@@ -30,13 +30,17 @@ function loadScript(name, tabId, cb) {
   }
 }
 
-const arrowURLs = ['^https://github\\.com'];
-
 chrome.tabs.onUpdated.addListener(async (tabId, changeInfo, tab) => {
-  if (changeInfo.status !== 'loading' || !tab.url.match(arrowURLs.join('|'))) return;
+  if (changeInfo.status !== 'loading') return;
 
   const result = await isInjected(tabId);
   if (chrome.runtime.lastError || result[0]) return;
 
   loadScript('inject', tabId, () => console.log('load inject bundle success!'));
+});
+
+chrome.browserAction.onClicked.addListener(function(){
+    chrome.tabs.query({active: true, currentWindow: true}, function(tabs){
+        chrome.tabs.sendMessage(tabs[0].id,"toggle");
+    })
 });

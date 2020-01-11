@@ -13,16 +13,23 @@ export default class Header extends Component {
     }
   };
 
+  close() {
+    chrome.tabs.query({active: true, currentWindow: true}, function(tabs){
+      chrome.tabs.sendMessage(tabs[0].id,"toggle");
+    })
+  }
+
   render() {
     return (
-      <header>
-        <h1>todos</h1>
+      <div>
+        <button onClick={() => this.close()}> X </button>
+        <h1>todos1</h1>
         <TodoTextInput
           newTodo
           onSave={this.handleSave}
           placeholder="What needs to be done?"
         />
-      </header>
+      </div>
     );
   }
 }
