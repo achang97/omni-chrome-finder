@@ -30,17 +30,15 @@ function loadScript(name, tabId, cb) {
   }
 }
 
-chrome.tabs.onUpdated.addListener(async (tabId, changeInfo, tab) => {
-  if (changeInfo.status !== 'loading') return;
-
-  const result = await isInjected(tabId);
-  if (chrome.runtime.lastError || result[0]) return;
-
-  loadScript('inject', tabId, () => console.log('load inject bundle success!'));
-});
-
 chrome.browserAction.onClicked.addListener(function(){
-    chrome.tabs.query({active: true, currentWindow: true}, function(tabs){
-        chrome.tabs.sendMessage(tabs[0].id,"toggle");
+    chrome.tabs.query({active: true, currentWindow: true}, async function(tabs){
+      const tabId = tabs[0].id;
+
+      const result = await isInjected(tabId);
+      if (chrome.runtime.lastError || result[0]) {
+        chrome.tabs.sendMessage(tabId, "toggle");
+      } else {
+        loadScript('inject', tabId, () => chrome.tabs.sendMessage(tabId, "toggle"));
+      }
     })
 });
