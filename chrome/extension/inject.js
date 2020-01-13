@@ -1,48 +1,30 @@
-import React, { Component } from 'react';
-import { render } from 'react-dom';
-import Dock from 'react-dock';
+var iframe = null;
 
-class InjectApp extends Component {
-  constructor(props) {
-    super(props);
-    this.state = { isVisible: false };
-  }
+if (!iframe) {
+	var iframe = document.createElement('iframe'); 
+	iframe.style.height = "100%";
+	iframe.style.width = "0px";
+	iframe.style.position = "fixed";
+	iframe.style.top = "0px";
+	iframe.style.right = "0px";
+	iframe.style.zIndex = "9000000000000000000";
+	iframe.frameBorder = "none"; 
+	iframe.src = chrome.extension.getURL(`inject.html?protocol=${location.protocol}`)
 
-  buttonOnClick = () => {
-    this.setState({ isVisible: !this.state.isVisible });
-  };
-
-  render() {
-    return (
-      <div>
-        <button onClick={this.buttonOnClick}>
-          Open TodoApp
-        </button>
-        <Dock
-          position="right"
-          dimMode="transparent"
-          defaultSize={0.4}
-          isVisible={this.state.isVisible}
-        >
-          <iframe
-            style={{
-              width: '100%',
-              height: '100%',
-            }}
-            frameBorder={0}
-            allowTransparency="true"
-            src={chrome.extension.getURL(`inject.html?protocol=${location.protocol}`)}
-          />
-        </Dock>
-      </div>
-    );
-  }
+	document.body.appendChild(iframe);
 }
 
-window.addEventListener('load', () => {
-  const injectDOM = document.createElement('div');
-  injectDOM.className = 'inject-react-example';
-  injectDOM.style.textAlign = 'center';
-  document.body.appendChild(injectDOM);
-  render(<InjectApp />, injectDOM);
-});
+chrome.runtime.onMessage.addListener(function(msg, sender){
+  if(msg == "toggle"){
+    toggle();
+  }
+})
+
+function toggle(){
+  if(iframe.style.width == "0px"){
+    iframe.style.width = "400px";
+  }
+  else{
+    iframe.style.width = "0px";
+  }
+}
