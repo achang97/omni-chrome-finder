@@ -38,7 +38,7 @@ chrome.browserAction.onClicked.addListener(function(){
       if (chrome.runtime.lastError || result[0]) {
         chrome.tabs.sendMessage(tabId, "toggle");
       } else {
-        loadScript('inject', tabId, () => chrome.tabs.sendMessage(tabId, "toggle"));
+        loadScript('inject', tabId, () => console.log('Injected!'));
       }
     })
 });

@@ -1,28 +1,73 @@
 import React, { PropTypes, Component } from 'react';
+import { Link } from 'react-router';
+import style from './header.css';
+import globalStyles from '../../styles/global.css';
+import Tabs from '@material-ui/core/Tabs';
+import Tab from '@material-ui/core/Tab';
+import FolderIcon from '@material-ui/icons/Folder';
+import NotificationsActiveIcon from '@material-ui/icons/NotificationsActive';
+import { withRouter } from 'react-router-dom';
 
-export default class Header extends Component {
+class Header extends Component {
+  constructor(props) {
+    super(props);
 
-  static propTypes = {
-    addTodo: PropTypes.func.isRequired
-  };
-
-  handleSave = (text) => {
-    if (text.length !== 0) {
-      this.props.addTodo(text);
+    this.state = {
+      tabValue: 0,
     }
-  };
+
+    this.handleTabClick = this.handleTabClick.bind(this);
+  }
 
   close() {
     chrome.tabs.query({active: true, currentWindow: true}, function(tabs){
-      chrome.tabs.sendMessage(tabs[0].id,"toggle");
+      chrome.tabs.sendMessage(tabs[0].id, "toggle");
     })
   }
 
+  handleTabClick(event, tabValue) {
+    this.setState({ tabValue });
+
+    let path;
+    switch (tabValue) {
+      case 0:
+        path = '/ask';
+        break;
+      case 1:
+        path = '/create';
+        break;
+      case 2:
+        path = '/navigate';
+        break;
+      case 3:
+        path = '/tasks';
+        break;
+      default:
+        return
+    }
+
+    this.props.history.push(path);
+  }
+
   render() {
+    const { tabValue } = this.state;
+
     return (
-      <div>
-        <button onClick={() => this.close()}> X </button>
+      <div className={`${globalStyles['padder-md']} ${globalStyles['primary-background']}`}>
+        <div className={`${globalStyles['flex-row']} ${globalStyles['flex-justify-space-between']}`}>
+          <div> Your Team Name </div>
+          <button onClick={() => this.close()}> Close </button>
+        </div>
+        <Tabs value={tabValue} onChange={this.handleTabClick} variant="fullWidth">
+          <Tab label="Ask" />
+          <Tab label="Create" />
+          <Tab icon={<FolderIcon />} />
+          <Tab icon={<NotificationsActiveIcon />} />
+        </Tabs>
       </div>
     );
   }
 }
+
+
+export default withRouter(Header);

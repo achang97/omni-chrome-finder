@@ -1,8 +1,8 @@
 {
   "version": "0.0.0",
-  "name": "react-chrome-extension-example",
+  "name": "Omni",
   "manifest_version": 2,
-  "description": "Example for react-chrome-extension-boilerplate",
+  "description": "A lightweight Q&A tool that helps you document and find information faster.",
   "browser_action": {
   },
   "icons": {
