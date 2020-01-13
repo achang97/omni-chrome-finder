@@ -8,6 +8,7 @@ import FolderIcon from '@material-ui/icons/Folder';
 import CloseIcon from '@material-ui/icons/Close';
 import NotificationsActiveIcon from '@material-ui/icons/NotificationsActive';
 import { withRouter } from 'react-router-dom';
+import { combineStyles } from '../../utils/style.js'
 
 class Header extends Component {
   constructor(props) {
@@ -54,8 +55,8 @@ class Header extends Component {
     const { tabValue } = this.state;
 
     return (
-      <div className={`${globalStyles['padder-md']} ${globalStyles['primary-background']}`}>
-        <div className={`${globalStyles['flex-row']} ${globalStyles['flex-justify-space-between']}`}>
+      <div className={combineStyles(globalStyles['padder-md'], globalStyles['primary-background'])}>
+        <div className={combineStyles(globalStyles['flex-row'], globalStyles['flex-justify-space-between'])}>
           <div> Your Team Name </div>
           <button onClick={() => this.close()}>
             <CloseIcon />
