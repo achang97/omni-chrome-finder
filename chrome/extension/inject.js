@@ -3,7 +3,7 @@ var iframe = null;
 if (!iframe) {
 	var iframe = document.createElement('iframe'); 
 	iframe.style.height = "100%";
-	iframe.style.width = "0px";
+	iframe.style.width = "300px";
 	iframe.style.position = "fixed";
 	iframe.style.top = "0px";
 	iframe.style.right = "0px";
@@ -22,7 +22,7 @@ chrome.runtime.onMessage.addListener(function(msg, sender){
 
 function toggle(){
   if(iframe.style.width == "0px"){
-    iframe.style.width = "400px";
+    iframe.style.width = "300px";
   }
   else{
     iframe.style.width = "0px";
