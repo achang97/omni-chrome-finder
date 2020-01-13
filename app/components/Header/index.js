@@ -5,6 +5,7 @@ import globalStyles from '../../styles/global.css';
 import Tabs from '@material-ui/core/Tabs';
 import Tab from '@material-ui/core/Tab';
 import FolderIcon from '@material-ui/icons/Folder';
+import CloseIcon from '@material-ui/icons/Close';
 import NotificationsActiveIcon from '@material-ui/icons/NotificationsActive';
 import { withRouter } from 'react-router-dom';
 
@@ -56,7 +57,9 @@ class Header extends Component {
       <div className={`${globalStyles['padder-md']} ${globalStyles['primary-background']}`}>
         <div className={`${globalStyles['flex-row']} ${globalStyles['flex-justify-space-between']}`}>
           <div> Your Team Name </div>
-          <button onClick={() => this.close()}> Close </button>
+          <button onClick={() => this.close()}>
+            <CloseIcon />
+          </button>
         </div>
         <Tabs value={tabValue} onChange={this.handleTabClick} variant="fullWidth">
           <Tab label="Ask" />
