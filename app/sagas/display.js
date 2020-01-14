@@ -5,9 +5,9 @@ import {
   OPEN_CARD
 } from '../actions/actionTypes'
 import {
-} from '../actions/cards'
+} from '../actions/display'
 
-export default function *watchCardRequests() {
+export default function *watchDisplayRequests() {
   let action
 
   while(action = yield take([OPEN_CARD])) {

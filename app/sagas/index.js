@@ -1,8 +1,8 @@
 import { all, spawn } from 'redux-saga/effects'
-import watchCardRequests from './cards'
+import watchDisplayRequests from './display'
 
 export default function* rootSaga(dispatch, getState) {
   yield all([
-    watchCardRequests(),
+    watchDisplayRequests(),
   ])
 }
