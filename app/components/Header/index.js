@@ -10,6 +10,18 @@ import NotificationsActiveIcon from '@material-ui/icons/NotificationsActive';
 import { withRouter } from 'react-router-dom';
 import { combineStyles } from '../../utils/style.js'
 
+import { bindActionCreators } from 'redux';
+import { connect } from 'react-redux';
+import { toggleDock } from '../../actions/display';
+
+@connect(
+  state => ({
+  }),
+  dispatch => bindActionCreators({
+    toggleDock,
+  }, dispatch)
+)
+
 class Header extends Component {
   constructor(props) {
     super(props);
@@ -19,12 +31,6 @@ class Header extends Component {
     }
 
     this.handleTabClick = this.handleTabClick.bind(this);
-  }
-
-  close() {
-    chrome.tabs.query({active: true, currentWindow: true}, function(tabs){
-      chrome.tabs.sendMessage(tabs[0].id, "toggle");
-    })
   }
 
   handleTabClick(event, tabValue) {
@@ -53,20 +59,21 @@ class Header extends Component {
 
   render() {
     const { tabValue } = this.state;
+    const { toggleDock } = this.props;
 
     return (
       <div className={combineStyles(globalStyles['padder-md'], globalStyles['primary-background'])}>
         <div className={combineStyles(globalStyles['flex-row'], globalStyles['flex-justify-space-between'])}>
           <div> Your Team Name </div>
-          <div onClick={() => this.close()}>
+          <div onClick={() => toggleDock()}>
             <CloseIcon />
           </div>
         </div>
-        <Tabs value={tabValue} onChange={this.handleTabClick} variant="fullWidth">
-          <Tab label="Ask" />
-          <Tab label="Create" />
-          <Tab icon={<FolderIcon />} />
-          <Tab icon={<NotificationsActiveIcon />} />
+        <Tabs value={tabValue} onChange={this.handleTabClick}>
+          <Tab label="Ask" className={style.tab} />
+          <Tab label="Create" className={style.tab}/>
+          <Tab icon={<FolderIcon />} className={style.tab} />
+          <Tab icon={<NotificationsActiveIcon />} className={style.tab} />
         </Tabs>
       </div>
     );

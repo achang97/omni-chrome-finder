@@ -10,7 +10,6 @@ import { combineStyles } from '../utils/style';
 
 import CloseIcon from '@material-ui/icons/Close';
 
-
 import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
 import { toggleDock, closeCard } from '../actions/display'
@@ -57,7 +56,7 @@ export default class App extends Component {
     const { dockVisible, cards, closeCard } = this.props;
     return (
       <div className={style.container}>
-        { 
+        { dockVisible && /// TODO: Needs to be updated by making Draggable component controlled
           cards.map(card => (
           <Draggable
             bounds="html"

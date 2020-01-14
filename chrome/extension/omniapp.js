@@ -1,3 +1,4 @@
+/* NOTE: this is currently not being used. May be deleted in the future. */
 import React from 'react';
 import ReactDOM from 'react-dom';
 import Root from '../../app/containers/Root';
