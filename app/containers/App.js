@@ -3,8 +3,8 @@ import { Route, Switch, Redirect } from 'react-router-dom';
 import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
 import Header from '../components/Header';
-import * as TodoActions from '../actions/todos';
 import style from './App.css';
+import Draggable from 'react-draggable';
 
 import Ask from './Ask';
 import Create from './Create';
@@ -13,27 +13,26 @@ import Tasks from './Tasks';
 
 @connect(
   state => ({
-    todos: state.todos
+    cards: state.cards.cards,
   }),
-  dispatch => ({
-    actions: bindActionCreators(TodoActions, dispatch)
-  })
+  dispatch => bindActionCreators({
+  }, dispatch)
 )
+
 export default class App extends Component {
   render() {
-    const { todos, actions } = this.props;
-
+    const { cards } = this.props;
     return (
       <div className={style.container}>
         <Header />
-          <Switch>
-            <Route path="/ask" component={Ask} />
-            <Route path="/create" component={Create} />
-            <Route path="/navigate" component={Navigate} />
-            <Route path="/tasks" component={Tasks} />
-            {/* A catch-all route: put all other routes ABOVE here */}
-            <Redirect to='/ask' />
-          </Switch>
+        <Switch>
+          <Route path="/ask" component={Ask} />
+          <Route path="/create" component={Create} />
+          <Route path="/navigate" component={Navigate} />
+          <Route path="/tasks" component={Tasks} />
+          {/* A catch-all route: put all other routes ABOVE here */}
+          <Redirect to='/ask' />
+        </Switch>
       </div>
     );
   }

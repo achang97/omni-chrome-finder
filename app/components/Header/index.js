@@ -58,9 +58,9 @@ class Header extends Component {
       <div className={combineStyles(globalStyles['padder-md'], globalStyles['primary-background'])}>
         <div className={combineStyles(globalStyles['flex-row'], globalStyles['flex-justify-space-between'])}>
           <div> Your Team Name </div>
-          <button onClick={() => this.close()}>
+          <div onClick={() => this.close()}>
             <CloseIcon />
-          </button>
+          </div>
         </div>
         <Tabs value={tabValue} onChange={this.handleTabClick} variant="fullWidth">
           <Tab label="Ask" />
