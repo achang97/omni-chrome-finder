@@ -14,7 +14,7 @@ import { openCard } from '../../actions/display';
 
 export default class Ask extends Component {
   openCard() {
-  	this.props.openCard(Math.random());
+  	this.props.openCard(Math.floor(Math.random() * Math.floor(10000)));
   }
 
   render() {
