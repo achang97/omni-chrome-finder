@@ -30,15 +30,20 @@ function loadScript(name, tabId, cb) {
   }
 }
 
-chrome.browserAction.onClicked.addListener(function(){
-    chrome.tabs.query({active: true, currentWindow: true}, async function(tabs){
-      const tabId = tabs[0].id;
+chrome.tabs.onUpdated.addListener(async (tabId, changeInfo, tab) => {
+  if (changeInfo.status !== 'loading') return;
+  const result = await isInjected(tabId);
+  if (!chrome.runtime.lastError && !result[0]) {
+    loadScript('inject', tabId, () => console.log('Injected!'));
+  } 
+});
 
-      const result = await isInjected(tabId);
-      if (chrome.runtime.lastError || result[0]) {
-        chrome.tabs.sendMessage(tabId, "toggle");
-      } else {
-        loadScript('inject', tabId, () => console.log('Injected!'));
-      }
-    })
+chrome.browserAction.onClicked.addListener(async (tab) => {
+  const tabId = tab.id;
+  const result = await isInjected(tabId);
+  if (chrome.runtime.lastError || result[0]) {
+    chrome.tabs.sendMessage(tabId, "toggle");
+  } else {
+    loadScript('inject', tabId, () => console.log('Injected!'));
+  } 
 });

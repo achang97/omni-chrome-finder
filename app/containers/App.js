@@ -39,7 +39,6 @@ export default class App extends Component {
 
   componentDidMount() {
     chrome.runtime.onMessage.addListener(this.listener);
-    this.props.toggleDock();
   }
 
   componentWillUnmount() {
@@ -56,7 +55,9 @@ export default class App extends Component {
     const { dockVisible, cards, closeCard } = this.props;
     return (
       <div className={style.container}>
-        { dockVisible && /// TODO: Needs to be updated by making Draggable component controlled
+        { dockVisible &&
+          /// TODO: Needs to be updated by making Draggable component controlled,
+          /// also should move to new component
           cards.map(card => (
           <Draggable
             bounds="html"
