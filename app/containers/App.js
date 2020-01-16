@@ -1,11 +1,14 @@
 import React, { Component } from 'react';
 import { Route, Switch, Redirect } from 'react-router-dom';
 import Header from '../components/Header';
+import Dock from 'react-dock';
+import { TOGGLE, TAB_UPDATE } from '../utils/constants';
+import shadow from 'react-shadow';
+
 import style from './App.css';
 import globalStyle from '../styles/global.css';
-import Dock from 'react-dock';
-import { combineStyles } from '../utils/style';
-import { TOGGLE, TAB_UPDATE } from '../utils/constants';
+import { StylesProvider, jssPreset } from '@material-ui/styles';
+import { create } from 'jss';
 
 import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
@@ -32,10 +35,12 @@ export default class App extends Component {
 
     this.state = {
       suggestTabVisible: false,
+      jss: null,
     };
 
     this.listener = this.listener.bind(this);
     this.handleFirstPageLoad = this.handleFirstPageLoad.bind(this);
+    this.setRefAndCreateJss = this.setRefAndCreateJss.bind(this);
   }
 
   componentDidMount() {
@@ -102,36 +107,54 @@ export default class App extends Component {
     }
   }
 
+  setRefAndCreateJss(headRef) {
+    const { jss } = this.state;
+    if (headRef && !jss) {
+      const createdJssWithRef = create({...jssPreset(), insertionPoint: headRef})
+      this.setState({ jss: createdJssWithRef });
+    }
+  }
+
   render() {
     const { dockVisible, toggleDock } = this.props;
-    const { suggestTabVisible } = this.state;
+    const { suggestTabVisible, jss } = this.state;
 
+    // Solution to CSS isolation taken from https://stackoverflow.com/a/57221293.
     return (
-      <div className={style.container}>
-        { dockVisible && <Cards /> }
-        { suggestTabVisible && // TODO: move to new file and style
-          <div className={combineStyles(style['suggest-tab'], globalStyle['white-background'])} onClick={() => toggleDock()}>
-            AI Suggest
-          </div>
+      <shadow.div>
+        <style ref={this.setRefAndCreateJss}></style>
+        <style type="text/css">{globalStyle}</style>
+        <style type="text/css">{style}</style>
+        {jss &&
+          <StylesProvider jss={jss}>
+            <div className="app-container">
+              { dockVisible && <Cards /> }
+              { suggestTabVisible && // TODO: move to new file and style
+                <div className="app-suggest-tab white-background" onClick={() => toggleDock()}>
+                  AI Suggest
+                </div>
+              }
+              <Dock
+                position="right"
+                fluid={false}
+                dimMode="none"
+                size={300}
+                isVisible={dockVisible}
+              >
+                <Header />
+                <Switch>
+                  <Route path="/ask" component={Ask} />
+                  <Route path="/create" component={Create} />
+                  <Route path="/navigate" component={Navigate} />
+                  <Route path="/tasks" component={Tasks} />
+                  {/* A catch-all route: put all other routes ABOVE here */}
+                  <Redirect to='/ask' />
+                </Switch>
+              </Dock>
+            </div>
+          </StylesProvider>
         }
-        <Dock
-          position="right"
-          fluid={false}
-          dimMode="none"
-          size={300}
-          isVisible={dockVisible}
-        >
-          <Header />
-          <Switch>
-            <Route path="/ask" component={Ask} />
-            <Route path="/create" component={Create} />
-            <Route path="/navigate" component={Navigate} />
-            <Route path="/tasks" component={Tasks} />
-            {/* A catch-all route: put all other routes ABOVE here */}
-            <Redirect to='/ask' />
-          </Switch>
-        </Dock>
-      </div>
+      </shadow.div>
     );
   }
 }

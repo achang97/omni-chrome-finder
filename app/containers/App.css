@@ -1,10 +1,10 @@
-.container {
+.app-container {
   box-shadow: rgba(0, 0, 0, 0.2) 0px 2px 12px 0px !important;
   background-color: rgb(242, 243, 245) !important;
   min-height: 100%;
 }
 
-.suggest-tab { 
+.app-suggest-tab { 
   position: fixed;
   z-index: 10000000;
   top: 10px;

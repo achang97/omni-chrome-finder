@@ -1,9 +1,7 @@
 import React, { Component } from 'react';
 import style from './cards.css';
-import globalStyle from '../../styles/global.css';
 import Draggable from 'react-draggable';
 import _ from 'underscore';
-import { combineStyles } from '../../utils/style';
 
 import CloseIcon from '@material-ui/icons/Close';
 
@@ -71,7 +69,8 @@ export default class App extends Component {
     const { positions } = this.state;
 
     return (
-      <div className={style.container}>
+      <div>
+        <style type="text/css">{style}</style>
         { cards.map(card => (
           <Draggable
             bounds="html"
@@ -79,7 +78,7 @@ export default class App extends Component {
             position={positions[card]}
             onDrag={(e, ui) => this.handleDrag(card, ui)}
           >
-            <div className={combineStyles(style.card, globalStyle['padder-lg'], globalStyle['white-background'])}>
+            <div className="card padder-lg white-background">
               <button onClick={() => closeCard(card)}>
                 <CloseIcon />
               </button>
