@@ -4,8 +4,10 @@
   min-height: 100%;
 }
 
-.card {
-	z-index: 100000000;
-	border: 1px solid black;
-	position: fixed !important;
+.suggest-tab { 
+  position: fixed;
+  z-index: 10000000;
+  top: 10px;
+  right: 0px;
+  box-shadow: rgba(0, 0, 0, 0.2) 0px 2px 12px 0px !important;
 }

@@ -1,3 +1,5 @@
+import { TOGGLE, TAB_UPDATE } from '../../../app/utils/constants';
+
 function isInjected(tabId) {
   return chrome.tabs.executeScriptAsync(tabId, {
     code: `var injected = window.reactExampleInjected;
@@ -32,17 +34,22 @@ function loadScript(name, tabId, cb) {
 
 chrome.tabs.onUpdated.addListener(async (tabId, changeInfo, tab) => {
   if (changeInfo.status !== 'loading') return;
+
   const result = await isInjected(tabId);
   if (!chrome.runtime.lastError && !result[0]) {
     loadScript('inject', tabId, () => console.log('Injected!'));
   } 
+
+  if (!chrome.runtime.lastError) {
+    chrome.tabs.sendMessage(tabId, { type: TAB_UPDATE, url: tab.url })
+  }
 });
 
 chrome.browserAction.onClicked.addListener(async (tab) => {
   const tabId = tab.id;
   const result = await isInjected(tabId);
   if (chrome.runtime.lastError || result[0]) {
-    chrome.tabs.sendMessage(tabId, "toggle");
+    chrome.tabs.sendMessage(tabId, { type: TOGGLE });
   } else {
     loadScript('inject', tabId, () => console.log('Injected!'));
   } 
