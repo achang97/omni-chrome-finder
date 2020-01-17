@@ -55,8 +55,8 @@ const baseDevConfig = () => ({
     }, {
       test: /\.css$/,
       use: [
-        'style-loader',
-        'css-loader?modules&sourceMap&importLoaders=1&localIdentName=[name]__[local]___[hash:base64:5]',
+        'to-string-loader',
+        'css-loader',
         {
           loader: 'postcss-loader',
           options: {

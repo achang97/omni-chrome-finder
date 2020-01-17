@@ -1,14 +1,25 @@
 import React, { PropTypes, Component } from 'react';
 import { Link } from 'react-router';
-import style from './header.css';
-import globalStyles from '../../styles/global.css';
 import Tabs from '@material-ui/core/Tabs';
 import Tab from '@material-ui/core/Tab';
 import FolderIcon from '@material-ui/icons/Folder';
 import CloseIcon from '@material-ui/icons/Close';
 import NotificationsActiveIcon from '@material-ui/icons/NotificationsActive';
 import { withRouter } from 'react-router-dom';
-import { combineStyles } from '../../utils/style.js'
+
+import style from './header.css';
+
+import { bindActionCreators } from 'redux';
+import { connect } from 'react-redux';
+import { toggleDock } from '../../actions/display';
+
+@connect(
+  state => ({
+  }),
+  dispatch => bindActionCreators({
+    toggleDock,
+  }, dispatch)
+)
 
 class Header extends Component {
   constructor(props) {
@@ -19,12 +30,6 @@ class Header extends Component {
     }
 
     this.handleTabClick = this.handleTabClick.bind(this);
-  }
-
-  close() {
-    chrome.tabs.query({active: true, currentWindow: true}, function(tabs){
-      chrome.tabs.sendMessage(tabs[0].id, "toggle");
-    })
   }
 
   handleTabClick(event, tabValue) {
@@ -53,21 +58,25 @@ class Header extends Component {
 
   render() {
     const { tabValue } = this.state;
+    const { toggleDock } = this.props;
 
     return (
-      <div className={combineStyles(globalStyles['padder-md'], globalStyles['primary-background'])}>
-        <div className={combineStyles(globalStyles['flex-row'], globalStyles['flex-justify-space-between'])}>
-          <div> Your Team Name </div>
-          <button onClick={() => this.close()}>
-            <CloseIcon />
-          </button>
+      <div>
+        <style type="text/css">{style}</style>
+        <div className="padder-md primary-background">
+          <div className="flex-row flex-justify-space-between">
+            <div> Your Team Name </div>
+            <div onClick={() => toggleDock()}>
+              <CloseIcon />
+            </div>
+          </div>
+          <Tabs value={tabValue} onChange={this.handleTabClick}>
+            <Tab label="Ask" className="header-tab" />
+            <Tab label="Create" className="header-tab" />
+            <Tab icon={<FolderIcon />} className="header-tab" />
+            <Tab icon={<NotificationsActiveIcon />} className="header-tab" />
+          </Tabs>
         </div>
-        <Tabs value={tabValue} onChange={this.handleTabClick} variant="fullWidth">
-          <Tab label="Ask" />
-          <Tab label="Create" />
-          <Tab icon={<FolderIcon />} />
-          <Tab icon={<NotificationsActiveIcon />} />
-        </Tabs>
       </div>
     );
   }

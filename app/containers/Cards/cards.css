@@ -1,0 +1,5 @@
+.card {
+	z-index: 100000000;
+	border: 1px solid black;
+	position: fixed !important;
+}
