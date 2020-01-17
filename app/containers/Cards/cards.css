@@ -2,4 +2,44 @@
 	z-index: 100000000;
 	border: 1px solid black;
 	position: fixed !important;
+	height: 500px;
+	width: 500px;
+	background-image: linear-gradient(29deg, #F9F9F9 0%, #FFFFFF 63%, #FFFFFF 63%);
+	border: 1px solid #edeef2;
+	border-radius: 12px;
+}
+
+.card-header {
+
+}
+
+.card-top-section {
+	background: #B9B9B914;
+}
+
+.card-title {
+	font-size: 24px;
+	font-weight: 600;
+}
+
+.card-tag-container {
+	background: #777BAD1A;
+	border-radius: 13.5px;
+	color: #777BAD;
+	font-weight: 600;
+	font-size: 12px;
+}
+
+.card-flag-up-to-date {
+	background: #E3F2EB;
+	color: #20B56A;
+	border-radius: 8px;
+	font-weight: 600;
+	font-size: 12px;
+}
+
+.card-bottom-panel {
+	position: fixed;
+	bottom: 0;
+	background: #777BAD1A;
 }
