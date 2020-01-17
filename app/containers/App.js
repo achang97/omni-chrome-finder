@@ -7,7 +7,11 @@ import shadow from 'react-shadow';
 
 import style from './App.css';
 import globalStyle from '../styles/global.css';
-import { StylesProvider, jssPreset } from '@material-ui/styles';
+import { defaultMuiTheme } from '../styles/defaultMuiTheme';
+
+import { ThemeProvider, StylesProvider, jssPreset } from '@material-ui/styles';
+import { createMuiTheme, withStyles } from '@material-ui/core/styles';
+import { CssBaseline } from '@material-ui/core';
 import { create } from 'jss';
 
 import { bindActionCreators } from 'redux';
@@ -24,6 +28,7 @@ const dockPanelStyles = {
   background: '#F5F7FE',
   borderRadius: '6px 0 0 6px',
 }
+const theme = createMuiTheme(defaultMuiTheme);
 
 @connect(
   state => ({
@@ -84,10 +89,7 @@ export default class App extends Component {
 
   handleTabUpdate(url) {
     // Placeholder code for AI Suggest, code should be written in another file eventually
-    // Case 1: Matches 
-    const text = this.getPageText();
-    console.log(text);
-      
+    // Case 1: Matches specific email page in Gmail
     if (/https:\/\/mail\.google\.com\/mail\/u\/\d+\/#inbox\/.+/.test(url)) {
       this.setState({ suggestTabVisible: true });
       const text = this.getPageText();
@@ -116,6 +118,7 @@ export default class App extends Component {
     const { jss } = this.state;
     if (headRef && !jss) {
       const createdJssWithRef = create({...jssPreset(), insertionPoint: headRef})
+      console.log(createdJssWithRef)
       this.setState({ jss: createdJssWithRef });
     }
   }
@@ -125,39 +128,41 @@ export default class App extends Component {
     const { suggestTabVisible, jss } = this.state;
 
     // Solution to CSS isolation taken from https://stackoverflow.com/a/57221293.
-    return (
+    return (      
       <shadow.div>
         <style ref={this.setRefAndCreateJss}></style>
         <style type="text/css">{globalStyle}</style>
         <style type="text/css">{style}</style>
         {jss &&
           <StylesProvider jss={jss}>
-            <div className="app-container">
-              { dockVisible && <Cards /> }
-              { suggestTabVisible && // TODO: move to new file and style
-                <div className="app-suggest-tab white-background" onClick={() => toggleDock()}>
-                  AI Suggest
-                </div>
-              }
-              <Dock
-                position="right"
-                fluid={false}
-                dimMode="none"
-                size={350}
-                isVisible={dockVisible}
-                dockStyle={dockPanelStyles}
-              >
-                <Header />
-                <Switch>
-                  <Route path="/ask" component={Ask} />
-                  <Route path="/create" component={Create} />
-                  <Route path="/navigate" component={Navigate} />
-                  <Route path="/tasks" component={Tasks} />
-                  {/* A catch-all route: put all other routes ABOVE here */}
-                  <Redirect to='/ask' />
-                </Switch>
-              </Dock>
-            </div>
+            <ThemeProvider theme={theme}>
+              <div className="app-container">
+                { dockVisible && <Cards /> }
+                { suggestTabVisible && // TODO: move to new file and style
+                  <div className="app-suggest-tab white-background" onClick={() => toggleDock()}>
+                    AI Suggest
+                  </div>
+                }
+                <Dock
+                  position="right"
+                  fluid={false}
+                  dimMode="none"
+                  size={350}
+                  isVisible={dockVisible}
+                  dockStyle={dockPanelStyles}
+                >
+                  <Header />
+                  <Switch>
+                    <Route path="/ask" component={Ask} />
+                    <Route path="/create" component={Create} />
+                    <Route path="/navigate" component={Navigate} />
+                    <Route path="/tasks" component={Tasks} />
+                    {/* A catch-all route: put all other routes ABOVE here */}
+                    <Redirect to='/ask' />
+                  </Switch>
+                </Dock>
+              </div>
+            </ThemeProvider>
           </StylesProvider>
         }
       </shadow.div>
