@@ -5,6 +5,7 @@ import Root from '../../app/containers/Root';
 const targetElem = document.querySelector('body');
 const wrapper = document.createElement('div');
 wrapper.id = 'omni-chrome-ext-main-container';
+wrapper.style = "all: initial;";
 targetElem.insertBefore(wrapper, targetElem.firstChild);
 
 chrome.storage.local.get('state', (obj) => {

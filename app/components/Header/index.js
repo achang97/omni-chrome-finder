@@ -64,16 +64,10 @@ class Header extends Component {
       <div>
         <style type="text/css">{style}</style>
         <div className="padder-md primary-background">
-          <div className="flex-row flex-justify-space-between">
-            <div> Your Team Name </div>
-            <div onClick={() => toggleDock()}>
-              <CloseIcon />
-            </div>
-          </div>
           <Tabs value={tabValue} onChange={this.handleTabClick}>
             <Tab label="Ask" className="header-tab" />
             <Tab label="Create" className="header-tab" />
-            <Tab icon={<FolderIcon />} className="header-tab" />
+            <Tab label="Cards" className="header-tab" />
             <Tab icon={<NotificationsActiveIcon />} className="header-tab" />
           </Tabs>
         </div>

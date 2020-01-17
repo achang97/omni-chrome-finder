@@ -20,6 +20,11 @@ import Navigate from './Navigate';
 import Tasks from './Tasks';
 import Cards from './Cards';
 
+const dockPanelStyles = {
+  background: '#F5F7FE',
+  borderRadius: '6px 0 0 6px',
+}
+
 @connect(
   state => ({
     dockVisible: state.display.dockVisible,
@@ -138,8 +143,9 @@ export default class App extends Component {
                 position="right"
                 fluid={false}
                 dimMode="none"
-                size={300}
+                size={350}
                 isVisible={dockVisible}
+                dockStyle={dockPanelStyles}
               >
                 <Header />
                 <Switch>
