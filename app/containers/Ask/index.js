@@ -3,6 +3,7 @@ import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
 import { TextField } from '@material-ui/core';
 import Tabs from '@material-ui/core/Tabs';
+import Button from '@material-ui/core/Button';
 import Tab from '@material-ui/core/Tab';
 import style from './ask.css';
 
@@ -26,19 +27,6 @@ export default class Ask extends Component {
 
   handleTabClick = (event, tabValue) => {
     this.setState({ tabValue });
-
-    switch (tabValue) {
-      case 0:
-        return '/ask';
-      case 1:
-        return '/create';
-      case 2:
-        return '/navigate';
-      default:
-        return;
-    }
-
-    //this.props.history.push(path);
   }
 
   openCard() {
@@ -47,7 +35,6 @@ export default class Ask extends Component {
   }
 
   render() {
-    const { tabValue } = this.state;
     return (
       <div>
         <style type="text/css">{style}</style>

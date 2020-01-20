@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import { Route, Switch, Redirect } from 'react-router-dom';
-import Header from '../components/Header';
+import Header from '../components/common/Header';
 import Dock from 'react-dock';
 import { TOGGLE, TAB_UPDATE } from '../utils/constants';
 import shadow from 'react-shadow';
@@ -118,7 +118,6 @@ export default class App extends Component {
     const { jss } = this.state;
     if (headRef && !jss) {
       const createdJssWithRef = create({...jssPreset(), insertionPoint: headRef})
-      console.log(createdJssWithRef)
       this.setState({ jss: createdJssWithRef });
     }
   }
