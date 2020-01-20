@@ -25,7 +25,7 @@ import Tasks from './Tasks';
 import Cards from './Cards';
 
 const dockPanelStyles = {
-  background: '#F5F7FE',
+  background: 'white',
   borderRadius: '6px 0 0 6px',
 }
 const theme = createMuiTheme(defaultMuiTheme);
