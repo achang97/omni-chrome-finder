@@ -31,7 +31,7 @@ export default class Cards extends Component {
     super(props);
   }
 
-  closeCard(e, cardId) {
+  closeCard = (e, cardId) => {
     const { closeCard } = this.props;
 
     e.stopPropagation();

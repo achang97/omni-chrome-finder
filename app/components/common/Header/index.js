@@ -29,11 +29,9 @@ class Header extends Component {
     this.state = {
       tabValue: 0,
     }
-
-    this.handleTabClick = this.handleTabClick.bind(this);
   }
 
-  handleTabClick(event, tabValue) {
+  handleTabClick = (event, tabValue) => {
     this.setState({ tabValue });
 
     let path;

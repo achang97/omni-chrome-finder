@@ -37,13 +37,13 @@ export default class Ask extends Component {
     this.setState({ tabValue });
   }
 
-  openCard() {
+  openCard = () => {
     // eslint-disable-next-line no-tabs,no-mixed-spaces-and-tabs,react/prop-types
     // Open card with random ID
   	this.props.openCard(Math.floor(Math.random() * Math.floor(10000)));
   }
 
-  toggleScreenRecording() {
+  toggleScreenRecording = () => {
     const { desktopSharing, localStream } = this.state;
 
     if (!desktopSharing) {
@@ -53,7 +53,7 @@ export default class Ask extends Component {
     }
   }
 
-  startScreenRecording() {
+  startScreenRecording = () => {
     navigator.mediaDevices.getDisplayMedia({
       audio: false,
       video: {
@@ -87,7 +87,7 @@ export default class Ask extends Component {
       .catch(error => console.log(error));
   }
 
-  endScreenRecording() {
+  endScreenRecording = () => {
     const { mediaRecorder, localStream, recordedChunks, screenRecordings } = this.state;
     
     mediaRecorder.stop();
@@ -126,11 +126,11 @@ export default class Ask extends Component {
           <div>Ask Body</div>
           <button
             className="bg-transparent hover:bg-blue-500 text-blue-700 hover:text-white py-1 px-2 border border-blue-500 hover:border-transparent rounded"
-            onClick={() => this.openCard()}
+            onClick={this.openCard}
           >
               Open Card
           </button>
-          <button onClick={() => this.toggleScreenRecording()}>
+          <button onClick={this.toggleScreenRecording}>
             { !desktopSharing ? 'Screen Record' : 'End Recording' }
           </button>
           <Grid container spacing={3}>

@@ -47,10 +47,6 @@ export default class App extends Component {
       suggestTabVisible: false,
       jss: null,
     };
-
-    this.listener = this.listener.bind(this);
-    this.handleFirstPageLoad = this.handleFirstPageLoad.bind(this);
-    this.setRefAndCreateJss = this.setRefAndCreateJss.bind(this);
   }
 
   componentDidMount() {
@@ -63,7 +59,7 @@ export default class App extends Component {
     window.removeEventListener('load', this.handleFirstPageLoad);
   }
 
-  getPageText() {
+  getPageText = () => {
     // TODO: Basic version that is website agnostic, simply removes chrome extension code, scripts,
     // and styles from DOM and gets inner text. Future version should look at specific divs (ie. title
     // and content of email for Gmail).
@@ -83,11 +79,11 @@ export default class App extends Component {
     return docCopy.body.innerText;
   }
 
-  handleFirstPageLoad() {
+  handleFirstPageLoad = () => {
     this.handleTabUpdate(window.location.href);
   }
 
-  handleTabUpdate(url) {
+  handleTabUpdate = (url) => {
     // Placeholder code for AI Suggest, code should be written in another file eventually
     // Case 1: Matches specific email page in Gmail
     if (/https:\/\/mail\.google\.com\/mail\/u\/\d+\/#inbox\/.+/.test(url)) {
@@ -99,7 +95,7 @@ export default class App extends Component {
     }
   }
 
-  listener(msg) {
+  listener = (msg) => {
     const { type, ...restMsg } = msg;
     switch (msg.type) {
       case TOGGLE: {
@@ -114,7 +110,7 @@ export default class App extends Component {
     }
   }
 
-  setRefAndCreateJss(headRef) {
+  setRefAndCreateJss = (headRef) => {
     const { jss } = this.state;
     if (headRef && !jss) {
       const createdJssWithRef = create({...jssPreset(), insertionPoint: headRef})
