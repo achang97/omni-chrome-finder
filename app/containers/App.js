@@ -134,7 +134,7 @@ export default class App extends Component {
               <div className="app-container">
                 { dockVisible && <Cards /> }
                 { suggestTabVisible && // TODO: move to new file and style
-                  <div className="app-suggest-tab white-background" onClick={() => toggleDock()}>
+                  <div className="fixed bg-white shadow-md app-suggest-tab" onClick={() => toggleDock()}>
                     AI Suggest
                   </div>
                 }

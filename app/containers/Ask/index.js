@@ -10,6 +10,12 @@ import ReactPlayer from 'react-player'
 import style from './ask.css';
 import { openCard } from '../../actions/display';
 
+const INTEGRATIONS = [
+  'Slack',
+  'Email',
+  'Asana'
+]
+
 @connect(
     // eslint-disable-next-line no-unused-vars
   state => ({
@@ -112,23 +118,26 @@ export default class Ask extends Component {
     return (
       <div>
         <style type="text/css">{style}</style>
-        <div className="padder-lg">
+        <div className="p-lg">
           <div className="flex float-left w-full">
             <div className="w-2/3">
               <Tabs value={tabValue} onChange={this.handleTabClick} TabIndicatorProps={{ style: { display: 'none', } }}>
-                <Tab label="Slack" className="ask-integrations-tab shadow-md" />
-                <Tab label="Email" className="ask-integrations-tab shadow-md" />
-                <Tab label="Asana" className="ask-integrations-tab shadow-md" />
+                { INTEGRATIONS.map((integration, i) => (
+                  <Tab
+                    label={integration}
+                    className={`ask-integrations-tab font-semibold text-purple-reg ${tabValue === i ? 'shadow-md ask-integrations-tab-selected' : ''}`}
+                  />
+                ))}
               </Tabs>
             </div>
           </div>
-          <TextField id="standard-basic" className="ask-question-text-field w-full" placeholder="Question" InputProps={{ disableUnderline: true }} />
+          <TextField id="standard-basic" className="ask-question-text-field bg-white rounded p-sm w-full" placeholder="Question" InputProps={{ disableUnderline: true }} />
           <div>Ask Body</div>
           <button
-            className="bg-transparent hover:bg-blue-500 text-blue-700 hover:text-white py-1 px-2 border border-blue-500 hover:border-transparent rounded"
+            className="bg-transparent hover:bg-blue-500 text-blue-700 hover:text-white py-xs px-sm border border-blue-500 hover:border-transparent rounded"
             onClick={this.openCard}
           >
-              Open Card
+            Open Card
           </button>
           <button onClick={this.toggleScreenRecording}>
             { !desktopSharing ? 'Screen Record' : 'End Recording' }
@@ -137,7 +146,7 @@ export default class Ask extends Component {
             { screenRecordings.map((recording) => (
               <Grid item xs={6}>
                 <div className="ask-video-player-container">
-                  <ReactPlayer url={recording} className="ask-video-player" controls playing height="100%" width="100%"/>
+                  <ReactPlayer url={recording} className="absolute top-0 left-0" controls playing height="100%" width="100%"/>
                 </div>
               </Grid>
             ))}    

@@ -54,16 +54,16 @@ export default class Cards extends Component {
           defaultPosition={{ x: window.innerWidth / 2 - defaultCardSize / 2, y: window.innerHeight / 2 - defaultCardSize / 2 }}
         >
           <Resizable
-            className="card white-background"
+            className="card bg-white rounded-lg shadow-lg border border-solid border-grey-100"
             defaultSize={{ width: defaultCardSize, height: defaultCardSize }}
             minWidth={defaultCardSize}
             minHeight={defaultCardSize}
             enable={{top:false, right:true, bottom:true, left:false, topRight:false, bottomRight:true, bottomLeft:false, topLeft:false}}
           >
-            <div className="flex-row-centered card-header">
+            <div className="card-header flex items-center bg-grey-100 rounded-t-lg">
               <Tabs
                 id="card-tab-container"
-                className="stretch"
+                className="flex-1"
                 value={activeCardIndex}
                 onChange={(e, newIndex) => setActiveCardIndex(newIndex)}
                 variant="scrollable"
@@ -71,9 +71,9 @@ export default class Cards extends Component {
                 { cards.map(cardId => (
                   <Tab
                     key={cardId}
-                    className="card-tab"
+                    className="bg-white shadow-md rounded card-tab"
                     label={
-                      <div className="flex-row-centered flex-justify-space-between"> 
+                      <div className="flex items-center justify-between"> 
                         <div> {cardId} </div>
                         <Button onClick={(e) => this.closeCard(e, cardId)}>
                           <CloseIcon />
@@ -83,7 +83,7 @@ export default class Cards extends Component {
                   />
                 ))}
               </Tabs>
-              <div className="flex-row-centered flex-justify-end">
+              <div className="flex items-center justify-end">
                 <Button onClick={() => closeAllCards()}>
                   <CloseIcon />
                 </Button>
