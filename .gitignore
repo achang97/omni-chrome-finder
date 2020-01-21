@@ -1,10 +1,12 @@
 node_modules
 npm-debug.log
 .DS_Store
+.idea
 
 build/
 dev/
 
+package-lock.json
 *.zip
 *.crx
 *.pem

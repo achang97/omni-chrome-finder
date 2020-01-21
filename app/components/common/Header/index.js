@@ -12,7 +12,7 @@ import style from './header.css';
 
 import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
-import { toggleDock } from '../../actions/display';
+import { toggleDock } from '../../../actions/display';
 
 @connect(
   state => ({
