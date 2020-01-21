@@ -1,4 +1,10 @@
 /* Colors, both background and font */
+@tailwind base;
+
+@tailwind components;
+
+@tailwind utilities;
+
 .primary-background {
 	background: rgba(189,200,249,0.15);
 }
