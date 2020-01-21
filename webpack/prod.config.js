@@ -1,6 +1,8 @@
 const path = require('path');
 const webpack = require('webpack');
 const autoprefixer = require('autoprefixer');
+const tailwindcss = require('tailwindcss');
+const tailwindConfig = require('../tailwind.config')
 
 const customPath = path.join(__dirname, './customPublicPath');
 
@@ -49,7 +51,7 @@ module.exports = {
         {
           loader: 'postcss-loader',
           options: {
-            plugins: () => [autoprefixer]
+            plugins: () => [tailwindcss(tailwindConfig), autoprefixer]
           }
         }
       ]

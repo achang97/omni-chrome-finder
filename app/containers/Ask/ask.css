@@ -1,11 +1,11 @@
-.question-text-field {
+.ask-question-text-field {
 	background: #FFFFFF;
 	border: 1px solid rgba(0,2,95,0.10);
 	border-radius: 8px;
 	padding: 6px;
 }
 
-.integrations-tab {
+.ask-integrations-tab {
 	color: #7A7EB0;
     border-radius: 17px;
     font-size: 12px;
@@ -18,12 +18,23 @@
     font-weight: 600;
 }
 
-.integrations-tab .MuiTab-wrapper {
+.ask-integrations-tab .MuiTab-wrapper {
 	padding-bottom: 2px;
     border-bottom: 2px solid #25456333;
 }
 
-.Mui-selected.integrations-tab {
+.ask-integrations-tab.Mui-selected {
 	background-image: linear-gradient(143deg, #777BAD 0%, #A0A1CD 100%);
 	color: white;
+}
+
+.ask-video-player-container {
+  position: relative;
+  padding-top: 56.25% /* Player ratio: 100 / (1280 / 720) */
+}
+ 
+.ask-video-player {
+  position: absolute;
+  top: 0;
+  left: 0;
 }
