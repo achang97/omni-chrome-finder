@@ -5,6 +5,10 @@ export function toggleDock() {
   return { type: types.TOGGLE_DOCK, payload: { } };
 }
 
+export function expandDock() {
+  return { type: types.EXPAND_DOCK, payload: { } };
+}
+
 /* Card behavior */
 export function openCard(id) {
   return { type: types.OPEN_CARD, payload: { id } };

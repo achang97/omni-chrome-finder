@@ -33,6 +33,7 @@ const theme = createMuiTheme(defaultMuiTheme);
 @connect(
   state => ({
     dockVisible: state.display.dockVisible,
+    dockExpanded: state.display.dockExpanded,
   }),
   dispatch => bindActionCreators({
     toggleDock,
@@ -119,7 +120,7 @@ export default class App extends Component {
   }
 
   render() {
-    const { dockVisible, toggleDock } = this.props;
+    const { dockVisible, dockExpanded, toggleDock } = this.props;
     const { suggestTabVisible, jss } = this.state;
 
     // Solution to CSS isolation taken from https://stackoverflow.com/a/57221293.
@@ -144,7 +145,7 @@ export default class App extends Component {
                   dimMode="none"
                   size={350}
                   isVisible={dockVisible}
-                  dockStyle={dockPanelStyles}
+                  dockStyle={{ height: dockExpanded ? '100%' : 'auto', ...dockPanelStyles }}
                 >
                   <Header />
                   <Switch>

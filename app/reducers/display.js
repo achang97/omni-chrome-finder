@@ -3,6 +3,7 @@ import _ from 'underscore';
 
 const initialState = {
   dockVisible: false,
+  dockExpanded: false,
 	cards: [],
   activeCardIndex: -1,
 };
@@ -12,7 +13,10 @@ export default function display(state=initialState, action) {
 
   switch (type) {
     case types.TOGGLE_DOCK: {
-      return { ...state, dockVisible: !state.dockVisible };
+      return { ...state, dockVisible: !state.dockVisible, dockExpanded: !state.dockVisible ? false : state.dockExpanded };
+    }
+    case types.EXPAND_DOCK: {
+      return { ...state, dockExpanded: !state.dockExpanded };
     }
 
     case types.OPEN_CARD: {
