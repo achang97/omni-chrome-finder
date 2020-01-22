@@ -38,7 +38,7 @@ const config = {
       'xl': '20px',
       '2xl': '24px',
       '3xl': '30px',
-      '4xl': '40px',
+      '4xl': '48px',
     },
     borderRadius: {
       'none': '0px',
