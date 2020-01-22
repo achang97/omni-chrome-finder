@@ -222,7 +222,6 @@ export const defaultMuiTheme = {
       "fontSize": 14,
       "lineHeight": 1.75,
       "letterSpacing": "0.02857em",
-      "textTransform": "uppercase"
     },
     "caption": {
       "fontFamily": "\"Roboto Regular\", \"Helvetica\", \"Arial\", sans-serif",
@@ -237,7 +236,6 @@ export const defaultMuiTheme = {
       "fontSize": 12,
       "lineHeight": 2.66,
       "letterSpacing": "0.08333em",
-      "textTransform": "uppercase"
     }
   },
   "shape": {
