@@ -8,8 +8,6 @@ import CloseIcon from '@material-ui/icons/Close';
 import NotificationsActiveIcon from '@material-ui/icons/NotificationsActive';
 import { withRouter } from 'react-router-dom';
 
-import style from './header.css';
-
 import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
 import { toggleDock } from '../../../actions/display';
@@ -29,11 +27,9 @@ class Header extends Component {
     this.state = {
       tabValue: 0,
     }
-
-    this.handleTabClick = this.handleTabClick.bind(this);
   }
 
-  handleTabClick(event, tabValue) {
+  handleTabClick = (event, tabValue) => {
     this.setState({ tabValue });
 
     let path;
@@ -63,13 +59,12 @@ class Header extends Component {
 
     return (
       <div>
-        <style type="text/css">{style}</style>
-        <div className="padder-md primary-background">
+        <div className="p-sm bg-purple-light">
           <Tabs value={tabValue} onChange={this.handleTabClick}>
-            <Tab label="Ask" className="header-tab" />
-            <Tab label="Create" className="header-tab" />
-            <Tab label="Cards" className="header-tab" />
-            <Tab icon={<NotificationsActiveIcon />} className="header-tab" />
+            <Tab label="Ask" className="font-bold min-w-0 text-purple-main" />
+            <Tab label="Create" className="font-bold min-w-0 text-purple-main" />
+            <Tab label="Cards" className="font-bold min-w-0 text-purple-main" />
+            <Tab icon={<NotificationsActiveIcon />} className="font-bold min-w-0 text-purple-main" />
           </Tabs>
         </div>
       </div>

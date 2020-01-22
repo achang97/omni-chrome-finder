@@ -12,9 +12,12 @@
 }
 
 .app-suggest-tab { 
-  position: fixed;
   z-index: 10000000;
   top: 10px;
   right: 0px;
-  box-shadow: rgba(0, 0, 0, 0.2) 0px 2px 12px 0px;
+}
+
+/* Overrides */
+.app-container button:focus {
+	outline: 0 !important;
 }

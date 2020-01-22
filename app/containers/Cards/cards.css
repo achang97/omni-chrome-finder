@@ -1,18 +1,12 @@
 .card {
-	z-index: 100000000;
-	border: 1px solid black;
 	position: fixed !important;
-	background-image: linear-gradient(29deg, #F9F9F9 0%, #FFFFFF 63%, #FFFFFF 63%);
-	border: 1px solid #edeef2;
-	border-radius: 12px;
+	z-index: 100000000;
 }
 
-.card-header, #card-tab-container {
+.card-header {
 	background: lightgrey;
-	border-top-left-radius: 12px;
-	border-top-right-radius: 12px;	
 }
 
 .card-tab {
-	background: white;
+	border: 1px solid lightgrey;
 }
