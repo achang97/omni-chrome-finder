@@ -18,6 +18,6 @@
 }
 
 /* Overrides */
-.app-container button:focus {
+.app-container button {
 	outline: 0 !important;
 }

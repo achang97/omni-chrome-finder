@@ -1,16 +1,19 @@
 import React, { Component } from 'react';
 import { EditorState } from 'draft-js';
 import { Editor } from 'react-draft-wysiwyg';
-import reactDraftStyles from 'react-draft-wysiwyg/dist/react-draft-wysiwyg.css';
+import 'react-draft-wysiwyg/dist/react-draft-wysiwyg.css';
+
 import style from './text-editor.css';
+import { getStyleApplicationFn } from '../../../utils/styleHelpers';
+const s = getStyleApplicationFn(style);
 
 const toolbarProps = {
   options: ['blockType', 'inline', 'list', 'link'],
   blockType: {
     inDropdown: true,
-    //options: [{label: 'Normal', value: 'Normal', className: 'bool'}],
+    //options: [{label: 'Normal', value: 'Normal', className: s('bool'}],
     options: ['Normal', 'H1', 'H2', 'H3', 'H4', 'H5', 'H6', 'Code'],
-    className: 'blocktype-dropdown',
+    className: s('text-editor-blocktype-dropdown'),
     component: undefined,
     dropdownClassName: undefined,
   },
@@ -20,9 +23,9 @@ const toolbarProps = {
     component: undefined,
     dropdownClassName: undefined,
     options: ['bold', 'italic', 'underline'],
-    bold: { className: 'inline-button' },
-    italic: { className: 'inline-button' },
-    underline: { className: 'inline-button' },
+    bold: { className: s('text-editor-inline-button') },
+    italic: { className: s('text-editor-inline-button') },
+    underline: { className: s('text-editor-inline-button') },
   },
   fontSize: {
     options: [8, 9, 10, 11, 12, 14, 16, 18, 24, 30, 36, 48, 60, 72, 96],
@@ -38,7 +41,7 @@ const toolbarProps = {
   },
   list: {
     inDropdown: true,
-    className: 'list-dropdown',
+    className: s('text-editor-list-dropdown'),
     component: undefined,
     dropdownClassName: undefined,
     options: ['unordered', 'ordered', 'indent', 'outdent']
@@ -63,7 +66,7 @@ const toolbarProps = {
   },
   link: {
     inDropdown: true,
-    className: 'link-dropdown',
+    className: s('text-editor-link-dropdown'),
     component: undefined,
     popupClassName: undefined,
     dropdownClassName: undefined,
@@ -139,17 +142,15 @@ export default class TextEditorExtension extends Component {
 		const { editorState }= this.state;
 		return (
 			<div>
-				<style type="text/css">{reactDraftStyles}</style>
-				<style type="text/css">{style}</style>
 				<Editor
-			        editorState={editorState}
-			        wrapperClassName="extension-wrapper"
-			        editorClassName="extension-editor"
-			        toolbarClassName="extension-toolbar"
-			        onEditorStateChange={this.onEditorStateChange}
-			        toolbar={toolbarProps}
-			      />
-		    </div>
+	        editorState={editorState}
+	        wrapperClassName={s("text-editor-wrapper")}
+	        editorClassName={s("text-editor")}
+	        toolbarClassName={s("text-editor-toolbar")}
+	        onEditorStateChange={this.onEditorStateChange}
+	        toolbar={toolbarProps}
+	      />
+	    </div>
 		)
 	}
 }

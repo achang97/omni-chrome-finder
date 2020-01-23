@@ -1,17 +1,13 @@
 import React, { Component } from 'react';
 import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
-import { TextField } from '@material-ui/core';
-import Tabs from '@material-ui/core/Tabs';
-import Button from '@material-ui/core/Button';
-import Tab from '@material-ui/core/Tab';
-import Grid from '@material-ui/core/Grid';
 import ReactPlayer from 'react-player'
-import style from './ask.css';
 import { openCard, expandDock } from '../../actions/display';
-
 import TextEditorExtension from '../../components/editors/TextEditorExtension';
 
+import style from './ask.css';
+import { getStyleApplicationFn } from '../../utils/styleHelpers';
+const s = getStyleApplicationFn(style);
 
 const INTEGRATIONS = [
   'Slack',
@@ -45,7 +41,7 @@ export default class Ask extends Component {
     }
   }
 
-  handleTabClick = (event, tabValue) => {
+  handleTabClick = (tabValue) => {
     this.setState({ tabValue });
   }
 
@@ -122,23 +118,22 @@ export default class Ask extends Component {
   renderExpandedAskPage = () => {
     const { tabValue, desktopSharing, screenRecordings, editorState } = this.state;
     return (
-      <div className="p-lg">
-        <div className="flex float-left w-full">
-          <div className="w-2/3">
-            <Tabs value={tabValue} onChange={this.handleTabClick} TabIndicatorProps={{ style: { display: 'none', } }}>
+      <div className={s("p-lg")}>
+        <div className={s("flex float-left w-full")}>
+          <div className={s("w-2/3")}>
+            <div>
               { INTEGRATIONS.map((integration, i) => (
-                <Tab
-                  label={integration}
-                  className={`ask-integrations-tab font-semibold text-purple-reg ${tabValue === i ? 'shadow-md ask-integrations-tab-selected' : ''}`}
-                />
+                <button className={s(`ask-integrations-tab font-semibold text-purple-reg ${tabValue === i ? 'shadow-md ask-integrations-tab-selected' : ''}`)} onClick={() => this.handleTabClick(i)}>
+                  {integration}
+                </button>
               ))}
-            </Tabs>
+            </div>
           </div>
         </div>
-        <TextField id="standard-basic" className="ask-question-text-field bg-white rounded p-sm w-full" placeholder="Question" InputProps={{ disableUnderline: true }} />
+        <input id="standard-basic" className={s("ask-question-text-field bg-white rounded p-sm w-full")} placeholder="Question" />
         <div>Ask Body</div>
         <button
-          className="bg-transparent hover:bg-blue-500 text-blue-700 hover:text-white py-xs px-sm border border-blue-500 hover:border-transparent rounded"
+          className={s("bg-transparent hover:bg-blue-500 text-blue-700 hover:text-white py-xs px-sm border border-blue-500 hover:border-transparent rounded")}
           onClick={this.openCard}
         >
           Open Card
@@ -147,15 +142,13 @@ export default class Ask extends Component {
         <button onClick={this.toggleScreenRecording}>
           { !desktopSharing ? 'Screen Record' : 'End Recording' }
         </button>
-        <Grid container spacing={3}>
+        <div>
           { screenRecordings.map((recording) => (
-            <Grid item xs={6}>
-              <div className="ask-video-player-container">
-                <ReactPlayer url={recording} className="absolute top-0 left-0" controls playing height="100%" width="100%"/>
-              </div>
-            </Grid>
+            <div className={s("ask-video-player-container")}>
+              <ReactPlayer url={recording} className={s("absolute top-0 left-0")} controls playing height="100%" width="100%"/>
+            </div>
           ))}    
-        </Grid>
+        </div>
       </div>
     );
   }
@@ -164,7 +157,7 @@ export default class Ask extends Component {
     return (
       <div>
         Just a peek
-        <Button onClick={this.props.expandDock}> Ask Question </Button>
+        <button onClick={this.props.expandDock}> Ask Question </button>
       </div>
     )
   }
@@ -173,7 +166,6 @@ export default class Ask extends Component {
     const { dockExpanded } = this.props;
     return (
       <div>
-        <style type="text/css">{style}</style>
         { dockExpanded ? this.renderExpandedAskPage() : this.renderMinifiedAskPage() }
       </div>
     );
