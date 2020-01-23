@@ -7,15 +7,15 @@ import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
 import { toggleDock } from '../../../actions/display';
 
-import { getStyleApplicationFn } from '../../../utils/styleHelpers';
-const s = getStyleApplicationFn();
+import Tabs from '../Tabs/Tabs';
+import Tab from '../Tabs/Tab';
 
-const TABS = [
-  "Ask",
-  "Create",
-  "Cards",
-  <MdNotificationsActive />,
-];
+import { colors } from '../../../styles/colors';
+import style from './header.css';
+import { getStyleApplicationFn } from '../../../utils/styleHelpers';
+const s = getStyleApplicationFn(style);
+
+const PROFILE_PICTURE_URL = 'https://janecanblogdotcom.files.wordpress.com/2014/09/ashley-square-profile.jpg';
 
 @connect(
   state => ({
@@ -30,15 +30,15 @@ class Header extends Component {
     super(props);
 
     this.state = {
-      tabValue: 0,
+      activeIndex: 0,
     }
   }
 
-  handleTabClick = (tabValue) => {
-    this.setState({ tabValue });
+  handleTabClick = (activeIndex) => {
+    this.setState({ activeIndex });
 
     let path;
-    switch (tabValue) {
+    switch (activeIndex) {
       case 0:
         path = '/ask';
         break;
@@ -51,6 +51,9 @@ class Header extends Component {
       case 3:
         path = '/tasks';
         break;
+      case 4:
+        path = '/profile';
+        break;
       default:
         return
     }
@@ -59,23 +62,25 @@ class Header extends Component {
   }
 
   render() {
-    const { tabValue } = this.state;
+    const { activeIndex } = this.state;
     const { toggleDock } = this.props;
 
     return (
-      <div>
-        <div className={s("px-sm pt-sm bg-purple-light")}>
-          <div>
-            { TABS.map((tab, i) => (
-              <button
-                className={s("font-bold min-w-0 text-purple-reg pb-sm")}
-                onClick={() => this.handleTabClick(i)}
-              >
-                {tab}
-              </button>
-            ))}
-          </div>
-        </div>
+      <div className={s("px-sm bg-purple-light")}>
+        <Tabs
+          onTabClick={this.handleTabClick}
+          activeIndex={activeIndex}
+          tabClassName={s("text-purple-reg text-sm py-lg font-semibold")}
+          color={colors.purple.reg}
+        >
+          <Tab label="Ask" key="ask" />
+          <Tab label="Create" key="create" />
+          <Tab label="Cards" key="cards" />
+          <Tab label={<MdNotificationsActive />} key="tasks" tabContainerClassName={s("ml-auto")} />
+          <Tab key="profile">
+            <img src={PROFILE_PICTURE_URL} className={s("header-profile-picture rounded-full")} />
+          </Tab>
+        </Tabs>
       </div>
     );
   }
