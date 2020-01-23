@@ -8,7 +8,7 @@ import Tab from '@material-ui/core/Tab';
 import Grid from '@material-ui/core/Grid';
 import ReactPlayer from 'react-player'
 import style from './ask.css';
-import { openCard } from '../../actions/display';
+import { openCard, expandDock } from '../../actions/display';
 
 import TextEditorExtension from '../../components/editors/TextEditorExtension';
 
@@ -20,10 +20,13 @@ const INTEGRATIONS = [
 ]
 
 @connect(
-    // eslint-disable-next-line no-unused-vars
   state => ({
+    dockExpanded: state.display.dockExpanded,
   }),
-  dispatch => bindActionCreators({ openCard, }, dispatch)
+  dispatch => bindActionCreators({
+    openCard,
+    expandDock,
+  }, dispatch)
 )
 
 export default class Ask extends Component {
@@ -116,48 +119,62 @@ export default class Ask extends Component {
     }
   }
 
-  render() {
-  	const { editorState } = this.state;
+  renderExpandedAskPage = () => {
+    const { tabValue, desktopSharing, screenRecordings, editorState } = this.state;
+    return (
+      <div className="p-lg">
+        <div className="flex float-left w-full">
+          <div className="w-2/3">
+            <Tabs value={tabValue} onChange={this.handleTabClick} TabIndicatorProps={{ style: { display: 'none', } }}>
+              { INTEGRATIONS.map((integration, i) => (
+                <Tab
+                  label={integration}
+                  className={`ask-integrations-tab font-semibold text-purple-reg ${tabValue === i ? 'shadow-md ask-integrations-tab-selected' : ''}`}
+                />
+              ))}
+            </Tabs>
+          </div>
+        </div>
+        <TextField id="standard-basic" className="ask-question-text-field bg-white rounded p-sm w-full" placeholder="Question" InputProps={{ disableUnderline: true }} />
+        <div>Ask Body</div>
+        <button
+          className="bg-transparent hover:bg-blue-500 text-blue-700 hover:text-white py-xs px-sm border border-blue-500 hover:border-transparent rounded"
+          onClick={this.openCard}
+        >
+          Open Card
+        </button>
+        <TextEditorExtension />
+        <button onClick={this.toggleScreenRecording}>
+          { !desktopSharing ? 'Screen Record' : 'End Recording' }
+        </button>
+        <Grid container spacing={3}>
+          { screenRecordings.map((recording) => (
+            <Grid item xs={6}>
+              <div className="ask-video-player-container">
+                <ReactPlayer url={recording} className="absolute top-0 left-0" controls playing height="100%" width="100%"/>
+              </div>
+            </Grid>
+          ))}    
+        </Grid>
+      </div>
+    );
+  }
 
-    const { tabValue, desktopSharing, screenRecordings } = this.state;
+  renderMinifiedAskPage = () => {
+    return (
+      <div>
+        Just a peek
+        <Button onClick={this.props.expandDock}> Ask Question </Button>
+      </div>
+    )
+  }
+
+  render() {
+    const { dockExpanded } = this.props;
     return (
       <div>
         <style type="text/css">{style}</style>
-        <div className="p-lg">
-          <div className="flex float-left w-full">
-            <div className="w-2/3">
-              <Tabs value={tabValue} onChange={this.handleTabClick} TabIndicatorProps={{ style: { display: 'none', } }}>
-                { INTEGRATIONS.map((integration, i) => (
-                  <Tab
-                    label={integration}
-                    className={`ask-integrations-tab font-semibold text-purple-reg ${tabValue === i ? 'shadow-md ask-integrations-tab-selected' : ''}`}
-                  />
-                ))}
-              </Tabs>
-            </div>
-          </div>
-          <TextField id="standard-basic" className="ask-question-text-field bg-white rounded p-sm w-full" placeholder="Question" InputProps={{ disableUnderline: true }} />
-          <div>Ask Body</div>
-          <button
-            className="bg-transparent hover:bg-blue-500 text-blue-700 hover:text-white py-xs px-sm border border-blue-500 hover:border-transparent rounded"
-            onClick={this.openCard}
-          >
-            Open Card
-          </button>
-          <TextEditorExtension />
-          <button onClick={this.toggleScreenRecording}>
-            { !desktopSharing ? 'Screen Record' : 'End Recording' }
-          </button>
-          <Grid container spacing={3}>
-            { screenRecordings.map((recording) => (
-              <Grid item xs={6}>
-                <div className="ask-video-player-container">
-                  <ReactPlayer url={recording} className="absolute top-0 left-0" controls playing height="100%" width="100%"/>
-                </div>
-              </Grid>
-            ))}    
-          </Grid>
-        </div>
+        { dockExpanded ? this.renderExpandedAskPage() : this.renderMinifiedAskPage() }
       </div>
     );
   }

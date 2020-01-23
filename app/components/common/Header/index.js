@@ -59,12 +59,12 @@ class Header extends Component {
 
     return (
       <div>
-        <div className="p-sm bg-purple-light">
+        <div className="px-sm pt-sm bg-purple-light">
           <Tabs value={tabValue} onChange={this.handleTabClick}>
-            <Tab label="Ask" className="font-bold min-w-0 text-purple-reg" />
-            <Tab label="Create" className="font-bold min-w-0 text-purple-reg" />
-            <Tab label="Cards" className="font-bold min-w-0 text-purple-reg" />
-            <Tab icon={<NotificationsActiveIcon />} className="font-bold min-w-0 text-purple-reg" />
+            <Tab label="Ask" className="font-bold min-w-0 text-purple-reg pb-sm" />
+            <Tab label="Create" className="font-bold min-w-0 text-purple-reg pb-sm" />
+            <Tab label="Cards" className="font-bold min-w-0 text-purple-reg pb-sm" />
+            <Tab icon={<NotificationsActiveIcon />} className="font-bold min-w-0 text-purple-reg pb-sm" />
           </Tabs>
         </div>
       </div>
