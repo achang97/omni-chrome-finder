@@ -62,7 +62,7 @@ export default class Cards extends Component {
             enable={{top:false, right:true, bottom:true, left:false, topRight:false, bottomRight:true, bottomLeft:false, topLeft:false}}
           >
             <div className={s("card-header flex items-center bg-grey-100 rounded-t-lg")}>
-              <div id="card-tab-container" className={s("flex-1")}>
+              <div id="card-tab-container" className={s("flex flex-1")}>
                 { cards.map((cardId, i) => (
                   <div
                     key={cardId}

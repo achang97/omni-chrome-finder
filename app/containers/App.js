@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { Route, Switch, Redirect } from 'react-router-dom';
+import { Route, Switch, Redirect, withRouter } from 'react-router-dom';
 import Dock from 'react-dock';
 import { TOGGLE, TAB_UPDATE } from '../utils/constants';
 
@@ -33,7 +33,7 @@ const dockPanelStyles = {
   }, dispatch)
 )
 
-export default class App extends Component {
+class App extends Component {
   constructor(props) {
     super(props);
 
@@ -104,8 +104,8 @@ export default class App extends Component {
   }
 
   render() {
-    const { dockVisible, dockExpanded, toggleDock } = this.props;
-    const { suggestTabVisible } = this.state;
+    const { dockVisible, dockExpanded, toggleDock, location: { pathname } } = this.props;
+    const { suggestTabVisible, jss } = this.state;
 
     // Solution to CSS isolation taken from https://stackoverflow.com/a/57221293.
     return (      
@@ -122,7 +122,7 @@ export default class App extends Component {
           dimMode="none"
           size={350}
           isVisible={dockVisible}
-          dockStyle={{ height: dockExpanded ? '100%' : 'auto', ...dockPanelStyles }}
+          dockStyle={{ height: (dockExpanded || pathname !== '/ask') ? '100%' : 'auto', ...dockPanelStyles }}
         >
           <Header/>
           <Switch>
@@ -138,3 +138,5 @@ export default class App extends Component {
     );
   }
 }
+
+export default withRouter(App);

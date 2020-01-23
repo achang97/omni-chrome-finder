@@ -123,7 +123,7 @@ export default class Ask extends Component {
           <div className={s("w-2/3")}>
             <div>
               { INTEGRATIONS.map((integration, i) => (
-                <button className={s(`ask-integrations-tab font-semibold text-purple-reg ${tabValue === i ? 'shadow-md ask-integrations-tab-selected' : ''}`), style} onClick={() => this.handleTabClick(i)}>
+                <button className={s(`ask-integrations-tab font-semibold text-purple-reg ${tabValue === i ? 'shadow-md ask-integrations-tab-selected' : ''}`)} onClick={() => this.handleTabClick(i)}>
                   {integration}
                 </button>
               ))}
