@@ -124,7 +124,7 @@ export default class App extends Component {
 
     // Solution to CSS isolation taken from https://stackoverflow.com/a/57221293.
     return (      
-      <shadow.div>
+      <div>
         <style ref={this.setRefAndCreateJss}></style>
         <style type="text/css">{globalStyle}</style>
         <style type="text/css">{style}</style>
@@ -160,7 +160,7 @@ export default class App extends Component {
             </ThemeProvider>
           </StylesProvider>
         }
-      </shadow.div>
+      </div>
     );
   }
 }

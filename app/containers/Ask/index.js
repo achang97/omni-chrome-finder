@@ -10,6 +10,9 @@ import ReactPlayer from 'react-player'
 import style from './ask.css';
 import { openCard } from '../../actions/display';
 
+import TextEditorExtension from '../../components/editors/TextEditorExtension';
+
+
 const INTEGRATIONS = [
   'Slack',
   'Email',
@@ -114,6 +117,8 @@ export default class Ask extends Component {
   }
 
   render() {
+  	const { editorState } = this.state;
+
     const { tabValue, desktopSharing, screenRecordings } = this.state;
     return (
       <div>
@@ -139,6 +144,7 @@ export default class Ask extends Component {
           >
             Open Card
           </button>
+          <TextEditorExtension />
           <button onClick={this.toggleScreenRecording}>
             { !desktopSharing ? 'Screen Record' : 'End Recording' }
           </button>
