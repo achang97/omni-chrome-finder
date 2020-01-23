@@ -1,16 +1,21 @@
 import React, { PropTypes, Component } from 'react';
 import { Link } from 'react-router';
-import Tabs from '@material-ui/core/Tabs';
-import Tab from '@material-ui/core/Tab';
-import Button from '@material-ui/core/Button';
-import FolderIcon from '@material-ui/icons/Folder';
-import CloseIcon from '@material-ui/icons/Close';
-import NotificationsActiveIcon from '@material-ui/icons/NotificationsActive';
+import { MdNotificationsActive } from "react-icons/md";
 import { withRouter } from 'react-router-dom';
 
 import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
 import { toggleDock } from '../../../actions/display';
+
+import { getStyleApplicationFn } from '../../../utils/styleHelpers';
+const s = getStyleApplicationFn();
+
+const TABS = [
+  "Ask",
+  "Create",
+  "Cards",
+  <MdNotificationsActive />,
+];
 
 @connect(
   state => ({
@@ -29,7 +34,7 @@ class Header extends Component {
     }
   }
 
-  handleTabClick = (event, tabValue) => {
+  handleTabClick = (tabValue) => {
     this.setState({ tabValue });
 
     let path;
@@ -59,13 +64,17 @@ class Header extends Component {
 
     return (
       <div>
-        <div className="px-sm pt-sm bg-purple-light">
-          <Tabs value={tabValue} onChange={this.handleTabClick}>
-            <Tab label="Ask" className="font-bold min-w-0 text-purple-reg pb-sm" />
-            <Tab label="Create" className="font-bold min-w-0 text-purple-reg pb-sm" />
-            <Tab label="Cards" className="font-bold min-w-0 text-purple-reg pb-sm" />
-            <Tab icon={<NotificationsActiveIcon />} className="font-bold min-w-0 text-purple-reg pb-sm" />
-          </Tabs>
+        <div className={s("px-sm pt-sm bg-purple-light")}>
+          <div>
+            { TABS.map((tab, i) => (
+              <button
+                className={s("font-bold min-w-0 text-purple-reg pb-sm")}
+                onClick={() => this.handleTabClick(i)}
+              >
+                {tab}
+              </button>
+            ))}
+          </div>
         </div>
       </div>
     );

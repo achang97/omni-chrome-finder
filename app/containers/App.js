@@ -1,34 +1,27 @@
 import React, { Component } from 'react';
 import { Route, Switch, Redirect } from 'react-router-dom';
-import Header from '../components/common/Header';
 import Dock from 'react-dock';
 import { TOGGLE, TAB_UPDATE } from '../utils/constants';
-import shadow from 'react-shadow';
-
-import style from './App.css';
-import globalStyle from '../styles/global.css';
-import { defaultMuiTheme } from '../styles/defaultMuiTheme';
-
-import { ThemeProvider, StylesProvider, jssPreset } from '@material-ui/styles';
-import { createMuiTheme, withStyles } from '@material-ui/core/styles';
-import { CssBaseline } from '@material-ui/core';
-import { create } from 'jss';
 
 import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
 import { toggleDock } from '../actions/display'
 
+import Header from '../components/common/Header';
 import Ask from './Ask';
 import Create from './Create';
 import Navigate from './Navigate';
 import Tasks from './Tasks';
 import Cards from './Cards';
 
+import style from './App.css';
+import { getStyleApplicationFn } from '../utils/styleHelpers';
+const s = getStyleApplicationFn(style);
+
 const dockPanelStyles = {
   background: 'white',
   borderRadius: '6px 0 0 6px',
 }
-const theme = createMuiTheme(defaultMuiTheme);
 
 @connect(
   state => ({
@@ -46,7 +39,6 @@ export default class App extends Component {
 
     this.state = {
       suggestTabVisible: false,
-      jss: null,
     };
   }
 
@@ -111,56 +103,37 @@ export default class App extends Component {
     }
   }
 
-  setRefAndCreateJss = (headRef) => {
-    const { jss } = this.state;
-    if (headRef && !jss) {
-      const createdJssWithRef = create({...jssPreset(), insertionPoint: headRef})
-      this.setState({ jss: createdJssWithRef });
-    }
-  }
-
   render() {
     const { dockVisible, dockExpanded, toggleDock } = this.props;
-    const { suggestTabVisible, jss } = this.state;
+    const { suggestTabVisible } = this.state;
 
     // Solution to CSS isolation taken from https://stackoverflow.com/a/57221293.
     return (      
-      <div>
-        <style ref={this.setRefAndCreateJss}></style>
-        <style type="text/css">{globalStyle}</style>
-        <style type="text/css">{style}</style>
-        {jss &&
-          <StylesProvider jss={jss}>
-            <ThemeProvider theme={theme}>
-              <div className="app-container">
-                { dockVisible && <Cards /> }
-                { suggestTabVisible && // TODO: move to new file and style
-                  <div className="fixed bg-white shadow-md app-suggest-tab" onClick={() => toggleDock()}>
-                    AI Suggest
-                  </div>
-                }
-                <Dock
-                  position="right"
-                  fluid={false}
-                  dimMode="none"
-                  size={350}
-                  isVisible={dockVisible}
-                  dockStyle={{ height: dockExpanded ? '100%' : 'auto', ...dockPanelStyles }}
-                >
-                  <Header />
-                  <Switch>
-                    <Route path="/ask" component={Ask} />
-                    <Route path="/create" component={Create} />
-                    <Route path="/navigate" component={Navigate} />
-                    <Route path="/tasks" component={Tasks} />
-                    {/* A catch-all route: put all other routes ABOVE here */}
-                    <Redirect to='/ask' />
-                  </Switch>
-                </Dock>
-              </div>
-            </ThemeProvider>
-          </StylesProvider>
+      <div className={s("app-container")}>
+        { dockVisible && <Cards /> }
+        { suggestTabVisible && // TODO: move to new file and style
+          <div className={s("app-suggest-tab fixed bg-white shadow-md")} onClick={() => toggleDock()}>
+            AI Suggest
+          </div>
         }
+        <Dock
+          position="right"
+          fluid={false}
+          dimMode="none"
+          size={350}
+          isVisible={dockVisible}
+          dockStyle={{ height: dockExpanded ? '100%' : 'auto', ...dockPanelStyles }}
+        >
+          <Header/>
+          <Switch>
+            <Route path="/ask" component={Ask} />
+            <Route path="/create" component={Create} />
+            <Route path="/navigate" component={Navigate} />
+            <Route path="/tasks" component={Tasks} />
+            {/* A catch-all route: put all other routes ABOVE here */}
+            <Redirect to='/ask' />
+          </Switch>
+        </Dock>
       </div>
     );
   }

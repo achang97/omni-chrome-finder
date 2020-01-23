@@ -56,15 +56,23 @@ const baseDevConfig = () => ({
       }
     }, {
       test: /\.css$/,
+      exclude: /node_modules/,
       use: [
-        'to-string-loader',
-        'css-loader',
+        'style-loader',
+        'css-loader?modules&importLoaders=1&localIdentName=[name]_[local]_[hash:base64:5]',
         {
           loader: 'postcss-loader',
           options: {
             plugins: () => [tailwindcss(tailwindConfig), autoprefixer]
           }
         }
+      ]
+    }, {
+      test: /\.css$/,
+      include: /node_modules/,
+      use: [
+        'style-loader',
+        'css-loader'
       ]
     }]
   }
