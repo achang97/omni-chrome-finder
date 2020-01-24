@@ -66,12 +66,14 @@ class Header extends Component {
     const { toggleDock } = this.props;
 
     return (
-      <div className={s("px-sm bg-purple-light")}>
+      <div className={s("px-sm bg-purple-xlight")}>
         <Tabs
           onTabClick={this.handleTabClick}
           activeIndex={activeIndex}
-          tabClassName={s("text-reg py-lg font-semibold")}
+          tabClassName={s("text-reg py-lg px-0 font-semibold")}
+          tabContainerClassName={s("mx-reg flex align-center")}
           color={colors.purple.reg}
+          showRipple={false}
         >
           <Tab label="Ask" key="ask" />
           <Tab label="Create" key="create" />
