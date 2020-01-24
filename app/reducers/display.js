@@ -30,7 +30,7 @@ export default function display(state=initialState, action) {
     }
     case types.CLOSE_CARD: {
       const { id } = payload;
-      const newCards = _.without(state.cards, id);
+      const newCards = state.cards.filter(({ id: cardId }) => cardId !== id);
       
       let activeCardIndex = state.activeCardIndex;
       if (newCards.length === 0) {
