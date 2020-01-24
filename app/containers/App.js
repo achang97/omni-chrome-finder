@@ -13,6 +13,7 @@ import Create from './Create';
 import Navigate from './Navigate';
 import Tasks from './Tasks';
 import Cards from './Cards';
+import Profile from './Profile';
 
 import style from './App.css';
 import { getStyleApplicationFn } from '../utils/styleHelpers';
@@ -130,6 +131,7 @@ class App extends Component {
             <Route path="/create" component={Create} />
             <Route path="/navigate" component={Navigate} />
             <Route path="/tasks" component={Tasks} />
+            <Route path="/profile" component={Profile} />
             {/* A catch-all route: put all other routes ABOVE here */}
             <Redirect to='/ask' />
           </Switch>
