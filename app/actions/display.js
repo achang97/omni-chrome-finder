@@ -25,3 +25,11 @@ export function closeCard(id) {
 export function closeAllCards() {
   return { type: types.CLOSE_ALL_CARDS, payload: { } };
 }
+
+export function editCard(id) {
+	return { type: types.EDIT_CARD, payload: { id } };
+}
+
+export function saveCard(id, answerEditorState) {
+	return { type: types.SAVE_CARD, payload: { id, answerEditorState } };
+}

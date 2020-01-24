@@ -14,7 +14,8 @@ import style from './cards.css';
 import { getStyleApplicationFn } from '../../utils/styleHelpers';
 const s = getStyleApplicationFn(style);
 
-const defaultCardSize = 500;
+const defaultCardHeight = 500;
+const defaultCardWidth = 660;
 
 @connect(
   state => ({
@@ -52,25 +53,25 @@ export default class Cards extends Component {
         <Draggable
           bounds="html"
           handle="#card-tab-container"
-          defaultPosition={{ x: window.innerWidth / 2 - defaultCardSize / 2, y: window.innerHeight / 2 - defaultCardSize / 2 }}
+          defaultPosition={{ x: window.innerWidth / 2 - defaultCardWidth / 2, y: window.innerHeight / 2 - defaultCardHeight / 2 }}
         >
           <Resizable
             className={s("card bg-white rounded-lg shadow-lg border border-solid border-grey-100")}
-            defaultSize={{ width: defaultCardSize, height: defaultCardSize }}
-            minWidth={defaultCardSize}
-            minHeight={defaultCardSize}
+            defaultSize={{ width: defaultCardWidth, height: defaultCardHeight }}
+            minWidth={defaultCardWidth}
+            minHeight={defaultCardHeight}
             enable={{top:false, right:true, bottom:true, left:false, topRight:false, bottomRight:true, bottomLeft:false, topLeft:false}}
           >
             <div className={s("card-header flex items-center bg-grey-100 rounded-t-lg")}>
               <div id="card-tab-container" className={s("flex flex-1")}>
-                { cards.map((cardId, i) => (
+                { cards.map(({ id }, i) => (
                   <div
-                    key={cardId}
+                    key={id}
                     className={s("card-tab bg-white shadow-md rounded flex items-center justify-between")}
                     onClick={() => setActiveCardIndex(i)}
                   > 
-                    <div> {cardId} </div>
-                    <button onClick={(e) => this.closeCard(e, cardId)}>
+                    <div> {id} </div>
+                    <button onClick={(e) => this.closeCard(e, id)}>
                       <MdClose />
                     </button>
                   </div>
@@ -82,7 +83,7 @@ export default class Cards extends Component {
                 </button>
               </div>
             </div>
-            <CardContent id={cards[activeCardIndex]} />
+            <CardContent {...cards[activeCardIndex]} />
           </Resizable>
         </Draggable>
       </div>

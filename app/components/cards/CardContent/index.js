@@ -1,13 +1,48 @@
 import React, { Component } from 'react';
 import { MdCheck, MdArrowDropDown, MdMoreHoriz } from "react-icons/md";
+import { bindActionCreators } from 'redux';
+import { EditorState } from 'draft-js';
+import { connect } from 'react-redux';
+import { editCard, saveCard } from '../../../actions/display';
+import TextEditorCard from '../../editors/TextEditorCard';
 
 import style from './card-content.css';
 import { getStyleApplicationFn } from '../../../utils/styleHelpers';
 const s = getStyleApplicationFn();
 
+@connect(
+  state => ({
+
+  }),
+  dispatch => bindActionCreators({
+    editCard,
+    saveCard,
+  }, dispatch)
+)
+
 export default class CardContent extends Component {
+  constructor(props) {
+    super(props);
+    this.state = {
+    	answerEditorState: EditorState.createEmpty(),
+    }
+  }
+
+  editCard = (id) => {
+  	this.props.editCard(id);
+  }
+
+  saveCard = (id) => {
+  	this.props.saveCard(id, this.state.answerEditorState);
+  }
+
+
+  onEditorStateChange = (editorState) => {
+  	this.setState({answerEditorState : editorState });
+  }
+
   render() {
-    const { id } = this.props;
+    const { id, isEditing, answerEditorState } = this.props;
     return (
       <div>
         <div className={s("bg-grey-xlight p-sm")}>
@@ -36,9 +71,23 @@ export default class CardContent extends Component {
             </div>
           </div>
         </div>
+        <div>
+        {
+        	isEditing ?
+        	<TextEditorCard onEditorStateChange={this.onEditorStateChange} editorState={this.state.answerEditorState} 
+        	wrapperClassName={'text-editor-wrapper-edit'} editorClassName={'text-editor'} toolbarClassName={'text-editor-toolbar'}/> 
+        	:
+        	<TextEditorCard onEditorStateChange={this.onEditorStateChange} editorState={this.state.answerEditorState} toolbarHidden 
+        	wrapperClassName={'text-editor-wrapper'} editorClassName={'text-editor-view'} toolbarClassName={''} readOnly/>
+        }
+        </div>
         <div className={s("card-content-bottom-panel flex items-center justify-between fixed bottom-0 w-full bg-grey-light")}>
-          <button>
+          <button onClick={() => this.editCard(id)}>
             Edit Card
+          </button>
+
+          <button onClick={() => this.saveCard(id)}>
+            Save Card
           </button>
         </div>
       </div>
