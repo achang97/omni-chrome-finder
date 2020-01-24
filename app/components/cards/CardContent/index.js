@@ -5,10 +5,13 @@ import { EditorState } from 'draft-js';
 import { connect } from 'react-redux';
 import { editCard, saveCard } from '../../../actions/display';
 import TextEditorCard from '../../editors/TextEditorCard';
+import Button from '../../common/Button/Button';
 
 import style from './card-content.css';
 import { getStyleApplicationFn } from '../../../utils/styleHelpers';
 const s = getStyleApplicationFn();
+
+const editIcon = require('../../../assets/images/icons/edit.svg');
 
 @connect(
   state => ({
@@ -46,7 +49,7 @@ export default class CardContent extends Component {
     return (
       <div>
         <div className={s("bg-purple-light p-sm")}>
-          <strong className={s("px-lg pt-lg pb-sm flex items-center justify-between")}>
+          <strong className={s("text-xs text-purple-reg px-lg pt-lg pb-sm flex items-center justify-between opacity-75")}>
             <div>2 Days Ago</div>
             <div className={s("flex items-center")}>
               <MdMoreHoriz />
@@ -54,7 +57,7 @@ export default class CardContent extends Component {
           </strong>
           <div className={s("px-lg pb-lg")}>
             <div className={s("text-2xl font-semibold")}>How do I delete a user? ({id}) </div>
-            <div className={s("my-lg")}>Here is the answer on how to do that. This should eventually be in a rich text editor, but we'll deal with that later. </div>
+            <div className={s("my-lg text-sm")}>Here is the answer on how to do that. This should eventually be in a rich text editor, but we'll deal with that later. </div>
             <div className={s("flex items-center justify-between")}>
               <div className={s("flex items-center")}>
                 { ['Customer Request Actions', 'Onboarding'].map(tag => (
@@ -82,10 +85,8 @@ export default class CardContent extends Component {
         }
         </div>
         <div className={s("card-content-bottom-panel flex items-center justify-between fixed bottom-0 w-full bg-purple-light rounded-b-lg")}>
-          <button onClick={() => this.editCard(id)}>
-            Edit Card
-          </button>
-
+          <Button imgSrc={editIcon} text={"Edit Card"} onClickButton={() => this.editCard(id)}/>
+          
           <button onClick={() => this.saveCard(id)}>
             Save Card
           </button>
