@@ -78,7 +78,7 @@ class Tabs extends Component {
 	render() {
 		const { labels, className } = this.props;
 		return (
-			<div className={s(`${className} flex`)}>
+			<div className={s(`${className} flex overflow-x-scroll hide-scrollbar max-w-full`)}>
 				{ labels ? 
 					labels.map((label, i) => this.renderTab(label, i)) :
 					this.renderChildren() 

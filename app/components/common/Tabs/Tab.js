@@ -43,7 +43,7 @@ class Tab extends Component {
 		);
 
 		return (
-			<div className={s(tabContainerClassName)} style={(isActive && showIndicator) ? activeTabStyle : null}>
+			<div className={s(tabContainerClassName)} style={(isActive && showIndicator) ? activeTabStyle : null} {...rest}>
 				{ showRipple ?
 					<Ripples className={s(`rounded h-full ${rippleClassName}`)}> {renderButton()} </Ripples> :
 					renderButton()
@@ -74,8 +74,6 @@ Tab.defaultProps = {
 	tabClassName: '',
 	activeTabClassName: '',
 	inactiveTabClassName: '',
-	showIndicator: true,
-	showRipple: true,
 }
 
 export default Tab;

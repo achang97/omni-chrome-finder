@@ -6,6 +6,7 @@ import { openCard, expandDock } from '../../actions/display';
 import TextEditorExtension from '../../components/editors/TextEditorExtension';
 
 import Tabs from '../../components/common/Tabs/Tabs';
+import Tab from '../../components/common/Tabs/Tab';
 
 import style from './ask.css';
 import { getStyleApplicationFn } from '../../utils/styleHelpers';
@@ -122,17 +123,20 @@ export default class Ask extends Component {
     return (
       <div className={s("p-lg")}>
         <Tabs
-          labels={INTEGRATIONS.map(integration => (
-            <div className={s("ask-integrations-tab-text")}> {integration} </div>
-          ))}
           activeIndex={tabValue}
           className={s("mb-lg")}
           tabClassName={s("ask-integrations-tab text-sm font-normal rounded-full")}
           inactiveTabClassName={s("text-purple-reg")}
-          activeTabClassName={s("ask-integrations-tab-selected border-white shadow-xl text-white font-semibold")}
+          activeTabClassName={s("ask-integrations-tab-selected text-white font-semibold")}
           onTabClick={this.handleTabClick}
           showRipple={false}
-        />
+        >
+          { INTEGRATIONS.map(integration => (
+            <Tab key={integration}>
+              <div className={s("ask-integrations-tab-text")}> {integration} </div>
+            </Tab>
+          ))}
+        </Tabs>
         <input id="standard-basic" className={s("ask-question-text-field bg-white rounded p-sm w-full")} placeholder="Question" />
         <div>Ask Body</div>
         <button

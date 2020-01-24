@@ -10,7 +10,7 @@ export default class CardContent extends Component {
     const { id } = this.props;
     return (
       <div>
-        <div className={s("bg-grey-xlight p-sm")}>
+        <div className={s("bg-purple-light p-sm")}>
           <strong className={s("px-lg pt-lg pb-sm flex items-center justify-between")}>
             <div>2 Days Ago</div>
             <div className={s("flex items-center")}>
@@ -23,7 +23,7 @@ export default class CardContent extends Component {
             <div className={s("flex items-center justify-between")}>
               <div className={s("flex items-center")}>
                 { ['Customer Request Actions', 'Onboarding'].map(tag => (
-                  <div className={s("flex items-center p-xs mr-xs bg-grey-light text-purple-reg rounded-full font-semibold text-xs")}>
+                  <div key={tag} className={s("flex items-center p-xs mr-xs bg-purple-grey text-purple-reg rounded-full font-semibold text-xs")}>
                     <div className={s("mr-xs")}>Customer Request Actions</div>
                   </div> 
                 ))}
@@ -36,7 +36,7 @@ export default class CardContent extends Component {
             </div>
           </div>
         </div>
-        <div className={s("card-content-bottom-panel flex items-center justify-between fixed bottom-0 w-full bg-grey-light")}>
+        <div className={s("card-content-bottom-panel flex items-center justify-between fixed bottom-0 w-full bg-purple-light rounded-b-lg")}>
           <button>
             Edit Card
           </button>

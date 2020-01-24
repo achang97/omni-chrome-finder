@@ -2,11 +2,3 @@
 	position: fixed !important;
 	z-index: 100000000;
 }
-
-.card-header {
-	background: lightgrey;
-}
-
-.card-tab {
-	border: 1px solid lightgrey;
-}
