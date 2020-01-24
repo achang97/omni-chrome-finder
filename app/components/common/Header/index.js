@@ -70,7 +70,7 @@ class Header extends Component {
         <Tabs
           onTabClick={this.handleTabClick}
           activeIndex={activeIndex}
-          tabClassName={s("text-purple-reg text-sm py-lg font-semibold")}
+          tabClassName={s("text-reg py-lg font-semibold")}
           color={colors.purple.reg}
         >
           <Tab label="Ask" key="ask" />

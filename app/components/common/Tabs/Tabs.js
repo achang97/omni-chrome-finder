@@ -24,9 +24,9 @@ class Tabs extends Component {
 	getBaseTabProps = (i) => {
 		const {
 			activeIndex,
-			onTabClick,
 			rippleClassName, tabContainerClassName, tabClassName, activeTabClassName, inactiveTabClassName,
 			color, indicatorColor, showIndicator,
+			showRipple,
 		} = this.props;
 		const isActive = activeIndex === i;
 
@@ -35,6 +35,7 @@ class Tabs extends Component {
 			onTabClick: () => this.onTabClick(i),
 			rippleClassName, tabContainerClassName, tabClassName, activeTabClassName, inactiveTabClassName,
 			color, indicatorColor, showIndicator,
+			showRipple,
 		}
 	}
 
@@ -42,7 +43,7 @@ class Tabs extends Component {
 		const baseTabProps = this.getBaseTabProps(i);
 		return (
 			<Tab
-				key={label}
+				key={typeof(label) === 'string' ? label : i}
 				label={label}
 				{...baseTabProps}
 			/>
@@ -75,9 +76,9 @@ class Tabs extends Component {
 	}
 
 	render() {
-		const { labels } = this.props;
+		const { labels, className } = this.props;
 		return (
-			<div className={s("flex")}>
+			<div className={s(`${className} flex`)}>
 				{ labels ? 
 					labels.map((label, i) => this.renderTab(label, i)) :
 					this.renderChildren() 
@@ -88,9 +89,10 @@ class Tabs extends Component {
 }
 
 Tabs.propTypes = {
-	labels: PropTypes.arrayOf(PropTypes.oneOf([PropTypes.element, PropTypes.string])),
+	labels: PropTypes.arrayOf(PropTypes.oneOfType([PropTypes.element, PropTypes.string])),
 	activeIndex: PropTypes.number.isRequired,
 	onTabClick: PropTypes.func.isRequired,
+	className: PropTypes.string,
 	rippleClassName: PropTypes.string,
 	tabContainerClassName: PropTypes.string,
 	tabClassName: PropTypes.string,
@@ -99,15 +101,18 @@ Tabs.propTypes = {
 	color: PropTypes.string,
 	indicatorColor: PropTypes.string,
 	showIndicator: PropTypes.bool,
+	showRipple: PropTypes.bool,
 }
 
 Tabs.defaultProps = {
+	className: '',
 	tabContainerClassName: '',
 	rippleClassName: '',
 	tabClassName: '',
 	activeTabClassName: '',
 	inactiveTabClassName: '',
 	showIndicator: true,
+	showRipple: true,
 }
 
 export default Tabs;

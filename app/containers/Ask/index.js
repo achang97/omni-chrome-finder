@@ -5,6 +5,8 @@ import ReactPlayer from 'react-player'
 import { openCard, expandDock } from '../../actions/display';
 import TextEditorExtension from '../../components/editors/TextEditorExtension';
 
+import Tabs from '../../components/common/Tabs/Tabs';
+
 import style from './ask.css';
 import { getStyleApplicationFn } from '../../utils/styleHelpers';
 const s = getStyleApplicationFn(style);
@@ -119,17 +121,18 @@ export default class Ask extends Component {
     const { tabValue, desktopSharing, screenRecordings, editorState } = this.state;
     return (
       <div className={s("p-lg")}>
-        <div className={s("flex float-left w-full")}>
-          <div className={s("w-2/3")}>
-            <div>
-              { INTEGRATIONS.map((integration, i) => (
-                <button className={s(`ask-integrations-tab font-semibold text-purple-reg ${tabValue === i ? 'shadow-md ask-integrations-tab-selected' : ''}`)} onClick={() => this.handleTabClick(i)}>
-                  {integration}
-                </button>
-              ))}
-            </div>
-          </div>
-        </div>
+        <Tabs
+          labels={INTEGRATIONS.map(integration => (
+            <div className={s("ask-integrations-tab-text")}> {integration} </div>
+          ))}
+          activeIndex={tabValue}
+          className={s("mb-lg")}
+          tabClassName={s("ask-integrations-tab text-sm font-normal rounded-full")}
+          inactiveTabClassName={s("text-purple-reg")}
+          activeTabClassName={s("ask-integrations-tab-selected border-white shadow-xl text-white font-semibold")}
+          onTabClick={this.handleTabClick}
+          showRipple={false}
+        />
         <input id="standard-basic" className={s("ask-question-text-field bg-white rounded p-sm w-full")} placeholder="Question" />
         <div>Ask Body</div>
         <button

@@ -17,40 +17,46 @@ class Tab extends Component {
 			onTabClick,
 			rippleClassName, tabContainerClassName, tabClassName, activeTabClassName, inactiveTabClassName,
 			color, indicatorColor, showIndicator,
+			showRipple,
 			children,
 			...rest
 		} = this.props;
 
 		const activeTabStyle = {
-			color,
 			borderBottom: (color || indicatorColor) ? `2px solid ${indicatorColor || color}` : null,
 		}
 
+		const renderButton = () => (
+			<button
+				{...rest}
+				onClick={onTabClick}
+				style={{ color }}
+				className={s(`
+					tab p-reg ${tabClassName}
+					${isActive ?
+						`${activeTabClassName}`:
+						`opacity-50 ${inactiveTabClassName}`}
+				`)}
+			>
+				{label ? label : children}
+			</button>
+		);
+
 		return (
 			<div className={s(tabContainerClassName)} style={(isActive && showIndicator) ? activeTabStyle : null}>
-				<Ripples className={s(`rounded h-full ${rippleClassName}`)}>
-					<button
-						{...rest}
-						onClick={onTabClick}
-						className={s(`
-							tab p-reg ${tabClassName}
-							${isActive ?
-								`${activeTabClassName}`:
-								`opacity-50 ${inactiveTabClassName}`}
-						`)}
-					>
-						{label ? label : children}
-					</button>
-				</Ripples>
+				{ showRipple ?
+					<Ripples className={s(`rounded h-full ${rippleClassName}`)}> {renderButton()} </Ripples> :
+					renderButton()
+				}
 			</div>
 		);
 	}
 }
 
 Tab.propTypes = {
-	label: PropTypes.oneOf([PropTypes.element, PropTypes.string]),
-	isActive: PropTypes.bool.isRequired,
-	onTabClick: PropTypes.func.isRequired,
+	label: PropTypes.oneOfType([PropTypes.element, PropTypes.string]),
+	isActive: PropTypes.bool,
+	onTabClick: PropTypes.func,
 	rippleClassName: PropTypes.string,
 	tabContainerClassName: PropTypes.string,
 	tabClassName: PropTypes.string,
@@ -59,6 +65,7 @@ Tab.propTypes = {
 	color: PropTypes.string,
 	indicatorColor: PropTypes.string,
 	showIndicator: PropTypes.bool,
+	showRipple: PropTypes.bool,
 }
 
 Tab.defaultProps = {
@@ -68,6 +75,7 @@ Tab.defaultProps = {
 	activeTabClassName: '',
 	inactiveTabClassName: '',
 	showIndicator: true,
+	showRipple: true,
 }
 
 export default Tab;
