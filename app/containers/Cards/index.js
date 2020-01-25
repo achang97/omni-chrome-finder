@@ -3,7 +3,7 @@ import Draggable from 'react-draggable';
 import { Resizable } from "re-resizable";
 import _ from 'underscore';
 
-import { MdClose } from "react-icons/md";
+import { MdClose, MdMoreHoriz } from "react-icons/md";
 import CardContent from '../../components/cards/CardContent';
 
 import { bindActionCreators } from 'redux';
@@ -65,7 +65,10 @@ export default class Cards extends Component {
             </Tab>
           ))}
         </Tabs>
-        <div className={s("px-reg")}>
+        <div className={s("px-reg flex flex-shrink-0")}>
+          <button className={s("mr-sm")}>
+            <MdMoreHoriz />
+          </button>
           <button onClick={() => closeAllCards()}>
             <MdClose />
           </button>
