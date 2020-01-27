@@ -51,10 +51,10 @@ export default class Cards extends Component {
     return (
       <div className={s("px-reg flex flex-shrink-0")}>
         <button className={s("mr-sm")}>
-          <MdMoreHoriz color={colors.purple['grey-50']} />
+          <MdMoreHoriz color={colors.purple['gray-50']} />
         </button>
         <button onClick={() => closeAllCards()}>
-          <MdClose color={colors.purple['grey-50']} />
+          <MdClose color={colors.purple['gray-50']} />
         </button>
       </div>
     );
@@ -72,17 +72,17 @@ export default class Cards extends Component {
           activeTabClassName={s("bg-purple-light")}
           onTabClick={setActiveCardIndex}
           showRipple={false}
-          scrollButtonColor={colors.purple['grey-50']}
+          scrollButtonColor={colors.purple['gray-50']}
         >
           { cards.map(({ id }, i) => (
             <Tab key={id}>
               <div className={s("truncate")}> How do I delete a user? ({id}) </div>
               <div className={s("flex ml-xs")}>
                 <div onClick={(e) => this.closeCard(e, id)} className={s("mr-reg")}>
-                  <MdClose color={colors.purple['grey-50']}/>
+                  <MdClose color={colors.purple['gray-50']}/>
                 </div>
                 { (i !== activeCardIndex && i !== activeCardIndex - 1) &&
-                  <div className={s("text-purple-grey-50")}> | </div>
+                  <div className={s("text-purple-gray-50")}> | </div>
                 }
               </div>
             </Tab>
