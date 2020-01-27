@@ -125,33 +125,33 @@ const toolbarProps = {
     dropdownClassName: undefined,
     options: ['undo', 'redo'],
   },
-}
+};
 
 export default class TextEditorExtension extends Component {
-	constructor(props) {
+  constructor(props) {
     	super(props);
     	this.state = {
 	      editorState: EditorState.createEmpty(),
-	    }
+	    };
   	}
 
   	onEditorStateChange = (editorState) => {
-  		this.setState({editorState, });
+  		this.setState({ editorState, });
   	}
 
-	render() {
-		const { editorState }= this.state;
-		return (
-			<div>
-				<Editor
-	        editorState={editorState}
-	        wrapperClassName={s("text-editor-wrapper")}
-	        editorClassName={s("text-editor")}
-	        toolbarClassName={s("text-editor-toolbar")}
-	        onEditorStateChange={this.onEditorStateChange}
-	        toolbar={toolbarProps}
-	      />
-	    </div>
-		)
-	}
+  render() {
+    const { editorState } = this.state;
+    return (
+      <div>
+        <Editor
+          editorState={editorState}
+          wrapperClassName={s('text-editor-wrapper')}
+          editorClassName={s('text-editor')}
+          toolbarClassName={s('text-editor-toolbar')}
+          onEditorStateChange={this.onEditorStateChange}
+          toolbar={toolbarProps}
+        />
+      </div>
+    );
+  }
 }

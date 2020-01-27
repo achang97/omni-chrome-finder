@@ -121,7 +121,7 @@ export default class CardContent extends Component {
         <div className={s("bg-purple-light p-sm")}>
           <strong className={s("text-xs text-purple-reg px-lg pt-lg pb-sm flex items-center justify-between opacity-75")}>
             <div>2 Days Ago</div>
-            <div className={s("flex items-center")}>
+            <div className={s('flex items-center')}>
               <MdMoreHoriz />
             </div>
           </strong>

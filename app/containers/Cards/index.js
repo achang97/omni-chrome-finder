@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import Draggable from 'react-draggable';
-import { Resizable } from "re-resizable";
+import { Resizable } from 're-resizable';
 import _ from 'underscore';
 
 import { MdClose, MdMoreHoriz } from "react-icons/md";
@@ -8,7 +8,7 @@ import CardContent from '../../components/cards/CardContent';
 
 import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
-import { closeCard, closeAllCards, setActiveCardIndex } from '../../actions/display'
+import { closeCard, closeAllCards, setActiveCardIndex } from '../../actions/display';
 
 import Tabs from '../../components/common/Tabs/Tabs';
 import Tab from '../../components/common/Tabs/Tab';
@@ -64,7 +64,7 @@ export default class Cards extends Component {
     const { cards, activeCardIndex, setActiveCardIndex, closeAllCards } = this.props;
 
     return (
-      <div id="card-tab-container" className={s("flex items-center bg-white rounded-t-lg px-reg pt-reg")}>
+      <div id="card-tab-container" className={s('flex items-center bg-white rounded-t-lg px-reg pt-reg')}>
         <Tabs
           activeIndex={activeCardIndex}
           className={s("flex-1")}

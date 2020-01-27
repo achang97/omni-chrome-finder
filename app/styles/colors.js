@@ -5,13 +5,13 @@ exports.colors = {
     reg: '#7a7daf',
     dark: '#5453af',
     'grey-10': '#777BAD1A',
-    'grey-50': '#777BAD80',
+    'grey-50': '#777BAD80'
   },
   grey: {
-    light: "#211A1D40"
+    light: '#211A1D40'
   },
   green: {
-    xlight: "#E3F2EB",
-    reg: "#20B56A"
-  },
+    xlight: '#E3F2EB',
+    reg: '#20B56A'
+  }
 };
