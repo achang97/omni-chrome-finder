@@ -1,5 +1,9 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
+import _ from 'underscore';
+import ReactResizeDetector from 'react-resize-detector';
+import { MdChevronLeft, MdChevronRight } from 'react-icons/md';
+import animate from '../../../utils/animate';
 
 import Tab from './Tab';
 
@@ -10,109 +14,185 @@ const s = getStyleApplicationFn(style);
 const CLASSNAME_PROPS = ["tabContainerClassName", "rippleClassName", "tabClassName", "activeTabClassName", "inactiveTabClassName"];
 
 class Tabs extends Component {
-	constructor(props) {
-		super(props);
-	}
+  constructor(props) {
+    super(props);
 
-	onTabClick = (i) => {
-		const { onTabClick } = this.props;
-		if (onTabClick) {
-			onTabClick(i);
-		}
-	}
+    this.state = {
+      displayScroll: {
+        start: false,
+        end: false
+      }
+    }
 
-	getBaseTabProps = (i) => {
-		const {
-			activeIndex,
-			rippleClassName, tabContainerClassName, tabClassName, activeTabClassName, inactiveTabClassName,
-			color, indicatorColor, showIndicator,
-			showRipple,
-		} = this.props;
-		const isActive = activeIndex === i;
+    this.tabsRef = React.createRef();
+  }
 
-		return {
-			isActive,
-			onTabClick: () => this.onTabClick(i),
-			rippleClassName, tabContainerClassName, tabClassName, activeTabClassName, inactiveTabClassName,
-			color, indicatorColor, showIndicator,
-			showRipple,
-		}
-	}
+  componentDidUpdate(prevProps) {
+    const { children = [], labels = [] } = this.props;
+    const { children: prevChildren = [], labels: prevLabels = [] } = prevProps;
 
-	renderTab = (label, i) => {
-		const baseTabProps = this.getBaseTabProps(i);
-		return (
-			<Tab
-				key={typeof(label) === 'string' ? label : i}
-				label={label}
-				{...baseTabProps}
-			/>
-		)
-	}
+    if (prevChildren.length !== children.length || prevLabels.length !== labels.length) {
+      this.handleResize();
+    }
 
-	mergeProps = (baseProps, childProps) => {
-		const mergedProps = baseProps;
+    if (prevChildren.length < children.length || prevLabels.length < labels.length) {
+      const { scrollWidth, scrollLeft } = this.tabsRef.current;
+      this.moveTabsScroll(scrollWidth - scrollLeft);
+    }
+  }
 
-		Object.entries(childProps).forEach(([propKey, childPropValue]) => {
-			if (childPropValue !== undefined && childPropValue !== null & childPropValue !== '') {
-				if (CLASSNAME_PROPS.includes(propKey)) {
-					mergedProps[propKey] += ` ${childPropValue}`;
-				} else {
-					mergedProps[propKey] = childPropValue;
-				}
-			}			
-		});
+  moveTabsScroll = delta => {
+    const scrollValue = this.tabsRef.current['scrollLeft'] + delta;
+    animate('scrollLeft', this.tabsRef.current, scrollValue);
+  };
 
-		return mergedProps;
-	}
+  handleScrollClick = (isStart) => {
+    this.moveTabsScroll((isStart ? -1 : 1) * this.tabsRef.current['clientWidth']);
+  };
 
-	renderChildren = () => {
-		const { children } = this.props;
-		return (
-			children.map((child, i) => (
-				React.cloneElement(child, this.mergeProps(this.getBaseTabProps(i), child.props))
-			))
-		)
-	}
+  handleResize = _.debounce(() => {
+    const { scrollLeft, scrollWidth, clientWidth } = this.tabsRef.current;
+    const { displayScroll } = this.state;
 
-	render() {
-		const { labels, className } = this.props;
-		return (
-			<div className={s(`${className} flex overflow-x-scroll hide-scrollbar max-w-full`)}>
-				{ labels ? 
-					labels.map((label, i) => this.renderTab(label, i)) :
-					this.renderChildren() 
-				}
-			</div>
-		);
-	}
+    // use 1 for the potential rounding error with browser zooms.
+    const showStartScroll = scrollLeft > 1;
+    const showEndScroll = scrollLeft < scrollWidth - clientWidth - 1;
+
+    if (showStartScroll !== displayScroll.start || showEndScroll !== displayScroll.end) {
+      this.setState({ displayScroll: { start: showStartScroll, end: showEndScroll } });
+    }
+  }, 166)
+
+  onTabClick = (i) => {
+    const { onTabClick } = this.props;
+    if (onTabClick) {
+      onTabClick(i);
+    }
+  }
+
+  getBaseTabProps = (i) => {
+    const {
+      activeIndex,
+      rippleClassName, tabContainerClassName, tabClassName, activeTabClassName, inactiveTabClassName,
+      color, indicatorColor, showIndicator,
+      showRipple,
+    } = this.props;
+    const isActive = activeIndex === i;
+
+    return {
+      isActive,
+      onTabClick: () => this.onTabClick(i),
+      rippleClassName, tabContainerClassName, tabClassName, activeTabClassName, inactiveTabClassName,
+      color, indicatorColor, showIndicator,
+      showRipple,
+    }
+  }
+
+  renderTab = (label, i) => {
+    const baseTabProps = this.getBaseTabProps(i);
+    return (
+      <Tab
+        key={typeof(label) === 'string' ? label : i}
+        label={label}
+        {...baseTabProps}
+      />
+    )
+  }
+
+  mergeProps = (baseProps, childProps) => {
+    const mergedProps = baseProps;
+
+    Object.entries(childProps).forEach(([propKey, childPropValue]) => {
+      if (childPropValue !== undefined && childPropValue !== null & childPropValue !== '') {
+        if (CLASSNAME_PROPS.includes(propKey)) {
+          mergedProps[propKey] += ` ${childPropValue}`;
+        } else {
+          mergedProps[propKey] = childPropValue;
+        }
+      }     
+    });
+
+    return mergedProps;
+  }
+
+  renderChildren = () => {
+    const { children } = this.props;
+    return (
+      children.map((child, i) => (
+        React.cloneElement(child, this.mergeProps(this.getBaseTabProps(i), child.props))
+      ))
+    )
+  }
+
+  renderScrollButton = (isStart) => {
+    const { scrollButtonColor } = this.props;
+    const { displayScroll: { start: displayScrollStart, end: displayScrollEnd } } = this.state;
+    const showScrollButtons = displayScrollStart || displayScrollEnd;
+
+    if (!showScrollButtons) {
+      return null;
+    }
+
+    const isDisabled = isStart ? !displayScrollStart : !displayScrollEnd;
+    const Icon = isStart ? MdChevronLeft : MdChevronRight;
+
+    return (
+      <button disabled={isDisabled} className={s(isDisabled ? 'opacity-25 cursor-default' : '')}>
+        <Icon onClick={() => this.handleScrollClick(isStart)} color={scrollButtonColor} />
+      </button>
+    );
+  }
+
+  render() {
+    const { labels, className, allTabsContainerClassName } = this.props;
+    return (
+      <div className={s(`flex overflow-hidden items-center ${className}`)}>
+        { this.renderScrollButton(true) }
+        <div
+          ref={this.tabsRef}
+          className={s(`flex-1 overflow-x-scroll hide-scrollbar flex max-w-full ${allTabsContainerClassName}`)}
+          onScroll={this.handleResize}
+        >
+          { labels ? 
+            labels.map((label, i) => this.renderTab(label, i)) :
+            this.renderChildren() 
+          }
+          <ReactResizeDetector handleWidth onResize={this.handleResize} />
+        </div>
+        { this.renderScrollButton(false) }
+      </div>
+    );
+  }
 }
 
 Tabs.propTypes = {
-	labels: PropTypes.arrayOf(PropTypes.oneOfType([PropTypes.element, PropTypes.string])),
-	activeIndex: PropTypes.number.isRequired,
-	onTabClick: PropTypes.func.isRequired,
-	className: PropTypes.string,
-	rippleClassName: PropTypes.string,
-	tabContainerClassName: PropTypes.string,
-	tabClassName: PropTypes.string,
-	activeTabClassName: PropTypes.string,
-	inactiveTabClassName: PropTypes.string,
-	color: PropTypes.string,
-	indicatorColor: PropTypes.string,
-	showIndicator: PropTypes.bool,
-	showRipple: PropTypes.bool,
+  labels: PropTypes.arrayOf(PropTypes.oneOfType([PropTypes.element, PropTypes.string])),
+  activeIndex: PropTypes.number.isRequired,
+  onTabClick: PropTypes.func.isRequired,
+  className: PropTypes.string,
+  allTabsContainerClassName: PropTypes.string,
+  rippleClassName: PropTypes.string,
+  tabContainerClassName: PropTypes.string,
+  tabClassName: PropTypes.string,
+  activeTabClassName: PropTypes.string,
+  inactiveTabClassName: PropTypes.string,
+  color: PropTypes.string,
+  indicatorColor: PropTypes.string,
+  showIndicator: PropTypes.bool,
+  showRipple: PropTypes.bool,
+  scrollButtonColor: PropTypes.string,
 }
 
 Tabs.defaultProps = {
-	className: '',
-	tabContainerClassName: '',
-	rippleClassName: '',
-	tabClassName: '',
-	activeTabClassName: '',
-	inactiveTabClassName: '',
-	showIndicator: true,
-	showRipple: true,
+  className: '',
+  allTabsContainerClassName: '',
+  tabContainerClassName: '',
+  rippleClassName: '',
+  tabClassName: '',
+  activeTabClassName: '',
+  inactiveTabClassName: '',
+  showIndicator: true,
+  showRipple: true,
 }
 
 export default Tabs;

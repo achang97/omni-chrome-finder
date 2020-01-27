@@ -23,7 +23,7 @@ export default class CardContent extends Component {
             <div className={s("flex items-center justify-between")}>
               <div className={s("flex items-center")}>
                 { ['Customer Request Actions', 'Onboarding'].map(tag => (
-                  <div key={tag} className={s("flex items-center p-xs mr-xs bg-purple-grey text-purple-reg rounded-full font-semibold text-xs")}>
+                  <div key={tag} className={s("flex items-center p-xs mr-xs bg-purple-grey-10 text-purple-reg rounded-full font-semibold text-xs")}>
                     <div className={s("mr-xs")}>Customer Request Actions</div>
                   </div> 
                 ))}
