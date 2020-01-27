@@ -15,6 +15,34 @@
 
 .separate-popup {
   position: absolute;
-  right: 120%;
+  right: 105%;
   top: 0%;
 }
+
+.max-h-600 {
+  max-height: 600px;
+}
+::-webkit-scrollbar {
+  width: 0px; /* Remove scrollbar space */
+  height: 0px;
+  background: transparent; /* Optional: just make scrollbar invisible */
+}
+
+.max-h-600:hover::-webkit-scrollbar {
+  width: 5px; /* Remove scrollbar space */
+  @apply bg-gray-300;
+}
+
+.max-h-600:hover::-webkit-scrollbar-thumb {
+  @apply bg-gray-400;
+  border-left: none;
+  border-right: none;
+}
+
+/* .Question-Info__Header {
+  background-color: rgba(189, 200, 249, 0.15) !important;
+}
+
+.Question-Info__Footer {
+  background-color: rgba(189, 200, 249, 0.15) !important;
+} */
