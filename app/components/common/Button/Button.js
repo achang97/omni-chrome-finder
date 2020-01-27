@@ -1,7 +1,5 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
-import { MdModeEdit } from "react-icons/md";
-
 import style from './button.css';
 import { getStyleApplicationFn } from '../../../utils/styleHelpers';
 const s = getStyleApplicationFn(style);
@@ -94,14 +92,12 @@ class Button extends Component {
 	}
 
 	render() {
-		const { text, textClassName, imgSrc } = this.props;
-		console.log(imgSrc);
+		const { text, textClassName, icon, buttonClassName } = this.props;
 		return (
 			<div>
-				<div className={s('flex button-container')} onClick={() => this.onClickButton()}>
-					{ /* imgSrc ? <img src={editIcon} /> : null */}
-					<MdModeEdit />
-					<div className={s(`${textClassName} button-text button-text-underline`)}>{text}</div>
+				<div className={s(` ${buttonClassName} flex button-container`)} onClick={() => this.onClickButton()}>
+					{ icon }
+					<div className={s(`button-text button-text-underline ${textClassName}`)}>{text}</div>
 				</div>
 				
 			</div>
@@ -111,19 +107,20 @@ class Button extends Component {
 
 Button.propTypes = {
 	text: PropTypes.string,
+	buttonClassName: PropTypes.string,
 	textClassName: PropTypes.string,
 	underline: PropTypes.bool,
 	onClickButton: PropTypes.func,
-	imgSrc: PropTypes.Object,
-
+	icon: PropTypes.element,
 }
 
 
 Button.defaultProps = {
 	text: '',
+	buttonClassName: '',
 	textClassName: '',
 	underline: false,
-	imgSrc: null,
+	icon: null,
 }
 /*
 Tabs.propTypes = {

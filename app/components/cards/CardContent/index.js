@@ -1,5 +1,6 @@
 import React, { Component } from 'react';
-import { MdCheck, MdArrowDropDown, MdMoreHoriz } from "react-icons/md";
+import { MdCheck, MdArrowDropDown, MdMoreHoriz, MdModeEdit, MdThumbUp, MdBookmarkBorder } from "react-icons/md";
+
 import { bindActionCreators } from 'redux';
 import { EditorState } from 'draft-js';
 import { connect } from 'react-redux';
@@ -9,7 +10,7 @@ import Button from '../../common/Button/Button';
 
 import style from './card-content.css';
 import { getStyleApplicationFn } from '../../../utils/styleHelpers';
-const s = getStyleApplicationFn();
+const s = getStyleApplicationFn(style);
 
 const editIcon = require('../../../assets/images/icons/edit.svg');
 
@@ -74,22 +75,37 @@ export default class CardContent extends Component {
             </div>
           </div>
         </div>
-        <div>
-        {
-        	isEditing ?
+        { isEditing ?
         	<TextEditorCard onEditorStateChange={this.onEditorStateChange} editorState={this.state.answerEditorState} 
         	wrapperClassName={'text-editor-wrapper-edit'} editorClassName={'text-editor'} toolbarClassName={'text-editor-toolbar'}/> 
         	:
         	<TextEditorCard onEditorStateChange={this.onEditorStateChange} editorState={this.state.answerEditorState} toolbarHidden 
         	wrapperClassName={'text-editor-wrapper'} editorClassName={'text-editor-view'} toolbarClassName={''} readOnly/>
         }
-        </div>
-        <div className={s("card-content-bottom-panel flex items-center justify-between fixed bottom-0 w-full bg-purple-light rounded-b-lg")}>
-          <Button imgSrc={editIcon} text={"Edit Card"} onClickButton={() => this.editCard(id)}/>
+        <div className={s("flex items-center justify-between fixed bottom-0 bg-purple-light rounded-b-lg p-lg left-0 right-0")}>
           
-          <button onClick={() => this.saveCard(id)}>
-            Save Card
-          </button>
+          <Button 
+          	text={"Edit Card"} 
+          	icon={<MdModeEdit className={s("mr-sm")} />} 
+          	onClickButton={() => this.editCard(id)}
+          />
+
+          <div className={s("flex")}>
+	          <Button 
+	          	text={"Helpful"} 
+	          	icon={<MdThumbUp  className={s("mr-sm")}/>} 
+	          	onClickButton={() => this.editCard(id)}
+	          	buttonClassName={s("bg-white no-background-image text-purple-reg mr-reg")}/>
+
+	          <Button 
+	          	icon={<MdBookmarkBorder />} 
+	          	onClickButton={() => this.editCard(id)}
+	          	buttonClassName={s("bg-white no-background-image text-purple-reg text-lg")}/>
+
+	          <button onClick={() => this.saveCard(id)}>
+	            Save Card
+	          </button>
+          </div>
         </div>
       </div>
     );

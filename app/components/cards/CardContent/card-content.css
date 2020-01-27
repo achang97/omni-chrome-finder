@@ -1,0 +1,8 @@
+.card-content-bottom-panel {
+	left: 0;
+	right: 0;
+}
+
+.no-background-image {
+	background-image: none !important;
+}
