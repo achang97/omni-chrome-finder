@@ -13,6 +13,7 @@ import { closeCard, closeAllCards, setActiveCardIndex } from '../../actions/disp
 import Tabs from '../../components/common/Tabs/Tabs';
 import Tab from '../../components/common/Tabs/Tab';
 
+import { colors } from '../../styles/colors';
 import style from './cards.css';
 import { getStyleApplicationFn } from '../../utils/styleHelpers';
 const s = getStyleApplicationFn(style);
@@ -43,6 +44,17 @@ export default class Cards extends Component {
     closeCard(cardId);
   }
 
+  renderTabHeaderButtons = () => (
+    <div className={s("px-reg flex flex-shrink-0")}>
+      <button className={s("mr-sm")}>
+        <MdMoreHoriz color={colors.purple['grey-50']} />
+      </button>
+      <button onClick={() => closeAllCards()}>
+        <MdClose color={colors.purple['grey-50']} />
+      </button>
+    </div>
+  )
+
   renderTabHeader = () => {
     const { cards, activeCardIndex, setActiveCardIndex, closeAllCards } = this.props;
 
@@ -51,28 +63,27 @@ export default class Cards extends Component {
         <Tabs
           activeIndex={activeCardIndex}
           className={s("flex-1")}
-          tabClassName={s("rounded-t-lg rounded-b-0 text-xs font-medium flex items-center")}
+          tabClassName={s("card-tab pr-0 rounded-t-lg rounded-b-0 text-xs font-medium flex items-center justify-between")}
           activeTabClassName={s("bg-purple-light")}
           onTabClick={setActiveCardIndex}
           showRipple={false}
+          scrollButtonColor={colors.purple['grey-50']}
         >
-          { cards.map(cardId => (
+          { cards.map((cardId, i) => (
             <Tab key={cardId}>
-              <div> {cardId} </div>
-              <div onClick={(e) => this.closeCard(e, cardId)}>
-                <MdClose />
+              <div className={s("truncate")}> How do I delete a user? ({cardId}) </div>
+              <div className={s("flex ml-xs")}>
+                <div onClick={(e) => this.closeCard(e, cardId)} className={s("mr-reg")}>
+                  <MdClose color={colors.purple['grey-50']}/>
+                </div>
+                { (i !== activeCardIndex && i !== activeCardIndex - 1) &&
+                  <div className={s("text-purple-grey-50")}> | </div>
+                }
               </div>
             </Tab>
           ))}
         </Tabs>
-        <div className={s("px-reg flex flex-shrink-0")}>
-          <button className={s("mr-sm")}>
-            <MdMoreHoriz />
-          </button>
-          <button onClick={() => closeAllCards()}>
-            <MdClose />
-          </button>
-        </div>
+        { this.renderTabHeaderButtons() }
       </div>
     );
   }
