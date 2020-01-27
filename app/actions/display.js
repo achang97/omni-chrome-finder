@@ -2,11 +2,11 @@ import * as types from './actionTypes';
 
 /* Dock behavior */
 export function toggleDock() {
-  return { type: types.TOGGLE_DOCK, payload: { } };
+  return { type: types.TOGGLE_DOCK, payload: {} };
 }
 
 export function expandDock() {
-  return { type: types.EXPAND_DOCK, payload: { } };
+  return { type: types.EXPAND_DOCK, payload: {} };
 }
 
 /* Card behavior */
@@ -23,13 +23,13 @@ export function closeCard(id) {
 }
 
 export function closeAllCards() {
-  return { type: types.CLOSE_ALL_CARDS, payload: { } };
+  return { type: types.CLOSE_ALL_CARDS, payload: {} };
 }
 
 export function editCard(id) {
-	return { type: types.EDIT_CARD, payload: { id } };
+  return { type: types.EDIT_CARD, payload: { id } };
 }
 
 export function saveCard(id, answerEditorState, descriptionEditorState) {
-	return { type: types.SAVE_CARD, payload: { id, answerEditorState, descriptionEditorState } };
+  return { type: types.SAVE_CARD, payload: { id, answerEditorState, descriptionEditorState } };
 }

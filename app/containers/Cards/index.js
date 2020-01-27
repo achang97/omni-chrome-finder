@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import Draggable from 'react-draggable';
-import { Resizable } from "re-resizable";
+import { Resizable } from 're-resizable';
 import _ from 'underscore';
 
 import { MdClose, MdMoreHoriz } from "react-icons/md";
@@ -8,7 +8,7 @@ import CardContent from '../../components/cards/CardContent';
 
 import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
-import { closeCard, closeAllCards, setActiveCardIndex } from '../../actions/display'
+import { closeCard, closeAllCards, setActiveCardIndex } from '../../actions/display';
 
 import Tabs from '../../components/common/Tabs/Tabs';
 import Tab from '../../components/common/Tabs/Tab';
@@ -64,7 +64,7 @@ export default class Cards extends Component {
     const { cards, activeCardIndex, setActiveCardIndex, closeAllCards } = this.props;
 
     return (
-      <div id="card-tab-container" className={s("flex items-center bg-white rounded-t-lg px-reg pt-reg")}>
+      <div id="card-tab-container" className={s('flex items-center bg-white rounded-t-lg px-reg pt-reg')}>
         <Tabs
           activeIndex={activeCardIndex}
           className={s("flex-1")}
@@ -74,21 +74,21 @@ export default class Cards extends Component {
           showRipple={false}
           scrollButtonColor={colors.purple['grey-50']}
         >
-          { cards.map(({ id }, i) => (
+          {cards.map(({ id }, i) => (
             <Tab key={id}>
               <div className={s("truncate")}> How do I delete a user? ({id}) </div>
               <div className={s("flex ml-xs")}>
                 <div onClick={(e) => this.closeCard(e, id)} className={s("mr-reg")}>
-                  <MdClose color={colors.purple['grey-50']}/>
+                  <MdClose color={colors.purple['grey-50']} />
                 </div>
-                { (i !== activeCardIndex && i !== activeCardIndex - 1) &&
+                {(i !== activeCardIndex && i !== activeCardIndex - 1) &&
                   <div className={s("text-purple-grey-50")}> | </div>
                 }
               </div>
             </Tab>
           ))}
         </Tabs>
-        { this.renderTabHeaderButtons() }
+        {this.renderTabHeaderButtons()}
       </div>
     );
   }
@@ -112,9 +112,9 @@ export default class Cards extends Component {
             defaultSize={{ width: defaultCardWidth, height: defaultCardHeight }}
             minWidth={defaultCardWidth}
             minHeight={defaultCardHeight}
-            enable={{top:false, right:true, bottom:true, left:false, topRight:false, bottomRight:true, bottomLeft:false, topLeft:false}}
+            enable={{ top: false, right: true, bottom: true, left: false, topRight: false, bottomRight: true, bottomLeft: false, topLeft: false }}
           >
-            { this.renderTabHeader() }
+            {this.renderTabHeader()}
             <CardContent {...cards[activeCardIndex]} />
           </Resizable>
         </Draggable>

@@ -2,7 +2,7 @@ const path = require('path');
 const webpack = require('webpack');
 const autoprefixer = require('autoprefixer');
 const tailwindcss = require('tailwindcss');
-const tailwindConfig = require('../tailwind.config')
+const tailwindConfig = require('../tailwind.config');
 
 const customPath = path.join(__dirname, './customPublicPath');
 
