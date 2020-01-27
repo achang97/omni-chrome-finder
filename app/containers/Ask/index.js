@@ -278,7 +278,11 @@ class Ask extends Component {
             className="bg-purple-200 flex flex-row text-purple-700 p-2 rounded-lg"
           >
             Screen Capture
-            <div className="ml-2 h-4 w-6 flex items-center justify-center rounded-sm  bg-purple-700" />
+            <div
+              className={s(
+                'ml-2 h-4 w-6 flex items-center justify-center rounded-sm  bg-purple-700'
+              )}
+            />
           </button>
         </div>
         <div className="mt-1">
@@ -376,7 +380,7 @@ class Ask extends Component {
                       this.setState({ showQuestionInfo: false });
                     }}
                   />
-                  ))}
+                ))}
               </div>
             </div>
             <div className="footer border-t border-gray-700 flex justify-center items-center mt-2">
