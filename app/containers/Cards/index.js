@@ -1,14 +1,14 @@
 import React, { Component } from 'react';
 import Draggable from 'react-draggable';
-import { Resizable } from "re-resizable";
+import { Resizable } from 're-resizable';
 import _ from 'underscore';
 
-import { MdClose } from "react-icons/md";
+import { MdClose } from 'react-icons/md';
 import CardContent from '../../components/cards/CardContent';
 
 import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
-import { closeCard, closeAllCards, setActiveCardIndex } from '../../actions/display'
+import { closeCard, closeAllCards, setActiveCardIndex } from '../../actions/display';
 
 import Tabs from '../../components/common/Tabs/Tabs';
 import Tab from '../../components/common/Tabs/Tab';
@@ -47,25 +47,25 @@ export default class Cards extends Component {
     const { cards, activeCardIndex, setActiveCardIndex, closeAllCards } = this.props;
 
     return (
-      <div id="card-tab-container" className={s("flex items-center bg-white rounded-t-lg px-reg pt-reg")}>
+      <div id="card-tab-container" className={s('flex items-center bg-white rounded-t-lg px-reg pt-reg')}>
         <Tabs
           activeIndex={activeCardIndex}
-          className={s("flex-1")}
-          tabClassName={s("rounded-t-lg rounded-b-0 text-xs font-medium flex items-center")}
-          activeTabClassName={s("bg-purple-light")}
+          className={s('flex-1')}
+          tabClassName={s('rounded-t-lg rounded-b-0 text-xs font-medium flex items-center')}
+          activeTabClassName={s('bg-purple-light')}
           onTabClick={setActiveCardIndex}
           showRipple={false}
         >
           { cards.map(cardId => (
             <Tab key={cardId}>
               <div> {cardId} </div>
-              <div onClick={(e) => this.closeCard(e, cardId)}>
+              <div onClick={e => this.closeCard(e, cardId)}>
                 <MdClose />
               </div>
             </Tab>
           ))}
         </Tabs>
-        <div className={s("px-reg")}>
+        <div className={s('px-reg')}>
           <button onClick={() => closeAllCards()}>
             <MdClose />
           </button>
@@ -89,11 +89,11 @@ export default class Cards extends Component {
           defaultPosition={{ x: window.innerWidth / 2 - defaultCardSize / 2, y: window.innerHeight / 2 - defaultCardSize / 2 }}
         >
           <Resizable
-            className={s("card bg-white rounded-lg shadow-2xl")}
+            className={s('card bg-white rounded-lg shadow-2xl')}
             defaultSize={{ width: defaultCardSize, height: defaultCardSize }}
             minWidth={defaultCardSize}
             minHeight={defaultCardSize}
-            enable={{top:false, right:true, bottom:true, left:false, topRight:false, bottomRight:true, bottomLeft:false, topLeft:false}}
+            enable={{ top: false, right: true, bottom: true, left: false, topRight: false, bottomRight: true, bottomLeft: false, topLeft: false }}
           >
             { this.renderTabHeader() }
             <CardContent id={cards[activeCardIndex]} />

@@ -4,12 +4,12 @@ import _ from 'underscore';
 const initialState = {
   dockVisible: false,
   dockExpanded: false,
-	cards: [],
+  cards: [],
   activeCardIndex: -1,
 };
 
-export default function display(state=initialState, action) {
-  const { type, payload = {} } = action
+export default function display(state = initialState, action) {
+  const { type, payload = {} } = action;
 
   switch (type) {
     case types.TOGGLE_DOCK: {
@@ -31,7 +31,7 @@ export default function display(state=initialState, action) {
     case types.CLOSE_CARD: {
       const { id } = payload;
       const newCards = _.without(state.cards, id);
-      
+
       let activeCardIndex = state.activeCardIndex;
       if (newCards.length === 0) {
         activeCardIndex = -1;

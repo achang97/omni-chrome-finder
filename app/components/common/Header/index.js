@@ -1,6 +1,6 @@
 import React, { PropTypes, Component } from 'react';
 import { Link } from 'react-router';
-import { MdNotificationsActive } from "react-icons/md";
+import { MdNotificationsActive } from 'react-icons/md';
 import { withRouter } from 'react-router-dom';
 
 import { bindActionCreators } from 'redux';
@@ -31,7 +31,7 @@ class Header extends Component {
 
     this.state = {
       activeIndex: 0,
-    }
+    };
   }
 
   handleTabClick = (activeIndex) => {
@@ -55,7 +55,7 @@ class Header extends Component {
         path = '/profile';
         break;
       default:
-        return
+        return;
     }
 
     this.props.history.push(path);
@@ -66,21 +66,21 @@ class Header extends Component {
     const { toggleDock } = this.props;
 
     return (
-      <div className={s("px-sm bg-purple-xlight")}>
+      <div className={s('px-sm bg-purple-xlight')}>
         <Tabs
           onTabClick={this.handleTabClick}
           activeIndex={activeIndex}
-          tabClassName={s("text-reg py-lg px-0 font-semibold")}
-          tabContainerClassName={s("mx-reg flex align-center")}
+          tabClassName={s('text-reg py-lg px-0 font-semibold')}
+          tabContainerClassName={s('mx-reg flex align-center')}
           color={colors.purple.reg}
           showRipple={false}
         >
           <Tab label="Ask" key="ask" />
           <Tab label="Create" key="create" />
           <Tab label="Cards" key="cards" />
-          <Tab label={<MdNotificationsActive />} key="tasks" tabContainerClassName={s("ml-auto")} />
+          <Tab label={<MdNotificationsActive />} key="tasks" tabContainerClassName={s('ml-auto')} />
           <Tab key="profile">
-            <img src={PROFILE_PICTURE_URL} className={s("header-profile-picture rounded-full")} />
+            <img src={PROFILE_PICTURE_URL} className={s('header-profile-picture rounded-full')} />
           </Tab>
         </Tabs>
       </div>
