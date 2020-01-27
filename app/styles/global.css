@@ -4,7 +4,17 @@
 @tailwind utilities;
 
 .hide-scrollbar::-webkit-scrollbar {
-    width: 0px;  /* Remove scrollbar space */
-    height: 0px;
-    background: transparent;  /* Optional: just make scrollbar invisible */
+  width: 0px; /* Remove scrollbar space */
+  height: 0px;
+  background: transparent; /* Optional: just make scrollbar invisible */
+}
+
+.bg-purple-gradient {
+  background: linear-gradient(143deg, #777bad 0%, #a0a1cd 100%) !important;
+}
+
+.separate-popup {
+  position: absolute;
+  right: 120%;
+  top: 0%;
 }

@@ -8,10 +8,10 @@ exports.colors = {
     'grey-50': '#777BAD80',
   },
   grey: {
-    light: '#211A1D40',
+    light: "#211A1D40"
   },
   green: {
-    xlight: '#E3F2EB',
-    reg: '#20B56A',
-  }
-}
+    xlight: "#E3F2EB",
+    reg: "#20B56A"
+  },
+};
