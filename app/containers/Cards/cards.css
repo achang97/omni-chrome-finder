@@ -2,3 +2,7 @@
 	position: fixed !important;
 	z-index: 100000000;
 }
+
+.card-tab {
+	width: 150px !important;
+}
