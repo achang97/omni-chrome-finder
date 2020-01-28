@@ -5,9 +5,7 @@ import { getStyleApplicationFn } from '../../../utils/styleHelpers';
 const s = getStyleApplicationFn(style);
 
 
-//const CLASSNAME_PROPS = ["tabContainerClassName", "rippleClassName", "tabClassName", "activeTabClassName", "inactiveTabClassName"];
-
-class Button extends Component {
+export default class Button extends Component {
 	constructor(props) {
 		super(props);
 	}
@@ -17,12 +15,12 @@ class Button extends Component {
 	}
 
 	render() {
-		const { text, textClassName, icon, buttonClassName } = this.props;
+		const { text, textClassName, icon, buttonClassName, underline, color } = this.props;
 		return (
 			<div>
-				<div className={s(` ${buttonClassName} flex button-container`)} onClick={() => this.onClickButton()}>
+				<div className={s(`${buttonClassName } flex justify-center button-container button-${color}`)} onClick={() => this.onClickButton()}>
 					{ icon }
-					<div className={s(`button-text button-text-underline ${textClassName}`)}>{text}</div>
+					<div className={s(`button-text ${underline ? `button-underline-${color}` : ''} ${textClassName}`)}>{text}</div>
 				</div>
 				
 			</div>
@@ -37,6 +35,7 @@ Button.propTypes = {
 	underline: PropTypes.bool,
 	onClickButton: PropTypes.func,
 	icon: PropTypes.element,
+	color: PropTypes.string,
 }
 
 
@@ -44,8 +43,7 @@ Button.defaultProps = {
 	text: '',
 	buttonClassName: '',
 	textClassName: '',
-	underline: false,
+	underline: true,
 	icon: null,
+	color: 'primary',
 }
-
-export default Button;

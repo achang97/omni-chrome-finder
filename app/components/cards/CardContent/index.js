@@ -6,7 +6,7 @@ import { EditorState } from 'draft-js';
 import { connect } from 'react-redux';
 import { editCard, saveCard } from '../../../actions/display';
 import TextEditorCard from '../../editors/TextEditorCard';
-import Button from '../../common/Button/Button';
+import Button from '../../common/Button';
 
 import style from './card-content.css';
 import { getStyleApplicationFn } from '../../../utils/styleHelpers';
@@ -79,10 +79,14 @@ export default class CardContent extends Component {
   			{
   			isEditing ?
 
-  			<div className={s("flex items-center justify-center fixed bottom-0 bg-purple-reg rounded-b-lg p-lg left-0 right-0 cursor-pointer")}
-	        	onClick={() => this.saveCard(id)} >
-	        	<div className={s("text-lg font-semibold text-white")}>Save Changes</div>
-	        </div>
+  			<Button
+  				text={"Save Changes"}
+  				onClickButton={() => this.saveCard(id)}
+  				buttonClassName={s("fixed bottom-0 left-0 right-0 rounded-t-none p-lg")}
+  				underline
+  			/>
+
+  			
 	        :
 	        <div className={s("flex items-center justify-between fixed bottom-0 bg-purple-light rounded-b-lg p-lg left-0 right-0")}>      
 	          <Button 
@@ -93,13 +97,14 @@ export default class CardContent extends Component {
 	          <div className={s("flex")}>
 		          <Button 
 		          	text={"Helpful"} 
-		          	icon={<MdThumbUp  
-		          	className={s("mr-sm")}/>} 
-		          	buttonClassName={s("bg-white no-background-image text-purple-reg mr-reg")}/>
+		          	icon={<MdThumbUp className={s("mr-sm")}/>} 
+		          	buttonClassName={s("mr-reg")}
+		          	color={"secondary"} />
 
 		          <Button 
 		          	icon={<MdBookmarkBorder />}
-		          	buttonClassName={s("bg-white no-background-image text-purple-reg text-lg")}/>
+		          	color={"secondary"}
+		          	/>
 	          </div>
 	        </div> 
 	    }
