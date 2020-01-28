@@ -6,7 +6,6 @@ import { convertToRaw } from 'draft-js';
 import draftToHtml from 'draftjs-to-html';
 import renderHTML from 'react-render-html';
 
-
 import style from './text-editor.css';
 import { getStyleApplicationFn } from '../../../utils/styleHelpers';
 const s = getStyleApplicationFn(style);

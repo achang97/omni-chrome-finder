@@ -30,6 +30,6 @@ export function editCard(id) {
 	return { type: types.EDIT_CARD, payload: { id } };
 }
 
-export function saveCard(id, answerEditorState) {
-	return { type: types.SAVE_CARD, payload: { id, answerEditorState } };
+export function saveCard(id, answerEditorState, descriptionEditorState) {
+	return { type: types.SAVE_CARD, payload: { id, answerEditorState, descriptionEditorState } };
 }

@@ -6,3 +6,64 @@
 .no-background-image {
 	background-image: none !important;
 }
+
+/* View Mode */
+.text-editor-view {
+  height: 100% !important;
+	padding: 20px !important;
+	border-radius: 0 0 8px 8px !important;
+	justify-content: space-between !important;
+}
+
+
+
+/* 
+=========================
+DESCRIPTION TEXT EDITORS 
+=========================
+*/
+
+/* Wrappers */
+
+.card-description-text-editor-wrapper-view {
+	margin-top: 10px;
+}
+
+.card-description-text-editor-wrapper-edit {
+	display: block !important;
+  	height: 100% !important;
+  	margin-top: 10px !important;
+}
+
+.card-description-text-editor-wrapper-inactive {
+	display: block !important;
+  	height: 100% !important;
+  	margin-top: 10px !important;
+	background-image: linear-gradient(143deg, #777BAD1A 0%, #A0A1CD1A 100%);
+	border-radius: 8px;
+	border: 0 !important;
+	padding: 10px !important;
+
+}
+
+/* Editors */
+
+.card-description-text-editor-view {
+	padding: 0 !important;
+	border-radius: 0 0 8px 8px !important;
+	justify-content: space-between !important;
+	border: 0 !important;
+}
+
+
+/* Click Mode */
+
+
+
+
+/* Edit Mode */
+.text-editor-wrapper-edit {
+  display: block !important;
+  margin: 25px !important;
+  height: 100%!important;
+}

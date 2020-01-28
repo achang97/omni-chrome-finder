@@ -43,7 +43,6 @@ export default function display(state=initialState, action) {
     }
 
     case types.EDIT_CARD: {
-      console.log("in Edit");
       const { id } = payload;
       const newCards = state.cards.map((card, i) => card.id === id ? {...card, isEditing: true } : card);
 
@@ -52,9 +51,8 @@ export default function display(state=initialState, action) {
     }
 
     case types.SAVE_CARD: {
-      console.log("here");
-      const { id, answerState } = payload;
-      const newCards = state.cards.map((card, i) => card.id === id ? {...card, answerEditorState: answerState, isEditing: false } : card);
+      const { id, answerState, descriptionState } = payload;
+      const newCards = state.cards.map((card, i) => card.id === id ? {...card, answerEditorState: answerState, descriptionEditorState: descriptionState, isEditing: false } : card);
 
       return { ...state, cards: newCards};
     }
