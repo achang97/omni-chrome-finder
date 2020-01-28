@@ -24,7 +24,7 @@ const INTEGRATIONS = ['Slack', 'Email', 'Asana'];
 
 @connect(
   state => ({
-    dockExpanded: state.display.dockExpanded,
+    dockExpanded: state.display.dockExpanded
   }),
   dispatch =>
     bindActionCreators(
@@ -281,7 +281,7 @@ class Ask extends Component {
           </button>
           <button
             onClick={this.toggleScreenRecording}
-            className={s("bg-purple-grey-10 flex flex-row items-center text-purple-reg p-sm rounded-lg")}
+            className={s("bg-purple-grey flex flex-row items-center text-purple-reg p-sm rounded-lg")}
           >
             <span className="underline">
               Screen Capture
@@ -312,7 +312,7 @@ class Ask extends Component {
             <span className={s("text-purple-reg text-sm font-light tracking-tight")}>Send to channel/person</span>
             <input placeholder={"Enter Name"} className={s("mt-sm text-gray-800 p-reg outline-none rounded-lg border-none")} />
             <div className={s("flex flex-row justify-between my-reg")}>
-              <div className={s(" bg-purple-grey-10 text-purple-reg font-bold text-reg rounded-lg p-sm w-48")}>
+              <div className={s(" bg-purple-grey text-purple-reg font-bold text-reg rounded-lg p-sm w-48")}>
                 <div className={s("h-10 p-reg flex flex-row items-center justify-between")}>
                   <span className={s("capitalize font-bold")}>Design</span>
                   <span className={s("text-gray-500")}>x</span>

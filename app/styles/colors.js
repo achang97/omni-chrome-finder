@@ -12,7 +12,7 @@ exports.colors = {
   'purple-light': '#F5F7FE',
   'purple-reg': '#7a7daf',
   'purple-dark': '#5453af',
-  'purple-grey-10': '#777BAD1A',
+  'purple-grey': '#777BAD1A',
   'purple-grey-50': '#777BAD80',
 
   //grey

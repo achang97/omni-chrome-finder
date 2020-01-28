@@ -167,12 +167,12 @@ export default class CardContent extends Component {
               <div className={s("flex items-center justify-around")}>
                 <div className={s("flex items-center flex-wrap")}>
                   {this.props.tags.filter((_, index) => index < 2).map(tag => (
-                    <div key={tag} className={s("flex p-xs py-sm mr-xs bg-purple-grey-10 text-purple-reg rounded-full font-semibold text-xs tracking-tighter truncate")}>
+                    <div key={tag} className={s("flex p-xs py-sm mr-xs bg-purple-grey text-purple-reg rounded-full font-semibold text-xs tracking-tighter truncate")}>
                       <div className={s("mr-xs")}>{tag}</div>
                     </div>
                   ))}
                   {this.props.tags.length - 2 > 0 &&
-                    <div className={s("flex p-xs py-sm mt-xs mr-xs bg-purple-grey-10 text-purple-reg rounded-full font-semibold text-xs tracking-tighter truncate")}>
+                    <div className={s("flex p-xs py-sm mt-xs mr-xs bg-purple-grey text-purple-reg rounded-full font-semibold text-xs tracking-tighter truncate")}>
                       <div className={s("mr-xs")}>+{this.props.tags.length - 2}</div>
                     </div>
                   }
