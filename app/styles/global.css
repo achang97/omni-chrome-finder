@@ -39,6 +39,22 @@
   border-right: none;
 }
 
+.show-scrollbar {
+  overflow-y: auto;
+}
+
+.show-scrollbar::-webkit-scrollbar {
+  width: 3px; /* Remove scrollbar space */
+  margin: 20px 0px;
+  @apply bg-white;
+}
+
+.show-scrollbar:hover::-webkit-scrollbar-thumb {
+  @apply bg-gray-400;
+  border-left: none;
+  border-right: none;
+}
+
 /* .Question-Info__Header {
   background-color: rgba(189, 200, 249, 0.15) !important;
 }

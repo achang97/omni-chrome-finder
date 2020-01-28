@@ -5,6 +5,17 @@ const config = {
   theme: {
     extend: {
       colors: colors.colors,
+      spacing: {
+        '0': '0px',
+        'xs': '4px',
+        'sm': '8px',
+        'reg': '12px',
+        'lg': '16px',
+        'xl': '20px',
+        '2xl': '24px',
+        '3xl': '30px',
+        '4xl': '48px',
+      },
     },
     fontSize: {
       'xs': '12px',
@@ -17,17 +28,6 @@ const config = {
       '4xl': '36px',
       '5xl': '48px',
       '6xl': '64px',
-    },
-    spacing: {
-      '0': '0px',
-      'xs': '4px',
-      'sm': '8px',
-      'reg': '12px',
-      'lg': '16px',
-      'xl': '20px',
-      '2xl': '24px',
-      '3xl': '30px',
-      '4xl': '48px',
     },
     borderRadius: {
       'none': '0px',

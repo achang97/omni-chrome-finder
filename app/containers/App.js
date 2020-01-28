@@ -133,7 +133,7 @@ class App extends Component {
           position="right"
           fluid={false}
           dimMode="none"
-          size={450}
+          size={400}
           isVisible={dockVisible}
           dockStyle={{
             height: dockExpanded || pathname !== '/ask' ? '100%' : 'auto',

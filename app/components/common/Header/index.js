@@ -72,7 +72,7 @@ class Header extends Component {
           activeIndex={activeIndex}
           tabClassName={s('text-reg py-lg px-0 font-semibold')}
           tabContainerClassName={s('mx-reg flex align-center')}
-          color={colors.purple.reg}
+          color={colors['purple-reg']}
           showRipple={false}
         >
           <Tab label="Ask" key="ask" />

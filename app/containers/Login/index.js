@@ -17,7 +17,7 @@ const Login = (props) => {
   };
 
   return (
-    <div className>
+    <div>
       <div className={s('h-16 p-lg bg-gray-300')}>
         <Tabs
           activeIndex={tabValue}
@@ -43,7 +43,7 @@ const Login = (props) => {
         </Tabs>
       </div>
       <div
-        className={s('w-full flex mx-auto p-2 items-center justify-center')}
+        className={s('w-full flex mx-auto p-sm items-center justify-center')}
         style={{ minHeight: '50vh' }}
       >
         <div>
@@ -58,7 +58,7 @@ const Login = (props) => {
             <ul>
               <li
                 className={s(
-                  'cursor-pointer bg-white m-sm my-lg p-2 px-8 font-semibold rounded-lg w-full'
+                  'list-none cursor-pointer bg-white m-sm my-lg p-sm px-xl font-semibold rounded-lg w-full'
                 )}
               >
                 Sign in through Slack
