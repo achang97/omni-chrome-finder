@@ -38,10 +38,10 @@ chrome.tabs.onUpdated.addListener(async (tabId, changeInfo, tab) => {
   const result = await isInjected(tabId);
   if (!chrome.runtime.lastError && !result[0]) {
     loadScript('inject', tabId, () => console.log('Injected!'));
-  } 
+  }
 
   if (!chrome.runtime.lastError) {
-    chrome.tabs.sendMessage(tabId, { type: TAB_UPDATE, url: tab.url })
+    chrome.tabs.sendMessage(tabId, { type: TAB_UPDATE, url: tab.url });
   }
 });
 
@@ -52,5 +52,5 @@ chrome.browserAction.onClicked.addListener(async (tab) => {
     chrome.tabs.sendMessage(tabId, { type: TOGGLE });
   } else {
     loadScript('inject', tabId, () => console.log('Injected!'));
-  } 
+  }
 });

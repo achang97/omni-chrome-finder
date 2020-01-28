@@ -1,21 +1,21 @@
-import { delay } from 'redux-saga'
-import { take, call, fork, all, cancel, cancelled, put, select } from 'redux-saga/effects'
+import { delay } from 'redux-saga';
+import { take, call, fork, all, cancel, cancelled, put, select } from 'redux-saga/effects';
 // import { doGet, doPost, doPut, doDelete } from '../utils/request'
 import {
   OPEN_CARD
-} from '../actions/actionTypes'
+} from '../actions/actionTypes';
 import {
-} from '../actions/display'
+} from '../actions/display';
 
-export default function *watchDisplayRequests() {
-  let action
+export default function* watchDisplayRequests() {
+  let action;
 
-  while(action = yield take([OPEN_CARD])) {
-    const { type, payload } = action
-    switch(type) {
+  while (action = yield take([OPEN_CARD])) {
+    const { type, payload } = action;
+    switch (type) {
       case OPEN_CARD: {
         // yield fork(getUser)
-        break
+        break;
       }
     }
   }

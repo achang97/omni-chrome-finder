@@ -1,9 +1,9 @@
 .text-editor {
   height: 275px !important;
-	border: 1px solid #00025F1A !important;
-	padding: 10px !important;
-	border-radius: 0 0 8px 8px !important;
-	justify-content: space-between !important;
+  border: 1px solid #00025f1a !important;
+  padding: 10px !important;
+  border-radius: 0 0 8px 8px !important;
+  justify-content: space-between !important;
 }
 
 .text-editor:hover {
@@ -14,58 +14,57 @@
   width: 100% !important;
   display: block !important;
   margin-bottom: 25px !important;
-  height: 400px !important;
+  height: 280px !important;
 }
 
 .text-editor-toolbar {
-	border-bottom: 0 !important;
-	margin-bottom: 0 !important;
-	border-radius: 8px 8px 0 0 !important;
-	padding-bottom: 5px !important;
+  border-bottom: 0 !important;
+  margin-bottom: 0 !important;
+  border-radius: 8px 8px 0 0 !important;
+  padding-bottom: 5px !important;
   padding-top: 10px !important;
-  border-color: #00025F1A !important;
+  border-color: #00025f1a !important;
 }
 
 .text-editor-inline-button {
-	min-width: 18px !important;
-	border-radius: 8px !important;
-	background-color: #BDC8F926 !important;
-	color: #7A7DAF !important;
-	border: 0 !important;
+  min-width: 18px !important;
+  border-radius: 8px !important;
+  background-color: #bdc8f926 !important;
+  color: #7a7daf !important;
+  border: 0 !important;
 }
 
 .text-editor-inline-button:hover {
-	box-shadow: none !important;
+  box-shadow: none !important;
 }
 
 .text-editor-inline-button:active {
-	background-color: #BDC8F9BF !important;
+  background-color: #bdc8f9bf !important;
 }
 
 .text-editor-list-dropdown {
-	width: 42px !important;
-	border-radius: 8px !important;
-	background-color: #BDC8F926 !important;
-	color: #7A7DAF !important;
-	border: 0 !important;
+  width: 42px !important;
+  border-radius: 8px !important;
+  background-color: #bdc8f926 !important;
+  color: #7a7daf !important;
+  border: 0 !important;
 }
 
 .text-editor-link-dropdown {
-	width: 42px !important;
-	border-radius: 8px !important;
-	background-color: #BDC8F926 !important;
-	color: #7A7DAF !important;
-	border: 0 !important;
+  width: 42px !important;
+  border-radius: 8px !important;
+  background-color: #bdc8f926 !important;
+  color: #7a7daf !important;
+  border: 0 !important;
 }
 
 .text-editor-blocktype-dropdown {
-	width: 80px !important;
-	border-radius: 8px !important;
-	background-color: #BDC8F926 !important;
-	color: #7A7DAF !important;
-	border: 0 !important;
+  width: 80px !important;
+  border-radius: 8px !important;
+  background-color: #bdc8f926 !important;
+  color: #7a7daf !important;
+  border: 0 !important;
 }
-
 
 /*Overrides*/
 .text-editor .public-DraftStyleDefault-block {
@@ -73,5 +72,5 @@
 }
 
 .text-editor .rdw-option-wrapper {
- /* min-width: 20px !important;*/
+  /* min-width: 20px !important;*/
 }

@@ -7,6 +7,7 @@ import { connect } from 'react-redux';
 import { editCard, saveCard } from '../../../actions/display';
 import TextEditorCard from '../../editors/TextEditorCard';
 import Button from '../../common/Button';
+import CardStatus from '../CardStatus';
 
 import style from './card-content.css';
 import { getStyleApplicationFn } from '../../../utils/styleHelpers';
@@ -100,7 +101,6 @@ export default class CardContent extends Component {
 		          	icon={<MdThumbUp className={s("mr-sm")}/>} 
 		          	buttonClassName={s("mr-reg")}
 		          	color={"secondary"} />
-
 		          <Button 
 		          	icon={<MdBookmarkBorder />}
 		          	color={"secondary"}
@@ -121,7 +121,7 @@ export default class CardContent extends Component {
         <div className={s("bg-purple-light p-sm")}>
           <strong className={s("text-xs text-purple-reg px-lg pt-lg pb-sm flex items-center justify-between opacity-75")}>
             <div>2 Days Ago</div>
-            <div className={s("flex items-center")}>
+            <div className={s('flex items-center')}>
               <MdMoreHoriz />
             </div>
           </strong>
@@ -164,16 +164,12 @@ export default class CardContent extends Component {
 	            <div className={s("flex items-center justify-between")}>
 	              <div className={s("flex items-center")}>
 	                { ['Customer Request Actions', 'Onboarding'].map(tag => (
-	                  <div key={tag} className={s("flex items-center p-xs mr-xs bg-purple-grey text-purple-reg rounded-full font-semibold text-xs")}>
+	                  <div key={tag} className={s("flex items-center p-xs mr-xs bg-purple-gray-10 text-purple-reg rounded-full font-semibold text-xs")}>
 	                    <div className={s("mr-xs")}>Customer Request Actions</div>
 	                  </div> 
 	                ))}
 	              </div>
-	              <div className={s("flex items-center p-xs bg-green-xlight text-green-reg rounded-lg font-semibold text-xs")}> 
-	                <MdCheck className={s("mr-xs")} />
-	                <div>Up To Date</div>
-	                <MdArrowDropDown />
-	              </div>
+	              <CardStatus isUpToDate={true} />
 	            </div>
 			}
           </div>

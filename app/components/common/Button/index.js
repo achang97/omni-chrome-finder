@@ -17,12 +17,9 @@ export default class Button extends Component {
 	render() {
 		const { text, textClassName, icon, buttonClassName, underline, color } = this.props;
 		return (
-			<div>
-				<div className={s(`${buttonClassName } flex justify-center button-container button-${color}`)} onClick={() => this.onClickButton()}>
-					{ icon }
-					<div className={s(`button-text ${underline ? `button-underline-${color}` : ''} ${textClassName}`)}>{text}</div>
-				</div>
-				
+			<div className={s(`${buttonClassName} flex justify-center button-container button-${color}`)} onClick={() => this.onClickButton()}>
+				{ icon }
+				<div className={s(`button-text ${underline ? `button-underline-${color}` : ''} ${textClassName}`)}>{text}</div>
 			</div>
 		);
 	}
