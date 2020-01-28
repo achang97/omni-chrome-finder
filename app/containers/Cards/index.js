@@ -45,16 +45,20 @@ export default class Cards extends Component {
     closeCard(cardId);
   }
 
-  renderTabHeaderButtons = () => (
-    <div className={s("px-reg flex flex-shrink-0")}>
-      <button className={s("mr-sm")}>
-        <MdMoreHoriz color={colors.purple['grey-50']} />
-      </button>
-      <button onClick={() => closeAllCards()}>
-        <MdClose color={colors.purple['grey-50']} />
-      </button>
-    </div>
-  )
+  renderTabHeaderButtons = () => {
+    const { closeAllCards } = this.props;
+
+    return (
+      <div className={s("px-reg flex flex-shrink-0")}>
+        <button className={s("mr-sm")}>
+          <MdMoreHoriz color={colors.purple['grey-50']} />
+        </button>
+        <button onClick={() => closeAllCards()}>
+          <MdClose color={colors.purple['grey-50']} />
+        </button>
+      </div>
+    );
+  }
 
   renderTabHeader = () => {
     const { cards, activeCardIndex, setActiveCardIndex, closeAllCards } = this.props;
