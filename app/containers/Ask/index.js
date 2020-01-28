@@ -6,6 +6,8 @@ import { withRouter } from 'react-router-dom';
 import ReactPlayer from 'react-player';
 import { openCard, expandDock } from '../../actions/display';
 import TextEditorExtension from '../../components/editors/TextEditorExtension';
+import { default as purplePaperPlane } from "../../assets/images/icons/purplePaperPlane.svg"
+
 
 import Tabs from '../../components/common/Tabs/Tabs';
 import Tab from '../../components/common/Tabs/Tab';
@@ -14,6 +16,7 @@ import GlobalStyle from '../../styles/global.css';
 import style from "./ask.css";
 import { getStyleApplicationFn } from '../../utils/styleHelpers';
 import { Card } from '../../components/cards/card';
+import ContentCard from '../../components/cards/CardContent';
 const s = getStyleApplicationFn(style);
 const tw = getStyleApplicationFn(GlobalStyle)
 
@@ -21,13 +24,13 @@ const INTEGRATIONS = ['Slack', 'Email', 'Asana'];
 
 @connect(
   state => ({
-    dockExpanded: state.display.dockExpanded
+    dockExpanded: state.display.dockExpanded,
   }),
   dispatch =>
     bindActionCreators(
       {
         openCard,
-        expandDock
+        expandDock,
       },
       dispatch
     )
@@ -278,14 +281,14 @@ class Ask extends Component {
           </button>
           <button
             onClick={this.toggleScreenRecording}
-            className={s("bg-purple-200 flex flex-row items-center text-purple-700 p-sm rounded-lg")}
+            className={s("bg-purple-grey-10 flex flex-row items-center text-purple-reg p-sm rounded-lg")}
           >
             <span className="underline">
               Screen Capture
             </span>
             <div
               className={s(
-                'ml-sm h-4 w-6 flex items-center justify-center rounded-sm  bg-purple-700'
+                'ml-sm h-4 w-6 flex items-center justify-center rounded-sm  bg-purple-reg'
               )}
             />
           </button>
@@ -307,12 +310,12 @@ class Ask extends Component {
         <div className={s("bg-purple-light p-reg text-gray-800 h-full ")}>
           <div className={s('flex flex-col')} style={{ minHeight: '325px' }}>
             <span className={s("text-purple-reg text-sm font-light tracking-tight")}>Send to channel/person</span>
-            <input placeholder={"Enter Name"} className={s("mt-sm text-gray-800 p-reg outline-none rounded-lg border-none ")} />
+            <input placeholder={"Enter Name"} className={s("mt-sm text-gray-800 p-reg outline-none rounded-lg border-none")} />
             <div className={s("flex flex-row justify-between my-reg")}>
-              <div className={s(" bg-purple-reg text-purple-reg font-bold text-reg rounded-lg p-sm w-48")}>
+              <div className={s(" bg-purple-grey-10 text-purple-reg font-bold text-reg rounded-lg p-sm w-48")}>
                 <div className={s("h-10 p-reg flex flex-row items-center justify-between")}>
-                  <span className={s("capitalize text-white font-bold")}>Design</span>
-                  <span className={s("text-white")}>x</span>
+                  <span className={s("capitalize font-bold")}>Design</span>
+                  <span className={s("text-gray-500")}>x</span>
                 </div>
                 <div className={s("p-reg flex flex-col mt-sm border-t")}>
                   <div className={s("p-sm bg-white rounded-lg")}>
@@ -352,9 +355,11 @@ class Ask extends Component {
             'w-full h-16 bg-purple-gradient rounded-bl-lg rounded-br-lg flex justify-center items-center text-white'
           )}
         >
-          <span className={s("w-full flex flex-row justify-between text-sm font-semibold")}>
+          <span className={s("w-full flex flex-row justify-between items-center text-sm font-semibold")}>
             <span className={s("p-reg")}>Ask Question</span>
-            <span className={s("p-reg")}>></span>
+            <span className={s("h-8 w-8 text-purple-reg rounded-full bg-white flex items-center justify-center")}>
+              {<img className="h-8 w-8" src={purplePaperPlane} />}
+            </span>
           </span>
         </button>
       </div>
@@ -413,11 +418,7 @@ class Ask extends Component {
                     description={card.description}
                     datePosted={card.datePosted}
                     status={card.status}
-                    onHover={e => this.setState({ showQuestionInfo: true })}
-                    onMouseLeave={(e) => {
-                      this.setState({ showQuestionInfo: false });
-                    }}
-                  />
+                    onClick={e => this.setState({ showQuestionInfo: true })} />
                 ))}
               </div>
             </div>
@@ -443,45 +444,8 @@ class Ask extends Component {
               )}
             </div>
             {showQuestionInfo && (
-              <div
-                className={s(
-                  ' Question-Info order-1 w-full text-gray-800 flex flex-col rounded-sm shadow-md separate-popup bg-gray-200 border-gray-500 '
-                )}
-              >
-                <div className={s('Question-Info__Header p-xl rounded-t-lg')}>
-                  <p className={s("text-xl tracking-tight")}>
-                    How do I delete a User?
-                  </p>
-                  <span className={s("mt-sm")}>
-                    I can’t find the area to delete an entire user in our
-                    dashboard - where is this functionality located?
-                  </span>
-                </div>
-                <div
-                  className={s(
-                    'Question-Info__Content bg-white p-xl tracking-tight'
-                  )}
-                >
-                  <div>How do I delete a User?</div>
-                  <div>
-                    I can’t find the area to delete an entire user in our
-                    dashboard - where is this functionality located?
-                  </div>
-                  <div>How do I delete a User?</div>
-                  <div>
-                    I can’t find the area to delete an entire user in our
-                    dashboard - where is this functionality located?
-                  </div>
-                </div>
-                <div
-                  className={s(
-                    'Question-Info__Footer border-t my-reg h-10 flex items-center justify-center rounded-b-lg '
-                  )}
-                >
-                  <a href="" className={s('block underline text-purple-reg')}>
-                    View full card
-                  </a>
-                </div>
+              <div className={s("separate-popup w-full bg-white rounded-sm shadow-md border-gray-500")}>
+                <ContentCard tags={['Customer Request Actions', 'Onboarding', 'longTagName', 'longTagName2']} onClose={e => this.setState({ showQuestionInfo: false })} />
               </div>
             )}
           </div>

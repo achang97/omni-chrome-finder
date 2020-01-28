@@ -55,6 +55,14 @@
   border-right: none;
 }
 
+.vertical-ellipsis {
+  display: -webkit-box;
+-webkit-line-clamp: 2;
+-webkit-box-orient: vertical;
+overflow: hidden;
+text-overflow: ellipsis;
+}
+
 /* .Question-Info__Header {
   background-color: rgba(189, 200, 249, 0.15) !important;
 }

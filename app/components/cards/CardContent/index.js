@@ -82,13 +82,13 @@ export default class CardContent extends Component {
             <Button
               text={"Save Changes"}
               onClickButton={() => this.saveCard(id)}
-              buttonClassName={s("fixed bottom-0 left-0 right-0 rounded-t-none p-lg")}
+              buttonClassName={s("absolute bottom-0 left-0 right-0 rounded-t-none p-lg")}
               underline
             />
 
 
             :
-            <div className={s("flex items-center justify-between fixed bottom-0 bg-purple-light rounded-b-lg p-lg left-0 right-0")}>
+            <div className={s("flex items-center justify-between absolute bottom-0 bg-purple-light rounded-b-lg p-lg left-0 right-0")}>
               <Button
                 text={"Edit Card"}
                 icon={<MdModeEdit className={s("mr-sm")} />}
@@ -114,15 +114,18 @@ export default class CardContent extends Component {
   }
 
   render() {
-    const { id, isEditing, answerEditorState } = this.props;
+    const { id, isEditing, answerEditorState, onClose } = this.props;
     const { descriptionEditorEnabled, answerEditorEnabled } = this.state;
     return (
-      <div>
+      <div className={s("relative")}>
         <div className={s("bg-purple-light p-sm")}>
           <strong className={s("text-xs text-purple-reg px-lg pt-lg pb-sm flex items-center justify-between opacity-75")}>
             <div>2 Days Ago</div>
-            <div className={s('flex items-center')}>
+            <div className={s('flex items-center justify-between')}>
               <MdMoreHoriz />
+              <span onClick={onClose} className={s("ml-sm cursor-pointer")}>
+                x
+              </span>
             </div>
           </strong>
           <div className={s("px-lg pb-lg")}>
@@ -161,24 +164,33 @@ export default class CardContent extends Component {
             }
 
             {!isEditing &&
-              <div className={s("flex items-center justify-between")}>
-                <div className={s("flex items-center")}>
-                  {['Customer Request Actions', 'Onboarding'].map(tag => (
-                    <div key={tag} className={s("flex items-center p-xs mr-xs bg-purple-grey text-purple-reg rounded-full font-semibold text-xs")}>
-                      <div className={s("mr-xs")}>Customer Request Actions</div>
+              <div className={s("flex items-center justify-around")}>
+                <div className={s("flex items-center flex-wrap")}>
+                  {this.props.tags.filter((_, index) => index < 2).map(tag => (
+                    <div key={tag} className={s("flex p-xs py-sm mr-xs bg-purple-grey-10 text-purple-reg rounded-full font-semibold text-xs tracking-tighter truncate")}>
+                      <div className={s("mr-xs")}>{tag}</div>
                     </div>
                   ))}
+                  {this.props.tags.length - 2 > 0 &&
+                    <div className={s("flex p-xs py-sm mt-xs mr-xs bg-purple-grey-10 text-purple-reg rounded-full font-semibold text-xs tracking-tighter truncate")}>
+                      <div className={s("mr-xs")}>+{this.props.tags.length - 2}</div>
+                    </div>
+                  }
                 </div>
-                <div className={s("flex items-center p-xs bg-green-xlight text-green-reg rounded-lg font-semibold text-xs")}>
+                <div className={s("flex items-center p-xs py-sm bg-green-xlight text-green-reg rounded-lg font-semibold text-xs tracking-tighter whitespace-no-wrap")}>
                   <MdCheck className={s("mr-xs")} />
                   <div>Up To Date</div>
                   <MdArrowDropDown />
                 </div>
               </div>
             }
+
           </div>
         </div>
-        <div className={s('p-2xl')}>
+        <div className={s("bg-white p-lg")}>
+          answer html will be rendered here
+            </div>
+        <div className={s('p-2xl bg-purple-xlight')}>
           {isEditing ?
 
             answerEditorEnabled ?
@@ -209,6 +221,7 @@ export default class CardContent extends Component {
               toolbarHidden
               readOnly />
           }
+
         </div>
         {this.renderFooter()}
       </div>

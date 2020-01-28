@@ -10,12 +10,10 @@ export const Card = ({
   description,
   datePosted,
   status,
-  onHover = null,
-  onMouseLeave = null
+  onClick = null,
 }) => (
     <div
-      onMouseOver={onHover}
-      onMouseOut={onMouseLeave}
+      onClick={onClick}
       className={s('Card m-sm my-reg rounded-xl p-reg bg-white text-gray-800')}
     >
       <div className={s('Card__header flex flex-col')}>
@@ -36,7 +34,7 @@ export const Card = ({
         </span>
         <div
           className={s(
-            'rounded-full bg-green-200 text-green-600 shadow-md mt-xl py-sm px-reg flex flex-row text-right self-end text-sm font-bold '
+            'rounded-full bg-green-xlight text-green-reg shadow-sm mt-xl py-sm px-reg flex flex-row text-right self-end text-sm font-bold '
           )}
         >
           {/** this will vary based on status */}

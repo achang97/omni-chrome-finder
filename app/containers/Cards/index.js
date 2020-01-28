@@ -115,7 +115,7 @@ export default class Cards extends Component {
             enable={{ top: false, right: true, bottom: true, left: false, topRight: false, bottomRight: true, bottomLeft: false, topLeft: false }}
           >
             {this.renderTabHeader()}
-            <CardContent {...cards[activeCardIndex]} />
+            <CardContent tags={[]} {...cards[activeCardIndex]} />
           </Resizable>
         </Draggable>
       </div>
