@@ -31,12 +31,27 @@ export default class CardContent extends Component {
     	answerEditorState: EditorState.createEmpty(),
     	descriptionEditorState: EditorState.createEmpty(),
     	descriptionEditorEnabled: false,
+    	answerEditorEnabled: true,
 
     }
   }
 
   enableDescriptionEditor = () => {
+  	this.disableAnswerEditor();
   	this.setState({ descriptionEditorEnabled: true });
+  }
+
+  disableDescriptionEditor = () => {
+  	this.setState({ descriptionEditorEnabled: false });
+  }
+
+  enableAnswerEditor = () => {
+  	this.disableDescriptionEditor();
+  	this.setState({ answerEditorEnabled: true });
+  }
+
+  disableAnswerEditor = () => {
+  	this.setState({ answerEditorEnabled: false });
   }
 
   editCard = (id) => {
@@ -95,7 +110,7 @@ export default class CardContent extends Component {
 
   render() {
     const { id, isEditing, answerEditorState } = this.props;
-    const { descriptionEditorEnabled } = this.state;
+    const { descriptionEditorEnabled, answerEditorEnabled } = this.state;
     return (
       <div>
         <div className={s("bg-purple-light p-sm")}>
@@ -158,25 +173,38 @@ export default class CardContent extends Component {
 			}
           </div>
         </div>
+        <div className={s('p-2xl')}>
+	        { isEditing ?
 
-        { isEditing ?
-        	<TextEditorCard 
-        		onEditorStateChange={this.onAnswerEditorStateChange} 
-        		editorState={this.state.answerEditorState} 
-        		wrapperClassName={'text-editor-wrapper-edit'} 
-        		editorClassName={'text-editor'} 
-        		toolbarClassName={'text-editor-toolbar'} /> 
-        	:
-        	<TextEditorCard 
-        		onEditorStateChange={this.onAnswerEditorStateChange} 
-        		editorState={this.state.answerEditorState} toolbarHidden 
-        		wrapperClassName={'text-editor-wrapper'} 
-        		editorClassName={'text-editor-view'} 
-        		toolbarClassName={''} 
-        		toolbarHidden
-        		readOnly/>
-        }
-
+	        	answerEditorEnabled ?
+		        	<TextEditorCard 
+		        		onEditorStateChange={this.onAnswerEditorStateChange} 
+		        		editorState={this.state.answerEditorState} 
+		        		wrapperClassName={'card-answer-text-editor-wrapper-edit'} 
+		        		editorClassName={'text-editor'} 
+		        		toolbarClassName={'text-editor-toolbar'} />
+		        	:
+		        	<div onClick={() => this.enableAnswerEditor()} >
+			        	<TextEditorCard 
+			        		onEditorStateChange={this.onAnswerEditorStateChange} 
+			        		editorState={this.state.answerEditorState} 
+			        		wrapperClassName={'card-answer-text-editor-wrapper-inactive cursor-pointer'} 
+			        		editorClassName={'text-editor card-answer-text-editor-view'} 
+			        		toolbarClassName={s('')}
+		        			toolbarHidden
+		        			readOnly/>
+	        		</div>
+	        	:
+	        	<TextEditorCard 
+	        		onEditorStateChange={this.onAnswerEditorStateChange} 
+	        		editorState={this.state.answerEditorState} 
+	        		wrapperClassName={'text-editor-wrapper'} 
+	        		editorClassName={'text-editor card-answer-text-editor-view'} 
+	        		toolbarClassName={''} 
+	        		toolbarHidden
+	        		readOnly/>
+	        }
+        </div>
         { this.renderFooter() }
       </div>
     );
