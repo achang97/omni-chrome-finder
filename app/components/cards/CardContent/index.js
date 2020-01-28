@@ -5,7 +5,7 @@ import { bindActionCreators } from 'redux';
 import { EditorState } from 'draft-js';
 import { connect } from 'react-redux';
 import { editCard, saveCard } from '../../../actions/display';
-import TextEditorCard from '../../editors/TextEditorCard';
+import TextEditor from '../../editors/TextEditor';
 import Button from '../../common/Button';
 
 import style from './card-content.css';
@@ -31,7 +31,7 @@ export default class CardContent extends Component {
     	answerEditorState: EditorState.createEmpty(),
     	descriptionEditorState: EditorState.createEmpty(),
     	descriptionEditorEnabled: false,
-    	answerEditorEnabled: true,
+    	answerEditorEnabled: false,
 
     }
   }
@@ -56,6 +56,7 @@ export default class CardContent extends Component {
 
   editCard = (id) => {
   	this.props.editCard(id);
+  	this.enableAnswerEditor();
   }
 
   saveCard = (id) => {
@@ -132,15 +133,16 @@ export default class CardContent extends Component {
 
             	
             		descriptionEditorEnabled ?
-            		<TextEditorCard 
+            		<TextEditor 
             			onEditorStateChange={this.onDescriptionEditorStateChange} 
             			editorState={this.state.descriptionEditorState} 
 	        			wrapperClassName={s('card-description-text-editor-wrapper-edit')} 
 	        			editorClassName={s('text-editor')} 
-	        			toolbarClassName={s('text-editor-toolbar')}/>
+	        			toolbarClassName={s('text-editor-toolbar')}
+	        			autoFocus />
  					:
  					<div onClick={() => this.enableDescriptionEditor()} >
-	            		<TextEditorCard
+	            		<TextEditor
 	            			onEditorStateChange={this.onDescriptionEditorStateChange} 
 	            			editorState={this.state.descriptionEditorState}
 	        				wrapperClassName={s('card-description-text-editor-wrapper-inactive cursor-pointer')} 
@@ -150,7 +152,7 @@ export default class CardContent extends Component {
 	        				readOnly/>
         			</div>
         		: 
-        		<TextEditorCard 
+        		<TextEditor 
         			onEditorStateChange={this.onDescriptionEditorStateChange} 
         			editorState={this.state.descriptionEditorState} 
         			wrapperClassName={s('text-editor-wrapper card-description-text-editor-wrapper-view ')} 
@@ -182,32 +184,35 @@ export default class CardContent extends Component {
 	        { isEditing ?
 
 	        	answerEditorEnabled ?
-		        	<TextEditorCard 
+		        	<TextEditor 
 		        		onEditorStateChange={this.onAnswerEditorStateChange} 
 		        		editorState={this.state.answerEditorState} 
 		        		wrapperClassName={'card-answer-text-editor-wrapper-edit'} 
 		        		editorClassName={'text-editor'} 
-		        		toolbarClassName={'text-editor-toolbar'} />
+		        		toolbarClassName={'text-editor-toolbar'}
+		        		autoFocus />
 		        	:
 		        	<div onClick={() => this.enableAnswerEditor()} >
-			        	<TextEditorCard 
+			        	<TextEditor 
 			        		onEditorStateChange={this.onAnswerEditorStateChange} 
 			        		editorState={this.state.answerEditorState} 
 			        		wrapperClassName={'card-answer-text-editor-wrapper-inactive cursor-pointer'} 
 			        		editorClassName={'text-editor card-answer-text-editor-view'} 
 			        		toolbarClassName={s('')}
 		        			toolbarHidden
-		        			readOnly/>
+		        			readOnly
+		        			/>
 	        		</div>
 	        	:
-	        	<TextEditorCard 
+	        	<TextEditor 
 	        		onEditorStateChange={this.onAnswerEditorStateChange} 
 	        		editorState={this.state.answerEditorState} 
 	        		wrapperClassName={'text-editor-wrapper'} 
 	        		editorClassName={'text-editor card-answer-text-editor-view'} 
 	        		toolbarClassName={''} 
 	        		toolbarHidden
-	        		readOnly/>
+	        		readOnly
+	        		/>
 	        }
         </div>
         { this.renderFooter() }

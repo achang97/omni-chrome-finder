@@ -1,0 +1,117 @@
+/* Prev styling */
+
+.text-editor {
+  height: 100%;
+	border: 1px solid #00025F1A;
+	padding: 10px;
+	border-radius: 0 0 8px 8px;
+	justify-content: space-between;
+}
+
+.text-editor:hover {
+  cursor: text;
+}
+
+.text-editor-wrapper {
+  width: 100%;
+  display: block;
+  margin-bottom: 25px;
+  height: 100%;
+}
+
+.text-editor-toolbar {
+	border-bottom: 0 !important;
+	margin-bottom: 0 !important;
+	border-radius: 8px 8px 0 0 !important;
+	padding-bottom: 5px !important;
+  	padding-top: 10px !important;
+  	border-color: #00025F1A !important;
+  	display: flex;
+  	justify-content: flex-start;
+}
+
+
+.text-editor-list-dropdown {
+	width: 42px !important;
+	border-radius: 8px !important;
+	background-color: #BDC8F926 !important;
+	color: #7A7DAF !important;
+	border: 0 !important;
+}
+
+.text-editor-link-dropdown {
+	width: 42px !important;
+	border-radius: 8px !important;
+	background-color: #BDC8F926 !important;
+	color: #7A7DAF !important;
+	border: 0 !important;
+}
+
+/* Small Button - applies to Inline Buttons */
+.text-editor-button-sm {
+	min-width: 18px !important;
+	border-radius: 8px !important;
+	background-color: #BDC8F926 !important;
+	color: #7A7DAF !important;
+	border: 0 !important;
+}
+
+/* Dropdown Container Regular - applies to list, font size, spacing, link, color */
+.text-editor-dropdown-container-md {
+	width: 42px !important;
+	border-radius: 8px !important;
+	background-color: #BDC8F926 !important;
+	color: #7A7DAF !important;
+	border: 0 !important;
+}
+
+.text-editor-dropdown-container-md a {
+	color: #7A7DAF !important;
+	text-decoration: none !important;
+}
+
+.text-editor-dropdown-container-md div {
+	border-top-color: #7A7DAF !important;
+}
+
+
+/* Dropown Container Large - applies to Blocktype & Font */
+
+.text-editor-dropdown-container-lg {
+	width: 80px !important;
+	border-radius: 8px !important;
+	background-color: #BDC8F926 !important;
+	color: #7A7DAF !important;
+	border: 0 !important;
+}
+
+.text-editor-dropdown-container-lg a {
+	color: #7A7DAF !important;
+	text-decoration: none !important;
+}
+
+.text-editor-dropdown-container-lg div {
+	border-top-color: #7A7DAF !important;
+}
+
+/* Dropdown - applies to all dropdowns to standardize styling*/
+
+.text-editor-dropdown {
+	border-radius: 8px !important;
+}
+
+/* Applies to all buttons and dropdowns to remove hover shadow */
+
+.no-hover-shadow:hover {
+	box-shadow: none !important;
+}
+
+
+/*Overrides*/
+.text-editor div {
+  margin: 0 !important;
+}
+
+.text-editor .rdw-option-wrapper {
+ /* min-width: 20px !important;*/
+}
