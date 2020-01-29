@@ -17,5 +17,10 @@
 }
 
 .ask-screen-capture-button-text {
-  @apply border-t-0 border-l-0 border-r-0 border-b-2 border-solid border-purple-gray-50;
+  @apply border-t-0 border-l-0 border-r-0 border-b-2 border-solid border-purple-gray-10;
+}
+
+.ask-recipient {
+	@apply m-xs text-purple-reg font-semibold text-xs rounded-lg flex justify-between p-reg;
+	max-width: 120px;
 }

@@ -27,12 +27,14 @@ export default class Button extends Component {
 					outerClassName: `button-${color}`,
 					innerClassName: underline ? `button-underline-${color}` : ''
 				}
+			default:
+				return {};
 		}
 	}
 
 	render() {
 		const { text, textClassName, icon, iconLeft, className, underline, color } = this.props;
-		const { outerClassName, innerClassName } = this.getClassNames(color, underline);
+		const { outerClassName = '', innerClassName = '' } = this.getClassNames(color, underline);
 
 		return (
 			<div className={s(`${className} flex justify-center shadow-md button-container ${outerClassName}`)} onClick={() => this.onClick()}>

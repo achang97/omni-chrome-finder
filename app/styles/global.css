@@ -6,8 +6,8 @@
 
 /* Scroll bar */
 .hide-scrollbar::-webkit-scrollbar {
-  width: 0px; /* Remove scrollbar space */
-  height: 0px;
+  width: 0px !important; /* Remove scrollbar space */
+  height: 0px !important;
   background: transparent; /* Optional: just make scrollbar invisible */
 }
 
@@ -20,7 +20,7 @@
 	text-overflow: ellipsis;
 }
 
-/* Spacers */
+/* Borders and separators */
 .horizontal-separator {
 	@apply border-t border-l-0 border-r-0 border-b-0 border-solid border-gray-200 w-full;
 }
@@ -35,14 +35,22 @@
 }
 
 /* Buttons */
-.circle-button-sm, .circle-button {
-  @apply h-lg w-lg rounded-full flex items-center justify-center !important;
+.circle-button-sm, .circle-button, .circle-button-lg {
+  @apply rounded-full flex items-center justify-center !important;
 }
 
 .circle-button-sm {
-  @apply text-reg p-sm !important;
+  @apply text-reg !important;
+  height: 32px !important;
+  width: 32px !important;
 }
 
 .circle-button {
-  @apply text-lg p-reg !important;
+  @apply text-reg !important;
+  height: 40px !important;
+  width: 40px !important;
+}
+
+.circle-button-lg {
+  @apply h-4xl w-4xl text-lg !important;
 }

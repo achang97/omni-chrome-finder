@@ -3,22 +3,20 @@ import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
 import { withRouter } from 'react-router-dom';
 
-import { MdChevronRight, MdPictureInPicture } from 'react-icons/md';
+import { MdChevronRight, MdPictureInPicture, MdClose } from 'react-icons/md';
 import { IoMdAdd } from 'react-icons/io';
-import { FaRegDotCircle } from 'react-icons/fa';
+import { FaRegDotCircle, FaPaperPlane } from 'react-icons/fa';
 
 import { EditorState } from 'draft-js';
 import ReactPlayer from 'react-player';
 import TextEditor from '../../components/editors/TextEditor';
 import Button from '../../components/common/Button';
-import { default as purplePaperPlane } from "../../assets/images/icons/purplePaperPlane.svg"
 
 import Tabs from '../../components/common/Tabs/Tabs';
 import Tab from '../../components/common/Tabs/Tab';
 import SuggestionPanel from "../../components/suggestions/SuggestionPanel";
 
 import { colors } from '../../styles/colors';
-
 import { openCard, expandDock } from '../../actions/display';
 
 import style from "./ask.css";
@@ -26,6 +24,36 @@ import { getStyleApplicationFn } from '../../utils/styleHelpers';
 const s = getStyleApplicationFn(style);
 
 const INTEGRATIONS = ['Slack', 'Email', 'Asana'];
+const PLACEHOLDER_RECIPIENTS = [
+  {
+    type: 'channel',
+    name: 'Design',
+    tagged: [
+      { name: 'Miodrag' },
+      { name: 'Goran' }
+    ]
+  },
+  {
+    type: 'user',
+    name: 'Akshay',
+  },
+  {
+    type: 'user',
+    name: 'Chetan'
+  },
+  {
+    type: 'user',
+    name: 'Andrew'
+  },
+  {
+    type: 'user',
+    name: 'Fernando'
+  },
+  {
+    type: 'user',
+    name: 'Chetan Really Long Name Wow!!!'
+  },
+];
 
 @connect(
   state => ({
@@ -211,16 +239,14 @@ class Ask extends Component {
           <TextEditor 
             onEditorStateChange={this.onEditorStateChange} 
             editorState={editorState} 
-            // wrapperClassName={s('card-description-text-editor-wrapper-edit')} 
-            editorClassName={s('text-editor')} 
-            toolbarClassName={s('text-editor-toolbar')}
+            editorType="EXTENSION"
           />
           <Button
             icon={<IoMdAdd color="white" /> }
-            className={s('absolute z-10 ask-text-editor-add-button circle-button-sm')}
+            className={s('absolute z-10 ask-text-editor-add-button circle-button-sm p-0')}
           />
         </div>
-        <div className={s('flex')}>
+        <div className={s('flex px-xs pt-reg')}>
           <button
             onClick={this.toggleScreenRecording}
             className={s("ask-screen-capture-button mr-xs bg bg-red-100 text-red-500")}
@@ -228,7 +254,7 @@ class Ask extends Component {
             <span className={s("ask-screen-capture-button-text")}>
               {!desktopSharing ? 'Screen Record' : 'End Recording'}
             </span>
-            <FaRegDotCircle color="red" className={s("ml-sm")} />
+            <FaRegDotCircle className={s("ml-sm text-red-500")} />
           </button>
           <button
             onClick={this.toggleScreenRecording}
@@ -240,18 +266,75 @@ class Ask extends Component {
             <MdPictureInPicture color={colors.purple.reg} className={s("ml-sm")} />
           </button>
         </div>
+        { /*<div className={s("mt-sm p-sm")}>
+          {screenRecordings.map(recording => (
+            <div className={s('ask-video-player-container my-sm')}>
+              <ReactPlayer
+                url={recording}
+                className={s('absolute top-0 left-0')}
+                controls
+                playing
+                height="100%"
+                width="100%"
+              />
+            </div>
+          ))}
+        </div>
+        */ }
       </div>
     );
+  }
+
+  renderRecipientSelection = () => {
+    return (
+      <div className={s("bg-purple-light flex-1 flex flex-col p-lg min-h-0")}>
+        <div className={s("text-purple-reg text-xs mb-reg")}>Send to channel/person</div>
+        <input
+          placeholder="Enter name"
+          className={s("w-full")}
+        />
+        <div className={s("flex my-xs flex-wrap min-h-0 overflow-y-scroll")}>
+          { PLACEHOLDER_RECIPIENTS.map(({ type, name, tagged=[] }) => (
+            <div className={s(`${type === 'channel' ? 'bg-purple-gray-10' : 'bg-white'} ask-recipient`)}>
+              <span className={s("truncate")}> @{name} </span>
+
+              <div>
+                <button>
+                  <MdClose className={s("text-purple-gray-50 ml-xs")} />
+                </button>
+              </div>
+            </div>
+          ))}
+        </div>
+      </div>
+    );    
+  }
+
+  renderFooterButton = () => {
+    return (
+      <Button
+        className={s('self-stretch rounded-t-none rounded-br-none rounded-bl-reg items-center justify-between text-reg')}
+        text="Ask Question"
+        iconLeft={false}
+        icon={
+          <span className={s("circle-button-sm bg-white text-purple-reg")}>
+            <FaPaperPlane />
+          </span>
+        }
+      />
+    )
   }
 
   renderExpandedAskPage = () => {
     const { editorState } = this.state;
     return (
-      <div className={s('max-h-screen min-h-screen')}>
+      <div className={s('flex flex-col flex-1 min-h-0')}>
         <div className={s("p-lg")}>
           { this.renderTabHeader() }
           { this.renderAskInputs() }
         </div>
+        { this.renderRecipientSelection() }
+        { this.renderFooterButton() }
       </div>
     );
   };
@@ -261,14 +344,14 @@ class Ask extends Component {
     const { expandDock } = this.props;
     
     return (
-      <div className={s("p-lg flex-col")}>
+      <div className={s("p-lg")}>
         <input
           onChange={this.onShowRelatedQuestions}
           placeholder="Let's find what you're looking for"
           className={s("w-full")}
         />
-        <div className={s('my-lg flex flex-row justify-center items-center')}>
-          <span className={s('flex-1 text-gray-dark ml-sm text-sm font-medium')}>
+        <div className={s('mt-lg flex flex-row justify-center items-center')}>
+          <span className={s('flex-1 text-gray-dark ml-sm text-xs font-medium')}>
             Don't see your question?
           </span>
           <Button
@@ -276,7 +359,7 @@ class Ask extends Component {
             color="primary"
             className={s("justify-between")}
             iconLeft={false}
-            icon={<MdChevronRight color="white" />}
+            icon={<MdChevronRight color="white" className={s("ml-sm")} />}
             onClick={expandDock}
           />
         </div>
@@ -287,13 +370,7 @@ class Ask extends Component {
 
   render() {
     const { dockExpanded } = this.props;
-    return (
-      <div>
-        {dockExpanded
-          ? this.renderExpandedAskPage()
-          : this.renderMinifiedAskPage()}
-      </div>
-    );
+    return (dockExpanded ? this.renderExpandedAskPage() : this.renderMinifiedAskPage());
   }
 }
 

@@ -33,8 +33,13 @@
   opacity: 0.8;
 }
 
+.app-container button:disabled {
+  opacity: 0.5;
+  cursor: default !important;
+}
+
 /* Input overrides */
-.app-container input, .app-container input:focus {
+.app-container input:not([type='checkbox']), .app-container input:not([type='checkbox']):focus {
   all: unset;
   background: #FFFFFF;
   border: 1px solid rgba(0,2,95,0.10);
@@ -43,16 +48,40 @@
   font-size: 13px;
   letter-spacing: 0.3px;
   line-height: 22px;
-  padding: 10px;
+  padding: 8px;
   box-sizing: border-box;
   @apply font-medium;
 }
 
-.app-container input:focus {
+.app-container input:not([type='checkbox']):focus {
   @apply outline-purple-light;
 }
 
-.app-container input::placeholder {
+.app-container input:not([type='checkbox'])::placeholder {
   @apply text-gray-dark;
 }
 
+/* Custom scrollbar */
+div::-webkit-scrollbar {
+  background: transparent; /* Optional: just make scrollbar invisible */
+}
+
+div::-webkit-scrollbar:vertical {
+  width: 5px; /* Remove scrollbar space */
+  height: 0px;
+}
+
+div::-webkit-scrollbar:horizontal {
+  width: 0px; /* Remove scrollbar space */
+  height: 5px;
+}
+
+div:hover::-webkit-scrollbar {
+  @apply bg-gray-300;
+}
+
+div:hover::-webkit-scrollbar-thumb {
+  @apply bg-gray-400;
+  border-left: none;
+  border-right: none;
+}

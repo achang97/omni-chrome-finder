@@ -137,7 +137,7 @@ class Tabs extends Component {
     const Icon = isStart ? MdChevronLeft : MdChevronRight;
 
     return (
-      <button disabled={isDisabled} className={s(isDisabled ? 'opacity-25 cursor-default' : '')}>
+      <button disabled={isDisabled} className={s(isDisabled ? 'opacity-25' : '')}>
         <Icon onClick={() => this.handleScrollClick(isStart)} color={scrollButtonColor} />
       </button>
     );
@@ -150,7 +150,7 @@ class Tabs extends Component {
         {this.renderScrollButton(true)}
         <div
           ref={this.tabsRef}
-          className={s(`flex-1 overflow-x-scroll hide-scrollbar flex max-w-full ${allTabsContainerClassName}`)}
+          className={s(`flex-1 overflow-auto hide-scrollbar flex max-w-full ${allTabsContainerClassName}`)}
           onScroll={this.handleResize}
         >
           {labels ?

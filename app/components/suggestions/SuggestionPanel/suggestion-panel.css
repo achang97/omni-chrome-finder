@@ -1,6 +1,7 @@
 .suggestion-panel {
   position: absolute;
-  right: 105%;
+  right: 100%;
+  margin-right: 5%;
   top: 0%;
 }
 
@@ -26,20 +27,4 @@
 
 .suggestion-panel-external-result-text {
 	border-bottom: 2px solid #25456333 !important;
-}
-
-.suggestion-panel-card-container::-webkit-scrollbar {
-  width: 4px; /* Remove scrollbar space */
-  height: 0px;
-  background: transparent; /* Optional: just make scrollbar invisible */
-}
-
-.suggestion-panel-card-container:hover::-webkit-scrollbar {
-  @apply bg-gray-300;
-}
-
-.suggestion-panel-card-container:hover::-webkit-scrollbar-thumb {
-  @apply bg-gray-400;
-  border-left: none;
-  border-right: none;
 }
