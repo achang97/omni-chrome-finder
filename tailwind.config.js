@@ -1,10 +1,15 @@
-const colors = require('./app/styles/colors');
+const customColors = require('./app/styles/colors');
+const tailwindColors = require('tailwindcss/defaultTheme');
+
+Object.entries(customColors.colors).forEach(([customColorName, customColorPallete]) => {
+  customColors.colors[customColorName] = { ...tailwindColors.colors[customColorName], ...customColorPallete };
+})
 
 const config = {
   important: true,
   theme: {
     extend: {
-      colors: colors.colors,
+      colors: customColors.colors,
     },
     fontSize: {
       'xs': '12px',

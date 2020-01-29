@@ -17,7 +17,7 @@ export default function (initialState) {
   const store = createStore(rootReducer, initialState, enhancer);
 
   // Run saga
-  sagaMiddleware.run(rootSaga, store.dispatch, store.getState)
+  sagaMiddleware.run(rootSaga, store.dispatch, store.getState);
 
   // Extensions
   store.runSaga = sagaMiddleware.run;

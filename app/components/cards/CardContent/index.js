@@ -7,6 +7,7 @@ import { connect } from 'react-redux';
 import { editCard, saveCard } from '../../../actions/display';
 import TextEditor from '../../editors/TextEditor';
 import Button from '../../common/Button';
+import CardStatus from '../CardStatus';
 
 import style from './card-content.css';
 import { getStyleApplicationFn } from '../../../utils/styleHelpers';
@@ -101,7 +102,6 @@ export default class CardContent extends Component {
 		          	icon={<MdThumbUp className={s("mr-sm")}/>} 
 		          	buttonClassName={s("mr-reg")}
 		          	color={"secondary"} />
-
 		          <Button 
 		          	icon={<MdBookmarkBorder />}
 		          	color={"secondary"}
@@ -125,7 +125,7 @@ export default class CardContent extends Component {
 	            <div>2 Days Ago</div>
 	            <div className={s("flex items-center")}>
 	              <MdMoreHoriz />
-	            </div>
+            	</div>
 	          </strong>
 	          <div className={s("px-lg pb-lg")}>
 	            <div className={s("text-2xl font-semibold")}>How do I delete a user? ({id}) </div>
