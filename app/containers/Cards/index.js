@@ -64,7 +64,7 @@ export default class Cards extends Component {
     const { cards, activeCardIndex, setActiveCardIndex, closeAllCards } = this.props;
 
     return (
-      <div id="card-tab-container" className={s('flex items-center bg-white rounded-t-lg px-reg pt-reg')}>
+      <div id="card-tab-container" className={s("flex flex-shrink-0 min-h-0 items-center bg-white rounded-t-lg px-reg pt-reg")}>
         <Tabs
           activeIndex={activeCardIndex}
           className={s("flex-1")}
@@ -108,7 +108,7 @@ export default class Cards extends Component {
           defaultPosition={{ x: window.innerWidth / 2 - defaultCardWidth / 2, y: window.innerHeight / 2 - defaultCardHeight / 2 }}
         >
           <Resizable
-            className={s("card bg-white rounded-lg shadow-2xl")}
+            className={s("card bg-white rounded-lg shadow-2xl flex flex-col")}
             defaultSize={{ width: defaultCardWidth, height: defaultCardHeight }}
             minWidth={defaultCardWidth}
             minHeight={defaultCardHeight}

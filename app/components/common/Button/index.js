@@ -18,7 +18,7 @@ export default class Button extends Component {
 		switch (color) {
 			case 'primary':
 				return {
-					outerClassName: `primary-gradient`,
+					outerClassName: `primary-gradient text-white`,
 					innerClassName: underline ? 'primary-underline' : ''
 				}
 			case 'secondary':
@@ -34,12 +34,10 @@ export default class Button extends Component {
 		const { text, textClassName, icon, iconLeft, className, underline, color } = this.props;
 		const { outerClassName, innerClassName } = this.getClassNames(color, underline);
 
-
-
 		return (
-			<div className={s(`${className} flex justify-center shadow-md button-container button-${color}`)} onClick={() => this.onClick()}>
+			<div className={s(`${className} flex justify-center shadow-md button-container ${outerClassName}`)} onClick={() => this.onClick()}>
 				{ iconLeft && icon }
-				<div className={s(`button-text ${underline ? `button-underline-${color}` : ''} ${textClassName}`)}>{text}</div>
+				<div className={s(`button-text ${innerClassName} ${textClassName}`)}>{text}</div>
 				{ !iconLeft && icon }
 			</div>
 		);

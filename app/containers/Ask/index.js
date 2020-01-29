@@ -7,9 +7,9 @@ import { MdChevronRight, MdPictureInPicture } from 'react-icons/md';
 import { IoMdAdd } from 'react-icons/io';
 import { FaRegDotCircle } from 'react-icons/fa';
 
+import { EditorState } from 'draft-js';
 import ReactPlayer from 'react-player';
-import { openCard, expandDock } from '../../actions/display';
-import TextEditorExtension from '../../components/editors/TextEditorExtension';
+import TextEditor from '../../components/editors/TextEditor';
 import Button from '../../components/common/Button';
 import { default as purplePaperPlane } from "../../assets/images/icons/purplePaperPlane.svg"
 
@@ -18,6 +18,8 @@ import Tab from '../../components/common/Tabs/Tab';
 import SuggestionPanel from "../../components/suggestions/SuggestionPanel";
 
 import { colors } from '../../styles/colors';
+
+import { openCard, expandDock } from '../../actions/display';
 
 import style from "./ask.css";
 import { getStyleApplicationFn } from '../../utils/styleHelpers';
@@ -45,6 +47,9 @@ class Ask extends Component {
 
     this.state = {
       tabValue: 0,
+
+      // Text editors
+      editorState: EditorState.createEmpty(),
 
       // Screen Recording
       desktopSharing: false,
@@ -189,8 +194,12 @@ class Ask extends Component {
     ); 
   }
 
+  onEditorStateChange = (editorState) => {
+    this.setState({ editorState : editorState });
+  }
+
   renderAskInputs = () => {
-    const { desktopSharing, screenRecordings } = this.state;
+    const { desktopSharing, screenRecordings, editorState } = this.state;
     return (
       <div >
         <div className={s("flex-col relative")}>
@@ -199,7 +208,13 @@ class Ask extends Component {
             onChange={this.onShowRelatedQuestions}
             className={s("w-full mb-reg")}
           />
-          <TextEditorExtension />
+          <TextEditor 
+            onEditorStateChange={this.onEditorStateChange} 
+            editorState={editorState} 
+            // wrapperClassName={s('card-description-text-editor-wrapper-edit')} 
+            editorClassName={s('text-editor')} 
+            toolbarClassName={s('text-editor-toolbar')}
+          />
           <Button
             icon={<IoMdAdd color="white" /> }
             className={s('absolute z-10 ask-text-editor-add-button circle-button-sm')}
