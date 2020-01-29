@@ -7,18 +7,21 @@
  */
 
 exports.colors = {
-  // purple
-  'purple-xlight': '#bcc9f826',
-  'purple-light': '#F5F7FE',
-  'purple-reg': '#7a7daf',
-  'purple-dark': '#5453af',
-  'purple-grey': '#777BAD1A',
-  'purple-grey-50': '#777BAD80',
-
-  //grey
-  'grey-light': '#211A1D40',
-
-  //green
-  'green-xlight': '#E3F2EB',
-  'green-reg': '#20B56A'
+  purple: {
+    xlight: '#bcc9f826',
+    light: '#F5F7FE',
+    reg: '#7a7daf',
+    dark: '#5453af',
+    'gray-10': '#777BAD1A',
+    'gray-50': '#777BAD80'
+  },
+  gray: {
+    xlight: '#211A1D0D',
+    light: '#211A1D40',
+    dark: '#211A1DBF'
+  },
+  green: {
+    xlight: '#E3F2EB',
+    reg: '#20B56A'
+  }
 };

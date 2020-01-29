@@ -43,7 +43,7 @@ const Login = (props) => {
         </Tabs>
       </div>
       <div
-        className={s('w-full flex mx-auto p-sm items-center justify-center')}
+        className={s('w-full flex mx-auto p-2 items-center justify-center')}
         style={{ minHeight: '50vh' }}
       >
         <div>

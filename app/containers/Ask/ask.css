@@ -37,9 +37,3 @@
   right: 10% !important;
   cursor: pointer !important;
 }
-
-.scrollable-y {
-  overflow-y: scroll !important;
-  min-height: 100vh;
-  max-height: 100vh;
-}

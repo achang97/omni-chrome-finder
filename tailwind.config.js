@@ -1,21 +1,26 @@
-const colors = require('./app/styles/colors');
+const customColors = require('./app/styles/colors');
+const tailwindColors = require('tailwindcss/defaultTheme');
+
+Object.entries(customColors.colors).forEach(([customColorName, customColorPallete]) => {
+  customColors.colors[customColorName] = { ...tailwindColors.colors[customColorName], ...customColorPallete };
+})
 
 const config = {
   important: true,
   theme: {
     extend: {
-      colors: colors.colors,
-      spacing: {
-        '0': '0px',
-        'xs': '4px',
-        'sm': '8px',
-        'reg': '12px',
-        'lg': '16px',
-        'xl': '20px',
-        '2xl': '24px',
-        '3xl': '30px',
-        '4xl': '48px',
-      },
+      colors: customColors.colors,
+    },
+    spacing: {
+      '0': '0px',
+      'xs': '4px',
+      'sm': '8px',
+      'reg': '12px',
+      'lg': '16px',
+      'xl': '20px',
+      '2xl': '24px',
+      '3xl': '30px',
+      '4xl': '48px',
     },
     fontSize: {
       'xs': '12px',

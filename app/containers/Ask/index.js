@@ -8,17 +8,14 @@ import { openCard, expandDock } from '../../actions/display';
 import TextEditorExtension from '../../components/editors/TextEditorExtension';
 import { default as purplePaperPlane } from "../../assets/images/icons/purplePaperPlane.svg"
 
-
 import Tabs from '../../components/common/Tabs/Tabs';
 import Tab from '../../components/common/Tabs/Tab';
 
-import GlobalStyle from '../../styles/global.css';
+import SuggestionPanel from "../../components/suggestions/SuggestionPanel";
+
 import style from "./ask.css";
 import { getStyleApplicationFn } from '../../utils/styleHelpers';
-import { Card } from '../../components/cards/card';
-import ContentCard from '../../components/cards/CardContent';
 const s = getStyleApplicationFn(style);
-const tw = getStyleApplicationFn(GlobalStyle)
 
 const INTEGRATIONS = ['Slack', 'Email', 'Asana'];
 
@@ -30,11 +27,12 @@ const INTEGRATIONS = ['Slack', 'Email', 'Asana'];
     bindActionCreators(
       {
         openCard,
-        expandDock,
+        expandDock
       },
       dispatch
     )
 )
+
 class Ask extends Component {
   constructor(props) {
     super(props);
@@ -51,61 +49,8 @@ class Ask extends Component {
 
       //loading questions
       showRelatedQuestions: false,
-      showQuestionInfo: false,
-      showResults: false
     };
   }
-
-  dummyCards = [
-    {
-      heading: 'How do i delete a user',
-      description:
-        'But stream software offline. Professor install angel sector anywhere create at components smart…',
-
-      datePosted: '2 days ago',
-      status: 'active'
-    },
-    {
-      heading: 'How do i delete a user',
-      description:
-        'But stream software offline. Professor install angel sector anywhere create at components smart…',
-
-      datePosted: '2 days ago',
-      status: 'active'
-    },
-    {
-      heading: 'How do i delete a user',
-      description:
-        'But stream software offline. Professor install angel sector anywhere create at components smart…',
-
-      datePosted: '2 days ago',
-      status: 'active'
-    },
-    {
-      heading: 'How do i delete a user',
-      description:
-        'But stream software offline. Professor install angel sector anywhere create at components smart…',
-
-      datePosted: '2 days ago',
-      status: 'active'
-    },
-    {
-      heading: 'How do i delete a user',
-      description:
-        'But stream software offline. Professor install angel sector anywhere create at components smart…',
-
-      datePosted: '2 days ago',
-      status: 'active'
-    },
-    {
-      heading: 'How do i delete a user',
-      description:
-        'But stream software offline. Professor install angel sector anywhere create at components smart…',
-
-      datePosted: '2 days ago',
-      status: 'active'
-    }
-  ];
 
   handleTabClick = (tabValue) => {
     this.setState({ tabValue });
@@ -214,7 +159,7 @@ class Ask extends Component {
       editorState
     } = this.state;
     return (
-      <div className={tw('max-h-screen min-h-screen show-scrollbar')}>
+      <div className={s('max-h-screen min-h-screen')}>
         <div className={s('flex flex-row justify-between p-lg')}>
           <Tabs
             activeIndex={tabValue}
@@ -240,28 +185,27 @@ class Ask extends Component {
           </Tabs>
           <button
             className={s(
-              'text-lg h-4 w-4 text-white border rounded-full bg-purple-light flex items-center justify-center p-sm'
+              "text-lg h-lg w-lg text-white border rounded-full bg-purple-light flex items-center justify-center p-sm"
             )}
           >
-            <span className={s('text-purple-reg font-semibold')}>+</span>
+            <span className={s("text-purple-reg")}>+</span>
           </button>
         </div>
-        <div className={s('px-lg py-sm relative')}>
+        <div className={s("p-lg relative")}>
           <input
             id="standard-basic"
             className={s(
-              'ask-question-text-field bg-white rounded p-sm w-full mb-sm'
+              "ask-question-text-field bg-white rounded p-sm mb-xs w-full"
             )}
             placeholder="Question"
           />
-
           <TextEditorExtension />
           <button
             onClick={(e) => {
               console.log('clicked');
             }}
             className={s(
-              'absolute cursor-pointer z-10 add-button text-lg h-4 w-4 text-white border rounded-full bg-purple-reg flex items-center justify-center p-sm'
+              'absolute cursor-pointer z-10 add-button text-lg h-lg w-lg text-white border rounded-full bg-purple-reg flex items-center justify-center p-sm'
             )}
           >
             +
@@ -275,8 +219,8 @@ class Ask extends Component {
             <span className="underline">
               {!desktopSharing ? 'Screen Record' : 'End Recording'}
             </span>
-            <div className={tw("ml-sm h-5 w-5 flex items-center justify-center rounded-full border border-red-300")}>
-              <div className={s("h-3 w-3 rounded-full bg-red-500")} />
+            <div className={s("ml-sm h-xl w-xl flex items-center justify-center rounded-full border border-red-300")}>
+              <div className={s("h-reg w-reg rounded-full bg-red-500")} />
             </div>
           </button>
           <button
@@ -288,7 +232,7 @@ class Ask extends Component {
             </span>
             <div
               className={s(
-                'ml-sm h-4 w-6 flex items-center justify-center rounded-sm  bg-purple-reg'
+                'ml-sm h-lg w-lg flex items-center justify-center rounded-sm  bg-purple-reg'
               )}
             />
           </button>
@@ -307,13 +251,13 @@ class Ask extends Component {
             </div>
           ))}
         </div>
-        <div className={s("bg-purple-light p-reg text-gray-800 h-full ")}>
-          <div className={s('flex flex-col')} style={{ minHeight: '325px' }}>
+        <div className={s("bg-purple-light p-reg text-gray-800 h-full")}>
+          <div className={s('flex flex-col')}>
             <span className={s("text-purple-reg text-sm font-light tracking-tight")}>Send to channel/person</span>
             <input placeholder={"Enter Name"} className={s("mt-sm text-gray-800 p-reg outline-none rounded-lg border-none")} />
             <div className={s("flex flex-row justify-between my-reg")}>
-              <div className={s(" bg-purple-grey text-purple-reg font-bold text-reg rounded-lg p-sm w-48")}>
-                <div className={s("h-10 p-reg flex flex-row items-center justify-between")}>
+              <div className={s(" bg-purple-grey text-purple-reg font-bold text-reg rounded-lg p-sm")}>
+                <div className={s("p-reg flex flex-row items-center justify-between")}>
                   <span className={s("capitalize font-bold")}>Design</span>
                   <span className={s("text-gray-500")}>x</span>
                 </div>
@@ -334,7 +278,7 @@ class Ask extends Component {
                   </div>
                 </div>
               </div>
-              <div className={s("selected-users w-48 p-sm")}>
+              <div className={s("p-sm")}>
                 <div className={s("w-full bg-white text-purple-reg font-bold text-reg rounded-lg flex flex-row justify-between p-reg")}>
                   <span>
                     @Chetan
@@ -352,13 +296,13 @@ class Ask extends Component {
             this.redirect('/login');
           }}
           className={s(
-            'w-full h-16 bg-purple-gradient rounded-bl-lg rounded-br-lg flex justify-center items-center text-white'
+            'w-full bg-purple-gradient rounded-bl-lg flex justify-center items-center text-white'
           )}
         >
           <span className={s("w-full flex flex-row justify-between items-center text-sm font-semibold")}>
             <span className={s("p-reg")}>Ask Question</span>
-            <span className={s("h-8 w-8 text-purple-reg rounded-full bg-white flex items-center justify-center")}>
-              {<img className="h-8 w-8" src={purplePaperPlane} />}
+            <span className={s("h-2xl w-2xl text-purple-reg rounded-full bg-white flex items-center justify-center")}>
+              {<img className="h-2xl w-2xl" src={purplePaperPlane} />}
             </span>
           </span>
         </button>
@@ -368,23 +312,20 @@ class Ask extends Component {
 
   renderMinifiedAskPage = () => {
     const { showRelatedQuestions, showQuestionInfo, showResults } = this.state;
-
     return (
       <div >
-        <div className={s('flex flex-col py-sm px-lg bg-white flex w-full')}>
-          <div className={s('mt-sm w-full mx-auto')}>
-            <input
-              onChange={this.onShowRelatedQuestions}
-              placeholder="Let's find what you're looking for"
-              className={s(
-                'p-reg text-sm w-full outline-none bg-white border border-gray-500 placeholder-purple-reg rounded-lg'
-              )}
-            />
-          </div>
+        <div className={s('flex flex-col py-sm px-lg bg-white')}>
+          <input
+            onChange={this.onShowRelatedQuestions}
+            placeholder="Let's find what you're looking for"
+            className={s(
+              'p-reg mt-sm text-sm outline-none bg-white border border-gray-500 placeholder-purple-reg rounded-lg'
+            )}
+          />
           <div className={s('my-lg flex flex-row justify-center items-center w-full')}>
-            <span className={s('w-1/2 text-gray-500 text-xs')}>
-              Don't see your questions?
-              </span>
+            <span className={s('w-1/2 text-gray-500 text-xs font-medium')}>
+              Don't see your question?
+            </span>
             <button
               className={s(
                 'flex-1 bg-purple-gradient flex justify-center items-center rounded-lg text-white'
@@ -398,59 +339,7 @@ class Ask extends Component {
             </button>
           </div>
         </div>
-        {showRelatedQuestions && (
-          <div
-            className={s(
-              'p-reg order-2 w-full flex flex-col rounded-sm shadow-md separate-popup bg-gray-200 border-gray-500 '
-            )}
-          >
-            <div className={s("cards")}>
-              <p className={s("text-gray-500 text-sm tracking-tighter")}>
-                30 Results
-              </p>
-              <div
-                className={s('mt-sm flex flex-col  overflow-y-scroll max-h-600')}
-              >
-                {this.dummyCards.map((card, index) => (
-                  <Card
-                    key={index}
-                    heading={card.heading}
-                    description={card.description}
-                    datePosted={card.datePosted}
-                    status={card.status}
-                    onClick={e => this.setState({ showQuestionInfo: true })} />
-                ))}
-              </div>
-            </div>
-            <div className={s("footer border-t border-gray-700 flex justify-center items-center mt-sm")} >
-              {!showResults && (
-                <button
-                  onClick={() => this.setState({ showResults: true })}
-                  className={s("block text-sm my-reg text-purple-reg underline font-bold tracking-tight")}
-                >
-                  Show results from your current documentation
-                </button>
-              )}
-              {showResults && (
-                <div className={s('p-lg my-sm')}>
-                  <div
-                    className={s(
-                      'rounded-full w-full p-lg bg-blue-400 border my-sm'
-                    )}
-                  >
-                    Doc
-                  </div>
-                </div>
-              )}
-            </div>
-            {showQuestionInfo && (
-              <div className={s("separate-popup w-full bg-white rounded-sm shadow-md border-gray-500")}>
-                <ContentCard tags={['Customer Request Actions', 'Onboarding', 'longTagName', 'longTagName2']} onClose={e => this.setState({ showQuestionInfo: false })} />
-              </div>
-            )}
-          </div>
-        )
-        }
+        <SuggestionPanel isVisible={showRelatedQuestions} />
       </div>
     );
   };
