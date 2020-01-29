@@ -29,7 +29,8 @@
 
 .app-container button:hover {
   all: unset;
-  cursor: pointer;
+  cursor: pointer !important;
+  opacity: 0.8;
 }
 
 /* Input overrides */

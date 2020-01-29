@@ -3,22 +3,15 @@
 
 @tailwind utilities;
 
+
+/* Scroll bar */
 .hide-scrollbar::-webkit-scrollbar {
   width: 0px; /* Remove scrollbar space */
   height: 0px;
   background: transparent; /* Optional: just make scrollbar invisible */
 }
 
-.bg-purple-gradient {
-  background: linear-gradient(143deg, #777bad 0%, #a0a1cd 100%) !important;
-}
-
-.separate-popup {
-  position: absolute;
-  right: 105%;
-  top: 0%;
-}
-
+/* Handling text overflow */
 .vertical-ellipsis-2 {
   display: -webkit-box;
 	-webkit-line-clamp: 2;
@@ -27,6 +20,29 @@
 	text-overflow: ellipsis;
 }
 
+/* Spacers */
 .horizontal-separator {
 	@apply border-t border-l-0 border-r-0 border-b-0 border-solid border-gray-200 w-full;
+}
+
+/* Primary styles */
+.primary-gradient {
+  background: linear-gradient(143deg, #777BAD 0%, #A0A1CD 100%) !important;
+}
+
+.primary-underline {
+  border-bottom: 2px solid #FFFFFF33 !important;
+}
+
+/* Buttons */
+.circle-button-sm, .circle-button {
+  @apply h-lg w-lg rounded-full flex items-center justify-center !important;
+}
+
+.circle-button-sm {
+  @apply text-reg p-sm !important;
+}
+
+.circle-button {
+  @apply text-lg p-reg !important;
 }

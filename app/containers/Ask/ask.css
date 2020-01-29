@@ -1,30 +1,5 @@
-.ask-question-text-field {
-  border: 1px solid rgba(0, 2, 95, 0.1);
-}
-
-.ask-integrations-tab {
-  min-width: 0 !important;
-  text-transform: none !important;
-  line-height: 1 !important;
-  min-height: 0 !important;
-  opacity: 1 !important;
-  padding: 8px 12px !important;
-}
-
 .ask-integrations-tab-text {
   border-bottom: 2px solid #7a7eaf33;
-}
-
-.ask-integrations-tab-selected {
-  background-image: linear-gradient(
-    143deg,
-    #777bad 0%,
-    #a0a1cd 100%
-  ) !important;
-}
-
-.ask-integrations-tab-selected .ask-integrations-tab-text {
-  border-color: #ffffff33;
 }
 
 .ask-video-player-container {
@@ -32,8 +7,15 @@
   padding-top: 56.25%; /* Player ratio: 100 / (1280 / 720) */
 }
 
-.add-button {
-  bottom: 8% !important;
-  right: 10% !important;
-  cursor: pointer !important;
+.ask-text-editor-add-button {
+  bottom: 3%;
+  right: 3%;
+}
+
+.ask-screen-capture-button {
+  @apply flex-1 shadow-md flex items-center justify-center p-reg text-sm rounded-lg !important;
+}
+
+.ask-screen-capture-button-text {
+  @apply border-t-0 border-l-0 border-r-0 border-b-2 border-solid border-purple-gray-50;
 }

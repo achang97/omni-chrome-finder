@@ -98,9 +98,9 @@ class SuggestionPanel extends Component {
         <Button
           text="Show results from your current documentation"
           underline={true}
-          onClickButton={() => this.setState({ showResults: true }, () => this.externalResults.scrollIntoView({ behavior: "smooth" }))}
+          onClick={() => this.setState({ showResults: true }, () => this.externalResults.scrollIntoView({ behavior: "smooth" }))}
           color="transparent"
-          buttonClassName={s("self-stretch rounded-none shadow-none py-lg")}
+          className={s("self-stretch rounded-none shadow-none py-lg")}
         />
       </div>
     );
@@ -139,7 +139,7 @@ class SuggestionPanel extends Component {
     }
 
     return (
-      <div className={s("separate-popup pt-reg w-full flex flex-col rounded-lg bg-purple-light shadow-xl border-gray-200 border border-solid")}>
+      <div className={s("suggestion-panel pt-reg w-full flex flex-col rounded-lg bg-purple-light shadow-xl border-gray-200 border border-solid")}>
         <div className={s("px-reg text-purple-gray-50 text-sm")}>
           30 results
         </div>

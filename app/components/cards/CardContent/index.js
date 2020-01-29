@@ -83,8 +83,8 @@ class CardContent extends Component {
 
         <Button
           text={"Save Changes"}
-          onClickButton={() => this.saveCard(id)}
-          buttonClassName={s("fixed bottom-0 left-0 right-0 rounded-t-none p-lg")}
+          onClick={() => this.saveCard(id)}
+          className={s("fixed bottom-0 left-0 right-0 rounded-t-none p-lg")}
           underline
         />
 
@@ -94,13 +94,13 @@ class CardContent extends Component {
             <Button 
               text={"Edit Card"} 
               icon={<MdModeEdit className={s("mr-sm")} />} 
-              onClickButton={() => this.editCard(id)}
+              onClick={() => this.editCard(id)}
             />
             <div className={s("flex")}>
               <Button 
                 text={"Helpful"} 
                 icon={<MdThumbUp className={s("mr-sm")}/>} 
-                buttonClassName={s("mr-reg")}
+                className={s("mr-reg")}
                 color={"secondary"} />
               <Button 
                 icon={<MdBookmarkBorder />}
