@@ -31,3 +31,27 @@
   all: unset;
   cursor: pointer;
 }
+
+/* Input overrides */
+.app-container input, .app-container input:focus {
+  all: unset;
+  background: #FFFFFF;
+  border: 1px solid rgba(0,2,95,0.10);
+  border-radius: 8px;
+  color: black;
+  font-size: 13px;
+  letter-spacing: 0.3px;
+  line-height: 22px;
+  padding: 10px;
+  box-sizing: border-box;
+  @apply font-medium;
+}
+
+.app-container input:focus {
+  @apply outline-purple-light;
+}
+
+.app-container input::placeholder {
+  @apply text-gray-dark;
+}
+

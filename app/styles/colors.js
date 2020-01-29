@@ -1,11 +1,3 @@
-
-/**
- * add colors as string keys. ex: purple-light
- * if we add them as objects they override default palette
- * if still want to add objects then import defaultTheme from tailwind and add its colors also
- * ex: purple: {...defaultTheme.colors.purple, light: '#bcc9f826'}
- */
-
 exports.colors = {
   purple: {
     xlight: '#bcc9f826',

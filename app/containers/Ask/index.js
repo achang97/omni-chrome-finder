@@ -3,9 +3,11 @@ import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
 import { withRouter } from 'react-router-dom';
 
+import { MdChevronRight } from 'react-icons/md';
 import ReactPlayer from 'react-player';
 import { openCard, expandDock } from '../../actions/display';
 import TextEditorExtension from '../../components/editors/TextEditorExtension';
+import Button from '../../components/common/Button';
 import { default as purplePaperPlane } from "../../assets/images/icons/purplePaperPlane.svg"
 
 import Tabs from '../../components/common/Tabs/Tabs';
@@ -255,7 +257,7 @@ class Ask extends Component {
           <div className={s('flex flex-col')}>
             <span className={s("text-purple-reg text-sm font-light tracking-tight")}>Send to channel/person</span>
             <input placeholder={"Enter Name"} className={s("mt-sm text-gray-800 p-reg outline-none rounded-lg border-none")} />
-            <div className={s("flex flex-row justify-between my-reg")}>
+            <div className={s("flex flex-row my-reg")}>
               <div className={s(" bg-purple-grey text-purple-reg font-bold text-reg rounded-lg p-sm")}>
                 <div className={s("p-reg flex flex-row items-center justify-between")}>
                   <span className={s("capitalize font-bold")}>Design</span>
@@ -313,31 +315,25 @@ class Ask extends Component {
   renderMinifiedAskPage = () => {
     const { showRelatedQuestions, showQuestionInfo, showResults } = this.state;
     return (
-      <div >
-        <div className={s('flex flex-col py-sm px-lg bg-white')}>
+      <div className={s("p-lg flex-col")}>
+        <div className={s("self-stretch")}>
           <input
             onChange={this.onShowRelatedQuestions}
             placeholder="Let's find what you're looking for"
-            className={s(
-              'p-reg mt-sm text-sm outline-none bg-white border border-gray-500 placeholder-purple-reg rounded-lg'
-            )}
+            className={s("w-full")}
           />
-          <div className={s('my-lg flex flex-row justify-center items-center w-full')}>
-            <span className={s('w-1/2 text-gray-500 text-xs font-medium')}>
-              Don't see your question?
-            </span>
-            <button
-              className={s(
-                'flex-1 bg-purple-gradient flex justify-center items-center rounded-lg text-white'
-              )}
-              onClick={this.props.expandDock}
-            >
-              <span className={s("w-full flex justify-between text-sm font-semibold")}>
-                <span className={s("p-reg")}>Ask Question</span>
-                <span className={s("p-reg")}>></span>
-              </span>
-            </button>
-          </div>
+        </div>
+        <div className={s('my-lg flex flex-row justify-center items-center')}>
+          <span className={s('flex-1 text-gray-dark mr-xs text-sm font-medium')}>
+            Don't see your question?
+          </span>
+          <Button
+            text="Ask Question"
+            color="primary"
+            className={s("flex-1 justify-between")}
+            iconLeft={false}
+            icon={<MdChevronRight color="white" />}
+          />
         </div>
         <SuggestionPanel isVisible={showRelatedQuestions} />
       </div>
