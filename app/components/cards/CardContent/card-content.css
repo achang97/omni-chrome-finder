@@ -3,6 +3,9 @@
 	right: 0;
 }
 
+.max-height-165 {
+	max-height: 165px !important;
+}
 
 /* 
 =========================
@@ -43,7 +46,7 @@ DESCRIPTION TEXT EDITORS
 /* Wrappers */
 
 .card-description-text-editor-wrapper-view {
-	margin-top: 10px;
+	margin-top: 8px;
 }
 
 .card-description-text-editor-wrapper-edit {

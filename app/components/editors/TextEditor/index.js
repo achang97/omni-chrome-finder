@@ -25,7 +25,6 @@ export default class TextEditor extends Component {
 	render() {
     const { editorState, wrapperClassName, editorClassName, toolbarClassName, onEditorStateChange, toolbarHidden, readOnly, editorType } = this.props;
 		return (
-			<div>
 				<Editor
           editorRef={this.setDomEditorRef}
 	        editorState={editorState}
@@ -38,7 +37,6 @@ export default class TextEditor extends Component {
           readOnly={readOnly}
 
 	      />
-	    </div>
 		)
 	}
 }

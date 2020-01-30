@@ -36,6 +36,10 @@ const defaultCardWidth = 660;
 export default class Cards extends Component {
   constructor(props) {
     super(props);
+    this.state = {
+      cardsWidth: defaultCardWidth,
+      cardsHeight: defaultCardHeight,
+    }
   }
 
   closeCard = (e, cardId) => {
@@ -110,12 +114,19 @@ export default class Cards extends Component {
           <Resizable
             className={s("card bg-white rounded-lg shadow-2xl flex flex-col")}
             defaultSize={{ width: defaultCardWidth, height: defaultCardHeight }}
+            size={{ width: this.state.cardsWidth, height: this.state.cardsHeight }}
+            onResizeStop={(e, direction, ref, d) => {
+              this.setState({
+                cardsWidth: this.state.cardsWidth + d.width,
+                cardsHeight: this.state.cardsHeight + d.height,
+              });
+            }}
             minWidth={defaultCardWidth}
             minHeight={defaultCardHeight}
             enable={{top:false, right:true, bottom:true, left:false, topRight:false, bottomRight:true, bottomLeft:false, topLeft:false}}
           >
             { this.renderTabHeader() }
-            <CardContent {...cards[activeCardIndex]} />
+            <CardContent {...cards[activeCardIndex]} cardWidth={this.state.cardsWidth} cardHeight={this.state.cardsHeight} />
           </Resizable>
         </Draggable>
       </div>

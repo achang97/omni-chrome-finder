@@ -6,6 +6,7 @@
 	padding: 10px;
 	border-radius: 0 0 8px 8px;
 	justify-content: space-between;
+	font-size: 14px !important;
 }
 
 .text-editor:hover {
@@ -15,7 +16,7 @@
 .text-editor-wrapper {
   width: 100%;
   display: block;
-  margin-bottom: 25px;
+  margin-bottom: 8px;
   height: 100%;
 }
 
