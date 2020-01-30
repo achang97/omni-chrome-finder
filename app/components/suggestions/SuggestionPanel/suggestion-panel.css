@@ -28,3 +28,8 @@
 .suggestion-panel-external-result-text {
 	border-bottom: 2px solid #25456333 !important;
 }
+
+.suggestion-panel-arrow {
+  top: 75px;
+  right: -5%;
+}
