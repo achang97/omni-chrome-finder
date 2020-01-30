@@ -69,7 +69,7 @@ class SuggestionCard extends Component {
             <span className={s("text-lg text-left font-semibold")}>
               {heading}
             </span>
-            <span className={s("mt-sm text-xs text-gray-dark font-medium suggestion-card-description")}>
+            <span className={s("mt-sm text-xs text-gray-dark font-medium vertical-ellipsis-2")}>
               {description}
             </span>
           </div>

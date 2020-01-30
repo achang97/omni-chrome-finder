@@ -5,6 +5,7 @@ import { FaGoogleDrive } from 'react-icons/fa';
 
 import SuggestionCard from '../SuggestionCard';
 import Button from '../../common/Button';
+import Triangle from '../../common/Triangle';
 
 import { colors } from '../../../styles/colors';
 
@@ -98,9 +99,9 @@ class SuggestionPanel extends Component {
         <Button
           text="Show results from your current documentation"
           underline={true}
-          onClickButton={() => this.setState({ showResults: true }, () => this.externalResults.scrollIntoView({ behavior: "smooth" }))}
+          onClick={() => this.setState({ showResults: true }, () => this.externalResults.scrollIntoView({ behavior: "smooth" }))}
           color="transparent"
-          buttonClassName={s("self-stretch rounded-none shadow-none py-lg")}
+          className={s("self-stretch rounded-none shadow-none py-lg")}
         />
       </div>
     );
@@ -139,26 +140,36 @@ class SuggestionPanel extends Component {
     }
 
     return (
-      <div className={s("separate-popup pt-reg w-full flex flex-col rounded-lg bg-purple-light shadow-xl border-gray-200 border border-solid")}>
-        <div className={s("px-reg text-purple-gray-50 text-sm")}>
-          30 results
-        </div>
+      <div className={s("suggestion-panel pt-reg w-full flex flex-col rounded-lg bg-purple-light shadow-xl border-gray-200 border border-solid")}>
         <div className={s("relative")}>
-          <div className={s(`suggestion-panel-card-container ${showResults ? 'suggestion-panel-card-container-lg' : ''} mt-sm flex flex-col`)}>
-            {PLACEHOLDER_CARDS.map((card, index) => (
-              <SuggestionCard
-                key={index}
-                heading={card.heading}
-                headingDescription={card.headingDescription}
-                description={card.description}
-                datePosted={card.datePosted}
-                isUpToDate={card.upToDate}
-              />
-            ))}
-            { showResults && this.renderExternalDocumentationResults() }
+          <div className={s("px-reg text-purple-gray-50 text-sm")}>
+            30 results
           </div>
+          <div className={s("relative")}>
+            <div className={s(`suggestion-panel-card-container ${showResults ? 'suggestion-panel-card-container-lg' : ''} mt-sm flex flex-col`)}>
+              {PLACEHOLDER_CARDS.map((card, index) => (
+                <SuggestionCard
+                  key={index}
+                  heading={card.heading}
+                  headingDescription={card.headingDescription}
+                  description={card.description}
+                  datePosted={card.datePosted}
+                  isUpToDate={card.upToDate}
+                />
+              ))}
+              { showResults && this.renderExternalDocumentationResults() }
+            </div>
+          </div>
+          { !showResults && this.renderFooter() }
+                  <Triangle
+          size={10}
+          color="white"
+          direction="left"
+          className={s("absolute suggestion-panel-arrow")}
+          outlineSize={1}
+          outlineColor={colors.gray.light}
+        />
         </div>
-        { !showResults && this.renderFooter() }
       </div>
     )
   }

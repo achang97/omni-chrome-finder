@@ -10,16 +10,37 @@ export default class Button extends Component {
 		super(props);
 	}
 
-	onClickButton = () => {
-		if (this.props.onClickButton) this.props.onClickButton();
+	onClick = () => {
+		if (this.props.onClick) this.props.onClick();
+	}
+
+	getClassNames = (color, underline) => {
+		switch (color) {
+			case 'primary':
+				return {
+					outerClassName: `primary-gradient text-white`,
+					innerClassName: underline ? 'primary-underline' : ''
+				}
+			case 'secondary':
+			case 'transparent':
+				return {
+					outerClassName: `button-${color}`,
+					innerClassName: underline ? `button-underline-${color}` : ''
+				}
+			default:
+				return {};
+		}
 	}
 
 	render() {
-		const { text, textClassName, icon, buttonClassName, underline, color } = this.props;
+		const { text, textClassName, icon, iconLeft, className, underline, color } = this.props;
+		const { outerClassName = '', innerClassName = '' } = this.getClassNames(color, underline);
+
 		return (
-			<div className={s(`${buttonClassName} flex justify-center button-container button-${color}`)} onClick={() => this.onClickButton()}>
-				{ icon }
-				<div className={s(`button-text ${underline ? `button-underline-${color}` : ''} ${textClassName}`)}>{text}</div>
+			<div className={s(`${className} flex justify-center shadow-md button-container ${outerClassName}`)} onClick={() => this.onClick()}>
+				{ iconLeft && icon }
+				<div className={s(`button-text ${innerClassName} ${textClassName}`)}>{text}</div>
+				{ !iconLeft && icon }
 			</div>
 		);
 	}
@@ -27,20 +48,22 @@ export default class Button extends Component {
 
 Button.propTypes = {
 	text: PropTypes.string,
-	buttonClassName: PropTypes.string,
+	className: PropTypes.string,
 	textClassName: PropTypes.string,
 	underline: PropTypes.bool,
-	onClickButton: PropTypes.func,
+	onClick: PropTypes.func,
 	icon: PropTypes.element,
-	color: PropTypes.string,
+	iconLeft: PropTypes.bool,
+	color: PropTypes.oneOf(["primary", "secondary", "transparent"]),
 }
 
 
 Button.defaultProps = {
 	text: '',
-	buttonClassName: '',
+	className: '',
 	textClassName: '',
 	underline: true,
 	icon: null,
+	iconLeft: true,
 	color: 'primary',
 }

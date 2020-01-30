@@ -74,7 +74,7 @@ export default class Cards extends Component {
           showRipple={false}
           scrollButtonColor={colors.purple['gray-50']}
         >
-          { cards.map(({ id }, i) => (
+          {cards.map(({ id }, i) => (
             <Tab key={id}>
               <div className={s("truncate")}> How do I delete a user? ({id}) </div>
               <div className={s("flex ml-xs")}>
@@ -88,7 +88,7 @@ export default class Cards extends Component {
             </Tab>
           ))}
         </Tabs>
-        { this.renderTabHeaderButtons() }
+        {this.renderTabHeaderButtons()}
       </div>
     );
   }
@@ -112,10 +112,13 @@ export default class Cards extends Component {
             defaultSize={{ width: defaultCardWidth, height: defaultCardHeight }}
             minWidth={defaultCardWidth}
             minHeight={defaultCardHeight}
-            enable={{top:false, right:true, bottom:true, left:false, topRight:false, bottomRight:true, bottomLeft:false, topLeft:false}}
+            enable={{ top: false, right: true, bottom: true, left: false, topRight: false, bottomRight: true, bottomLeft: false, topLeft: false }}
           >
-            { this.renderTabHeader() }
-            <CardContent {...cards[activeCardIndex]} />
+            {this.renderTabHeader()}
+            <CardContent
+              tags={['Customer Onboarding', 'Sales']}
+              {...cards[activeCardIndex]}
+            />
           </Resizable>
         </Draggable>
       </div>

@@ -18,11 +18,14 @@ const SuggestionPreview = ({ heading, headingDescription, description, datePoste
       <div className={s("bg-white py-xl px-lg text-sm")}>
         { description }
       </div>
-      <Button
-        text="View full card"
-        underline={true}
-        buttonClassName={s("rounded-t-0")}
-      />
+      <div className={s("bg-white")}>
+        <Button
+          text="View full card"
+          underline={true}
+          color="transparent"
+          className={s("rounded-t-0")}
+        />
+      </div>
     </div>
   );
 }
