@@ -21,7 +21,7 @@ export default function display(state = initialState, action) {
 
     case types.OPEN_CARD: {
       const { id } = payload;
-      const newCards = _.union(state.cards, [{id, isEditing: false, answerEditorState: {}, }]);
+      const newCards = _.union(state.cards, [{ id, isEditing: false, answerEditorState: {}, }]);
       return { ...state, cards: newCards, activeCardIndex: newCards.length - 1 };
     }
     case types.SET_ACTIVE_CARD_INDEX: {
@@ -44,17 +44,17 @@ export default function display(state = initialState, action) {
 
     case types.EDIT_CARD: {
       const { id } = payload;
-      const newCards = state.cards.map((card, i) => card.id === id ? {...card, isEditing: true } : card);
+      const newCards = state.cards.map((card, i) => card.id === id ? { ...card, isEditing: true } : card);
 
-      return { ...state, cards: newCards};
+      return { ...state, cards: newCards };
 
     }
 
     case types.SAVE_CARD: {
       const { id, answerState, descriptionState } = payload;
-      const newCards = state.cards.map((card, i) => card.id === id ? {...card, answerEditorState: answerState, descriptionEditorState: descriptionState, isEditing: false } : card);
+      const newCards = state.cards.map((card, i) => card.id === id ? { ...card, answerEditorState: answerState, descriptionEditorState: descriptionState, isEditing: false } : card);
 
-      return { ...state, cards: newCards};
+      return { ...state, cards: newCards };
     }
 
     case types.CLOSE_ALL_CARDS: {

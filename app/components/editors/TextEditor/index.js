@@ -23,13 +23,18 @@ export default class TextEditor extends Component {
   }
 
 	render() {
-    const { editorState, wrapperClassName, editorClassName, toolbarClassName, onEditorStateChange, toolbarHidden, readOnly, editorType } = this.props;
-		return (
+    let { editorState, wrapperClassName, editorClassName, toolbarClassName, onEditorStateChange, toolbarHidden, readOnly, editorType } = this.props;
+		
+    if (editorClassName === '') {
+      editorClassName = editorType === 'CARD' ? 'text-editor' : 'text-editor-extension';
+    }
+    
+    return (
 				<Editor
           editorRef={this.setDomEditorRef}
 	        editorState={editorState}
 	        wrapperClassName={s(wrapperClassName)}
-	        editorClassName={s(editorClassName)}
+	        editorClassName={s(editorClassName )}
 	        toolbarClassName={s(toolbarClassName)}
 	        onEditorStateChange={onEditorStateChange}
 	        toolbar={editorType === 'CARD' ? CARD_TOOLBAR_PROPS : EXTENSION_TOOLBAR_PROPS}
@@ -57,7 +62,7 @@ TextEditor.propTypes = {
 TextEditor.defaultProps = {
   wrapperClassName: '',
   editorClassName: '',
-  toolbarClassName: '',
+  toolbarClassName: 'text-editor-toolbar',
   toolbarHidden: false,
   readOnly: false,
   autoFocus: false,

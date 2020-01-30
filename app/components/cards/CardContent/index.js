@@ -1,4 +1,5 @@
 import React, { Component } from 'react';
+import PropTypes from 'prop-types';
 import { MdCheck, MdArrowDropDown, MdMoreHoriz, MdModeEdit, MdThumbUp, MdBookmarkBorder } from "react-icons/md";
 
 import { bindActionCreators } from 'redux';
@@ -31,7 +32,7 @@ const MIN_QUESTION_HEIGHT = 165;
   }, dispatch)
 )
 
-export default class CardContent extends Component {
+class CardContent extends Component {
   constructor(props) {
     super(props);
     this.state = {
@@ -39,26 +40,25 @@ export default class CardContent extends Component {
     	descriptionEditorState: EditorState.createEmpty(),
     	descriptionEditorEnabled: false,
     	answerEditorEnabled: false,
-
     }
   }
 
   enableDescriptionEditor = () => {
-  	this.disableAnswerEditor();
-  	this.setState({ descriptionEditorEnabled: true });
+    this.disableAnswerEditor();
+    this.setState({ descriptionEditorEnabled: true });
   }
 
   disableDescriptionEditor = () => {
-  	this.setState({ descriptionEditorEnabled: false });
+    this.setState({ descriptionEditorEnabled: false });
   }
 
   enableAnswerEditor = () => {
-  	this.disableDescriptionEditor();
-  	this.setState({ answerEditorEnabled: true });
+    this.disableDescriptionEditor();
+    this.setState({ answerEditorEnabled: true });
   }
 
   disableAnswerEditor = () => {
-  	this.setState({ answerEditorEnabled: false });
+    this.setState({ answerEditorEnabled: false });
   }
 
   editCard = (id) => {
@@ -67,17 +67,17 @@ export default class CardContent extends Component {
   }
 
   saveCard = (id) => {
-  	this.setState({ descriptionEditorEnabled: false });
-  	this.props.saveCard(id, this.state.answerEditorState, this.state.descriptionEditorState);
+    this.setState({ descriptionEditorEnabled: false });
+    this.props.saveCard(id, this.state.answerEditorState, this.state.descriptionEditorState);
   }
 
 
   onAnswerEditorStateChange = (editorState) => {
-  	this.setState({answerEditorState : editorState });
+    this.setState({answerEditorState : editorState });
   }
 
   onDescriptionEditorStateChange = (editorState) => {
-  	this.setState({descriptionEditorState : editorState });
+    this.setState({descriptionEditorState : editorState });
   }
 
   renderFooter = () => {
@@ -89,7 +89,7 @@ export default class CardContent extends Component {
 
   			<Button
   				text={"Save Changes"}
-  				onClickButton={() => this.saveCard(id)}
+  				onClick={() => this.saveCard(id)}
   				buttonClassName={s("rounded-t-none p-lg")}
   				underline
   			/>
@@ -100,7 +100,7 @@ export default class CardContent extends Component {
 	          <Button 
 	          	text={"Edit Card"} 
 	          	icon={<MdModeEdit className={s("mr-sm")} />} 
-	          	onClickButton={() => this.editCard(id)}
+	          	onClick={() => this.editCard(id)}
 	          />
 	          <div className={s("flex")}>
 		          <Button 
@@ -125,7 +125,7 @@ export default class CardContent extends Component {
   }
 
   render() {
-    const { id, isEditing, answerEditorState } = this.props;
+    const { id, isEditing, answerEditorState, tags } = this.props;
     const { descriptionEditorEnabled, answerEditorEnabled } = this.state;
     return (
       <div className={s("flex-grow flex flex-col min-h-0")}>
@@ -237,3 +237,9 @@ export default class CardContent extends Component {
     );
   }
 }
+
+CardContent.propTypes = {
+  tags: PropTypes.arrayOf(PropTypes.string).isRequired,
+}
+
+export default CardContent;

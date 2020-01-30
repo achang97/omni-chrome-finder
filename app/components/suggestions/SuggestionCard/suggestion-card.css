@@ -11,10 +11,3 @@
   width: 350px !important;
   display: none;
 }
-
-.suggestion-card-description {
-  overflow: hidden;
-  display: -webkit-box;
-  -webkit-line-clamp: 3;
-  -webkit-box-orient: vertical;  
-}

@@ -1,21 +1,59 @@
-import React, { Component } from "react";
-import { bindActionCreators } from "redux";
-import { connect } from "react-redux";
-import { withRouter } from "react-router-dom";
+import React, { Component } from 'react';
+import { bindActionCreators } from 'redux';
+import { connect } from 'react-redux';
+import { withRouter } from 'react-router-dom';
 
-import ReactPlayer from "react-player";
-import { openCard, expandDock } from "../../actions/display";
-import TextEditorExtension from "../../components/editors/TextEditorExtension";
+import { MdChevronRight, MdPictureInPicture, MdClose } from 'react-icons/md';
+import { IoMdAdd } from 'react-icons/io';
+import { FaRegDotCircle, FaPaperPlane } from 'react-icons/fa';
 
-import Tabs from "../../components/common/Tabs/Tabs";
-import Tab from "../../components/common/Tabs/Tab";
+import { EditorState } from 'draft-js';
+import ReactPlayer from 'react-player';
+import TextEditor from '../../components/editors/TextEditor';
+import Button from '../../components/common/Button';
+
+import Tabs from '../../components/common/Tabs/Tabs';
+import Tab from '../../components/common/Tabs/Tab';
 import SuggestionPanel from "../../components/suggestions/SuggestionPanel";
 
+import { colors } from '../../styles/colors';
+import { openCard, expandDock } from '../../actions/display';
+
 import style from "./ask.css";
-import { getStyleApplicationFn } from "../../utils/styleHelpers";
+import { getStyleApplicationFn } from '../../utils/styleHelpers';
 const s = getStyleApplicationFn(style);
 
-const INTEGRATIONS = ["Slack", "Email", "Asana"];
+const INTEGRATIONS = ['Slack', 'Email', 'Asana'];
+const PLACEHOLDER_RECIPIENTS = [
+  {
+    type: 'channel',
+    name: 'Design',
+    tagged: [
+      { name: 'Miodrag' },
+      { name: 'Goran' }
+    ]
+  },
+  {
+    type: 'user',
+    name: 'Akshay',
+  },
+  {
+    type: 'user',
+    name: 'Chetan'
+  },
+  {
+    type: 'user',
+    name: 'Andrew'
+  },
+  {
+    type: 'user',
+    name: 'Fernando'
+  },
+  {
+    type: 'user',
+    name: 'Chetan Really Long Name Wow!!!'
+  },
+];
 
 @connect(
   state => ({
@@ -37,6 +75,9 @@ class Ask extends Component {
 
     this.state = {
       tabValue: 0,
+
+      // Text editors
+      editorState: EditorState.createEmpty(),
 
       // Screen Recording
       desktopSharing: false,
@@ -92,9 +133,9 @@ class Ask extends Component {
       })
       .then((stream) => {
         const mediaRecorder = new MediaRecorder(stream, {
-          mimeType: "video/webm"
+          mimeType: 'video/webm'
         });
-        mediaRecorder.addEventListener("dataavailable", (event) => {
+        mediaRecorder.addEventListener('dataavailable', (event) => {
           if (event.data && event.data.size > 0) {
             this.setState({
               recordedChunks: [...this.state.recordedChunks, event.data]
@@ -104,14 +145,14 @@ class Ask extends Component {
         mediaRecorder.start(10);
 
         stream.onended = () => {
-          console.log("stream.onended fired.");
+          console.log('stream.onended fired.');
           if (this.state.desktopSharing) {
             this.toggleScreenRecording();
           }
         };
 
-        stream.addEventListener("inactive", (e) => {
-          console.log("stream inactive fired.");
+        stream.addEventListener('inactive', (e) => {
+          console.log('stream inactive fired.');
           this.toggleScreenRecording();
         });
 
@@ -134,7 +175,7 @@ class Ask extends Component {
 
     mediaRecorder.stop();
     localStream.getTracks().forEach(track => track.stop());
-    const recordingBlob = new Blob(recordedChunks, { type: "video/webm" });
+    const recordingBlob = new Blob(recordedChunks, { type: 'video/webm' });
 
     const reader = new FileReader();
     reader.readAsDataURL(recordingBlob);
@@ -149,96 +190,88 @@ class Ask extends Component {
     };
   };
 
-  renderExpandedAskPage = () => {
-    const {
-      tabValue,
-      desktopSharing,
-      screenRecordings,
-      editorState
-    } = this.state;
+  renderTabHeader = () => {
+    const { tabValue } = this.state;
     return (
-      <div className={s("overflow-y-scroll max-h-screen min-h-screen")}>
-        <div className={s("flex flex-row justify-between p-lg")}>
-          <Tabs
-            activeIndex={tabValue}
-            className={s("mb-lg")}
-            tabClassName={s(
-              "ask-integrations-tab text-sm font-normal rounded-full"
-            )}
-            inactiveTabClassName={s("text-purple-reg")}
-            activeTabClassName={s(
-              "ask-integrations-tab-selected text-white font-semibold"
-            )}
-            onTabClick={this.handleTabClick}
-            showRipple={false}
-          >
-            {INTEGRATIONS.map(integration => (
-              <Tab key={integration}>
-                <div className={s("ask-integrations-tab-text")}>
-                  {" "}
-                  {integration}{" "}
-                </div>
-              </Tab>
-            ))}
-          </Tabs>
-          <button
-            className={s(
-              "text-lg h-4 w-4 text-white border rounded-full bg-purple-light flex items-center justify-center p-2"
-            )}
-          >
-            <span className={s("text-purple-reg")}>+</span>
-          </button>
-        </div>
-        <div className={s("p-lg relative")}>
-          <input
-            id="standard-basic"
-            className={s(
-              "ask-question-text-field bg-white rounded p-sm w-full mb-1"
-            )}
-            placeholder="Question"
-          />
-          {/* <div>Ask Body</div> */}
+      <div className={s('flex flex-row justify-between')}>
+        <Tabs
+          activeIndex={tabValue}
+          className={s('mb-lg')}
+          tabClassName={s(
+            'text-sm font-normal rounded-full py-sm px-reg'
+          )}
+          inactiveTabClassName={s('text-purple-reg')}
+          activeTabClassName={s(
+            'primary-gradient text-white font-semibold'
+          )}
+          onTabClick={this.handleTabClick}
+          showRipple={false}
+        >
+          {INTEGRATIONS.map((integration, i) => (
+            <Tab key={integration}>
+              <div className={s(i !== tabValue ? 'ask-integrations-tab-text' : 'primary-underline')}>
+                {integration}
+              </div>
+            </Tab>
+          ))}
+        </Tabs>
+        <button className={s("circle-button bg-purple-light shadow-md")}>
+          <IoMdAdd color={colors.purple.reg} />
+        </button>
+      </div>   
+    ); 
+  }
 
-          <TextEditorExtension />
-          <button
-            onClick={(e) => {
-              console.log("clicked");
-            }}
-            className={s(
-              "absolute cursor-pointer z-10 add-button text-lg h-4 w-4 text-white border rounded-full bg-purple-reg flex items-center justify-center p-2"
-            )}
-          >
-            +
-          </button>
+  onEditorStateChange = (editorState) => {
+    this.setState({ editorState : editorState });
+  }
+
+  renderAskInputs = () => {
+    const { desktopSharing, screenRecordings, editorState } = this.state;
+    return (
+      <div >
+        <div className={s("flex-col relative")}>
+          <input
+            placeholder="Question"
+            onChange={this.onShowRelatedQuestions}
+            className={s("w-full mb-reg")}
+          />
+          <TextEditor 
+            onEditorStateChange={this.onEditorStateChange} 
+            editorState={editorState} 
+            editorType="EXTENSION"
+          />
+          <Button
+            icon={<IoMdAdd color="white" /> }
+            className={s('absolute z-10 ask-text-editor-add-button circle-button-sm p-0')}
+          />
         </div>
-        <div className={s("flex flex-row justify-between p-lg")}>
+        <div className={s('flex px-xs pt-reg')}>
           <button
             onClick={this.toggleScreenRecording}
-            className={s("bg-red-200 flex flex-row text-red-500 p-2 rounded-lg")}
+            className={s("ask-screen-capture-button mr-xs bg bg-red-100 text-red-500")}
           >
-            {!desktopSharing ? "Screen Record" : "End Recording"}
-            <div className={s("ml-2 h-5 w-5 flex items-center justify-center rounded-full border border-red-300")}>
-              <div className={s("h-3 w-3 rounded-full bg-red-500")} />
-            </div>
+            <span className={s("ask-screen-capture-button-text")}>
+              {!desktopSharing ? 'Screen Record' : 'End Recording'}
+            </span>
+            <FaRegDotCircle className={s("ml-sm text-red-500")} />
           </button>
           <button
             onClick={this.toggleScreenRecording}
-            className={s("bg-purple-200 flex flex-row text-purple-700 p-2 rounded-lg")}
+            className={s("ask-screen-capture-button ml-xs bg-purple-xlight text-purple-reg")}
           >
-            Screen Capture
-            <div
-              className={s(
-                "ml-2 h-4 w-6 flex items-center justify-center rounded-sm  bg-purple-700"
-              )}
-            />
+            <span className={s("ask-screen-capture-button-text")}>
+              Screen Capture
+            </span>
+            <MdPictureInPicture color={colors.purple.reg} className={s("ml-sm")} />
           </button>
         </div>
-        <div className={s("mt-1")}>
+        { /*<div className={s("mt-sm p-sm")}>
           {screenRecordings.map(recording => (
-            <div className={s("ask-video-player-container")}>
+            <div className={s('ask-video-player-container my-sm')}>
               <ReactPlayer
                 url={recording}
-                className={s("absolute top-0 left-0")}
+                className={s('absolute top-0 left-0')}
                 controls
                 playing
                 height="100%"
@@ -247,62 +280,88 @@ class Ask extends Component {
             </div>
           ))}
         </div>
-        <div className={s("bg-purple-200 text-gray-800 h-full")}>
-          <div className={s("h-40")} style={{ minHeight: "375px" }}>
-            <span>Send to channel/person</span>
-          </div>
-          <button
-            onClick={() => {
-              this.redirect("/login");
-            }}
-            className={s(
-              "w-full bg-purple-gradient flex justify-center items-center text-white"
-            )}
-          >
-            <span className={s("w-full flex justify-between p-2")}>
-              <span>Ask Question</span>
-              <span>></span>
-            </span>
-          </button>
+        */ }
+      </div>
+    );
+  }
+
+  renderRecipientSelection = () => {
+    return (
+      <div className={s("bg-purple-light flex-1 flex flex-col p-lg min-h-0")}>
+        <div className={s("text-purple-reg text-xs mb-reg")}>Send to channel/person</div>
+        <input
+          placeholder="Enter name"
+          className={s("w-full")}
+        />
+        <div className={s("flex my-xs flex-wrap min-h-0 overflow-y-scroll")}>
+          { PLACEHOLDER_RECIPIENTS.map(({ type, name, tagged=[] }) => (
+            <div className={s(`${type === 'channel' ? 'bg-purple-gray-10' : 'bg-white'} ask-recipient`)}>
+              <span className={s("truncate")}> @{name} </span>
+
+              <div>
+                <button>
+                  <MdClose className={s("text-purple-gray-50 ml-xs")} />
+                </button>
+              </div>
+            </div>
+          ))}
         </div>
+      </div>
+    );    
+  }
+
+  renderFooterButton = () => {
+    return (
+      <Button
+        className={s('self-stretch rounded-t-none rounded-br-none rounded-bl-reg items-center justify-between text-reg')}
+        text="Ask Question"
+        iconLeft={false}
+        icon={
+          <span className={s("circle-button-sm bg-white text-purple-reg")}>
+            <FaPaperPlane />
+          </span>
+        }
+      />
+    )
+  }
+
+  renderExpandedAskPage = () => {
+    const { editorState } = this.state;
+    return (
+      <div className={s('flex flex-col flex-1 min-h-0')}>
+        <div className={s("p-lg")}>
+          { this.renderTabHeader() }
+          { this.renderAskInputs() }
+        </div>
+        { this.renderRecipientSelection() }
+        { this.renderFooterButton() }
       </div>
     );
   };
 
   renderMinifiedAskPage = () => {
-    const { showRelatedQuestions } = this.state;
-
+    const { showRelatedQuestions, showQuestionInfo, showResults } = this.state;
+    const { expandDock } = this.props;
+    
     return (
-      <div>
-      	<button onClick={this.openCard}> test </button>
-        <div className={s("order-3 py-xs px-lg flex")}>
-          <div className={s("flex flex-col items-center")}>
-            <div className={s("mt-2 w-full mx-auto")}>
-              <input
-                onChange={this.onShowRelatedQuestions}
-                placeholder="Let's find what you're looking for"
-                className={s(
-                  "p-sm text-sm w-full bg-white border border-gray-500 placeholder-purple-reg rounded-lg"
-                )}
-              />
-            </div>
-            <div className={s("my-lg flex flex-row justify-center w-full")}>
-              <span className={s("w-1/2 text-gray-500 text-sm p-0 ")}>
-                Don't see your questions?
-              </span>
-              <button
-                className={s(
-                  "flex-1 bg-purple-gradient flex justify-center items-center rounded-lg text-white"
-                )}
-                onClick={this.props.expandDock}
-              >
-                <span className="w-full flex justify-between p-2">
-                  <span>Ask Question</span>
-                  <span>></span>
-                </span>
-              </button>
-            </div>
-          </div>
+      <div className={s("p-lg")}>
+        <input
+          onChange={this.onShowRelatedQuestions}
+          placeholder="Let's find what you're looking for"
+          className={s("w-full")}
+        />
+        <div className={s('mt-lg flex flex-row justify-center items-center')}>
+          <span className={s('flex-1 text-gray-dark ml-sm text-xs font-medium')}>
+            Don't see your question?
+          </span>
+          <Button
+            text="Ask Question"
+            color="primary"
+            className={s("justify-between")}
+            iconLeft={false}
+            icon={<MdChevronRight color="white" className={s("ml-sm")} />}
+            onClick={expandDock}
+          />
         </div>
         <SuggestionPanel isVisible={showRelatedQuestions} />
       </div>
@@ -311,13 +370,7 @@ class Ask extends Component {
 
   render() {
     const { dockExpanded } = this.props;
-    return (
-      <div>
-        {dockExpanded
-          ? this.renderExpandedAskPage()
-          : this.renderMinifiedAskPage()}
-      </div>
-    );
+    return (dockExpanded ? this.renderExpandedAskPage() : this.renderMinifiedAskPage());
   }
 }
 

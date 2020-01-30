@@ -22,7 +22,7 @@ const s = getStyleApplicationFn(style);
 
 const dockPanelStyles = {
   background: 'white',
-  borderRadius: '6px 0 0 6px'
+  borderRadius: '8px 0 0 8px'
 };
 
 @connect(
@@ -140,17 +140,19 @@ class App extends Component {
             ...dockPanelStyles
           }}
         >
-          <Header />
-          <Switch>
-            <Route path="/ask" component={Ask} />
-            <Route path="/create" component={Create} />
-            <Route path="/navigate" component={Navigate} />
-            <Route path="/tasks" component={Tasks} />
-            <Route path="/profile" component={Profile} />
-            <Route path="/login" component={Login} />
-            {/* A catch-all route: put all other routes ABOVE here */}
-            <Redirect to="/ask" />
-          </Switch>
+          <div className={s(`flex flex-col ${dockExpanded ? 'h-screen' : ''}`)}>
+            <Header />
+            <Switch>
+              <Route path="/ask" component={Ask} />
+              <Route path="/create" component={Create} />
+              <Route path="/navigate" component={Navigate} />
+              <Route path="/tasks" component={Tasks} />
+              <Route path="/profile" component={Profile} />
+              <Route path="/login" component={Login} />
+              {/* A catch-all route: put all other routes ABOVE here */}
+              <Redirect to="/ask" />
+            </Switch>
+          </div>
         </Dock>
       </div>
     );

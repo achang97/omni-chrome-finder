@@ -92,7 +92,7 @@ class Tabs extends Component {
     const baseTabProps = this.getBaseTabProps(i);
     return (
       <Tab
-        key={typeof(label) === 'string' ? label : i}
+        key={typeof (label) === 'string' ? label : i}
         label={label}
         {...baseTabProps}
       />
@@ -109,7 +109,7 @@ class Tabs extends Component {
         } else {
           mergedProps[propKey] = childPropValue;
         }
-      }     
+      }
     });
 
     return mergedProps;
@@ -137,7 +137,7 @@ class Tabs extends Component {
     const Icon = isStart ? MdChevronLeft : MdChevronRight;
 
     return (
-      <button disabled={isDisabled} className={s(isDisabled ? 'opacity-25 cursor-default' : '')}>
+      <button disabled={isDisabled} className={s(isDisabled ? 'opacity-25' : '')}>
         <Icon onClick={() => this.handleScrollClick(isStart)} color={scrollButtonColor} />
       </button>
     );
@@ -147,19 +147,19 @@ class Tabs extends Component {
     const { labels, className, allTabsContainerClassName } = this.props;
     return (
       <div className={s(`flex overflow-hidden items-center ${className}`)}>
-        { this.renderScrollButton(true) }
+        {this.renderScrollButton(true)}
         <div
           ref={this.tabsRef}
-          className={s(`flex-1 overflow-x-scroll hide-scrollbar flex max-w-full ${allTabsContainerClassName}`)}
+          className={s(`flex-1 overflow-auto hide-scrollbar flex max-w-full ${allTabsContainerClassName}`)}
           onScroll={this.handleResize}
         >
-          { labels ? 
+          {labels ?
             labels.map((label, i) => this.renderTab(label, i)) :
-            this.renderChildren() 
+            this.renderChildren()
           }
           <ReactResizeDetector handleWidth onResize={this.handleResize} />
         </div>
-        { this.renderScrollButton(false) }
+        {this.renderScrollButton(false)}
       </div>
     );
   }

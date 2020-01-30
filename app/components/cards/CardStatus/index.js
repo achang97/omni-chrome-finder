@@ -20,9 +20,9 @@ class CardStatus extends Component {
 
     return (
       <div className={s(`flex items-center justify-between p-sm bg-${bgColor} rounded-lg font-semibold text-xs`)}>
-        <div className={s("flex")}>
-          <Icon color={fontColor} />
-          <div className={s("ml-xs")} style={{ color: fontColor }}> {label} </div>
+        <div className={s("flex")} style={{ color: fontColor }}>
+          <Icon />
+          <div className={s("ml-xs")}> {label} </div>
         </div>
         { isActionable && <MdArrowDropDown /> }
       </div>

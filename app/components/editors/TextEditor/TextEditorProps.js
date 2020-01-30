@@ -133,9 +133,9 @@ export const EXTENSION_TOOLBAR_PROPS = {
     inDropdown: true,
     //options: [{label: 'Normal', value: 'Normal', className: s('bool'}],
     options: ['Normal', 'H1', 'H2', 'H3', 'H4', 'H5', 'H6', 'Code'],
-    className: s('text-editor-blocktype-dropdown'),
+    className: s('text-editor-dropdown-container-lg no-hover-shadow'),
     component: undefined,
-    dropdownClassName: undefined,
+    dropdownClassName: s('text-editor-dropdown no-hover-shadow'),
   },
   inline: {
     inDropdown: false,
@@ -143,9 +143,9 @@ export const EXTENSION_TOOLBAR_PROPS = {
     component: undefined,
     dropdownClassName: undefined,
     options: ['bold', 'italic', 'underline'],
-    bold: { className: s('text-editor-inline-button') },
-    italic: { className: s('text-editor-inline-button') },
-    underline: { className: s('text-editor-inline-button') },
+    bold: { className: s('text-editor-button-sm no-hover-shadow') },
+    italic: { className: s('text-editor-button-sm no-hover-shadow') },
+    underline: { className: s('text-editor-button-sm no-hover-shadow') },
   },
   fontSize: {
     options: [8, 9, 10, 11, 12, 14, 16, 18, 24, 30, 36, 48, 60, 72, 96],
@@ -161,9 +161,9 @@ export const EXTENSION_TOOLBAR_PROPS = {
   },
   list: {
     inDropdown: true,
-    className: s('text-editor-list-dropdown'),
+    className: s('text-editor-dropdown-container-md no-hover-shadow'),
     component: undefined,
-    dropdownClassName: undefined,
+    dropdownClassName: s('text-editor-dropdown no-hover-shadow'),
     options: ['unordered', 'ordered', 'indent', 'outdent']
   },
   textAlign: {
@@ -186,10 +186,10 @@ export const EXTENSION_TOOLBAR_PROPS = {
   },
   link: {
     inDropdown: true,
-    className: s('text-editor-link-dropdown'),
+    className: s('text-editor-dropdown-container-md no-hover-shadow'),
     component: undefined,
     popupClassName: undefined,
-    dropdownClassName: undefined,
+    dropdownClassName: s('text-editor-dropdown no-hover-shadow'),
     showOpenOptionOnHover: true,
     defaultTargetOption: '_self',
     options: ['link', 'unlink'],

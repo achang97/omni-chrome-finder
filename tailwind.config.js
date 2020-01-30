@@ -11,6 +11,17 @@ const config = {
     extend: {
       colors: customColors.colors,
     },
+    spacing: {
+      '0': '0px',
+      'xs': '4px',
+      'sm': '8px',
+      'reg': '12px',
+      'lg': '16px',
+      'xl': '20px',
+      '2xl': '24px',
+      '3xl': '30px',
+      '4xl': '48px',
+    },
     fontSize: {
       'xs': '12px',
       'sm': '14px',
@@ -23,17 +34,6 @@ const config = {
       '5xl': '48px',
       '6xl': '64px',
     },
-    spacing: {
-      '0': '0px',
-      'xs': '4px',
-      'sm': '8px',
-      'reg': '12px',
-      'lg': '16px',
-      'xl': '20px',
-      '2xl': '22px',
-      '3xl': '30px',
-      '4xl': '48px',
-    },
     borderRadius: {
       'none': '0px',
       'sm': '2px',
@@ -44,7 +44,31 @@ const config = {
     }
   },
   variants: {},
-  plugins: []
+  plugins: [
+    function({ addUtilities, theme, config }) {
+
+      let newUtilities      = {};
+      const boxShadowPrefix = '0 0 0 3px';
+      const colors          = theme('colors');
+      Object.keys( colors ).forEach(color => {
+
+        const colorData = colors[color];
+        if(typeof colorData === 'string') {
+          newUtilities[`.outline-${color}`] = {
+            boxShadow: `${boxShadowPrefix} ${colorData}`,
+          }
+        }
+        else {
+          Object.keys(colorData).forEach(colorVariation => {
+            newUtilities[`.outline-${color}-${colorVariation}`] = {
+              boxShadow: `${boxShadowPrefix} ${colorData[colorVariation]}`,
+            }
+          });
+        }
+      });
+      addUtilities(newUtilities);
+    }
+  ]
 };
 
 module.exports = config;

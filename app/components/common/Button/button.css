@@ -1,12 +1,10 @@
 .button-container {
 	padding: 14px;
 	border-radius: 8px;
-	box-shadow: 0 5px 10px 0 rgba(149,151,197,0.75);
 }
 
 .button-container:hover {
 	cursor: pointer;
-	opacity: 0.8;
 }
 
 .button-shadow {
@@ -19,25 +17,13 @@
 	font-size: 14px;
 }
 
-
-/* PRIMARY BUTTON */
-
-.button-primary {
-	background: linear-gradient(143deg, #777BAD 0%, #A0A1CD 100%);
-	color: white;
-	box-shadow: 0 5px 10px 0 rgba(149,151,197,0.75);
-}
-
-.button-underline-primary {
-	border-bottom: 2px solid #FFFFFF33;
-}
+/* PRIMARY BUTTON (in global styles) */
 
 /* SECONDARY BUTTON */
 
 .button-secondary {
 	background: white;
 	@apply text-purple-reg;
-	box-shadow: 0 5px 10px 0 rgba(149,151,197,0.75);
 }
 
 .button-underline-secondary {
