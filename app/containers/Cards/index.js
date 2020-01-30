@@ -54,9 +54,6 @@ export default class Cards extends Component {
 
     return (
       <div className={s("px-reg flex flex-shrink-0")}>
-        <button className={s("mr-sm")}>
-          <MdMoreHoriz color={colors.purple['gray-50']} />
-        </button>
         <button onClick={() => closeAllCards()}>
           <MdClose color={colors.purple['gray-50']} />
         </button>

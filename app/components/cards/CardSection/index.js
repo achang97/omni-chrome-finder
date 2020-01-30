@@ -1,0 +1,61 @@
+import React, { Component } from 'react';
+import PropTypes from 'prop-types';
+
+import { MdExpandLess, MdExpandMore } from 'react-icons/md';
+import AnimateHeight from 'react-animate-height';
+
+import { getStyleApplicationFn } from '../../../utils/styleHelpers';
+const s = getStyleApplicationFn();
+
+class CardSection extends Component {
+	constructor(props) {
+		super(props);
+
+		this.state = {
+			isExpanded: props.startExpanded,
+		}
+	}
+
+	toggleSection = () => {
+		this.setState({ isExpanded: !this.state.isExpanded });
+	}
+
+	render() {
+		const { title, isExpandable, showSeparator, children } = this.props;
+		const { isExpanded } = this.state;
+
+		return (
+			<div>
+				<div className={s("flex mb-sm items-center")}>
+					<div className={s("font-semibold mr-reg text-sm text-black")}> {title} </div>
+					{ isExpandable &&
+						<button className={s("text-gray-light")} onClick={this.toggleSection}>
+							{ isExpanded ? <MdExpandLess /> : <MdExpandMore /> }
+						</button>
+					}
+				</div>
+				<AnimateHeight height={isExpandable && isExpanded ? 'auto' : 0}>
+					{ children }
+				</AnimateHeight>
+				{ showSeparator &&
+					<div className={s("horizontal-separator mt-xs")} />
+				}
+			</div>
+		);
+	}
+}
+
+CardSection.propTypes = {
+	title: PropTypes.string.isRequired,
+	isExpandable: PropTypes.bool,
+	startExpanded: PropTypes.bool,
+	showSeparator: PropTypes.bool,
+}
+
+CardSection.defaultProps = {
+	isExpandable: true,
+	startExpanded: true,
+	showSeparator: true,
+}
+
+export default CardSection;

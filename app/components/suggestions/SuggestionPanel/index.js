@@ -176,7 +176,7 @@ class SuggestionPanel extends Component {
 }
 
 SuggestionPanel.propTypes = {
-  isVisible: PropTypes.bool.required,
+  isVisible: PropTypes.bool.isRequired,
 }
 
 export default SuggestionPanel;

@@ -3,6 +3,77 @@
 
 @tailwind utilities;
 
+/* Button Overrides */
+.app-container button {
+  all: unset;
+}
+
+.app-container button:focus {
+  all: unset;
+  outline: none;
+}
+
+.app-container button:hover {
+  all: unset;
+}
+
+.app-container button:hover, .button-hover:hover {
+  cursor: pointer !important;
+  opacity: 0.8;
+}
+
+.app-container button:disabled {
+  opacity: 0.5;
+  cursor: default !important;
+}
+
+/* Input overrides */
+.app-container input:not([type='checkbox']), .app-container input:not([type='checkbox']):focus {
+  all: unset;
+  background: #FFFFFF;
+  border: 1px solid rgba(0,2,95,0.10);
+  border-radius: 8px;
+  color: black;
+  font-size: 13px;
+  letter-spacing: 0.3px;
+  line-height: 22px;
+  padding: 8px;
+  box-sizing: border-box;
+  @apply font-medium;
+}
+
+.app-container input:not([type='checkbox']):focus {
+  @apply outline-purple-light;
+}
+
+.app-container input:not([type='checkbox'])::placeholder {
+  @apply text-gray-dark;
+}
+
+/* Custom scrollbar */
+div::-webkit-scrollbar {
+  background: transparent; /* Optional: just make scrollbar invisible */
+}
+
+div::-webkit-scrollbar:vertical {
+  width: 5px; /* Remove scrollbar space */
+  height: 0px;
+}
+
+div::-webkit-scrollbar:horizontal {
+  width: 0px; /* Remove scrollbar space */
+  height: 5px;
+}
+
+div:hover::-webkit-scrollbar {
+  @apply bg-gray-300;
+}
+
+div:hover::-webkit-scrollbar-thumb {
+  @apply bg-gray-400;
+  border-left: none;
+  border-right: none;
+}
 
 /* Scroll bar */
 .hide-scrollbar::-webkit-scrollbar {
@@ -22,7 +93,11 @@
 
 /* Borders and separators */
 .horizontal-separator {
-	@apply border-t border-l-0 border-r-0 border-b-0 border-solid border-gray-200 w-full;
+	@apply border-t border-l-0 border-r-0 border-b-0 border-solid border-gray-300 w-full;
+}
+
+.underline-border {
+  @apply border-t-0 border-l-0 border-r-0 border-b-2 border-solid;
 }
 
 /* Primary styles */
@@ -32,25 +107,4 @@
 
 .primary-underline {
   border-bottom: 2px solid #FFFFFF33 !important;
-}
-
-/* Buttons */
-.circle-button-sm, .circle-button, .circle-button-lg {
-  @apply rounded-full flex items-center justify-center !important;
-}
-
-.circle-button-sm {
-  @apply text-reg !important;
-  height: 32px !important;
-  width: 32px !important;
-}
-
-.circle-button {
-  @apply text-reg !important;
-  height: 40px !important;
-  width: 40px !important;
-}
-
-.circle-button-lg {
-  @apply h-4xl w-4xl text-lg !important;
 }

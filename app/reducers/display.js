@@ -4,8 +4,10 @@ import _ from 'underscore';
 const initialState = {
   dockVisible: false,
   dockExpanded: false,
-  cards: [],
-  activeCardIndex: -1,
+  // cards: [],
+  // activeCardIndex: -1,
+  cards: [{ id: 100, isEditing: false, answerEditorState: {} }],
+  activeCardIndex: 0,
 };
 
 export default function display(state = initialState, action) {
@@ -21,7 +23,7 @@ export default function display(state = initialState, action) {
 
     case types.OPEN_CARD: {
       const { id } = payload;
-      const newCards = _.union(state.cards, [{ id, isEditing: false, answerEditorState: {}, }]);
+      const newCards = _.union(state.cards, [{ id, isEditing: false, answerEditorState: {} }]);
       return { ...state, cards: newCards, activeCardIndex: newCards.length - 1 };
     }
     case types.SET_ACTIVE_CARD_INDEX: {

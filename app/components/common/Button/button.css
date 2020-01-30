@@ -3,10 +3,6 @@
 	border-radius: 8px;
 }
 
-.button-container:hover {
-	cursor: pointer;
-}
-
 .button-shadow {
 	width: 80%;
 	background-color: white;

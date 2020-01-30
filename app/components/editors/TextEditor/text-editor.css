@@ -86,6 +86,7 @@
 	background-color: #BDC8F926 !important;
 	color: #7A7DAF !important;
 	border: 0 !important;
+	z-index: 2 !important;
 }
 
 .text-editor-dropdown-container-md > a, .text-editor-dropdown-container-lg > a {
@@ -104,10 +105,16 @@
 .text-editor-dropdown-container-md + div, .text-editor-dropdown-container-lg + div {
 	right: 5px !important;
 	left: unset !important;
+	height: auto !important;
 }
 
 .text-editor-dropdown-container-md + div > label, .text-editor-dropdown-container-lg + div > label {
 	@apply mb-xs text-xs text-gray-dark !important;
+}
+
+/* Hide checkbox */
+.text-editor-dropdown-container-md + div > label:nth-last-child(2), .text-editor-dropdown-container-lg + div > label:nth-last-child(2) {
+	display: none !important;
 }
 
 .text-editor-dropdown-container-md + div > input, .text-editor-dropdown-container-lg + div > input {

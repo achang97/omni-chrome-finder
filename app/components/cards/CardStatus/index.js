@@ -6,28 +6,25 @@ import { colors } from '../../../styles/colors';
 import { getStyleApplicationFn } from '../../../utils/styleHelpers';
 const s = getStyleApplicationFn();
 
-class CardStatus extends Component {
-  getDisplayInfo = () => {
-    const { isUpToDate } = this.props;
-    return isUpToDate ?
-      { label: 'Up to date', Icon: MdCheck, bgColor: 'green-xlight', fontColor: colors.green.reg } :
-      { label: 'Out of date', Icon: MdRemoveCircle, bgColor: 'red-500', fontColor: 'white' };
-  }
+const getDisplayInfo = (isUpToDate) => {
+  return isUpToDate ?
+    { label: 'Up to date', Icon: MdCheck, bgColor: 'green-xlight', fontColor: colors.green.reg } :
+    { label: 'Out of date', Icon: MdRemoveCircle, bgColor: 'red-500', fontColor: 'white' };
+}
 
-  render() {
-    const { isActionable } = this.props;
-    const { label, Icon, bgColor, fontColor } = this.getDisplayInfo();
+const CardStatus = (props) => {
+  const { isActionable, isUpToDate } = props;
+  const { label, Icon, bgColor, fontColor } = getDisplayInfo(isUpToDate);
 
-    return (
-      <div className={s(`flex items-center justify-between p-sm bg-${bgColor} rounded-lg font-semibold text-xs`)}>
-        <div className={s("flex")} style={{ color: fontColor }}>
-          <Icon />
-          <div className={s("ml-xs")}> {label} </div>
-        </div>
-        { isActionable && <MdArrowDropDown /> }
+  return (
+    <div className={s(`flex items-center justify-between p-sm bg-${bgColor} rounded-lg font-semibold text-xs`)}>
+      <div className={s("flex")} style={{ color: fontColor }}>
+        <Icon />
+        <div className={s("ml-xs")}> {label} </div>
       </div>
-    );
-  }
+      { isActionable && <MdArrowDropDown /> }
+    </div>
+  );
 }
 
 CardStatus.propTypes = {
