@@ -5,6 +5,7 @@ import { MdClose } from 'react-icons/md';
 
 import CardSection from '../CardSection';
 import CardUsers from '../CardUsers';
+import CardTags from '../CardTags';
 
 import style from './card-side-dock.css';
 import { getStyleApplicationFn } from '../../../utils/styleHelpers';
@@ -26,8 +27,8 @@ class CardSideDock extends Component {
   }
 
   closeSideDock = () => {
-    const { onVisibleChange } = this.props;
-    onVisibleChange(false);
+    const { onClose } = this.props;
+    onClose();
   }
 
   renderHeader = () => (
@@ -40,16 +41,30 @@ class CardSideDock extends Component {
   );
 
   renderOwners = () => {
-    const users = [{ name: 'Andrew', img: 'https://sunrift.com/wp-content/uploads/2014/12/Blake-profile-photo-square-768x769.jpg' }, { name: 'Chetan', img: null }, { name: 'Akshayasdfdasfasdfd', img: null }, { name: 'Akshayasdfdasfasdfd', img: null }, { name: 'Akshayasdfdasfasdfd', img: null }, { name: 'Akshayasdfdasfasdfd', img: null }];
+    const users = [{ name: 'Andrew', id: 1, img: 'https://sunrift.com/wp-content/uploads/2014/12/Blake-profile-photo-square-768x769.jpg' }, { name: 'Chetan', id: 5, img: null }];
     return (
       <CardSection title="Owner(s)">
-        <CardUsers users={users} />
+        <CardUsers
+          users={users}
+          isEditable={true}
+          onAddClick={() => console.log('Added!')}
+          onRemoveClick={() => console.log('Removed!')}
+        />
       </CardSection>
     );
   }
 
+  renderTags = () => {
+    const tags = ['Customer Service Onboarding', 'Sales', 'Pitches'];
+    return (
+      <CardSection className={s("mt-reg")} title="Tags">
+        <CardTags tags={tags} isEditable={true} />
+      </CardSection>
+    )
+  }
+
   render() {
-    const { isVisible, onVisibleChange } = this.props;
+    const { isVisible } = this.props;
     const { hasBeenToggled } = this.state;
 
     return (
@@ -60,7 +75,7 @@ class CardSideDock extends Component {
         <div className={s(`card-side-dock ${hasBeenToggled ? (isVisible ? 'card-side-dock-slide-in' : 'card-side-dock-slide-out') : ''}`)}>
           { this.renderHeader() }
           { this.renderOwners() }
-
+          { this.renderTags() }
         </div>
       </div>
     );
@@ -69,7 +84,7 @@ class CardSideDock extends Component {
 
 CardSideDock.propTypes = {
   isVisible: PropTypes.bool.isRequired,
-  onVisibleChange: PropTypes.func.isRequired,
+  onClose: PropTypes.func.isRequired,
 };
 
 CardSideDock.defaultProps = {

@@ -61,6 +61,11 @@ export default class Cards extends Component {
     );
   }
 
+  changeTab = (tabValue) => {
+    const { setActiveCardIndex } = this.props;
+    setActiveCardIndex(tabValue);
+  }
+
   renderTabHeader = () => {
     const { cards, activeCardIndex, setActiveCardIndex, closeAllCards } = this.props;
 
@@ -71,7 +76,7 @@ export default class Cards extends Component {
           className={s("flex-1")}
           tabClassName={s("card-tab pr-0 rounded-t-lg rounded-b-0 text-xs font-medium flex items-center justify-between")}
           activeTabClassName={s("bg-purple-light")}
-          onTabClick={setActiveCardIndex}
+          onTabClick={this.changeTab}
           showRipple={false}
           scrollButtonColor={colors.purple['gray-50']}
         >
@@ -123,7 +128,12 @@ export default class Cards extends Component {
             enable={{ top: false, right: true, bottom: true, left: false, topRight: false, bottomRight: true, bottomLeft: false, topLeft: false }}
           >
             { this.renderTabHeader() }
-            <CardContent {...cards[activeCardIndex]} cardWidth={this.state.cardsWidth} cardHeight={this.state.cardsHeight} tags={['Customer Onboarding', 'Sales']}/>
+            <CardContent
+              {...cards[activeCardIndex]}
+              cardWidth={this.state.cardsWidth}
+              cardHeight={this.state.cardsHeight}
+              tags={['Customer Onboarding', 'Sales']}
+            />
           </Resizable>
         </Draggable>
       </div>

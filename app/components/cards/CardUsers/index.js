@@ -9,25 +9,30 @@ import CircleButton from '../../common/CircleButton';
 import { getStyleApplicationFn } from '../../../utils/styleHelpers';
 const s = getStyleApplicationFn();
 
-const CardUsers = ({ className, users }) => {
+const CardUsers = ({ className, users, isEditable, onRemoveClick, onAddClick }) => {
 	return (	
 		<div className={s(`${className} text-gray-dark flex w-full overflow-auto`)}>
-			{ users.map(({ name, img }) => (
+			{ users.map(({ id, name, img }) => (
 				<CardUser
+					key={id}
 					size="md"
 					name={name}
 					img={img}
 					className={s("mr-xs")}
-					onRemove={() => console.log('Removed!')}
+					onRemove={onRemoveClick}
 				/>
 			))}
-			<CircleButton
-				content={<IoMdAdd size={30} />}
-				containerClassName={s("text-purple-reg pt-sm ml-xs")}
-				buttonClassName={s("bg-purple-gray-10")}
-				size="md"
-				label="Add"
-			/>
+			{ isEditable &&
+				<CircleButton
+					content={<IoMdAdd size={30} />}
+					containerClassName={s("text-purple-reg pt-sm ml-xs")}
+					buttonClassName={s("bg-purple-gray-10")}
+					labelClassName={s("text-xs")}
+					size="md"
+					label="Add"
+					onClick={onAddClick}
+				/>
+			}
 		</div>
 	);
 }
@@ -35,11 +40,14 @@ const CardUsers = ({ className, users }) => {
 CardUsers.propTypes = {
 	className: PropTypes.string,
 	users: PropTypes.arrayOf(PropTypes.object).isRequired,
+	isEditable: PropTypes.bool,
+	onRemoveClick: PropTypes.func,
+	onAddClick: PropTypes.func,
 }
 
 CardUsers.defaultProps = {
 	className: '',
-	size: 'md',
+	isEditable: false,
 }
 
 export default CardUsers;

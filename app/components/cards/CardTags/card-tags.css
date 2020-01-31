@@ -1,0 +1,3 @@
+.card-tag {
+	@apply flex items-center py-xs px-sm bg-purple-gray-10 text-purple-reg rounded-full font-semibold text-xs;
+}

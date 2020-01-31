@@ -21,11 +21,11 @@ class CardSection extends Component {
 	}
 
 	render() {
-		const { title, isExpandable, showSeparator, children } = this.props;
+		const { title, isExpandable, showSeparator, className, children } = this.props;
 		const { isExpanded } = this.state;
 
 		return (
-			<div>
+			<div className={className}>
 				<div className={s("flex mb-sm items-center")}>
 					<div className={s("font-semibold mr-reg text-sm text-black")}> {title} </div>
 					{ isExpandable &&
@@ -50,12 +50,14 @@ CardSection.propTypes = {
 	isExpandable: PropTypes.bool,
 	startExpanded: PropTypes.bool,
 	showSeparator: PropTypes.bool,
+	className: PropTypes.string,
 }
 
 CardSection.defaultProps = {
 	isExpandable: true,
 	startExpanded: true,
 	showSeparator: true,
+	className: '',
 }
 
 export default CardSection;

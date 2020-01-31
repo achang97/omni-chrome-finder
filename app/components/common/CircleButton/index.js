@@ -30,7 +30,7 @@ const CircleButton = ({ size, onClick, content, label, containerClassName, butto
 			>
 				{ content }
 			</div>
-			{ label && <div className={s(`mt-sm text-sm ${labelClassName}`)}> {label} </div> }
+			{ label && <div className={s(`mt-sm ${labelClassName}`)}> {label} </div> }
 		</div>
 	);
 }
