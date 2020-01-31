@@ -1,6 +1,8 @@
-.card-side-dock-container {
-	background: #081B3E80;
-	@apply pointer-events-auto w-full h-full cursor-pointer;
+.card-side-dock-overlay {
+	@apply bg-gray-overlay pointer-events-auto w-full h-full;
+    transition: all 0.3s;
+    opacity: 0;
+    visibility: hidden;
 }
 
 .card-side-dock {
@@ -10,14 +12,19 @@
     @apply absolute top-0 bottom-0 right-0 bg-purple-light p-lg pointer-events-auto rounded-l-lg shadow-lg;
 }
 
-.card-side-dock-slide-in {
-    animation: slide-in 0.5s forwards;
-    -webkit-animation: slide-in 0.5s forwards;
+.card-side-dock-slide-in > .card-side-dock {
+    animation: slide-in 0.3s forwards;
+    -webkit-animation: slide-in 0.3s forwards;
 }
 
-.card-side-dock-slide-out {
-    animation: slide-out 0.5s forwards;
-    -webkit-animation: slide-out 0.5s forwards;
+.card-side-dock-slide-out > .card-side-dock {
+    animation: slide-out 0.3s forwards;
+    -webkit-animation: slide-out 0.3s forwards;
+}
+
+.card-side-dock-slide-in > .card-side-dock-overlay {
+    opacity: 1;
+    visibility: visible;
 }
     
 @keyframes slide-in {

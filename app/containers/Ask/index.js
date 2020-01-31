@@ -350,7 +350,6 @@ class Ask extends Component {
     
     return (
       <div className={s("p-lg")}>
-        <button onClick={this.openCard}> test </button>
         <input
           onChange={this.onShowRelatedQuestions}
           placeholder="Let's find what you're looking for"

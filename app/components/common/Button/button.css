@@ -1,6 +1,7 @@
 .button-container {
 	padding: 14px;
 	border-radius: 8px;
+	@apply flex justify-center shadow-md;
 }
 
 .button-shadow {

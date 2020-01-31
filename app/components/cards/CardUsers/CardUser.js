@@ -11,7 +11,7 @@ const s = getStyleApplicationFn(style);
 
 const CardUser = ({ className, name, img, size, onRemove, ...rest }) => {
 	return (	
-		<div className={s(`${className} relative ${onRemove ? 'pr-sm pt-sm' : ''}`)} {...rest}>
+		<div className={s(`card-user ${className} ${onRemove ? 'pr-sm pt-sm' : ''}`)} {...rest}>
 			<CircleButton
 				content={<PlaceholderImg src={img} name={name} className={s("w-full h-full")} />}
 				size={size}

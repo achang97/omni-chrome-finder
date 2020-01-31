@@ -68,11 +68,9 @@ class CardSideDock extends Component {
     const { hasBeenToggled } = this.state;
 
     return (
-      <div className={s("overflow-hidden pointer-events-none rounded-b-lg absolute top-0 left-0 right-0 bottom-0 z-10")}>
-        { isVisible &&
-          <div className={s("card-side-dock-container")} onClick={this.closeSideDock} />
-        }
-        <div className={s(`card-side-dock ${hasBeenToggled ? (isVisible ? 'card-side-dock-slide-in' : 'card-side-dock-slide-out') : ''}`)}>
+      <div className={s(`${hasBeenToggled ? (isVisible ? 'card-side-dock-slide-in' : 'card-side-dock-slide-out') : ''} overflow-hidden pointer-events-none rounded-b-lg absolute top-0 left-0 right-0 bottom-0 z-10`)}>
+        <div className={s("card-side-dock-overlay")} onClick={this.closeSideDock} />
+        <div className={s("card-side-dock")}>
           { this.renderHeader() }
           { this.renderOwners() }
           { this.renderTags() }

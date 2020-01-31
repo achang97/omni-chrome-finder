@@ -19,7 +19,7 @@ const getPlaceholder = (name, className) => {
   const initials = tokens.length === 0 ? '' : `${tokens[0][0]}${tokens.length > 1 ? tokens[tokens.length - 1][0] : ''}`
 
   return (
-    <div className={s(`flex justify-center items-center text-gray-600 w-full h-full placeholder-img-${bucket} ${className}`)}>
+    <div className={s(`placeholder-img placeholder-img-${bucket} ${className}`)}>
       { initials }
     </div>
   );

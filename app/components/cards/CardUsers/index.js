@@ -11,7 +11,7 @@ const s = getStyleApplicationFn();
 
 const CardUsers = ({ className, users, isEditable, onRemoveClick, onAddClick }) => {
 	return (	
-		<div className={s(`${className} text-gray-dark flex w-full overflow-auto`)}>
+		<div className={s(`card-users-container ${className}`)}>
 			{ users.map(({ id, name, img }) => (
 				<CardUser
 					key={id}

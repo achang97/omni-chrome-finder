@@ -22,19 +22,19 @@ const Tab = (props) => {
   };
 
   const renderButton = () => (
-    <button
+    <div
       {...rest}
       onClick={onTabClick}
       style={{ color }}
       className={s(`
-				tab p-reg ${tabClassName}
+				tab button-hover ${tabClassName}
 				${isActive ?
 					`${activeTabClassName}` :
-					`opacity-50 ${inactiveTabClassName}`}
+					`tab-inactive ${inactiveTabClassName}`}
 			`)}
     >
       {label || children}
-    </button>
+    </div>
 	);
 
   return (

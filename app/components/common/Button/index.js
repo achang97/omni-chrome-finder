@@ -31,7 +31,7 @@ const Button = (props) => {
 	}
 
 	return (
-		<div className={s(`${className} flex justify-center shadow-md button-container button-hover ${outerClassName}`)} onClick={protectedOnClick}>
+		<div className={s(`button-container button-hover ${className} ${outerClassName}`)} onClick={protectedOnClick}>
 			{ iconLeft && icon }
 			<div className={s(`button-text ${innerClassName} ${textClassName}`)}>{text}</div>
 			{ !iconLeft && icon }

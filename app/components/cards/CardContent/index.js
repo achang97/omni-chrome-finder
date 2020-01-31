@@ -45,6 +45,8 @@ class CardContent extends Component {
       descriptionEditorState: EditorState.createEmpty(),
       descriptionEditorEnabled: false,
       answerEditorEnabled: false,
+
+      isModalOpen: false,
     }
   }
 

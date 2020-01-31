@@ -17,7 +17,7 @@ const CardTags = ({ className, tags, isEditable, onTagClick, onAddClick, onRemov
 	}
 
 	return (	
-		<div className={s(`${className} text-gray-dark flex flex-wrap`)}>
+		<div className={s(`card-tags-container ${className}`)}>
 			{ tags.map((tag) => (
 				<CardTag
 					key={tag}

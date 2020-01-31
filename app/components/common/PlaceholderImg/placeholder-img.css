@@ -1,3 +1,7 @@
+.placeholder-img {
+	@apply flex justify-center items-center text-gray-600 w-full h-full;
+}
+
 .placeholder-img-0 {
 	background: rgb(255, 240, 215);
 }

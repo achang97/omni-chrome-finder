@@ -1,8 +1,9 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 
+import style from './circle-button.css';
 import { getStyleApplicationFn } from '../../../utils/styleHelpers';
-const s = getStyleApplicationFn();
+const s = getStyleApplicationFn(style);
 
 const CircleButton = ({ size, onClick, content, label, containerClassName, buttonClassName, labelClassName }) => {
 	let buttonStyle;
@@ -22,15 +23,15 @@ const CircleButton = ({ size, onClick, content, label, containerClassName, butto
 	}
 
 	return (
-		<div className={s(`flex flex-col items-center ${containerClassName}`)}>
+		<div className={s(`circle-button-container ${containerClassName}`)}>
 			<div
-				className={s(`rounded-full button-hover overflow-hidden flex items-center justify-center shadow-md ${buttonClassName}`)}
+				className={s(`circle-button button-hover ${buttonClassName}`)}
 				onClick={onClick}
 				style={buttonStyle}
 			>
 				{ content }
 			</div>
-			{ label && <div className={s(`mt-sm ${labelClassName}`)}> {label} </div> }
+			{ label && <div className={s(`circle-button-label ${labelClassName}`)}> {label} </div> }
 		</div>
 	);
 }

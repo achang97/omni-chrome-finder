@@ -146,11 +146,11 @@ class Tabs extends Component {
   render() {
     const { labels, className, allTabsContainerClassName } = this.props;
     return (
-      <div className={s(`flex overflow-hidden items-center ${className}`)}>
+      <div className={s(`tabs-all-container ${className}`)}>
         {this.renderScrollButton(true)}
         <div
           ref={this.tabsRef}
-          className={s(`flex-1 overflow-auto hide-scrollbar flex max-w-full ${allTabsContainerClassName}`)}
+          className={s(`tabs-tab-container hide-scrollbar ${allTabsContainerClassName}`)}
           onScroll={this.handleResize}
         >
           {labels ?
