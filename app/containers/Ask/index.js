@@ -11,6 +11,7 @@ import { EditorState } from 'draft-js';
 import ReactPlayer from 'react-player';
 import TextEditor from '../../components/editors/TextEditor';
 import Button from '../../components/common/Button';
+import CircleButton from '../../components/common/CircleButton';
 
 import Tabs from '../../components/common/Tabs/Tabs';
 import Tab from '../../components/common/Tabs/Tab';
@@ -215,9 +216,11 @@ class Ask extends Component {
             </Tab>
           ))}
         </Tabs>
-        <button className={s("circle-button bg-purple-light shadow-md")}>
-          <IoMdAdd color={colors.purple.reg} />
-        </button>
+        <CircleButton
+          content={<IoMdAdd color={colors.purple.reg} />}
+          size="md"
+          buttonClassName={s("bg-purple-light")}
+        />
       </div>   
     ); 
   }
@@ -241,9 +244,11 @@ class Ask extends Component {
             editorState={editorState} 
             editorType="EXTENSION"
           />
-          <Button
-            icon={<IoMdAdd color="white" /> }
-            className={s('absolute z-10 ask-text-editor-add-button circle-button-sm p-0')}
+          <CircleButton
+            content={<IoMdAdd color="white" /> }
+            size="sm"
+            containerClassName={s('absolute z-10 ask-text-editor-add-button')}
+            buttonClassName={s("primary-gradient")}
           />
         </div>
         <div className={s('flex px-xs pt-reg')}>
@@ -251,7 +256,7 @@ class Ask extends Component {
             onClick={this.toggleScreenRecording}
             className={s("ask-screen-capture-button mr-xs bg bg-red-100 text-red-500")}
           >
-            <span className={s("ask-screen-capture-button-text")}>
+            <span className={s("underline-border border-purple-gray-10")}>
               {!desktopSharing ? 'Screen Record' : 'End Recording'}
             </span>
             <FaRegDotCircle className={s("ml-sm text-red-500")} />
@@ -260,7 +265,7 @@ class Ask extends Component {
             onClick={this.toggleScreenRecording}
             className={s("ask-screen-capture-button ml-xs bg-purple-xlight text-purple-reg")}
           >
-            <span className={s("ask-screen-capture-button-text")}>
+            <span className={s("underline-border border-purple-gray-10")}>
               Screen Capture
             </span>
             <MdPictureInPicture color={colors.purple.reg} className={s("ml-sm")} />
@@ -317,7 +322,7 @@ class Ask extends Component {
         text="Ask Question"
         iconLeft={false}
         icon={
-          <span className={s("circle-button-sm bg-white text-purple-reg")}>
+          <span className={s("rounded-full h-3xl w-3xl flex justify-center items-center bg-white text-purple-reg")}>
             <FaPaperPlane />
           </span>
         }

@@ -3,7 +3,6 @@
 
 @tailwind utilities;
 
-
 /* Scroll bar */
 .hide-scrollbar::-webkit-scrollbar {
   width: 0px !important; /* Remove scrollbar space */
@@ -22,7 +21,11 @@
 
 /* Borders and separators */
 .horizontal-separator {
-	@apply border-t border-l-0 border-r-0 border-b-0 border-solid border-gray-200 w-full;
+	@apply border-t border-l-0 border-r-0 border-b-0 border-solid border-gray-300 w-full;
+}
+
+.underline-border {
+  @apply border-t-0 border-l-0 border-r-0 border-b-2 border-solid;
 }
 
 /* Primary styles */
@@ -32,25 +35,4 @@
 
 .primary-underline {
   border-bottom: 2px solid #FFFFFF33 !important;
-}
-
-/* Buttons */
-.circle-button-sm, .circle-button, .circle-button-lg {
-  @apply rounded-full flex items-center justify-center !important;
-}
-
-.circle-button-sm {
-  @apply text-reg !important;
-  height: 32px !important;
-  width: 32px !important;
-}
-
-.circle-button {
-  @apply text-reg !important;
-  height: 40px !important;
-  width: 40px !important;
-}
-
-.circle-button-lg {
-  @apply h-4xl w-4xl text-lg !important;
 }

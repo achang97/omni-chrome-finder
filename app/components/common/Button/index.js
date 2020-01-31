@@ -4,46 +4,39 @@ import style from './button.css';
 import { getStyleApplicationFn } from '../../../utils/styleHelpers';
 const s = getStyleApplicationFn(style);
 
+const getClassNames = (color, underline) => {
+	switch (color) {
+		case 'primary':
+			return {
+				outerClassName: `primary-gradient text-white`,
+				innerClassName: underline ? 'primary-underline' : ''
+			}
+		case 'secondary':
+		case 'transparent':
+			return {
+				outerClassName: `button-${color}`,
+				innerClassName: underline ? `button-underline-${color}` : ''
+			}
+		default:
+			return {};
+	}
+}
 
-export default class Button extends Component {
-	constructor(props) {
-		super(props);
+const Button = (props) => {
+	const { text, textClassName, icon, iconLeft, className, underline, color, onClick } = props;
+	const { outerClassName = '', innerClassName = '' } = getClassNames(color, underline);
+
+	const protectedOnClick = () => {
+		if (onClick) onClick();
 	}
 
-	onClick = () => {
-		if (this.props.onClick) this.props.onClick();
-	}
-
-	getClassNames = (color, underline) => {
-		switch (color) {
-			case 'primary':
-				return {
-					outerClassName: `primary-gradient text-white`,
-					innerClassName: underline ? 'primary-underline' : ''
-				}
-			case 'secondary':
-			case 'transparent':
-				return {
-					outerClassName: `button-${color}`,
-					innerClassName: underline ? `button-underline-${color}` : ''
-				}
-			default:
-				return {};
-		}
-	}
-
-	render() {
-		const { text, textClassName, icon, iconLeft, className, underline, color } = this.props;
-		const { outerClassName = '', innerClassName = '' } = this.getClassNames(color, underline);
-
-		return (
-			<div className={s(`${className} flex justify-center shadow-md button-container ${outerClassName}`)} onClick={() => this.onClick()}>
-				{ iconLeft && icon }
-				<div className={s(`button-text ${innerClassName} ${textClassName}`)}>{text}</div>
-				{ !iconLeft && icon }
-			</div>
-		);
-	}
+	return (
+		<div className={s(`button-container button-hover ${className} ${outerClassName}`)} onClick={protectedOnClick}>
+			{ iconLeft && icon }
+			<div className={s(`button-text ${innerClassName} ${textClassName}`)}>{text}</div>
+			{ !iconLeft && icon }
+		</div>
+	);
 }
 
 Button.propTypes = {
@@ -67,3 +60,5 @@ Button.defaultProps = {
 	iconLeft: true,
 	color: 'primary',
 }
+
+export default Button;

@@ -2,17 +2,19 @@ import React, { Component, useMemo } from 'react';
 import PropTypes from 'prop-types';
 import { MdCheck, MdArrowDropDown, MdMoreHoriz, MdModeEdit, MdThumbUp, MdBookmarkBorder, MdPerson, MdAttachment } from "react-icons/md";
 import { FaSlack } from "react-icons/fa";
-
 import { bindActionCreators } from 'redux';
 import { EditorState } from 'draft-js';
 import { connect } from 'react-redux';
-import { editCard, saveCard } from '../../../actions/display';
+import { editCard, saveCard, openCardSideDock, closeCardSideDock } from '../../../actions/display';
 import TextEditor from '../../editors/TextEditor';
 import Button from '../../common/Button';
+
 import CardStatus from '../CardStatus';
+import CardTag from '../CardTags/CardTag';
 import { Resizable } from 're-resizable';
 import {useDropzone} from 'react-dropzone';
 import Dropzone from 'react-dropzone'
+import CardSideDock from '../CardSideDock';
 
 import style from './card-content.css';
 import { getStyleApplicationFn } from '../../../utils/styleHelpers';
@@ -101,6 +103,8 @@ function StyledDropzone(props) {
   dispatch => bindActionCreators({
     editCard,
     saveCard,
+    openCardSideDock,
+    closeCardSideDock,
   }, dispatch)
 )
 
@@ -121,6 +125,7 @@ class CardContent extends Component {
     	footerHeight: 0,
     	descriptionSectionHeight: MIN_QUESTION_HEIGHT,
     	showMessageManager: false,
+    	isModalOpen: false,
     };
   }
 
@@ -156,15 +161,14 @@ class CardContent extends Component {
   }
 
   editCard = (id) => {
-  	this.props.editCard(id);
-  	this.enableAnswerEditor();
+    this.props.editCard(id);
+    this.enableAnswerEditor();
   }
 
   saveCard = (id) => {
     this.setState({ descriptionEditorEnabled: false });
     this.props.saveCard(id, this.state.answerEditorState, this.state.descriptionEditorState);
   }
-
 
   onAnswerEditorStateChange = (editorState) => {
     this.setState({answerEditorState : editorState });
@@ -206,8 +210,8 @@ class CardContent extends Component {
 }
 
   renderHeader = () => {
-  	const { id, isEditing, tags } = this.props;
-    const { descriptionEditorEnabled } = this.state;
+  	const { id, isEditing, tags, sideDockOpen, openCardSideDock, closeCardSideDock} = this.props;
+    const { descriptionEditorEnabled,isSideDockVisible } = this.state;
     
   	return (
   		<Resizable
@@ -226,8 +230,10 @@ class CardContent extends Component {
           <strong className={s("text-xs text-purple-reg pt-xs pb-sm flex items-center justify-between opacity-75")}>
             <div>2 Days Ago</div>
             <div className={s("flex items-center")}>
-              <MdMoreHoriz />
-        	</div>
+	            <button onClick={() => openCardSideDock(id)}>
+                  <MdMoreHoriz />
+                </button>
+            </div>
           </strong>
           <div className={s("text-2xl font-semibold")}>How do I delete a user? ({id})</div>
           { isEditing ?
@@ -278,7 +284,7 @@ class CardContent extends Component {
 	            <div className={s("flex items-center justify-between")}>
 	              <div className={s("flex items-center")}>
 	                { ['Customer Request Actions', 'Onboarding'].map(tag => (
-	                  <div key={tag} className={s("flex items-center padding-6 mr-xs bg-purple-gray-10 text-purple-reg rounded-full font-semibold text-xs")}>
+	                  <div key={tag} onClick={() => openCardSideDock(id)} className={s("flex items-center padding-6 mr-xs bg-purple-gray-10 text-purple-reg rounded-full font-semibold text-xs")}>
 	                    <div className={s("mr-xs")}>Customer Request Actions</div>
 	                  </div> 
 	                ))}
@@ -419,16 +425,22 @@ class CardContent extends Component {
   	)
   }
 
+
   render() {
-    const { id, isEditing, answerEditorState, tags } = this.props;
-    const { descriptionEditorEnabled, answerEditorEnabled } = this.state;
+    const { id, isEditing, answerEditorState, tags, sideDockOpen, openCardSideDock, closeCardSideDock } = this.props;
+    const { descriptionEditorEnabled, answerEditorEnabled, isSideDockVisible } = this.state;
     return (
-      <div className={s("flex-grow flex flex-col min-h-0")}>
+      <div className={s("flex-grow flex flex-col min-h-0 relative")}>
       	<div className={s("flex-grow flex flex-col min-h-0")}>
 	        { this.renderHeader() }
 	        { this.renderAnswer() }
+
         </div>
         { this.renderFooter() }
+        <CardSideDock
+          isVisible={sideDockOpen}
+          onClose={() => closeCardSideDock(id)}
+        />
       </div>
     );
   }

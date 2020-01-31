@@ -1,0 +1,36 @@
+.modal, .modal-overlay {
+	transition: all 0.3s;
+	opacity: 0;
+	visibility: hidden;
+}
+
+.modal {
+	@apply absolute bg-white flex flex-col rounded-lg;
+    top: 50%;
+    left: 10%;
+    right: 10%;
+    max-height: 80%;
+	z-index: 101;
+}
+
+.modal-overlay {
+	@apply absolute top-0 left-0 right-0 bottom-0 bg-gray-overlay;
+	z-index: 100;
+}
+
+.modal-header {
+	@apply bg-purple-light flex items-center justify-between p-lg bg-purple-gray-10;
+}
+
+.modal-body {
+	@apply overflow-auto;
+}
+
+.modal-show > .modal-overlay, .modal-show > .modal {
+	opacity: 1;
+	visibility: visible;
+}
+
+.modal-show > .modal {
+	transform: translate(0, -50%) scale(1);
+}
