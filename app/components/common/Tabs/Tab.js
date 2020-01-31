@@ -6,51 +6,45 @@ import style from './tabs.css';
 import { getStyleApplicationFn } from '../../../utils/styleHelpers';
 const s = getStyleApplicationFn(style);
 
-class Tab extends Component {
-  constructor(props) {
-    super(props);
-  }
+const Tab = (props) => {
+  const {
+		isActive, label,
+		onTabClick,
+		rippleClassName, tabContainerClassName, tabClassName, activeTabClassName, inactiveTabClassName,
+		color, indicatorColor, showIndicator,
+		showRipple,
+		children,
+		...rest
+	} = props;
 
-  render() {
-    const {
-			isActive, label,
-			onTabClick,
-			rippleClassName, tabContainerClassName, tabClassName, activeTabClassName, inactiveTabClassName,
-			color, indicatorColor, showIndicator,
-			showRipple,
-			children,
-			...rest
-		} = this.props;
+  const activeTabStyle = {
+    borderBottom: (color || indicatorColor) ? `2px solid ${indicatorColor || color}` : null,
+  };
 
-    const activeTabStyle = {
-      borderBottom: (color || indicatorColor) ? `2px solid ${indicatorColor || color}` : null,
-    };
+  const renderButton = () => (
+    <div
+      {...rest}
+      onClick={onTabClick}
+      style={{ color }}
+      className={s(`
+				tab button-hover ${tabClassName}
+				${isActive ?
+					`${activeTabClassName}` :
+					`tab-inactive ${inactiveTabClassName}`}
+			`)}
+    >
+      {label || children}
+    </div>
+	);
 
-    const renderButton = () => (
-      <button
-        {...rest}
-        onClick={onTabClick}
-        style={{ color }}
-        className={s(`
-					tab p-reg ${tabClassName}
-					${isActive ?
-						`${activeTabClassName}` :
-						`opacity-50 ${inactiveTabClassName}`}
-				`)}
-      >
-        {label || children}
-      </button>
-		);
-
-    return (
-      <div className={s(tabContainerClassName)} style={(isActive && showIndicator) ? activeTabStyle : null} {...rest}>
-        { showRipple ?
-          <Ripples className={s(`rounded h-full ${rippleClassName}`)}> {renderButton()} </Ripples> :
-					renderButton()
-				}
-      </div>
-    );
-  }
+  return (
+    <div className={s(tabContainerClassName)} style={(isActive && showIndicator) ? activeTabStyle : null} {...rest}>
+      { showRipple ?
+        <Ripples className={s(`rounded h-full ${rippleClassName}`)}> {renderButton()} </Ripples> :
+				renderButton()
+			}
+    </div>
+  );
 }
 
 Tab.propTypes = {

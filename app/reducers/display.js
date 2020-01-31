@@ -8,6 +8,11 @@ const initialState = {
   activeCardIndex: -1,
 };
 
+const getNewCards = (id, newInfo, cards) => {
+  const newCards = cards.map((card, i) => card.id === id ? { ...card, ...newInfo } : card);
+  return newCards;
+}
+
 export default function display(state = initialState, action) {
   const { type, payload = {} } = action;
 
@@ -21,7 +26,7 @@ export default function display(state = initialState, action) {
 
     case types.OPEN_CARD: {
       const { id } = payload;
-      const newCards = _.union(state.cards, [{ id, isEditing: false, answerEditorState: {}, }]);
+      const newCards = _.union(state.cards, [{ id, isEditing: false, sideDockOpen: false, answerEditorState: {} }]);
       return { ...state, cards: newCards, activeCardIndex: newCards.length - 1 };
     }
     case types.SET_ACTIVE_CARD_INDEX: {
@@ -41,19 +46,25 @@ export default function display(state = initialState, action) {
 
       return { ...state, cards: newCards, activeCardIndex };
     }
+    case types.OPEN_CARD_SIDE_DOCK: {
+      const { id } = payload;
+      const newCards = getNewCards(id, { sideDockOpen: true }, state.cards);
+      return { ...state, cards: newCards };
+    }
+    case types.CLOSE_CARD_SIDE_DOCK: {
+      const { id } = payload;
+      const newCards = getNewCards(id, { sideDockOpen: false }, state.cards);
+      return { ...state, cards: newCards };
+    }
 
     case types.EDIT_CARD: {
       const { id } = payload;
-      const newCards = state.cards.map((card, i) => card.id === id ? { ...card, isEditing: true } : card);
-
+      const newCards = getNewCards(id, { isEditing: true }, state.cards);
       return { ...state, cards: newCards };
-
     }
-
     case types.SAVE_CARD: {
       const { id, answerState, descriptionState } = payload;
-      const newCards = state.cards.map((card, i) => card.id === id ? { ...card, answerEditorState: answerState, descriptionEditorState: descriptionState, isEditing: false } : card);
-
+      const newCards = getNewCards(id, { answerEditorState: answerState, descriptionEditorState: descriptionState, isEditing: false }, state.cards);
       return { ...state, cards: newCards };
     }
 

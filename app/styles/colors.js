@@ -10,7 +10,8 @@ exports.colors = {
   gray: {
     xlight: '#211A1D0D',
     light: '#211A1D40',
-    dark: '#211A1DBF'
+    dark: '#211A1DBF',
+    overlay: '#081B3E80',
   },
   green: {
     xlight: '#E3F2EB',

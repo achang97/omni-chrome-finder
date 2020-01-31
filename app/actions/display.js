@@ -33,3 +33,11 @@ export function editCard(id) {
 export function saveCard(id, answerEditorState, descriptionEditorState) {
   return { type: types.SAVE_CARD, payload: { id, answerEditorState, descriptionEditorState } };
 }
+
+export function openCardSideDock(id) {
+  return { type: types.OPEN_CARD_SIDE_DOCK, payload: { id } };
+}
+
+export function closeCardSideDock(id) {
+  return { type: types.CLOSE_CARD_SIDE_DOCK, payload: { id } };
+}

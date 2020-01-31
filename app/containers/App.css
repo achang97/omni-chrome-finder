@@ -29,6 +29,9 @@
 
 .app-container button:hover {
   all: unset;
+}
+
+.app-container button:hover, .app-container .button-hover:hover {
   cursor: pointer !important;
   opacity: 0.8;
 }

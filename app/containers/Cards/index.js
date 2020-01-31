@@ -54,14 +54,16 @@ export default class Cards extends Component {
 
     return (
       <div className={s("px-reg flex flex-shrink-0")}>
-        <button className={s("mr-sm")}>
-          <MdMoreHoriz color={colors.purple['gray-50']} />
-        </button>
         <button onClick={() => closeAllCards()}>
           <MdClose color={colors.purple['gray-50']} />
         </button>
       </div>
     );
+  }
+
+  changeTab = (tabValue) => {
+    const { setActiveCardIndex } = this.props;
+    setActiveCardIndex(tabValue);
   }
 
   renderTabHeader = () => {
@@ -74,7 +76,7 @@ export default class Cards extends Component {
           className={s("flex-1")}
           tabClassName={s("card-tab pr-0 rounded-t-lg rounded-b-0 text-xs font-medium flex items-center justify-between")}
           activeTabClassName={s("bg-purple-light")}
-          onTabClick={setActiveCardIndex}
+          onTabClick={this.changeTab}
           showRipple={false}
           scrollButtonColor={colors.purple['gray-50']}
         >
@@ -126,7 +128,12 @@ export default class Cards extends Component {
             enable={{ top: false, right: true, bottom: true, left: false, topRight: false, bottomRight: true, bottomLeft: false, topLeft: false }}
           >
             { this.renderTabHeader() }
-            <CardContent {...cards[activeCardIndex]} cardWidth={this.state.cardsWidth} cardHeight={this.state.cardsHeight} tags={['Customer Onboarding', 'Sales']}/>
+            <CardContent
+              {...cards[activeCardIndex]}
+              cardWidth={this.state.cardsWidth}
+              cardHeight={this.state.cardsHeight}
+              tags={['Customer Onboarding', 'Sales']}
+            />
           </Resizable>
         </Draggable>
       </div>
