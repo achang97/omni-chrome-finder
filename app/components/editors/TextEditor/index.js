@@ -40,7 +40,6 @@ export default class TextEditor extends Component {
 	        toolbar={editorType === 'CARD' ? CARD_TOOLBAR_PROPS : EXTENSION_TOOLBAR_PROPS}
           toolbarHidden={toolbarHidden}
           readOnly={readOnly}
-
 	      />
 		)
 	}

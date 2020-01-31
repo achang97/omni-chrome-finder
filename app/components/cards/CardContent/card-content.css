@@ -7,6 +7,18 @@
 	max-height: 165px !important;
 }
 
+/* MESSAGE DISPLAY SECTION */
+.message-manager-container {
+	max-height: 165px;
+	border: 1px solid #7A7BAA33;
+	background: #7A7BAA05;
+	min-height: 30px;
+}
+
+.message-photo-container {
+	height: 48px;
+	width: 48px;
+}
 /* 
 =========================
 Answer TEXT EDITORS 
@@ -15,12 +27,12 @@ Answer TEXT EDITORS
 
 /* Wrappers */
 .card-answer-text-editor-wrapper-edit {
-  display: block !important;
+  display: flex !important;
   height: 100%!important;
 }
 
 .card-answer-text-editor-wrapper-inactive {
-	display: block !important;
+	display: flex !important;
   	height: 100% !important;
 	background-image: linear-gradient(143deg, #777BAD1A 0%, #A0A1CD1A 100%);
 	border-radius: 8px;
@@ -47,18 +59,17 @@ DESCRIPTION TEXT EDITORS
 
 .card-description-text-editor-wrapper-view {
 	margin-top: 8px;
+	border-radius: 0 !important;
 }
 
 .card-description-text-editor-wrapper-edit {
-	display: block !important;
+	display: flex !important;
   	height: 100% !important;
   	margin-top: 10px !important;
 }
 
 .card-description-text-editor-wrapper-inactive {
-	display: block !important;
-  	height: 100% !important;
-  	margin-top: 10px !important;
+	display: flex !important;
 	background-image: linear-gradient(143deg, #777BAD1A 0%, #A0A1CD1A 100%);
 	border-radius: 8px;
 	border: 0 !important;
@@ -73,6 +84,7 @@ DESCRIPTION TEXT EDITORS
 	border-radius: 0 0 8px 8px !important;
 	justify-content: space-between !important;
 	border: 0 !important;
+	border-radius: 0 !important;
 }
 
 

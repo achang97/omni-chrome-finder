@@ -345,6 +345,7 @@ class Ask extends Component {
     
     return (
       <div className={s("p-lg")}>
+      	<div onClick={this.openCard}> Open Card </div>
         <input
           onChange={this.onShowRelatedQuestions}
           placeholder="Let's find what you're looking for"
