@@ -1,6 +1,6 @@
-import React, { Component } from 'react';
+import React, { Component, useMemo } from 'react';
 import PropTypes from 'prop-types';
-import { MdCheck, MdArrowDropDown, MdMoreHoriz, MdModeEdit, MdThumbUp, MdBookmarkBorder, MdPerson } from "react-icons/md";
+import { MdCheck, MdArrowDropDown, MdMoreHoriz, MdModeEdit, MdThumbUp, MdBookmarkBorder, MdPerson, MdAttachment } from "react-icons/md";
 import { FaSlack } from "react-icons/fa";
 
 import { bindActionCreators } from 'redux';
@@ -11,14 +11,15 @@ import TextEditor from '../../editors/TextEditor';
 import Button from '../../common/Button';
 import CardStatus from '../CardStatus';
 import { Resizable } from 're-resizable';
-
+import {useDropzone} from 'react-dropzone';
+import Dropzone from 'react-dropzone'
 
 import style from './card-content.css';
 import { getStyleApplicationFn } from '../../../utils/styleHelpers';
 const s = getStyleApplicationFn(style);
 
 const TABS_HEIGHT = 51;
-const MIN_ANSWER_HEIGHT = 165;
+const MIN_ANSWER_HEIGHT = 180;
 const MIN_QUESTION_HEIGHT = 180;
 
 const PLACEHOLDER_MESSAGES = [
@@ -36,6 +37,63 @@ const PLACEHOLDER_MESSAGES = [
 	},
 ];
 
+const baseStyle = {
+  flex: 1,
+  display: 'flex',
+  flexDirection: 'column',
+  alignItems: 'center',
+  borderWidth: 2,
+  borderRadius: 8,
+  paddingHorizontal: 10,
+  borderColor: '#eeeeee',
+  borderStyle: 'dashed',
+  backgroundColor: '#fafafa',
+  color: '#bdbdbd',
+  outline: 'none',
+  transition: 'border .24s ease-in-out'
+};
+
+const activeStyle = {
+  borderColor: '#2196f3'
+};
+
+const acceptStyle = {
+  borderColor: '#00e676'
+};
+
+const rejectStyle = {
+  borderColor: '#ff1744'
+};
+
+function StyledDropzone(props) {
+  const {
+    getRootProps,
+    getInputProps,
+    isDragActive,
+    isDragAccept,
+    isDragReject
+  } = useDropzone({accept: 'image/*'});
+
+  const style = useMemo(() => ({
+    ...baseStyle,
+    ...(isDragActive ? activeStyle : {}),
+    ...(isDragAccept ? acceptStyle : {}),
+    ...(isDragReject ? rejectStyle : {})
+  }), [
+    isDragActive,
+    isDragReject
+  ]);
+
+  return (
+    <div className="container">
+      <div {...getRootProps({style})}>
+        <input {...getInputProps()} />
+        <p className={s("m-0 text-sm text-purple-reg")}>Drag Files Here or Click to Add</p>
+      </div>
+    </div>
+  );
+}
+
 @connect(
   state => ({
 
@@ -46,9 +104,15 @@ const PLACEHOLDER_MESSAGES = [
   }, dispatch)
 )
 
+
+
+
+
+
 class CardContent extends Component {
   constructor(props) {
     super(props);
+  
     this.state = {
     	answerEditorState: EditorState.createEmpty(),
     	descriptionEditorState: EditorState.createEmpty(),
@@ -57,7 +121,7 @@ class CardContent extends Component {
     	footerHeight: 0,
     	descriptionSectionHeight: MIN_QUESTION_HEIGHT,
     	showMessageManager: false,
-    }
+    };
   }
 
   componentDidMount() {
@@ -118,9 +182,33 @@ class CardContent extends Component {
   	this.setState({ showMessageManager: !this.state.showMessageManager });
   }
 
+  renderDropZone =  (props) => {
+  const {acceptedFiles, getRootProps, getInputProps} = useDropzone();
+  
+  const files = acceptedFiles.map(file => (
+    <li key={file.path}>
+      {file.path} - {file.size} bytes
+    </li>
+  ));
+
+  return (
+    <section className="container">
+      <div {...getRootProps({className: 'dropzone'})}>
+        <input {...getInputProps()} />
+        <p>Drag 'n' drop some files here, or click to select files</p>
+      </div>
+      <aside>
+        <h4>Files</h4>
+        <ul>{files}</ul>
+      </aside>
+    </section>
+  );
+}
+
   renderHeader = () => {
   	const { id, isEditing, tags } = this.props;
     const { descriptionEditorEnabled } = this.state;
+    
   	return (
   		<Resizable
             className={s("bg-purple-light py-sm px-2xl min-h-0 flex-shrink-0 flex flex-col")}
@@ -144,27 +232,37 @@ class CardContent extends Component {
           <div className={s("text-2xl font-semibold")}>How do I delete a user? ({id})</div>
           { isEditing ?
 
-            	
-            		descriptionEditorEnabled ?
-            		<TextEditor 
-            			onEditorStateChange={this.onDescriptionEditorStateChange} 
-            			editorState={this.state.descriptionEditorState} 
-	        			wrapperClassName={s('card-description-text-editor-wrapper-edit flex flex-col flex-grow min-h-0 my-reg')} 
-	        			editorClassName={s('text-editor overflow-auto bg-white')} 
-	        			toolbarClassName={s('text-editor-toolbar')}
-	        			autoFocus />
- 					:
- 					<div className={s("flex-grow my-reg flex flex-col flex-grow min-h-0")} onClick={() => this.enableDescriptionEditor()} >
-	            		<TextEditor
-	            			onClick={() => this.enableDescriptionEditor()}
+            	<div className={s('flex-grow min-h-0 flex flex-col min-h-0')}>
+		        	{
+	            		descriptionEditorEnabled ?
+	            		<TextEditor 
 	            			onEditorStateChange={this.onDescriptionEditorStateChange} 
-	            			editorState={this.state.descriptionEditorState}
-	        				wrapperClassName={s('card-description-text-editor-wrapper-inactive cursor-pointer flex flex-col flex-grow min-h-0')} 
-	        				editorClassName={s('text-editor card-description-text-editor-view overflow-auto')} 
-	        				toolbarClassName={s('')}
-	        				toolbarHidden
-	        				readOnly/>
-        			</div>
+	            			editorState={this.state.descriptionEditorState} 
+		        			wrapperClassName={s('card-description-text-editor-wrapper-edit flex flex-col flex-grow min-h-0 my-reg')} 
+		        			editorClassName={s('text-editor overflow-auto bg-white')} 
+		        			toolbarClassName={s('text-editor-toolbar')}
+		        			autoFocus />
+	 					:
+	 					<div className={s("flex-grow my-reg flex flex-col flex-grow min-h-0")} onClick={() => this.enableDescriptionEditor()} >
+		            		<TextEditor
+		            			onClick={() => this.enableDescriptionEditor()}
+		            			onEditorStateChange={this.onDescriptionEditorStateChange} 
+		            			editorState={this.state.descriptionEditorState}
+		        				wrapperClassName={s('card-description-text-editor-wrapper-inactive cursor-pointer flex flex-col flex-grow min-h-0')} 
+		        				editorClassName={s('text-editor card-description-text-editor-view overflow-auto')} 
+		        				toolbarClassName={s('')}
+		        				toolbarHidden
+		        				readOnly/>
+	        			</div>
+	        		}
+	        		<div className={s("flex justify-between")}>
+		        		<div className={s("flex text-purple-reg text-sm cursor-pointer element-underline items-center")}> 
+		        			<MdAttachment className={s("mr-sm")} />
+		        			<div >3 Attachments</div>
+		        		</div>
+		        		<StyledDropzone />
+					</div>
+        		</div>
         		: 
         		<TextEditor 
         			onEditorStateChange={this.onDescriptionEditorStateChange} 
@@ -180,15 +278,25 @@ class CardContent extends Component {
 	            <div className={s("flex items-center justify-between")}>
 	              <div className={s("flex items-center")}>
 	                { ['Customer Request Actions', 'Onboarding'].map(tag => (
-	                  <div key={tag} className={s("flex items-center p-xs mr-xs bg-purple-gray-10 text-purple-reg rounded-full font-semibold text-xs")}>
+	                  <div key={tag} className={s("flex items-center padding-6 mr-xs bg-purple-gray-10 text-purple-reg rounded-full font-semibold text-xs")}>
 	                    <div className={s("mr-xs")}>Customer Request Actions</div>
 	                  </div> 
 	                ))}
 	              </div>
-	              <div className={s("flex items-center p-sm bg-green-xlight text-green-reg rounded-lg font-semibold text-xs")}> 
-	                <MdCheck className={s("mr-xs")} />
-	                <div>Up To Date</div>
-	                <MdArrowDropDown />
+	              <div className={s("flex")}>
+	              	  <Button 
+	              	  	text={"2"}
+	              	  	iconLeft={false}
+	              	  	icon={<MdAttachment className={s("ml-xs")} />}
+	              	  	color={"secondary"}
+	              	  	className={s("py-sm px-reg rounded-full")}
+	              	  />
+	              	  <div className={s("width-1 bg-gray-xlight mx-sm")} ></div>
+		              <div className={s("flex items-center shadow-md p-sm bg-green-xlight text-green-reg rounded-lg font-semibold text-xs")}> 
+		                <MdCheck className={s("mr-xs")} />
+		                <div>Up To Date</div>
+		                <MdArrowDropDown />
+		              </div>
 	              </div>
 	            </div>
 			}
@@ -213,7 +321,7 @@ class CardContent extends Component {
 			        		toolbarClassName={'text-editor-toolbar'}
 			        		autoFocus />
 			        	:
-			        	<div className={s("flex-grow my-reg flex flex-col flex-grow min-h-0")} onClick={() => this.enableAnswerEditor()} >
+			        	<div className={s("flex-grow mb-reg flex flex-col flex-grow min-h-0")} onClick={() => this.enableAnswerEditor()} >
 				        	<TextEditor 
 				        		onEditorStateChange={this.onAnswerEditorStateChange} 
 				        		editorState={this.state.answerEditorState} 
@@ -228,7 +336,6 @@ class CardContent extends Component {
 		        	<Button 
 		        		text={"Manage Message Display"}
 		        		color={"transparent"}
-		        		onClick={() => this.toggleMessageManager()}
 		        		className={s("flex justify-between shadow-none")}
 		        		icon={ <FaSlack /> } 
 		        		iconLeft={false}
@@ -330,5 +437,6 @@ class CardContent extends Component {
 CardContent.propTypes = {
   tags: PropTypes.arrayOf(PropTypes.string).isRequired,
 }
+
 
 export default CardContent;

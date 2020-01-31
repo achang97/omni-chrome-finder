@@ -7,6 +7,38 @@
 	max-height: 165px !important;
 }
 
+.element-underline {
+	border-bottom: 2px solid #777BAD33;
+}
+
+.width-1 {
+	width: 1px;
+}
+
+.padding-6 {
+	padding: 6px !important;
+}
+
+
+/* File DropZone Styles */
+.baseStyle {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  border-width: 2;
+  border-color: #eeeeee;
+  border-style: dashed;
+  background-color: #fafafa;
+  outline: none;
+}
+
+
+
+.card-dropzone-text {
+	margin: 0 !important;
+}
+
 /* MESSAGE DISPLAY SECTION */
 .message-manager-container {
 	max-height: 165px;
@@ -29,6 +61,7 @@ Answer TEXT EDITORS
 .card-answer-text-editor-wrapper-edit {
   display: flex !important;
   height: 100%!important;
+  margin-top: 0 !important;
 }
 
 .card-answer-text-editor-wrapper-inactive {
@@ -38,6 +71,7 @@ Answer TEXT EDITORS
 	border-radius: 8px;
 	border: 0 !important;
 	padding: 10px !important;
+	margin-top: 0 !important;
 }
 
 /* Editors */
