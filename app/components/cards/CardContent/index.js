@@ -8,6 +8,8 @@ import { connect } from 'react-redux';
 import { editCard, saveCard, openCardSideDock, closeCardSideDock } from '../../../actions/display';
 import TextEditor from '../../editors/TextEditor';
 import Button from '../../common/Button';
+import Modal from '../../common/Modal';
+import CheckBox from '../../common/CheckBox';
 
 import CardStatus from '../CardStatus';
 import CardTag from '../CardTags/CardTag';
@@ -34,6 +36,12 @@ const PLACEHOLDER_MESSAGES = [
 	{
 		senderName: 'Andrew Chang',
 		message: 'What up bro how u doin',
+		time: 'Today at 3:52 PM',
+		selected: true,
+	},
+	{
+		senderName: 'Chetan Rane',
+		message: 'Savings her pleased are several started females met. Short her not among being any. Thing of judge fruit charm views do. Miles mr an forty along as he. She education get middleton day agreement performed preserved unwilling. Do however as pleased offence outward beloved by present. By outward neither he so covered amiable greater. Juvenile proposal betrayed he an informed weddings followed. Precaution day see imprudence sympathize principles. At full leaf give quit to in they up.',
 		time: 'Today at 3:52 PM',
 		selected: true,
 	},
@@ -283,11 +291,15 @@ class CardContent extends Component {
             { !isEditing &&
 	            <div className={s("flex items-center justify-between")}>
 	              <div className={s("flex items-center")}>
-	                { ['Customer Request Actions', 'Onboarding'].map(tag => (
-	                  <div key={tag} onClick={() => openCardSideDock(id)} className={s("flex items-center padding-6 mr-xs bg-purple-gray-10 text-purple-reg rounded-full font-semibold text-xs")}>
-	                    <div className={s("mr-xs")}>Customer Request Actions</div>
-	                  </div> 
-	                ))}
+	                { ['Customer Request Actions', 'Onboarding'].map((tag) => {
+
+		                return (
+		                  <div key={tag} onClick={() => openCardSideDock(id)} className={s("flex items-center padding-6 mr-xs bg-purple-gray-10 text-purple-reg rounded-full font-semibold text-xs")}>
+		                    <div className={s("mr-xs")}>{tag}</div>
+		                  </div> 
+		   				)
+	   			 	 })
+	            	}
 	              </div>
 	              <div className={s("flex")}>
 	              	  <Button 
@@ -344,15 +356,23 @@ class CardContent extends Component {
 		        		color={"transparent"}
 		        		className={s("flex justify-between shadow-none")}
 		        		icon={ <FaSlack /> } 
+		        		onClick={() => this.toggleMessageManager()}
 		        		iconLeft={false}
 		        		underline
 		        	/>
-		        	{
-		        		this.state.showMessageManager ?
-		        		<div className={s("message-manager-container rounded-lg flex-grow flex flex-col overflow-auto mt-reg")}> 
-		        			{PLACEHOLDER_MESSAGES.map((messageObj, i) => (
-		        				<div className={s("flex p-reg")}>
-		        					<div className={s("message-photo-container rounded-lg bg-purple-reg flex-shrink-0 text-white flex justify-center mr-reg items-center")}>
+
+		        	<Modal 
+		        		isOpen={this.state.showMessageManager} 
+		        		onRequestClose={() => {this.setState({ showMessageManager: false})}}
+		        		headerClassName={s("bg-purple-light rounded-lg")}
+		        		bodyClassName={s("overflow-none flex flex-col rounded-b-lg")}
+		        		className={s("bg-purple-light")}
+		        		overlayClassName={s("rounded-b-lg")}
+		        		title={"Unselect messages you do not want shown"}>
+			      		<div className={s("message-manager-container bg-purple-light mx-lg mb-lg rounded-lg overflow-auto")}>
+			      			{PLACEHOLDER_MESSAGES.map((messageObj, i) => (
+		        				<div className={s(`flex p-reg   ${ i % 2 === 0 ? '' : 'bg-purple-gray-10' } `)}>
+		        					<div className={s("message-photo-container rounded-lg bg-purple-reg flex-shrink-0 text-white flex justify-center mr-reg items-center shadow-md")}>
 		        						<MdPerson />
 		        					</div>
 		        					<div className={s("flex flex-col flex-grow")}> 
@@ -362,15 +382,17 @@ class CardContent extends Component {
 		        						</div>
 		        						<div className={s("mt-sm text-sm")}> {messageObj.message}</div>
 		        					</div>
-		        					<div className={s("flex-shrink-0")}>
-		        						Check
-		        					</div>
+		        					<CheckBox className={s("flex-shrink-0")}/>
 		        				</div>
-					          ))}
-		        		</div>
-		        		:
-		        		null
-		        	}
+					        ))}
+			      		</div>
+			      		<Button
+				        	color={"primary"}
+				        	text={"Save"}
+				        	className={s("rounded-t-none")}
+				        	
+				        />
+			      	</Modal>		        	
 	        	</div>
 	        	:
 	        	<TextEditor 

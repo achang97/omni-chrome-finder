@@ -7,7 +7,7 @@ import style from './modal.css';
 import { getStyleApplicationFn } from '../../../utils/styleHelpers';
 const s = getStyleApplicationFn(style);
 
-const Modal = ({ isOpen, onRequestClose, shouldCloseOnOutsideClick, className, headerClassName, bodyClassName, title, children }) => {
+const Modal = ({ isOpen, onRequestClose, shouldCloseOnOutsideClick, className, headerClassName, bodyClassName, overlayClassName, title, children }) => {
 	const onOutsideClick = () => {
 		if (shouldCloseOnOutsideClick && onRequestClose) onRequestClose();
 	}
@@ -23,7 +23,7 @@ const Modal = ({ isOpen, onRequestClose, shouldCloseOnOutsideClick, className, h
 					{children}
 				</div>
 			</div>
-			<div className={s("modal-overlay")} onClick={onOutsideClick} />
+			<div className={s(`modal-overlay ${overlayClassName}`)} onClick={onOutsideClick} />
 		</div>
 	);
 }
@@ -35,11 +35,13 @@ Modal.propTypes = {
 	className: PropTypes.string,
 	headerClassName: PropTypes.string,
 	bodyClassName: PropTypes.string,
+	overlayClassName: PropTypes.string,
 	title: PropTypes.string,
 }
 
 Modal.defaultProps = {
 	shouldCloseOnOutsideClick: false,
+	overlayClassName: '',
 	headerClassName: '',
 	bodyClassName: '',
 	className: '',

@@ -12,6 +12,8 @@ exports.colors = {
     light: '#211A1D40',
     dark: '#211A1DBF',
     overlay: '#081B3E80',
+    'checkbox-border': '#7A7BAA33',
+    'checkbox-fill': '#E0E0EB',
   },
   green: {
     xlight: '#E3F2EB',

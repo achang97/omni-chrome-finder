@@ -20,6 +20,9 @@
 }
 
 
+
+
+
 /* File DropZone Styles */
 .baseStyle {
   flex: 1;
@@ -41,10 +44,7 @@
 
 /* MESSAGE DISPLAY SECTION */
 .message-manager-container {
-	max-height: 165px;
 	border: 1px solid #7A7BAA33;
-	background: #7A7BAA05;
-	min-height: 30px;
 }
 
 .message-photo-container {
