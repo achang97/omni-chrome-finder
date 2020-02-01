@@ -48,16 +48,17 @@
   border: 1px solid rgba(0,2,95,0.10);
   border-radius: 8px;
   color: black;
-  font-size: 13px;
+  font-size: 14px;
   letter-spacing: 0.3px;
   line-height: 22px;
-  padding: 8px;
+  height: 40px;
+  padding: 0px 8px;
   box-sizing: border-box;
   @apply font-medium;
 }
 
 .app-container input:not([type='checkbox']):focus {
-  @apply outline-purple-light;
+  @apply outline-purple-gray-10;
 }
 
 .app-container input:not([type='checkbox'])::placeholder {

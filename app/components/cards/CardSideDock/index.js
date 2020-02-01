@@ -2,21 +2,33 @@ import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 
 import { MdClose } from 'react-icons/md';
+import { FaRegTrashAlt } from 'react-icons/fa';
 
 import CardSection from '../CardSection';
 import CardUsers from '../CardUsers';
 import CardTags from '../CardTags';
 
+import Select from '../../common/Select';
+import Button from '../../common/Button';
+
+import { PERMISSION_OPTIONS, VERIFICATION_INTERVAL_OPTIONS } from '../../../utils/constants';
+import { createSelectOptions } from '../../../utils/selectHelpers';
+
 import style from './card-side-dock.css';
 import { getStyleApplicationFn } from '../../../utils/styleHelpers';
 const s = getStyleApplicationFn(style);
+
+const SELECT_PERMISSION_OPTIONS = createSelectOptions(PERMISSION_OPTIONS);
+const SELECT_VERIFICATION_INTERVAL_OPTIONS = createSelectOptions(VERIFICATION_INTERVAL_OPTIONS);
 
 class CardSideDock extends Component {
   constructor(props) {
     super(props);
 
     this.state = {
-      hasBeenToggled: false,
+      hasBeenToggled: props.isVisible, // If it starts out as visible, then say it's been toggled?
+      verificationInterval: null,
+      permission: null,
     }
   }
 
@@ -63,6 +75,58 @@ class CardSideDock extends Component {
     )
   }
 
+  renderVerificationPeriod = () => {
+    return (
+      <CardSection className={s("mt-reg")} title="Verification Period">
+        <Select
+          value={this.state.verificationInterval}
+          onChange={(verificationInterval) => this.setState({ verificationInterval })}
+          options={SELECT_VERIFICATION_INTERVAL_OPTIONS}
+          isSearchable
+          isClearable
+        />
+      </CardSection>
+    );
+  }
+
+  renderPermissions = () => {
+    return (
+      <CardSection className={s("mt-reg")} title="Permissions">
+        <Select
+          value={this.state.permission}
+          onChange={(permission) => this.setState({ permission })}
+          options={SELECT_PERMISSION_OPTIONS}
+          isSearchable
+          isClearable
+        />
+      </CardSection>
+    );
+  }
+
+  renderFooter = () => {
+    return (
+      <div className={s("pt-lg")}>
+        <div className={s("text-sm font-medium")}>
+          <div className={s("flex justify-between items-center")}>
+            <div className={s("text-gray-reg")}> Created on: </div>
+            <div className={s("text-purple-gray-50")}> Jan 13, 2020 </div>
+          </div>
+          <div className={s("flex justify-between items-center mt-sm")}>
+            <div className={s("text-gray-reg")}> Last edited: </div>
+            <div className={s("text-purple-gray-50")}> Jan 16, 2020 </div>
+          </div>
+        </div>
+        <Button
+          className={s("justify-between mt-lg bg-white text-red-500")}
+          text="Delete This Card"
+          textClassName={s("underline-border border-red-200")}
+          icon={<FaRegTrashAlt />}
+          iconLeft={false}
+        />
+      </div>
+    );
+  }
+
   render() {
     const { isVisible } = this.props;
     const { hasBeenToggled } = this.state;
@@ -70,10 +134,13 @@ class CardSideDock extends Component {
     return (
       <div className={s(`${hasBeenToggled ? (isVisible ? 'card-side-dock-slide-in' : 'card-side-dock-slide-out') : ''} overflow-hidden pointer-events-none rounded-b-lg absolute top-0 left-0 right-0 bottom-0 z-10`)}>
         <div className={s("card-side-dock-overlay")} onClick={this.closeSideDock} />
-        <div className={s("card-side-dock")}>
+        <div className={s("card-side-dock overflow-auto")}>
           { this.renderHeader() }
           { this.renderOwners() }
           { this.renderTags() }
+          { this.renderVerificationPeriod() }
+          { this.renderPermissions() }
+          { this.renderFooter() }
         </div>
       </div>
     );

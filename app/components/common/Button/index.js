@@ -58,7 +58,6 @@ Button.defaultProps = {
 	underline: true,
 	icon: null,
 	iconLeft: true,
-	color: 'primary',
 }
 
 export default Button;

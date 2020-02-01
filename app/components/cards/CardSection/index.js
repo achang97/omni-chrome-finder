@@ -27,9 +27,11 @@ class CardSection extends Component {
 		return (
 			<div className={className}>
 				<div className={s("flex mb-sm items-center")}>
-					<div className={s("font-semibold mr-reg text-sm text-black")}> {title} </div>
+					<div className={s("font-semibold mr-reg text-sm text-black button-hover")} onClick={this.toggleSection}>
+						{title}
+					</div>
 					{ isExpandable &&
-						<button className={s("text-gray-light")} onClick={this.toggleSection}>
+						<button className={s("text-gray-light flex items-center")} onClick={this.toggleSection}>
 							{ isExpanded ? <MdExpandLess /> : <MdExpandMore /> }
 						</button>
 					}

@@ -4,8 +4,10 @@ import _ from 'underscore';
 const initialState = {
   dockVisible: false,
   dockExpanded: false,
-  cards: [],
-  activeCardIndex: -1,
+  // cards: [],
+  // activeCardIndex: -1,
+  cards: [{ id: 100, isEditing: false, sideDockOpen: false, answerEditorState: {} }],
+  activeCardIndex: 0,
 };
 
 const getNewCards = (id, newInfo, cards) => {

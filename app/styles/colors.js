@@ -10,6 +10,7 @@ exports.colors = {
   gray: {
     xlight: '#211A1D0D',
     light: '#211A1D40',
+    reg: '#211A1D80',
     dark: '#211A1DBF',
     overlay: '#081B3E80',
   },

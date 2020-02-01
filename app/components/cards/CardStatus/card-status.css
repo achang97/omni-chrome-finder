@@ -1,0 +1,3 @@
+.card-status {
+	@apply flex items-center justify-between p-sm rounded-lg font-semibold text-xs;
+}
