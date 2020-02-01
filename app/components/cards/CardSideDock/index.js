@@ -7,6 +7,7 @@ import { FaRegTrashAlt } from 'react-icons/fa';
 import CardSection from '../CardSection';
 import CardUsers from '../CardUsers';
 import CardTags from '../CardTags';
+import CardAttachment from '../CardAttachment';
 
 import Select from '../../common/Select';
 import Button from '../../common/Button';
@@ -27,6 +28,7 @@ class CardSideDock extends Component {
 
     this.state = {
       hasBeenToggled: props.isVisible, // If it starts out as visible, then say it's been toggled?
+      keywords: [],
       verificationInterval: null,
       permission: null,
     }
@@ -58,10 +60,29 @@ class CardSideDock extends Component {
       <CardSection title="Owner(s)">
         <CardUsers
           users={users}
-          isEditable={true}
-          onAddClick={() => console.log('Added!')}
-          onRemoveClick={() => console.log('Removed!')}
+          onAddClick={() => console.log('User added!')}
+          onClick={() => console.log('User clicked!')}
+          onRemoveClick={() => console.log('User removed!')}
         />
+      </CardSection>
+    );
+  }
+
+  renderAttachments = () => {
+    const attachments = [{ filename: 'User Deletion.mp4', type: 'video' }, { filename: 'deletion.png', type: 'image' }, { filename: 'tests.txt', type: 'file' }]
+    return (
+      <CardSection className={s("mt-reg")} title="Attachments">
+        <div className={s("flex flex-wrap")}>
+          { attachments.map(({ filename, type }) => (
+            <CardAttachment
+              key={filename}
+              filename={filename}
+              type={type}
+              onClick={() => console.log('File clicked!')}
+              onRemoveClick={() => console.log('File removed!')}
+            />
+          ))}
+        </div>
       </CardSection>
     );
   }
@@ -70,35 +91,55 @@ class CardSideDock extends Component {
     const tags = ['Customer Service Onboarding', 'Sales', 'Pitches'];
     return (
       <CardSection className={s("mt-reg")} title="Tags">
-        <CardTags tags={tags} isEditable={true} />
+        <CardTags
+          tags={tags}
+          onTagClick={() => console.log('Tag clicked')}
+          onAddClick={() => console.log('Tag added')}
+          onRemoveClick={() => console.log('Tag removed')}
+        />
       </CardSection>
     )
   }
 
-  renderVerificationPeriod = () => {
+  renderKeywords = () => {
     return (
-      <CardSection className={s("mt-reg")} title="Verification Period">
+      <CardSection className={s("mt-reg")} title="Keywords">
         <Select
-          value={this.state.verificationInterval}
-          onChange={(verificationInterval) => this.setState({ verificationInterval })}
+          value={this.state.keywords}
+          onChange={(keywords) => this.setState({ keywords })}
           options={SELECT_VERIFICATION_INTERVAL_OPTIONS}
           isSearchable
-          isClearable
+          isMulti
+          menuShouldScrollIntoView
+          isClearable={false}
         />
       </CardSection>
     );
   }
 
-  renderPermissions = () => {
+  renderAdvanced = () => {
     return (
-      <CardSection className={s("mt-reg")} title="Permissions">
-        <Select
-          value={this.state.permission}
-          onChange={(permission) => this.setState({ permission })}
-          options={SELECT_PERMISSION_OPTIONS}
-          isSearchable
-          isClearable
-        />
+      <CardSection className={s("mt-reg")} title="Advanced">
+        <div className={s("mb-sm")}>
+          <div className={s("text-gray-reg text-xs mb-xs")}> Verification Interval </div>
+          <Select
+            value={this.state.verificationInterval}
+            onChange={(verificationInterval) => this.setState({ verificationInterval })}
+            options={SELECT_VERIFICATION_INTERVAL_OPTIONS}
+            isSearchable
+            menuShouldScrollIntoView
+          />
+        </div>
+        <div>
+          <div className={s("text-gray-reg text-xs mb-xs")}> Permissions </div>
+          <Select
+            value={this.state.permission}
+            onChange={(permission) => this.setState({ permission })}
+            options={SELECT_PERMISSION_OPTIONS}
+            isSearchable
+            menuShouldScrollIntoView
+          />
+        </div>
       </CardSection>
     );
   }
@@ -137,9 +178,10 @@ class CardSideDock extends Component {
         <div className={s("card-side-dock overflow-auto")}>
           { this.renderHeader() }
           { this.renderOwners() }
+          { this.renderAttachments() }
           { this.renderTags() }
-          { this.renderVerificationPeriod() }
-          { this.renderPermissions() }
+          { this.renderKeywords() }
+          { this.renderAdvanced() }
           { this.renderFooter() }
         </div>
       </div>

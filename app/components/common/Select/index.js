@@ -54,6 +54,21 @@ const customStyles = {
     borderColor: colors.purple['gray-10'],
     fontWeight: 500,
   }),
+  multiValue: (provided, state) => ({
+    ...provided,
+    background: colors.purple.light
+  }),
+  multiValueLabel: (provided, state) => ({
+    ...provided,
+    color: colors.purple.reg,
+    textDecorationColor: `${colors.purple['gray-50']} !important`,
+    textDecoration: 'underline'    
+  }),
+  multiValueRemove: (provided, state) => ({
+    ...provided,
+    color: colors.purple['gray-50'],
+    background: 'transparent !important'
+  })
 }
 
 const Select = (props) => {

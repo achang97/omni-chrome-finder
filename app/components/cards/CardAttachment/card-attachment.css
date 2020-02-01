@@ -1,0 +1,3 @@
+.card-attachment {
+	@apply flex items-center py-xs px-sm rounded-full font-semibold text-xs;
+}

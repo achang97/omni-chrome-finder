@@ -40,7 +40,7 @@ class CardSection extends Component {
 					{ children }
 				</AnimateHeight>
 				{ showSeparator &&
-					<div className={s("horizontal-separator mt-xs")} />
+					<div className={s("horizontal-separator mt-sm")} />
 				}
 			</div>
 		);

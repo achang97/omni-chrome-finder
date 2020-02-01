@@ -10,30 +10,19 @@ import style from './card-tags.css';
 import { getStyleApplicationFn } from '../../../utils/styleHelpers';
 const s = getStyleApplicationFn(style);
 
-const CardTags = ({ className, tags, isEditable, onTagClick, onAddClick, onRemoveClick }) => {
-	const onRemove = (e) => {
-		e.stopPropagation();
-		onRemoveClick();
-	}
-
+const CardTags = ({ className, tags, onTagClick, onAddClick, onRemoveClick }) => {
 	return (	
 		<div className={s(`card-tags-container ${className}`)}>
 			{ tags.map((tag) => (
 				<CardTag
 					key={tag}
-					text={
-						<div className={s("flex items-center")}>
-							<div> {tag} </div>
-							{ isEditable &&
-								<MdClose onClick={onRemove} className={s("ml-xs")} />
-							}
-						</div>
-					}
-					className={s("mr-xs mb-xs")}
+					text={tag}
+					className={s("flex items-center mr-xs mb-xs")}
 					onClick={onTagClick}
+					onRemoveClick={onRemoveClick}
 				/>
 			))}
-			{ isEditable &&
+			{ onAddClick &&
 				<CardTag
 					text={
 						<div className={s("flex items-center")}>
@@ -52,7 +41,6 @@ const CardTags = ({ className, tags, isEditable, onTagClick, onAddClick, onRemov
 CardTags.propTypes = {
 	className: PropTypes.string,
 	tags: PropTypes.arrayOf(PropTypes.string).isRequired,
-	isEditable: PropTypes.bool,
 	onTagClick: PropTypes.func,
 	onAddClick: PropTypes.func,
 	onRemoveClick: PropTypes.func,
@@ -61,7 +49,6 @@ CardTags.propTypes = {
 CardTags.defaultProps = {
 	className: '',
 	size: 'md',
-	isEditable: false,
 }
 
 export default CardTags;

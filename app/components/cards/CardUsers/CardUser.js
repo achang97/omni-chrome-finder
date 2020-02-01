@@ -9,17 +9,18 @@ import style from './card-users.css';
 import { getStyleApplicationFn } from '../../../utils/styleHelpers';
 const s = getStyleApplicationFn(style);
 
-const CardUser = ({ className, name, img, size, onRemove, ...rest }) => {
+const CardUser = ({ className, name, img, size, onClick, onRemoveClick, ...rest }) => {
 	return (	
-		<div className={s(`card-user ${className} ${onRemove ? 'pr-sm pt-sm' : ''}`)} {...rest}>
+		<div className={s(`card-user ${className} ${onRemoveClick ? 'pr-sm pt-sm' : ''}`)} {...rest}>
 			<CircleButton
 				content={<PlaceholderImg src={img} name={name} className={s("w-full h-full")} />}
 				size={size}
 				label={name}
 				labelClassName={s("card-user-label text-xs")}
+				onClick={onClick}
 			/>
-			{ onRemove &&
-				<button onClick={onRemove} className={s("absolute top-0 right-0 text-purple-gray-50")}>
+			{ onRemoveClick &&
+				<button onClick={onRemoveClick} className={s("absolute top-0 right-0 text-purple-gray-50")}>
 					<MdClose />
 				</button>
 			}
@@ -35,7 +36,8 @@ CardUser.propTypes = {
 	    PropTypes.number,
 	    PropTypes.oneOf(['sm', 'md', 'lg'])
 	]),
-	onRemove: PropTypes.func,
+	onClick: PropTypes.func,
+	onRemoveClick: PropTypes.func,
 }
 
 CardUser.defaultProps = {
