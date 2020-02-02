@@ -1,0 +1,11 @@
+.circle-button-container {
+	@apply flex flex-col items-center;
+}
+
+.circle-button {
+	@apply rounded-full overflow-hidden flex items-center justify-center shadow-md;
+}
+
+.circle-button-label {
+	@apply mt-sm;
+}

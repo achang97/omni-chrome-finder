@@ -28,14 +28,14 @@ class Tabs extends Component {
   }
 
   componentDidUpdate(prevProps) {
-    const { children = [], labels = [] } = this.props;
-    const { children: prevChildren = [], labels: prevLabels = [] } = prevProps;
+    const { children = [], tabOptions = [] } = this.props;
+    const { children: prevChildren = [], tabOptions: prevTabOptions = [] } = prevProps;
 
-    if (prevChildren.length !== children.length || prevLabels.length !== labels.length) {
+    if (prevChildren.length !== children.length || prevTabOptions.length !== tabOptions.length) {
       this.handleResize();
     }
 
-    if (prevChildren.length < children.length || prevLabels.length < labels.length) {
+    if (prevChildren.length < children.length || prevTabOptions.length < tabOptions.length) {
       const { scrollWidth, scrollLeft } = this.tabsRef.current;
       this.moveTabsScroll(scrollWidth - scrollLeft);
     }
@@ -63,33 +63,36 @@ class Tabs extends Component {
     }
   }, 166)
 
-  onTabClick = (i) => {
+  onTabClick = (value) => {
     const { onTabClick } = this.props;
     if (onTabClick) {
-      onTabClick(i);
+      onTabClick(value);
     }
   }
 
-  getBaseTabProps = (i) => {
+  getBaseTabProps = (value, i) => {
     const {
-      activeIndex,
+      activeValue,
       rippleClassName, tabContainerClassName, tabClassName, activeTabClassName, inactiveTabClassName,
       color, indicatorColor, showIndicator,
       showRipple,
     } = this.props;
-    const isActive = activeIndex === i;
+
+    const actualValue = value || i;
+    const isActive = activeValue === actualValue;
 
     return {
       isActive,
-      onTabClick: () => this.onTabClick(i),
+      value: actualValue,
+      onTabClick: () => this.onTabClick(actualValue),
       rippleClassName, tabContainerClassName, tabClassName, activeTabClassName, inactiveTabClassName,
       color, indicatorColor, showIndicator,
       showRipple,
     }
   }
 
-  renderTab = (label, i) => {
-    const baseTabProps = this.getBaseTabProps(i);
+  renderTab = ({ label, value }, i) => {
+    const baseTabProps = this.getBaseTabProps(value, i);
     return (
       <Tab
         key={typeof (label) === 'string' ? label : i}
@@ -119,7 +122,7 @@ class Tabs extends Component {
     const { children } = this.props;
     return (
       children.map((child, i) => (
-        React.cloneElement(child, this.mergeProps(this.getBaseTabProps(i), child.props))
+        React.cloneElement(child, this.mergeProps(this.getBaseTabProps(child.props.value, i), child.props))
       ))
     )
   }
@@ -144,7 +147,7 @@ class Tabs extends Component {
   }
 
   render() {
-    const { labels, className, allTabsContainerClassName } = this.props;
+    const { tabOptions, className, allTabsContainerClassName } = this.props;
     return (
       <div className={s(`tabs-all-container ${className}`)}>
         {this.renderScrollButton(true)}
@@ -153,8 +156,8 @@ class Tabs extends Component {
           className={s(`tabs-tab-container hide-scrollbar ${allTabsContainerClassName}`)}
           onScroll={this.handleResize}
         >
-          {labels ?
-            labels.map((label, i) => this.renderTab(label, i)) :
+          {tabOptions ?
+            tabOptions.map((tabOption, i) => this.renderTab(tabOption, i)) :
             this.renderChildren()
           }
           <ReactResizeDetector handleWidth onResize={this.handleResize} />
@@ -166,8 +169,11 @@ class Tabs extends Component {
 }
 
 Tabs.propTypes = {
-  labels: PropTypes.arrayOf(PropTypes.oneOfType([PropTypes.element, PropTypes.string])),
-  activeIndex: PropTypes.number.isRequired,
+  tabOptions: PropTypes.arrayOf(PropTypes.shape({
+    label: PropTypes.oneOfType([PropTypes.element, PropTypes.string, PropTypes.string]).isRequired,
+    value: PropTypes.oneOfType([PropTypes.string, PropTypes.number, PropTypes.object]),
+  })),
+  activeValue: PropTypes.oneOfType([PropTypes.string, PropTypes.number, PropTypes.object]).isRequired,
   onTabClick: PropTypes.func.isRequired,
   className: PropTypes.string,
   allTabsContainerClassName: PropTypes.string,

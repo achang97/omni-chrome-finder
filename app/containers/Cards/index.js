@@ -72,7 +72,7 @@ export default class Cards extends Component {
     return (
       <div id="card-tab-container" className={s("flex flex-shrink-0 min-h-0 items-center bg-white rounded-t-lg px-reg pt-reg")}>
         <Tabs
-          activeIndex={activeCardIndex}
+          activeValue={activeCardIndex}
           className={s("flex-1")}
           tabClassName={s("card-tab pr-0 rounded-t-lg rounded-b-0 text-xs font-medium flex items-center justify-between")}
           activeTabClassName={s("bg-purple-light")}

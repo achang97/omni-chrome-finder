@@ -16,7 +16,7 @@ const CardUser = ({ className, name, img, size, onClick, onRemoveClick, ...rest 
 				content={<PlaceholderImg src={img} name={name} className={s("w-full h-full")} />}
 				size={size}
 				label={name}
-				labelClassName={s("card-user-label text-xs")}
+				labelClassName={s("card-user-label")}
 				onClick={onClick}
 			/>
 			{ onRemoveClick &&
