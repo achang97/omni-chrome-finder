@@ -4,7 +4,7 @@ import PropTypes from 'prop-types';
 import CardTag from '../CardTags/CardTag';
 
 import { IoIosVideocam } from 'react-icons/io';
-import { AiOutlinePicture } from 'react-icons/ai';
+import { AiFillPicture } from 'react-icons/ai';
 import { FaFileAlt } from 'react-icons/fa';
 import { MdClose } from 'react-icons/md';
 
@@ -17,7 +17,7 @@ const getAttachmentProps = (type) => {
     case 'video':
       return { color: 'red-500', underlineColor: 'red-200', Icon: IoIosVideocam }
     case 'image':
-      return { color: 'purple-reg', underlineColor: 'purple-grey-50', Icon: AiOutlinePicture }
+      return { color: 'purple-reg', underlineColor: 'purple-grey-50', Icon: AiFillPicture }
     case 'file':
       return { color: 'blue-500', underlineColor: 'blue-200', Icon: FaFileAlt }
     default:

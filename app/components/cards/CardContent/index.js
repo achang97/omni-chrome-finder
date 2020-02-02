@@ -5,7 +5,7 @@ import { FaSlack } from "react-icons/fa";
 import { bindActionCreators } from 'redux';
 import { EditorState } from 'draft-js';
 import { connect } from 'react-redux';
-import { editCard, saveCard, openCardSideDock, closeCardSideDock } from '../../../actions/display';
+import { editCard, saveCard, openCardSideDock, closeCardSideDock, openCardCreateModal, closeCardCreateModal } from '../../../actions/cards';
 import TextEditor from '../../editors/TextEditor';
 import Button from '../../common/Button';
 
@@ -15,6 +15,7 @@ import { Resizable } from 're-resizable';
 import {useDropzone} from 'react-dropzone';
 import Dropzone from 'react-dropzone'
 import CardSideDock from '../CardSideDock';
+import CardCreateModal from '../CardCreateModal';
 
 import style from './card-content.css';
 import { getStyleApplicationFn } from '../../../utils/styleHelpers';
@@ -105,6 +106,8 @@ function StyledDropzone(props) {
     saveCard,
     openCardSideDock,
     closeCardSideDock,
+    openCardCreateModal,
+    closeCardCreateModal,
   }, dispatch)
 )
 
@@ -225,8 +228,8 @@ class CardContent extends Component {
             <div>2 Days Ago</div>
             <div className={s("flex items-center")}>
 	            <button onClick={() => openCardSideDock(id)}>
-                  <MdMoreHoriz />
-                </button>
+                <MdMoreHoriz />
+              </button>
             </div>
           </strong>
           <div className={s("text-2xl font-semibold")}>How do I delete a user? ({id})</div>
@@ -427,19 +430,26 @@ class CardContent extends Component {
 
 
   render() {
-    const { id, isEditing, answerEditorState, tags, sideDockOpen, openCardSideDock, closeCardSideDock } = this.props;
+    const { id, isEditing, answerEditorState, tags, sideDockOpen, createModalOpen, openCardSideDock, closeCardSideDock, openCardCreateModal, closeCardCreateModal } = this.props;
     const { descriptionEditorEnabled, answerEditorEnabled, isSideDockVisible } = this.state;
+
+    console.l
     return (
       <div className={s("flex-grow flex flex-col min-h-0 relative")}>
       	<div className={s("flex-grow flex flex-col min-h-0")}>
 	        { this.renderHeader() }
 	        { this.renderAnswer() }
-
+          <div onClick={() => openCardCreateModal(id)}> open modal </div>
         </div>
         { this.renderFooter() }
         <CardSideDock
           isVisible={sideDockOpen}
           onClose={() => closeCardSideDock(id)}
+        />
+        <CardCreateModal
+          isOpen={createModalOpen}
+          onRequestClose={() => closeCardCreateModal(id)}
+          question="How do I delete this?"
         />
       </div>
     );

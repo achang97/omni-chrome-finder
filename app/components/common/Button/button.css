@@ -1,7 +1,7 @@
 .button-container {
 	padding: 14px;
 	border-radius: 8px;
-	@apply flex items-center justify-center shadow-md;
+	@apply flex items-center justify-center shadow-md font-semibold;
 }
 
 .button-shadow {

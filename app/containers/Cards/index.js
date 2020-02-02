@@ -8,7 +8,7 @@ import CardContent from '../../components/cards/CardContent';
 
 import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
-import { closeCard, closeAllCards, setActiveCardIndex } from '../../actions/display';
+import { closeCard, closeAllCards, setActiveCardIndex } from '../../actions/cards';
 
 import Tabs from '../../components/common/Tabs/Tabs';
 import Tab from '../../components/common/Tabs/Tab';
@@ -23,8 +23,8 @@ const defaultCardWidth = 660;
 
 @connect(
   state => ({
-    cards: state.display.cards,
-    activeCardIndex: state.display.activeCardIndex,
+    cards: state.cards.cards,
+    activeCardIndex: state.cards.activeCardIndex,
   }),
   dispatch => bindActionCreators({
     closeCard,

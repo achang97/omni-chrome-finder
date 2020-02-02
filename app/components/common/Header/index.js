@@ -5,7 +5,6 @@ import { withRouter } from 'react-router-dom';
 
 import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
-import { toggleDock } from '../../../actions/display';
 
 import Tabs from '../Tabs/Tabs';
 import Tab from '../Tabs/Tab';
@@ -21,7 +20,6 @@ const PROFILE_PICTURE_URL = 'https://janecanblogdotcom.files.wordpress.com/2014/
   state => ({
   }),
   dispatch => bindActionCreators({
-    toggleDock,
   }, dispatch)
 )
 
@@ -63,7 +61,6 @@ class Header extends Component {
 
   render() {
     const { activeIndex } = this.state;
-    const { toggleDock } = this.props;
 
     return (
       <div className={s('px-sm bg-purple-xlight')}>

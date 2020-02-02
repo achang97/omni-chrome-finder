@@ -18,7 +18,8 @@ import Tab from '../../components/common/Tabs/Tab';
 import SuggestionPanel from "../../components/suggestions/SuggestionPanel";
 
 import { colors } from '../../styles/colors';
-import { openCard, expandDock } from '../../actions/display';
+import { expandDock } from '../../actions/display';
+import { openCard } from '../../actions/cards';
 
 import style from "./ask.css";
 import { getStyleApplicationFn } from '../../utils/styleHelpers';
@@ -256,7 +257,8 @@ class Ask extends Component {
             onClick={this.toggleScreenRecording}
             className={s("ask-screen-capture-button mr-xs bg-red-100 text-red-500")}
             text={!desktopSharing ? 'Screen Record' : 'End Recording'}
-            textClassName={s("underline-border border-red-200")}
+            underline
+            underlineColor="red-200"
             icon={<FaRegDotCircle className={s("ml-sm text-red-500")} />}
             iconLeft={false}
           />
@@ -264,7 +266,8 @@ class Ask extends Component {
             onClick={this.toggleScreenRecording}
             className={s("ask-screen-capture-button ml-xs bg-purple-xlight text-purple-reg")}
             text="Screen Capture"
-            textClassName={s("underline-border border-purple-gray-10")}
+            underline
+            underlineColor="purple-gray-10"
             icon={<MdPictureInPicture color={colors.purple.reg} className={s("ml-sm")} />}
             iconLeft={false}
           />

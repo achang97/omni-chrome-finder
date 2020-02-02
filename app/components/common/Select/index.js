@@ -67,7 +67,12 @@ const customStyles = {
   multiValueRemove: (provided, state) => ({
     ...provided,
     color: colors.purple['gray-50'],
-    background: 'transparent !important'
+    background: 'transparent !important',
+    cursor: 'pointer',
+  }),
+  menu: (provided, state) => ({
+    ...provided,
+    overflow: 'hidden',
   })
 }
 

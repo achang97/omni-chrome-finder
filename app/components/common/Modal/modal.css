@@ -5,7 +5,7 @@
 }
 
 .modal {
-	@apply absolute bg-white flex flex-col rounded-lg;
+	@apply absolute bg-white flex flex-col rounded-lg overflow-hidden bg-purple-light;
     top: 50%;
     left: 10%;
     right: 10%;
@@ -19,7 +19,7 @@
 }
 
 .modal-header {
-	@apply bg-purple-light flex items-center justify-between p-lg bg-purple-gray-10;
+	@apply flex items-center justify-between p-lg bg-purple-gray-10;
 }
 
 .modal-body {

@@ -160,7 +160,8 @@ class CardSideDock extends Component {
         <Button
           className={s("justify-between mt-lg bg-white text-red-500")}
           text="Delete This Card"
-          textClassName={s("underline-border border-red-200")}
+          underline
+          underlineColor="red-200"
           icon={<FaRegTrashAlt />}
           iconLeft={false}
         />
