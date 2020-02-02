@@ -9,7 +9,7 @@ import CircleButton from '../../common/CircleButton';
 import { getStyleApplicationFn } from '../../../utils/styleHelpers';
 const s = getStyleApplicationFn();
 
-const CardUsers = ({ className, users, isEditable, onRemoveClick, onAddClick }) => {
+const CardUsers = ({ className, users, onUserClick, onRemoveClick, onAddClick }) => {
 	return (	
 		<div className={s(`card-users-container ${className}`)}>
 			{ users.map(({ id, name, img }) => (
@@ -18,11 +18,12 @@ const CardUsers = ({ className, users, isEditable, onRemoveClick, onAddClick }) 
 					size="md"
 					name={name}
 					img={img}
-					className={s("mr-xs")}
-					onRemove={onRemoveClick}
+					className={s("mr-sm")}
+					onClick={onUserClick}
+					onRemoveClick={onRemoveClick}
 				/>
 			))}
-			{ isEditable &&
+			{ onAddClick &&
 				<CircleButton
 					content={<IoMdAdd size={30} />}
 					containerClassName={s("text-purple-reg pt-sm ml-xs")}
@@ -40,14 +41,13 @@ const CardUsers = ({ className, users, isEditable, onRemoveClick, onAddClick }) 
 CardUsers.propTypes = {
 	className: PropTypes.string,
 	users: PropTypes.arrayOf(PropTypes.object).isRequired,
-	isEditable: PropTypes.bool,
 	onRemoveClick: PropTypes.func,
+	onUserClick: PropTypes.func,
 	onAddClick: PropTypes.func,
 }
 
 CardUsers.defaultProps = {
 	className: '',
-	isEditable: false,
 }
 
 export default CardUsers;

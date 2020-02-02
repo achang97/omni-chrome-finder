@@ -3,8 +3,9 @@ import PropTypes from 'prop-types';
 import { MdCheck, MdRemoveCircle, MdArrowDropDown } from 'react-icons/md';
 
 import { colors } from '../../../styles/colors';
+import style from './card-status.css';
 import { getStyleApplicationFn } from '../../../utils/styleHelpers';
-const s = getStyleApplicationFn();
+const s = getStyleApplicationFn(style);
 
 const getDisplayInfo = (isUpToDate) => {
   return isUpToDate ?
@@ -12,12 +13,11 @@ const getDisplayInfo = (isUpToDate) => {
     { label: 'Out of date', Icon: MdRemoveCircle, bgColor: 'red-500', fontColor: 'white' };
 }
 
-const CardStatus = (props) => {
-  const { isActionable, isUpToDate } = props;
+const CardStatus = ({ isActionable, isUpToDate, className }) => {
   const { label, Icon, bgColor, fontColor } = getDisplayInfo(isUpToDate);
 
   return (
-    <div className={s(`flex items-center justify-between p-sm bg-${bgColor} rounded-lg font-semibold text-xs`)}>
+    <div className={s(`card-status bg-${bgColor} ${className}`)}>
       <div className={s("flex")} style={{ color: fontColor }}>
         <Icon />
         <div className={s("ml-xs")}> {label} </div>
@@ -30,10 +30,12 @@ const CardStatus = (props) => {
 CardStatus.propTypes = {
   isUpToDate: PropTypes.bool.isRequired,
   isActionable: PropTypes.bool,
+  className: PropTypes.string,
 };
 
 CardStatus.defaultProps = {
   isActionable: false,
+  className: '',
 };
 
 export default CardStatus;
