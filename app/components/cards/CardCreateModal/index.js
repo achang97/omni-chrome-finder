@@ -123,8 +123,7 @@ class CardCreateModal extends Component {
         </div>
         <Button
           text="Complete Card"
-          className={s("flex-shrink-0")}
-          textClassName={s("")}
+          className={s("flex-shrink-0 rounded-t-none")}
           underline
           underlineColor="purple-gray-50"
           color={"primary"}
