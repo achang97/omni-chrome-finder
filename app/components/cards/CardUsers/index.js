@@ -40,7 +40,11 @@ const CardUsers = ({ className, users, onUserClick, onRemoveClick, onAddClick })
 
 CardUsers.propTypes = {
 	className: PropTypes.string,
-	users: PropTypes.arrayOf(PropTypes.object).isRequired,
+	users: PropTypes.arrayOf(PropTypes.shape({
+		id: PropTypes.string.isRequired,
+		name: PropTypes.string.isRequired,
+		img: PropTypes.string,
+	})).isRequired,
 	onRemoveClick: PropTypes.func,
 	onUserClick: PropTypes.func,
 	onAddClick: PropTypes.func,

@@ -76,7 +76,7 @@ class Ask extends Component {
     super(props);
 
     this.state = {
-      tabValue: 0,
+      activeIntegration: INTEGRATIONS[0],
 
       // Text editors
       editorState: EditorState.createEmpty(),
@@ -93,8 +93,8 @@ class Ask extends Component {
     };
   }
 
-  handleTabClick = (tabValue) => {
-    this.setState({ tabValue });
+  handleTabClick = (activeIntegration) => {
+    this.setState({ activeIntegration });
   };
 
   onShowRelatedQuestions = (ev) => {
@@ -193,11 +193,11 @@ class Ask extends Component {
   };
 
   renderTabHeader = () => {
-    const { tabValue } = this.state;
+    const { activeIntegration } = this.state;
     return (
       <div className={s('flex flex-row justify-between')}>
         <Tabs
-          activeIndex={tabValue}
+          activeValue={activeIntegration}
           className={s('mb-lg')}
           tabClassName={s(
             'text-sm font-normal rounded-full py-sm px-reg'
@@ -209,9 +209,9 @@ class Ask extends Component {
           onTabClick={this.handleTabClick}
           showRipple={false}
         >
-          {INTEGRATIONS.map((integration, i) => (
-            <Tab key={integration}>
-              <div className={s(i !== tabValue ? 'ask-integrations-tab-text' : 'primary-underline')}>
+          {INTEGRATIONS.map((integration) => (
+            <Tab key={integration} value={integration}>
+              <div className={s(integration !== activeIntegration ? 'ask-integrations-tab-text' : 'primary-underline')}>
                 {integration}
               </div>
             </Tab>

@@ -31,7 +31,7 @@
   all: unset;
 }
 
-.app-container button:hover, .app-container .button-hover:hover {
+.app-container button:hover {
   cursor: pointer !important;
   opacity: 0.8;
 }

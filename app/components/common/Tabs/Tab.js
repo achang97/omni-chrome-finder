@@ -8,7 +8,7 @@ const s = getStyleApplicationFn(style);
 
 const Tab = (props) => {
   const {
-		isActive, label,
+		isActive, label, value,
 		onTabClick,
 		rippleClassName, tabContainerClassName, tabClassName, activeTabClassName, inactiveTabClassName,
 		color, indicatorColor, showIndicator,
@@ -24,7 +24,7 @@ const Tab = (props) => {
   const renderButton = () => (
     <div
       {...rest}
-      onClick={onTabClick}
+      onClick={() => onTabClick(value)}
       style={{ color }}
       className={s(`
 				tab button-hover ${tabClassName}
@@ -48,7 +48,8 @@ const Tab = (props) => {
 }
 
 Tab.propTypes = {
-  label: PropTypes.oneOfType([PropTypes.element, PropTypes.string]),
+  label: PropTypes.oneOfType([PropTypes.element, PropTypes.string, PropTypes.string]),
+  value: PropTypes.oneOfType([PropTypes.string, PropTypes.number, PropTypes.object]),
   isActive: PropTypes.bool,
   onTabClick: PropTypes.func,
   rippleClassName: PropTypes.string,
