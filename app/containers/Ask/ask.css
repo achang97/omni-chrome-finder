@@ -13,7 +13,7 @@
 }
 
 .ask-screen-capture-button {
-  @apply flex-1 shadow-md flex items-center justify-center p-reg text-sm rounded-lg !important;
+  @apply flex-1 p-reg text-sm rounded-lg;
 }
 
 .ask-recipient {

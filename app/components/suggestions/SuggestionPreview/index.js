@@ -23,7 +23,7 @@ const SuggestionPreview = ({ heading, headingDescription, description, datePoste
           text="View full card"
           underline={true}
           color="transparent"
-          className={s("rounded-t-0")}
+          className={s("rounded-t-none")}
         />
       </div>
     </div>

@@ -45,6 +45,7 @@ Modal.defaultProps = {
 	headerClassName: '',
 	bodyClassName: '',
 	className: '',
+	overlayClassName: '',
 }
 
 export default Modal;

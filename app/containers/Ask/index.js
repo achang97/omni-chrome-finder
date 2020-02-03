@@ -18,7 +18,8 @@ import Tab from '../../components/common/Tabs/Tab';
 import SuggestionPanel from "../../components/suggestions/SuggestionPanel";
 
 import { colors } from '../../styles/colors';
-import { openCard, expandDock } from '../../actions/display';
+import { expandDock } from '../../actions/display';
+import { openCard } from '../../actions/cards';
 
 import style from "./ask.css";
 import { getStyleApplicationFn } from '../../utils/styleHelpers';
@@ -75,7 +76,7 @@ class Ask extends Component {
     super(props);
 
     this.state = {
-      tabValue: 0,
+      activeIntegration: INTEGRATIONS[0],
 
       // Text editors
       editorState: EditorState.createEmpty(),
@@ -92,8 +93,8 @@ class Ask extends Component {
     };
   }
 
-  handleTabClick = (tabValue) => {
-    this.setState({ tabValue });
+  handleTabClick = (activeIntegration) => {
+    this.setState({ activeIntegration });
   };
 
   onShowRelatedQuestions = (ev) => {
@@ -192,11 +193,11 @@ class Ask extends Component {
   };
 
   renderTabHeader = () => {
-    const { tabValue } = this.state;
+    const { activeIntegration } = this.state;
     return (
       <div className={s('flex flex-row justify-between')}>
         <Tabs
-          activeIndex={tabValue}
+          activeValue={activeIntegration}
           className={s('mb-lg')}
           tabClassName={s(
             'text-sm font-normal rounded-full py-sm px-reg'
@@ -208,9 +209,9 @@ class Ask extends Component {
           onTabClick={this.handleTabClick}
           showRipple={false}
         >
-          {INTEGRATIONS.map((integration, i) => (
-            <Tab key={integration}>
-              <div className={s(i !== tabValue ? 'ask-integrations-tab-text' : 'primary-underline')}>
+          {INTEGRATIONS.map((integration) => (
+            <Tab key={integration} value={integration}>
+              <div className={s(integration !== activeIntegration ? 'ask-integrations-tab-text' : 'primary-underline')}>
                 {integration}
               </div>
             </Tab>
@@ -252,24 +253,24 @@ class Ask extends Component {
           />
         </div>
         <div className={s('flex px-xs pt-reg')}>
-          <button
+          <Button
             onClick={this.toggleScreenRecording}
-            className={s("ask-screen-capture-button mr-xs bg bg-red-100 text-red-500")}
-          >
-            <span className={s("underline-border border-purple-gray-10")}>
-              {!desktopSharing ? 'Screen Record' : 'End Recording'}
-            </span>
-            <FaRegDotCircle className={s("ml-sm text-red-500")} />
-          </button>
-          <button
+            className={s("ask-screen-capture-button mr-xs bg-red-100 text-red-500")}
+            text={!desktopSharing ? 'Screen Record' : 'End Recording'}
+            underline
+            underlineColor="red-200"
+            icon={<FaRegDotCircle className={s("ml-sm text-red-500")} />}
+            iconLeft={false}
+          />
+          <Button
             onClick={this.toggleScreenRecording}
             className={s("ask-screen-capture-button ml-xs bg-purple-xlight text-purple-reg")}
-          >
-            <span className={s("underline-border border-purple-gray-10")}>
-              Screen Capture
-            </span>
-            <MdPictureInPicture color={colors.purple.reg} className={s("ml-sm")} />
-          </button>
+            text="Screen Capture"
+            underline
+            underlineColor="purple-gray-10"
+            icon={<MdPictureInPicture color={colors.purple.reg} className={s("ml-sm")} />}
+            iconLeft={false}
+          />
         </div>
         { /*<div className={s("mt-sm p-sm")}>
           {screenRecordings.map(recording => (
@@ -318,7 +319,8 @@ class Ask extends Component {
   renderFooterButton = () => {
     return (
       <Button
-        className={s('self-stretch rounded-t-none rounded-br-none rounded-bl-reg items-center justify-between text-reg')}
+        className={s('self-stretch justify-between rounded-t-none rounded-br-none rounded-bl-reg text-reg')}
+        color="primary"
         text="Ask Question"
         iconLeft={false}
         icon={

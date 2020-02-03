@@ -31,7 +31,7 @@
   all: unset;
 }
 
-.app-container button:hover, .app-container .button-hover:hover {
+.app-container button:hover {
   cursor: pointer !important;
   opacity: 0.8;
 }
@@ -48,16 +48,17 @@
   border: 1px solid rgba(0,2,95,0.10);
   border-radius: 8px;
   color: black;
-  font-size: 13px;
+  font-size: 14px;
   letter-spacing: 0.3px;
   line-height: 22px;
-  padding: 8px;
+  height: 40px;
+  padding: 0px 8px;
   box-sizing: border-box;
   @apply font-medium;
 }
 
 .app-container input:not([type='checkbox']):focus {
-  @apply outline-purple-light;
+  @apply outline-purple-gray-10;
 }
 
 .app-container input:not([type='checkbox'])::placeholder {
@@ -65,25 +66,25 @@
 }
 
 /* Custom scrollbar */
-div::-webkit-scrollbar {
+.app-container div::-webkit-scrollbar {
   background: transparent; /* Optional: just make scrollbar invisible */
 }
 
-div::-webkit-scrollbar:vertical {
+.app-container div::-webkit-scrollbar:vertical {
   width: 5px; /* Remove scrollbar space */
   height: 0px;
 }
 
-div::-webkit-scrollbar:horizontal {
+.app-container div::-webkit-scrollbar:horizontal {
   width: 0px; /* Remove scrollbar space */
   height: 5px;
 }
 
-div:hover::-webkit-scrollbar {
+.app-container div:hover::-webkit-scrollbar {
   @apply bg-gray-300;
 }
 
-div:hover::-webkit-scrollbar-thumb {
+.app-container div:hover::-webkit-scrollbar-thumb {
   @apply bg-gray-400;
   border-left: none;
   border-right: none;

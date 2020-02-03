@@ -20,7 +20,7 @@ const Login = (props) => {
     <div>
       <div className={s('h-16 p-lg bg-gray-300')}>
         <Tabs
-          activeIndex={tabValue}
+          activeValue={tabValue}
           className={s('mb-lg')}
           tabClassName={s(
             'ask-integrations-tab text-sm font-normal rounded-full'

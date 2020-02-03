@@ -8,7 +8,7 @@ import CardContent from '../../components/cards/CardContent';
 
 import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
-import { closeCard, closeAllCards, setActiveCardIndex } from '../../actions/display';
+import { closeCard, closeAllCards, setActiveCardIndex } from '../../actions/cards';
 
 import Tabs from '../../components/common/Tabs/Tabs';
 import Tab from '../../components/common/Tabs/Tab';
@@ -23,8 +23,8 @@ const defaultCardWidth = 660;
 
 @connect(
   state => ({
-    cards: state.display.cards,
-    activeCardIndex: state.display.activeCardIndex,
+    cards: state.cards.cards,
+    activeCardIndex: state.cards.activeCardIndex,
   }),
   dispatch => bindActionCreators({
     closeCard,
@@ -72,7 +72,7 @@ export default class Cards extends Component {
     return (
       <div id="card-tab-container" className={s("flex flex-shrink-0 min-h-0 items-center bg-white rounded-t-lg px-reg pt-reg")}>
         <Tabs
-          activeIndex={activeCardIndex}
+          activeValue={activeCardIndex}
           className={s("flex-1")}
           tabClassName={s("card-tab pr-0 rounded-t-lg rounded-b-0 text-xs font-medium flex items-center justify-between")}
           activeTabClassName={s("bg-purple-light")}

@@ -5,7 +5,7 @@ import { FaSlack } from "react-icons/fa";
 import { bindActionCreators } from 'redux';
 import { EditorState } from 'draft-js';
 import { connect } from 'react-redux';
-import { editCard, saveCard, openCardSideDock, closeCardSideDock } from '../../../actions/display';
+import { editCard, saveCard, openCardSideDock, closeCardSideDock, openCardCreateModal, closeCardCreateModal } from '../../../actions/cards';
 import TextEditor from '../../editors/TextEditor';
 import Button from '../../common/Button';
 import Modal from '../../common/Modal';
@@ -17,6 +17,7 @@ import { Resizable } from 're-resizable';
 import {useDropzone} from 'react-dropzone';
 import Dropzone from 'react-dropzone'
 import CardSideDock from '../CardSideDock';
+import CardCreateModal from '../CardCreateModal';
 
 import style from './card-content.css';
 import { getStyleApplicationFn } from '../../../utils/styleHelpers';
@@ -113,13 +114,10 @@ function StyledDropzone(props) {
     saveCard,
     openCardSideDock,
     closeCardSideDock,
+    openCardCreateModal,
+    closeCardCreateModal,
   }, dispatch)
 )
-
-
-
-
-
 
 class CardContent extends Component {
   constructor(props) {
@@ -141,9 +139,6 @@ class CardContent extends Component {
 
   componentDidMount() {
   	this.setState({ footerHeight: this.footerRef.clientHeight })
-  	console.log(this.state.footerHeight);
-  	console.log(this.state.selectedMessages);
-  	console.log(PLACEHOLDER_MESSAGES);
   }
 
   componentDidUpdate(prevProps, prevState) {
@@ -209,27 +204,27 @@ class CardContent extends Component {
   }
 
   renderDropZone =  (props) => {
-  const {acceptedFiles, getRootProps, getInputProps} = useDropzone();
-  
-  const files = acceptedFiles.map(file => (
-    <li key={file.path}>
-      {file.path} - {file.size} bytes
-    </li>
-  ));
+    const {acceptedFiles, getRootProps, getInputProps} = useDropzone();
+    
+    const files = acceptedFiles.map(file => (
+      <li key={file.path}>
+        {file.path} - {file.size} bytes
+      </li>
+    ));
 
-  return (
-    <section className="container">
-      <div {...getRootProps({className: 'dropzone'})}>
-        <input {...getInputProps()} />
-        <p>Drag 'n' drop some files here, or click to select files</p>
-      </div>
-      <aside>
-        <h4>Files</h4>
-        <ul>{files}</ul>
-      </aside>
-    </section>
-  );
-}
+    return (
+      <section className="container">
+        <div {...getRootProps({className: 'dropzone'})}>
+          <input {...getInputProps()} />
+          <p>Drag 'n' drop some files here, or click to select files</p>
+        </div>
+        <aside>
+          <h4>Files</h4>
+          <ul>{files}</ul>
+        </aside>
+      </section>
+    );
+  }
 
   renderHeader = () => {
   	const { id, isEditing, tags, sideDockOpen, openCardSideDock, closeCardSideDock} = this.props;
@@ -253,8 +248,8 @@ class CardContent extends Component {
             <div>2 Days Ago</div>
             <div className={s("flex items-center")}>
 	            <button onClick={() => openCardSideDock(id)}>
-                  <MdMoreHoriz />
-                </button>
+                <MdMoreHoriz />
+              </button>
             </div>
           </strong>
           <div className={s("text-2xl font-semibold")}>How do I delete a user? ({id})</div>
@@ -284,7 +279,7 @@ class CardContent extends Component {
 	        			</div>
 	        		}
 	        		<div className={s("flex justify-between")}>
-		        		<div className={s("flex text-purple-reg text-sm cursor-pointer element-underline items-center")}> 
+		        		<div className={s("flex text-purple-reg text-sm cursor-pointer element-underline items-center")} onClick={() => openCardSideDock(id)}> 
 		        			<MdAttachment className={s("mr-sm")} />
 		        			<div >3 Attachments</div>
 		        		</div>
@@ -305,15 +300,14 @@ class CardContent extends Component {
             { !isEditing &&
 	            <div className={s("flex items-center justify-between")}>
 	              <div className={s("flex items-center")}>
-	                { ['Customer Request Actions', 'Onboarding'].map((tag) => {
-
-		                return (
-		                  <div key={tag} onClick={() => openCardSideDock(id)} className={s("flex items-center padding-6 mr-xs bg-purple-gray-10 text-purple-reg rounded-full font-semibold text-xs")}>
-		                    <div className={s("mr-xs")}>{tag}</div>
-		                  </div> 
-		   				)
-	   			 	 })
-	            	}
+	                { tags.map(tag => (
+                    <CardTag
+                      key={tag}
+                      text={tag}
+                      className={s("mr-xs")}
+                      onClick={() => openCardSideDock(id)}
+                    />
+                  ))}
 	              </div>
 	              <div className={s("flex")}>
 	              	  <Button 
@@ -322,6 +316,7 @@ class CardContent extends Component {
 	              	  	icon={<MdAttachment className={s("ml-xs")} />}
 	              	  	color={"secondary"}
 	              	  	className={s("py-sm px-reg rounded-full")}
+                      onClick={() => openCardSideDock(id)}
 	              	  />
 	              	  <div className={s("width-1 bg-gray-xlight mx-sm")} ></div>
 		              <div className={s("flex items-center shadow-md p-sm bg-green-xlight text-green-reg rounded-lg font-semibold text-xs")}> 
@@ -467,6 +462,7 @@ class CardContent extends Component {
 
   			<Button
   				text={"Save Changes"}
+          color="primary"
   				onClick={() => this.saveCard(id)}
   				className={s("rounded-t-none p-lg")}
   				underline
@@ -475,6 +471,7 @@ class CardContent extends Component {
 	        <div className={s("flex items-center justify-between bg-purple-light rounded-b-lg p-lg")}>     
 	          <Button 
 	          	text={"Edit Card"} 
+              color="primary"
 	          	icon={<MdModeEdit className={s("mr-sm")} />} 
 	          	onClick={() => this.editCard(id)}
 	          />
@@ -498,19 +495,26 @@ class CardContent extends Component {
 
 
   render() {
-    const { id, isEditing, answerEditorState, tags, sideDockOpen, openCardSideDock, closeCardSideDock } = this.props;
+    const { id, isEditing, answerEditorState, tags, sideDockOpen, createModalOpen, openCardSideDock, closeCardSideDock, openCardCreateModal, closeCardCreateModal } = this.props;
     const { descriptionEditorEnabled, answerEditorEnabled, isSideDockVisible, selectedMessages } = this.state;
+
     return (
       <div className={s("flex-grow flex flex-col min-h-0 relative")}>
       	<div className={s("flex-grow flex flex-col min-h-0")}>
 	        { this.renderHeader() }
 	        { this.renderAnswer() }
 	        { this.renderThreadModal() }
+			<div onClick={() => openCardCreateModal(id)}> open modal </div>
         </div>
         { this.renderFooter() }
         <CardSideDock
           isVisible={sideDockOpen}
           onClose={() => closeCardSideDock(id)}
+        />
+        <CardCreateModal
+          isOpen={createModalOpen}
+          onRequestClose={() => closeCardCreateModal(id)}
+          question="How do I delete this?"
         />
       </div>
     );
