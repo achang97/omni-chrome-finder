@@ -55,7 +55,7 @@ class CardSideDock extends Component {
   );
 
   renderOwners = () => {
-    const users = [{ name: 'Andrew', id: 1, img: 'https://sunrift.com/wp-content/uploads/2014/12/Blake-profile-photo-square-768x769.jpg' }, { name: 'Chetan', id: 5, img: null }];
+    const users = [{ name: 'Andrew', id: '1', img: 'https://sunrift.com/wp-content/uploads/2014/12/Blake-profile-photo-square-768x769.jpg' }, { name: 'Chetan', id: '5', img: null }];
     return (
       <CardSection className={s("mt-reg")} title="Owner(s)">
         <CardUsers

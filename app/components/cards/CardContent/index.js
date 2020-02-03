@@ -15,7 +15,7 @@ import Modal from '../../common/Modal';
 import CheckBox from '../../common/CheckBox';
 
 import CardStatus from '../CardStatus';
-import CardTag from '../CardTags/CardTag';
+import CardTags from '../CardTags';
 import { Resizable } from 're-resizable';
 import {useDropzone} from 'react-dropzone';
 import Dropzone from 'react-dropzone'
@@ -237,7 +237,7 @@ class CardContent extends Component {
   }
 
   renderHeader = () => {
-  	const { id, isEditing, tags, sideDockOpen, openCardSideDock, closeCardSideDock} = this.props;
+  	const { id, isEditing, tags, sideDockOpen, openCardSideDock, closeCardSideDock, cardWidth } = this.props;
     const { descriptionEditorEnabled,isSideDockVisible } = this.state;
     
   	return (
@@ -309,26 +309,21 @@ class CardContent extends Component {
 
             { !isEditing &&
 	            <div className={s("flex items-center justify-between")}>
-	              <div className={s("flex items-center")}>
-	                { tags.map(tag => (
-                    <CardTag
-                      key={tag}
-                      text={tag}
-                      className={s("mr-xs")}
-                      onClick={() => openCardSideDock(id)}
-                    />
-                  ))}
-	              </div>
-	              <div className={s("flex")}>
-	              	  <Button 
-	              	  	text={"2"}
-	              	  	iconLeft={false}
-	              	  	icon={<MdAttachment className={s("ml-xs")} />}
-	              	  	color={"secondary"}
-	              	  	className={s("py-sm px-reg rounded-full")}
-                      onClick={() => openCardSideDock(id)}
-	              	  />
-	              	  <div className={s("width-1 bg-gray-xlight mx-sm")} ></div>
+	              <CardTags
+                  tags={tags}
+                  onTagClick={() => openCardSideDock(id)}
+                  maxWidth={cardWidth * 0.5}
+                />  
+	              <div className={s("flex flex-shrink-0 z-10 bg-purple-light ml-sm")}>
+              	  <Button 
+              	  	text={"2"}
+              	  	iconLeft={false}
+              	  	icon={<MdAttachment className={s("ml-xs")} />}
+              	  	color={"secondary"}
+              	  	className={s("py-sm px-reg rounded-full")}
+                    onClick={() => openCardSideDock(id)}
+              	  />
+              	  <div className={s("width-1 bg-gray-xlight mx-sm")} ></div>
 		              <div className={s("flex items-center shadow-md p-sm bg-green-xlight text-green-reg rounded-lg font-semibold text-xs")}> 
 		                <MdCheck className={s("mr-xs")} />
 		                <div>Up To Date</div>
@@ -534,8 +529,9 @@ class CardContent extends Component {
 }
 
 CardContent.propTypes = {
+  cardWidth: PropTypes.number.isRequired,
+  cardHeight: PropTypes.number.isRequired,
   tags: PropTypes.arrayOf(PropTypes.string).isRequired,
 }
-
 
 export default CardContent;

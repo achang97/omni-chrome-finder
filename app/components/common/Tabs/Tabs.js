@@ -4,6 +4,7 @@ import _ from 'underscore';
 import ReactResizeDetector from 'react-resize-detector';
 import { MdChevronLeft, MdChevronRight } from 'react-icons/md';
 import animate from '../../../utils/animate';
+import { DEBOUNCE_60_HZ } from '../../../utils/constants';
 
 import Tab from './Tab';
 
@@ -61,7 +62,7 @@ class Tabs extends Component {
     if (showStartScroll !== displayScroll.start || showEndScroll !== displayScroll.end) {
       this.setState({ displayScroll: { start: showStartScroll, end: showEndScroll } });
     }
-  }, 166)
+  }, DEBOUNCE_60_HZ)
 
   onTabClick = (value) => {
     const { onTabClick } = this.props;
