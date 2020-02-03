@@ -57,7 +57,7 @@ class CardSideDock extends Component {
   renderOwners = () => {
     const users = [{ name: 'Andrew', id: 1, img: 'https://sunrift.com/wp-content/uploads/2014/12/Blake-profile-photo-square-768x769.jpg' }, { name: 'Chetan', id: 5, img: null }];
     return (
-      <CardSection title="Owner(s)">
+      <CardSection className={s("mt-reg")} title="Owner(s)">
         <CardUsers
           users={users}
           onAddClick={() => console.log('User added!')}
@@ -71,7 +71,7 @@ class CardSideDock extends Component {
   renderAttachments = () => {
     const attachments = [{ filename: 'User Deletion.mp4', type: 'video' }, { filename: 'deletion.png', type: 'image' }, { filename: 'tests.txt', type: 'file' }]
     return (
-      <CardSection className={s("mt-reg")} title="Attachments">
+      <CardSection className={s("mt-lg")} title="Attachments">
         <div className={s("flex flex-wrap")}>
           { attachments.map(({ filename, type }) => (
             <CardAttachment
@@ -90,7 +90,7 @@ class CardSideDock extends Component {
   renderTags = () => {
     const tags = ['Customer Service Onboarding', 'Sales', 'Pitches'];
     return (
-      <CardSection className={s("mt-reg")} title="Tags">
+      <CardSection className={s("mt-lg")} title="Tags">
         <CardTags
           tags={tags}
           onTagClick={() => console.log('Tag clicked')}
@@ -103,7 +103,7 @@ class CardSideDock extends Component {
 
   renderKeywords = () => {
     return (
-      <CardSection className={s("mt-reg")} title="Keywords">
+      <CardSection className={s("mt-lg")} title="Keywords">
         <Select
           value={this.state.keywords}
           onChange={(keywords) => this.setState({ keywords })}
@@ -119,7 +119,7 @@ class CardSideDock extends Component {
 
   renderAdvanced = () => {
     return (
-      <CardSection className={s("mt-reg")} title="Advanced">
+      <CardSection className={s("mt-lg")} title="Advanced">
         <div className={s("mb-sm")}>
           <div className={s("text-gray-reg text-xs mb-xs")}> Verification Interval </div>
           <Select

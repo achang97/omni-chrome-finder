@@ -9,7 +9,7 @@
 	width: 300px;
     transform: translateX(100%);
     -webkit-transform: translateX(100%);
-    @apply absolute top-0 bottom-0 right-0 bg-purple-light p-lg pointer-events-auto rounded-l-lg shadow-lg;
+    @apply absolute top-0 bottom-0 right-0 bg-purple-light p-2xl pointer-events-auto rounded-l-lg shadow-lg;
 }
 
 .card-side-dock-slide-in > .card-side-dock {

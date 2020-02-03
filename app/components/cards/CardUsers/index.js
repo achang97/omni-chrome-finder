@@ -18,7 +18,7 @@ const CardUsers = ({ className, users, onUserClick, onRemoveClick, onAddClick })
 					size="md"
 					name={name}
 					img={img}
-					className={s("mr-sm")}
+					className={s("mr-reg")}
 					onClick={onUserClick}
 					onRemoveClick={onRemoveClick}
 				/>

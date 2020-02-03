@@ -60,7 +60,7 @@ class CardCreateModal extends Component {
 
   renderKeywords = () => {
     return (
-      <CardSection className={s("mt-reg")} title="Keywords">
+      <CardSection className={s("mt-reg")} title="Keywords" startExpanded={false}>
         <Select
           value={this.state.keywords}
           onChange={(keywords) => this.setState({ keywords })}
@@ -76,7 +76,7 @@ class CardCreateModal extends Component {
 
   renderAdvanced = () => {
     return (
-      <CardSection className={s("mt-reg")} title="Advanced" showSeparator={false}>
+      <CardSection className={s("mt-reg")} title="Advanced" showSeparator={false} startExpanded={false}>
         <div className={s("flex")}>
           <div className={s("flex-1 mr-xs")}>
             <div className={s("text-gray-reg text-xs mb-xs")}> Verification Interval </div>
@@ -113,18 +113,21 @@ class CardCreateModal extends Component {
         onRequestClose={onRequestClose}
         title={question}
         overlayClassName={s("rounded-b-lg")}
-        bodyClassName={s("rounded-b-lg p-lg")}
+        bodyClassName={s("rounded-b-lg flex flex-col")}
       >
-        { this.renderOwners() }
-        { this.renderTags() }
-        { this.renderKeywords() }
-        { this.renderAdvanced() }
+        <div className={s("flex-grow overflow-auto p-lg")}>
+          { this.renderOwners() }
+          { this.renderTags() }
+          { this.renderKeywords() }
+          { this.renderAdvanced() }
+        </div>
         <Button
           text="Complete Card"
-          className={s("bg-purple-gray-10 mt-reg")}
-          textClassName={s("text-purple-reg")}
+          className={s("flex-shrink-0")}
+          textClassName={s("")}
           underline
           underlineColor="purple-gray-50"
+          color={"primary"}
         />
       </Modal>
     );

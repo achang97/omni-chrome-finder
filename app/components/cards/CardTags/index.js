@@ -17,7 +17,7 @@ const CardTags = ({ className, tags, onTagClick, onAddClick, onRemoveClick }) =>
 				<CardTag
 					key={tag}
 					text={tag}
-					className={s("flex items-center mr-xs mb-xs")}
+					className={s("flex items-center mr-xs mb-sm")}
 					onClick={onTagClick}
 					onRemoveClick={onRemoveClick}
 				/>

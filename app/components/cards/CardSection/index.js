@@ -26,7 +26,7 @@ class CardSection extends Component {
 
 		return (
 			<div className={className}>
-				<div className={s("flex mb-sm items-center")}>
+				<div className={s("flex mb-lg items-center")}>
 					<div className={s("font-semibold mr-reg text-sm text-black button-hover")} onClick={this.toggleSection}>
 						{title}
 					</div>
@@ -40,7 +40,7 @@ class CardSection extends Component {
 					{ children }
 				</AnimateHeight>
 				{ showSeparator &&
-					<div className={s("horizontal-separator mt-sm")} />
+					<div className={s("horizontal-separator mt-lg")} />
 				}
 			</div>
 		);

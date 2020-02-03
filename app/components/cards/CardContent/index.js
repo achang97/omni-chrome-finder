@@ -359,7 +359,7 @@ class CardContent extends Component {
   	const { selectedMessages } = this.state;
   	const { isEditing } = this.props;
   	return (
-  		<div className={s("message-manager-container bg-purple-light mx-lg mb-lg rounded-lg overflow-auto")}>
+  		<div className={s("message-manager-container bg-purple-light mx-lg mb-lg rounded-lg flex-grow overflow-auto")}>
 		  	{PLACEHOLDER_MESSAGES.map((messageObj, i) => (
 				<div className={s(`flex p-reg   ${ i % 2 === 0 ? '' : 'bg-purple-gray-10' } `)}>
 					<div className={s("message-photo-container rounded-lg bg-purple-reg flex-shrink-0 text-white flex justify-center mr-reg items-center shadow-md")}>
