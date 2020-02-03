@@ -133,13 +133,17 @@ class CardContent extends Component {
     	footerHeight: 0,
     	descriptionSectionHeight: MIN_QUESTION_HEIGHT,
     	showMessageManager: false,
+    	showMessages: false,
     	isModalOpen: false,
+    	selectedMessages: PLACEHOLDER_MESSAGES.map(msg => msg.selected),
     };
   }
 
   componentDidMount() {
   	this.setState({ footerHeight: this.footerRef.clientHeight })
   	console.log(this.state.footerHeight);
+  	console.log(this.state.selectedMessages);
+  	console.log(PLACEHOLDER_MESSAGES);
   }
 
   componentDidUpdate(prevProps, prevState) {
@@ -192,6 +196,16 @@ class CardContent extends Component {
 
   toggleMessageManager = () => {
   	this.setState({ showMessageManager: !this.state.showMessageManager });
+  }
+
+  toggleMessages = () => {
+  	this.setState({ showMessages: !this.state.showMessages });
+  }
+
+  toggleSelectedMessage = (i) => {
+  	const selectedMessages = this.state.selectedMessages;
+  	selectedMessages[i] = !selectedMessages[i];
+  	this.setState({ selectedMessages: selectedMessages });
   }
 
   renderDropZone =  (props) => {
@@ -322,11 +336,65 @@ class CardContent extends Component {
   	)
   }
 
+  renderThreadModal = () => {
+  	const { isEditing } = this.props;
+  	return (
+  		<Modal 
+    		isOpen={isEditing ? this.state.showMessageManager : this.state.showMessages} 
+    		onRequestClose={isEditing ? () => {this.setState({ showMessageManager: false})} : () => {this.setState({ showMessages: false})}}
+    		headerClassName={s("bg-purple-light rounded-lg")}
+    		bodyClassName={s("overflow-none flex flex-col rounded-b-lg")}
+    		className={s("bg-purple-light")}
+    		overlayClassName={s("rounded-b-lg")}
+    		title={isEditing ? "Unselect messages you do not want shown" : "View Slack Thread"}>
+      			{this.renderMessageList()}
+	      		{ isEditing &&
+	      			<Button
+			        	color={"primary"}
+			        	text={"Save"}
+			        	className={s("rounded-t-none")}
+			        	/>
+		    	}	
+      	</Modal>
+
+  	)
+  }
+
+  renderMessageList = () => {
+  	const { selectedMessages } = this.state;
+  	const { isEditing } = this.props;
+  	return (
+  		<div className={s("message-manager-container bg-purple-light mx-lg mb-lg rounded-lg overflow-auto")}>
+		  	{PLACEHOLDER_MESSAGES.map((messageObj, i) => (
+				<div className={s(`flex p-reg   ${ i % 2 === 0 ? '' : 'bg-purple-gray-10' } `)}>
+					<div className={s("message-photo-container rounded-lg bg-purple-reg flex-shrink-0 text-white flex justify-center mr-reg items-center shadow-md")}>
+						<MdPerson />
+					</div>
+					<div className={s("flex flex-col flex-grow")}> 
+						<div className={s("flex items-end")}>
+							<div className={s("text-sm font-semibold mr-reg")}> { messageObj.senderName } </div>
+							<div className={s("text-sm text-gray-dark")}> { messageObj.time } </div>
+						</div>
+						<div className={s("mt-sm text-sm")}> {messageObj.message}</div>
+					</div>
+
+					{isEditing &&
+						<CheckBox 
+							isSelected={selectedMessages[i]} 
+							toggleCheckbox={() => this.toggleSelectedMessage(i)}
+							className={s("flex-shrink-0 margin-xs")}/>
+					}
+				</div>
+	    	))}
+    	</div>
+    )
+  }
+
   renderAnswer = () => {
   	const { isEditing  } = this.props;
-    const { answerEditorEnabled } = this.state;
+    const { answerEditorEnabled, selectedMessages } = this.state;
   	return (
-  		<div className={s('p-2xl flex-grow min-h-0 flex flex-col min-h-0')}>
+  		<div className={s('p-2xl flex-grow min-h-0 flex flex-col min-h-0 relative')}>
 	        { isEditing ?
 	        	<div className={s('flex-grow min-h-0 flex flex-col min-h-0')}>
 	        	{
@@ -361,38 +429,7 @@ class CardContent extends Component {
 		        		underline
 		        	/>
 
-		        	<Modal 
-		        		isOpen={this.state.showMessageManager} 
-		        		onRequestClose={() => {this.setState({ showMessageManager: false})}}
-		        		headerClassName={s("bg-purple-light rounded-lg")}
-		        		bodyClassName={s("overflow-none flex flex-col rounded-b-lg")}
-		        		className={s("bg-purple-light")}
-		        		overlayClassName={s("rounded-b-lg")}
-		        		title={"Unselect messages you do not want shown"}>
-			      		<div className={s("message-manager-container bg-purple-light mx-lg mb-lg rounded-lg overflow-auto")}>
-			      			{PLACEHOLDER_MESSAGES.map((messageObj, i) => (
-		        				<div className={s(`flex p-reg   ${ i % 2 === 0 ? '' : 'bg-purple-gray-10' } `)}>
-		        					<div className={s("message-photo-container rounded-lg bg-purple-reg flex-shrink-0 text-white flex justify-center mr-reg items-center shadow-md")}>
-		        						<MdPerson />
-		        					</div>
-		        					<div className={s("flex flex-col flex-grow")}> 
-		        						<div className={s("flex items-end")}>
-		        							<div className={s("text-sm font-semibold mr-reg")}> { messageObj.senderName } </div>
-		        							<div className={s("text-sm text-gray-dark")}> { messageObj.time } </div>
-		        						</div>
-		        						<div className={s("mt-sm text-sm")}> {messageObj.message}</div>
-		        					</div>
-		        					<CheckBox className={s("flex-shrink-0")}/>
-		        				</div>
-					        ))}
-			      		</div>
-			      		<Button
-				        	color={"primary"}
-				        	text={"Save"}
-				        	className={s("rounded-t-none")}
-				        	
-				        />
-			      	</Modal>		        	
+		        	        	
 	        	</div>
 	        	:
 	        	<TextEditor 
@@ -404,6 +441,18 @@ class CardContent extends Component {
 	        		toolbarHidden
 	        		readOnly
 	        		/>
+
+	        }
+	        { !isEditing && 
+	        	<Button
+	        		text={"View Thread"}
+	        		onClick={() => this.toggleMessages()}
+	        		className={s("view-thread-button p-sm absolute text-xs mb-lg mr-2xl")}
+	        		color={"secondary"}
+	        		icon={<FaSlack className={s("ml-sm")}/>}
+	        		iconLeft={false}
+	        		underline={false}
+	        	/>
 	        }
         </div>
   	)
@@ -450,13 +499,13 @@ class CardContent extends Component {
 
   render() {
     const { id, isEditing, answerEditorState, tags, sideDockOpen, openCardSideDock, closeCardSideDock } = this.props;
-    const { descriptionEditorEnabled, answerEditorEnabled, isSideDockVisible } = this.state;
+    const { descriptionEditorEnabled, answerEditorEnabled, isSideDockVisible, selectedMessages } = this.state;
     return (
       <div className={s("flex-grow flex flex-col min-h-0 relative")}>
       	<div className={s("flex-grow flex flex-col min-h-0")}>
 	        { this.renderHeader() }
 	        { this.renderAnswer() }
-
+	        { this.renderThreadModal() }
         </div>
         { this.renderFooter() }
         <CardSideDock
