@@ -6,6 +6,7 @@ exports.colors = {
     dark: '#5453af',
     checkbox: '#E0E0EB',
     'gray-10': '#777BAD1A',
+    'gray-20': '#777BAD33',
     'gray-50': '#777BAD80'
   },
   gray: {

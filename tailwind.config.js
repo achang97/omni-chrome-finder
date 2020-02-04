@@ -23,6 +23,7 @@ const config = {
       '4xl': '48px',
     },
     fontSize: {
+      '2xs': '10px',
       'xs': '12px',
       'sm': '14px',
       'reg': '16px',

@@ -21,6 +21,12 @@
 }
 
 .ask-recipient {
-	@apply m-xs text-purple-reg font-semibold text-xs rounded-lg flex justify-between p-reg;
-	max-width: 120px;
+	height: 15px;
+	@apply m-xs min-w-0 relative text-purple-reg font-semibold text-xs rounded-lg flex justify-between items-center p-reg;
+}
+
+.ask-recipient-mentions-count {
+	@apply m-xs bg-purple-gray-50 text-purple-reg rounded-full flex justify-center items-center;
+	min-width: 10px;
+	padding: 2px 4px;
 }

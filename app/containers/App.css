@@ -54,6 +54,7 @@
   height: 40px;
   padding: 0px 8px;
   box-sizing: border-box;
+  flex-shrink: 0;
   @apply font-medium;
 }
 

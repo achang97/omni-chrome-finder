@@ -289,7 +289,7 @@ class CardContent extends Component {
 	        			</div>
 	        		}
 	        		<div className={s("flex justify-between")}>
-		        		<div className={s("flex text-purple-reg text-sm cursor-pointer element-underline items-center")} onClick={() => openCardSideDock(id)}> 
+		        		<div className={s("flex text-purple-reg text-sm cursor-pointer underline-border border-purple-gray-20 items-center")} onClick={() => openCardSideDock(id)}> 
 		        			<MdAttachment className={s("mr-sm")} />
 		        			<div >3 Attachments</div>
 		        		</div>
@@ -323,12 +323,8 @@ class CardContent extends Component {
               	  	className={s("py-sm px-reg rounded-full")}
                     onClick={() => openCardSideDock(id)}
               	  />
-              	  <div className={s("width-1 bg-gray-xlight mx-sm")} ></div>
-		              <div className={s("flex items-center shadow-md p-sm bg-green-xlight text-green-reg rounded-lg font-semibold text-xs")}> 
-		                <MdCheck className={s("mr-xs")} />
-		                <div>Up To Date</div>
-		                <MdArrowDropDown />
-		              </div>
+                  <div className={s("vertical-separator")} />
+                  <CardStatus isUpToDate={true} />
 	              </div>
 	            </div>
 			}

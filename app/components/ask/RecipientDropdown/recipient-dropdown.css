@@ -1,0 +1,14 @@
+.recipient-dropdown {
+	@apply absolute left-0 right-0 z-10 pb-reg pt-sm shadow-md rounded-t-lg flex flex-col;
+	max-height: 150px;
+	bottom: 100%;
+	background: #e8ebf5;
+}
+
+.recipient-dropdown-select {
+	height: 150px;
+}
+
+.recipient-dropdown-input {
+	height: 30px !important;
+}
