@@ -1,6 +1,8 @@
 import React, { Component, useMemo } from 'react';
 import PropTypes from 'prop-types';
 import { MdCheck, MdArrowDropDown, MdMoreHoriz, MdModeEdit, MdThumbUp, MdBookmarkBorder, MdPerson, MdAttachment } from "react-icons/md";
+import { default as SlackIcon } from "../../../assets/images/icons/Slack_Mark.svg";
+
 import { FaSlack } from "react-icons/fa";
 import { bindActionCreators } from 'redux';
 import { EditorState } from 'draft-js';
@@ -341,6 +343,7 @@ class CardContent extends Component {
     		bodyClassName={s("overflow-none flex flex-col rounded-b-lg")}
     		className={s("bg-purple-light")}
     		overlayClassName={s("rounded-b-lg")}
+    		shouldCloseOnOutsideClick
     		title={isEditing ? "Unselect messages you do not want shown" : "View Slack Thread"}>
       			{this.renderMessageList()}
 	      		{ isEditing &&
@@ -440,11 +443,12 @@ class CardContent extends Component {
 	        }
 	        { !isEditing && 
 	        	<Button
-	        		text={"View Thread"}
+	        		text={"Thread"}
 	        		onClick={() => this.toggleMessages()}
 	        		className={s("view-thread-button p-sm absolute text-xs mb-lg mr-2xl")}
 	        		color={"secondary"}
-	        		icon={<FaSlack className={s("ml-sm")}/>}
+	        		imgSrc={SlackIcon}
+	        		imgClassName={s("slack-icon ml-sm")}
 	        		iconLeft={false}
 	        		underline={false}
 	        	/>
