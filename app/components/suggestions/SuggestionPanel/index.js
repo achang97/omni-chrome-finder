@@ -3,7 +3,9 @@ import PropTypes from 'prop-types';
 import { MdClose } from 'react-icons/md';
 import { FaGoogleDrive } from 'react-icons/fa';
 
+import HoverableScrollContainer from '../../common/HoverableScrollContainer';
 import SuggestionCard from '../SuggestionCard';
+import SuggestionPreview from '../SuggestionPreview';
 import Button from '../../common/Button';
 import Triangle from '../../common/Triangle';
 
@@ -133,7 +135,7 @@ class SuggestionPanel extends Component {
 
   render() {
     const { isVisible } = this.props;
-    const { showQuestionInfo, showResults } = this.state;
+    const { showResults } = this.state;
 
     if (!isVisible) {
       return null;
@@ -141,34 +143,48 @@ class SuggestionPanel extends Component {
 
     return (
       <div className={s("suggestion-panel pt-reg w-full flex flex-col rounded-lg bg-purple-light shadow-xl border-gray-200 border border-solid")}>
-        <div className={s("relative")}>
-          <div className={s("px-reg text-purple-gray-50 text-sm")}>
+        <div>
+          <div className={s("px-reg text-purple-gray-50 text-sm mb-sm")}>
             30 results
           </div>
-          <div className={s("relative")}>
-            <div className={s(`suggestion-panel-card-container ${showResults ? 'suggestion-panel-card-container-lg' : ''} mt-sm flex flex-col`)}>
-              {PLACEHOLDER_CARDS.map((card, index) => (
-                <SuggestionCard
-                  key={index}
-                  heading={card.heading}
-                  headingDescription={card.headingDescription}
-                  description={card.description}
-                  datePosted={card.datePosted}
-                  isUpToDate={card.upToDate}
+          <HoverableScrollContainer
+            scrollContainerClassName={s(`suggestion-panel-card-container ${showResults ? 'suggestion-panel-card-container-lg' : ''} flex flex-col`)}
+            list={PLACEHOLDER_CARDS}
+            renderScrollElement={(card) => (
+              <SuggestionCard
+                heading={card.heading}
+                headingDescription={card.headingDescription}
+                description={card.description}
+                datePosted={card.datePosted}
+                isUpToDate={card.upToDate}
+              />
+            )}
+            renderHoverElement={(card) => (
+              <div className={s("flex")}>
+                <SuggestionPreview {...card} />
+                <Triangle
+                  size={10}
+                  color={colors.purple.light}
+                  direction="left"
+                  className={s("mt-lg")}
+                  outlineSize={1}
+                  outlineColor={colors.gray.light}
                 />
-              ))}
-              { showResults && this.renderExternalDocumentationResults() }
-            </div>
-          </div>
+              </div>
+            )}
+            footer={showResults && this.renderExternalDocumentationResults()}
+            position="left"
+            positionOffset={{ right: 5 /* Correct for scrollbar */ }}
+          />
           { !showResults && this.renderFooter() }
-                  <Triangle
-          size={10}
-          color="white"
-          direction="left"
-          className={s("absolute suggestion-panel-arrow")}
-          outlineSize={1}
-          outlineColor={colors.gray.light}
-        />
+          <Triangle
+            size={10}
+            color="white"
+            direction="left"
+            className={s("absolute suggestion-panel-arrow")}
+            outlineSize={1}
+            outlineColor={colors.gray.light}
+          />
         </div>
       </div>
     )

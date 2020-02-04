@@ -369,7 +369,7 @@ class Ask extends Component {
             No current recipients
           </div>
         }
-        <div className={s("flex my-xs flex-wrap min-h-0")}>
+        <div className={s("my-xs flex-wrap min-h-0 flex overflow-y-auto")}>
           { recipients.map(({ type, ...rest }) => ( type === 'channel' ?
             this.renderChannelRecipient(rest) :
             this.renderIndividualRecipient(rest)

@@ -8,8 +8,6 @@
 .suggestion-panel-card-container {
   width: 350px;
   max-height: 500px;
-  overflow-x: hidden;
-  overflow-y: auto;
 }
 
 .suggestion-panel-card-container-lg {
