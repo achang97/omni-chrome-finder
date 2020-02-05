@@ -3,7 +3,7 @@ import PropTypes from 'prop-types';
 import { MdClose } from 'react-icons/md';
 import { FaGoogleDrive } from 'react-icons/fa';
 
-import HoverableScrollContainer from '../../common/HoverableScrollContainer';
+import ScrollContainer from '../../common/ScrollContainer';
 import SuggestionCard from '../SuggestionCard';
 import SuggestionPreview from '../SuggestionPreview';
 import Button from '../../common/Button';
@@ -147,7 +147,7 @@ class SuggestionPanel extends Component {
           <div className={s("px-reg text-purple-gray-50 text-sm mb-sm")}>
             30 results
           </div>
-          <HoverableScrollContainer
+          <ScrollContainer
             scrollContainerClassName={s(`suggestion-panel-card-container ${showResults ? 'suggestion-panel-card-container-lg' : ''} flex flex-col`)}
             list={PLACEHOLDER_CARDS}
             renderScrollElement={(card) => (
@@ -159,7 +159,7 @@ class SuggestionPanel extends Component {
                 isUpToDate={card.upToDate}
               />
             )}
-            renderHoverElement={(card) => (
+            renderOverflowElement={(card) => (
               <div className={s("flex")}>
                 <SuggestionPreview {...card} />
                 <Triangle
@@ -174,7 +174,6 @@ class SuggestionPanel extends Component {
             )}
             footer={showResults && this.renderExternalDocumentationResults()}
             position="left"
-            positionOffset={{ right: 5 /* Correct for scrollbar */ }}
           />
           { !showResults && this.renderFooter() }
           <Triangle

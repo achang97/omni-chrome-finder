@@ -20,9 +20,13 @@
 	box-shadow: 0 4px 6px -1px rgba(255, 159, 159, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
 }
 
+.ask-recipient-scroll-max {
+  max-height: 150px;
+}
+
 .ask-recipient {
 	height: 15px;
-	@apply m-xs min-w-0 relative text-purple-reg font-semibold text-xs rounded-lg flex justify-between items-center p-reg;
+	@apply m-xs relative text-purple-reg font-semibold text-xs rounded-lg flex justify-between items-center p-reg;
 }
 
 .ask-recipient-mentions-count {

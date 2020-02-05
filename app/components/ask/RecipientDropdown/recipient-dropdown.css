@@ -1,5 +1,5 @@
 .recipient-dropdown {
-	@apply absolute left-0 right-0 z-10 pb-reg pt-sm shadow-md rounded-t-lg flex flex-col;
+	@apply text-xs pb-reg pt-sm shadow-md rounded-t-lg flex flex-col;
 	max-height: 150px;
 	bottom: 100%;
 	background: #e8ebf5;

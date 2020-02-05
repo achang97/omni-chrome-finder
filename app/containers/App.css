@@ -67,17 +67,17 @@
 }
 
 /* Custom scrollbar */
-.app-container div::-webkit-scrollbar {
-  background: transparent; /* Optional: just make scrollbar invisible */
+/*.app-container div::-webkit-scrollbar {
+  background: transparent;
 }
 
 .app-container div::-webkit-scrollbar:vertical {
-  width: 5px; /* Remove scrollbar space */
+  width: 5px;
   height: 0px;
 }
 
 .app-container div::-webkit-scrollbar:horizontal {
-  width: 0px; /* Remove scrollbar space */
+  width: 0px;
   height: 5px;
 }
 
@@ -89,4 +89,4 @@
   @apply bg-gray-400;
   border-left: none;
   border-right: none;
-}
+}*/

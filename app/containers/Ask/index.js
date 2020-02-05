@@ -18,6 +18,7 @@ import Tabs from '../../components/common/Tabs/Tabs';
 import Tab from '../../components/common/Tabs/Tab';
 import Select from '../../components/common/Select';
 import SuggestionPanel from "../../components/suggestions/SuggestionPanel";
+import ScrollContainer from '../../components/common/ScrollContainer';
 
 import RecipientDropdown from "../../components/ask/RecipientDropdown";
 
@@ -26,7 +27,7 @@ import { expandDock } from '../../actions/display';
 import { openCard } from '../../actions/cards';
 
 import style from "./ask.css";
-import { getStyleApplicationFn } from '../../utils/styleHelpers';
+import { getStyleApplicationFn, isOverflowing } from '../../utils/styleHelpers';
 import { createSelectOptions } from '../../utils/selectHelpers';
 const s = getStyleApplicationFn(style);
 
@@ -76,11 +77,14 @@ class Ask extends Component {
       recordedChunks: [],
       screenRecordings: [],
 
-      recipients: [],
+      recipients: [
+      ],
 
       //loading questions
       showRelatedQuestions: false,
     };
+
+    this.expandedPageRef = React.createRef();
   }
 
   handleTabClick = (activeIntegration) => {
@@ -91,11 +95,6 @@ class Ask extends Component {
     this.setState({
       showRelatedQuestions: ev.target.value.trim().length > 0
     });
-  };
-
-  redirect = (routeName) => {
-    console.log(routeName);
-    this.props.history.push(routeName);
   };
 
   openCard = () => {
@@ -338,15 +337,6 @@ class Ask extends Component {
         <button onClick={() => this.removeRecipient(id)}>
           <MdClose className={s("text-purple-reg")} />
         </button>
-        <RecipientDropdown
-          name={name}
-          mentions={mentions}
-          isDropdownOpen={isDropdownOpen}
-          isDropdownSelectOpen={isDropdownSelectOpen}
-          onAddMention={(newMention) => this.updateRecipientInfo(name, { mentions: _.union(mentions, [newMention]) })}
-          onRemoveMention={(removeMention) => this.updateRecipientInfo(name, { mentions: _.without(mentions, removeMention) })}
-          onClose={() => this.updateRecipientInfo(name, { isDropdownOpen: false, isDropdownSelectOpen: false })}
-        />
       </div>
     );
   }
@@ -354,7 +344,7 @@ class Ask extends Component {
   renderRecipientSelection = () => {
     const { recipients } = this.state;
     return (
-      <div className={s("bg-purple-light flex-1 flex flex-col p-lg min-h-0")}>
+      <div className={s("bg-purple-light flex-1 flex flex-col p-lg")}>
         <div className={s("text-purple-reg text-xs mb-reg")}>Send to channel/person</div>
         <Select
           value={null}
@@ -369,12 +359,33 @@ class Ask extends Component {
             No current recipients
           </div>
         }
-        <div className={s("my-xs flex-wrap min-h-0 flex overflow-y-auto")}>
-          { recipients.map(({ type, ...rest }) => ( type === 'channel' ?
+        <ScrollContainer
+          className={s("my-xs flex flex-col flex-1")}
+          scrollContainerClassName={s(`flex-1 flex flex-wrap content-start ${isOverflowing(this.expandedPageRef.current) ? 'ask-recipient-scroll-max' : ''}`)}
+          scrollElementClassName={s("min-w-0")}
+          list={recipients}
+          renderScrollElement={({ type, ...rest }) => (type === 'channel' ?
             this.renderChannelRecipient(rest) :
             this.renderIndividualRecipient(rest)
-          ))}
-        </div>
+          )}
+          renderOverflowElement={({ type, name, mentions, isDropdownOpen, isDropdownSelectOpen }) => ( type === 'channel' &&
+            <RecipientDropdown
+              name={name}
+              mentions={mentions}
+              isDropdownOpen={isDropdownOpen}
+              isDropdownSelectOpen={isDropdownSelectOpen}
+              onAddMention={(newMention) => this.updateRecipientInfo(name, { mentions: _.union(mentions, [newMention]) })}
+              onRemoveMention={(removeMention) => this.updateRecipientInfo(name, { mentions: _.without(mentions, removeMention) })}
+              onClose={() => this.updateRecipientInfo(name, { isDropdownOpen: false, isDropdownSelectOpen: false })}
+            />
+          )}
+          position="top"
+          matchDimensions={true}
+          showCondition={({ type, isDropdownOpen, isDropdownSelectOpen }) => (
+            type === 'channel' && (isDropdownOpen || isDropdownSelectOpen)
+          )}
+          marginAdjust={true}
+        />
       </div>
     );    
   }
@@ -395,15 +406,18 @@ class Ask extends Component {
     )
   }
 
+
   renderExpandedAskPage = () => {
     const { editorState } = this.state;
     return (
       <div className={s('flex flex-col flex-1 min-h-0')}>
-        <div className={s("p-lg")}>
-          { this.renderTabHeader() }
-          { this.renderAskInputs() }
+        <div className={s('flex flex-col flex-1 overflow-y-auto')} ref={this.expandedPageRef}>
+          <div className={s("p-lg")}>
+            { this.renderTabHeader() }
+            { this.renderAskInputs() }
+          </div>
+          { this.renderRecipientSelection() }
         </div>
-        { this.renderRecipientSelection() }
         { this.renderFooterButton() }
       </div>
     );
@@ -414,7 +428,7 @@ class Ask extends Component {
     const { expandDock } = this.props;
     
     return (
-      <div className={s("p-lg")}>
+      <div className={s("p-lg overflow-y-auto")}>
       	<div onClick={this.openCard}> Open Card </div>
         <input
           onChange={this.onShowRelatedQuestions}

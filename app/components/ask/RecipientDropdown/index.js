@@ -45,10 +45,10 @@ class RecipientDropdown extends Component {
       <div className={s(`recipient-dropdown ${isDropdownSelectOpen ? 'recipient-dropdown-select' : ''}`)}>
         { isDropdownOpen && (mentions.length === 0 ?
           <div className={s("text-center text-purple-reg font-normal")}> No current mentions </div> :
-          <div className={s("overflow-auto px-sm")}>
+          <div className={s("overflow-auto px-sm text-purple-reg")}>
             { mentions.map((mention) => (
               <div key={mention.id} className={s("flex justify-between items-center py-xs")}>
-                <div className={s("min-w-0 truncate")}> @{mention.name} </div>
+                <div className={s("min-w-0 truncate font-semibold")}> @{mention.name} </div>
                 <button onClick={() => onRemoveMention(mention)}>
                   <MdClose className={s("text-purple-reg")} />
                 </button>
@@ -61,17 +61,17 @@ class RecipientDropdown extends Component {
             <div className={s("px-xs")}>
               <input 
                 className={s("recipient-dropdown-input w-full")}
-                placeholder="@ mention"
+                placeholder="@mention"
                 onChange={e => this.setState({ mentionInputText: e.target.value })}
               />
               <div className={s("horizontal-separator")} />
             </div>
-            <div className={s("overflow-auto px-sm my-xs")}>
+            <div className={s("overflow-auto px-sm my-xs text-purple-reg")}>
               { addMentionOptions.length === 0 ?
-                <div className={s("text-center text-purple-reg font-normal")}> No mention options </div> :
+                <div className={s("text-center font-normal")}> No mention options </div> :
                 addMentionOptions.map(mention => (
                   <div key={mention.id} className={s("py-xs button-hover")} onClick={() => onAddMention(mention)}>
-                    <div className={s("w-full truncate")}> @{mention.name} </div>
+                    <div className={s("w-full truncate font-semibold")}> @{mention.name} </div>
                   </div>
                 ))
               }
