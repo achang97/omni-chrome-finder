@@ -16,6 +16,10 @@
   @apply flex-1 p-reg text-sm rounded-lg;
 }
 
+.ask-screen-record-shadow {
+	box-shadow: 0 4px 6px -1px rgba(255, 159, 159, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+}
+
 .ask-recipient {
 	@apply m-xs text-purple-reg font-semibold text-xs rounded-lg flex justify-between p-reg;
 	max-width: 120px;

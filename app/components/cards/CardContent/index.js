@@ -5,9 +5,10 @@ import { default as SlackIcon } from "../../../assets/images/icons/Slack_Mark.sv
 
 import { FaSlack } from "react-icons/fa";
 import { bindActionCreators } from 'redux';
-import { EditorState } from 'draft-js';
+import { convertFromRaw, convertToRaw,
+  CompositeDecorator, EditorState } from 'draft-js';
 import { connect } from 'react-redux';
-import { editCard, saveCard, openCardSideDock, closeCardSideDock, openCardCreateModal, closeCardCreateModal } from '../../../actions/cards';
+import { editCard, saveCard, openCardSideDock, closeCardSideDock, openCardCreateModal, closeCardCreateModal, changeAnswerEditor, changeDescriptionEditor } from '../../../actions/cards';
 import TextEditor from '../../editors/TextEditor';
 import Button from '../../common/Button';
 import Modal from '../../common/Modal';
@@ -118,6 +119,8 @@ function StyledDropzone(props) {
     closeCardSideDock,
     openCardCreateModal,
     closeCardCreateModal,
+    changeAnswerEditor,
+    changeDescriptionEditor,
   }, dispatch)
 )
 
@@ -126,8 +129,8 @@ class CardContent extends Component {
     super(props);
   
     this.state = {
-    	answerEditorState: EditorState.createEmpty(),
-    	descriptionEditorState: EditorState.createEmpty(),
+    	answerEditorState: this.props.answerState ? EditorState.createWithContent(convertFromRaw(this.props.answerState)) : EditorState.createEmpty(),
+    	descriptionEditorState:  EditorState.createEmpty(),
     	descriptionEditorEnabled: false,
     	answerEditorEnabled: false,
     	footerHeight: 0,
@@ -140,13 +143,17 @@ class CardContent extends Component {
   }
 
   componentDidMount() {
-  	this.setState({ footerHeight: this.footerRef.clientHeight })
+  	this.setState({ footerHeight: this.footerRef.clientHeight });
   }
 
   componentDidUpdate(prevProps, prevState) {
   	if (prevState.footerHeight !== this.footerRef.clientHeight) {
   		this.setState({ footerHeight: this.footerRef.clientHeight });
   	}
+  }
+
+  componentWillUnmount() {
+  	console.log('unmounted')
   }
 
   enableDescriptionEditor = () => {
@@ -176,15 +183,16 @@ class CardContent extends Component {
 
   saveCard = (id) => {
     this.setState({ descriptionEditorEnabled: false });
-    this.props.saveCard(id, this.state.answerEditorState, this.state.descriptionEditorState);
+    this.props.saveCard(id);
   }
 
   onAnswerEditorStateChange = (editorState) => {
-    this.setState({answerEditorState : editorState });
+    this.props.changeAnswerEditor(this.props.id, editorState);
   }
 
   onDescriptionEditorStateChange = (editorState) => {
-    this.setState({descriptionEditorState : editorState });
+    //this.setState({descriptionEditorState : editorState });
+    this.props.changeDescriptionEditor(this.props.id, editorState);
   }
 
   getMaxDescriptionHeight = () => {
@@ -262,7 +270,7 @@ class CardContent extends Component {
 	            		descriptionEditorEnabled ?
 	            		<TextEditor 
 	            			onEditorStateChange={this.onDescriptionEditorStateChange} 
-	            			editorState={this.state.descriptionEditorState} 
+	            			editorState={this.props.descriptionEditorState} 
 		        			wrapperClassName={s('card-description-text-editor-wrapper-edit flex flex-col flex-grow min-h-0 my-reg')} 
 		        			editorClassName={s('text-editor overflow-auto bg-white')} 
 		        			toolbarClassName={s('text-editor-toolbar')}
@@ -272,7 +280,7 @@ class CardContent extends Component {
 		            		<TextEditor
 		            			onClick={() => this.enableDescriptionEditor()}
 		            			onEditorStateChange={this.onDescriptionEditorStateChange} 
-		            			editorState={this.state.descriptionEditorState}
+		            			editorState={this.props.descriptionEditorState}
 		        				wrapperClassName={s('card-description-text-editor-wrapper-inactive cursor-pointer flex flex-col flex-grow min-h-0')} 
 		        				editorClassName={s('text-editor card-description-text-editor-view overflow-auto')} 
 		        				toolbarClassName={s('')}
@@ -291,7 +299,7 @@ class CardContent extends Component {
         		: 
         		<TextEditor 
         			onEditorStateChange={this.onDescriptionEditorStateChange} 
-        			editorState={this.state.descriptionEditorState} 
+        			editorState={this.props.descriptionEditorState} 
         			wrapperClassName={s('text-editor-wrapper card-description-text-editor-wrapper-view flex-grow flex flex-col min-h-0 my-reg')} 
         			editorClassName={s('text-editor card-description-text-editor-view overflow-auto')} 
         			toolbarClassName={''} 
@@ -399,7 +407,7 @@ class CardContent extends Component {
 		        	answerEditorEnabled ?
 			        	<TextEditor 
 			        		onEditorStateChange={this.onAnswerEditorStateChange} 
-			        		editorState={this.state.answerEditorState} 
+			        		editorState={this.props.answerEditorState} 
 			        		wrapperClassName={'card-answer-text-editor-wrapper-edit flex flex-col flex-grow min-h-0 my-reg'} 
 			        		editorClassName={'text-editor overflow-auto'} 
 			        		toolbarClassName={'text-editor-toolbar'}
@@ -408,7 +416,7 @@ class CardContent extends Component {
 			        	<div className={s("flex-grow mb-reg flex flex-col flex-grow min-h-0")} onClick={() => this.enableAnswerEditor()} >
 				        	<TextEditor 
 				        		onEditorStateChange={this.onAnswerEditorStateChange} 
-				        		editorState={this.state.answerEditorState} 
+				        		editorState={this.props.answerEditorState} 
 				        		wrapperClassName={'card-answer-text-editor-wrapper-inactive cursor-pointer flex flex-col flex-grow min-h-0'} 
 				        		editorClassName={'text-editor card-answer-text-editor-view overflow-auto'} 
 				        		toolbarClassName={s('')}
@@ -432,7 +440,7 @@ class CardContent extends Component {
 	        	:
 	        	<TextEditor 
 	        		onEditorStateChange={this.onAnswerEditorStateChange} 
-	        		editorState={this.state.answerEditorState} 
+	        		editorState={this.props.answerEditorState} 
 	        		wrapperClassName={'text-editor-wrapper flex-grow flex flex-col min-h-0'} 
 	        		editorClassName={'text-editor card-answer-text-editor-view overflow-auto'} 
 	        		toolbarClassName={''} 

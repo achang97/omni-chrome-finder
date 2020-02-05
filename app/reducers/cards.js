@@ -1,5 +1,6 @@
 import * as types from '../actions/actionTypes';
 import _ from 'underscore';
+import { EditorState } from 'draft-js';
 
 const initialState = {
   cards: [],
@@ -16,8 +17,8 @@ export default function cards(state = initialState, action) {
 
   switch (type) {
     case types.OPEN_CARD: {
-      const { id } = payload;
-      const newCards = _.union(state.cards, [{ id, isEditing: false, sideDockOpen: false, createModalOpen: false, answerEditorState: {} }]);
+      const { id, question, descriptionEditorState, answerEditorState } = payload;
+      const newCards = _.union(state.cards, [{ id, isEditing: false, sideDockOpen: false, createModalOpen: false, question, descriptionEditorState: EditorState.createEmpty(), answerEditorState: EditorState.createEmpty()}]);
       return { ...state, cards: newCards, activeCardIndex: newCards.length - 1 };
     }
     case types.SET_ACTIVE_CARD_INDEX: {
@@ -60,14 +61,26 @@ export default function cards(state = initialState, action) {
       return { ...state, cards: newCards };
     }
 
+    case types.CHANGE_ANSWER_EDITOR: {
+      const { id, editorState } = payload;
+      const newCards = getNewCards(id, { answerEditorState: editorState}, state.cards);
+      return { ...state, cards: newCards };
+    }
+
+    case types.CHANGE_DESCRIPTION_EDITOR: {
+      const { id, editorState } = payload;
+      const newCards = getNewCards(id, { descriptionEditorState: editorState}, state.cards);
+      return { ...state, cards: newCards };
+    }
+
     case types.EDIT_CARD: {
       const { id } = payload;
       const newCards = getNewCards(id, { isEditing: true }, state.cards);
       return { ...state, cards: newCards };
     }
     case types.SAVE_CARD: {
-      const { id, answerState, descriptionState } = payload;
-      const newCards = getNewCards(id, { answerEditorState: answerState, descriptionEditorState: descriptionState, isEditing: false }, state.cards);
+      const { id } = payload;
+      const newCards = getNewCards(id, { isEditing: false }, state.cards);
       return { ...state, cards: newCards };
     }
 

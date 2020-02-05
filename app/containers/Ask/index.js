@@ -3,7 +3,7 @@ import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
 import { withRouter } from 'react-router-dom';
 
-import { MdChevronRight, MdPictureInPicture, MdClose } from 'react-icons/md';
+import { MdChevronRight, MdPictureInPicture, MdClose, MdCloudUpload } from 'react-icons/md';
 import { IoMdAdd } from 'react-icons/io';
 import { FaRegDotCircle, FaPaperPlane } from 'react-icons/fa';
 
@@ -255,7 +255,7 @@ class Ask extends Component {
         <div className={s('flex px-xs pt-reg')}>
           <Button
             onClick={this.toggleScreenRecording}
-            className={s("ask-screen-capture-button mr-xs bg-red-100 text-red-500")}
+            className={s("ask-screen-capture-button ask-screen-record-shadow mr-xs bg-red-100 text-red-500")}
             text={!desktopSharing ? 'Screen Record' : 'End Recording'}
             underline
             underlineColor="red-200"
@@ -264,11 +264,9 @@ class Ask extends Component {
           />
           <Button
             onClick={this.toggleScreenRecording}
-            className={s("ask-screen-capture-button ml-xs bg-purple-xlight text-purple-reg")}
-            text="Screen Capture"
-            underline
-            underlineColor="purple-gray-10"
-            icon={<MdPictureInPicture color={colors.purple.reg} className={s("ml-sm")} />}
+            className={s("ask-screen-capture-button ml-xs bg-white text-purple-reg border border-dashed border-gray-light shadow-none")}
+            text="Drag & Drop"
+            icon={<MdCloudUpload color={colors.purple.reg} className={s("ml-sm")} />}
             iconLeft={false}
           />
         </div>
@@ -370,6 +368,9 @@ class Ask extends Component {
             icon={<MdChevronRight color="white" className={s("ml-sm")} />}
             onClick={expandDock}
           />
+        </div>
+        <div className="flex justify-between items-center">
+
         </div>
         <SuggestionPanel isVisible={showRelatedQuestions} />
       </div>

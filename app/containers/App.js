@@ -117,6 +117,8 @@ class App extends Component {
     } = this.props;
     const { suggestTabVisible, jss } = this.state;
 
+    const showFullDock = dockExpanded || pathname !== '/ask';
+
     // Solution to CSS isolation taken from https://stackoverflow.com/a/57221293.
     return (
       <div className={s('app-container')}>
@@ -136,11 +138,11 @@ class App extends Component {
           size={350}
           isVisible={dockVisible}
           dockStyle={{
-            height: dockExpanded || pathname !== '/ask' ? '100%' : 'auto',
+            height: showFullDock ? '100%' : 'auto',
             ...dockPanelStyles
           }}
         >
-          <div className={s(`flex flex-col ${dockExpanded ? 'h-screen' : ''}`)}>
+          <div className={s(`flex flex-col ${showFullDock ? 'h-screen' : ''}`)}>
             <Header />
             <Switch>
               <Route path="/ask" component={Ask} />
