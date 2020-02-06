@@ -83,7 +83,7 @@ class HoverableScrollElement extends Component {
 
 		switch (position) {
 			case "left": {
-				overflowElem.style.left = `${left - parentLeft - overflowWidth + marginLeft}px`;
+				overflowElem.style.right = `${parentRight - right + width - marginLeft}px`;
 				overflowElem.style.top = `${top - parentTop + marginTop}px`;
 				break;
 			}
@@ -94,7 +94,7 @@ class HoverableScrollElement extends Component {
 			}
 			case "top": {
 				overflowElem.style.right = `${parentRight - right + marginRight}px`;
-				overflowElem.style.top = `${top - parentTop - overflowHeight + marginTop}px`;
+				overflowElem.style.bottom = `${parentBottom - bottom + height - marginTop}px`;
 				break;				
 			}
 			case "bottom": {
