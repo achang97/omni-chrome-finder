@@ -17,6 +17,10 @@ export function closeAllCards() {
   return { type: types.CLOSE_ALL_CARDS, payload: {} };
 }
 
+export function adjustCardsDimensions(newWidth, newHeight) {
+  return { type: types.ADJUST_CARDS_DIMENSIONS, payload: { newWidth, newHeight } }
+}
+
 export function changeAnswerEditor(id, editorState) {
   return { type: types.CHANGE_ANSWER_EDITOR, payload: { id, editorState } };
 }
@@ -27,6 +31,26 @@ export function changeDescriptionEditor(id, editorState) {
 
 export function editCard(id) {
   return { type: types.EDIT_CARD, payload: { id } };
+}
+
+export function enableEditor(id, editorType) {
+  return { type: types.ENABLE_EDITOR, payload: { id, editorType} };
+}
+
+export function disableEditor(id, editorType) {
+  return { type: types.DISABLE_EDITOR, payload: { id, editorType} };
+}
+
+export function adjustDescriptionSectionHeight(id, newHeight) {
+  return { type: types.ADJUST_DESCRIPTION_SECTION_HEIGHT, payload: { id, newHeight} };
+}
+
+export function openModal(id, modalType) {
+  return { type: types.OPEN_MODAL, payload: {id, modalType} };
+}
+
+export function closeModal(id, modalType) {
+  return { type: types.CLOSE_MODAL, payload: {id, modalType} };
 }
 
 export function saveCard(id) {
