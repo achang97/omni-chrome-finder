@@ -59,14 +59,23 @@ export default function cards(state = initialState, action) {
 
   switch (type) {
     case types.OPEN_CARD: {
-      const { id, question, descriptionEditorState, answerEditorState } = payload;
+      const { id, question, descriptionEditorState, answerEditorState,  } = payload;
 
-      const descriptionEditorStateSaved = EditorState.createEmpty();
-      const answerEditorStateSaved = EditorState.createEmpty();
+      const descriptionEditorStateSaved = descriptionEditorState || EditorState.createEmpty();
+      const answerEditorStateSaved = answerEditorState || EditorState.createEmpty();
+
+
+      // If Open Card is being called from Create, set properties to editing
+      var isEditing = false;
+      var answerEditorEnabled = false;
+      if (descriptionEditorState || answerEditorState) {
+        isEditing = true;
+        answerEditorEnabled = true;
+      }
 
       const newCards = _.union(state.cards, 
         [{  id, 
-            isEditing: false, 
+            isEditing: isEditing, 
             sideDockOpen: false, 
             createModalOpen: false, 
             question,
@@ -75,7 +84,7 @@ export default function cards(state = initialState, action) {
             descriptionEditorState: descriptionEditorStateSaved, 
             answerEditorState: answerEditorStateSaved,
             descriptionEditorEnabled: false,
-            answerEditorEnabled: false,
+            answerEditorEnabled: answerEditorEnabled,
             descriptionSectionHeight: MIN_QUESTION_HEIGHT,
             showThreadModal: false,
             showThreadEditModal: false,
