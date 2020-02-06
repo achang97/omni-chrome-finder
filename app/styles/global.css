@@ -26,8 +26,18 @@
 }
 
 /* Borders and separators */
+.horizontal-separator, .vertical-separator {
+	@apply bg-gray-xlight;
+}
+
 .horizontal-separator {
-	@apply border-t border-l-0 border-r-0 border-b-0 border-solid border-gray-300 w-full;
+  height: 1px;
+  @apply my-xs min-w-full;
+}
+
+.vertical-separator {
+  width: 1px;
+  @apply mx-xs min-h-full;
 }
 
 .underline-border {

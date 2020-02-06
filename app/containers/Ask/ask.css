@@ -20,7 +20,17 @@
 	box-shadow: 0 4px 6px -1px rgba(255, 159, 159, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
 }
 
+.ask-recipient-scroll-max {
+  max-height: 150px;
+}
+
 .ask-recipient {
-	@apply m-xs text-purple-reg font-semibold text-xs rounded-lg flex justify-between p-reg;
-	max-width: 120px;
+	height: 15px;
+	@apply m-xs relative text-purple-reg font-semibold text-xs rounded-lg flex justify-between items-center p-reg;
+}
+
+.ask-recipient-mentions-count {
+	@apply m-xs bg-purple-gray-50 text-purple-reg rounded-full flex justify-center items-center;
+	min-width: 10px;
+	padding: 2px 4px;
 }

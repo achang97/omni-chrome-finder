@@ -1,0 +1,7 @@
+.scroll-container-elem {
+	position: static;
+}
+
+.scroll-container-overflow-elem {
+  position: absolute;
+}

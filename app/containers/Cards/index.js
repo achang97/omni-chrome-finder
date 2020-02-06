@@ -15,6 +15,7 @@ import Tab from '../../components/common/Tabs/Tab';
 
 import { colors } from '../../styles/colors';
 import style from './cards.css';
+import { DEBOUNCE_60_HZ } from '../../utils/constants';
 import { getStyleApplicationFn } from '../../utils/styleHelpers';
 const s = getStyleApplicationFn(style);
 
@@ -99,6 +100,13 @@ export default class Cards extends Component {
     );
   }
 
+  onResize = (e, direction, ref, d) => {
+    this.setState({
+      cardsWidth: ref.clientWidth,
+      cardsHeight: ref.clientHeight,
+    });
+  }
+
   render() {
     const { cards, closeCard, closeAllCards, activeCardIndex, setActiveCardIndex } = this.props;
 
@@ -117,12 +125,8 @@ export default class Cards extends Component {
             className={s("card bg-white rounded-lg shadow-2xl flex flex-col")}
             defaultSize={{ width: defaultCardWidth, height: defaultCardHeight }}
             size={{ width: this.state.cardsWidth, height: this.state.cardsHeight }}
-            onResizeStop={(e, direction, ref, d) => {
-              this.setState({
-                cardsWidth: this.state.cardsWidth + d.width,
-                cardsHeight: this.state.cardsHeight + d.height,
-              });
-            }}
+            onResize={_.debounce(this.onResize, DEBOUNCE_60_HZ)}
+            onResizeStop={this.onResize}
             minWidth={defaultCardWidth}
             minHeight={defaultCardHeight}
             enable={{ top: false, right: true, bottom: true, left: false, topRight: false, bottomRight: true, bottomLeft: false, topLeft: false }}
@@ -132,7 +136,7 @@ export default class Cards extends Component {
               {...cards[activeCardIndex]}
               cardWidth={this.state.cardsWidth}
               cardHeight={this.state.cardsHeight}
-              tags={['Customer Onboarding', 'Sales']}
+              tags={['Customer Onboarding', 'Sales', 'Customers', 'Management', 'Onboarding', 'Test', 'a lot of tags', 'how many tags you got']}
             />
           </Resizable>
         </Draggable>

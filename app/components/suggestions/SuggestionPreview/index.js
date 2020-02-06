@@ -1,12 +1,13 @@
 import React, { Component } from 'react';
 import Button from '../../common/Button';
 
+import style from './suggestion-preview.css';
 import { getStyleApplicationFn } from '../../../utils/styleHelpers';
-const s = getStyleApplicationFn();
+const s = getStyleApplicationFn(style);
 
 const SuggestionPreview = ({ heading, headingDescription, description, datePosted, isUpToDate }) => {
   return (
-    <div className={s("w-full flex flex-col rounded-lg shadow-xl border-gray-200 border border-solid")}>
+    <div className={s("suggestion-preview")}>
       <div className={s("bg-purple-light py-xl px-lg rounded-t-lg")}>
         <div className={s("text-lg font-semibold")}>
           { heading }
@@ -18,7 +19,7 @@ const SuggestionPreview = ({ heading, headingDescription, description, datePoste
       <div className={s("bg-white py-xl px-lg text-sm")}>
         { description }
       </div>
-      <div className={s("bg-white")}>
+      <div className={s("bg-white rounded-b-lg")}>
         <Button
           text="View full card"
           underline={true}

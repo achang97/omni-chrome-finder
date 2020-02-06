@@ -5,57 +5,46 @@ import { withRouter } from 'react-router-dom';
 
 import { MdChevronRight, MdPictureInPicture, MdClose, MdCloudUpload } from 'react-icons/md';
 import { IoMdAdd } from 'react-icons/io';
-import { FaRegDotCircle, FaPaperPlane } from 'react-icons/fa';
+import { FaRegDotCircle, FaPaperPlane, FaMinus } from 'react-icons/fa';
 
 import { EditorState } from 'draft-js';
 import ReactPlayer from 'react-player';
 import TextEditor from '../../components/editors/TextEditor';
 import Button from '../../components/common/Button';
 import CircleButton from '../../components/common/CircleButton';
+import _ from 'underscore';
 
 import Tabs from '../../components/common/Tabs/Tabs';
 import Tab from '../../components/common/Tabs/Tab';
+import Select from '../../components/common/Select';
 import SuggestionPanel from "../../components/suggestions/SuggestionPanel";
+import ScrollContainer from '../../components/common/ScrollContainer';
+
+import RecipientDropdown from "../../components/ask/RecipientDropdown";
 
 import { colors } from '../../styles/colors';
 import { expandDock } from '../../actions/display';
 import { openCard } from '../../actions/cards';
 
 import style from "./ask.css";
-import { getStyleApplicationFn } from '../../utils/styleHelpers';
+import { getStyleApplicationFn, isOverflowing } from '../../utils/styleHelpers';
+import { createSelectOptions } from '../../utils/selectHelpers';
 const s = getStyleApplicationFn(style);
 
 const INTEGRATIONS = ['Slack', 'Email', 'Asana'];
-const PLACEHOLDER_RECIPIENTS = [
-  {
-    type: 'channel',
-    name: 'Design',
-    tagged: [
-      { name: 'Miodrag' },
-      { name: 'Goran' }
-    ]
-  },
-  {
-    type: 'user',
-    name: 'Akshay',
-  },
-  {
-    type: 'user',
-    name: 'Chetan'
-  },
-  {
-    type: 'user',
-    name: 'Andrew'
-  },
-  {
-    type: 'user',
-    name: 'Fernando'
-  },
-  {
-    type: 'user',
-    name: 'Chetan Really Long Name Wow!!!'
-  },
-];
+
+const PLACEHOLDER_RECIPIENT_OPTIONS = createSelectOptions([
+  { id: 'c1', type: 'channel', name: 'Design' },
+  { id: 'u1', type: 'user', name: 'Akshay' },
+  { id: 'u2', type: 'user', name: 'Chetan' },
+  { id: 'u3', type: 'user', name: 'Andrew' },
+  { id: 'u4', type: 'user', name: 'Fernando' },
+  { id: 'u5', type: 'user', name: 'Chetan Really Long Name Wow ASDf ASdf ASdf asdf !!!' },  
+  { id: 'u6', type: 'user', name: 'Roger' },
+  { id: 'u7', type: 'user', name: 'Mike' },
+  { id: 'u8', type: 'channel', name: 'Engineering' },
+  { id: 'u9', type: 'channel', name: 'Frontend' },
+], (option) => ({ label: `${option.type === 'channel' ? '#' : '@'} ${option.name}`, value: option }));
 
 @connect(
   state => ({
@@ -88,9 +77,14 @@ class Ask extends Component {
       recordedChunks: [],
       screenRecordings: [],
 
+      recipients: [
+      ],
+
       //loading questions
       showRelatedQuestions: false,
     };
+
+    this.expandedPageRef = React.createRef();
   }
 
   handleTabClick = (activeIntegration) => {
@@ -101,11 +95,6 @@ class Ask extends Component {
     this.setState({
       showRelatedQuestions: ev.target.value.trim().length > 0
     });
-  };
-
-  redirect = (routeName) => {
-    console.log(routeName);
-    this.props.history.push(routeName);
   };
 
   openCard = () => {
@@ -289,27 +278,114 @@ class Ask extends Component {
     );
   }
 
-  renderRecipientSelection = () => {
-    return (
-      <div className={s("bg-purple-light flex-1 flex flex-col p-lg min-h-0")}>
-        <div className={s("text-purple-reg text-xs mb-reg")}>Send to channel/person</div>
-        <input
-          placeholder="Enter name"
-          className={s("w-full")}
-        />
-        <div className={s("flex my-xs flex-wrap min-h-0 overflow-y-scroll")}>
-          { PLACEHOLDER_RECIPIENTS.map(({ type, name, tagged=[] }) => (
-            <div className={s(`${type === 'channel' ? 'bg-purple-gray-10' : 'bg-white'} ask-recipient`)}>
-              <span className={s("truncate")}> @{name} </span>
+  updateRecipientInfo = (name, newInfo) => {
+    const { recipients } = this.state;
+    this.setState({ 
+      recipients: recipients.map(recipient => (
+        recipient.name === name ? { ...recipient, ...newInfo } : recipient
+      ))
+    })
+  }
 
-              <div>
-                <button>
-                  <MdClose className={s("text-purple-gray-50 ml-xs")} />
-                </button>
-              </div>
-            </div>
-          ))}
+  addRecipient = ({ label, value: newRecipient }) => {
+    const { recipients } = this.state;
+
+    if (!recipients.find(({ id }) => id === newRecipient.id)) {
+      let newRecipients;
+      if (newRecipient.type === 'user') {
+        newRecipients = [...recipients, newRecipient];
+      } else {
+        newRecipients = [...recipients, { ...newRecipient, mentions: [], isDropdownOpen: false, isDropdownSelectOpen: false }];
+      }      
+
+      this.setState({ recipients: newRecipients });
+    }
+  }
+
+  removeRecipient = (recipientId) => {
+    const { recipients } = this.state;
+    this.setState({ recipients: recipients.filter(({ id }) => id !== recipientId )});
+  }
+
+  renderIndividualRecipient = ({ id, name }) => {
+    return (
+      <div key={id} className={s("bg-white ask-recipient")}>
+        <span className={s("truncate")}> @ {name} </span>
+        <div>
+          <button onClick={() => this.removeRecipient(id)}>
+            <MdClose className={s("text-purple-gray-50 ml-xs")} />
+          </button>
         </div>
+      </div>
+    );
+  }
+
+  renderChannelRecipient = ({ id, name, mentions, isDropdownOpen, isDropdownSelectOpen }) => {
+    return (
+      <div key={id} className={s(`bg-purple-gray-10 ask-recipient ${isDropdownOpen || isDropdownSelectOpen ? 'rounded-t-none' : ''}`)}>
+        <span className={s("truncate")}> # {name} </span>
+        <div
+          className={s("ask-recipient-mentions-count button-hover")}
+          onClick={() => this.updateRecipientInfo(name, { isDropdownOpen: true, isDropdownSelectOpen: false })}
+        >
+          {mentions.length}
+        </div>
+        <div className={s("vertical-separator bg-purple-gray-50")} />
+        <button onClick={() => this.updateRecipientInfo(name, { isDropdownOpen: false, isDropdownSelectOpen: true })}>
+          <IoMdAdd className={s("text-purple-reg mr-xs")} />
+        </button>
+        <button onClick={() => this.removeRecipient(id)}>
+          <MdClose className={s("text-purple-reg")} />
+        </button>
+      </div>
+    );
+  }
+
+  renderRecipientSelection = () => {
+    const { recipients } = this.state;
+    return (
+      <div className={s("bg-purple-light flex-1 flex flex-col p-lg")}>
+        <div className={s("text-purple-reg text-xs mb-reg")}>Send to channel/person</div>
+        <Select
+          value={null}
+          onChange={this.addRecipient}
+          placeholder="Enter name"
+          options={PLACEHOLDER_RECIPIENT_OPTIONS.filter(({ value: recipient }) => !recipients.find(currRecipient => currRecipient.id === recipient.id))}
+          isSearchable
+          menuShouldScrollIntoView
+        />
+        { recipients.length === 0 &&
+          <div className={s("text-gray-light text-sm my-reg text-center")}>
+            No current recipients
+          </div>
+        }
+        <ScrollContainer
+          className={s("my-xs flex flex-col flex-1")}
+          scrollContainerClassName={s(`flex-1 flex flex-wrap content-start ${isOverflowing(this.expandedPageRef.current) ? 'ask-recipient-scroll-max' : ''}`)}
+          scrollElementClassName={s("min-w-0")}
+          list={recipients}
+          renderScrollElement={({ type, ...rest }) => (type === 'channel' ?
+            this.renderChannelRecipient(rest) :
+            this.renderIndividualRecipient(rest)
+          )}
+          renderOverflowElement={({ type, name, mentions, isDropdownOpen, isDropdownSelectOpen }) => ( type === 'channel' &&
+            <RecipientDropdown
+              name={name}
+              mentions={mentions}
+              isDropdownOpen={isDropdownOpen}
+              isDropdownSelectOpen={isDropdownSelectOpen}
+              onAddMention={(newMention) => this.updateRecipientInfo(name, { mentions: _.union(mentions, [newMention]) })}
+              onRemoveMention={(removeMention) => this.updateRecipientInfo(name, { mentions: _.without(mentions, removeMention) })}
+              onClose={() => this.updateRecipientInfo(name, { isDropdownOpen: false, isDropdownSelectOpen: false })}
+            />
+          )}
+          position="top"
+          matchDimensions={true}
+          showCondition={({ type, isDropdownOpen, isDropdownSelectOpen }) => (
+            type === 'channel' && (isDropdownOpen || isDropdownSelectOpen)
+          )}
+          marginAdjust={true}
+        />
       </div>
     );    
   }
@@ -330,15 +406,18 @@ class Ask extends Component {
     )
   }
 
+
   renderExpandedAskPage = () => {
     const { editorState } = this.state;
     return (
       <div className={s('flex flex-col flex-1 min-h-0')}>
-        <div className={s("p-lg")}>
-          { this.renderTabHeader() }
-          { this.renderAskInputs() }
+        <div className={s('flex flex-col flex-1 overflow-y-auto')} ref={this.expandedPageRef}>
+          <div className={s("p-lg")}>
+            { this.renderTabHeader() }
+            { this.renderAskInputs() }
+          </div>
+          { this.renderRecipientSelection() }
         </div>
-        { this.renderRecipientSelection() }
         { this.renderFooterButton() }
       </div>
     );
@@ -349,7 +428,7 @@ class Ask extends Component {
     const { expandDock } = this.props;
     
     return (
-      <div className={s("p-lg")}>
+      <div className={s("p-lg overflow-y-auto")}>
       	<div onClick={this.openCard}> Open Card </div>
         <input
           onChange={this.onShowRelatedQuestions}

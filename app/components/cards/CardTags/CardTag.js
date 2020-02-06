@@ -7,21 +7,21 @@ import style from './card-tags.css';
 import { getStyleApplicationFn } from '../../../utils/styleHelpers';
 const s = getStyleApplicationFn(style);
 
-const CardTag = ({ text, onClick, onRemoveClick, className, ...rest }) => {
+const CardTag = React.forwardRef(({ text, onClick, onRemoveClick, className, ...rest }, ref) => {
   const onRemove = (e) => {
     e.stopPropagation();
     onRemoveClick();
   }
 
   return (
-    <div onClick={onClick} {...rest} className={s(`card-tag button-hover ${className}`)}>
+    <div onClick={onClick} ref={ref} className={s(`card-tag button-hover ${className}`)} {...rest}>
       {text}
       { onRemoveClick &&
         <MdClose onClick={onRemove} className={s("ml-xs")} />
       }
     </div> 
   )
-}
+});
 
 CardTag.propTypes = {
   text: PropTypes.oneOfType([PropTypes.string, PropTypes.element]).isRequired,
