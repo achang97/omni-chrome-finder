@@ -37,6 +37,9 @@ const initialState = {
   cardsWidth: DEFAULT_CARDS_WIDTH,
   cardsHeight: DEFAULT_CARDS_HEIGHT,
   activeCardIndex: -1,
+
+  createDescriptionEditorState: EditorState.createEmpty(),
+  createAnswerEditorState: EditorState.createEmpty(),
 };
 
 const getNewCards = (id, newInfo, cards) => {
@@ -59,10 +62,10 @@ export default function cards(state = initialState, action) {
 
   switch (type) {
     case types.OPEN_CARD: {
-      const { id, question, descriptionEditorState, answerEditorState,  } = payload;
+      const { id, question, descriptionEditorState, answerEditorState, fromCreate=false } = payload;
 
-      const descriptionEditorStateSaved = descriptionEditorState || EditorState.createEmpty();
-      const answerEditorStateSaved = answerEditorState || EditorState.createEmpty();
+      var descriptionEditorStateSaved = descriptionEditorState || EditorState.createEmpty();
+      var answerEditorStateSaved = answerEditorState || EditorState.createEmpty();
 
 
       // If Open Card is being called from Create, set properties to editing
@@ -71,6 +74,13 @@ export default function cards(state = initialState, action) {
       if (descriptionEditorState || answerEditorState) {
         isEditing = true;
         answerEditorEnabled = true;
+      }
+
+      if (fromCreate) {
+        isEditing = true;
+        answerEditorEnabled = true;
+        descriptionEditorStateSaved = state.createDescriptionEditorState;
+        answerEditorStateSaved = state.createAnswerEditorState;
       }
 
       const newCards = _.union(state.cards, 
@@ -90,8 +100,8 @@ export default function cards(state = initialState, action) {
             showThreadEditModal: false,
             selectedMessages: PLACEHOLDER_MESSAGES.map(msg => msg.selected),
             selectedMessagesSaved: PLACEHOLDER_MESSAGES.map(msg => msg.selected),
-
         }]);
+
       return { ...state, cards: newCards, activeCardIndex: newCards.length - 1 };
     }
     case types.SET_ACTIVE_CARD_INDEX: {
@@ -148,6 +158,17 @@ export default function cards(state = initialState, action) {
       const { id, editorState } = payload;
       const newCards = getNewCards(id, { descriptionEditorState: editorState}, state.cards);
       return { ...state, cards: newCards };
+    }
+
+    // Create Editors
+    case types.CHANGE_CREATE_ANSWER_EDITOR: {
+      const { editorState } = payload;
+      return { ...state, createAnswerEditorState: editorState };
+    }
+
+    case types.CHANGE_CREATE_DESCRIPTION_EDITOR: {
+      const { editorState } = payload;
+      return { ...state, createDescriptionEditorState: editorState };
     }
 
     case types.EDIT_CARD: {

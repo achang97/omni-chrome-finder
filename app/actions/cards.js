@@ -1,8 +1,8 @@
 import * as types from './actionTypes';
 
 /* Card behavior */
-export function openCard(id, question, descriptionEditorState, answerEditorState) {
-  return { type: types.OPEN_CARD, payload: { id, question, descriptionEditorState, answerEditorState } };
+export function openCard({id, question, descriptionEditorState, answerEditorState, fromCreate}) {
+  return { type: types.OPEN_CARD, payload: { id, question, descriptionEditorState, answerEditorState, fromCreate } };
 }
 
 export function setActiveCardIndex(index) {
@@ -27,6 +27,14 @@ export function changeAnswerEditor(id, editorState) {
 
 export function changeDescriptionEditor(id, editorState) {
   return { type: types.CHANGE_DESCRIPTION_EDITOR, payload: { id, editorState } };
+}
+
+export function changeCreateAnswerEditor(editorState) {
+  return { type: types.CHANGE_CREATE_ANSWER_EDITOR, payload: { editorState } };
+}
+
+export function changeCreateDescriptionEditor(editorState) {
+  return { type: types.CHANGE_CREATE_DESCRIPTION_EDITOR, payload: { editorState } };
 }
 
 export function editCard(id) {
