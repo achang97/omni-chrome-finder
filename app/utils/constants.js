@@ -2,6 +2,9 @@
 export const TOGGLE = 'TOGGLE';
 export const TAB_UPDATE = 'TAB_UPDATE';
 
+// Debounce
+export const DEBOUNCE_60_HZ = 166;
+
 // Card options
 export const VERIFICATION_INTERVAL_OPTIONS = [
 	'Auto-Remind',
