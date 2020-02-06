@@ -51,12 +51,19 @@ export default class Cards extends Component {
     closeCard(cardId);
   }
 
+  closeAllCards = () => {
+    const { adjustCardsDimensions, closeAllCards } = this.props;
+
+    closeAllCards();
+    adjustCardsDimensions(defaultCardWidth, defaultCardHeight);
+  }
+
   renderTabHeaderButtons = () => {
     const { closeAllCards } = this.props;
 
     return (
       <div className={s("px-reg flex flex-shrink-0")}>
-        <button onClick={() => closeAllCards()}>
+        <button onClick={this.closeAllCards}>
           <MdClose color={colors.purple['gray-50']} />
         </button>
       </div>
