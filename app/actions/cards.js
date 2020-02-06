@@ -45,6 +45,10 @@ export function adjustDescriptionSectionHeight(id, newHeight) {
   return { type: types.ADJUST_DESCRIPTION_SECTION_HEIGHT, payload: { id, newHeight} };
 }
 
+export function toggleSelectedMessage(id, messageIndex) {
+  return { type: types.TOGGLE_SELECTED_MESSAGE, payload: { id, messageIndex } };
+}
+
 export function openModal(id, modalType) {
   return { type: types.OPEN_MODAL, payload: {id, modalType} };
 }
@@ -53,8 +57,12 @@ export function closeModal(id, modalType) {
   return { type: types.CLOSE_MODAL, payload: {id, modalType} };
 }
 
-export function saveCard(id) {
+export function saveCard(id ) {
   return { type: types.SAVE_CARD, payload: { id } };
+}
+
+export function saveMessages(id ) {
+  return { type: types.SAVE_MESSAGES, payload: { id } };
 }
 
 export function openCardSideDock(id) {

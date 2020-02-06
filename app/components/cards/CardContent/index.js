@@ -7,7 +7,7 @@ import { FaSlack } from "react-icons/fa";
 import { bindActionCreators } from 'redux';
 import { EditorState } from 'draft-js';
 import { connect } from 'react-redux';
-import { editCard, saveCard, openCardSideDock, closeCardSideDock, openCardCreateModal, closeCardCreateModal, changeAnswerEditor, changeDescriptionEditor, enableEditor, disableEditor, adjustDescriptionSectionHeight, openModal, closeModal } from '../../../actions/cards';
+import { editCard, saveCard, openCardSideDock, closeCardSideDock, openCardCreateModal, closeCardCreateModal, changeAnswerEditor, changeDescriptionEditor, enableEditor, disableEditor, adjustDescriptionSectionHeight, openModal, closeModal, toggleSelectedMessage, saveMessages} from '../../../actions/cards';
 import TextEditor from '../../editors/TextEditor';
 import Button from '../../common/Button';
 import Modal from '../../common/Modal';
@@ -120,6 +120,7 @@ function StyledDropzone(props) {
   dispatch => bindActionCreators({
     editCard,
     saveCard,
+    saveMessages,
     openCardSideDock,
     closeCardSideDock,
     openCardCreateModal,
@@ -131,6 +132,7 @@ function StyledDropzone(props) {
     adjustDescriptionSectionHeight,
     openModal,
     closeModal,
+    toggleSelectedMessage,
   }, dispatch)
 )
 
@@ -188,6 +190,10 @@ class CardContent extends Component {
     this.props.saveCard(id);
   }
 
+  saveMessages = (id) => {
+    this.props.saveMessages(id);
+  }
+
   onAnswerEditorStateChange = (editorState) => {
     this.props.changeAnswerEditor(this.props.id, editorState);
   }
@@ -201,9 +207,7 @@ class CardContent extends Component {
   }
 
   toggleSelectedMessage = (i) => {
-  	const selectedMessages = this.state.selectedMessages;
-  	selectedMessages[i] = !selectedMessages[i];
-  	this.setState({ selectedMessages: selectedMessages });
+  	this.props.toggleSelectedMessage(this.props.id, i);
   }
 
   renderDropZone =  (props) => {
@@ -338,6 +342,7 @@ class CardContent extends Component {
       			{this.renderMessageList()}
 	      		{ isEditing &&
 	      			<Button
+	      				onClick={() => this.saveMessages(id)}
 			        	color={"primary"}
 			        	text={"Save"}
 			        	className={s("rounded-t-none")}
@@ -349,8 +354,7 @@ class CardContent extends Component {
   }
 
   renderMessageList = () => {
-  	const { selectedMessages } = this.state;
-  	const { isEditing } = this.props;
+  	const { isEditing, selectedMessages } = this.props;
   	return (
   		<div className={s("message-manager-container bg-purple-light mx-lg mb-lg rounded-lg flex-grow overflow-auto")}>
 		  	{PLACEHOLDER_MESSAGES.map((messageObj, i) => (
@@ -379,8 +383,7 @@ class CardContent extends Component {
   }
 
   renderAnswer = () => {
-  	const { isEditing, answerEditorEnabled } = this.props;
-    const { selectedMessages } = this.state;
+  	const { isEditing, answerEditorEnabled, selectedMessages } = this.props;
   	return (
   		<div className={s('p-2xl flex-grow min-h-0 flex flex-col min-h-0 relative')}>
 	        { isEditing ?
@@ -490,7 +493,7 @@ class CardContent extends Component {
 
   render() {
     const { id, isEditing, tags, sideDockOpen, createModalOpen, openCardSideDock, closeCardSideDock, openCardCreateModal, closeCardCreateModal } = this.props;
-    const { isSideDockVisible, selectedMessages } = this.state;
+    const { isSideDockVisible } = this.state;
 
     return (
       <div className={s("flex-grow flex flex-col min-h-0 relative")}>

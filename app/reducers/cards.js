@@ -11,6 +11,27 @@ const DEFAULT_CARDS_HEIGHT = 500;
 const THREAD_MODAL = 'THREAD_MODAL';
 const THREAD_MODAL_EDIT = 'THREAD_MODAL_EDIT';
 
+const PLACEHOLDER_MESSAGES = [
+  {
+    senderName: 'Chetan Rane',
+    message: 'Savings her pleased are several started females met. Short her not among being any. Thing of judge fruit charm views do. Miles mr an forty along as he. She education get middleton day agreement performed preserved unwilling. Do however as pleased offence outward beloved by present. By outward neither he so covered amiable greater. Juvenile proposal betrayed he an informed weddings followed. Precaution day see imprudence sympathize principles. At full leaf give quit to in they up.',
+    time: 'Today at 3:52 PM',
+    selected: true,
+  },
+  {
+    senderName: 'Andrew Chang',
+    message: 'What up bro how u doin',
+    time: 'Today at 3:52 PM',
+    selected: true,
+  },
+  {
+    senderName: 'Chetan Rane',
+    message: 'Savings her pleased are several started females met. Short her not among being any. Thing of judge fruit charm views do. Miles mr an forty along as he. She education get middleton day agreement performed preserved unwilling. Do however as pleased offence outward beloved by present. By outward neither he so covered amiable greater. Juvenile proposal betrayed he an informed weddings followed. Precaution day see imprudence sympathize principles. At full leaf give quit to in they up.',
+    time: 'Today at 3:52 PM',
+    selected: true,
+  },
+];
+
 const initialState = {
   cards: [],
   cardsWidth: DEFAULT_CARDS_WIDTH,
@@ -25,6 +46,11 @@ const getNewCards = (id, newInfo, cards) => {
 
 const getNewCardsOnSave = (id, cards) => {
   const newCards = cards.map((card, i) => card.id === id ? {...card, ...{ isEditing: false, descriptionEditorStateSaved: card.descriptionEditorState, answerEditorStateSaved: card.answerEditorState }} : card);
+  return newCards;
+}
+
+const getNewCardsOnSaveMessages = (id, cards) => {
+  const newCards = cards.map((card, i) => card.id === id ? {...card, ...{ showThreadEditModal: false, selectedMessagesSaved: card.selectedMessages }} : card);
   return newCards;
 }
 
@@ -53,6 +79,8 @@ export default function cards(state = initialState, action) {
             descriptionSectionHeight: MIN_QUESTION_HEIGHT,
             showThreadModal: false,
             showThreadEditModal: false,
+            selectedMessages: PLACEHOLDER_MESSAGES.map(msg => msg.selected),
+            selectedMessagesSaved: PLACEHOLDER_MESSAGES.map(msg => msg.selected),
 
         }]);
       return { ...state, cards: newCards, activeCardIndex: newCards.length - 1 };
@@ -133,6 +161,13 @@ export default function cards(state = initialState, action) {
       const newCards = getNewCards(id, { descriptionSectionHeight: newHeight }, state.cards);
       return { ...state, cards: newCards };
     }
+    case types.TOGGLE_SELECTED_MESSAGE: {
+      const { id, messageIndex } = payload;
+      var newSelectedMessages = state.cards.find(card => { return card.id === id } ).selectedMessages;
+      newSelectedMessages[messageIndex] = !newSelectedMessages[messageIndex]
+      const newCards = getNewCards(id, { selectedMessages: newSelectedMessages }, state.cards);
+      return { ...state, cards: newCards };
+    }
     case types.OPEN_MODAL: {
       const { id, modalType} = payload;
       const newCards = modalType === THREAD_MODAL ? getNewCards(id, {showThreadModal: true}, state.cards) : getNewCards(id, {showThreadEditModal: true}, state.cards);
@@ -140,12 +175,24 @@ export default function cards(state = initialState, action) {
     }
     case types.CLOSE_MODAL: {
       const { id, modalType} = payload;
-      const newCards = modalType === THREAD_MODAL ? getNewCards(id, {showThreadModal: false}, state.cards) : getNewCards(id, {showThreadEditModal: false}, state.cards);
+      let newCards;
+      if (modalType === THREAD_MODAL) {
+        newCards = getNewCards(id, {showThreadModal: false}, state.cards);
+      } else if (modalType === THREAD_MODAL_EDIT) {
+        // Restore messages state to saved state
+         const selectedMessagesSaved = state.cards.find(card => { return card.id === id } ).selectedMessagesSaved;
+         newCards = getNewCards(id, {selectedMessages: selectedMessagesSaved , showThreadEditModal: false}, state.cards);
+      }
       return { ...state, cards: newCards };
     }
     case types.SAVE_CARD: {
       const { id } = payload;
       const newCards = getNewCardsOnSave(id, state.cards);
+      return { ...state, cards: newCards };
+    }
+    case types.SAVE_MESSAGES: {
+      const { id } = payload;
+      const newCards = getNewCardsOnSaveMessages(id, state.cards);
       return { ...state, cards: newCards };
     }
 
