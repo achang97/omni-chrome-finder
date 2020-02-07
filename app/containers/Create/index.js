@@ -8,6 +8,8 @@ import { EditorState } from 'draft-js';
 import TextEditor from '../../components/editors/TextEditor';
 
 import { openCard, changeCreateDescriptionEditor, changeCreateAnswerEditor, changeCreateQuestion, clearCreatePanel} from '../../actions/cards';
+import { showDescriptionEditor } from '../../actions/create';
+
 
 import style from "./create.css";
 import { getStyleApplicationFn } from '../../utils/styleHelpers';
@@ -18,6 +20,7 @@ const s = getStyleApplicationFn(style);
   	createDescriptionEditorState: state.cards.createDescriptionEditorState,
   	createAnswerEditorState: state.cards.createAnswerEditorState,
   	createQuestion: state.cards.createQuestion,
+  	viewDescriptionEditor: state.create.showDescriptionEditor,
   }),
   dispatch =>
     bindActionCreators(
@@ -27,6 +30,7 @@ const s = getStyleApplicationFn(style);
         changeCreateAnswerEditor,
         changeCreateQuestion,
         clearCreatePanel,
+        showDescriptionEditor
       },
       dispatch
     )
@@ -37,9 +41,6 @@ export default class Create extends Component {
 	    super(props);
 
 	    this.state = {
-	      // Text editors
-	      showDescriptionEditor: false,
-	      inputValue: '',
 	    };
 	 }
 
@@ -57,24 +58,24 @@ export default class Create extends Component {
 		this.setState( { showDescriptionEditor: true} );
 	}
 
-	openCard = () => {
+	openCard = (openCreateModal=false) => {
     // eslint-disable-next-line no-tabs,no-mixed-spaces-and-tabs,react/prop-types
     // Open card with random ID
     this.props.openCard({id: Math.floor(Math.random() * Math.floor(10000)),
     										 fromCreate: true,
+    										 createModalOpen: openCreateModal,
     										});
     //Clear out the Create panel
     this.props.clearCreatePanel();
   	
-  };
+  }
 
   changeQuestionValue = (event) => {
   	this.props.changeCreateQuestion(event.target.value);
   }
 
   render() {
-  	const { showDescriptionEditor } = this.state;
-    const { createDescriptionEditorState, createAnswerEditorState } = this.props;
+    const { createDescriptionEditorState, createAnswerEditorState, viewDescriptionEditor, showDescriptionEditor, createQuestion } = this.props;
     return (
       <div className={s('flex flex-col flex-1 min-h-0')}>
         <div className={s("p-lg flex flex-col flex-grow")}>
@@ -92,11 +93,11 @@ export default class Create extends Component {
         	<input
             	placeholder="Question"
             	className={s("w-full my-xl")}
-            	value={this.props.createQuestion}
+            	value={createQuestion}
             	onChange={this.changeQuestionValue}
           	/>
           {
-          	showDescriptionEditor ?
+          	viewDescriptionEditor ?
           	<TextEditor 
 	            onEditorStateChange={this.onDescriptionEditorStateChange} 
 	            editorState={createDescriptionEditorState} 
@@ -105,7 +106,7 @@ export default class Create extends Component {
           	:
 	          <Button
 	          	text={"Add Description"}
-	          	onClick={this.showDescriptionEditor}
+	          	onClick={() => showDescriptionEditor()}
 	          	color={"secondary"}
 	          	className={s("description-button justify-start shadow-none")}
 	          	icon={<MdAdd className={s("mr-reg")}/>}
@@ -123,6 +124,7 @@ export default class Create extends Component {
 
         <Button
 	        className={s('self-stretch justify-between rounded-t-none rounded-br-none rounded-bl-reg text-reg flex-shrink-0')}
+	        onClick={() => this.openCard(true)}
 	        color="primary"
 	        text="Create Card"
 	        iconLeft={false}

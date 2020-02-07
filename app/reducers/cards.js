@@ -67,7 +67,7 @@ export default function cards(state = initialState, action) {
 
   switch (type) {
     case types.OPEN_CARD: {
-      const { id, descriptionEditorState, answerEditorState, fromCreate=false } = payload;
+      const { id, createModalOpen=false, descriptionEditorState, answerEditorState, fromCreate=false } = payload;
 
       var descriptionEditorStateSaved = descriptionEditorState || EditorState.createEmpty();
       var answerEditorStateSaved = answerEditorState || EditorState.createEmpty();
@@ -93,7 +93,7 @@ export default function cards(state = initialState, action) {
         [{  id, 
             isEditing: isEditing, 
             sideDockOpen: false, 
-            createModalOpen: false, 
+            createModalOpen, 
 
             question: question,
             questionSaved: questionSaved,

@@ -1,8 +1,8 @@
 import * as types from './actionTypes';
 
 /* Card behavior */
-export function openCard({id, descriptionEditorState, answerEditorState, fromCreate}) {
-  return { type: types.OPEN_CARD, payload: { id, descriptionEditorState, answerEditorState, fromCreate } };
+export function openCard({id, createModalOpen, descriptionEditorState, answerEditorState, fromCreate}) {
+  return { type: types.OPEN_CARD, payload: { id, createModalOpen, descriptionEditorState, answerEditorState, fromCreate } };
 }
 
 export function setActiveCardIndex(index) {
