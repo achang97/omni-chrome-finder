@@ -1,3 +1,11 @@
 .card-attachment {
 	@apply flex items-center py-xs px-sm rounded-full font-semibold text-xs;
 }
+
+.card-attachment-remove-icon {
+	@apply ml-xs flex-shrink-0;
+}
+
+.card-attachment-file-icon {
+	@apply mr-xs flex-shrink-0;
+}

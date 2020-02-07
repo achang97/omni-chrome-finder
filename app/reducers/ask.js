@@ -19,8 +19,9 @@ const initialState = {
   localStream: null,
   mediaRecorder: null,
   recordedChunks: [],
-  screenRecordings: [],
   screenRecordingError: null,
+
+  attachments: [],
 };
 
 export default function display(state = initialState, action) {
@@ -87,11 +88,21 @@ export default function display(state = initialState, action) {
     }
     case types.END_ASK_SCREEN_RECORDING: {
       const { screenRecording } = payload;
-      return { ...state, desktopSharing: false, localStream: null, mediaRecorder: null, recordedChunks: [], screenRecordingError: null, screenRecordings: [...state.screenRecordings, screenRecording] };
+      return { ...state, desktopSharing: false, localStream: null, mediaRecorder: null, recordedChunks: [], screenRecordingError: null, attachments: [...state.attachments, { type: 'recording', data: screenRecording }] };
     }
     case types.ASK_SCREEN_RECORDING_ERROR: {
       const { error } = payload;
       return { ...state, desktopSharing: false, localStream: null, mediaRecorder: null, recordedChunks: [], screenRecordingError: error }
+    }
+
+    case types.ADD_ASK_ATTACHMENTS: {
+      const { attachments } = payload;
+      const newAttachments = attachments.map(attachment => ({ type: 'attachment', data: attachment }))
+      return { ...state, attachments: [...state.attachments, ...newAttachments] }
+    }
+    case types.REMOVE_ASK_ATTACHMENT: {
+      const { index } = payload;
+      return { ...state, attachments: state.attachments.filter((_, i) => index !== i) }
     }
 
     default:
