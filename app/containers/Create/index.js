@@ -7,7 +7,7 @@ import { MdAdd } from "react-icons/md";
 import { EditorState } from 'draft-js';
 import TextEditor from '../../components/editors/TextEditor';
 
-import { openCard } from '../../actions/cards';
+import { openCard, changeCreateDescriptionEditor, changeCreateAnswerEditor, } from '../../actions/cards';
 
 import style from "./create.css";
 import { getStyleApplicationFn } from '../../utils/styleHelpers';
@@ -15,11 +15,15 @@ const s = getStyleApplicationFn(style);
 
 @connect(
   state => ({
+  	createDescriptionEditorState: state.cards.createDescriptionEditorState,
+  	createAnswerEditorState: state.cards.createAnswerEditorState,
   }),
   dispatch =>
     bindActionCreators(
       {
         openCard,
+        changeCreateDescriptionEditor,
+        changeCreateAnswerEditor,
       },
       dispatch
     )
@@ -31,18 +35,18 @@ export default class Create extends Component {
 
 	    this.state = {
 	      // Text editors
-	      descriptionEditorState: EditorState.createEmpty(),
-	      answerEditorState: EditorState.createEmpty(),
 	      showDescriptionEditor: false,
 	    };
 	 }
 
 	onDescriptionEditorStateChange = (editorState) => {
-    this.setState({ descriptionEditorState : editorState });
+    //this.setState({ descriptionEditorState : editorState });
+    this.props.changeCreateDescriptionEditor(editorState)
 	}
 
 	onAnswerEditorStateChange = (editorState) => {
-    this.setState({ answerEditorState : editorState });
+    //this.setState({ answerEditorState : editorState });
+    this.props.changeCreateAnswerEditor(editorState)
 	}
 
 	showDescriptionEditor = () => {
@@ -52,16 +56,15 @@ export default class Create extends Component {
 	openCard = () => {
     // eslint-disable-next-line no-tabs,no-mixed-spaces-and-tabs,react/prop-types
     // Open card with random ID
-    this.props.openCard(Math.floor(Math.random() * Math.floor(10000)), Math.floor(Math.random() * Math.floor(10000)), this.state.descriptionEditorState, this.state.answerEditorState);
+    this.props.openCard({id: Math.floor(Math.random() * Math.floor(10000)),
+    										 fromCreate: true,
+    										});
   	
-    const temp = this.state.descriptionEditorState;
-  	this.setState({ descriptionEditorState: EditorState.createEmpty(), answerEditorState: EditorState.createEmpty() }, () => {
-  		console.log(temp === this.state.descriptionEditorState)
-  	});
   };
 
   render() {
-  	const { descriptionEditorState, answerEditorState, showDescriptionEditor } = this.state;
+  	const { showDescriptionEditor } = this.state;
+    const { createDescriptionEditorState, createAnswerEditorState } = this.props;
     return (
       <div className={s('flex flex-col flex-1 min-h-0')}>
         <div className={s("p-lg flex flex-col flex-grow")}>
@@ -84,7 +87,7 @@ export default class Create extends Component {
           	showDescriptionEditor ?
           	<TextEditor 
 	            onEditorStateChange={this.onDescriptionEditorStateChange} 
-	            editorState={descriptionEditorState} 
+	            editorState={createDescriptionEditorState} 
 	            editorType="EXTENSION"
 	          />
           	:
@@ -100,7 +103,7 @@ export default class Create extends Component {
           <div className={s("horizontal-separator my-lg")} ></div>
           <TextEditor 
             onEditorStateChange={this.onAnswerEditorStateChange} 
-            editorState={answerEditorState} 
+            editorState={createAnswerEditorState} 
             editorType="EXTENSION"
           />
 

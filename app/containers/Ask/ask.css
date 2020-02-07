@@ -12,12 +12,27 @@
   right: 3%;
 }
 
-.ask-screen-capture-button {
-  @apply flex-1 p-reg text-sm rounded-lg;
+.ask-attachment-button {
+  @apply flex-1 py-reg px-0 text-sm rounded-lg;
 }
 
 .ask-screen-record-shadow {
 	box-shadow: 0 4px 6px -1px rgba(255, 159, 159, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+}
+
+.ask-attachment-icon {
+  transform: rotate(-90deg);
+}
+
+.ask-attachment-count {
+  @apply bg-purple-reg text-white absolute z-10 rounded-full p-xs text-xs bottom-0;
+  right: 0;
+  transform: translate(40%, 35%);
+}
+
+.ask-attachment-dropdown {
+  @apply bg-white shadow-md mt-sm rounded-lg text-sm p-sm border border-solid border-gray-xlight;
+  width: 175px;
 }
 
 .ask-recipient-scroll-max {

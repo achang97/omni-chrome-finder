@@ -21,3 +21,6 @@ export const PERMISSION_OPTIONS = [
 	'My Team',
 	'Just Me',
 ]
+
+// Ask page constants
+export const ASK_INTEGRATIONS = ['Slack', 'Email', 'Asana'];

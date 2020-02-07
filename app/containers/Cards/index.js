@@ -8,7 +8,7 @@ import CardContent from '../../components/cards/CardContent';
 
 import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
-import { closeCard, closeAllCards, setActiveCardIndex } from '../../actions/cards';
+import { closeCard, closeAllCards, setActiveCardIndex, adjustCardsDimensions } from '../../actions/cards';
 
 import Tabs from '../../components/common/Tabs/Tabs';
 import Tab from '../../components/common/Tabs/Tab';
@@ -26,11 +26,14 @@ const defaultCardWidth = 660;
   state => ({
     cards: state.cards.cards,
     activeCardIndex: state.cards.activeCardIndex,
+    cardsWidth: state.cards.cardsWidth,
+    cardsHeight: state.cards.cardsHeight,
   }),
   dispatch => bindActionCreators({
     closeCard,
     closeAllCards,
     setActiveCardIndex,
+    adjustCardsDimensions,
   }, dispatch)
 )
 
@@ -38,8 +41,6 @@ export default class Cards extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      cardsWidth: defaultCardWidth,
-      cardsHeight: defaultCardHeight,
     }
   }
 
@@ -50,12 +51,19 @@ export default class Cards extends Component {
     closeCard(cardId);
   }
 
+  closeAllCards = () => {
+    const { adjustCardsDimensions, closeAllCards } = this.props;
+
+    closeAllCards();
+    adjustCardsDimensions(defaultCardWidth, defaultCardHeight);
+  }
+
   renderTabHeaderButtons = () => {
     const { closeAllCards } = this.props;
 
     return (
       <div className={s("px-reg flex flex-shrink-0")}>
-        <button onClick={() => closeAllCards()}>
+        <button onClick={this.closeAllCards}>
           <MdClose color={colors.purple['gray-50']} />
         </button>
       </div>
@@ -101,14 +109,11 @@ export default class Cards extends Component {
   }
 
   onResize = (e, direction, ref, d) => {
-    this.setState({
-      cardsWidth: ref.clientWidth,
-      cardsHeight: ref.clientHeight,
-    });
+    this.props.adjustCardsDimensions(ref.clientWidth, ref.clientHeight);
   }
 
   render() {
-    const { cards, closeCard, closeAllCards, activeCardIndex, setActiveCardIndex } = this.props;
+    const { cards, closeCard, closeAllCards, activeCardIndex, setActiveCardIndex, cardsWidth, cardsHeight } = this.props;
 
     if (cards.length === 0) {
       return null;
@@ -119,12 +124,12 @@ export default class Cards extends Component {
         <Draggable
           bounds="html"
           handle="#card-tab-container"
-          defaultPosition={{ x: window.innerWidth / 2 - defaultCardWidth / 2, y: window.innerHeight / 2 - defaultCardHeight / 2 }}
+          defaultPosition={{ x: window.innerWidth / 2 - cardsWidth / 2, y: window.innerHeight / 2 - cardsHeight / 2 }}
         >
           <Resizable
             className={s("card bg-white rounded-lg shadow-2xl flex flex-col")}
-            defaultSize={{ width: defaultCardWidth, height: defaultCardHeight }}
-            size={{ width: this.state.cardsWidth, height: this.state.cardsHeight }}
+            defaultSize={{ width: cardsWidth, height: cardsHeight }}
+            size={{ width: cardsWidth, height: cardsHeight }}
             onResize={_.debounce(this.onResize, DEBOUNCE_60_HZ)}
             onResizeStop={this.onResize}
             minWidth={defaultCardWidth}
@@ -134,8 +139,8 @@ export default class Cards extends Component {
             { this.renderTabHeader() }
             <CardContent
               {...cards[activeCardIndex]}
-              cardWidth={this.state.cardsWidth}
-              cardHeight={this.state.cardsHeight}
+              cardWidth={cardsWidth}
+              cardHeight={cardsHeight}
               tags={['Customer Onboarding', 'Sales', 'Customers', 'Management', 'Onboarding', 'Test', 'a lot of tags', 'how many tags you got']}
             />
           </Resizable>

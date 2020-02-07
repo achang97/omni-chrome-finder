@@ -1,14 +1,13 @@
-import React, { Component, useMemo } from 'react';
+import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import { MdCheck, MdArrowDropDown, MdMoreHoriz, MdModeEdit, MdThumbUp, MdBookmarkBorder, MdPerson, MdAttachment } from "react-icons/md";
 import { default as SlackIcon } from "../../../assets/images/icons/Slack_Mark.svg";
 
 import { FaSlack } from "react-icons/fa";
 import { bindActionCreators } from 'redux';
-import { convertFromRaw, convertToRaw,
-  CompositeDecorator, EditorState } from 'draft-js';
+import { EditorState } from 'draft-js';
 import { connect } from 'react-redux';
-import { editCard, saveCard, openCardSideDock, closeCardSideDock, openCardCreateModal, closeCardCreateModal, changeAnswerEditor, changeDescriptionEditor } from '../../../actions/cards';
+import { editCard, saveCard, openCardSideDock, closeCardSideDock, openCardCreateModal, closeCardCreateModal, changeAnswerEditor, changeDescriptionEditor, enableEditor, disableEditor, adjustDescriptionSectionHeight, openModal, closeModal, toggleSelectedMessage, saveMessages} from '../../../actions/cards';
 import TextEditor from '../../editors/TextEditor';
 import Button from '../../common/Button';
 import Modal from '../../common/Modal';
@@ -17,8 +16,7 @@ import CheckBox from '../../common/CheckBox';
 import CardStatus from '../CardStatus';
 import CardTags from '../CardTags';
 import { Resizable } from 're-resizable';
-import {useDropzone} from 'react-dropzone';
-import Dropzone from 'react-dropzone'
+import Dropzone from '../../common/Dropzone';
 import CardSideDock from '../CardSideDock';
 import CardCreateModal from '../CardCreateModal';
 
@@ -29,6 +27,12 @@ const s = getStyleApplicationFn(style);
 const TABS_HEIGHT = 51;
 const MIN_ANSWER_HEIGHT = 180;
 const MIN_QUESTION_HEIGHT = 180;
+
+const DESCRIPTION_EDITOR_TYPE = 'DESCRIPTION';
+const ANSWER_EDITOR_TYPE = 'ANSWER';
+
+const THREAD_MODAL = 'THREAD_MODAL';
+const THREAD_MODAL_EDIT = 'THREAD_MODAL_EDIT';
 
 const PLACEHOLDER_MESSAGES = [
 	{
@@ -51,63 +55,6 @@ const PLACEHOLDER_MESSAGES = [
 	},
 ];
 
-const baseStyle = {
-  flex: 1,
-  display: 'flex',
-  flexDirection: 'column',
-  alignItems: 'center',
-  borderWidth: 2,
-  borderRadius: 8,
-  paddingHorizontal: 10,
-  borderColor: '#eeeeee',
-  borderStyle: 'dashed',
-  backgroundColor: '#fafafa',
-  color: '#bdbdbd',
-  outline: 'none',
-  transition: 'border .24s ease-in-out'
-};
-
-const activeStyle = {
-  borderColor: '#2196f3'
-};
-
-const acceptStyle = {
-  borderColor: '#00e676'
-};
-
-const rejectStyle = {
-  borderColor: '#ff1744'
-};
-
-function StyledDropzone(props) {
-  const {
-    getRootProps,
-    getInputProps,
-    isDragActive,
-    isDragAccept,
-    isDragReject
-  } = useDropzone({accept: 'image/*'});
-
-  const style = useMemo(() => ({
-    ...baseStyle,
-    ...(isDragActive ? activeStyle : {}),
-    ...(isDragAccept ? acceptStyle : {}),
-    ...(isDragReject ? rejectStyle : {})
-  }), [
-    isDragActive,
-    isDragReject
-  ]);
-
-  return (
-    <div className="container">
-      <div {...getRootProps({style})}>
-        <input {...getInputProps()} />
-        <p className={s("m-0 text-sm text-purple-reg")}>Drag Files Here or Click to Add</p>
-      </div>
-    </div>
-  );
-}
-
 @connect(
   state => ({
 
@@ -115,12 +62,19 @@ function StyledDropzone(props) {
   dispatch => bindActionCreators({
     editCard,
     saveCard,
+    saveMessages,
     openCardSideDock,
     closeCardSideDock,
     openCardCreateModal,
     closeCardCreateModal,
     changeAnswerEditor,
     changeDescriptionEditor,
+    enableEditor,
+    disableEditor,
+    adjustDescriptionSectionHeight,
+    openModal,
+    closeModal,
+    toggleSelectedMessage,
   }, dispatch)
 )
 
@@ -129,15 +83,7 @@ class CardContent extends Component {
     super(props);
   
     this.state = {
-    	answerEditorState: this.props.answerState ? EditorState.createWithContent(convertFromRaw(this.props.answerState)) : EditorState.createEmpty(),
-    	descriptionEditorState:  EditorState.createEmpty(),
-    	descriptionEditorEnabled: false,
-    	answerEditorEnabled: false,
     	footerHeight: 0,
-    	descriptionSectionHeight: MIN_QUESTION_HEIGHT,
-    	showMessageManager: false,
-    	showMessages: false,
-    	isModalOpen: false,
     	selectedMessages: PLACEHOLDER_MESSAGES.map(msg => msg.selected),
     };
   }
@@ -153,27 +99,27 @@ class CardContent extends Component {
   }
 
   componentWillUnmount() {
-  	console.log('unmounted')
   }
 
   enableDescriptionEditor = () => {
-    this.disableAnswerEditor();
-    this.setState({ descriptionEditorEnabled: true });
-    this.setState({ descriptionSectionHeight: this.getMaxDescriptionHeight()});
+    this.props.disableEditor(this.props.id, ANSWER_EDITOR_TYPE);
+    this.props.enableEditor(this.props.id, DESCRIPTION_EDITOR_TYPE);
+    this.props.adjustDescriptionSectionHeight(this.props.id, this.getMaxDescriptionHeight());
   }
 
   disableDescriptionEditor = () => {
-    this.setState({ descriptionEditorEnabled: false });
+    this.props.disableEditor(this.props.id, DESCRIPTION_EDITOR_TYPE);
   }
 
   enableAnswerEditor = () => {
     this.disableDescriptionEditor();
-    this.setState({ answerEditorEnabled: true });
-    this.setState({ descriptionSectionHeight: MIN_QUESTION_HEIGHT });
+    this.props.enableEditor(this.props.id, ANSWER_EDITOR_TYPE);
+    this.props.adjustDescriptionSectionHeight(this.props.id, MIN_QUESTION_HEIGHT);
   }
 
   disableAnswerEditor = () => {
     this.setState({ answerEditorEnabled: false });
+    this.props.disableEditor(this.props.id, ANSWER_EDITOR_TYPE);
   }
 
   editCard = (id) => {
@@ -182,8 +128,12 @@ class CardContent extends Component {
   }
 
   saveCard = (id) => {
-    this.setState({ descriptionEditorEnabled: false });
+    this.props.disableEditor(this.props.id, DESCRIPTION_EDITOR_TYPE);
     this.props.saveCard(id);
+  }
+
+  saveMessages = (id) => {
+    this.props.saveMessages(id);
   }
 
   onAnswerEditorStateChange = (editorState) => {
@@ -191,7 +141,6 @@ class CardContent extends Component {
   }
 
   onDescriptionEditorStateChange = (editorState) => {
-    //this.setState({descriptionEditorState : editorState });
     this.props.changeDescriptionEditor(this.props.id, editorState);
   }
 
@@ -199,46 +148,13 @@ class CardContent extends Component {
   	return this.props.cardHeight - TABS_HEIGHT - this.state.footerHeight - MIN_ANSWER_HEIGHT;
   }
 
-  toggleMessageManager = () => {
-  	this.setState({ showMessageManager: !this.state.showMessageManager });
-  }
-
-  toggleMessages = () => {
-  	this.setState({ showMessages: !this.state.showMessages });
-  }
-
   toggleSelectedMessage = (i) => {
-  	const selectedMessages = this.state.selectedMessages;
-  	selectedMessages[i] = !selectedMessages[i];
-  	this.setState({ selectedMessages: selectedMessages });
-  }
-
-  renderDropZone =  (props) => {
-    const {acceptedFiles, getRootProps, getInputProps} = useDropzone();
-    
-    const files = acceptedFiles.map(file => (
-      <li key={file.path}>
-        {file.path} - {file.size} bytes
-      </li>
-    ));
-
-    return (
-      <section className="container">
-        <div {...getRootProps({className: 'dropzone'})}>
-          <input {...getInputProps()} />
-          <p>Drag 'n' drop some files here, or click to select files</p>
-        </div>
-        <aside>
-          <h4>Files</h4>
-          <ul>{files}</ul>
-        </aside>
-      </section>
-    );
+  	this.props.toggleSelectedMessage(this.props.id, i);
   }
 
   renderHeader = () => {
-  	const { id, isEditing, tags, sideDockOpen, openCardSideDock, closeCardSideDock, cardWidth } = this.props;
-    const { descriptionEditorEnabled,isSideDockVisible } = this.state;
+  	const { id, isEditing, tags, sideDockOpen, openCardSideDock, closeCardSideDock, descriptionEditorEnabled, descriptionSectionHeight, cardWidth } = this.props;
+    const { isSideDockVisible } = this.state;
     
   	return (
   		<Resizable
@@ -246,11 +162,9 @@ class CardContent extends Component {
             defaultSize={{ height: MIN_QUESTION_HEIGHT }}
             minHeight={ MIN_QUESTION_HEIGHT }
             maxHeight={ this.getMaxDescriptionHeight() }
-            size={{ height: this.state.descriptionSectionHeight }}
+            size={{ height: descriptionSectionHeight }}
             onResizeStop={(e, direction, ref, d) => {
-              this.setState({
-                descriptionSectionHeight: this.state.descriptionSectionHeight + d.height,
-              });
+            	this.props.adjustDescriptionSectionHeight(id, descriptionSectionHeight + d.height);
             }}
             enable={{ top:false, right:false, bottom:true, left:false, topRight:false, bottomRight:true, bottomLeft:false, topLeft:false }}
         >
@@ -293,7 +207,9 @@ class CardContent extends Component {
 		        			<MdAttachment className={s("mr-sm")} />
 		        			<div >3 Attachments</div>
 		        		</div>
-		        		<StyledDropzone />
+		        		<Dropzone>
+                  <p className={s("m-0 text-sm text-purple-reg p-sm")}>Drag Files Here or Click to Add</p>
+                </Dropzone>
 					</div>
         		</div>
         		: 
@@ -333,11 +249,11 @@ class CardContent extends Component {
   }
 
   renderThreadModal = () => {
-  	const { isEditing } = this.props;
+  	const { id, isEditing, showThreadEditModal , showThreadModal, closeModal} = this.props;
   	return (
   		<Modal 
-    		isOpen={isEditing ? this.state.showMessageManager : this.state.showMessages} 
-    		onRequestClose={isEditing ? () => {this.setState({ showMessageManager: false})} : () => {this.setState({ showMessages: false})}}
+    		isOpen={isEditing ? showThreadEditModal : showThreadModal} 
+    		onRequestClose={isEditing ? () => {closeModal(id, THREAD_MODAL_EDIT)} : () => {closeModal(id, THREAD_MODAL)}}
     		headerClassName={s("bg-purple-light rounded-lg")}
     		bodyClassName={s("overflow-none flex flex-col rounded-b-lg")}
     		className={s("bg-purple-light")}
@@ -347,6 +263,7 @@ class CardContent extends Component {
       			{this.renderMessageList()}
 	      		{ isEditing &&
 	      			<Button
+	      				onClick={() => this.saveMessages(id)}
 			        	color={"primary"}
 			        	text={"Save"}
 			        	className={s("rounded-t-none")}
@@ -358,8 +275,7 @@ class CardContent extends Component {
   }
 
   renderMessageList = () => {
-  	const { selectedMessages } = this.state;
-  	const { isEditing } = this.props;
+  	const { isEditing, selectedMessages } = this.props;
   	return (
   		<div className={s("message-manager-container bg-purple-light mx-lg mb-lg rounded-lg flex-grow overflow-auto")}>
 		  	{PLACEHOLDER_MESSAGES.map((messageObj, i) => (
@@ -388,8 +304,7 @@ class CardContent extends Component {
   }
 
   renderAnswer = () => {
-  	const { isEditing  } = this.props;
-    const { answerEditorEnabled, selectedMessages } = this.state;
+  	const { isEditing, answerEditorEnabled, selectedMessages } = this.props;
   	return (
   		<div className={s('p-2xl flex-grow min-h-0 flex flex-col min-h-0 relative')}>
 	        { isEditing ?
@@ -421,7 +336,7 @@ class CardContent extends Component {
 		        		color={"transparent"}
 		        		className={s("flex justify-between shadow-none")}
 		        		icon={ <FaSlack /> } 
-		        		onClick={() => this.toggleMessageManager()}
+		        		onClick={() => this.props.openModal(this.props.id, THREAD_MODAL_EDIT)}
 		        		iconLeft={false}
 		        		underline
 		        	/>
@@ -443,7 +358,7 @@ class CardContent extends Component {
 	        { !isEditing && 
 	        	<Button
 	        		text={"Thread"}
-	        		onClick={() => this.toggleMessages()}
+	        		onClick={() => this.props.openModal(this.props.id, THREAD_MODAL)}
 	        		className={s("view-thread-button p-sm absolute text-xs mb-lg mr-2xl")}
 	        		color={"secondary"}
 	        		imgSrc={SlackIcon}
@@ -498,8 +413,8 @@ class CardContent extends Component {
 
 
   render() {
-    const { id, isEditing, answerEditorState, tags, sideDockOpen, createModalOpen, openCardSideDock, closeCardSideDock, openCardCreateModal, closeCardCreateModal } = this.props;
-    const { descriptionEditorEnabled, answerEditorEnabled, isSideDockVisible, selectedMessages } = this.state;
+    const { id, isEditing, tags, sideDockOpen, createModalOpen, openCardSideDock, closeCardSideDock, openCardCreateModal, closeCardCreateModal } = this.props;
+    const { isSideDockVisible } = this.state;
 
     return (
       <div className={s("flex-grow flex flex-col min-h-0 relative")}>
