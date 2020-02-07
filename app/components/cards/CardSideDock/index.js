@@ -27,7 +27,7 @@ class CardSideDock extends Component {
     super(props);
 
     this.state = {
-      hasBeenToggled: props.isVisible, // If it starts out as visible, then say it's been toggled?
+      hasBeenToggled: false,
       keywords: [],
       verificationInterval: null,
       permission: null,
@@ -35,7 +35,7 @@ class CardSideDock extends Component {
   }
 
   componentDidUpdate(prevProps) {
-    if (!prevProps.isVisible && this.props.isVisible && !this.state.hasBeenToggled) {
+    if (((!prevProps.isVisible && this.props.isVisible) || (prevProps.isVisible && !this.props.isVisible)) && !this.state.hasBeenToggled) {
       this.setState({ hasBeenToggled: true });
     }
   }
@@ -173,8 +173,12 @@ class CardSideDock extends Component {
     const { isVisible } = this.props;
     const { hasBeenToggled } = this.state;
 
+    const className = hasBeenToggled ?
+      (isVisible ? 'card-side-dock-slide-in' : 'card-side-dock-slide-out') :
+      (isVisible ? 'card-side-dock-no-slide-show' : '');
+
     return (
-      <div className={s(`${hasBeenToggled ? (isVisible ? 'card-side-dock-slide-in' : 'card-side-dock-slide-out') : ''} overflow-hidden pointer-events-none rounded-b-lg absolute top-0 left-0 right-0 bottom-0 z-10`)}>
+      <div className={s(`${className} card-side-dock-container`)}>
         <div className={s("card-side-dock-overlay")} onClick={this.closeSideDock} />
         <div className={s("card-side-dock overflow-auto")}>
           { this.renderHeader() }
