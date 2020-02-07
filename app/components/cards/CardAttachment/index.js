@@ -18,14 +18,12 @@ const getAttachmentProps = (type) => {
       return { color: 'red-500', underlineColor: 'red-200', Icon: IoIosVideocam }
     case 'image':
       return { color: 'purple-reg', underlineColor: 'purple-grey-50', Icon: AiFillPicture }
-    case 'file':
-      return { color: 'blue-500', underlineColor: 'blue-200', Icon: FaFileAlt }
     default:
-      return {}
+      return { color: 'blue-500', underlineColor: 'blue-200', Icon: FaFileAlt }
   }
 }
 
-const CardAttachment = ({ filename, type, onClick, onRemoveClick, className, ...rest }) => {
+const CardAttachment = ({ filename, type, onClick, onRemoveClick, className, textClassName, removeIconClassName, fileTypeIconClassName, ...rest }) => {
   const onRemove = (e) => {
     e.stopPropagation();
     onRemoveClick();
@@ -35,10 +33,10 @@ const CardAttachment = ({ filename, type, onClick, onRemoveClick, className, ...
 
   return (
     <div onClick={onClick} {...rest} className={s(`card-attachment button-hover text-${color} ${className}`)}>
-      <Icon className={s("mr-xs")} />
-      <div className={s(`underline-border border-${underlineColor}`)}> {filename} </div>
+      <Icon className={s(`card-attachment-file-icon ${fileTypeIconClassName}`)} />
+      <div className={s(`underline-border border-${underlineColor} ${textClassName}`)}> {filename} </div>
       { onRemoveClick &&
-        <MdClose onClick={onRemove} className={s("ml-xs")} />
+        <MdClose onClick={onRemove} className={s(`card-attachment-remove-icon ${removeIconClassName}`)} />
       }
     </div> 
   )
@@ -50,10 +48,16 @@ CardAttachment.propTypes = {
   onClick: PropTypes.func,
   onRemoveClick: PropTypes.func,
   className: PropTypes.string,
+  textClassName: PropTypes.string,
+  removeIconClassName: PropTypes.string,
+  fileTypeIconClassName: PropTypes.string,
 }
 
 CardAttachment.defaultProps = {
   className: '',
+  textClassName: '',
+  removeIconClassName: '',
+  fileTypeIconClassName: '',
 }
 
 export default CardAttachment;

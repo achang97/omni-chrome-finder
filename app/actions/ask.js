@@ -43,3 +43,11 @@ export function endAskScreenRecording(screenRecording) {
 export function askScreenRecordingError(error) {
   return { type: types.ASK_SCREEN_RECORDING_ERROR, payload: { error } }
 }
+
+export function addAskAttachments(attachments) {
+  return { type: types.ADD_ASK_ATTACHMENTS, payload: { attachments } }
+}
+
+export function removeAskAttachment(index) {
+  return { type: types.REMOVE_ASK_ATTACHMENT, payload: { index } }
+}

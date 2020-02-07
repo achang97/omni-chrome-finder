@@ -3,7 +3,7 @@ import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
 import { withRouter } from 'react-router-dom';
 
-import { MdChevronRight, MdPictureInPicture, MdClose, MdCloudUpload } from 'react-icons/md';
+import { MdChevronRight, MdPictureInPicture, MdClose, MdCloudUpload, MdAttachment } from 'react-icons/md';
 import { IoMdAdd } from 'react-icons/io';
 import { FaRegDotCircle, FaPaperPlane, FaMinus } from 'react-icons/fa';
 
@@ -18,8 +18,10 @@ import Tab from '../../components/common/Tabs/Tab';
 import Select from '../../components/common/Select';
 import SuggestionPanel from "../../components/suggestions/SuggestionPanel";
 import ScrollContainer from '../../components/common/ScrollContainer';
-
+import Dropzone from '../../components/common/Dropzone';
+import Dropdown from '../../components/common/Dropdown';
 import RecipientDropdown from "../../components/ask/RecipientDropdown";
+import CardAttachment from "../../components/cards/CardAttachment";
 
 import { colors } from '../../styles/colors';
 import { expandDock } from '../../actions/display';
@@ -58,6 +60,10 @@ const PLACEHOLDER_RECIPIENT_OPTIONS = createSelectOptions([
 class Ask extends Component {
   constructor(props) {
     super(props);
+
+    this.state = {
+      isAttachmentDropdownOpen: false,
+    }
 
     this.expandedPageRef = React.createRef();
   }
@@ -150,8 +156,13 @@ class Ask extends Component {
     const {
       questionTitle, updateAskQuestionTitle,
       questionDescription, updateAskQuestionDescription,
-      desktopSharing, screenRecordings
+      desktopSharing,
+      addAskAttachments, removeAskAttachment, attachments,
     } = this.props;
+    const { isAttachmentDropdownOpen } = this.state;
+
+    console.log(attachments)
+
     return (
       <div >
         <div className={s("flex-col relative")}>
@@ -176,35 +187,54 @@ class Ask extends Component {
         <div className={s('flex px-xs pt-reg')}>
           <Button
             onClick={!desktopSharing ? this.startScreenRecording : this.endScreenRecording}
-            className={s("ask-screen-capture-button ask-screen-record-shadow mr-xs bg-red-100 text-red-500")}
+            className={s("ask-attachment-button ask-screen-record-shadow mr-xs bg-red-100 text-red-500")}
             text={!desktopSharing ? 'Screen Record' : 'End Recording'}
             underline
             underlineColor="red-200"
             icon={<FaRegDotCircle className={s("ml-sm text-red-500")} />}
             iconLeft={false}
           />
-          <Button
-            className={s("ask-screen-capture-button ml-xs bg-white text-purple-reg border border-dashed border-gray-light shadow-none")}
-            text="Drag & Drop"
-            icon={<MdCloudUpload color={colors.purple.reg} className={s("ml-sm")} />}
-            iconLeft={false}
-          />
-        </div>
-        { /*<div className={s("mt-sm p-sm")}>
-          {screenRecordings.map(recording => (
-            <div className={s('ask-video-player-container my-sm')}>
-              <ReactPlayer
-                url={recording}
-                className={s('absolute top-0 left-0')}
-                controls
-                playing
-                height="100%"
-                width="100%"
-              />
+          <Dropzone
+            className={s("mx-xs flex-1 border border-dashed")}
+            style={{ borderColor: colors.gray.light }}
+            onDrop={acceptedFiles => addAskAttachments(acceptedFiles)}
+          >
+            <Button
+              className={s("ask-attachment-button bg-white text-purple-reg shadow-none")}
+              text="Drag & Drop"
+              icon={<MdCloudUpload color={colors.purple.reg} className={s("ml-sm")} />}
+              iconLeft={false}
+            />
+          </Dropzone>
+          <div className={s("ml-xs relative")}>
+            <Button
+              onClick={() => this.setState({ isAttachmentDropdownOpen: !isAttachmentDropdownOpen })}
+              className={s("bg-white py-reg px-sm")}
+              icon={<MdAttachment color={colors.purple.reg} className={s("ask-attachment-icon")} />}
+            />
+            <div className={s("ask-attachment-count")}>
+              {attachments.length}
             </div>
-          ))}
+            <Dropdown isOpen={isAttachmentDropdownOpen}>
+              <div className={s("ask-attachment-dropdown")}>
+                { attachments.length === 0 &&
+                  <div className={s("text-center")}>
+                    No current attachments
+                  </div>
+                }
+                { attachments.map(({ type, data }, i) => (
+                  <CardAttachment
+                    type={type === 'recording' ? 'video' : data.type}
+                    filename={type === 'recording' ? 'Screen Recording' : data.name}
+                    textClassName={s("truncate")}
+                    removeIconClassName={s("ml-auto")}
+                    onRemoveClick={() => removeAskAttachment(i)}
+                  />
+                ))}
+              </div>
+            </Dropdown>
+          </div>
         </div>
-        */ }
       </div>
     );
   }

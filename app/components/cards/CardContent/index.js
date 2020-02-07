@@ -1,4 +1,4 @@
-import React, { Component, useMemo } from 'react';
+import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import { MdCheck, MdArrowDropDown, MdMoreHoriz, MdModeEdit, MdThumbUp, MdBookmarkBorder, MdPerson, MdAttachment } from "react-icons/md";
 import { default as SlackIcon } from "../../../assets/images/icons/Slack_Mark.svg";
@@ -16,8 +16,7 @@ import CheckBox from '../../common/CheckBox';
 import CardStatus from '../CardStatus';
 import CardTags from '../CardTags';
 import { Resizable } from 're-resizable';
-import {useDropzone} from 'react-dropzone';
-import Dropzone from 'react-dropzone'
+import Dropzone from '../../common/Dropzone';
 import CardSideDock from '../CardSideDock';
 import CardCreateModal from '../CardCreateModal';
 
@@ -55,63 +54,6 @@ const PLACEHOLDER_MESSAGES = [
 		selected: true,
 	},
 ];
-
-const baseStyle = {
-  flex: 1,
-  display: 'flex',
-  flexDirection: 'column',
-  alignItems: 'center',
-  borderWidth: 2,
-  borderRadius: 8,
-  paddingHorizontal: 10,
-  borderColor: '#eeeeee',
-  borderStyle: 'dashed',
-  backgroundColor: '#fafafa',
-  color: '#bdbdbd',
-  outline: 'none',
-  transition: 'border .24s ease-in-out'
-};
-
-const activeStyle = {
-  borderColor: '#2196f3'
-};
-
-const acceptStyle = {
-  borderColor: '#00e676'
-};
-
-const rejectStyle = {
-  borderColor: '#ff1744'
-};
-
-function StyledDropzone(props) {
-  const {
-    getRootProps,
-    getInputProps,
-    isDragActive,
-    isDragAccept,
-    isDragReject
-  } = useDropzone({accept: 'image/*'});
-
-  const style = useMemo(() => ({
-    ...baseStyle,
-    ...(isDragActive ? activeStyle : {}),
-    ...(isDragAccept ? acceptStyle : {}),
-    ...(isDragReject ? rejectStyle : {})
-  }), [
-    isDragActive,
-    isDragReject
-  ]);
-
-  return (
-    <div className="container">
-      <div {...getRootProps({style})}>
-        <input {...getInputProps()} />
-        <p className={s("m-0 text-sm text-purple-reg")}>Drag Files Here or Click to Add</p>
-      </div>
-    </div>
-  );
-}
 
 @connect(
   state => ({
@@ -210,29 +152,6 @@ class CardContent extends Component {
   	this.props.toggleSelectedMessage(this.props.id, i);
   }
 
-  renderDropZone =  (props) => {
-    const {acceptedFiles, getRootProps, getInputProps} = useDropzone();
-    
-    const files = acceptedFiles.map(file => (
-      <li key={file.path}>
-        {file.path} - {file.size} bytes
-      </li>
-    ));
-
-    return (
-      <section className="container">
-        <div {...getRootProps({className: 'dropzone'})}>
-          <input {...getInputProps()} />
-          <p>Drag 'n' drop some files here, or click to select files</p>
-        </div>
-        <aside>
-          <h4>Files</h4>
-          <ul>{files}</ul>
-        </aside>
-      </section>
-    );
-  }
-
   renderHeader = () => {
   	const { id, isEditing, tags, sideDockOpen, openCardSideDock, closeCardSideDock, descriptionEditorEnabled, descriptionSectionHeight, cardWidth } = this.props;
     const { isSideDockVisible } = this.state;
@@ -288,7 +207,9 @@ class CardContent extends Component {
 		        			<MdAttachment className={s("mr-sm")} />
 		        			<div >3 Attachments</div>
 		        		</div>
-		        		<StyledDropzone />
+		        		<Dropzone>
+                  <p className={s("m-0 text-sm text-purple-reg p-sm")}>Drag Files Here or Click to Add</p>
+                </Dropzone>
 					</div>
         		</div>
         		: 
