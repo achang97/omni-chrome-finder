@@ -42,6 +42,7 @@ const initialState = {
   cardsHeight: DEFAULT_CARDS_HEIGHT,
   activeCardIndex: -1,
 
+  createQuestion: '',
   createDescriptionEditorState: EditorState.createEmpty(),
   createAnswerEditorState: EditorState.createEmpty(),
 };
@@ -52,7 +53,7 @@ const getNewCards = (id, newInfo, cards) => {
 }
 
 const getNewCardsOnSave = (id, cards) => {
-  const newCards = cards.map((card, i) => card.id === id ? {...card, ...{ isEditing: false, descriptionEditorStateSaved: card.descriptionEditorState, answerEditorStateSaved: card.answerEditorState }} : card);
+  const newCards = cards.map((card, i) => card.id === id ? {...card, ...{ isEditing: false, questionSaved: card.question, descriptionEditorStateSaved: card.descriptionEditorState, answerEditorStateSaved: card.answerEditorState }} : card);
   return newCards;
 }
 
@@ -66,16 +67,18 @@ export default function cards(state = initialState, action) {
 
   switch (type) {
     case types.OPEN_CARD: {
-      const { id, question, descriptionEditorState, answerEditorState, fromCreate=false } = payload;
+      const { id, descriptionEditorState, answerEditorState, fromCreate=false } = payload;
 
       var descriptionEditorStateSaved = descriptionEditorState || EditorState.createEmpty();
       var answerEditorStateSaved = answerEditorState || EditorState.createEmpty();
 
 
+      const questionSaved = '';
       // If Open Card is being called from Create, set properties to editing
       var isEditing = false;
       var answerEditorEnabled = false;
       var cardStatus = CARD_STATUS_OPTIONS.UP_TO_DATE;
+      var question = questionSaved;
 
       if (fromCreate) {
         isEditing = true;
@@ -83,6 +86,7 @@ export default function cards(state = initialState, action) {
         descriptionEditorStateSaved = state.createDescriptionEditorState;
         answerEditorStateSaved = state.createAnswerEditorState;
         cardStatus = CARD_STATUS_OPTIONS.NOT_DOCUMENTED;
+        question = state.createQuestion;
       }
 
       const newCards = _.union(state.cards, 
@@ -90,7 +94,10 @@ export default function cards(state = initialState, action) {
             isEditing: isEditing, 
             sideDockOpen: false, 
             createModalOpen: false, 
-            question,
+
+            question: question,
+            questionSaved: questionSaved,
+
             descriptionEditorStateSaved: descriptionEditorStateSaved,
             answerEditorStateSaved: answerEditorStateSaved, 
             descriptionEditorState: descriptionEditorStateSaved, 
@@ -153,12 +160,16 @@ export default function cards(state = initialState, action) {
       return { ...state, cards: newCards };
     }
 
+    case types.CHANGE_QUESTION: {
+      const { id, newValue } = payload;
+      const newCards = getNewCards(id, { question: newValue }, state.cards);
+      return {...state, cards: newCards };
+    }
     case types.CHANGE_ANSWER_EDITOR: {
       const { id, editorState } = payload;
       const newCards = getNewCards(id, { answerEditorState: editorState}, state.cards);
       return { ...state, cards: newCards };
     }
-
     case types.CHANGE_DESCRIPTION_EDITOR: {
       const { id, editorState } = payload;
       const newCards = getNewCards(id, { descriptionEditorState: editorState}, state.cards);
@@ -166,15 +177,25 @@ export default function cards(state = initialState, action) {
     }
 
     // Create Editors
+    case types.CHANGE_CREATE_QUESTION: {
+      const { newValue } = payload;
+      return { ...state, createQuestion: newValue };
+    }
     case types.CHANGE_CREATE_ANSWER_EDITOR: {
       const { editorState } = payload;
       return { ...state, createAnswerEditorState: editorState };
     }
-
     case types.CHANGE_CREATE_DESCRIPTION_EDITOR: {
       const { editorState } = payload;
       return { ...state, createDescriptionEditorState: editorState };
     }
+    case types.CLEAR_CREATE_PANEL: {
+      return { ...state, createQuestion: '', createAnswerEditorState: EditorState.createEmpty(), createDescriptionEditorState: EditorState.createEmpty() };
+    }
+
+
+
+
 
     case types.EDIT_CARD: {
       const { id } = payload;

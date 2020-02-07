@@ -1,8 +1,8 @@
 import * as types from './actionTypes';
 
 /* Card behavior */
-export function openCard({id, question, descriptionEditorState, answerEditorState, fromCreate}) {
-  return { type: types.OPEN_CARD, payload: { id, question, descriptionEditorState, answerEditorState, fromCreate } };
+export function openCard({id, descriptionEditorState, answerEditorState, fromCreate}) {
+  return { type: types.OPEN_CARD, payload: { id, descriptionEditorState, answerEditorState, fromCreate } };
 }
 
 export function setActiveCardIndex(index) {
@@ -21,6 +21,10 @@ export function adjustCardsDimensions(newWidth, newHeight) {
   return { type: types.ADJUST_CARDS_DIMENSIONS, payload: { newWidth, newHeight } }
 }
 
+export function changeQuestion(id, newValue) {
+  return { type: types.CHANGE_QUESTION, payload: { id, newValue } };
+}
+
 export function changeAnswerEditor(id, editorState) {
   return { type: types.CHANGE_ANSWER_EDITOR, payload: { id, editorState } };
 }
@@ -29,12 +33,20 @@ export function changeDescriptionEditor(id, editorState) {
   return { type: types.CHANGE_DESCRIPTION_EDITOR, payload: { id, editorState } };
 }
 
+export function changeCreateQuestion(newValue) {
+  return { type: types.CHANGE_CREATE_QUESTION, payload: { newValue }};
+}
+
 export function changeCreateAnswerEditor(editorState) {
   return { type: types.CHANGE_CREATE_ANSWER_EDITOR, payload: { editorState } };
 }
 
 export function changeCreateDescriptionEditor(editorState) {
   return { type: types.CHANGE_CREATE_DESCRIPTION_EDITOR, payload: { editorState } };
+}
+
+export function clearCreatePanel() {
+  return { type: types.CLEAR_CREATE_PANEL, payload: {} };
 }
 
 export function changeCardStatus(id, newStatus) {

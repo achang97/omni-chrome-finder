@@ -7,7 +7,7 @@ import { MdAdd } from "react-icons/md";
 import { EditorState } from 'draft-js';
 import TextEditor from '../../components/editors/TextEditor';
 
-import { openCard, changeCreateDescriptionEditor, changeCreateAnswerEditor, } from '../../actions/cards';
+import { openCard, changeCreateDescriptionEditor, changeCreateAnswerEditor, changeCreateQuestion, clearCreatePanel} from '../../actions/cards';
 
 import style from "./create.css";
 import { getStyleApplicationFn } from '../../utils/styleHelpers';
@@ -17,6 +17,7 @@ const s = getStyleApplicationFn(style);
   state => ({
   	createDescriptionEditorState: state.cards.createDescriptionEditorState,
   	createAnswerEditorState: state.cards.createAnswerEditorState,
+  	createQuestion: state.cards.createQuestion,
   }),
   dispatch =>
     bindActionCreators(
@@ -24,6 +25,8 @@ const s = getStyleApplicationFn(style);
         openCard,
         changeCreateDescriptionEditor,
         changeCreateAnswerEditor,
+        changeCreateQuestion,
+        clearCreatePanel,
       },
       dispatch
     )
@@ -36,6 +39,7 @@ export default class Create extends Component {
 	    this.state = {
 	      // Text editors
 	      showDescriptionEditor: false,
+	      inputValue: '',
 	    };
 	 }
 
@@ -59,8 +63,14 @@ export default class Create extends Component {
     this.props.openCard({id: Math.floor(Math.random() * Math.floor(10000)),
     										 fromCreate: true,
     										});
+    //Clear out the Create panel
+    this.props.clearCreatePanel();
   	
   };
+
+  changeQuestionValue = (event) => {
+  	this.props.changeCreateQuestion(event.target.value);
+  }
 
   render() {
   	const { showDescriptionEditor } = this.state;
@@ -82,6 +92,8 @@ export default class Create extends Component {
         	<input
             	placeholder="Question"
             	className={s("w-full my-xl")}
+            	value={this.props.createQuestion}
+            	onChange={this.changeQuestionValue}
           	/>
           {
           	showDescriptionEditor ?

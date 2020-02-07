@@ -7,7 +7,7 @@ import { FaSlack } from "react-icons/fa";
 import { bindActionCreators } from 'redux';
 import { EditorState } from 'draft-js';
 import { connect } from 'react-redux';
-import { editCard, saveCard, openCardSideDock, closeCardSideDock, openCardCreateModal, closeCardCreateModal, changeAnswerEditor, changeDescriptionEditor, enableEditor, disableEditor, adjustDescriptionSectionHeight, openModal, closeModal, toggleSelectedMessage, saveMessages} from '../../../actions/cards';
+import { editCard, saveCard, openCardSideDock, closeCardSideDock, openCardCreateModal, closeCardCreateModal, changeAnswerEditor, changeDescriptionEditor, enableEditor, disableEditor, adjustDescriptionSectionHeight, openModal, closeModal, toggleSelectedMessage, saveMessages, changeQuestion} from '../../../actions/cards';
 import TextEditor from '../../editors/TextEditor';
 import Button from '../../common/Button';
 import Modal from '../../common/Modal';
@@ -78,6 +78,7 @@ const PLACEHOLDER_MESSAGES = [
     openModal,
     closeModal,
     toggleSelectedMessage,
+    changeQuestion,
   }, dispatch)
 )
 
@@ -155,6 +156,10 @@ class CardContent extends Component {
   	this.props.toggleSelectedMessage(this.props.id, i);
   }
 
+  changeQuestionValue = (event) => {
+  	this.props.changeQuestion(this.props.id, event.target.value);
+  }
+
   renderHeader = () => {
   	const { id, isEditing, tags, sideDockOpen, openCardSideDock, closeCardSideDock, descriptionEditorEnabled, descriptionSectionHeight, cardWidth } = this.props;
     const { isSideDockVisible } = this.state;
@@ -181,7 +186,16 @@ class CardContent extends Component {
               	}
             </div>
           </strong>
-          <div className={s("text-2xl font-semibold")}>How do I delete a user? ({id})</div>
+          {isEditing ?
+          	<input
+            	placeholder="Question"
+            	className={s("w-full")}
+            	value={this.props.question}
+            	onChange={this.changeQuestionValue}
+          	/>
+          	:
+          	<div className={s("text-2xl font-semibold")}>{this.props.question} ({id})</div>
+          }
           { isEditing ?
 
             	<div className={s('flex-grow min-h-0 flex flex-col min-h-0')}>
