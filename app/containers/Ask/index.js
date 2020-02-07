@@ -358,6 +358,12 @@ class Ask extends Component {
     );
   };
 
+  expandDock = () => {
+    const { expandDock, updateAskSearchText } = this.props;
+    updateAskSearchText("");
+    expandDock();
+  }
+
   renderMinifiedAskPage = () => {
     const { expandDock, updateAskSearchText, searchText } = this.props;
     const showRelatedQuestions = searchText.length > 0;
@@ -380,7 +386,7 @@ class Ask extends Component {
             className={s("justify-between")}
             iconLeft={false}
             icon={<MdChevronRight color="white" className={s("ml-sm")} />}
-            onClick={expandDock}
+            onClick={() => this.expandDock()}
           />
         </div>
         <SuggestionPanel isVisible={showRelatedQuestions} />

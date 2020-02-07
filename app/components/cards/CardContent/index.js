@@ -223,10 +223,12 @@ class CardContent extends Component {
 	        			</div>
 	        		}
 	        		<div className={s("flex justify-between")}>
-		        		<div className={s("flex text-purple-reg text-sm cursor-pointer underline-border border-purple-gray-20 items-center")} onClick={() => openCardSideDock(id)}> 
-		        			<MdAttachment className={s("mr-sm")} />
-		        			<div >3 Attachments</div>
-		        		</div>
+                <div className={s("flex items-center")}>
+  		        		<div className={s("flex text-purple-reg text-sm cursor-pointer underline-border border-purple-gray-20 items-center")} onClick={() => openCardSideDock(id)}> 
+  		        			<MdAttachment className={s("mr-sm")} />
+  		        			<div >3 Attachments</div>
+  		        		</div>
+                </div>
 		        		<Dropzone>
                   <p className={s("m-0 text-sm text-purple-reg p-sm")}>Drag Files Here or Click to Add</p>
                 </Dropzone>
