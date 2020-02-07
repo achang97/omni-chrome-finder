@@ -24,3 +24,12 @@ export const PERMISSION_OPTIONS = [
 
 // Ask page constants
 export const ASK_INTEGRATIONS = ['Slack', 'Email', 'Asana'];
+
+// Card Status Options
+export const CARD_STATUS_OPTIONS = {
+	NOT_DOCUMENTED: 'NOT_DOCUMENTED',
+	NEEDS_APPROVAL: 'NEEDS_APPROVAL',
+	OUT_OF_DATE: 'OUT_OF_DATE',
+	NEEDS_VERIFICATION: 'NEEDS_VERIFICATION',
+	UP_TO_DATE: 'UP_TO_DATE',
+}

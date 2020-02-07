@@ -10,19 +10,40 @@ import Select from '../../common/Select';
 import Button from '../../common/Button';
 import Modal from '../../common/Modal';
 
-import { PERMISSION_OPTIONS, VERIFICATION_INTERVAL_OPTIONS } from '../../../utils/constants';
+import { PERMISSION_OPTIONS, VERIFICATION_INTERVAL_OPTIONS, CARD_STATUS_OPTIONS } from '../../../utils/constants';
 import { createSelectOptions } from '../../../utils/selectHelpers';
+
+import { bindActionCreators } from 'redux';
+import { connect } from 'react-redux';
 
 import { getStyleApplicationFn } from '../../../utils/styleHelpers';
 const s = getStyleApplicationFn();
 
 const SELECT_PERMISSION_OPTIONS = createSelectOptions(PERMISSION_OPTIONS);
 const SELECT_VERIFICATION_INTERVAL_OPTIONS = createSelectOptions(VERIFICATION_INTERVAL_OPTIONS);
+import { saveCard, changeCardStatus} from '../../../actions/cards';
+
+
+// Card Statuses
+const NOT_DOCUMENTED = 'NOT_DOCUMENTED';
+const NEEDS_APPROVAL = 'NEEDS_APPROVAL';
+const OUT_OF_DATE = 'OUT_OF_DATE';
+const NEEDS_VERIFICATION = 'NEEDS_VERIFICATION';
+const UP_TO_DATE = 'UP_TO_DATE';
+
+@connect(
+  state => ({
+
+  }),
+  dispatch => bindActionCreators({
+    saveCard,
+    changeCardStatus,
+  }, dispatch)
+)
 
 class CardCreateModal extends Component {
   constructor(props) {
     super(props);
-
     this.state = {
       keywords: [],
       verificationInterval: null,
@@ -103,6 +124,12 @@ class CardCreateModal extends Component {
     );
   }
 
+  completeCard = () => {
+    this.props.saveCard(this.props.cardId);
+    this.props.changeCardStatus(this.props.cardId, CARD_STATUS_OPTIONS.UP_TO_DATE);
+    this.props.onRequestClose();
+  }
+
   render() {
     const { isOpen, onRequestClose, question } = this.props;
     const { hasBeenToggled } = this.state;
@@ -123,6 +150,7 @@ class CardCreateModal extends Component {
         </div>
         <Button
           text="Complete Card"
+          onClick={() => this.completeCard()}
           className={s("flex-shrink-0 rounded-t-none")}
           underline
           underlineColor="purple-gray-50"
@@ -134,6 +162,7 @@ class CardCreateModal extends Component {
 }
 
 CardCreateModal.propTypes = {
+  cardId: PropTypes.number,
   isOpen: PropTypes.bool.isRequired,
   onRequestClose: PropTypes.func.isRequired,
   question: PropTypes.string.isRequired,

@@ -37,6 +37,10 @@ export function changeCreateDescriptionEditor(editorState) {
   return { type: types.CHANGE_CREATE_DESCRIPTION_EDITOR, payload: { editorState } };
 }
 
+export function changeCardStatus(id, newStatus) {
+  return { type: types.CHANGE_CARD_STATUS, payload: { id, newStatus } };
+}
+
 export function editCard(id) {
   return { type: types.EDIT_CARD, payload: { id } };
 }

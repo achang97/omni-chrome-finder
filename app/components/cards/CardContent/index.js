@@ -24,6 +24,8 @@ import style from './card-content.css';
 import { getStyleApplicationFn } from '../../../utils/styleHelpers';
 const s = getStyleApplicationFn(style);
 
+import { CARD_STATUS_OPTIONS } from '../../../utils/constants';
+
 const TABS_HEIGHT = 51;
 const MIN_ANSWER_HEIGHT = 180;
 const MIN_QUESTION_HEIGHT = 180;
@@ -33,6 +35,7 @@ const ANSWER_EDITOR_TYPE = 'ANSWER';
 
 const THREAD_MODAL = 'THREAD_MODAL';
 const THREAD_MODAL_EDIT = 'THREAD_MODAL_EDIT';
+
 
 const PLACEHOLDER_MESSAGES = [
 	{
@@ -171,9 +174,11 @@ class CardContent extends Component {
           <strong className={s("text-xs text-purple-reg pt-xs pb-sm flex items-center justify-between opacity-75")}>
             <div>2 Days Ago</div>
             <div className={s("flex items-center")}>
-	            <button onClick={() => openCardSideDock(id)}>
-                <MdMoreHoriz />
-              </button>
+            	{ this.props.cardStatus !== CARD_STATUS_OPTIONS.NOT_DOCUMENTED &&
+		            <button onClick={() => openCardSideDock(id)}>
+	                	<MdMoreHoriz />
+	              	</button>
+              	}
             </div>
           </strong>
           <div className={s("text-2xl font-semibold")}>How do I delete a user? ({id})</div>
@@ -372,19 +377,28 @@ class CardContent extends Component {
   }
 
   renderFooter = () => {
-  	const { id, isEditing } = this.props;
+  	const { id, isEditing, cardStatus, openCardCreateModal } = this.props;
   	return (
   		<div className={s("flex-shrink-0 min-h-0")} ref={element => this.footerRef = element}>
   			{
   			isEditing ?
+  				cardStatus === CARD_STATUS_OPTIONS.NOT_DOCUMENTED ?
+  				<Button
+	  				text={"Add to Knowledge Base"}
+	          		color="primary"
+	  				onClick={() => openCardCreateModal(id)}
+	  				className={s("rounded-t-none p-lg")}
+	  				underline
+	  				/>
+  				:
 
-  			<Button
-  				text={"Save Changes"}
-          color="primary"
-  				onClick={() => this.saveCard(id)}
-  				className={s("rounded-t-none p-lg")}
-  				underline
-  			/>
+	  			<Button
+	  				text={"Save Changes"}
+	          		color="primary"
+	  				onClick={() => this.saveCard(id)}
+	  				className={s("rounded-t-none p-lg")}
+	  				underline
+	  				/>
 	        :
 	        <div className={s("flex items-center justify-between bg-purple-light rounded-b-lg p-lg")}>     
 	          <Button 
@@ -413,7 +427,7 @@ class CardContent extends Component {
 
 
   render() {
-    const { id, isEditing, tags, sideDockOpen, createModalOpen, openCardSideDock, closeCardSideDock, openCardCreateModal, closeCardCreateModal } = this.props;
+    const { id, isEditing, tags, sideDockOpen, createModalOpen, openCardSideDock, closeCardSideDock, closeCardCreateModal } = this.props;
     const { isSideDockVisible } = this.state;
 
     return (
@@ -422,7 +436,6 @@ class CardContent extends Component {
 	        { this.renderHeader() }
 	        { this.renderAnswer() }
 	        { this.renderThreadModal() }
-			<div onClick={() => openCardCreateModal(id)}> open modal </div>
         </div>
         { this.renderFooter() }
         <CardSideDock
@@ -430,6 +443,7 @@ class CardContent extends Component {
           onClose={() => closeCardSideDock(id)}
         />
         <CardCreateModal
+          cardId={this.props.id}
           isOpen={createModalOpen}
           onRequestClose={() => closeCardCreateModal(id)}
           question="How do I delete this?"

@@ -1,6 +1,7 @@
 import * as types from '../actions/actionTypes';
 import _ from 'underscore';
 import { EditorState } from 'draft-js';
+import { CARD_STATUS_OPTIONS } from '../utils/constants';
 
 const DESCRIPTION_EDITOR_TYPE = 'DESCRIPTION';
 const ANSWER_EDITOR_TYPE = 'ANSWER';
@@ -10,6 +11,9 @@ const DEFAULT_CARDS_HEIGHT = 500;
 
 const THREAD_MODAL = 'THREAD_MODAL';
 const THREAD_MODAL_EDIT = 'THREAD_MODAL_EDIT';
+
+
+
 
 const PLACEHOLDER_MESSAGES = [
   {
@@ -71,16 +75,14 @@ export default function cards(state = initialState, action) {
       // If Open Card is being called from Create, set properties to editing
       var isEditing = false;
       var answerEditorEnabled = false;
-      if (descriptionEditorState || answerEditorState) {
-        isEditing = true;
-        answerEditorEnabled = true;
-      }
+      var cardStatus = CARD_STATUS_OPTIONS.UP_TO_DATE;
 
       if (fromCreate) {
         isEditing = true;
         answerEditorEnabled = true;
         descriptionEditorStateSaved = state.createDescriptionEditorState;
         answerEditorStateSaved = state.createAnswerEditorState;
+        cardStatus = CARD_STATUS_OPTIONS.NOT_DOCUMENTED;
       }
 
       const newCards = _.union(state.cards, 
@@ -100,6 +102,9 @@ export default function cards(state = initialState, action) {
             showThreadEditModal: false,
             selectedMessages: PLACEHOLDER_MESSAGES.map(msg => msg.selected),
             selectedMessagesSaved: PLACEHOLDER_MESSAGES.map(msg => msg.selected),
+
+
+            cardStatus: cardStatus,
         }]);
 
       return { ...state, cards: newCards, activeCardIndex: newCards.length - 1 };
@@ -213,6 +218,11 @@ export default function cards(state = initialState, action) {
          const selectedMessagesSaved = state.cards.find(card => { return card.id === id } ).selectedMessagesSaved;
          newCards = getNewCards(id, {selectedMessages: selectedMessagesSaved , showThreadEditModal: false}, state.cards);
       }
+      return { ...state, cards: newCards };
+    }
+    case types.CHANGE_CARD_STATUS: {
+      const { id, newStatus } = payload;
+      const newCards = getNewCards(id, { cardStatus: newStatus }, state.cards);
       return { ...state, cards: newCards };
     }
     case types.SAVE_CARD: {
