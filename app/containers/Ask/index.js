@@ -161,8 +161,6 @@ class Ask extends Component {
     } = this.props;
     const { isAttachmentDropdownOpen } = this.state;
 
-    console.log(attachments)
-
     return (
       <div >
         <div className={s("flex-col relative")}>
@@ -239,14 +237,14 @@ class Ask extends Component {
     );
   }
 
-  renderIndividualRecipient = ({ id, name }) => {
+  renderIndividualRecipient = ({ id, name }, index) => {
     const { removeAskRecipient } = this.props;
 
     return (
       <div key={id} className={s("bg-white ask-recipient")}>
         <span className={s("truncate")}> @ {name} </span>
         <div>
-          <button onClick={() => removeAskRecipient(id)}>
+          <button onClick={() => removeAskRecipient(index)}>
             <MdClose className={s("text-purple-gray-50 ml-xs")} />
           </button>
         </div>
@@ -254,7 +252,7 @@ class Ask extends Component {
     );
   }
 
-  renderChannelRecipient = ({ id, name, mentions, isDropdownOpen, isDropdownSelectOpen }) => {
+  renderChannelRecipient = ({ id, name, mentions, isDropdownOpen, isDropdownSelectOpen }, index) => {
     const { removeAskRecipient, updateAskRecipient } = this.props;
 
     return (
@@ -262,15 +260,15 @@ class Ask extends Component {
         <span className={s("truncate")}> # {name} </span>
         <div
           className={s("ask-recipient-mentions-count button-hover")}
-          onClick={() => updateAskRecipient(id, { isDropdownOpen: true, isDropdownSelectOpen: false })}
+          onClick={() => updateAskRecipient(index, { isDropdownOpen: true, isDropdownSelectOpen: false })}
         >
           {mentions.length}
         </div>
         <div className={s("vertical-separator bg-purple-gray-50")} />
-        <button onClick={() => updateAskRecipient(id, { isDropdownOpen: false, isDropdownSelectOpen: true })}>
+        <button onClick={() => updateAskRecipient(index, { isDropdownOpen: false, isDropdownSelectOpen: true })}>
           <IoMdAdd className={s("text-purple-reg mr-xs")} />
         </button>
-        <button onClick={() => removeAskRecipient(id)}>
+        <button onClick={() => removeAskRecipient(index)}>
           <MdClose className={s("text-purple-reg")} />
         </button>
       </div>
@@ -301,19 +299,19 @@ class Ask extends Component {
           scrollContainerClassName={s(`flex-1 flex flex-wrap content-start ${isOverflowing(this.expandedPageRef.current) ? 'ask-recipient-scroll-max' : ''}`)}
           scrollElementClassName={s("min-w-0")}
           list={recipients}
-          renderScrollElement={({ type, ...rest }) => (type === 'channel' ?
-            this.renderChannelRecipient(rest) :
-            this.renderIndividualRecipient(rest)
+          renderScrollElement={({ type, ...rest }, i) => (type === 'channel' ?
+            this.renderChannelRecipient(rest, i) :
+            this.renderIndividualRecipient(rest, i)
           )}
-          renderOverflowElement={({ type, id, name, mentions, isDropdownOpen, isDropdownSelectOpen }) => ( type === 'channel' &&
+          renderOverflowElement={({ type, id, name, mentions, isDropdownOpen, isDropdownSelectOpen }, i) => ( type === 'channel' &&
             <RecipientDropdown
               name={name}
               mentions={mentions}
               isDropdownOpen={isDropdownOpen}
               isDropdownSelectOpen={isDropdownSelectOpen}
-              onAddMention={(newMention) => updateAskRecipient(id, { mentions: _.union(mentions, [newMention]) })}
-              onRemoveMention={(removeMention) => updateAskRecipient(id, { mentions: _.without(mentions, removeMention) })}
-              onClose={() => updateAskRecipient(id, { isDropdownOpen: false, isDropdownSelectOpen: false })}
+              onAddMention={(newMention) => updateAskRecipient(i, { mentions: _.union(mentions, [newMention]) })}
+              onRemoveMention={(removeMention) => updateAskRecipient(i, { mentions: _.without(mentions, removeMention) })}
+              onClose={() => updateAskRecipient(i, { isDropdownOpen: false, isDropdownSelectOpen: false })}
             />
           )}
           position="top"

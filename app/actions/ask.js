@@ -20,12 +20,12 @@ export function addAskRecipient(recipient) {
   return { type: types.ADD_ASK_RECIPIENT, payload: { recipient } };
 }
 
-export function removeAskRecipient(recipientId) {
-  return { type: types.REMOVE_ASK_RECIPIENT, payload: { recipientId } };
+export function removeAskRecipient(index) {
+  return { type: types.REMOVE_ASK_RECIPIENT, payload: { index } };
 }
 
-export function updateAskRecipient(recipientId, newInfo ) {
-  return { type: types.UPDATE_ASK_RECIPIENT, payload: { recipientId, newInfo } };
+export function updateAskRecipient(index, newInfo ) {
+  return { type: types.UPDATE_ASK_RECIPIENT, payload: { index, newInfo } };
 }
 
 export function addAskScreenRecordingChunk(recordingChunk) {
