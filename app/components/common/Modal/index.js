@@ -3,32 +3,24 @@ import PropTypes from 'prop-types';
 import { Transition } from 'react-transition-group';
 
 import { MdClose } from 'react-icons/md';
+import { FADE_IN_TRANSITIONS } from '../../../utils/constants';
+import { getBaseAnimationStyle } from '../../../utils/animateHelpers';
 
 import style from './modal.css';
 import { getStyleApplicationFn } from '../../../utils/styleHelpers';
 const s = getStyleApplicationFn(style);
-
-
 
 const Modal = ({ isOpen, transitionMs, className, onRequestClose, headerClassName, overlayClassName, bodyClassName, title, children }) => {
 	const onOutsideClick = () => {
 		if (shouldCloseOnOutsideClick && onRequestClose) onRequestClose();
 	}
 
-	const baseStyle = { transition: `opacity ${transitionMs}ms ease-in-out, transform ${transitionMs}ms` };
-
+	const baseStyle = getBaseAnimationStyle(transitionMs);
 	const modalTransitionStyles = {
 		entering: { opacity: 0, transform: 'translate(0, -50%) scale(0.5)' },
 		entered:  { opacity: 1, transform: 'translate(0, -50%)', visibility: 'visible' },
 		exiting:  { opacity: 1, transform: 'translate(0, -50%) scale(0.5)' },
 		exited:  { opacity: 0, visibility: 'hidden' },
-	};
-
-	const overlayTransitionStyles = {
-		entering: { opacity: 1 },
-		entered:  { opacity: 1 },
-		exiting:  { opacity: 0 },
-		exited:  { opacity: 0 },
 	};
 
 	return (
@@ -58,7 +50,7 @@ const Modal = ({ isOpen, transitionMs, className, onRequestClose, headerClassNam
 				unmountOnExit
 			>
 				{state => (
-					<div style={{ ...baseStyle, ...overlayTransitionStyles[state] }}  className={s(`modal-overlay ${overlayClassName}`)} onClick={onOutsideClick} />
+					<div style={{ ...baseStyle, ...FADE_IN_TRANSITIONS[state] }}  className={s(`modal-overlay ${overlayClassName}`)} onClick={onOutsideClick} />
 				)}
 			</Transition>
 		</div>

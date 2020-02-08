@@ -3,7 +3,7 @@ import PropTypes from 'prop-types';
 import _ from 'underscore';
 import ReactResizeDetector from 'react-resize-detector';
 import { MdChevronLeft, MdChevronRight } from 'react-icons/md';
-import animate from '../../../utils/animate';
+import { animate } from '../../../utils/animateHelpers';
 import { DEBOUNCE_60_HZ } from '../../../utils/constants';
 
 import Tab from './Tab';

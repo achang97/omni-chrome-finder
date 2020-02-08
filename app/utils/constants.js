@@ -2,8 +2,15 @@
 export const TOGGLE = 'TOGGLE';
 export const TAB_UPDATE = 'TAB_UPDATE';
 
-// Debounce
+// Debounce / Animations
 export const DEBOUNCE_60_HZ = 166;
+
+export const FADE_IN_TRANSITIONS = {
+	entering: { opacity: 1 },
+	entered:  { opacity: 1 },
+	exiting:  { opacity: 0 },
+	exited:  { opacity: 0 },	
+}
 
 // Ask page constants
 export const ASK_INTEGRATIONS = ['Slack', 'Email', 'Asana'];

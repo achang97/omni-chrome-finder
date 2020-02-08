@@ -1,5 +1,6 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
+import { Transition } from 'react-transition-group';
 
 import { MdClose } from 'react-icons/md';
 import { FaRegTrashAlt } from 'react-icons/fa';
@@ -12,7 +13,8 @@ import CardAttachment from '../CardAttachment';
 import Select from '../../common/Select';
 import Button from '../../common/Button';
 
-import { PERMISSION_OPTIONS, VERIFICATION_INTERVAL_OPTIONS } from '../../../utils/constants';
+import { getBaseAnimationStyle } from '../../../utils/animateHelpers';
+import { PERMISSION_OPTIONS, VERIFICATION_INTERVAL_OPTIONS, FADE_IN_TRANSITIONS } from '../../../utils/constants';
 import { createSelectOptions } from '../../../utils/selectHelpers';
 
 import style from './card-side-dock.css';
@@ -22,21 +24,16 @@ const s = getStyleApplicationFn(style);
 const SELECT_PERMISSION_OPTIONS = createSelectOptions(PERMISSION_OPTIONS);
 const SELECT_VERIFICATION_INTERVAL_OPTIONS = createSelectOptions(VERIFICATION_INTERVAL_OPTIONS);
 
+const SIDE_DOCK_TRANSITION_MS = 300;
+
 class CardSideDock extends Component {
   constructor(props) {
     super(props);
 
     this.state = {
-      hasBeenToggled: false,
       keywords: [],
       verificationInterval: null,
       permission: null,
-    }
-  }
-
-  componentDidUpdate(prevProps) {
-    if (((!prevProps.isVisible && this.props.isVisible) || (prevProps.isVisible && !this.props.isVisible)) && !this.state.hasBeenToggled) {
-      this.setState({ hasBeenToggled: true });
     }
   }
 
@@ -169,26 +166,58 @@ class CardSideDock extends Component {
     );
   }
 
+  renderOverlay = () => {
+    const { isVisible } = this.props;
+
+    const baseStyle = getBaseAnimationStyle(SIDE_DOCK_TRANSITION_MS);
+
+    return (
+      <Transition
+        in={isVisible}
+        timeout={SIDE_DOCK_TRANSITION_MS}
+        mountOnEnter
+        unmountOnExit
+      >
+        {state => (  
+          <div className={s("card-side-dock-overlay")} style={{ ...baseStyle, ...FADE_IN_TRANSITIONS[state] }} onClick={this.closeSideDock} />
+        )}
+      </Transition>
+    );
+  }
+
   render() {
     const { isVisible } = this.props;
     const { hasBeenToggled } = this.state;
 
-    const className = hasBeenToggled ?
-      (isVisible ? 'card-side-dock-slide-in' : 'card-side-dock-slide-out') :
-      (isVisible ? 'card-side-dock-no-slide-show' : '');
+    const baseStyle = getBaseAnimationStyle(SIDE_DOCK_TRANSITION_MS);
+    const transitionStyles = {
+      entering: { transform: 'translateX(0%)' },
+      entered:  { transform: 'translateX(0%)' },
+      exiting:  { transform: 'translateX(100%)' },
+      exited:  { transform: 'translateX(100%)' },
+    }
 
     return (
-      <div className={s(`${className} card-side-dock-container`)}>
-        <div className={s("card-side-dock-overlay")} onClick={this.closeSideDock} />
-        <div className={s("card-side-dock overflow-auto")}>
-          { this.renderHeader() }
-          { this.renderOwners() }
-          { this.renderAttachments() }
-          { this.renderTags() }
-          { this.renderKeywords() }
-          { this.renderAdvanced() }
-          { this.renderFooter() }
-        </div>
+      <div className={s("card-side-dock-container")}>
+        { this.renderOverlay() }
+        <Transition
+          in={isVisible}
+          timeout={SIDE_DOCK_TRANSITION_MS}
+          mountOnEnter
+          unmountOnExit
+        >
+          {state => (
+            <div className={s("card-side-dock overflow-auto")} style={{ ...baseStyle, ...transitionStyles[state] }}>
+              { this.renderHeader() }
+              { this.renderOwners() }
+              { this.renderAttachments() }
+              { this.renderTags() }
+              { this.renderKeywords() }
+              { this.renderAdvanced() }
+              { this.renderFooter() }
+            </div>
+          )}
+        </Transition>
       </div>
     );
   }
