@@ -20,22 +20,16 @@ import Dropzone from '../../common/Dropzone';
 import CardSideDock from '../CardSideDock';
 import CardCreateModal from '../CardCreateModal';
 
+import {
+  CARD_STATUS_OPTIONS,
+  TABS_HEIGHT,
+  MIN_ANSWER_HEIGHT, MIN_QUESTION_HEIGHT,
+  DESCRIPTION_EDITOR_TYPE, ANSWER_EDITOR_TYPE, THREAD_MODAL, THREAD_MODAL_EDIT
+} from '../../../utils/constants';
+
 import style from './card-content.css';
 import { getStyleApplicationFn } from '../../../utils/styleHelpers';
 const s = getStyleApplicationFn(style);
-
-import { CARD_STATUS_OPTIONS } from '../../../utils/constants';
-
-const TABS_HEIGHT = 51;
-const MIN_ANSWER_HEIGHT = 180;
-const MIN_QUESTION_HEIGHT = 180;
-
-const DESCRIPTION_EDITOR_TYPE = 'DESCRIPTION';
-const ANSWER_EDITOR_TYPE = 'ANSWER';
-
-const THREAD_MODAL = 'THREAD_MODAL';
-const THREAD_MODAL_EDIT = 'THREAD_MODAL_EDIT';
-
 
 const PLACEHOLDER_MESSAGES = [
 	{
@@ -60,7 +54,7 @@ const PLACEHOLDER_MESSAGES = [
 
 @connect(
   state => ({
-
+    ...state.cards.activeCard,
   }),
   dispatch => bindActionCreators({
     editCard,
@@ -89,7 +83,6 @@ class CardContent extends Component {
   
     this.state = {
     	footerHeight: 0,
-    	selectedMessages: PLACEHOLDER_MESSAGES.map(msg => msg.selected),
     };
   }
 
@@ -103,50 +96,46 @@ class CardContent extends Component {
   	}
   }
 
-  componentWillUnmount() {
-  }
-
   enableDescriptionEditor = () => {
-    this.props.disableEditor(this.props.id, ANSWER_EDITOR_TYPE);
-    this.props.enableEditor(this.props.id, DESCRIPTION_EDITOR_TYPE);
-    this.props.adjustDescriptionSectionHeight(this.props.id, this.getMaxDescriptionHeight());
+    this.props.disableEditor(ANSWER_EDITOR_TYPE);
+    this.props.enableEditor(DESCRIPTION_EDITOR_TYPE);
+    this.props.adjustDescriptionSectionHeight(this.getMaxDescriptionHeight());
   }
 
   disableDescriptionEditor = () => {
-    this.props.disableEditor(this.props.id, DESCRIPTION_EDITOR_TYPE);
+    this.props.disableEditor(DESCRIPTION_EDITOR_TYPE);
   }
 
   enableAnswerEditor = () => {
     this.disableDescriptionEditor();
-    this.props.enableEditor(this.props.id, ANSWER_EDITOR_TYPE);
-    this.props.adjustDescriptionSectionHeight(this.props.id, MIN_QUESTION_HEIGHT);
+    this.props.enableEditor(ANSWER_EDITOR_TYPE);
+    this.props.adjustDescriptionSectionHeight(MIN_QUESTION_HEIGHT);
   }
 
   disableAnswerEditor = () => {
-    this.setState({ answerEditorEnabled: false });
-    this.props.disableEditor(this.props.id, ANSWER_EDITOR_TYPE);
+    this.props.disableEditor(ANSWER_EDITOR_TYPE);
   }
 
-  editCard = (id) => {
-    this.props.editCard(id);
+  editCard = () => {
+    this.props.editCard();
     this.enableAnswerEditor();
   }
 
-  saveCard = (id) => {
-    this.props.disableEditor(this.props.id, DESCRIPTION_EDITOR_TYPE);
-    this.props.saveCard(id);
+  saveCard = () => {
+    this.props.disableEditor(DESCRIPTION_EDITOR_TYPE);
+    this.props.saveCard();
   }
 
-  saveMessages = (id) => {
-    this.props.saveMessages(id);
+  saveMessages = () => {
+    this.props.saveMessages();
   }
 
   onAnswerEditorStateChange = (editorState) => {
-    this.props.changeAnswerEditor(this.props.id, editorState);
+    this.props.changeAnswerEditor(editorState);
   }
 
   onDescriptionEditorStateChange = (editorState) => {
-    this.props.changeDescriptionEditor(this.props.id, editorState);
+    this.props.changeDescriptionEditor(editorState);
   }
 
   getMaxDescriptionHeight = () => {
@@ -154,7 +143,7 @@ class CardContent extends Component {
   }
 
   toggleSelectedMessage = (i) => {
-  	this.props.toggleSelectedMessage(this.props.id, i);
+  	this.props.toggleSelectedMessage(i);
   }
 
   changeQuestionValue = (event) => {
@@ -163,17 +152,16 @@ class CardContent extends Component {
 
   renderHeader = () => {
   	const { id, isEditing, tags, sideDockOpen, openCardSideDock, closeCardSideDock, descriptionEditorEnabled, descriptionSectionHeight, cardWidth } = this.props;
-    const { isSideDockVisible } = this.state;
     
   	return (
   		<Resizable
             className={s("bg-purple-light py-sm px-2xl min-h-0 flex-shrink-0 flex flex-col")}
             defaultSize={{ height: MIN_QUESTION_HEIGHT }}
             minHeight={ MIN_QUESTION_HEIGHT }
-            maxHeight={ this.getMaxDescriptionHeight() }
+            maxHeight={ this.getMaxDescriptionHeight()}
             size={{ height: descriptionSectionHeight }}
             onResizeStop={(e, direction, ref, d) => {
-            	this.props.adjustDescriptionSectionHeight(id, descriptionSectionHeight + d.height);
+            	this.props.adjustDescriptionSectionHeight(descriptionSectionHeight + d.height);
             }}
             enable={{ top:false, right:false, bottom:true, left:false, topRight:false, bottomRight:true, bottomLeft:false, topLeft:false }}
         >
@@ -181,10 +169,10 @@ class CardContent extends Component {
             <div>2 Days Ago</div>
             <div className={s("flex items-center")}>
             	{ this.props.cardStatus !== CARD_STATUS_OPTIONS.NOT_DOCUMENTED &&
-		            <button onClick={() => openCardSideDock(id)}>
-	                	<MdMoreHoriz />
-	              	</button>
-              	}
+		            <button onClick={openCardSideDock}>
+                	<MdMoreHoriz />
+              	</button>
+            	}
             </div>
           </strong>
           {isEditing ?
@@ -224,7 +212,7 @@ class CardContent extends Component {
 	        		}
 	        		<div className={s("flex justify-between")}>
                 <div className={s("flex items-center")}>
-  		        		<div className={s("flex text-purple-reg text-sm cursor-pointer underline-border border-purple-gray-20 items-center")} onClick={() => openCardSideDock(id)}> 
+  		        		<div className={s("flex text-purple-reg text-sm cursor-pointer underline-border border-purple-gray-20 items-center")} onClick={openCardSideDock}> 
   		        			<MdAttachment className={s("mr-sm")} />
   		        			<div >3 Attachments</div>
   		        		</div>
@@ -249,7 +237,7 @@ class CardContent extends Component {
 	            <div className={s("flex items-center justify-between")}>
 	              <CardTags
                   tags={tags}
-                  onTagClick={() => openCardSideDock(id)}
+                  onTagClick={openCardSideDock}
                   maxWidth={cardWidth * 0.5}
                 />  
 	              <div className={s("flex flex-shrink-0 z-10 bg-purple-light ml-sm")}>
@@ -259,7 +247,7 @@ class CardContent extends Component {
               	  	icon={<MdAttachment className={s("ml-xs")} />}
               	  	color={"secondary"}
               	  	className={s("py-sm px-reg rounded-full")}
-                    onClick={() => openCardSideDock(id)}
+                    onClick={openCardSideDock}
               	  />
                   <div className={s("vertical-separator")} />
                   <CardStatus cardStatus={this.props.cardStatus} />
@@ -275,7 +263,7 @@ class CardContent extends Component {
   	return (
   		<Modal 
     		isOpen={isEditing ? showThreadEditModal : showThreadModal} 
-    		onRequestClose={isEditing ? () => {closeModal(id, THREAD_MODAL_EDIT)} : () => {closeModal(id, THREAD_MODAL)}}
+    		onRequestClose={() => closeModal(isEditing ? THREAD_MODAL_EDIT : THREAD_MODAL)}
     		headerClassName={s("bg-purple-light rounded-lg")}
     		bodyClassName={s("overflow-none flex flex-col rounded-b-lg")}
     		className={s("bg-purple-light")}
@@ -285,7 +273,7 @@ class CardContent extends Component {
       			{this.renderMessageList()}
 	      		{ isEditing &&
 	      			<Button
-	      				onClick={() => this.saveMessages(id)}
+	      				onClick={() => this.saveMessages()}
 			        	color={"primary"}
 			        	text={"Save"}
 			        	className={s("rounded-t-none")}
@@ -358,7 +346,7 @@ class CardContent extends Component {
 		        		color={"transparent"}
 		        		className={s("flex justify-between shadow-none")}
 		        		icon={ <FaSlack /> } 
-		        		onClick={() => this.props.openModal(this.props.id, THREAD_MODAL_EDIT)}
+		        		onClick={() => this.props.openModal(THREAD_MODAL_EDIT)}
 		        		iconLeft={false}
 		        		underline
 		        	/>
@@ -380,7 +368,7 @@ class CardContent extends Component {
 	        { !isEditing && 
 	        	<Button
 	        		text={"Thread"}
-	        		onClick={() => this.props.openModal(this.props.id, THREAD_MODAL)}
+	        		onClick={() => this.props.openModal(THREAD_MODAL)}
 	        		className={s("view-thread-button p-sm absolute text-xs mb-lg mr-2xl")}
 	        		color={"secondary"}
 	        		imgSrc={SlackIcon}
@@ -469,7 +457,6 @@ class CardContent extends Component {
 
   render() {
     const { id, isEditing, tags, sideDockOpen, createModalOpen, openCardSideDock, closeCardSideDock, closeCardCreateModal } = this.props;
-    const { isSideDockVisible } = this.state;
 
     return (
       <div className={s("flex-grow flex flex-col min-h-0 relative")}>
@@ -481,12 +468,12 @@ class CardContent extends Component {
         { this.renderFooter() }
         <CardSideDock
           isVisible={sideDockOpen}
-          onClose={() => closeCardSideDock(id)}
+          onClose={closeCardSideDock}
         />
         <CardCreateModal
           cardId={this.props.id}
           isOpen={createModalOpen}
-          onRequestClose={() => closeCardCreateModal(id)}
+          onRequestClose={closeCardCreateModal}
           question="How do I delete this?"
         />
       </div>

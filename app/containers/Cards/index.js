@@ -15,12 +15,9 @@ import Tab from '../../components/common/Tabs/Tab';
 
 import { colors } from '../../styles/colors';
 import style from './cards.css';
-import { DEBOUNCE_60_HZ } from '../../utils/constants';
+import { DEBOUNCE_60_HZ, TABS_HEIGHT, DEFAULT_CARDS_WIDTH, DEFAULT_CARDS_HEIGHT } from '../../utils/constants';
 import { getStyleApplicationFn } from '../../utils/styleHelpers';
 const s = getStyleApplicationFn(style);
-
-const defaultCardHeight = 500;
-const defaultCardWidth = 660;
 
 @connect(
   state => ({
@@ -55,7 +52,7 @@ export default class Cards extends Component {
     const { adjustCardsDimensions, closeAllCards } = this.props;
 
     closeAllCards();
-    adjustCardsDimensions(defaultCardWidth, defaultCardHeight);
+    adjustCardsDimensions(DEFAULT_CARDS_WIDTH, DEFAULT_CARDS_HEIGHT);
   }
 
   renderTabHeaderButtons = () => {
@@ -79,7 +76,11 @@ export default class Cards extends Component {
     const { cards, activeCardIndex, setActiveCardIndex, closeAllCards } = this.props;
 
     return (
-      <div id="card-tab-container" className={s("flex flex-shrink-0 min-h-0 items-center bg-white rounded-t-lg px-reg pt-reg")}>
+      <div
+        id="card-tab-container"
+        className={s("card-tab-container")}
+        style={{ height: TABS_HEIGHT }}
+      >
         <Tabs
           activeValue={activeCardIndex}
           className={s("flex-1")}
@@ -132,13 +133,12 @@ export default class Cards extends Component {
             size={{ width: cardsWidth, height: cardsHeight }}
             onResize={_.debounce(this.onResize, DEBOUNCE_60_HZ)}
             onResizeStop={this.onResize}
-            minWidth={defaultCardWidth}
-            minHeight={defaultCardHeight}
+            minWidth={DEFAULT_CARDS_WIDTH}
+            minHeight={DEFAULT_CARDS_HEIGHT}
             enable={{ top: false, right: true, bottom: true, left: false, topRight: false, bottomRight: true, bottomLeft: false, topLeft: false }}
           >
             { this.renderTabHeader() }
             <CardContent
-              {...cards[activeCardIndex]}
               cardWidth={cardsWidth}
               cardHeight={cardsHeight}
               tags={['Customer Onboarding', 'Sales', 'Customers', 'Management', 'Onboarding', 'Test', 'a lot of tags', 'how many tags you got']}

@@ -59,13 +59,10 @@ export default class Create extends Component {
 	}
 
 	openCard = (openCreateModal=false) => {
-    // eslint-disable-next-line no-tabs,no-mixed-spaces-and-tabs,react/prop-types
     // Open card with random ID
-    this.props.openCard({id: Math.floor(Math.random() * Math.floor(10000)),
-    										 fromCreate: true,
-    										 createModalOpen: openCreateModal,
-    										});
-    //Clear out the Create panel
+    this.props.openCard({ fromCreate: true, createModalOpen: openCreateModal });
+
+    // Clear out the Create panel
     this.props.clearCreatePanel();
   	
   }

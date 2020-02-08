@@ -10,16 +10,19 @@ const Tab = (props) => {
   const {
 		isActive, label, value,
 		onTabClick,
-		rippleClassName, tabContainerClassName, tabClassName, activeTabClassName, inactiveTabClassName,
+		rippleClassName, tabContainerClassName, tabClassName, activeTabClassName, inactiveTabClassName, style,
 		color, indicatorColor, showIndicator,
 		showRipple,
 		children,
 		...rest
 	} = props;
 
-  const activeTabStyle = {
-    borderBottom: (color || indicatorColor) ? `2px solid ${indicatorColor || color}` : null,
-  };
+  let activeTabStyle = {};
+  if (isActive && showIndicator) {
+    activeTabStyle = {
+      borderBottom: (color || indicatorColor) ? `2px solid ${indicatorColor || color}` : null,
+    };    
+  }
 
   const renderButton = () => (
     <div
@@ -38,7 +41,7 @@ const Tab = (props) => {
 	);
 
   return (
-    <div className={s(tabContainerClassName)} style={(isActive && showIndicator) ? activeTabStyle : null} {...rest}>
+    <div className={s(tabContainerClassName)} style={{ ...style, ...activeTabStyle }} {...rest}>
       { showRipple ?
         <Ripples className={s(`rounded h-full ${rippleClassName}`)}> {renderButton()} </Ripples> :
 				renderButton()
@@ -57,6 +60,7 @@ Tab.propTypes = {
   tabClassName: PropTypes.string,
   activeTabClassName: PropTypes.string,
   inactiveTabClassName: PropTypes.string,
+  style: PropTypes.object,
   color: PropTypes.string,
   indicatorColor: PropTypes.string,
   showIndicator: PropTypes.bool,
@@ -69,6 +73,7 @@ Tab.defaultProps = {
   tabClassName: '',
   activeTabClassName: '',
   inactiveTabClassName: '',
+  style: {},
 };
 
 export default Tab;

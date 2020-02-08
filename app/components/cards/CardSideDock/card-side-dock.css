@@ -4,7 +4,6 @@
 
 .card-side-dock-overlay {
 	@apply bg-gray-overlay pointer-events-auto w-full h-full;
-    transition: all 0.3s;
     opacity: 0;
     visibility: hidden;
 }
