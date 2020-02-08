@@ -20,7 +20,7 @@ class SuggestionCard extends Component {
   }
 
   render() {
-    const { heading, headingDescription, description, datePosted, isUpToDate } = this.props;
+    const { heading, headingDescription, description, datePosted, cardStatus } = this.props;
     return (
       <div className={s("mx-sm mb-sm rounded-xl p-lg bg-white")} >
         <div className={s("flex flex-col")}>
@@ -37,7 +37,7 @@ class SuggestionCard extends Component {
             <span className={s("block text-center text-xs text-gray-light")}>
               {datePosted}
             </span>
-            <CardStatus isUpToDate={isUpToDate} />
+            <CardStatus cardStatus={cardStatus} />
           </div>
         </div>
       </div>
@@ -49,7 +49,7 @@ SuggestionCard.propTypes = {
   heading: PropTypes.string.isRequired,
   description: PropTypes.string.isRequired,
   datePosted: PropTypes.string.isRequired,
-  isUpToDate: PropTypes.bool.isRequired,
+  cardStatus: PropTypes.string.isRequired,
 }
 
 export default SuggestionCard;

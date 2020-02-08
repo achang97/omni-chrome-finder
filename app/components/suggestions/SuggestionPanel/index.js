@@ -10,6 +10,7 @@ import Button from '../../common/Button';
 import Triangle from '../../common/Triangle';
 
 import { colors } from '../../../styles/colors';
+import { CARD_STATUS_OPTIONS } from '../../../utils/constants';
 
 import style from './suggestion-panel.css';
 import { getStyleApplicationFn } from '../../../utils/styleHelpers';
@@ -22,7 +23,7 @@ const PLACEHOLDER_CARDS = [
     description:
       "But stream software offline. Professor install angel sector anywhere create at components smart But stream software offline. Professor install angel sector anywhere create at components smart But stream software offline. Professor install angel sector anywhere create at components smart ",
     datePosted: "2 days ago",
-    upToDate: true
+    cardStatus: CARD_STATUS_OPTIONS.UP_TO_DATE,
   },
   {
     heading: "How do I delete a user?",
@@ -31,7 +32,7 @@ const PLACEHOLDER_CARDS = [
       "But stream software offline. Professor install angel sector anywhere create at components smart…",
 
     datePosted: "2 days ago",
-    upToDate: false
+    cardStatus: CARD_STATUS_OPTIONS.NEEDS_VERIFICATION,
   },
   {
     heading: "How do I delete a user?",
@@ -40,7 +41,7 @@ const PLACEHOLDER_CARDS = [
       "But stream software offline. Professor install angel sector anywhere create at components smart…",
 
     datePosted: "2 days ago",
-    upToDate: false
+    cardStatus: CARD_STATUS_OPTIONS.UP_TO_DATE,
   },
   {
     heading: "How do I delete a user?",
@@ -48,7 +49,7 @@ const PLACEHOLDER_CARDS = [
       "But stream software offline. Professor install angel sector anywhere create at components smart…",
 
     datePosted: "2 days ago",
-    upToDate: true
+    cardStatus: CARD_STATUS_OPTIONS.OUT_OF_DATE,
   },
   {
     heading: "How do I delete a user?",
@@ -56,7 +57,7 @@ const PLACEHOLDER_CARDS = [
       "But stream software offline. Professor install angel sector anywhere create at components smart…",
 
     datePosted: "2 days ago",
-    upToDate: true
+    cardStatus: CARD_STATUS_OPTIONS.UP_TO_DATE,
   },
   {
     heading: "How do I delete a user?",
@@ -64,7 +65,7 @@ const PLACEHOLDER_CARDS = [
       "But stream software offline. Professor install angel sector anywhere create at components smart…",
 
     datePosted: "2 days ago",
-    upToDate: true
+    cardStatus: CARD_STATUS_OPTIONS.UP_TO_DATE,
   }
 ];
 
@@ -156,7 +157,7 @@ class SuggestionPanel extends Component {
                 headingDescription={card.headingDescription}
                 description={card.description}
                 datePosted={card.datePosted}
-                isUpToDate={card.upToDate}
+                cardStatus={card.cardStatus}
               />
             )}
             renderOverflowElement={(card) => (

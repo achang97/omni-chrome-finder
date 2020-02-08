@@ -20,5 +20,8 @@ exports.colors = {
   green: {
     xlight: '#E3F2EB',
     reg: '#20B56A'
+  },
+  yellow: {
+    reg: '#FFDC1E80'
   }
 };

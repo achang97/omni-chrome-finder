@@ -7,7 +7,7 @@ import { FaSlack } from "react-icons/fa";
 import { bindActionCreators } from 'redux';
 import { EditorState } from 'draft-js';
 import { connect } from 'react-redux';
-import { editCard, saveCard, openCardSideDock, closeCardSideDock, openCardCreateModal, closeCardCreateModal, changeAnswerEditor, changeDescriptionEditor, enableEditor, disableEditor, adjustDescriptionSectionHeight, openModal, closeModal, toggleSelectedMessage, saveMessages, changeQuestion} from '../../../actions/cards';
+import { editCard, saveCard, openCardSideDock, closeCardSideDock, openCardCreateModal, closeCardCreateModal, changeAnswerEditor, changeDescriptionEditor, enableEditor, disableEditor, adjustDescriptionSectionHeight, openModal, closeModal, toggleSelectedMessage, saveMessages, changeQuestion, changeCardStatus} from '../../../actions/cards';
 import TextEditor from '../../editors/TextEditor';
 import Button from '../../common/Button';
 import Modal from '../../common/Modal';
@@ -79,6 +79,7 @@ const PLACEHOLDER_MESSAGES = [
     closeModal,
     toggleSelectedMessage,
     changeQuestion,
+    changeCardStatus,
   }, dispatch)
 )
 
@@ -259,7 +260,7 @@ class CardContent extends Component {
                     onClick={() => openCardSideDock(id)}
               	  />
                   <div className={s("vertical-separator")} />
-                  <CardStatus isUpToDate={true} />
+                  <CardStatus cardStatus={this.props.cardStatus} />
 	              </div>
 	            </div>
 			}
@@ -415,12 +416,36 @@ class CardContent extends Component {
 	  				/>
 	        :
 	        <div className={s("flex items-center justify-between bg-purple-light rounded-b-lg p-lg")}>     
-	          <Button 
-	          	text={"Edit Card"} 
-              color="primary"
-	          	icon={<MdModeEdit className={s("mr-sm")} />} 
-	          	onClick={() => this.editCard(id)}
-	          />
+	          <div className={s("flex")}>
+		          <Button 
+		          	text={"Edit Card"} 
+	              	color="primary"
+		          	icon={<MdModeEdit className={s("mr-sm")} />} 
+		          	onClick={() => this.editCard(id)}
+		          />
+		          {
+		          	this.props.cardStatus === CARD_STATUS_OPTIONS.OUT_OF_DATE &&
+		          		<Button 
+				          	text={"Mark as Up-to-Date"} 
+			              	color="secondary"
+			              	className={s("ml-reg text-green-reg")}
+			              	underline={false}
+				          	icon={<MdCheck className={s("mr-sm")} />} 
+				          	onClick={() => this.props.changeCardStatus(id, CARD_STATUS_OPTIONS.UP_TO_DATE)}
+				          />
+		      		}
+		      		{
+		          	this.props.cardStatus === CARD_STATUS_OPTIONS.NEEDS_VERIFICATION &&
+		          		<Button 
+				          	text={"Mark as Verified"} 
+			              	color="secondary"
+			              	className={s("ml-reg text-green-reg")}
+			              	underline={false}
+				          	icon={<MdCheck className={s("mr-sm")} />} 
+				          	onClick={() => this.props.changeStatus(id, CARD_STATUS_OPTIONS.UP_TO_DATE)}
+				          />
+		      		}
+	          </div>
 	          <div className={s("flex")}>
 		          <Button 
 		          	text={"Helpful"} 
