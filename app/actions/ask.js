@@ -24,7 +24,7 @@ export function removeAskRecipient(index) {
   return { type: types.REMOVE_ASK_RECIPIENT, payload: { index } };
 }
 
-export function updateAskRecipient(index, newInfo ) {
+export function updateAskRecipient(index, newInfo) {
   return { type: types.UPDATE_ASK_RECIPIENT, payload: { index, newInfo } };
 }
 

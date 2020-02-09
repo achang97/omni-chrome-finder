@@ -2,7 +2,7 @@ import * as types from '../actions/actionTypes';
 import _ from 'underscore';
 import { EditorState } from 'draft-js';
 import { removeIndex, updateIndex } from '../utils/arrayHelpers';
-import { CARD_STATUS_OPTIONS, DESCRIPTION_EDITOR_TYPE, ANSWER_EDITOR_TYPE, MIN_QUESTION_HEIGHT, DEFAULT_CARDS_WIDTH, DEFAULT_CARDS_HEIGHT, THREAD_MODAL, THREAD_MODAL_EDIT } from '../utils/constants';
+import { CARD_STATUS_OPTIONS, EDITOR_TYPE, CARD_DIMENSIONS, MODAL_TYPE } from '../utils/constants';
 
 const PLACEHOLDER_MESSAGES = [
   {
@@ -27,22 +27,30 @@ const PLACEHOLDER_MESSAGES = [
 
 const initialState = {
   cards: [],
-  cardsWidth: DEFAULT_CARDS_WIDTH,
-  cardsHeight: DEFAULT_CARDS_HEIGHT,
+  cardsWidth: CARD_DIMENSIONS.DEFAULT_CARDS_WIDTH,
+  cardsHeight: CARD_DIMENSIONS.DEFAULT_CARDS_HEIGHT,
   activeCardIndex: -1,
   activeCard: {},
-
-  createQuestion: '',
-  createDescriptionEditorState: EditorState.createEmpty(),
-  createAnswerEditorState: EditorState.createEmpty(),
 };
-
 
 export default function cards(state = initialState, action) {
   const { type, payload = {} } = action;
 
-  const updateActiveCard = (newInfo) => {
-    return { ...state, activeCard: { ...state.activeCard, ...newInfo } };
+  const updateActiveCard = (newInfo, newEditsInfo={}) => {
+    return { ...state, activeCard: { ...state.activeCard, ...newInfo, edits: { ...state.activeCard.edits, ...newEditsInfo } } };
+  }
+
+  const updateActiveCardEdits = (newEditsInfo) => {
+    return updateActiveCard({}, newEditsInfo);
+  }
+
+  const createActiveCardEdits = (card) => {
+    const { owners, attachments, tags, keywords, permissions, verificationInterval, question, answerEditorState, descriptionEditorState, messages } = card;
+    return {
+      ...card,
+      isEditing: true,
+      edits: { owners, attachments, tags, keywords, permissions, verificationInterval, question, answerEditorState, descriptionEditorState, messages }
+    };
   }
 
   const getUpdatedCards = () => {
@@ -51,61 +59,57 @@ export default function cards(state = initialState, action) {
   }
 
   switch (type) {
+    case types.ADJUST_CARDS_DIMENSIONS: {
+      const { newWidth, newHeight } = payload;
+      return { ...state, cardsWidth: newWidth, cardsHeight: newHeight };
+    }
+
     case types.OPEN_CARD: {
-      const { id, createModalOpen=false, descriptionEditorState, answerEditorState, fromCreate=false } = payload;
-      const { cards, activeCardIndex, createDescriptionEditorState, createAnswerEditorState } = state;
-
-      let descriptionEditorStateSaved = (fromCreate ? createDescriptionEditorState : descriptionEditorState) || EditorState.createEmpty();
-      let answerEditorStateSaved = (fromCreate ? createAnswerEditorState : answerEditorState) || EditorState.createEmpty();
-
-      const questionSaved = '';
-      // If Open Card is being called from Create, set properties to editing
-
-      var isEditing = false;
-      var answerEditorEnabled = false;
-      var cardStatus = CARD_STATUS_OPTIONS.UP_TO_DATE;
-      var question = questionSaved;
-
-      if (fromCreate) {
-        isEditing = true;
-        answerEditorEnabled = true;
-        descriptionEditorStateSaved = state.createDescriptionEditorState;
-        answerEditorStateSaved = state.createAnswerEditorState;
-        cardStatus = CARD_STATUS_OPTIONS.NOT_DOCUMENTED;
-        question = state.createQuestion;
-      }
+      const { card, isNewCard, createModalOpen } = payload;
+      const { cards, activeCardIndex } = state;
 
       // Check if card is already open
-      if (!fromCreate && cards.find(({ id: currId }) => currId === id)) {
+      if (!isNewCard && cards.find(({ id: currId }) => currId === card.id)) {
         return state;
       }
 
-      const newCard = {
-        id: fromCreate ? `new-card-${cards.length}` : id, // assign temp ID
-        isEditing: isEditing, 
+      let cardInfo = {
+        isEditing: false, 
         sideDockOpen: false, 
-        createModalOpen: false, 
-        question: question,
-        questionSaved: questionSaved,
-        descriptionEditorStateSaved: descriptionEditorStateSaved,
-        answerEditorStateSaved: answerEditorStateSaved, 
-        descriptionEditorState: descriptionEditorStateSaved, 
-        answerEditorState: answerEditorStateSaved,
-        descriptionEditorEnabled: false,
-        answerEditorEnabled: answerEditorEnabled,
-        descriptionSectionHeight: MIN_QUESTION_HEIGHT,
-        showThreadModal: false,
-        showThreadEditModal: false,
-        selectedMessages: PLACEHOLDER_MESSAGES.map(msg => msg.selected),
-        selectedMessagesSaved: PLACEHOLDER_MESSAGES.map(msg => msg.selected),
-        cardStatus: cardStatus,
+        modalOpen: { [MODAL_TYPE.CREATE]: false, [MODAL_TYPE.THREAD]: false },
+        editorEnabled: { [EDITOR_TYPE.DESCRIPTION]: false, [EDITOR_TYPE.ANSWER]: false },
+        descriptionSectionHeight: CARD_DIMENSIONS.MIN_QUESTION_HEIGHT,
+        edits: {},
+        ...card,
       };
 
+      if (isNewCard) {
+        cardInfo = createActiveCardEdits({
+          ...cardInfo,
+          id: `new-card-${Math.floor(Math.random() * 10001)}`,
+          cardStatus: CARD_STATUS_OPTIONS.NOT_DOCUMENTED,
+          modalOpen: { ...cardInfo.modalOpen, [MODAL_TYPE.CREATE]: createModalOpen },
+          editorEnabled: { ...cardInfo.editorEnabled, [EDITOR_TYPE.ANSWER]: true },
+          messages: PLACEHOLDER_MESSAGES, // [],
+          owners: [],
+          attachments: [],
+          tags: [],
+          keywords: [],
+          verificationInterval: null,
+          permissions: null,
+        });
+      } else {
+        // Will have to update this section in the future
+        cardInfo = {
+          ...cardInfo,
+          messages: PLACEHOLDER_MESSAGES,
+        }
+      }
+
       let newCards = activeCardIndex === -1 ? [] : getUpdatedCards();
-      newCards = [...newCards, newCard];
+      newCards = [...newCards, cardInfo];
 
-      return { ...state, cards: newCards, activeCard: newCard, activeCardIndex: newCards.length - 1 };
-
+      return { ...state, cards: newCards, activeCard: cardInfo, activeCardIndex: newCards.length - 1 };
     }
     case types.SET_ACTIVE_CARD_INDEX: {
       const { index } = payload;
@@ -121,18 +125,16 @@ export default function cards(state = initialState, action) {
       const { index } = payload;
       const newCards = removeIndex(state.cards, index);
 
-      let activeCardIndex = state.activeCardIndex;
       if (newCards.length === 0) {
-        activeCardIndex = -1;
-      } else if (activeCardIndex >= newCards.length) {
+        return initialState;
+      }
+
+      let activeCardIndex = state.activeCardIndex;
+      if (activeCardIndex >= newCards.length) {
         activeCardIndex = newCards.length - 1;
       }
 
-      return { ...state, cards: newCards, activeCardIndex };
-    }
-    case types.ADJUST_CARDS_DIMENSIONS: {
-      const { newWidth, newHeight } = payload;
-      return { ...state, cardsWidth: newWidth, cardsHeight: newHeight };
+      return { ...state, cards: newCards, activeCardIndex, activeCard: newCards[activeCardIndex] };
     }
 
     case types.OPEN_CARD_SIDE_DOCK: {
@@ -142,114 +144,81 @@ export default function cards(state = initialState, action) {
       return updateActiveCard({ sideDockOpen: false });
     }
 
-    case types.OPEN_CARD_CREATE_MODAL: {
-      return updateActiveCard({ createModalOpen: true });
-    }
-    case types.CLOSE_CARD_CREATE_MODAL: {
-      return updateActiveCard({ createModalOpen: false });
-    }
-
-    case types.CHANGE_QUESTION: {
-      const { id, newValue } = payload;
-      const newCards = getNewCards(id, { question: newValue }, state.cards);
-      return {...state, cards: newCards };
-    }
-    case types.CHANGE_ANSWER_EDITOR: {
-      const { editorState } = payload;
-      return updateActiveCard({ answerEditorState: editorState });
-    }
-    case types.CHANGE_DESCRIPTION_EDITOR: {
-      const { editorState } = payload;
-      return updateActiveCard({ descriptionEditorState: editorState });
-    }
-
-    // Create Editors
-    case types.CHANGE_CREATE_QUESTION: {
-      const { newValue } = payload;
-      return { ...state, createQuestion: newValue };
-    }
-    case types.CHANGE_CREATE_ANSWER_EDITOR: {
-      const { editorState } = payload;
-      return { ...state, createAnswerEditorState: editorState };
-    }
-    case types.CHANGE_CREATE_DESCRIPTION_EDITOR: {
-      const { editorState } = payload;
-      return { ...state, createDescriptionEditorState: editorState };
-    }
-    case types.CLEAR_CREATE_PANEL: {
-      return { ...state, createQuestion: '', createAnswerEditorState: EditorState.createEmpty(), createDescriptionEditorState: EditorState.createEmpty() };
-    }
-
-
-
-
-
-    case types.EDIT_CARD: {
-      return updateActiveCard({ isEditing: true });
-    }
-    case types.SAVE_CARD: {
-      // Edits will likely be made to this case when connecting to the backend.
+    case types.ENABLE_CARD_EDITOR: {
+      const { editorType } = payload;
       const { activeCard } = state;
-      const newCardState = updateActiveCard({ isEditing: false, descriptionEditorStateSaved: activeCard.descriptionEditorState, answerEditorStateSaved: activeCard.answerEditorState });
-      return { ...newCardState, cards: getUpdatedCards() };
+      return updateActiveCard({ editorEnabled: { ...activeCard.editorEnabled, [editorType]: true } });
+    }
+    case types.DISABLE_CARD_EDITOR: {
+      const { editorType } = payload;
+      const { activeCard } = state;
+      return updateActiveCard({ editorEnabled: { ...activeCard.editorEnabled, [editorType]: false } });
     }
 
-    case types.ENABLE_EDITOR: {
-      const { editorType } = payload;
-      const newInfo = editorType === DESCRIPTION_EDITOR_TYPE ? { descriptionEditorEnabled: true } : { answerEditorEnabled: true };
-      return updateActiveCard(newInfo);
+    case types.OPEN_CARD_MODAL: {
+      const { modalType } = payload;
+      const { activeCard } = state; 
+      return updateActiveCard({ modalOpen: { ...activeCard.modalOpen, [modalType]: true } });
     }
-    case types.DISABLE_EDITOR: {
-      const { editorType } = payload;
-      const newInfo = editorType === DESCRIPTION_EDITOR_TYPE ? { descriptionEditorEnabled: false } : { answerEditorEnabled: false };
+    case types.CLOSE_CARD_MODAL: {
+      const { modalType} = payload;
+      const { activeCard } = state;
+      const newInfo = { modalOpen: { ...activeCard.modalOpen, [modalType]: false } };
       return updateActiveCard(newInfo);
+    }      
+    case types.UPDATE_CARD_STATUS: {
+      const { cardStatus } = payload;
+      return updateActiveCard({ cardStatus });
     }
 
-    case types.ADJUST_DESCRIPTION_SECTION_HEIGHT: {
+    case types.ADJUST_CARD_DESCRIPTION_SECTION_HEIGHT: {
       const { newHeight } = payload;
       return updateActiveCard({ descriptionSectionHeight: newHeight });
     }
-    case types.TOGGLE_SELECTED_MESSAGE: {
+
+    case types.UPDATE_CARD_QUESTION: {
+      const { question } = payload;
+      return updateActiveCardEdits({ question });
+    }
+    case types.UPDATE_CARD_ANSWER_EDITOR: {
+      const { editorState } = payload;
+      return updateActiveCardEdits({ answerEditorState: editorState });
+    }
+    case types.UPDATE_CARD_DESCRIPTION_EDITOR: {
+      const { editorState } = payload;
+      return updateActiveCardEdits({ descriptionEditorState: editorState });
+    }
+
+    case types.TOGGLE_CARD_SELECTED_MESSAGE: {
       const { messageIndex } = payload;
       const { activeCard } = state;
       
-      const newSelectedMessages = activeCard.selectedMessages;
-      newSelectedMessages[messageIndex] = !newSelectedMessages[messageIndex];
-      
-      return updateActiveCard({ selectedMessages: newSelectedMessages });
+      const messages = activeCard.edits.messages;
+      const newMessages = updateIndex(messages, messageIndex, { ...messages[messageIndex], selected: !messages[messageIndex].selected });
+      return updateActiveCardEdits({ messages: newMessages });
+    }
+    case types.CANCEL_EDIT_CARD_MESSAGES: {
+      const { activeCard } = state;
+      return updateActiveCardEdits({ messages: activeCard.messages });
     }
 
-    case types.OPEN_MODAL: {
-      const { modalType} = payload;
-      const newInfo = modalType === THREAD_MODAL ? {showThreadModal: true} : {showThreadEditModal: true};
-      return updateActiveCard(newInfo);
-    }
-    case types.CLOSE_MODAL: {
-      const { modalType} = payload;
+    case types.EDIT_CARD: {
       const { activeCard } = state;
-      const newInfo = modalType === THREAD_MODAL ?
-        {showThreadModal: false} :
-        {selectedMessages: activeCard.selectedMessagesSaved, showThreadEditModal: false};
-      return updateActiveCard(newInfo);
-    }      
-    case types.CHANGE_CARD_STATUS: {
-      const { id, newStatus } = payload;
-      const newCards = getNewCards(id, { cardStatus: newStatus }, state.cards);
-      return { ...state, cards: newCards };
+      return { ...state, activeCard: createActiveCardEdits(activeCard) };
+    }
+    case types.CANCEL_EDIT_CARD: { 
+      const { activeCard } = state;
+      return updateActiveCard({ isEditing: false, edits: {} });
     }
     case types.SAVE_CARD: {
-      const { id } = payload;
-      const newCards = getNewCardsOnSave(id, state.cards);
-      return { ...state, cards: newCards };
-    }
-
-    case types.SAVE_MESSAGES: {
+      // Edits will be made to this case when connecting to the backend.
       const { activeCard } = state;
-      return updateActiveCard({ showThreadEditModal: false, selectedMessagesSaved: activeCard.selectedMessages });
+      const newCardState = updateActiveCard({ isEditing: false, ...activeCard.edits });
+      return { ...newCardState, cards: getUpdatedCards() };
     }
 
     case types.CLOSE_ALL_CARDS: {
-      return { ...state, cards: [], activeCardIndex: -1, activeCard: {} };
+      return initialState;
     }
 
     default:

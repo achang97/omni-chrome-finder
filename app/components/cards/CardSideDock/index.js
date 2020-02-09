@@ -2,6 +2,10 @@ import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import { Transition } from 'react-transition-group';
 
+import { bindActionCreators } from 'redux';
+import { connect } from 'react-redux';
+import { closeCardSideDock } from '../../../actions/cards';
+
 import { MdClose } from 'react-icons/md';
 import { FaRegTrashAlt } from 'react-icons/fa';
 
@@ -26,6 +30,15 @@ const SELECT_VERIFICATION_INTERVAL_OPTIONS = createSelectOptions(VERIFICATION_IN
 
 const SIDE_DOCK_TRANSITION_MS = 300;
 
+@connect(
+  state => ({
+    ...state.cards.activeCard,
+  }),
+  dispatch => bindActionCreators({
+    closeCardSideDock
+  }, dispatch)
+)
+
 class CardSideDock extends Component {
   constructor(props) {
     super(props);
@@ -38,8 +51,7 @@ class CardSideDock extends Component {
   }
 
   closeSideDock = () => {
-    const { onClose } = this.props;
-    onClose();
+    this.props.closeCardSideDock();
   }
 
   renderHeader = () => (
@@ -167,13 +179,13 @@ class CardSideDock extends Component {
   }
 
   renderOverlay = () => {
-    const { isVisible } = this.props;
+    const { sideDockOpen } = this.props;
 
     const baseStyle = getBaseAnimationStyle(SIDE_DOCK_TRANSITION_MS);
 
     return (
       <Transition
-        in={isVisible}
+        in={sideDockOpen}
         timeout={SIDE_DOCK_TRANSITION_MS}
         mountOnEnter
         unmountOnExit
@@ -186,7 +198,7 @@ class CardSideDock extends Component {
   }
 
   render() {
-    const { isVisible } = this.props;
+    const { sideDockOpen } = this.props;
     const { hasBeenToggled } = this.state;
 
     const baseStyle = getBaseAnimationStyle(SIDE_DOCK_TRANSITION_MS);
@@ -201,7 +213,7 @@ class CardSideDock extends Component {
       <div className={s("card-side-dock-container")}>
         { this.renderOverlay() }
         <Transition
-          in={isVisible}
+          in={sideDockOpen}
           timeout={SIDE_DOCK_TRANSITION_MS}
           mountOnEnter
           unmountOnExit
@@ -222,13 +234,5 @@ class CardSideDock extends Component {
     );
   }
 }
-
-CardSideDock.propTypes = {
-  isVisible: PropTypes.bool.isRequired,
-  onClose: PropTypes.func.isRequired,
-};
-
-CardSideDock.defaultProps = {
-};
 
 export default CardSideDock;

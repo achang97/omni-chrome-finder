@@ -1,6 +1,8 @@
 // Messages
-export const TOGGLE = 'TOGGLE';
-export const TAB_UPDATE = 'TAB_UPDATE';
+export const CHROME_MESSAGES = {
+	TOGGLE: 'TOGGLE',
+	TAB_UPDATE: 'TAB_UPDATE',
+}
 
 // Debounce / Animations
 export const DEBOUNCE_60_HZ = 166;
@@ -16,18 +18,23 @@ export const FADE_IN_TRANSITIONS = {
 export const ASK_INTEGRATIONS = ['Slack', 'Email', 'Asana'];
 
 // Card page constants
-export const MIN_QUESTION_HEIGHT = 180;
-export const TABS_HEIGHT = 51;
-export const MIN_ANSWER_HEIGHT = 180;
+export const CARD_DIMENSIONS = {
+	MIN_QUESTION_HEIGHT: 180,
+	TABS_HEIGHT: 51,
+	MIN_ANSWER_HEIGHT: 180,
+	DEFAULT_CARDS_WIDTH: 660,
+	DEFAULT_CARDS_HEIGHT: 500
+}
 
-export const DEFAULT_CARDS_WIDTH = 660;
-export const DEFAULT_CARDS_HEIGHT = 500;
+export const MODAL_TYPE = {
+	THREAD: 'THREAD',
+	CREATE: 'CREATE',
+}
 
-export const THREAD_MODAL = 'THREAD_MODAL';
-export const THREAD_MODAL_EDIT = 'THREAD_MODAL_EDIT';
-
-export const DESCRIPTION_EDITOR_TYPE = 'DESCRIPTION';
-export const ANSWER_EDITOR_TYPE = 'ANSWER';
+export const EDITOR_TYPE = {
+	DESCRIPTION: 'DESCRIPTION',
+	ANSWER: 'ANSWER',
+}
 
 export const CARD_STATUS_OPTIONS = {
 	NOT_DOCUMENTED: 'NOT_DOCUMENTED',

@@ -10,7 +10,7 @@ import style from './modal.css';
 import { getStyleApplicationFn } from '../../../utils/styleHelpers';
 const s = getStyleApplicationFn(style);
 
-const Modal = ({ isOpen, transitionMs, className, onRequestClose, headerClassName, overlayClassName, bodyClassName, title, children }) => {
+const Modal = ({ isOpen, transitionMs, shouldCloseOnOutsideClick, className, onRequestClose, headerClassName, overlayClassName, bodyClassName, title, children }) => {
 	const onOutsideClick = () => {
 		if (shouldCloseOnOutsideClick && onRequestClose) onRequestClose();
 	}

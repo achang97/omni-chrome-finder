@@ -7,9 +7,9 @@ import { MdAdd } from "react-icons/md";
 import { EditorState } from 'draft-js';
 import TextEditor from '../../components/editors/TextEditor';
 
-import { openCard, changeCreateDescriptionEditor, changeCreateAnswerEditor, changeCreateQuestion, clearCreatePanel} from '../../actions/cards';
+import { openCard } from '../../actions/cards';
+import * as createActions from '../../actions/create';
 import { showDescriptionEditor } from '../../actions/create';
-
 
 import style from "./create.css";
 import { getStyleApplicationFn } from '../../utils/styleHelpers';
@@ -17,20 +17,13 @@ const s = getStyleApplicationFn(style);
 
 @connect(
   state => ({
-  	createDescriptionEditorState: state.cards.createDescriptionEditorState,
-  	createAnswerEditorState: state.cards.createAnswerEditorState,
-  	createQuestion: state.cards.createQuestion,
-  	viewDescriptionEditor: state.create.showDescriptionEditor,
+  	...state.create,
   }),
   dispatch =>
     bindActionCreators(
       {
         openCard,
-        changeCreateDescriptionEditor,
-        changeCreateAnswerEditor,
-        changeCreateQuestion,
-        clearCreatePanel,
-        showDescriptionEditor
+        ...createActions,
       },
       dispatch
     )
@@ -38,41 +31,29 @@ const s = getStyleApplicationFn(style);
 
 export default class Create extends Component {
 	constructor(props) {
-	    super(props);
+    super(props);
+  }  
 
-	    this.state = {
-	    };
-	 }
+	openCard = (createModalOpen=false) => {
+    const { openCard, clearCreatePanel, question, descriptionEditorState, answerEditorState } = this.props;
 
-	onDescriptionEditorStateChange = (editorState) => {
-    //this.setState({ descriptionEditorState : editorState });
-    this.props.changeCreateDescriptionEditor(editorState)
-	}
-
-	onAnswerEditorStateChange = (editorState) => {
-    //this.setState({ answerEditorState : editorState });
-    this.props.changeCreateAnswerEditor(editorState)
-	}
-
-	showDescriptionEditor = () => {
-		this.setState( { showDescriptionEditor: true} );
-	}
-
-	openCard = (openCreateModal=false) => {
-    // Open card with random ID
-    this.props.openCard({ fromCreate: true, createModalOpen: openCreateModal });
-
-    // Clear out the Create panel
-    this.props.clearCreatePanel();
-  	
+    // Open card with random ID and clear out Create panel
+    const newCardInfo = { question, descriptionEditorState, answerEditorState };
+    openCard(newCardInfo, createModalOpen, true);
+    clearCreatePanel();
   }
 
-  changeQuestionValue = (event) => {
-  	this.props.changeCreateQuestion(event.target.value);
+  updateQuestionValue = (event) => {
+  	this.props.updateCreateQuestion(event.target.value);
   }
 
   render() {
-    const { createDescriptionEditorState, createAnswerEditorState, viewDescriptionEditor, showDescriptionEditor, createQuestion } = this.props;
+    const {
+      showCreateDescriptionEditor, isDescriptionEditorShown, 
+      question,
+      descriptionEditorState, updateCreateDescriptionEditor,
+      answerEditorState, updateCreateAnswerEditor,
+    } = this.props;
     return (
       <div className={s('flex flex-col flex-1 min-h-0')}>
         <div className={s("p-lg flex flex-col flex-grow")}>
@@ -90,20 +71,20 @@ export default class Create extends Component {
         	<input
             	placeholder="Question"
             	className={s("w-full my-xl")}
-            	value={createQuestion}
-            	onChange={this.changeQuestionValue}
+            	value={question}
+            	onChange={this.updateQuestionValue}
           	/>
           {
-          	viewDescriptionEditor ?
+          	isDescriptionEditorShown ?
           	<TextEditor 
-	            onEditorStateChange={this.onDescriptionEditorStateChange} 
-	            editorState={createDescriptionEditorState} 
+	            onEditorStateChange={updateCreateDescriptionEditor} 
+	            editorState={descriptionEditorState} 
 	            editorType="EXTENSION"
 	          />
           	:
 	          <Button
 	          	text={"Add Description"}
-	          	onClick={() => showDescriptionEditor()}
+	          	onClick={showCreateDescriptionEditor}
 	          	color={"secondary"}
 	          	className={s("description-button justify-start shadow-none")}
 	          	icon={<MdAdd className={s("mr-reg")}/>}
@@ -112,8 +93,8 @@ export default class Create extends Component {
           }
           <div className={s("horizontal-separator my-lg")} ></div>
           <TextEditor 
-            onEditorStateChange={this.onAnswerEditorStateChange} 
-            editorState={createAnswerEditorState} 
+            onEditorStateChange={updateCreateAnswerEditor} 
+            editorState={answerEditorState} 
             editorType="EXTENSION"
           />
 
