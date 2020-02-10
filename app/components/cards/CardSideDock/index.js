@@ -4,7 +4,13 @@ import { Transition } from 'react-transition-group';
 
 import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
-import { closeCardSideDock } from '../../../actions/cards';
+import {
+  closeCardSideDock,
+  removeCardAttachment,
+  addCardTag, removeCardTag,
+  updateCardKeywords,
+  updateCardVerificationInterval, updateCardPermissions,
+} from '../../../actions/cards';
 
 import { MdClose } from 'react-icons/md';
 import { FaRegTrashAlt } from 'react-icons/fa';
@@ -18,7 +24,7 @@ import Select from '../../common/Select';
 import Button from '../../common/Button';
 
 import { getBaseAnimationStyle } from '../../../utils/animateHelpers';
-import { PERMISSION_OPTIONS, VERIFICATION_INTERVAL_OPTIONS, FADE_IN_TRANSITIONS } from '../../../utils/constants';
+import { PERMISSION_OPTIONS, VERIFICATION_INTERVAL_OPTIONS, FADE_IN_TRANSITIONS, CARD_STATUS_OPTIONS } from '../../../utils/constants';
 import { createSelectOptions } from '../../../utils/selectHelpers';
 
 import style from './card-side-dock.css';
@@ -35,23 +41,22 @@ const SIDE_DOCK_TRANSITION_MS = 300;
     ...state.cards.activeCard,
   }),
   dispatch => bindActionCreators({
-    closeCardSideDock
+    closeCardSideDock,
+    removeCardAttachment,
+    addCardTag, removeCardTag,
+    updateCardKeywords,
+    updateCardVerificationInterval, updateCardPermissions,
   }, dispatch)
 )
 
 class CardSideDock extends Component {
-  constructor(props) {
-    super(props);
-
-    this.state = {
-      keywords: [],
-      verificationInterval: null,
-      permission: null,
-    }
-  }
-
   closeSideDock = () => {
     this.props.closeCardSideDock();
+  }
+
+  getAttribute = (attribute) => {
+    const { isEditing, edits } = this.props;
+    return isEditing ? edits[attribute] : this.props[attribute];
   }
 
   renderHeader = () => (
@@ -64,11 +69,11 @@ class CardSideDock extends Component {
   );
 
   renderOwners = () => {
-    const users = [{ name: 'Andrew', id: '1', img: 'https://sunrift.com/wp-content/uploads/2014/12/Blake-profile-photo-square-768x769.jpg' }, { name: 'Chetan', id: '5', img: null }];
+    const currOwners = this.getAttribute('owners');
     return (
       <CardSection className={s("mt-reg")} title="Owner(s)">
         <CardUsers
-          users={users}
+          users={currOwners}
           onAddClick={() => console.log('User added!')}
           onClick={() => console.log('User clicked!')}
           onRemoveClick={() => console.log('User removed!')}
@@ -78,17 +83,24 @@ class CardSideDock extends Component {
   }
 
   renderAttachments = () => {
-    const attachments = [{ filename: 'User Deletion.mp4', type: 'video' }, { filename: 'deletion.png', type: 'image' }, { filename: 'tests.txt', type: 'file' }]
+    const { removeCardAttachment } = this.props; 
+    const currAttachments = this.getAttribute('attachments');
+
     return (
       <CardSection className={s("mt-lg")} title="Attachments">
+        { currAttachments.length === 0 &&
+          <div className={s("text-xs text-gray-light")}>
+            No current attachments
+          </div>
+        }
         <div className={s("flex flex-wrap")}>
-          { attachments.map(({ filename, type }) => (
+          { currAttachments.map(({ type, data }, i) => (
             <CardAttachment
-              key={filename}
-              filename={filename}
-              type={type}
-              onClick={() => console.log('File clicked!')}
-              onRemoveClick={() => console.log('File removed!')}
+              type={type === 'recording' ? 'video' : data.type}
+              filename={type === 'recording' ? 'Screen Recording' : data.name}
+              className={s("min-w-0")}
+              textClassName={s("truncate")}
+              onRemoveClick={() => removeCardAttachment(i)}
             />
           ))}
         </div>
@@ -97,11 +109,11 @@ class CardSideDock extends Component {
   }
 
   renderTags = () => {
-    const tags = ['Customer Service Onboarding', 'Sales', 'Pitches'];
+    const currTags = this.getAttribute('tags');
     return (
       <CardSection className={s("mt-lg")} title="Tags">
         <CardTags
-          tags={tags}
+          tags={currTags}
           onTagClick={() => console.log('Tag clicked')}
           onAddClick={() => console.log('Tag added')}
           onRemoveClick={() => console.log('Tag removed')}
@@ -111,42 +123,74 @@ class CardSideDock extends Component {
   }
 
   renderKeywords = () => {
+    const { isEditing, updateCardKeywords } = this.props;
+    const currKeywords = this.getAttribute('keywords');
     return (
       <CardSection className={s("mt-lg")} title="Keywords">
-        <Select
-          value={this.state.keywords}
-          onChange={(keywords) => this.setState({ keywords })}
-          options={SELECT_VERIFICATION_INTERVAL_OPTIONS}
-          isSearchable
-          isMulti
-          menuShouldScrollIntoView
-          isClearable={false}
-        />
+        { isEditing ?
+          <Select
+            value={currKeywords}
+            onChange={updateCardKeywords}
+            isSearchable
+            isMulti
+            menuShouldScrollIntoView
+            isClearable={false}
+            placeholder={"Add keywords..."}
+            creatable={true}
+            components={{ DropdownIndicator: null }}
+            noOptionsMessage={({ inputValue }) => currKeywords.some(keyword => keyword.value === inputValue) ?
+              "Keyword already exists" : "Begin typing to add a keyword"
+            }
+          /> :
+          <div>
+            { !currKeywords.length === 0 &&
+              <div className={s("text-xs text-gray-light")}>
+                No current keywords
+              </div>
+            }
+            <div className={s("flex flex-wrap")}>
+              { currKeywords.map(({ label, value }, i) => (
+                <div key={value} className={s("text-sm mr-sm mb-sm truncate text-purple-reg underline-border border-purple-gray-10")}>
+                  {value}{i !== currKeywords.length - 1 && ','}
+                </div>
+              ))}
+            </div>
+          </div>
+        }
+
       </CardSection>
     );
   }
 
   renderAdvanced = () => {
+    const { isEditing, updateCardPermissions, updateCardVerificationInterval } = this.props;
+    const currVerificationInterval = this.getAttribute('verificationInterval');
+    const currPermissions = this.getAttribute('permissions');
+
     return (
       <CardSection className={s("mt-lg")} title="Advanced">
         <div className={s("mb-sm")}>
           <div className={s("text-gray-reg text-xs mb-xs")}> Verification Interval </div>
           <Select
-            value={this.state.verificationInterval}
-            onChange={(verificationInterval) => this.setState({ verificationInterval })}
+            value={currVerificationInterval}
+            onChange={updateCardVerificationInterval}
             options={SELECT_VERIFICATION_INTERVAL_OPTIONS}
+            placeholder="Select verification interval..."
             isSearchable
             menuShouldScrollIntoView
+            isDisabled={!isEditing}
           />
         </div>
         <div>
           <div className={s("text-gray-reg text-xs mb-xs")}> Permissions </div>
           <Select
-            value={this.state.permission}
-            onChange={(permission) => this.setState({ permission })}
+            value={currPermissions}
+            onChange={updateCardPermissions}
+            placeholder="Select permissions..."
             options={SELECT_PERMISSION_OPTIONS}
             isSearchable
             menuShouldScrollIntoView
+            isDisabled={!isEditing}
           />
         </div>
       </CardSection>
@@ -198,8 +242,7 @@ class CardSideDock extends Component {
   }
 
   render() {
-    const { sideDockOpen } = this.props;
-    const { hasBeenToggled } = this.state;
+    const { sideDockOpen, cardStatus } = this.props;
 
     const baseStyle = getBaseAnimationStyle(SIDE_DOCK_TRANSITION_MS);
     const transitionStyles = {
@@ -208,6 +251,8 @@ class CardSideDock extends Component {
       exiting:  { transform: 'translateX(100%)' },
       exited:  { transform: 'translateX(100%)' },
     }
+
+    const isNewCard = cardStatus === CARD_STATUS_OPTIONS.NOT_DOCUMENTED;
 
     return (
       <div className={s("card-side-dock-container")}>
@@ -221,12 +266,12 @@ class CardSideDock extends Component {
           {state => (
             <div className={s("card-side-dock overflow-auto")} style={{ ...baseStyle, ...transitionStyles[state] }}>
               { this.renderHeader() }
-              { this.renderOwners() }
+              { !isNewCard && this.renderOwners() }
               { this.renderAttachments() }
-              { this.renderTags() }
-              { this.renderKeywords() }
-              { this.renderAdvanced() }
-              { this.renderFooter() }
+              { !isNewCard && this.renderTags() }
+              { !isNewCard && this.renderKeywords() }
+              { !isNewCard && this.renderAdvanced() }
+              { !isNewCard && this.renderFooter() }
             </div>
           )}
         </Transition>

@@ -60,6 +60,11 @@ class CardContent extends Component {
   	}
   }
 
+  getAttribute = (attribute) => {
+    const { isEditing, edits } = this.props;
+    return isEditing ? edits[attribute] : this.props[attribute];
+  }
+
   enableDescriptionEditor = () => {
     this.disableAnswerEditor();
     this.props.enableCardEditor(EDITOR_TYPE.DESCRIPTION);
@@ -115,9 +120,10 @@ class CardContent extends Component {
   }
 
   renderHeader = () => {
-  	const { id, isEditing, tags, sideDockOpen, openCardSideDock, closeCardSideDock, editorEnabled, descriptionSectionHeight, cardsWidth } = this.props;
-    
-  	return (
+  	const { id, isEditing, tags, attachments, sideDockOpen, openCardSideDock, closeCardSideDock, editorEnabled, descriptionSectionHeight, cardsWidth, addCardAttachments } = this.props;
+    const currAttachments = this.getAttribute('attachments');
+
+    return (
   		<Resizable
         className={s("bg-purple-light py-sm px-2xl min-h-0 flex-shrink-0 flex flex-col")}
         defaultSize={{ height: CARD_DIMENSIONS.MIN_QUESTION_HEIGHT }}
@@ -132,11 +138,9 @@ class CardContent extends Component {
         <strong className={s("text-xs text-purple-reg pt-xs pb-sm flex items-center justify-between opacity-75")}>
           <div>2 Days Ago</div>
           <div className={s("flex items-center")}>
-          	{ this.props.cardStatus !== CARD_STATUS_OPTIONS.NOT_DOCUMENTED &&
-	            <button onClick={openCardSideDock}>
-              	<MdMoreHoriz />
-            	</button>
-          	}
+            <button onClick={openCardSideDock}>
+            	<MdMoreHoriz />
+          	</button>
           </div>
         </strong>
         { isEditing ?
@@ -173,13 +177,15 @@ class CardContent extends Component {
         			</div>
         		}
         		<div className={s("flex justify-between")}>
-              <div className={s("flex items-center")}>
-		        		<div className={s("flex text-purple-reg text-sm cursor-pointer underline-border border-purple-gray-20 items-center")} onClick={openCardSideDock}> 
-		        			<MdAttachment className={s("mr-sm")} />
-		        			<div >3 Attachments</div>
-		        		</div>
-              </div>
-	        		<Dropzone>
+              { currAttachments.length !== 0 &&
+                <div className={s("flex items-center")}>
+                  <div className={s("flex text-purple-reg text-sm cursor-pointer underline-border border-purple-gray-20 items-center")} onClick={openCardSideDock}> 
+                    <MdAttachment className={s("mr-sm")} />
+                    <div> {currAttachments.length} Attachments</div>
+                  </div>
+                </div>
+              }
+	        		<Dropzone className={s("ml-auto")} onDrop={addCardAttachments}>
                 <p className={s("m-0 text-sm text-purple-reg p-sm")}>Drag Files Here or Click to Add</p>
               </Dropzone>
 				    </div>

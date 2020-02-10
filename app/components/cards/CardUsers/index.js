@@ -6,10 +6,12 @@ import { IoMdAdd } from 'react-icons/io';
 import CardUser from './CardUser';
 import CircleButton from '../../common/CircleButton';
 
+import { NOOP } from '../../../utils/constants';
+
 import { getStyleApplicationFn } from '../../../utils/styleHelpers';
 const s = getStyleApplicationFn();
 
-const CardUsers = ({ className, users, onUserClick, onRemoveClick, onAddClick }) => {
+const CardUsers = ({ className, isEditable, users, onUserClick, onRemoveClick, onAddClick }) => {
 	return (	
 		<div className={s(`card-users-container ${className}`)}>
 			{ users.map(({ id, name, img }) => (
@@ -20,10 +22,10 @@ const CardUsers = ({ className, users, onUserClick, onRemoveClick, onAddClick })
 					img={img}
 					className={s("mr-reg")}
 					onClick={onUserClick}
-					onRemoveClick={onRemoveClick}
+					onRemoveClick={isEditable ? onRemoveClick : NOOP}
 				/>
 			))}
-			{ onAddClick &&
+			{ isEditable && onAddClick &&
 				<CircleButton
 					content={<IoMdAdd size={30} />}
 					containerClassName={s("text-purple-reg pt-sm ml-xs")}
@@ -39,6 +41,7 @@ const CardUsers = ({ className, users, onUserClick, onRemoveClick, onAddClick })
 }
 
 CardUsers.propTypes = {
+	isEditable: PropTypes.bool.isRequired,
 	className: PropTypes.string,
 	users: PropTypes.arrayOf(PropTypes.shape({
 		id: PropTypes.string.isRequired,

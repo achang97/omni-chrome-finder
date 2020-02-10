@@ -285,7 +285,7 @@ class Ask extends Component {
           value={null}
           onChange={({ label, value }) => addAskRecipient(value)}
           placeholder="Enter name"
-          options={PLACEHOLDER_RECIPIENT_OPTIONS.filter(({ value: recipient }) => !recipients.find(currRecipient => currRecipient.id === recipient.id))}
+          options={PLACEHOLDER_RECIPIENT_OPTIONS.filter(({ value: recipient }) => !recipients.some(currRecipient => currRecipient.id === recipient.id))}
           isSearchable
           menuShouldScrollIntoView
         />

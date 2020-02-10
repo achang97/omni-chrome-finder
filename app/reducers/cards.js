@@ -69,7 +69,7 @@ export default function cards(state = initialState, action) {
       const { cards, activeCardIndex } = state;
 
       // Check if card is already open
-      if (!isNewCard && cards.find(({ id: currId }) => currId === card.id)) {
+      if (!isNewCard && cards.some(({ id: currId }) => currId === card.id)) {
         return state;
       }
 
@@ -123,18 +123,24 @@ export default function cards(state = initialState, action) {
     }
     case types.CLOSE_CARD: {
       const { index } = payload;
-      const newCards = removeIndex(state.cards, index);
+      const { activeCardIndex, cards, activeCard } = state;
+
+      const newCards = removeIndex(cards, index);
 
       if (newCards.length === 0) {
         return initialState;
       }
 
-      let activeCardIndex = state.activeCardIndex;
-      if (activeCardIndex >= newCards.length) {
-        activeCardIndex = newCards.length - 1;
+      const isClosingActiveCard = index === activeCardIndex;
+
+      let newActiveCardIndex = activeCardIndex;
+      if (newActiveCardIndex >= newCards.length) {
+        newActiveCardIndex = newCards.length - 1;
       }
 
-      return { ...state, cards: newCards, activeCardIndex, activeCard: newCards[activeCardIndex] };
+      const newActiveCard = isClosingActiveCard ? newCards[newActiveCardIndex] : activeCard;
+
+      return { ...state, cards: newCards, activeCardIndex: newActiveCardIndex, activeCard: newActiveCard };
     }
 
     case types.OPEN_CARD_SIDE_DOCK: {
@@ -200,6 +206,53 @@ export default function cards(state = initialState, action) {
     case types.CANCEL_EDIT_CARD_MESSAGES: {
       const { activeCard } = state;
       return updateActiveCardEdits({ messages: activeCard.messages });
+    }
+
+    case types.ADD_CARD_ATTACHMENTS: {
+      const { attachments } = payload;
+      const { activeCard: { edits } } = state; 
+      const newAttachments = attachments.map(attachment => ({ type: 'attachment', data: attachment }));
+      return updateActiveCardEdits({ attachments: [...edits.attachments, ...newAttachments] });
+    }
+    case types.REMOVE_CARD_ATTACHMENT: {
+      const { index } = payload;
+      const { activeCard: { edits } } = state; 
+      return updateActiveCardEdits({ attachments: removeIndex(edits.attachments, index) });
+    }
+
+    case types.ADD_CARD_OWNER: {
+      const { owner } = payload;
+      const { activeCard: { edits } } = state; 
+      return updateActiveCardEdits({ owners: _.union(edits.owners, [owner]) });
+    }
+    case types.REMOVE_CARD_OWNER: {
+      const { index } = payload;
+      const { activeCard: { edits } } = state; 
+      return updateActiveCardEdits({ owners: removeIndex(edits.owners, index) });
+    }
+
+    case types.ADD_CARD_TAG: {
+      const { tag } = payload;
+      const { activeCard: { edits } } = state; 
+      return updateActiveCardEdits({ tags: _.union(edits.tags, [tag]) });
+    }
+    case types.REMOVE_CARD_TAG: {
+      const { index } = payload;
+      const { activeCard: { edits } } = state; 
+      return updateActiveCardEdits({ tags: removeIndex(edits.tags, index) });
+    }
+
+    case types.UPDATE_CARD_KEYWORDS: {
+      const { keywords } = payload;
+      return updateActiveCardEdits({ keywords: keywords || [] });
+    }
+    case types.UPDATE_CARD_VERIFICATION_INTERVAL: {
+      const { verificationInterval } = payload;
+      return updateActiveCardEdits({ verificationInterval });
+    }
+    case types.UPDATE_CARD_PERMISSIONS: {
+      const { permissions } = payload;
+      return updateActiveCardEdits({ permissions });
     }
 
     case types.EDIT_CARD: {

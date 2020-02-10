@@ -79,7 +79,7 @@ class RecipientDropdown extends Component {
 
     return PLACEHOLDER_MENTION_OPTIONS
       .filter(mention => (
-        !mentions.find(currMention => currMention.id === mention.id) &&
+        !mentions.some(currMention => currMention.id === mention.id) &&
         mention.name.toLowerCase().includes(mentionInputText.trim().toLowerCase())
       ));
   }

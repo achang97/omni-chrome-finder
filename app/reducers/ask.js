@@ -52,7 +52,7 @@ export default function display(state = initialState, action) {
       const { recipient } = payload;
       const { recipients } = state;
 
-      if (recipients.find(({ id }) => id === recipient.id)) return state;
+      if (recipients.some(({ id }) => id === recipient.id)) return state;
 
       let newRecipients;
       if (recipient.type === 'user') {

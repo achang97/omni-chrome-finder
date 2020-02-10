@@ -6,6 +6,8 @@ import { MdClose } from 'react-icons/md';
 
 import CardTag from './CardTag';
 
+import { NOOP } from '../../../utils/constants';
+
 import style from './card-tags.css';
 import { getStyleApplicationFn } from '../../../utils/styleHelpers';
 const s = getStyleApplicationFn(style);
@@ -65,7 +67,7 @@ class CardTags extends Component {
 	}
 
 	renderTag = (tag, i) => {
-		const { maxWidth, tags, onTagClick, onRemoveClick } = this.props;
+		const { maxWidth, tags, onTagClick, onRemoveClick, isEditable } = this.props;
 		const { firstHiddenIndex } = this.state;
 		return (
 			<Fragment key={tag}>
@@ -82,14 +84,14 @@ class CardTags extends Component {
 					ref={maxWidth && ((instance)=>{this.tagRefs[i] = instance;})}
 					className={s(`flex items-center mr-xs mb-xs ${maxWidth ? `whitespace-no-wrap ${i >= firstHiddenIndex ? 'invisible' : ''}` : ''}`)}
 					onClick={onTagClick}
-					onRemoveClick={onRemoveClick}
+					onRemoveClick={isEditable ? onRemoveClick : NOOP}
 				/>
 			</Fragment>
 		)
 	}
 
 	render() {
-		const { className, tags, onTagClick, onAddClick, onRemoveClick, maxWidth } = this.props;
+		const { className, tags, onTagClick, onAddClick, onRemoveClick, maxWidth, isEditable } = this.props;
 		const { firstHiddenIndex } = this.state;
 		const containerStyle = this.getContainerStyle();
 
@@ -99,7 +101,7 @@ class CardTags extends Component {
 				style={containerStyle}
 			>
 				{ tags.map((tag, i) => this.renderTag(tag, i)) }
-				{ onAddClick &&
+				{ isEditable && onAddClick &&
 					<CardTag
 						text={
 							<div className={s("flex items-center")}>
@@ -117,6 +119,7 @@ class CardTags extends Component {
 }
 
 CardTags.propTypes = {
+	isEditable: PropTypes.bool.isRequired,
 	className: PropTypes.string,
 	tags: PropTypes.arrayOf(PropTypes.string).isRequired,
 	maxWidth: PropTypes.number,

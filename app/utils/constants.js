@@ -53,9 +53,11 @@ export const VERIFICATION_INTERVAL_OPTIONS = [
 	'1 Year',
 	'Never'
 ]
-
 export const PERMISSION_OPTIONS = [
 	'Whole Organization',
 	'My Team',
 	'Just Me',
 ]
+
+// Misc.
+const NOOP = () => {};
