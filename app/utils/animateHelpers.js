@@ -2,7 +2,7 @@ function easeInOutSin(time) {
   return (1 + Math.sin(Math.PI * time - Math.PI / 2)) / 2;
 }
 
-export default function animate(property, element, to, options = {}, cb = () => {}) {
+export function animate(property, element, to, options = {}, cb = () => {}) {
   const {
     ease = easeInOutSin,
     duration = 300, // standard
@@ -47,3 +47,7 @@ export default function animate(property, element, to, options = {}, cb = () => 
   requestAnimationFrame(step);
   return cancel;
 }
+
+export const getBaseAnimationStyle = (transitionMs) => ({
+  transition: `opacity ${transitionMs}ms ease-in-out, transform ${transitionMs}ms`
+});

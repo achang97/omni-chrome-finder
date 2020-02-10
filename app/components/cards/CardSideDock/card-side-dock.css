@@ -4,41 +4,9 @@
 
 .card-side-dock-overlay {
 	@apply bg-gray-overlay pointer-events-auto w-full h-full;
-    transition: all 0.3s;
-    opacity: 0;
-    visibility: hidden;
 }
 
 .card-side-dock {
 	width: 300px;
-    transform: translateX(100%);
     @apply absolute top-0 bottom-0 right-0 bg-purple-light p-2xl pointer-events-auto rounded-l-lg shadow-lg;
-}
-
-.card-side-dock-no-slide-show > .card-side-dock {
-    transform: translateX(0%);
-}
-
-.card-side-dock-no-slide-show > .card-side-dock-overlay, .card-side-dock-slide-in > .card-side-dock-overlay {
-    opacity: 1;
-    visibility: visible;
-}
-
-.card-side-dock-slide-in > .card-side-dock {
-    animation: slide-in 0.3s forwards;
-    transform: slide-in 0.3s forwards;
-}
-
-.card-side-dock-slide-out > .card-side-dock {
-    animation: slide-out 0.3s forwards;
-    transform: slide-out 0.3s forwards;
-}
-    
-@keyframes slide-in {
-    100% { transform: translateX(0%); }
-}
-    
-@keyframes slide-out {
-    0% { transform: translateX(0%); }
-    100% { transform: translateX(100%); }
 }

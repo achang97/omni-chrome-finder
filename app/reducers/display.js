@@ -14,7 +14,7 @@ export default function display(state = initialState, action) {
       return { ...state, dockVisible: !state.dockVisible, dockExpanded: !state.dockVisible ? false : state.dockExpanded };
     }
     case types.EXPAND_DOCK: {
-      return { ...state, dockExpanded: !state.dockExpanded };
+      return { ...state, dockExpanded: true };
     }
 
     default:

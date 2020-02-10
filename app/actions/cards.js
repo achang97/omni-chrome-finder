@@ -1,16 +1,16 @@
 import * as types from './actionTypes';
 
 /* Card behavior */
-export function openCard({id, createModalOpen, descriptionEditorState, answerEditorState, fromCreate}) {
-  return { type: types.OPEN_CARD, payload: { id, createModalOpen, descriptionEditorState, answerEditorState, fromCreate } };
+export function openCard(card, createModalOpen=false, isNewCard=false) {
+  return { type: types.OPEN_CARD, payload: { card, isNewCard, createModalOpen } };
 }
 
 export function setActiveCardIndex(index) {
   return { type: types.SET_ACTIVE_CARD_INDEX, payload: { index } };
 }
 
-export function closeCard(id) {
-  return { type: types.CLOSE_CARD, payload: { id } };
+export function closeCard(index) {
+  return { type: types.CLOSE_CARD, payload: { index } };
 }
 
 export function closeAllCards() {
@@ -21,86 +21,67 @@ export function adjustCardsDimensions(newWidth, newHeight) {
   return { type: types.ADJUST_CARDS_DIMENSIONS, payload: { newWidth, newHeight } }
 }
 
-export function changeQuestion(id, newValue) {
-  return { type: types.CHANGE_QUESTION, payload: { id, newValue } };
+export function updateCardQuestion(question) {
+  return { type: types.UPDATE_CARD_QUESTION, payload: { question } };
 }
 
-export function changeAnswerEditor(id, editorState) {
-  return { type: types.CHANGE_ANSWER_EDITOR, payload: { id, editorState } };
+export function updateCardAnswerEditor(editorState) {
+  return { type: types.UPDATE_CARD_ANSWER_EDITOR, payload: { editorState } };
 }
 
-export function changeDescriptionEditor(id, editorState) {
-  return { type: types.CHANGE_DESCRIPTION_EDITOR, payload: { id, editorState } };
+export function updateCardDescriptionEditor(editorState) {
+  return { type: types.UPDATE_CARD_DESCRIPTION_EDITOR, payload: { editorState } };
 }
 
-export function changeCreateQuestion(newValue) {
-  return { type: types.CHANGE_CREATE_QUESTION, payload: { newValue }};
+export function updateCardStatus(cardStatus) {
+  return { type: types.UPDATE_CARD_STATUS, payload: { cardStatus } };
 }
 
-export function changeCreateAnswerEditor(editorState) {
-  return { type: types.CHANGE_CREATE_ANSWER_EDITOR, payload: { editorState } };
+
+export function enableCardEditor(editorType) {
+  return { type: types.ENABLE_CARD_EDITOR, payload: { editorType} };
 }
 
-export function changeCreateDescriptionEditor(editorState) {
-  return { type: types.CHANGE_CREATE_DESCRIPTION_EDITOR, payload: { editorState } };
+export function disableCardEditor(editorType) {
+  return { type: types.DISABLE_CARD_EDITOR, payload: { editorType} };
 }
 
-export function clearCreatePanel() {
-  return { type: types.CLEAR_CREATE_PANEL, payload: {} };
+export function adjustCardDescriptionSectionHeight(newHeight) {
+  return { type: types.ADJUST_CARD_DESCRIPTION_SECTION_HEIGHT, payload: { newHeight} };
 }
 
-export function changeCardStatus(id, newStatus) {
-  return { type: types.CHANGE_CARD_STATUS, payload: { id, newStatus } };
+export function toggleCardSelectedMessage(messageIndex) {
+  return { type: types.TOGGLE_CARD_SELECTED_MESSAGE, payload: { messageIndex } };
 }
 
-export function editCard(id) {
-  return { type: types.EDIT_CARD, payload: { id } };
+export function cancelEditCardMessages() {
+  return { type: types.CANCEL_EDIT_CARD_MESSAGES, payload: {} };
 }
 
-export function enableEditor(id, editorType) {
-  return { type: types.ENABLE_EDITOR, payload: { id, editorType} };
+export function openCardModal(modalType) {
+  return { type: types.OPEN_CARD_MODAL, payload: { modalType } };
 }
 
-export function disableEditor(id, editorType) {
-  return { type: types.DISABLE_EDITOR, payload: { id, editorType} };
+export function closeCardModal(modalType) {
+  return { type: types.CLOSE_CARD_MODAL, payload: { modalType } };
 }
 
-export function adjustDescriptionSectionHeight(id, newHeight) {
-  return { type: types.ADJUST_DESCRIPTION_SECTION_HEIGHT, payload: { id, newHeight} };
+export function editCard() {
+  return { type: types.EDIT_CARD, payload: { } };
 }
 
-export function toggleSelectedMessage(id, messageIndex) {
-  return { type: types.TOGGLE_SELECTED_MESSAGE, payload: { id, messageIndex } };
+export function cancelEditCard() {
+  return { type: types.CANCEL_EDIT_CARD, payload: {} }
 }
 
-export function openModal(id, modalType) {
-  return { type: types.OPEN_MODAL, payload: {id, modalType} };
+export function saveCard() {
+  return { type: types.SAVE_CARD, payload: { } };
 }
 
-export function closeModal(id, modalType) {
-  return { type: types.CLOSE_MODAL, payload: {id, modalType} };
+export function openCardSideDock() {
+  return { type: types.OPEN_CARD_SIDE_DOCK, payload: { } };
 }
 
-export function saveCard(id ) {
-  return { type: types.SAVE_CARD, payload: { id } };
-}
-
-export function saveMessages(id ) {
-  return { type: types.SAVE_MESSAGES, payload: { id } };
-}
-
-export function openCardSideDock(id) {
-  return { type: types.OPEN_CARD_SIDE_DOCK, payload: { id } };
-}
-
-export function closeCardSideDock(id) {
-  return { type: types.CLOSE_CARD_SIDE_DOCK, payload: { id } };
-}
-
-export function openCardCreateModal(id) {
-  return { type: types.OPEN_CARD_CREATE_MODAL, payload: { id } };
-}
-
-export function closeCardCreateModal(id) {
-  return { type: types.CLOSE_CARD_CREATE_MODAL, payload: { id } };
+export function closeCardSideDock() {
+  return { type: types.CLOSE_CARD_SIDE_DOCK, payload: { } };
 }

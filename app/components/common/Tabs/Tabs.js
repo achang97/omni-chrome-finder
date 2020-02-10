@@ -3,7 +3,7 @@ import PropTypes from 'prop-types';
 import _ from 'underscore';
 import ReactResizeDetector from 'react-resize-detector';
 import { MdChevronLeft, MdChevronRight } from 'react-icons/md';
-import animate from '../../../utils/animate';
+import { animate } from '../../../utils/animateHelpers';
 import { DEBOUNCE_60_HZ } from '../../../utils/constants';
 
 import Tab from './Tab';
@@ -148,9 +148,9 @@ class Tabs extends Component {
   }
 
   render() {
-    const { tabOptions, className, allTabsContainerClassName } = this.props;
+    const { tabOptions, className, allTabsContainerClassName, style } = this.props;
     return (
-      <div className={s(`tabs-all-container ${className}`)}>
+      <div className={s(`tabs-all-container ${className}`)} style={style}>
         {this.renderScrollButton(true)}
         <div
           ref={this.tabsRef}
@@ -176,6 +176,7 @@ Tabs.propTypes = {
   })),
   activeValue: PropTypes.oneOfType([PropTypes.string, PropTypes.number, PropTypes.object]).isRequired,
   onTabClick: PropTypes.func.isRequired,
+  style: PropTypes.object,
   className: PropTypes.string,
   allTabsContainerClassName: PropTypes.string,
   rippleClassName: PropTypes.string,
@@ -191,6 +192,7 @@ Tabs.propTypes = {
 }
 
 Tabs.defaultProps = {
+  style: {},
   className: '',
   allTabsContainerClassName: '',
   tabContainerClassName: '',

@@ -68,6 +68,7 @@
   },
   "dependencies": {
     "@babel/core": "^7.8.4",
+    "@types/react-transition-group": "^4.2.3",
     "autoprefixer": "^7.2.5",
     "bluebird": "^3.3.4",
     "classnames": "^2.1.3",

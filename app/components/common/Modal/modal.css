@@ -1,9 +1,3 @@
-.modal, .modal-overlay {
-	transition: all 0.3s;
-	opacity: 0;
-	visibility: hidden;
-}
-
 .modal {
 	@apply absolute bg-white flex flex-col rounded-lg overflow-hidden bg-purple-light;
     top: 50%;
@@ -24,13 +18,4 @@
 
 .modal-body {
 	@apply overflow-auto;
-}
-
-.modal-show > .modal-overlay, .modal-show > .modal {
-	opacity: 1;
-	visibility: visible;
-}
-
-.modal-show > .modal {
-	transform: translate(0, -50%) scale(1);
 }

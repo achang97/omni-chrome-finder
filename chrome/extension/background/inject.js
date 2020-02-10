@@ -1,4 +1,4 @@
-import { TOGGLE, TAB_UPDATE } from '../../../app/utils/constants';
+import { CHROME_MESSAGES } from '../../../app/utils/constants';
 
 function isInjected(tabId) {
   return chrome.tabs.executeScriptAsync(tabId, {
@@ -41,7 +41,7 @@ chrome.tabs.onUpdated.addListener(async (tabId, changeInfo, tab) => {
   }
 
   if (!chrome.runtime.lastError) {
-    chrome.tabs.sendMessage(tabId, { type: TAB_UPDATE, url: tab.url });
+    chrome.tabs.sendMessage(tabId, { type: CHROME_MESSAGES.TAB_UPDATE, url: tab.url });
   }
 });
 
@@ -49,7 +49,7 @@ chrome.browserAction.onClicked.addListener(async (tab) => {
   const tabId = tab.id;
   const result = await isInjected(tabId);
   if (chrome.runtime.lastError || result[0]) {
-    chrome.tabs.sendMessage(tabId, { type: TOGGLE });
+    chrome.tabs.sendMessage(tabId, { type: CHROME_MESSAGES.TOGGLE });
   } else {
     loadScript('inject', tabId, () => console.log('Injected!'));
   }

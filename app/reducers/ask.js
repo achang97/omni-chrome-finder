@@ -2,6 +2,7 @@ import * as types from '../actions/actionTypes';
 import _ from 'underscore';
 
 import { ASK_INTEGRATIONS } from '../utils/constants';
+import { removeIndex, updateIndex } from '../utils/arrayHelpers';
 import { EditorState } from 'draft-js';
 
 const initialState = {
@@ -63,19 +64,13 @@ export default function display(state = initialState, action) {
       return { ...state, recipients: newRecipients }; 
     }
     case types.REMOVE_ASK_RECIPIENT: {
-      const { recipientId } = payload;
-      const { recipients } = state;
-      return { ...state, recipients: recipients.filter(({ id }) => id !== recipientId ) }
+      const { index } = payload;
+      return { ...state, recipients: removeIndex(state.recipients, index) }
     }
     case types.UPDATE_ASK_RECIPIENT: {
-      const { recipientId, newInfo } = payload;
+      const { index, newInfo } = payload;
       const { recipients } = state;
-      return {
-        ...state,
-        recipients: recipients.map(recipient => (
-          recipient.id === recipientId ? { ...recipient, ...newInfo } : recipient
-        ))
-      }
+      return { ...state, recipients: updateIndex(recipients, index, { ...recipients[index], ...newInfo }) }
     }
 
     case types.START_ASK_SCREEN_RECORDING: {
@@ -102,7 +97,7 @@ export default function display(state = initialState, action) {
     }
     case types.REMOVE_ASK_ATTACHMENT: {
       const { index } = payload;
-      return { ...state, attachments: state.attachments.filter((_, i) => index !== i) }
+      return { ...state, attachments: removeIndex(state.attachments, index) }
     }
 
     default:
