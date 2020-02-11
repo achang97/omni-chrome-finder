@@ -10,15 +10,24 @@ import Select from '../../common/Select';
 import Button from '../../common/Button';
 import Modal from '../../common/Modal';
 
+import { MdLock, MdAutorenew } from 'react-icons/md';
+
 import { PERMISSION_OPTIONS, VERIFICATION_INTERVAL_OPTIONS, CARD_STATUS_OPTIONS, MODAL_TYPE } from '../../../utils/constants';
 import { createSelectOptions } from '../../../utils/selectHelpers';
 
 import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
-import { saveCard, updateCardStatus, closeCardModal } from '../../../actions/cards';
+import { 
+  saveCard, updateCardStatus, closeCardModal,
+  addCardOwner, removeCardOwner,
+  updateCardTags, removeCardTag,
+  updateCardKeywords,
+  updateCardVerificationInterval, updateCardPermissions,
+} from '../../../actions/cards';
 
+import style from './card-create-modal.css';
 import { getStyleApplicationFn } from '../../../utils/styleHelpers';
-const s = getStyleApplicationFn();
+const s = getStyleApplicationFn(style);
 
 const SELECT_PERMISSION_OPTIONS = createSelectOptions(PERMISSION_OPTIONS);
 const SELECT_VERIFICATION_INTERVAL_OPTIONS = createSelectOptions(VERIFICATION_INTERVAL_OPTIONS);
@@ -28,76 +37,109 @@ const SELECT_VERIFICATION_INTERVAL_OPTIONS = createSelectOptions(VERIFICATION_IN
     ...state.cards.activeCard,
   }),
   dispatch => bindActionCreators({
-    saveCard,
-    updateCardStatus,
-    closeCardModal,
+    saveCard, updateCardStatus, closeCardModal,
+    addCardOwner, removeCardOwner,
+    updateCardTags, removeCardTag,
+    updateCardKeywords,
+    updateCardVerificationInterval, updateCardPermissions,
   }, dispatch)
 )
 
 class CardCreateModal extends Component {
   constructor(props) {
     super(props);
-    this.state = {
-      keywords: [],
-      verificationInterval: null,
-      permission: null,
-    }
   }
 
   renderOwners = () => {
-    const users = [{ name: 'Andrew', id: '1', img: 'https://sunrift.com/wp-content/uploads/2014/12/Blake-profile-photo-square-768x769.jpg' }, { name: 'Chetan', id: '5', img: null }];
+    const { edits: { owners }, addCardOwner, removeCardOwner } = this.props;
     return (
       <CardSection title="Owner(s)">
         <CardUsers
-          users={users}
-          onAddClick={() => console.log('User added!')}
-          onClick={() => console.log('User clicked!')}
-          onRemoveClick={() => console.log('User removed!')}
+          isEditable={true}
+          users={owners}
+          onAdd={addCardOwner}
+          onRemoveClick={removeCardOwner}
+          showSelect={true}
         />
       </CardSection>
     );
   }
 
   renderTags = () => {
-    const tags = ['Customer Service Onboarding', 'Sales', 'Pitches'];
+    const { edits: { tags }, updateCardTags, removeCardTag } = this.props;
     return (
       <CardSection className={s("mt-reg")} title="Tags">
         <CardTags
+          isEditable={true}
           tags={tags}
-          onTagClick={() => console.log('Tag clicked')}
-          onAddClick={() => console.log('Tag added')}
-          onRemoveClick={() => console.log('Tag removed')}
+          onChange={updateCardTags}
+          onRemoveClick={removeCardTag}
+          showPlaceholder={true}
+          showSelect={true}
         />
       </CardSection>
     )
   }
 
   renderKeywords = () => {
+    const { edits: { keywords }, updateCardKeywords } = this.props;
     return (
-      <CardSection className={s("mt-reg")} title="Keywords" startExpanded={false}>
+      <CardSection
+        className={s("mt-reg")}
+        title="Keywords"
+        startExpanded={false}
+        preview={
+          <div className={s("card-create-modal-keywords-preview")}>
+            { keywords.map(({ label }, i) => (
+              <div className={i !== keywords.length - 1 ? s('mr-xs') : ''}> {label}{i !== keywords.length - 1 && ','} </div>
+            ))}
+          </div>
+        }
+      >
         <Select
-          value={this.state.keywords}
-          onChange={(keywords) => this.setState({ keywords })}
-          options={SELECT_VERIFICATION_INTERVAL_OPTIONS}
+          value={keywords}
+          onChange={updateCardKeywords}
           isSearchable
           isMulti
           menuShouldScrollIntoView
           isClearable={false}
+          placeholder={"Add keywords..."}
+          creatable={true}
+          components={{ DropdownIndicator: null }}
+          noOptionsMessage={({ inputValue }) => keywords.some(keyword => keyword.value === inputValue) ?
+            "Keyword already exists" : "Begin typing to add a keyword"
+          }
         />
       </CardSection>
     );
   }
 
   renderAdvanced = () => {
+    const { edits: { verificationInterval, permissions }, updateCardVerificationInterval, updateCardPermissions } = this.props;
     return (
-      <CardSection className={s("mt-reg")} title="Advanced" showSeparator={false} startExpanded={false}>
+      <CardSection
+        className={s("mt-reg")}
+        title="Advanced"
+        showSeparator={false}
+        startExpanded={false}
+        preview={
+          <div className={s("text-xs text-purple-gray-50 flex")}>
+            <MdAutorenew />
+            <span className={s("ml-xs")}> {verificationInterval.label} </span>
+            <div className={s("vertical-separator mx-reg")} />
+            <MdLock />
+            <span className={s("ml-xs")}> {permissions.label} </span>
+          </div>
+        }
+      >
         <div className={s("flex")}>
           <div className={s("flex-1 mr-xs")}>
             <div className={s("text-gray-reg text-xs mb-xs")}> Verification Interval </div>
             <Select
-              value={this.state.verificationInterval}
-              onChange={(verificationInterval) => this.setState({ verificationInterval })}
+              value={verificationInterval}
+              onChange={updateCardVerificationInterval}
               options={SELECT_VERIFICATION_INTERVAL_OPTIONS}
+              placeholder="Select verification interval..."
               isSearchable
               menuShouldScrollIntoView
             />
@@ -105,8 +147,9 @@ class CardCreateModal extends Component {
           <div className={s("flex-1 ml-xs")}>
             <div className={s("text-gray-reg text-xs mb-xs")}> Permissions </div>
             <Select
-              value={this.state.permission}
-              onChange={(permission) => this.setState({ permission })}
+              value={permissions}
+              onChange={updateCardPermissions}
+              placeholder="Select permissions..."
               options={SELECT_PERMISSION_OPTIONS}
               isSearchable
               menuShouldScrollIntoView
@@ -125,8 +168,7 @@ class CardCreateModal extends Component {
   }
 
   render() {
-    const { modalOpen, closeCardModal, edits: { question } } = this.props;
-    const { hasBeenToggled } = this.state;
+    const { modalOpen, closeCardModal, edits: { question, owners, verificationInterval, permissions } } = this.props;
 
     return (
       <Modal
@@ -149,6 +191,11 @@ class CardCreateModal extends Component {
           underline
           underlineColor="purple-gray-50"
           color={"primary"}
+          disabled={
+            owners.length === 0 ||
+            !verificationInterval ||
+            !permissions            
+          }
         />
       </Modal>
     );

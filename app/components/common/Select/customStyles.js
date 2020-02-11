@@ -12,7 +12,12 @@ const customStyles = {
   }),
   control: (provided, state) => ({
     ...provided,
+    background: state.isDisabled ? 'transparent' : provided.background,
     border: '1px solid rgba(0,2,95,0.10) !important',
+  }),
+  dropdownIndicator: (provided, state) => ({
+    ...provided,
+    display: state.isDisabled ? 'none' : provided.display,
   }),
   valueContainer: (provided, state) => ({
     ...provided,
@@ -63,6 +68,7 @@ const customStyles = {
     color: colors.purple['gray-50'],
     background: 'transparent !important',
     cursor: 'pointer',
+    display: state.isDisabled ? 'none' : provided.display,
   }),
   menu: (provided, state) => ({
     ...provided,

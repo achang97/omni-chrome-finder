@@ -2,7 +2,8 @@ import * as types from '../actions/actionTypes';
 import _ from 'underscore';
 import { EditorState } from 'draft-js';
 import { removeIndex, updateIndex } from '../utils/arrayHelpers';
-import { CARD_STATUS_OPTIONS, EDITOR_TYPE, CARD_DIMENSIONS, MODAL_TYPE } from '../utils/constants';
+import { createSelectValue } from '../utils/selectHelpers';
+import { CARD_STATUS_OPTIONS, EDITOR_TYPE, CARD_DIMENSIONS, MODAL_TYPE, VERIFICATION_INTERVAL_OPTIONS, PERMISSION_OPTIONS, USER_OPTIONS } from '../utils/constants';
 
 const PLACEHOLDER_MESSAGES = [
   {
@@ -70,7 +71,7 @@ export default function cards(state = initialState, action) {
       const { cards, activeCardIndex } = state;
 
       // Check if card is already open
-      if (!isNewCard && cards.find(({ id: currId }) => currId === card.id)) {
+      if (!isNewCard && cards.some(({ id: currId }) => currId === card.id)) {
         return state;
       }
 
@@ -92,12 +93,12 @@ export default function cards(state = initialState, action) {
           modalOpen: { ...cardInfo.modalOpen, [MODAL_TYPE.CREATE]: createModalOpen },
           editorEnabled: { ...cardInfo.editorEnabled, [EDITOR_TYPE.ANSWER]: true },
           messages: PLACEHOLDER_MESSAGES, // [],
-          owners: [],
+          owners: [USER_OPTIONS[0]], // TODO: add yourself by default
           attachments: [],
           tags: [],
           keywords: [],
-          verificationInterval: null,
-          permissions: null,
+          verificationInterval: createSelectValue(VERIFICATION_INTERVAL_OPTIONS[0]),
+          permissions: createSelectValue(PERMISSION_OPTIONS[0]),
         });
       } else {
         // Will have to update this section in the future
@@ -125,16 +126,22 @@ export default function cards(state = initialState, action) {
     case types.CLOSE_CARD: {
       const { index } = payload;
       const { activeCardIndex, cards, activeCard } = state;
+
       const newCards = removeIndex(cards, index);
+
       if (newCards.length === 0) {
         return initialState;
       }
+
       const isClosingActiveCard = index === activeCardIndex;
+
       let newActiveCardIndex = activeCardIndex;
       if (newActiveCardIndex >= newCards.length) {
         newActiveCardIndex = newCards.length - 1;
       }
+
       const newActiveCard = isClosingActiveCard ? newCards[newActiveCardIndex] : activeCard;
+
       return { ...state, cards: newCards, activeCardIndex: newActiveCardIndex, activeCard: newActiveCard };
     }
 
@@ -208,6 +215,53 @@ export default function cards(state = initialState, action) {
     case types.CANCEL_EDIT_CARD_MESSAGES: {
       const { activeCard } = state;
       return updateActiveCardEdits({ messages: activeCard.messages });
+    }
+
+    case types.ADD_CARD_ATTACHMENTS: {
+      const { attachments } = payload;
+      const { activeCard: { edits } } = state; 
+      const newAttachments = attachments.map(attachment => ({ type: 'attachment', data: attachment }));
+      return updateActiveCardEdits({ attachments: [...edits.attachments, ...newAttachments] });
+    }
+    case types.REMOVE_CARD_ATTACHMENT: {
+      const { index } = payload;
+      const { activeCard: { edits } } = state; 
+      return updateActiveCardEdits({ attachments: removeIndex(edits.attachments, index) });
+    }
+
+    case types.ADD_CARD_OWNER: {
+      const { owner } = payload;
+      const { activeCard: { edits } } = state; 
+      return updateActiveCardEdits({ owners: _.union(edits.owners, [owner]) });
+    }
+    case types.REMOVE_CARD_OWNER: {
+      const { index } = payload;
+      const { activeCard: { edits } } = state; 
+      return updateActiveCardEdits({ owners: removeIndex(edits.owners, index) });
+    }
+
+    case types.UPDATE_CARD_TAGS: {
+      const { tags } = payload;
+      const { activeCard: { edits } } = state; 
+      return updateActiveCardEdits({ tags: tags || [] });
+    }
+    case types.REMOVE_CARD_TAG: {
+      const { index } = payload;
+      const { activeCard: { edits } } = state; 
+      return updateActiveCardEdits({ tags: removeIndex(edits.tags, index) });
+    }
+
+    case types.UPDATE_CARD_KEYWORDS: {
+      const { keywords } = payload;
+      return updateActiveCardEdits({ keywords: keywords || [] });
+    }
+    case types.UPDATE_CARD_VERIFICATION_INTERVAL: {
+      const { verificationInterval } = payload;
+      return updateActiveCardEdits({ verificationInterval });
+    }
+    case types.UPDATE_CARD_PERMISSIONS: {
+      const { permissions } = payload;
+      return updateActiveCardEdits({ permissions });
     }
 
     case types.EDIT_CARD: {

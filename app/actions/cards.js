@@ -45,7 +45,6 @@ export function updateCardStatus(cardStatus) {
   return { type: types.UPDATE_CARD_STATUS, payload: { cardStatus } };
 }
 
-
 export function enableCardEditor(editorType) {
   return { type: types.ENABLE_CARD_EDITOR, payload: { editorType} };
 }
@@ -64,6 +63,42 @@ export function toggleCardSelectedMessage(messageIndex) {
 
 export function cancelEditCardMessages() {
   return { type: types.CANCEL_EDIT_CARD_MESSAGES, payload: {} };
+}
+
+export function addCardAttachments(attachments) {
+  return { type: types.ADD_CARD_ATTACHMENTS, payload: { attachments } };
+}
+
+export function removeCardAttachment(index) {
+  return { type: types.REMOVE_CARD_ATTACHMENT, payload: { index } };
+}
+
+export function addCardOwner(owner) {
+  return { type: types.ADD_CARD_OWNER, payload: { owner } };
+}
+
+export function removeCardOwner(index) {
+  return { type: types.REMOVE_CARD_OWNER, payload: { index } };
+}
+
+export function updateCardTags(tags) {
+  return { type: types.UPDATE_CARD_TAGS, payload: { tags } };
+}
+
+export function removeCardTag(index) {
+  return { type: types.REMOVE_CARD_TAG, payload: { index } };
+}
+
+export function updateCardKeywords(keywords) {
+  return { type: types.UPDATE_CARD_KEYWORDS, payload: { keywords } };
+}
+
+export function updateCardVerificationInterval(verificationInterval) {
+  return { type: types.UPDATE_CARD_VERIFICATION_INTERVAL, payload: { verificationInterval } };
+}
+
+export function updateCardPermissions(permissions) {
+  return { type: types.UPDATE_CARD_PERMISSIONS, payload: { permissions } };
 }
 
 export function openCardModal(modalType) {
