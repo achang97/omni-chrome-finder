@@ -137,10 +137,10 @@ class CardCreateModal extends Component {
         bodyClassName={s("rounded-b-lg flex flex-col")}
       >
         <div className={s("flex-grow overflow-auto p-lg")}>
-          { this.renderOwners() }
-          { this.renderTags() }
-          { this.renderKeywords() }
-          { this.renderAdvanced() }
+          { /* this.renderOwners() */ }
+          { /* this.renderTags() */ }
+          { /* this.renderKeywords() */ }
+          { /* this.renderAdvanced() */ }
         </div>
         <Button
           text="Complete Card"

@@ -73,8 +73,8 @@ export function removeCardOwner(index) {
   return { type: types.REMOVE_CARD_OWNER, payload: { index } };
 }
 
-export function addCardTag(tag) {
-  return { type: types.ADD_CARD_TAG, payload: { tag } };
+export function updateCardTags(tags) {
+  return { type: types.UPDATE_CARD_TAGS, payload: { tags } };
 }
 
 export function removeCardTag(index) {

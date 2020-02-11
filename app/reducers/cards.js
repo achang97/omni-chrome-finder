@@ -231,10 +231,10 @@ export default function cards(state = initialState, action) {
       return updateActiveCardEdits({ owners: removeIndex(edits.owners, index) });
     }
 
-    case types.ADD_CARD_TAG: {
-      const { tag } = payload;
+    case types.UPDATE_CARD_TAGS: {
+      const { tags } = payload;
       const { activeCard: { edits } } = state; 
-      return updateActiveCardEdits({ tags: _.union(edits.tags, [tag]) });
+      return updateActiveCardEdits({ tags: tags || [] });
     }
     case types.REMOVE_CARD_TAG: {
       const { index } = payload;

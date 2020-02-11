@@ -7,7 +7,8 @@ import { connect } from 'react-redux';
 import {
   closeCardSideDock,
   removeCardAttachment,
-  addCardTag, removeCardTag,
+  addCardOwner, removeCardOwner,
+  updateCardTags, removeCardTag,
   updateCardKeywords,
   updateCardVerificationInterval, updateCardPermissions,
 } from '../../../actions/cards';
@@ -42,8 +43,9 @@ const SIDE_DOCK_TRANSITION_MS = 300;
   }),
   dispatch => bindActionCreators({
     closeCardSideDock,
+    addCardOwner, removeCardOwner,
     removeCardAttachment,
-    addCardTag, removeCardTag,
+    updateCardTags, removeCardTag,
     updateCardKeywords,
     updateCardVerificationInterval, updateCardPermissions,
   }, dispatch)
@@ -69,14 +71,15 @@ class CardSideDock extends Component {
   );
 
   renderOwners = () => {
+    const { isEditing, addCardOwner, removeCardOwner } = this.props;
     const currOwners = this.getAttribute('owners');
     return (
       <CardSection className={s("mt-reg")} title="Owner(s)">
         <CardUsers
+          isEditable={isEditing}
           users={currOwners}
-          onAddClick={() => console.log('User added!')}
-          onClick={() => console.log('User clicked!')}
-          onRemoveClick={() => console.log('User removed!')}
+          onAdd={addCardOwner}
+          onRemoveClick={removeCardOwner}
         />
       </CardSection>
     );
@@ -89,7 +92,7 @@ class CardSideDock extends Component {
     return (
       <CardSection className={s("mt-lg")} title="Attachments">
         { currAttachments.length === 0 &&
-          <div className={s("text-xs text-gray-light")}>
+          <div className={s("text-sm text-gray-light")}>
             No current attachments
           </div>
         }
@@ -109,14 +112,17 @@ class CardSideDock extends Component {
   }
 
   renderTags = () => {
+    const { isEditing, updateCardTags, removeCardTag } = this.props;
     const currTags = this.getAttribute('tags');
+
     return (
       <CardSection className={s("mt-lg")} title="Tags">
         <CardTags
+          isEditable={isEditing}
           tags={currTags}
-          onTagClick={() => console.log('Tag clicked')}
-          onAddClick={() => console.log('Tag added')}
-          onRemoveClick={() => console.log('Tag removed')}
+          onChange={updateCardTags}
+          onRemoveClick={removeCardTag}
+          showPlaceholder={true}
         />
       </CardSection>
     )
@@ -143,8 +149,8 @@ class CardSideDock extends Component {
             }
           /> :
           <div>
-            { !currKeywords.length === 0 &&
-              <div className={s("text-xs text-gray-light")}>
+            { currKeywords.length === 0 &&
+              <div className={s("text-sm text-gray-light")}>
                 No current keywords
               </div>
             }

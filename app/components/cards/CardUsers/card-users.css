@@ -1,5 +1,5 @@
 .card-users-container {
-	@apply text-gray-dark flex w-full overflow-auto;
+	@apply text-gray-dark flex w-full flex-wrap;
 }
 
 .card-user {

@@ -2,15 +2,27 @@ import React, { Fragment, Component } from 'react';
 import PropTypes from 'prop-types';
 
 import { IoMdAdd } from 'react-icons/io';
-import { MdClose } from 'react-icons/md';
+import { MdClose, MdLock } from 'react-icons/md';
 
 import CardTag from './CardTag';
+import Select from '../../common/Select';
 
-import { NOOP } from '../../../utils/constants';
+import { NOOP, TAG_OPTIONS } from '../../../utils/constants';
+import { createSelectOptions } from '../../../utils/selectHelpers';
 
 import style from './card-tags.css';
 import { getStyleApplicationFn } from '../../../utils/styleHelpers';
 const s = getStyleApplicationFn(style);
+
+const SELECT_TAG_OPTIONS = createSelectOptions(TAG_OPTIONS, ({ tag, id, isLocked }) => ({
+	label: (
+		<div className={s("flex items-center")}>
+			<div> {tag} </div>
+			{ isLocked && <MdLock className={s("ml-xs")} /> }
+		</div>
+	),
+	value: { tag, id, isLocked }
+}));
 
 class CardTags extends Component {
 	constructor(props) {
@@ -18,6 +30,7 @@ class CardTags extends Component {
 
 		this.state = {
 			firstHiddenIndex: props.tags.length,
+			showSelect: false,
 		}
 
 		this.tagRefs = [];
@@ -66,7 +79,8 @@ class CardTags extends Component {
 		}
 	}
 
-	renderTag = (tag, i) => {
+	renderTag = ({ label, value }, i) => {
+		const { tag, id, isLocked } = value;
 		const { maxWidth, tags, onTagClick, onRemoveClick, isEditable } = this.props;
 		const { firstHiddenIndex } = this.state;
 		return (
@@ -80,19 +94,19 @@ class CardTags extends Component {
 				}
 				<CardTag
 					key={tag}
-					text={tag}
+					text={label}
 					ref={maxWidth && ((instance)=>{this.tagRefs[i] = instance;})}
 					className={s(`flex items-center mr-xs mb-xs ${maxWidth ? `whitespace-no-wrap ${i >= firstHiddenIndex ? 'invisible' : ''}` : ''}`)}
 					onClick={onTagClick}
-					onRemoveClick={isEditable ? onRemoveClick : NOOP}
+					onRemoveClick={isEditable ? () => onRemoveClick(i) : NOOP}
 				/>
 			</Fragment>
 		)
 	}
 
 	render() {
-		const { className, tags, onTagClick, onAddClick, onRemoveClick, maxWidth, isEditable } = this.props;
-		const { firstHiddenIndex } = this.state;
+		const { className, tags, onChange, onTagClick, onRemoveClick, maxWidth, isEditable, showPlaceholder } = this.props;
+		const { firstHiddenIndex, showSelect } = this.state;
 		const containerStyle = this.getContainerStyle();
 
 		return (	
@@ -100,18 +114,38 @@ class CardTags extends Component {
 				className={s(`card-tags-container ${maxWidth ? 'flex-shrink-1 min-w-0' : 'card-tags-container-wrap'} ${className}`)}
 				style={containerStyle}
 			>
-				{ tags.map((tag, i) => this.renderTag(tag, i)) }
-				{ isEditable && onAddClick &&
-					<CardTag
-						text={
-							<div className={s("flex items-center")}>
-								<div> Add Tag </div>
-								<IoMdAdd className={s("ml-xs")} />
+				{ showSelect ?
+					<Select
+						className={s("w-full")}
+			            value={tags}
+			            options={SELECT_TAG_OPTIONS}
+			            onChange={onChange}
+			            isSearchable
+			            isMulti
+			            menuShouldScrollIntoView
+			            isClearable={false}
+			            placeholder={"Add tags..."}
+					/> :
+					<React.Fragment>
+						{ tags.map((tag, i) => this.renderTag(tag, i)) }
+						{ !isEditable && tags.length === 0 && showPlaceholder &&
+							<div className={s("text-sm text-gray-light")}>
+								No current tags
 							</div>
 						}
-						className={s("mr-xs mb-xs primary-gradient text-white")}
-						onClick={onAddClick}
-					/>
+						{ isEditable &&
+							<CardTag
+								text={
+									<div className={s("flex items-center")}>
+										<div> Add Tag </div>
+										<IoMdAdd className={s("ml-xs")} />
+									</div>
+								}
+								className={s("mr-xs mb-xs primary-gradient text-white")}
+								onClick={() => this.setState({ showSelect: true })}
+							/>
+						}
+					</React.Fragment>
 				}
 			</div>
 		);		
@@ -123,14 +157,16 @@ CardTags.propTypes = {
 	className: PropTypes.string,
 	tags: PropTypes.arrayOf(PropTypes.string).isRequired,
 	maxWidth: PropTypes.number,
+	onChange: PropTypes.func,
 	onTagClick: PropTypes.func,
-	onAddClick: PropTypes.func,
 	onRemoveClick: PropTypes.func,
+	showPlaceholder: PropTypes.bool,
 }
 
 CardTags.defaultProps = {
 	className: '',
 	size: 'md',
+	showPlaceholder: false,
 }
 
 export default CardTags;
