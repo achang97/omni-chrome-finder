@@ -2,7 +2,8 @@ import * as types from '../actions/actionTypes';
 import _ from 'underscore';
 import { EditorState } from 'draft-js';
 import { removeIndex, updateIndex } from '../utils/arrayHelpers';
-import { CARD_STATUS_OPTIONS, EDITOR_TYPE, CARD_DIMENSIONS, MODAL_TYPE } from '../utils/constants';
+import { createSelectValue } from '../utils/selectHelpers';
+import { CARD_STATUS_OPTIONS, EDITOR_TYPE, CARD_DIMENSIONS, MODAL_TYPE, VERIFICATION_INTERVAL_OPTIONS, PERMISSION_OPTIONS, USER_OPTIONS } from '../utils/constants';
 
 const PLACEHOLDER_MESSAGES = [
   {
@@ -31,6 +32,7 @@ const initialState = {
   cardsHeight: CARD_DIMENSIONS.DEFAULT_CARDS_HEIGHT,
   activeCardIndex: -1,
   activeCard: {},
+  showCloseModal: false,
 };
 
 export default function cards(state = initialState, action) {
@@ -76,7 +78,7 @@ export default function cards(state = initialState, action) {
       let cardInfo = {
         isEditing: false, 
         sideDockOpen: false, 
-        modalOpen: { [MODAL_TYPE.CREATE]: false, [MODAL_TYPE.THREAD]: false },
+        modalOpen: { [MODAL_TYPE.CREATE]: false, [MODAL_TYPE.THREAD]: false, [MODAL_TYPE.CONFIRM_CLOSE]: false, [MODAL_TYPE.CONFIRM_CLOSE_UNDOCUMENTED]: false, [MODAL_TYPE.CONFIRM_UP_TO_DATE]: false, [MODAL_TYPE.CONFIRM_UP_TO_DATE_SAVE]: false },
         editorEnabled: { [EDITOR_TYPE.DESCRIPTION]: false, [EDITOR_TYPE.ANSWER]: false },
         descriptionSectionHeight: CARD_DIMENSIONS.MIN_QUESTION_HEIGHT,
         edits: {},
@@ -91,12 +93,12 @@ export default function cards(state = initialState, action) {
           modalOpen: { ...cardInfo.modalOpen, [MODAL_TYPE.CREATE]: createModalOpen },
           editorEnabled: { ...cardInfo.editorEnabled, [EDITOR_TYPE.ANSWER]: true },
           messages: PLACEHOLDER_MESSAGES, // [],
-          owners: [],
+          owners: [USER_OPTIONS[0]], // TODO: add yourself by default
           attachments: [],
           tags: [],
           keywords: [],
-          verificationInterval: null,
-          permissions: null,
+          verificationInterval: createSelectValue(VERIFICATION_INTERVAL_OPTIONS[0]),
+          permissions: createSelectValue(PERMISSION_OPTIONS[0]),
         });
       } else {
         // Will have to update this section in the future
@@ -148,6 +150,13 @@ export default function cards(state = initialState, action) {
     }
     case types.CLOSE_CARD_SIDE_DOCK: {
       return updateActiveCard({ sideDockOpen: false });
+    }
+
+    case types.OPEN_MODAL: {
+      return { ...state, showCloseModal: true };
+    }
+    case types.CLOSE_MODAL: {
+      return { ...state, showCloseModal: false };
     }
 
     case types.ENABLE_CARD_EDITOR: {

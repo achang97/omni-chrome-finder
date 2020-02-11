@@ -52,3 +52,12 @@
 .primary-underline {
   border-bottom: 2px solid #FFFFFF33 !important;
 }
+
+/* Z-index */
+.modal-overlay-important {
+  z-index: 200;
+}
+
+.modal-important {
+  z-index: 201;
+}

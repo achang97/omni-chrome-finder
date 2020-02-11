@@ -10,6 +10,8 @@ import Select from '../../common/Select';
 import Button from '../../common/Button';
 import Modal from '../../common/Modal';
 
+import { MdLock, MdAutorenew } from 'react-icons/md';
+
 import { PERMISSION_OPTIONS, VERIFICATION_INTERVAL_OPTIONS, CARD_STATUS_OPTIONS, MODAL_TYPE } from '../../../utils/constants';
 import { createSelectOptions } from '../../../utils/selectHelpers';
 
@@ -23,8 +25,9 @@ import {
   updateCardVerificationInterval, updateCardPermissions,
 } from '../../../actions/cards';
 
+import style from './card-create-modal.css';
 import { getStyleApplicationFn } from '../../../utils/styleHelpers';
-const s = getStyleApplicationFn();
+const s = getStyleApplicationFn(style);
 
 const SELECT_PERMISSION_OPTIONS = createSelectOptions(PERMISSION_OPTIONS);
 const SELECT_VERIFICATION_INTERVAL_OPTIONS = createSelectOptions(VERIFICATION_INTERVAL_OPTIONS);
@@ -81,7 +84,18 @@ class CardCreateModal extends Component {
   renderKeywords = () => {
     const { edits: { keywords }, updateCardKeywords } = this.props;
     return (
-      <CardSection className={s("mt-reg")} title="Keywords" startExpanded={false}>
+      <CardSection
+        className={s("mt-reg")}
+        title="Keywords"
+        startExpanded={false}
+        preview={
+          <div className={s("card-create-modal-keywords-preview")}>
+            { keywords.map(({ label }, i) => (
+              <div className={i !== keywords.length - 1 ? s('mr-xs') : ''}> {label}{i !== keywords.length - 1 && ','} </div>
+            ))}
+          </div>
+        }
+      >
         <Select
           value={keywords}
           onChange={updateCardKeywords}
@@ -103,7 +117,21 @@ class CardCreateModal extends Component {
   renderAdvanced = () => {
     const { edits: { verificationInterval, permissions }, updateCardVerificationInterval, updateCardPermissions } = this.props;
     return (
-      <CardSection className={s("mt-reg")} title="Advanced" showSeparator={false} startExpanded={false}>
+      <CardSection
+        className={s("mt-reg")}
+        title="Advanced"
+        showSeparator={false}
+        startExpanded={false}
+        preview={
+          <div className={s("text-xs text-purple-gray-50 flex")}>
+            <MdAutorenew />
+            <span className={s("ml-xs")}> {verificationInterval.label} </span>
+            <div className={s("vertical-separator mx-reg")} />
+            <MdLock />
+            <span className={s("ml-xs")}> {permissions.label} </span>
+          </div>
+        }
+      >
         <div className={s("flex")}>
           <div className={s("flex-1 mr-xs")}>
             <div className={s("text-gray-reg text-xs mb-xs")}> Verification Interval </div>
@@ -140,7 +168,7 @@ class CardCreateModal extends Component {
   }
 
   render() {
-    const { modalOpen, closeCardModal, edits: { question } } = this.props;
+    const { modalOpen, closeCardModal, edits: { question, owners, verificationInterval, permissions } } = this.props;
 
     return (
       <Modal
@@ -163,6 +191,11 @@ class CardCreateModal extends Component {
           underline
           underlineColor="purple-gray-50"
           color={"primary"}
+          disabled={
+            owners.length === 0 ||
+            !verificationInterval ||
+            !permissions            
+          }
         />
       </Modal>
     );

@@ -19,3 +19,11 @@
 .modal-body {
 	@apply overflow-auto;
 }
+
+.modal-overlay-important {
+	z-index: 200 !important;
+}
+
+.modal-important {
+	z-index: 201 !important;
+}

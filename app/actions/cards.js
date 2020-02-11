@@ -17,6 +17,14 @@ export function closeAllCards() {
   return { type: types.CLOSE_ALL_CARDS, payload: {} };
 }
 
+export function openModal() {
+  return { type: types.OPEN_MODAL, payload: {} };
+}
+
+export function closeModal() {
+  return { type: types.CLOSE_MODAL, payload: {} };
+}
+
 export function adjustCardsDimensions(newWidth, newHeight) {
   return { type: types.ADJUST_CARDS_DIMENSIONS, payload: { newWidth, newHeight } }
 }

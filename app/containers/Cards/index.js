@@ -8,14 +8,16 @@ import CardContent from '../../components/cards/CardContent';
 
 import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
-import { closeCard, closeAllCards, setActiveCardIndex, adjustCardsDimensions } from '../../actions/cards';
+import { closeCard, closeAllCards, setActiveCardIndex, adjustCardsDimensions, openCardModal, openModal, closeModal } from '../../actions/cards';
 
 import Tabs from '../../components/common/Tabs/Tabs';
 import Tab from '../../components/common/Tabs/Tab';
+import Modal from '../../components/common/Modal';
+import Button from '../../components/common/Button';
 
 import { colors } from '../../styles/colors';
 import style from './cards.css';
-import { DEBOUNCE_60_HZ, CARD_DIMENSIONS } from '../../utils/constants';
+import { DEBOUNCE_60_HZ, CARD_DIMENSIONS, MODAL_TYPE, CARD_STATUS_OPTIONS } from '../../utils/constants';
 import { getStyleApplicationFn } from '../../utils/styleHelpers';
 const s = getStyleApplicationFn(style);
 
@@ -26,12 +28,16 @@ const s = getStyleApplicationFn(style);
     activeCard: state.cards.activeCard,
     cardsWidth: state.cards.cardsWidth,
     cardsHeight: state.cards.cardsHeight,
+    showCloseModal: state.cards.showCloseModal,
   }),
   dispatch => bindActionCreators({
     closeCard,
     closeAllCards,
     setActiveCardIndex,
     adjustCardsDimensions,
+    openCardModal,
+    openModal,
+    closeModal
   }, dispatch)
 )
 
@@ -42,19 +48,103 @@ export default class Cards extends Component {
     }
   }
 
-  closeCard = (e, index) => {
-    const { closeCard } = this.props;
+  cardStateChanged = (index) => {
+    const { cards, activeCardIndex, activeCard } = this.props;
 
+    // Get updated current card
+    let currentCard = cards[index];
+    if (index === activeCardIndex ) { 
+      currentCard = activeCard;
+    }
+
+    // Check Question
+    if (currentCard.question !== currentCard.edits.question) return true;
+    // Check Description
+    if (currentCard.descriptionEditorState.getCurrentContent() !== currentCard.edits.descriptionEditorState.getCurrentContent()) return true;
+    // Check Answer
+    if (currentCard.answerEditorState.getCurrentContent() !== currentCard.edits.answerEditorState.getCurrentContent()) return true;
+
+    return false;
+  }
+
+  closeCard = (e, index) => {
+    const { cards, closeCard, openCardModal, activeCardIndex, activeCard } = this.props;
     e.stopPropagation();
-    closeCard(index);
+
+    let currentCard = cards[index];
+    if (index === activeCardIndex ) { 
+      currentCard = activeCard;
+    }
+    // Check to make sure edit state is different than saved state
+    if (this.cardStateChanged(index)) {
+      if (index !== activeCardIndex) this.updateTab(index);
+      if (currentCard.cardStatus === CARD_STATUS_OPTIONS.NOT_DOCUMENTED) openCardModal(MODAL_TYPE.CONFIRM_CLOSE_UNDOCUMENTED) 
+      else openCardModal(MODAL_TYPE.CONFIRM_CLOSE);
+    } else {
+      closeCard(index);
+    }
+  }
+
+  closeAllCards = () => {
+    const { cards, closeAllCards, openModal } = this.props;
+    let cardChanges = false;
+    cards.forEach((card, i) => {
+      if (this.cardStateChanged(i)) {
+        cardChanges = true;
+      }
+    });
+    if (cardChanges) {
+      openModal()
+    } else {
+      closeAllCards()
+    }
+
+  }
+
+  closeCloseCardsModal = () => {
+    const { closeModal } = this.props;
+    closeModal();
+  }
+
+  renderCloseModal = () => {
+    const { showCloseModal, closeAllCards } = this.props;
+    return (
+      <Modal
+        isOpen={showCloseModal}
+        onRequestClose={() => this.closeCloseCardsModal()}
+        headerClassName={s("bg-purple-light")}
+        overlayClassName={s("rounded-lg")}
+        title={"Close Cards"}
+        important
+        >
+        <div className={s("p-lg flex flex-col")}> 
+          <div> One of more of the cards open have unsaved changes. All unsaved changes will be lost upon closing the cards. Are you sure you want to close your cards? </div>
+          <div className={s("flex mt-lg")} >
+            <Button 
+              text={"No"}
+              onClick={() => this.closeCloseCardsModal()}
+              color={"transparent"}
+              className={s("flex-grow mr-reg")}
+              underline
+            /> 
+            <Button 
+              text={"Close Cards"}
+              onClick={() => closeAllCards()}
+              color={"primary"}
+              className={s("flex-grow ml-reg")}
+              underline
+            />   
+          </div>
+        </div>
+      </Modal>
+    )
   }
 
   renderTabHeaderButtons = () => {
-    const { closeAllCards } = this.props;
 
     return (
       <div className={s("px-reg flex flex-shrink-0")}>
-        <button onClick={closeAllCards}>
+        <button onClick={this.closeAllCards}>
           <MdClose color={colors.purple['gray-50']} />
         </button>
       </div>
@@ -140,6 +230,7 @@ export default class Cards extends Component {
           >
             { this.renderTabHeader() }
             <CardContent />
+            { this.renderCloseModal() }
           </Resizable>
         </Draggable>
       </div>
