@@ -117,7 +117,7 @@ export default function cards(state = initialState, action) {
       const { index } = payload;
       const { activeCard, activeCardIndex, cards } = state;
 
-      if (index === activeCard) {
+      if (index === activeCardIndex) {
         return state;
       }
 
