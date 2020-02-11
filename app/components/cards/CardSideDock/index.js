@@ -86,7 +86,7 @@ class CardSideDock extends Component {
   }
 
   renderAttachments = () => {
-    const { removeCardAttachment } = this.props; 
+    const { removeCardAttachment, isEditable } = this.props; 
     const currAttachments = this.getAttribute('attachments');
 
     return (
@@ -103,7 +103,7 @@ class CardSideDock extends Component {
               filename={type === 'recording' ? 'Screen Recording' : data.name}
               className={s("min-w-0")}
               textClassName={s("truncate")}
-              onRemoveClick={() => removeCardAttachment(i)}
+              onRemoveClick={isEditable ? () => removeCardAttachment(i) : null}
             />
           ))}
         </div>

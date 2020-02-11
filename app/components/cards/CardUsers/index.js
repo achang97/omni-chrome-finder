@@ -28,17 +28,16 @@ class CardUsers extends Component {
 	constructor(props) {
 		super(props);
 		this.state = {
-			addSelectShown: false,
+			showSelect: false,
 		}
 	}
 
 	render() {
 		const { className, isEditable, users, onUserClick, onRemoveClick, onAdd } = this.props;
-		const { addSelectShown } = this.state;
-
+		const showSelect = this.state.showSelect || this.props.showSelect;
 		return (
 			<div className={s(`card-users-container ${className}`)}>
-				{ addSelectShown &&
+				{ showSelect &&
 					<Select
 						className={s("w-full mb-sm")}
 			            value={null}
@@ -50,7 +49,7 @@ class CardUsers extends Component {
 			            placeholder={"Add users..."}
 					/>
 				}
-				{ users.map(({ id, name, img }) => (
+				{ users.map(({ id, name, img }, i) => (
 					<CardUser
 						key={id}
 						size="md"
@@ -58,7 +57,7 @@ class CardUsers extends Component {
 						img={img}
 						className={s("mr-reg")}
 						onClick={onUserClick}
-						onRemoveClick={isEditable ? onRemoveClick : null}
+						onRemoveClick={isEditable ? () => onRemoveClick(i) : null}
 					/>
 				))}
 				{ !isEditable && users.length === 0 &&
@@ -66,7 +65,7 @@ class CardUsers extends Component {
 						No current users
 					</div>
 				}
-				{ isEditable && onAdd && !addSelectShown &&
+				{ isEditable && onAdd && !showSelect &&
 					<CircleButton
 						content={<IoMdAdd size={30} />}
 						containerClassName={s("text-purple-reg pt-sm ml-xs")}
@@ -74,7 +73,7 @@ class CardUsers extends Component {
 						labelClassName={s("text-xs")}
 						size="md"
 						label="Add"
-						onClick={() => this.setState({ addSelectShown: true })}
+						onClick={() => this.setState({ showSelect: true })}
 					/>
 				}
 			</div>
@@ -93,10 +92,12 @@ CardUsers.propTypes = {
 	onRemoveClick: PropTypes.func,
 	onUserClick: PropTypes.func,
 	onAdd: PropTypes.func,
+	showSelect: PropTypes.bool,
 }
 
 CardUsers.defaultProps = {
 	className: '',
+	showSelect: false,
 }
 
 export default CardUsers;

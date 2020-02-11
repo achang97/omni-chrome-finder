@@ -106,7 +106,7 @@ class CardTags extends Component {
 
 	render() {
 		const { className, tags, onChange, onTagClick, onRemoveClick, maxWidth, isEditable, showPlaceholder } = this.props;
-		const { firstHiddenIndex, showSelect } = this.state;
+		const { firstHiddenIndex } = this.state;
 		const containerStyle = this.getContainerStyle();
 
 		return (	
@@ -114,7 +114,7 @@ class CardTags extends Component {
 				className={s(`card-tags-container ${maxWidth ? 'flex-shrink-1 min-w-0' : 'card-tags-container-wrap'} ${className}`)}
 				style={containerStyle}
 			>
-				{ showSelect ?
+				{ (this.state.showSelect || this.props.showSelect) ?
 					<Select
 						className={s("w-full")}
 			            value={tags}
@@ -161,12 +161,14 @@ CardTags.propTypes = {
 	onTagClick: PropTypes.func,
 	onRemoveClick: PropTypes.func,
 	showPlaceholder: PropTypes.bool,
+	showSelect: PropTypes.bool,
 }
 
 CardTags.defaultProps = {
 	className: '',
 	size: 'md',
 	showPlaceholder: false,
+	showSelect: false,
 }
 
 export default CardTags;
