@@ -31,6 +31,7 @@ const initialState = {
   cardsHeight: CARD_DIMENSIONS.DEFAULT_CARDS_HEIGHT,
   activeCardIndex: -1,
   activeCard: {},
+  showCloseModal: false,
 };
 
 export default function cards(state = initialState, action) {
@@ -76,7 +77,7 @@ export default function cards(state = initialState, action) {
       let cardInfo = {
         isEditing: false, 
         sideDockOpen: false, 
-        modalOpen: { [MODAL_TYPE.CREATE]: false, [MODAL_TYPE.THREAD]: false },
+        modalOpen: { [MODAL_TYPE.CREATE]: false, [MODAL_TYPE.THREAD]: false, [MODAL_TYPE.CONFIRM_CLOSE]: false, [MODAL_TYPE.CONFIRM_CLOSE_UNDOCUMENTED]: false, [MODAL_TYPE.CONFIRM_UP_TO_DATE]: false, [MODAL_TYPE.CONFIRM_UP_TO_DATE_SAVE]: false },
         editorEnabled: { [EDITOR_TYPE.DESCRIPTION]: false, [EDITOR_TYPE.ANSWER]: false },
         descriptionSectionHeight: CARD_DIMENSIONS.MIN_QUESTION_HEIGHT,
         edits: {},
@@ -123,18 +124,18 @@ export default function cards(state = initialState, action) {
     }
     case types.CLOSE_CARD: {
       const { index } = payload;
-      const newCards = removeIndex(state.cards, index);
-
+      const { activeCardIndex, cards, activeCard } = state;
+      const newCards = removeIndex(cards, index);
       if (newCards.length === 0) {
         return initialState;
       }
-
-      let activeCardIndex = state.activeCardIndex;
-      if (activeCardIndex >= newCards.length) {
-        activeCardIndex = newCards.length - 1;
+      const isClosingActiveCard = index === activeCardIndex;
+      let newActiveCardIndex = activeCardIndex;
+      if (newActiveCardIndex >= newCards.length) {
+        newActiveCardIndex = newCards.length - 1;
       }
-
-      return { ...state, cards: newCards, activeCardIndex, activeCard: newCards[activeCardIndex] };
+      const newActiveCard = isClosingActiveCard ? newCards[newActiveCardIndex] : activeCard;
+      return { ...state, cards: newCards, activeCardIndex: newActiveCardIndex, activeCard: newActiveCard };
     }
 
     case types.OPEN_CARD_SIDE_DOCK: {
@@ -142,6 +143,13 @@ export default function cards(state = initialState, action) {
     }
     case types.CLOSE_CARD_SIDE_DOCK: {
       return updateActiveCard({ sideDockOpen: false });
+    }
+
+    case types.OPEN_MODAL: {
+      return { ...state, showCloseModal: true };
+    }
+    case types.CLOSE_MODAL: {
+      return { ...state, showCloseModal: false };
     }
 
     case types.ENABLE_CARD_EDITOR: {

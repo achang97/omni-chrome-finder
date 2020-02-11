@@ -106,6 +106,7 @@ export default class Create extends Component {
 	        color="primary"
 	        text="Create Card"
 	        iconLeft={false}
+	        disabled={question === '' || !answerEditorState.getCurrentContent().hasText()}
 	        icon={
 	          <span className={s("rounded-full h-3xl w-3xl flex justify-center items-center bg-white text-purple-reg")}>
 	            <MdAdd />

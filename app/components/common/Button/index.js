@@ -23,7 +23,7 @@ const getClassNames = (color, underline) => {
 }
 
 const Button = (props) => {
-	const { text, textClassName, icon, iconLeft, className, underline, underlineColor, color, onClick, imgSrc, imgClassName } = props;
+	const { text, textClassName, icon, iconLeft, className, underline, underlineColor, color, onClick, imgSrc, imgClassName, disabled } = props;
 	const { outerClassName = '', innerClassName = '' } = getClassNames(color, underline);
 
 	const protectedOnClick = () => {
@@ -31,7 +31,7 @@ const Button = (props) => {
 	}
 
 	return (
-		<div className={s(`button-container button-hover ${className} ${outerClassName}`)} onClick={protectedOnClick}>
+		<div className={s(`button-container button-hover ${className} ${outerClassName} ${ disabled ? 'pointer-events-none opacity-75' : ''}`)} onClick={protectedOnClick}>
 			{ iconLeft && icon }
 			{ iconLeft && imgSrc && <img className={s(`${imgClassName}`)} src={imgSrc} /> }
 			<div className={s(`button-text ${underline && underlineColor ? `underline-border border-${underlineColor}` : ''} ${innerClassName} ${textClassName}`)}>
@@ -54,6 +54,7 @@ Button.propTypes = {
 	icon: PropTypes.element,
 	iconLeft: PropTypes.bool,
 	color: PropTypes.oneOf(["primary", "secondary", "transparent"]),
+	disabled: PropTypes.bool,
 }
 
 
@@ -66,6 +67,7 @@ Button.defaultProps = {
 	icon: null,
 	iconLeft: true,
 	imgSrc: null,
+	disabled: false,
 }
 
 export default Button;

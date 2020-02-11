@@ -10,7 +10,7 @@ import style from './modal.css';
 import { getStyleApplicationFn } from '../../../utils/styleHelpers';
 const s = getStyleApplicationFn(style);
 
-const Modal = ({ isOpen, transitionMs, shouldCloseOnOutsideClick, className, onRequestClose, headerClassName, overlayClassName, bodyClassName, title, children }) => {
+const Modal = ({ isOpen, transitionMs, shouldCloseOnOutsideClick, className, onRequestClose, headerClassName, overlayClassName, bodyClassName, title, children, important }) => {
 	const onOutsideClick = () => {
 		if (shouldCloseOnOutsideClick && onRequestClose) onRequestClose();
 	}
@@ -32,7 +32,7 @@ const Modal = ({ isOpen, transitionMs, shouldCloseOnOutsideClick, className, onR
 				unmountOnExit
 			>
 				{state => (
-					<div style={{ ...baseStyle, ...modalTransitionStyles[state] }} className={s(`modal ${className}`)}>
+					<div style={{ ...baseStyle, ...modalTransitionStyles[state] }} className={s(`modal ${className} ${important? 'modal-important' : ''}`)}>
 						<div className={s(`modal-header ${headerClassName}`)}>
 							<div className={s("font-semibold")}> {title} </div>
 							<button onClick={onRequestClose}> <MdClose className={s("text-purple-gray-50")} /> </button>
@@ -50,7 +50,7 @@ const Modal = ({ isOpen, transitionMs, shouldCloseOnOutsideClick, className, onR
 				unmountOnExit
 			>
 				{state => (
-					<div style={{ ...baseStyle, ...FADE_IN_TRANSITIONS[state] }}  className={s(`modal-overlay ${overlayClassName}`)} onClick={onOutsideClick} />
+					<div style={{ ...baseStyle, ...FADE_IN_TRANSITIONS[state] }}  className={s(`modal-overlay ${overlayClassName} ${important? 'modal-overlay-important' : ''}`)} onClick={onOutsideClick} />
 				)}
 			</Transition>
 		</div>
@@ -67,6 +67,7 @@ Modal.propTypes = {
 	overlayClassName: PropTypes.string,
 	title: PropTypes.string,
 	transitionMs: PropTypes.number,
+	important: PropTypes.bool,
 }
 
 Modal.defaultProps = {
@@ -77,6 +78,7 @@ Modal.defaultProps = {
 	className: '',
 	overlayClassName: '',
 	transitionMs: 100,
+	important: false,
 }
 
 export default Modal;
