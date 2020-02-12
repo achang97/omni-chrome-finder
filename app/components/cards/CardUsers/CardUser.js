@@ -5,19 +5,25 @@ import { MdClose } from 'react-icons/md';
 import CircleButton from '../../common/CircleButton';
 import PlaceholderImg from '../../common/PlaceholderImg';
 
+import { NOOP } from '../../../utils/constants';
+
 import style from './card-users.css';
 import { getStyleApplicationFn } from '../../../utils/styleHelpers';
 const s = getStyleApplicationFn(style);
 
 const CardUser = ({ className, name, img, size, onClick, onRemoveClick, ...rest }) => {
+	const protectedOnClick = () => {
+		if (onClick) onClick({ img, name });
+	}
+
 	return (	
 		<div className={s(`card-user ${className} ${onRemoveClick ? 'pr-sm pt-sm' : ''}`)} {...rest}>
 			<CircleButton
-				content={<PlaceholderImg src={img} name={name} className={s("w-full h-full")} />}
+				content={<PlaceholderImg src={img} name={name} className={s(`w-full h-full`)} />}
 				size={size}
 				label={name}
 				labelClassName={s("card-user-label")}
-				onClick={onClick}
+				onClick={protectedOnClick}
 			/>
 			{ onRemoveClick &&
 				<button onClick={onRemoveClick} className={s("absolute top-0 right-0 text-purple-gray-50")}>

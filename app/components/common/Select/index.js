@@ -1,5 +1,7 @@
 import React from 'react';
 import ReactSelect from 'react-select';
+import CreatableSelect from 'react-select/creatable';
+import PropTypes from 'prop-types';
 
 import { colors } from '../../../styles/colors';
 import customStyles from './customStyles';
@@ -8,9 +10,11 @@ import style from './select.css';
 import { getStyleApplicationFn } from '../../../utils/styleHelpers';
 const s = getStyleApplicationFn(style);
 
-const Select = ({ className, styles, ...rest }) => {
+const Select = ({ className, creatable, styles, ...rest }) => {
+  const SelectComponent = creatable ? CreatableSelect : ReactSelect;
+
   return (
-    <ReactSelect
+    <SelectComponent
       {...rest}
       classNamePrefix="omni-react-select"
       className={s(`select ${className}`)}
@@ -30,7 +34,12 @@ const Select = ({ className, styles, ...rest }) => {
   );
 }
 
+Select.propTypes = {
+  creatable: PropTypes.bool,
+}
+
 Select.defaultProps = {
+  creatable: false,
   className: '',
   styles: {},
 }

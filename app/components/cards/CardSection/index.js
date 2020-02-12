@@ -21,20 +21,23 @@ class CardSection extends Component {
 	}
 
 	render() {
-		const { title, isExpandable, showSeparator, className, children } = this.props;
+		const { title, isExpandable, showSeparator, className, preview, children } = this.props;
 		const { isExpanded } = this.state;
 
 		return (
 			<div className={className}>
-				<div className={s("flex mb-lg items-center")}>
-					<div className={s("font-semibold mr-reg text-sm text-black button-hover")} onClick={this.toggleSection}>
-						{title}
+				<div className={s("flex mb-lg items-center justify-between")}>
+					<div className={s("flex items-center")}>
+						<div className={s("font-semibold mr-reg text-sm text-black button-hover")} onClick={this.toggleSection}>
+							{title}
+						</div>
+						{ isExpandable &&
+							<button className={s("text-gray-light flex items-center")} onClick={this.toggleSection}>
+								{ isExpanded ? <MdExpandLess /> : <MdExpandMore /> }
+							</button>
+						}
 					</div>
-					{ isExpandable &&
-						<button className={s("text-gray-light flex items-center")} onClick={this.toggleSection}>
-							{ isExpanded ? <MdExpandLess /> : <MdExpandMore /> }
-						</button>
-					}
+					{ !isExpanded && preview }
 				</div>
 				<AnimateHeight height={isExpandable && isExpanded ? 'auto' : 0}>
 					{ children }
@@ -53,6 +56,7 @@ CardSection.propTypes = {
 	startExpanded: PropTypes.bool,
 	showSeparator: PropTypes.bool,
 	className: PropTypes.string,
+	preview: PropTypes.element,
 }
 
 CardSection.defaultProps = {
