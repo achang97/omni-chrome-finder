@@ -2,11 +2,9 @@ import React, { Component } from 'react';
 import { Route, Switch, Redirect, withRouter } from 'react-router-dom';
 import Dock from 'react-dock';
 import { CHROME_MESSAGES } from '../utils/constants';
-
 import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
 import { toggleDock } from '../actions/display';
-
 import Header from '../components/common/Header';
 import Ask from './Ask';
 import Create from './Create';
@@ -14,21 +12,18 @@ import Navigate from './Navigate';
 import Tasks from './Tasks';
 import Cards from './Cards';
 import Profile from './Profile';
-import Login from './Login';
 
 import style from './App.css';
 import { getStyleApplicationFn } from '../utils/styleHelpers';
 const s = getStyleApplicationFn(style);
-
 const dockPanelStyles = {
   background: 'white',
   borderRadius: '8px 0 0 8px'
 };
-
 @connect(
   state => ({
     dockVisible: state.display.dockVisible,
-    dockExpanded: state.display.dockExpanded
+    dockExpanded: state.display.dockExpanded,
   }),
   dispatch =>
     bindActionCreators(
@@ -41,31 +36,25 @@ const dockPanelStyles = {
 class App extends Component {
   constructor(props) {
     super(props);
-
     this.state = {
       suggestTabVisible: false
     };
   }
-
   componentDidMount() {
     chrome.runtime.onMessage.addListener(this.listener);
     window.addEventListener('load', this.handleFirstPageLoad);
   }
-
   componentWillUnmount() {
     chrome.runtime.onMessage.removeListener(this.listener);
     window.removeEventListener('load', this.handleFirstPageLoad);
   }
-
   getPageText = () => {
     // TODO: Basic version that is website agnostic, simply removes chrome extension code, scripts,
     // and styles from DOM and gets inner text. Future version should look at specific divs (ie. title
     // and content of email for Gmail).
     const docCopy = document.cloneNode(true);
-
     const omniExt = docCopy.getElementById('omni-chrome-ext-main-container');
     omniExt.remove();
-
     const removeSelectors = ['script', 'noscript', 'style'];
     removeSelectors.forEach((selector) => {
       const elements = docCopy.querySelectorAll(`body ${selector}`);
@@ -73,14 +62,11 @@ class App extends Component {
         elem.remove();
       }
     });
-
     return docCopy.body.innerText;
   };
-
   handleFirstPageLoad = () => {
     this.handleTabUpdate(window.location.href);
   };
-
   handleTabUpdate = (url) => {
     // Placeholder code for AI Suggest, code should be written in another file eventually
     // Case 1: Matches specific email page in Gmail
@@ -92,7 +78,6 @@ class App extends Component {
       this.setState({ suggestTabVisible: false });
     }
   };
-
   listener = (msg) => {
     const { type, ...restMsg } = msg;
     switch (msg.type) {
@@ -107,7 +92,6 @@ class App extends Component {
       }
     }
   };
-
   render() {
     const {
       dockVisible,
@@ -116,14 +100,12 @@ class App extends Component {
       location: { pathname }
     } = this.props;
     const { suggestTabVisible, jss } = this.state;
-
     const showFullDock = dockExpanded || pathname !== '/ask';
-
     // Solution to CSS isolation taken from https://stackoverflow.com/a/57221293.
     return (
       <div className={s('app-container')}>
-        {dockVisible && <Cards />}
-        {suggestTabVisible && ( // TODO: move to new file and style
+        { dockVisible && <Cards />}
+        { suggestTabVisible && ( // TODO: move to new file and style
           <div
             className={s('app-suggest-tab fixed bg-white shadow-md')}
             onClick={() => toggleDock()}
@@ -143,16 +125,15 @@ class App extends Component {
           }}
         >
           <div className={s(`flex flex-col ${showFullDock ? 'h-screen' : ''}`)}>
-            <Header />
+            { <Header /> }
             <Switch>
-              <Route path="/ask" component={Ask} />
-              <Route path="/create" component={Create} />
-              <Route path="/navigate" component={Navigate} />
-              <Route path="/tasks" component={Tasks} />
-              <Route path="/profile" component={Profile} />
-              <Route path="/login" component={Login} />
+              { <Route path="/ask" component={Ask} /> }
+              { <Route path="/create" component={Create} /> }
+              { <Route path="/navigate" component={Navigate} /> }
+              { <Route path="/tasks" component={Tasks} /> }
+              { <Route path="/profile" component={Profile} /> }
               {/* A catch-all route: put all other routes ABOVE here */}
-              <Redirect to="/ask" />
+              <Redirect to='/ask' />
             </Switch>
           </div>
         </Dock>
@@ -160,5 +141,4 @@ class App extends Component {
     );
   }
 }
-
 export default withRouter(App);
