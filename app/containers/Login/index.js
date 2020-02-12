@@ -1,74 +1,74 @@
-import React, { useState } from 'react';
+import React, { Component } from 'react';
+import { Link } from 'react-router-dom';
 
-import Tabs from '../../components/common/Tabs/Tabs';
-import Tab from '../../components/common/Tabs/Tab';
+import Button from '../../components/common/Button';
+
+import { updateLoginEmail, updateLoginPassword, requestLogin } from '../../actions/auth';
+import { bindActionCreators } from 'redux';
+import { connect } from 'react-redux';
 
 import style from './login.css';
 import { getStyleApplicationFn } from '../../utils/styleHelpers';
 const s = getStyleApplicationFn(style);
 
-const INTEGRATIONS = ['Slack', 'Email', 'Asana'];
+import logo from '../../assets/images/logos/logo.png';
 
-const Login = (props) => {
-  const [tabValue, setTabValue] = useState(0);
+@connect(
+  state => ({
+    loginEmail: state.auth.loginEmail,
+    loginPassword: state.auth.loginPassword,
+    loginError: state.auth.loginError,
+  }),
+  dispatch =>
+    bindActionCreators(
+      {
+        requestLogin,
+        updateLoginEmail,
+        updateLoginPassword,
+      },
+      dispatch
+    )
+)
 
-  const handleTabClick = (tabValue) => {
-    setTabValue(tabValue);
-  };
+class Login extends Component {
+  constructor(props) {
+    super(props);
+  }
 
-  return (
-    <div>
-      <div className={s('h-16 p-lg bg-gray-300')}>
-        <Tabs
-          activeValue={tabValue}
-          className={s('mb-lg')}
-          tabClassName={s(
-            'ask-integrations-tab text-sm font-normal rounded-full'
-          )}
-          inactiveTabClassName={s('text-purple-reg')}
-          activeTabClassName={s(
-            'ask-integrations-tab-selected text-white font-semibold'
-          )}
-          onTabClick={handleTabClick}
-          showRipple={false}
-        >
-          {INTEGRATIONS.map(integration => (
-            <Tab key={integration}>
-              <div className={s('ask-integrations-tab-text')}>
-                {' '}
-                {integration}{' '}
-              </div>
-            </Tab>
-          ))}
-        </Tabs>
-      </div>
-      <div
-        className={s('w-full flex mx-auto p-2 items-center justify-center')}
-        style={{ minHeight: '50vh' }}
-      >
+  render() {
+    const { requestLogin, updateLoginEmail, updateLoginPassword, loginEmail, loginPassword } = this.props;
+
+    return (
+      <div className={s("flex-1 items-center px-lg pb-lg pt-3xl bg-purple-light")}>
+        <img src={logo} className={s("w-1/2 mx-auto block mb-reg")} />
         <div>
-          <span className={s('block text-center my-xl text-xl')}>
-            Please,sign in
-          </span>
-          <div
-            className={s(
-              'w-full flex-1 bg-gray-300 rounded-lg p-lg shadow-md text-purple-reg'
-            )}
-          >
-            <ul>
-              <li
-                className={s(
-                  'list-none cursor-pointer bg-white m-sm my-lg p-sm px-xl font-semibold rounded-lg w-full'
-                )}
-              >
-                Sign in through Slack
-              </li>
-            </ul>
-          </div>
+          <input
+            type="text"
+            value={loginEmail}
+            placeholder="Enter login email"
+            className={s("w-full mb-xs")}
+            onChange={(e) => updateLoginEmail(e.target.value)}
+          />
         </div>
+        <div>
+          <input
+            type="password"
+            value={loginPassword}
+            placeholder="Enter password"
+            className={s("w-full")}
+            onChange={(e) => updateLoginPassword(e.target.value)}
+          />
+        </div>
+        <Button
+          color="primary"
+          text="Login"
+          className={s("mt-reg")}
+          onClick={requestLogin}
+          disabled={loginEmail === '' || loginPassword === ''}
+        />
       </div>
-    </div>
-  );
+    );    
+  }
 };
 
 export default Login;

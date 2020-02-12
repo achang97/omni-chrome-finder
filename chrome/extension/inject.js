@@ -15,7 +15,7 @@ chrome.storage.local.get('state', (obj) => {
   const createStore = require('../../app/store/configureStore');
 
   ReactDOM.render(
-    <Root store={createStore(initialState)} />,
+    <Root {...createStore(initialState)} />,
     wrapper // document.querySelector('#root')
   );
 });

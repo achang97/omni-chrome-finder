@@ -1,4 +1,5 @@
 import { applyMiddleware, createStore, compose } from 'redux';
+import { persistStore } from 'redux-persist';
 import thunk from 'redux-thunk';
 import rootReducer from '../reducers';
 import storage from '../utils/storage';
@@ -15,6 +16,7 @@ const enhancer = compose(
 
 export default function (initialState) {
   const store = createStore(rootReducer, initialState, enhancer);
+  const persistor = persistStore(store);
 
   // Run saga
   sagaMiddleware.run(rootSaga, store.dispatch, store.getState);
@@ -24,5 +26,5 @@ export default function (initialState) {
   store.injectedReducers = {}; // Reducer registry
   store.injectedSagas = {}; // Saga registry
 
-  return store;
+  return { store, persistor };
 }

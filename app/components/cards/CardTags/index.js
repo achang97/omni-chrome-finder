@@ -8,21 +8,11 @@ import CardTag from './CardTag';
 import Select from '../../common/Select';
 
 import { NOOP, TAG_OPTIONS } from '../../../utils/constants';
-import { createSelectOptions } from '../../../utils/selectHelpers';
+import { createSelectOptions, simpleInputFilter } from '../../../utils/selectHelpers';
 
 import style from './card-tags.css';
 import { getStyleApplicationFn } from '../../../utils/styleHelpers';
 const s = getStyleApplicationFn(style);
-
-const SELECT_TAG_OPTIONS = createSelectOptions(TAG_OPTIONS, ({ tag, id, isLocked }) => ({
-	label: (
-		<div className={s("flex items-center")}>
-			<div> {tag} </div>
-			{ isLocked && <MdLock className={s("ml-xs")} /> }
-		</div>
-	),
-	value: { tag, id, isLocked }
-}));
 
 class CardTags extends Component {
 	constructor(props) {
@@ -79,8 +69,14 @@ class CardTags extends Component {
 		}
 	}
 
-	renderTag = ({ label, value }, i) => {
-		const { tag, id, isLocked } = value;
+	renderOptionLabel = ({ tag, isLocked }) => (
+		<div className={s("flex items-center")}>
+			<div> {tag} </div>
+			{ isLocked && <MdLock className={s("ml-xs")} /> }
+		</div>
+	);
+
+	renderTag = ({ tag, id, isLocked }, i) => {
 		const { maxWidth, tags, onTagClick, onRemoveClick, isEditable } = this.props;
 		const { firstHiddenIndex } = this.state;
 		return (
@@ -94,7 +90,7 @@ class CardTags extends Component {
 				}
 				<CardTag
 					key={tag}
-					text={label}
+					text={this.renderOptionLabel({ tag, isLocked })}
 					ref={maxWidth && ((instance)=>{this.tagRefs[i] = instance;})}
 					className={s(`flex items-center mr-xs mb-xs ${maxWidth ? `whitespace-no-wrap ${i >= firstHiddenIndex ? 'invisible' : ''}` : ''}`)}
 					onClick={onTagClick}
@@ -118,13 +114,16 @@ class CardTags extends Component {
 					<Select
 						className={s("w-full")}
 			            value={tags}
-			            options={SELECT_TAG_OPTIONS}
+			            options={TAG_OPTIONS}
 			            onChange={onChange}
 			            isSearchable
 			            isMulti
 			            menuShouldScrollIntoView
 			            isClearable={false}
 			            placeholder={"Add tags..."}
+			            getOptionLabel={option => option.tag}
+			            getOptionValue={option => option}
+			            formatOptionLabel={this.renderOptionLabel}
 					/> :
 					<React.Fragment>
 						{ tags.map((tag, i) => this.renderTag(tag, i)) }

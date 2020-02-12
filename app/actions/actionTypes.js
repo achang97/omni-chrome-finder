@@ -1,3 +1,11 @@
+// Auth
+export const UPDATE_LOGIN_EMAIL = 'UPDATE_LOGIN_EMAIL';
+export const UPDATE_LOGIN_PASSWORD = 'UPDATE_LOGIN_PASSWORD';
+export const LOGIN_REQUEST = 'LOGIN_REQUEST';
+export const LOGIN_SUCCESS = 'LOGIN_SUCCESS';
+export const LOGIN_ERROR = 'LOGIN_ERROR';
+export const LOGOUT = 'LOGOUT';
+
 // Display
 export const EXPAND_DOCK = 'EXPAND_DOCK';
 export const TOGGLE_DOCK = 'TOGGLE_DOCK';

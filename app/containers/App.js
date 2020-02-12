@@ -24,6 +24,7 @@ const dockPanelStyles = {
   state => ({
     dockVisible: state.display.dockVisible,
     dockExpanded: state.display.dockExpanded,
+    isLoggedIn: state.auth.isLoggedIn,
   }),
   dispatch =>
     bindActionCreators(
@@ -97,6 +98,7 @@ class App extends Component {
       dockVisible,
       dockExpanded,
       toggleDock,
+      isLoggedIn,
       location: { pathname }
     } = this.props;
     const { suggestTabVisible, jss } = this.state;
@@ -104,8 +106,8 @@ class App extends Component {
     // Solution to CSS isolation taken from https://stackoverflow.com/a/57221293.
     return (
       <div className={s('app-container')}>
-        { dockVisible && <Cards />}
-        { suggestTabVisible && ( // TODO: move to new file and style
+        { isLoggedIn && dockVisible && <Cards />}
+        { isLoggedIn && suggestTabVisible && ( // TODO: move to new file and style
           <div
             className={s('app-suggest-tab fixed bg-white shadow-md')}
             onClick={() => toggleDock()}
@@ -125,16 +127,17 @@ class App extends Component {
           }}
         >
           <div className={s(`flex flex-col ${showFullDock ? 'h-screen' : ''}`)}>
-            { <Header /> }
+            { isLoggedIn && <Header /> }
             <Switch>
-              <Route path="/ask" component={Ask} />
-              <Route path="/create" component={Create} />
-              <Route path="/navigate" component={Navigate} />
-              <Route path="/tasks" component={Tasks} />
-              <Route path="/profile" component={Profile} />
-              <Route path="/login" component={Login} />
+              { isLoggedIn && <Route path="/ask" component={Ask} /> }
+              { isLoggedIn && <Route path="/create" component={Create} /> }
+              { isLoggedIn && <Route path="/navigate" component={Navigate} /> }
+              { isLoggedIn && <Route path="/tasks" component={Tasks} /> }
+              { isLoggedIn && <Route path="/profile" component={Profile} /> }
+              { !isLoggedIn && <Route path="/login" component={Login} /> }
+              
               {/* A catch-all route: put all other routes ABOVE here */}
-              <Redirect to="/ask" />
+              <Redirect to={isLoggedIn ? '/ask' : '/login' } />
             </Switch>
           </div>
         </Dock>

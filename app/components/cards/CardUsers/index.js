@@ -9,20 +9,10 @@ import PlaceholderImg from '../../common/PlaceholderImg';
 import Select from '../../common/Select';
 
 import { USER_OPTIONS } from '../../../utils/constants';
-import { createSelectOptions } from '../../../utils/selectHelpers';
+import { createSelectOptions, simpleInputFilter } from '../../../utils/selectHelpers';
 
 import { getStyleApplicationFn } from '../../../utils/styleHelpers';
 const s = getStyleApplicationFn();
-
-const SELECT_USER_OPTIONS = createSelectOptions(USER_OPTIONS, ({ id, name, img }) => ({
-	label: (
-		<div className={s("flex items-center")}>
-			<PlaceholderImg src={img} name={name} className={s("h-3xl w-3xl rounded-full mr-sm")} />
-			<div> {name} </div>
-		</div>
-	),
-	value: { id, name, img }
-}));
 
 class CardUsers extends Component {
 	constructor(props) {
@@ -41,12 +31,20 @@ class CardUsers extends Component {
 					<Select
 						className={s("w-full mb-sm")}
 			            value={null}
-			            options={SELECT_USER_OPTIONS}
-			            onChange={({ label, value }) => onAdd(value)}
+			            options={USER_OPTIONS}
+			            onChange={option => onAdd(option)}
 			            isSearchable
 			            menuShouldScrollIntoView
 			            isClearable={false}
 			            placeholder={"Add users..."}
+			            getOptionLabel={option => option.name}
+			            getOptionValue={option => option}
+			            formatOptionLabel={({ id, name, img }) => (
+							<div className={s("flex items-center")}>
+								<PlaceholderImg src={img} name={name} className={s("h-3xl w-3xl rounded-full mr-sm")} />
+								<div> {name} </div>
+							</div>
+			           	)}
 					/>
 				}
 				{ users.map(({ id, name, img }, i) => (

@@ -215,6 +215,7 @@ class CardContent extends Component {
               tags={tags}
               onTagClick={openCardSideDock}
               maxWidth={cardsWidth * 0.5}
+              isEditable={false}
             />  
             <div className={s("flex flex-shrink-0 z-10 bg-purple-light ml-sm")}>
           	  <Button 
