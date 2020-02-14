@@ -7,9 +7,9 @@ import style from './scroll-container.css';
 import { getStyleApplicationFn } from '../../../utils/styleHelpers';
 const s = getStyleApplicationFn(style);
 
-const ScrollContainer = ({ list, renderScrollElement, renderOverflowElement, footer, showCondition, marginAdjust, matchDimensions, scrollY, className, scrollContainerClassName, scrollElementClassName, children, position }) => {
+const ScrollContainer = ({ list, renderScrollElement, renderOverflowElement, footer, showCondition, marginAdjust, matchDimensions, scrollY, className, scrollContainerClassName, scrollElementClassName, children, position, relative }) => {
 	return (
-		<div className={s(`relative ${className}`)}>
+		<div className={s(`${relative ? 'relative' : ''} ${className}`)}>
 			<div className={s(`overflow-x-hidden overflow-y-auto ${scrollContainerClassName}`)}>
 				{ list.map((listElem, i) => (
 					<ScrollElement
@@ -44,6 +44,7 @@ ScrollContainer.propTypes = {
 	position: PropTypes.oneOf(["top", "left", "bottom", "right"]),
 	matchDimensions: PropTypes.bool,
 	marginAdjust: PropTypes.bool,
+	relative: PropTypes.bool,
 }
 
 ScrollContainer.defaultProps = {
@@ -54,6 +55,7 @@ ScrollContainer.defaultProps = {
 	position: 'left',
 	matchDimensions: false,
 	marginAdjust: false,
+	relative: true,
 }
 
 export default ScrollContainer;

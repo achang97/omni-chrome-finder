@@ -18,7 +18,7 @@ export default function navigate(state = initialState, action) {
 
     case types.UPDATE_FILTER_TAGS: {
       const { newTags } = payload;
-      return { ...state, filterTags: newTags };
+      return { ...state, filterTags: newTags || []};
     }
     case types.REMOVE_FILTER_TAG: {
       const { index } = payload;

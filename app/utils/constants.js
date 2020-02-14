@@ -20,6 +20,10 @@ export const ASK_INTEGRATIONS = ['Slack', 'Email', 'Asana'];
 // Navigate page constants
 export const NAVIGATE_TAB_OPTIONS = ['All', 'My Cards', 'Bookmarked'];
 
+// Tasks page constants
+export const TASKS_TAB_OPTIONS = ['Unresolved', 'Needs Approval'];
+
+
 // Card page constants
 export const CARD_DIMENSIONS = {
 	MIN_QUESTION_HEIGHT: 180,

@@ -23,5 +23,8 @@ exports.colors = {
   },
   yellow: {
     reg: '#FFDC1E80'
-  }
+  },
+  red: {
+    reg: '#EC6464'
+  },
 };

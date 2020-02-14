@@ -11,6 +11,10 @@
   letter-spacing: 0px;
 }
 
+.app-container > div:last-child > div > div:first-child {
+  display: none !important;
+}
+
 .app-container > div > div > div:nth-child(2) {
   overflow: initial !important;
 }

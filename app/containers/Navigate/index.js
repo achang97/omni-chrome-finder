@@ -4,6 +4,7 @@ import { connect } from 'react-redux';
 import { MdSearch } from "react-icons/md";
 
 import * as navigateActions from '../../actions/navigate';
+import { openCard } from '../../actions/cards';
 
 import CardTags from '../../components/cards/CardTags';
 import Tabs from '../../components/common/Tabs/Tabs';
@@ -83,6 +84,7 @@ const PLACEHOLDER_CARDS = [
   bindActionCreators(
     {
       ...navigateActions,
+      openCard,
     },
     dispatch
   )
@@ -139,10 +141,11 @@ export default class Navigate extends Component {
             }
           </Tabs>
         </div>
-        <div>
+        <div className={s("py-lg")}>
           <ScrollContainer
-            scrollContainerClassName={s(`suggestion-panel-card-container ${false ? 'suggestion-panel-card-container-lg' : ''} flex flex-col`)}
+            scrollContainerClassName={s(`navigate-card-container flex flex-col`)}
             list={PLACEHOLDER_CARDS}
+            relative={false}
             renderScrollElement={(card) => (
               <SuggestionCard
                 heading={card.heading}
@@ -150,6 +153,9 @@ export default class Navigate extends Component {
                 description={card.description}
                 datePosted={card.datePosted}
                 cardStatus={card.cardStatus}
+                className={s("navigate-suggestion-card cursor-pointer mx-lg mb-reg")}
+                onClick={() => console.log('hi')/*OPEN CARD HERE*/}
+                showMoreMenu
               />
             )}
             renderOverflowElement={(card) => (
@@ -157,7 +163,7 @@ export default class Navigate extends Component {
                 <SuggestionPreview {...card} />
                 <Triangle
                   size={10}
-                  color={colors.purple.light}
+                  color={'white'}
                   direction="left"
                   className={s("mt-lg")}
                   outlineSize={1}

@@ -158,6 +158,7 @@ class SuggestionPanel extends Component {
                 description={card.description}
                 datePosted={card.datePosted}
                 cardStatus={card.cardStatus}
+                className={s("mx-sm")}
               />
             )}
             renderOverflowElement={(card) => (

@@ -4,11 +4,13 @@ import cards from './cards';
 import ask from './ask';
 import create from './create';
 import navigate from './navigate';
+import tasks from './tasks';
 
 export default combineReducers({
   display,
   cards,
   ask,
   create,
-  navigate
+  navigate,
+  tasks
 });
