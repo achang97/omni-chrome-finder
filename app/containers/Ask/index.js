@@ -25,8 +25,9 @@ import CardAttachment from "../../components/cards/CardAttachment";
 
 import { colors } from '../../styles/colors';
 import { expandDock } from '../../actions/display';
+import { requestCardSearch } from '../../actions/search';
 import * as askActions from '../../actions/ask';
-import { ASK_INTEGRATIONS } from '../../utils/constants';
+import { ASK_INTEGRATIONS, DEBOUNCE_300_MS, SEARCH_TYPES } from '../../utils/constants';
 
 import style from "./ask.css";
 import { getStyleApplicationFn, isOverflowing } from '../../utils/styleHelpers';
@@ -53,7 +54,8 @@ const PLACEHOLDER_RECIPIENT_OPTIONS = createSelectOptions([
   }),
   dispatch => bindActionCreators({
     expandDock,
-    ...askActions
+    ...askActions,
+    requestCardSearch,
   }, dispatch)
 )
 
@@ -362,14 +364,25 @@ class Ask extends Component {
     expandDock();
   }
 
+  debouncedRequestSearch = _.debounce(() => {
+    const { requestCardSearch, searchText } = this.props;
+    requestCardSearch(SEARCH_TYPES.POPOUT, searchText);
+  }, DEBOUNCE_300_MS)
+
+  updateMinifiedAskPageText = (e) => {
+    const { updateAskSearchText } = this.props;
+    updateAskSearchText(e.target.value);
+    this.debouncedRequestSearch()
+  }
+
   renderMinifiedAskPage = () => {
-    const { expandDock, updateAskSearchText, searchText } = this.props;
+    const { expandDock, searchText } = this.props;
     const showRelatedQuestions = searchText.length > 0;
 
     return (
       <div className={s("p-lg overflow-y-auto")}>
         <input
-          onChange={e => updateAskSearchText(e.target.value)}
+          onChange={this.updateMinifiedAskPageText}
           value={searchText}
           placeholder="Let's find what you're looking for"
           className={s("w-full")}

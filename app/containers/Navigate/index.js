@@ -145,7 +145,6 @@ export default class Navigate extends Component {
           <ScrollContainer
             scrollContainerClassName={s(`navigate-card-container flex flex-col`)}
             list={PLACEHOLDER_CARDS}
-            relative={false}
             renderScrollElement={(card) => (
               <SuggestionCard
                 heading={card.heading}
@@ -165,13 +164,12 @@ export default class Navigate extends Component {
                   size={10}
                   color={'white'}
                   direction="left"
-                  className={s("mt-lg")}
+                  className={s("mt-sm")}
                   outlineSize={1}
                   outlineColor={colors.gray.light}
                 />
               </div>
             )}
-            footer={false && this.renderExternalDocumentationResults()}
             position="left"
           />
         </div>

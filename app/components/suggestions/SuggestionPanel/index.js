@@ -168,7 +168,7 @@ class SuggestionPanel extends Component {
                   size={10}
                   color={colors.purple.light}
                   direction="left"
-                  className={s("mt-lg")}
+                  className={s("mt-sm")}
                   outlineSize={1}
                   outlineColor={colors.gray.light}
                 />

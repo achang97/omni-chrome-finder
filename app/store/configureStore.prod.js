@@ -5,6 +5,7 @@ import rootReducer from '../reducers';
 import storage from '../utils/storage';
 import createSagaMiddleware from 'redux-saga';
 import rootSaga from '../sagas';
+import setUpAuthSync from '../utils/authSync';
 
 const sagaMiddleware = createSagaMiddleware();
 
@@ -25,6 +26,8 @@ export default function (initialState) {
   store.runSaga = sagaMiddleware.run;
   store.injectedReducers = {}; // Reducer registry
   store.injectedSagas = {}; // Saga registry
+
+  setUpAuthSync(store);
 
   return { store, persistor };
 }

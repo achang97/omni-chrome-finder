@@ -34,7 +34,7 @@ class HoverableScrollElement extends Component {
 	onMouseOver = (e) => {
 		const { showCondition } = this.props;
 		if (showCondition === 'hover') {
-			this.showOverflowElement();
+			this.showOverflowElement(e);
 		}
 	}
 
@@ -84,12 +84,12 @@ class HoverableScrollElement extends Component {
 		switch (position) {
 			case "left": {
 				overflowElem.style.right = `${parentRight - right + width - marginLeft}px`;
-				overflowElem.style.top = `${top - parentTop + marginTop}px`;
+				overflowElem.style.top = `${(top < 0 ? 0 : top - parentTop) + marginTop}px`;
 				break;
 			}
 			case "right": {
 				overflowElem.style.left = `${left - parentLeft + width - marginRight}px`;
-				overflowElem.style.top = `${top - parentTop + marginTop}px`;
+				overflowElem.style.top = `${(top < 0 ? 0 : top - parentTop) + marginTop}px`;
 				break;
 			}
 			case "top": {

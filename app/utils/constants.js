@@ -9,6 +9,7 @@ export const CHROME_MESSAGES = {
 
 // Debounce / Animations
 export const DEBOUNCE_60_HZ = 166;
+export const DEBOUNCE_300_MS = 300;
 
 export const FADE_IN_TRANSITIONS = {
 	entering: { opacity: 1 },
@@ -91,6 +92,12 @@ export const USER_OPTIONS = [
 	{ id: 6, name: 'Tatie Balabanis', img: null},
 	{ id: 7, name: 'Antonio Brown', img: null},
 ]
+
+// Search types
+export const SEARCH_TYPES = {
+	POPOUT: 'POPOUT',
+	SIDEBAR: 'SIDEBAR',
+}
 
 // Misc.
 const NOOP = () => {};
