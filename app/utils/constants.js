@@ -27,7 +27,6 @@ export const NAVIGATE_TAB_OPTIONS = ['All', 'My Cards', 'Bookmarked'];
 // Tasks page constants
 export const TASKS_TAB_OPTIONS = ['Unresolved', 'Needs Approval'];
 
-
 // Card page constants
 export const CARD_DIMENSIONS = {
 	MIN_QUESTION_HEIGHT: 180,
@@ -53,11 +52,11 @@ export const EDITOR_TYPE = {
 }
 
 export const CARD_STATUS_OPTIONS = {
-	NOT_DOCUMENTED: 'NOT_DOCUMENTED',
-	NEEDS_APPROVAL: 'NEEDS_APPROVAL',
-	OUT_OF_DATE: 'OUT_OF_DATE',
-	NEEDS_VERIFICATION: 'NEEDS_VERIFICATION',
-	UP_TO_DATE: 'UP_TO_DATE',
+	UP_TO_DATE: 1,
+	OUT_OF_DATE: 2,
+	NEEDS_VERIFICATION: 3,
+	NEEDS_APPROVAL: 4,
+	NOT_DOCUMENTED: 5,
 }
 
 export const VERIFICATION_INTERVAL_OPTIONS = [

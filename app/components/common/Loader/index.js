@@ -23,9 +23,9 @@ const getSize = (size) => {
 }
 
 const Loader = ({ color, size, className, centered, ...rest }) => (
-	<div className={s(`${centered ? 'flex justify-center' : ''} ${className}`)}>
+	<div className={s(`${centered ? 'flex justify-center items-center' : ''} ${className}`)}>
 		<MoonLoader
-			color={"#123abc"}
+			color={color}
 			size={getSize(size)}
 			{...rest}
 		/>

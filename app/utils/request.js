@@ -18,7 +18,7 @@ export function* doPost(path, data) {
 
   try {
     const response = yield call([axios, axios.post], url, data, config)
-    if (!response.data.success) {
+    if (response.status !== 200 && response.status !== 201) {
       throw { response }
     }
     return response.data
@@ -37,7 +37,7 @@ export function* doPut(path, data) {
 
   try {
     const response = yield call([axios, axios.put], url, data, config)
-    if (!response.data.success) {
+    if (response.status !== 200 && response.status !== 201) {
       throw { response }
     }
     return response.data
@@ -56,7 +56,7 @@ export function* doGet(path, data) {
 
   try {
     const response = yield call([axios, axios.get], url, { params: { ...data}, ...config });
-    if (!response.data.success) {
+    if (response.status !== 200 && response.status !== 201) {
       throw { response }
     }
     return response.data
@@ -75,7 +75,7 @@ export function* doDelete(path, data) {
 
   try {
     const response = yield call([axios, axios.delete], url, {...config, data })
-    if (!response.data.success) {
+    if (response.status !== 200 && response.status !== 201) {
       throw { response }
     }
     return response.data

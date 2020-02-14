@@ -3,7 +3,7 @@ import { take, call, fork, all, cancel, cancelled, put, select } from 'redux-sag
 import { doGet, doPost, doPut, doDelete } from '../utils/request'
 import { SEARCH_CARDS_REQUEST } from '../actions/actionTypes';
 import { 
-  handleCardSearchSuccess, handleCardSearchError,
+  handleSearchCardsSuccess, handleSearchCardsError,
 } from '../actions/search';
 
 export default function* watchSearchRequests() {
@@ -23,9 +23,9 @@ export default function* watchSearchRequests() {
 function* searchCards({ type, query }) {
   try {
     const { cards } = yield call(doGet, '/cards/query', { q: query });
-    yield put(handleCardSearchSuccess(type, cards));
+    yield put(handleSearchCardsSuccess(type, cards));
   } catch(error) {
     const { response: { data } } = error;
-    yield put(handleCardSearchError(type, data.error));
+    yield put(handleSearchCardsError(type, data.error));
   }
 }

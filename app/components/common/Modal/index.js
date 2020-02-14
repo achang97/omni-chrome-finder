@@ -3,14 +3,14 @@ import PropTypes from 'prop-types';
 import { Transition } from 'react-transition-group';
 
 import { MdClose } from 'react-icons/md';
-import { FADE_IN_TRANSITIONS } from '../../../utils/constants';
+import { FADE_IN_TRANSITIONS, NOOP } from '../../../utils/constants';
 import { getBaseAnimationStyle } from '../../../utils/animateHelpers';
 
 import style from './modal.css';
 import { getStyleApplicationFn } from '../../../utils/styleHelpers';
 const s = getStyleApplicationFn(style);
 
-const Modal = ({ isOpen, transitionMs, shouldCloseOnOutsideClick, className, onRequestClose, headerClassName, overlayClassName, bodyClassName, title, children, important }) => {
+const Modal = ({ isOpen, transitionMs, shouldCloseOnOutsideClick, showHeader, className, onRequestClose, headerClassName, overlayClassName, bodyClassName, title, children, important }) => {
 	const onOutsideClick = () => {
 		if (shouldCloseOnOutsideClick && onRequestClose) onRequestClose();
 	}
@@ -33,10 +33,12 @@ const Modal = ({ isOpen, transitionMs, shouldCloseOnOutsideClick, className, onR
 			>
 				{state => (
 					<div style={{ ...baseStyle, ...modalTransitionStyles[state] }} className={s(`modal ${className} ${important? 'modal-important' : ''}`)}>
-						<div className={s(`modal-header ${headerClassName}`)}>
-							<div className={s("font-semibold")}> {title} </div>
-							<button onClick={onRequestClose}> <MdClose className={s("text-purple-gray-50")} /> </button>
-						</div>
+						{ showHeader &&
+							<div className={s(`modal-header ${headerClassName}`)}>
+								<div className={s("font-semibold")}> {title} </div>
+								<button onClick={onRequestClose}> <MdClose className={s("text-purple-gray-50")} /> </button>
+							</div>
+						}
 						<div className={s(`modal-body ${bodyClassName}`)}>
 							{children}
 						</div>
@@ -58,20 +60,23 @@ const Modal = ({ isOpen, transitionMs, shouldCloseOnOutsideClick, className, onR
 }
 
 Modal.propTypes = {
-	isOpen: PropTypes.bool.isRequired,
-	onRequestClose: PropTypes.func.isRequired,
+	isOpen: PropTypes.bool,
+	onRequestClose: PropTypes.func,
 	shouldCloseOnOutsideClick: PropTypes.bool,
 	className: PropTypes.string,
 	headerClassName: PropTypes.string,
 	bodyClassName: PropTypes.string,
 	overlayClassName: PropTypes.string,
 	title: PropTypes.string,
+	showHeader: PropTypes.bool,
 	transitionMs: PropTypes.number,
 	important: PropTypes.bool,
 }
 
 Modal.defaultProps = {
+	isOpen: false,
 	shouldCloseOnOutsideClick: false,
+	onRequestClose: NOOP,
 	overlayClassName: '',
 	headerClassName: '',
 	bodyClassName: '',
@@ -79,6 +84,7 @@ Modal.defaultProps = {
 	overlayClassName: '',
 	transitionMs: 100,
 	important: false,
+	showHeader: true,
 }
 
 export default Modal;

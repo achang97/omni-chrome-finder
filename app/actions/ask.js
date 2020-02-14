@@ -51,3 +51,19 @@ export function addAskAttachments(attachments) {
 export function removeAskAttachment(index) {
   return { type: types.REMOVE_ASK_ATTACHMENT, payload: { index } }
 }
+
+export function requestAskQuestion() {
+  return { type: types.ASK_QUESTION_REQUEST, payload: { } };
+}
+
+export function handleAskQuestionSuccess() {
+  return { type: types.ASK_QUESTION_SUCCESS, payload: { } };
+}
+
+export function handleAskQuestionError(error) {
+  return { type: types.ASK_QUESTION_ERROR, payload: { error } };
+}
+
+export function clearAskQuestionInfo() {
+  return { type: types.CLEAR_ASK_QUESTION_INFO, payload: { } }
+}

@@ -145,7 +145,7 @@ class HoverableScrollElement extends Component {
 HoverableScrollElement.propTypes = {
 	scrollElementClassName: PropTypes.string,
 	scrollElement: PropTypes.element.isRequired,
-	overflowElement: PropTypes.element.isRequired,
+	overflowElement: PropTypes.element,
 	showCondition: PropTypes.oneOfType([
 		PropTypes.oneOf(["hover"]),
 		PropTypes.bool
