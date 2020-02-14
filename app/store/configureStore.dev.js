@@ -5,6 +5,8 @@ import rootReducer from '../reducers';
 import storage from '../utils/storage';
 import createSagaMiddleware from 'redux-saga';
 import rootSaga from '../sagas';
+import * as types from '../actions/actionTypes';
+import { getStorageName } from '../utils/constants';
 
 // If Redux DevTools Extension is installed use it, otherwise use Redux compose
 /* eslint-disable no-underscore-dangle */
@@ -33,6 +35,22 @@ export default function (initialState) {
   store.runSaga = sagaMiddleware.run;
   store.injectedReducers = {}; // Reducer registry
   store.injectedSagas = {}; // Saga registry
+
+  chrome.storage.onChanged.addListener(function(changes, namespace) {
+    for (const key in changes) {
+      const { oldValue, newValue } = changes[key];
+      if (namespace === 'sync' && key === getStorageName('auth')) {
+        const oldValueJSON = oldValue ? JSON.parse(oldValue) : oldValue;
+        const newValueJSON = newValue ? JSON.parse(newValue) : newValue;
+
+        if (oldValueJSON.isLoggedIn && !newValueJSON.isLoggedIn) {
+          store.dispatch({ type: types.LOGOUT });
+        } else if (!oldValueJSON.isLoggedIn && newValueJSON.isLoggedIn) {
+          store.dispatch({ type: types.SYNC_LOGIN, payload: newValueJSON });
+        }
+      }
+    }
+  });
 
   if (module.hot) {
     module.hot.accept('../reducers', () => {

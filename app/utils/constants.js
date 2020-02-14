@@ -1,3 +1,6 @@
+// Function to get storage key names
+export const getStorageName = (name) => `OMNI_EXTENSION_${name}`;
+
 // Messages
 export const CHROME_MESSAGES = {
 	TOGGLE: 'TOGGLE',

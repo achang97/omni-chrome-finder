@@ -1,6 +1,7 @@
 import * as types from '../actions/actionTypes';
 import _ from 'underscore';
 import { EditorState } from 'draft-js';
+import { getStorageName } from '../utils/constants';
 
 const initialState = {
   isLoggedIn: false,
@@ -30,8 +31,15 @@ export default function auth(state = initialState, action) {
   	}
   	case types.LOGIN_SUCCESS: {
   		const { user, token, refreshToken } = payload;
+      chrome.storage.sync.set({
+        [getStorageName('auth')]: JSON.stringify({ user, token, refreshToken, isLoggedIn: true })
+      });
   		return { ...state, isLoggingIn: false, isLoggedIn: true, user, token, refreshToken };
   	}
+    case types.SYNC_LOGIN: {
+      const { user, token, refreshToken } = payload;
+      return { ...state, isLoggingIn: false, isLoggedIn: true, user, token, refreshToken };
+    }
   	case types.LOGIN_ERROR: {
   		const { error } = payload;
   		return { ...state, isLoggingIn: false, loginError: error };

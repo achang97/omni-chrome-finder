@@ -7,13 +7,14 @@ import create from './create';
 import navigate from './navigate';
 import tasks from './tasks';
 import { persistStore, persistReducer } from 'redux-persist'
-import { localStorage } from 'redux-persist-webextension-storage'
+import { getStorageName } from '../utils/constants';
+import { syncStorage } from 'redux-persist-webextension-storage'
 import { LOGOUT } from '../actions/actionTypes';
 
 const authPersistConfig = {
-  key: 'OMNI_EXTENSION_auth',
-  storage: localStorage,
-  whitelist: ['isLoggedIn', 'user', 'refreshToken', 'token'],
+  key: getStorageName('auth'),
+  storage: syncStorage,
+  whitelist: ['isLoggedIn', 'refreshToken', 'token'],
 }
 
 const appReducer = combineReducers({
@@ -29,7 +30,10 @@ const appReducer = combineReducers({
 const rootReducer = (state, action) => {
   if (action.type === LOGOUT) {
     // REMOVE EVERYTHING
-    localStorage.removeItem('persist:OMNI_EXTENSION_auth');
+    syncStorage.removeItem(`persist:${getStorageName('auth')}`);
+    chrome.storage.sync.set({
+      [getStorageName('auth')]: JSON.stringify({ user: {}, token: null, refreshToken: null, isLoggedIn: false })
+    });
     state = undefined;
   }
   return appReducer(state, action);
