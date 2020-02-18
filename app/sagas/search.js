@@ -37,7 +37,10 @@ export default function* watchSearchRequests() {
 
 function* searchCards({ type, query }) {
   try {
-    const { cards } = yield call(doGet, '/cards/query', { q: query });
+    let cards = [];
+    if (query !== '') {
+      cards = yield call(doGet, '/cards/query', { q: query });
+    }
     yield put(handleSearchCardsSuccess(type, cards));
   } catch(error) {
     const { response: { data } } = error;

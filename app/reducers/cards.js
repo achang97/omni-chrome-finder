@@ -70,7 +70,7 @@ export default function cards(state = initialState, action) {
       const { cards, activeCardIndex } = state;
 
       // Check if card is already open
-      if (!isNewCard && cards.some(({ id: currId }) => currId === card.id)) {
+      if (!isNewCard && cards.some(({ _id: currId }) => currId === card._id)) {
         return state;
       }
 
@@ -87,7 +87,7 @@ export default function cards(state = initialState, action) {
       if (isNewCard) {
         cardInfo = createActiveCardEdits({
           ...cardInfo,
-          id: `new-card-${Math.floor(Math.random() * 10001)}`,
+          _id: `new-card-${Math.floor(Math.random() * 10001)}`,
           cardStatus: CARD_STATUS_OPTIONS.NOT_DOCUMENTED,
           modalOpen: { ...cardInfo.modalOpen, [MODAL_TYPE.CREATE]: createModalOpen },
           editorEnabled: { ...cardInfo.editorEnabled, [EDITOR_TYPE.ANSWER]: true },

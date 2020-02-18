@@ -1,23 +1,26 @@
 import React, { Component } from 'react';
 import Button from '../../common/Button';
+import ReactHtmlParser from 'react-html-parser';
+
+import { getContentStateHTMLFromString } from '../../../utils/editorHelpers';
 
 import style from './suggestion-preview.css';
 import { getStyleApplicationFn } from '../../../utils/styleHelpers';
 const s = getStyleApplicationFn(style);
 
-const SuggestionPreview = ({ heading, headingDescription, description, datePosted, isUpToDate }) => {
+const SuggestionPreview = ({ question, questionDescription, answer }) => {
   return (
     <div className={s("suggestion-preview")}>
       <div className={s("bg-purple-light py-xl px-lg rounded-t-lg")}>
         <div className={s("text-lg font-semibold")}>
-          { heading }
+          { question }
         </div>
         <div className={s("mt-reg text-xs text-gray-dark font-medium")}>
-          { headingDescription }
+          { ReactHtmlParser(getContentStateHTMLFromString(questionDescription)) }
         </div>
       </div>
       <div className={s("bg-white py-xl px-lg text-sm")}>
-        { description }
+        { ReactHtmlParser(getContentStateHTMLFromString(answer)) }
       </div>
       <div className={s("bg-white rounded-b-lg")}>
         <Button

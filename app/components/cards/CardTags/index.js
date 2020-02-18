@@ -8,7 +8,7 @@ import _ from 'underscore';
 import CardTag from './CardTag';
 import Select from '../../common/Select';
 
-import { NOOP, DEBOUNCE_300_MS } from '../../../utils/constants';
+import { NOOP, DEBOUNCE_60_HZ } from '../../../utils/constants';
 import { createSelectOptions, simpleInputFilter } from '../../../utils/selectHelpers';
 
 import { bindActionCreators } from 'redux';
@@ -135,7 +135,7 @@ class CardTags extends Component {
 			            value={tags}
 			            options={tagOptions}
 			            onChange={onChange}
-			            onInputChange={_.debounce(this.loadOptions, DEBOUNCE_300_MS)}
+			            onInputChange={_.debounce(this.loadOptions, DEBOUNCE_60_HZ)}
 			            onFocus={() => this.loadOptions("")}
 			            isSearchable
 			            isMulti

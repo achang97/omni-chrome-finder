@@ -29,7 +29,7 @@ import { colors } from '../../styles/colors';
 import { expandDock } from '../../actions/display';
 import { requestSearchCards } from '../../actions/search';
 import * as askActions from '../../actions/ask';
-import { ASK_INTEGRATIONS, DEBOUNCE_300_MS, SEARCH_TYPES } from '../../utils/constants';
+import { ASK_INTEGRATIONS, DEBOUNCE_60_HZ, SEARCH_TYPES } from '../../utils/constants';
 
 import style from "./ask.css";
 import { getStyleApplicationFn, isOverflowing } from '../../utils/styleHelpers';
@@ -52,6 +52,7 @@ const PLACEHOLDER_RECIPIENT_OPTIONS = createSelectOptions([
 @connect(
   state => ({
     dockExpanded: state.display.dockExpanded,
+    ...state.search[SEARCH_TYPES.POPOUT],
     ...state.ask,
   }),
   dispatch => bindActionCreators({
@@ -401,7 +402,7 @@ class Ask extends Component {
   debouncedRequestSearch = _.debounce(() => {
     const { requestSearchCards, searchText } = this.props;
     requestSearchCards(SEARCH_TYPES.POPOUT, searchText);
-  }, DEBOUNCE_300_MS)
+  }, DEBOUNCE_60_HZ)
 
   updateMinifiedAskPageText = (e) => {
     const { updateAskSearchText } = this.props;
@@ -410,7 +411,7 @@ class Ask extends Component {
   }
 
   renderMinifiedAskPage = () => {
-    const { expandDock, searchText } = this.props;
+    const { expandDock, searchText, cards, isSearchingCards } = this.props;
     const showRelatedQuestions = searchText.length > 0;
 
     return (
@@ -434,7 +435,11 @@ class Ask extends Component {
             onClick={() => this.expandDock()}
           />
         </div>
-        <SuggestionPanel isVisible={showRelatedQuestions} />
+        <SuggestionPanel
+          isVisible={showRelatedQuestions}
+          cards={cards}
+          isLoading={isSearchingCards}
+        />
       </div>
     );
   };

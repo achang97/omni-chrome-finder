@@ -1,4 +1,5 @@
 import { convertToRaw, convertFromRaw, EditorState } from 'draft-js';
+import {stateToHTML} from 'draft-js-export-html';
 
 export const getContentStateFromEditorState = (editorState) => {
 	const contentState = editorState.getCurrentContent();
@@ -8,7 +9,10 @@ export const getContentStateFromEditorState = (editorState) => {
 	}
 }
 
+export const getContentStateHTMLFromString = (contentStateString) => {
+	return stateToHTML(convertFromRaw(JSON.parse(contentStateString)));
+}
+
 export const getEditorStateFromContentState = (contentStateString) => {
-	const contentState = convertFromRaw(JSON.parse(contentStateString));
-	return EditorState.createWithContent(contentState);
+	return EditorState.createWithContent(getContentStateFromString(contentStateString));
 }

@@ -5,7 +5,7 @@ import Select from '../../common/Select';
 import AnimateHeight from 'react-animate-height';
 import _ from 'underscore';
 
-import { PERMISSION_OPTIONS, PERMISSION_OPTIONS_MAP, DEBOUNCE_300_MS } from '../../../utils/constants';
+import { PERMISSION_OPTIONS, PERMISSION_OPTIONS_MAP, DEBOUNCE_60_HZ } from '../../../utils/constants';
 import { createSelectOptions } from '../../../utils/selectHelpers';
 
 import { bindActionCreators } from 'redux';
@@ -34,7 +34,7 @@ const CardPermissions = ({ selectedPermission, onChangePermission, permissionGro
         <Select
           value={permissionGroups}
           onChange={onChangePermissionGroups}
-          onInputChange={_.debounce(loadOptions, DEBOUNCE_300_MS)}
+          onInputChange={_.debounce(loadOptions, DEBOUNCE_60_HZ)}
           onFocus={() => loadOptions("")}
           className={s("mt-xs")}
           placeholder="Add permission groups..."

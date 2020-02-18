@@ -13,7 +13,7 @@ import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
 import { requestSearchUsers } from '../../../actions/search';
 
-import { DEBOUNCE_300_MS } from '../../../utils/constants';
+import { DEBOUNCE_60_HZ } from '../../../utils/constants';
 import { createSelectOptions, simpleInputFilter } from '../../../utils/selectHelpers';
 
 import { getStyleApplicationFn } from '../../../utils/styleHelpers';
@@ -52,7 +52,7 @@ class CardUsers extends Component {
 			            value={null}
 			            options={userOptions.filter(userOption => !users.some(user => user._id === userOption._id))}
 			            onChange={option => onAdd(option)}
-			            onInputChange={_.debounce(this.loadOptions, DEBOUNCE_300_MS)}
+			            onInputChange={_.debounce(this.loadOptions, DEBOUNCE_60_HZ)}
 			            onFocus={() => this.loadOptions("")}
 			            isSearchable
 			            menuShouldScrollIntoView
