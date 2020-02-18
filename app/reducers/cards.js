@@ -2,7 +2,6 @@ import * as types from '../actions/actionTypes';
 import _ from 'underscore';
 import { EditorState } from 'draft-js';
 import { removeIndex, updateIndex } from '../utils/arrayHelpers';
-import { createSelectValue } from '../utils/selectHelpers';
 import { CARD_STATUS_OPTIONS, EDITOR_TYPE, CARD_DIMENSIONS, MODAL_TYPE, VERIFICATION_INTERVAL_OPTIONS, PERMISSION_OPTIONS } from '../utils/constants';
 
 const PLACEHOLDER_MESSAGES = [
@@ -97,7 +96,7 @@ export default function cards(state = initialState, action) {
           tags: [],
           keywords: [],
           verificationInterval: VERIFICATION_INTERVAL_OPTIONS[0],
-          permissions: createSelectValue(PERMISSION_OPTIONS[0]),
+          permissions: PERMISSION_OPTIONS[0],
           permissionGroups: [],
         });
       } else {
@@ -276,22 +275,17 @@ export default function cards(state = initialState, action) {
       const { activeCard } = state;
       return updateActiveCard({ isEditing: false, edits: {} });
     }
-    case types.SAVE_CARD: {
-      // Edits will be made to this case when connecting to the backend.
-      const { activeCard } = state;
-      const newCardState = updateActiveCard({ isEditing: false, ...activeCard.edits });
-      return { ...newCardState, cards: getUpdatedCards() };
-    }
 
     case types.CREATE_CARD_REQUEST: {
-      return { ...state, isCreatingCard: true, createError: null, createSuccess: null };
+      return { ...state, isCreatingCard: true, createError: null };
     }
     case types.CREATE_CARD_SUCCESS: {
-      return { ...initialState, isCreatingCard: false, createSuccess: true };
+      const { card } = payload;
+      return { ...state, isCreatingCard: false };
     }
     case types.CREATE_CARD_ERROR: {
       const { error } = payload;
-      return { ...state, isCreatingCard: false, createSuccess: false, createError: error };
+      return { ...state, isCreatingCard: false, createError: error };
     }
 
     case types.CLOSE_ALL_CARDS: {

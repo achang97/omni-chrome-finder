@@ -13,13 +13,13 @@ import Modal from '../../common/Modal';
 
 import { MdLock, MdAutorenew } from 'react-icons/md';
 
-import { PERMISSION_OPTIONS, VERIFICATION_INTERVAL_OPTIONS, CARD_STATUS_OPTIONS, MODAL_TYPE, SEARCH_TYPES } from '../../../utils/constants';
-import { createSelectOptions } from '../../../utils/selectHelpers';
+import { PERMISSION_OPTIONS_MAP, VERIFICATION_INTERVAL_OPTIONS, CARD_STATUS_OPTIONS, MODAL_TYPE, SEARCH_TYPES } from '../../../utils/constants';
 
 import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
 import { 
-  saveCard, updateCardStatus, closeCardModal,
+  requestCreateCard,
+  closeCardModal,
   addCardOwner, removeCardOwner,
   updateCardTags, removeCardTag,
   updateCardKeywords,
@@ -29,8 +29,6 @@ import {
 import style from './card-create-modal.css';
 import { getStyleApplicationFn } from '../../../utils/styleHelpers';
 const s = getStyleApplicationFn(style);
-
-const SELECT_PERMISSION_OPTIONS = createSelectOptions(PERMISSION_OPTIONS);
 
 const CardCreateModal = (props) => {
 
@@ -142,15 +140,8 @@ const CardCreateModal = (props) => {
     );
   }
 
-  const completeCard = () => {
-    const { saveCard, updateCardStatus, closeCardModal } = props;
-    saveCard();
-    updateCardStatus(CARD_STATUS_OPTIONS.UP_TO_DATE);
-    closeCardModal(MODAL_TYPE.CREATE);
-  }
-
   const render = () => {
-    const { modalOpen, closeCardModal, edits: { question, owners, verificationInterval, permissions, permissionGroups } } = props;
+    const { modalOpen, requestCreateCard, closeCardModal, edits: { question, owners, verificationInterval, permissions, permissionGroups } } = props;
     return (
       <Modal
         isOpen={modalOpen[MODAL_TYPE.CREATE]}
@@ -167,7 +158,7 @@ const CardCreateModal = (props) => {
         </div>
         <Button
           text="Complete Card"
-          onClick={() => completeCard()}
+          onClick={requestCreateCard}
           className={s("flex-shrink-0 rounded-t-none")}
           underline
           underlineColor="purple-gray-50"
@@ -176,7 +167,7 @@ const CardCreateModal = (props) => {
             owners.length === 0 ||
             !verificationInterval ||
             !permissions ||
-            (permissions.value === PERMISSION_OPTIONS[2] && permissionGroups.length === 0)          
+            (permissions.value === PERMISSION_OPTIONS_MAP.SPECIFIC_GROUPS && permissionGroups.length === 0)          
           }
         />
       </Modal>
@@ -191,7 +182,8 @@ export default connect(
     ...state.cards.activeCard,
   }),
   dispatch => bindActionCreators({
-    saveCard, updateCardStatus, closeCardModal,
+    requestCreateCard,
+    closeCardModal,
     addCardOwner, removeCardOwner,
     updateCardTags, removeCardTag,
     updateCardKeywords,

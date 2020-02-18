@@ -121,10 +121,6 @@ export function cancelEditCard() {
   return { type: types.CANCEL_EDIT_CARD, payload: {} }
 }
 
-export function saveCard() {
-  return { type: types.SAVE_CARD, payload: { } };
-}
-
 export function openCardSideDock() {
   return { type: types.OPEN_CARD_SIDE_DOCK, payload: { } };
 }
@@ -133,7 +129,7 @@ export function closeCardSideDock() {
   return { type: types.CLOSE_CARD_SIDE_DOCK, payload: { } };
 }
 
-
+/* API REQUESTS */
 export function requestCreateCard() {
   return { type: types.CREATE_CARD_REQUEST, payload: {} };
 }
@@ -144,4 +140,30 @@ export function handleCreateCardSuccess() {
 
 export function handleCreateCardError(error) {
   return { type: types.CREATE_CARD_ERROR, payload: { error } };
+}
+
+
+export function requestUpdateCard() {
+  return { type: types.UPDATE_CARD_REQUEST, payload: {} };
+}
+
+export function handleUpdateCardSuccess(card) {
+  return { type: types.UPDATE_CARD_SUCCESS, payload: { card } };
+}
+
+export function handleUpdateCardError(error) {
+  return { type: types.UPDATE_CARD_ERROR, payload: { error } };
+}
+
+
+export function requestDeleteCard() {
+  return { type: types.DELETE_CARD_REQUEST, payload: {} };
+}
+
+export function handleDeleteCardSuccess() {
+  return { type: types.DELETE_CARD_SUCCESS, payload: {} };
+}
+
+export function handleDeleteCardError(error) {
+  return { type: types.DELETE_CARD_ERROR, payload: { error } };
 }

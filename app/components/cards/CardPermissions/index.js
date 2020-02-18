@@ -5,7 +5,7 @@ import Select from '../../common/Select';
 import AnimateHeight from 'react-animate-height';
 import _ from 'underscore';
 
-import { PERMISSION_OPTIONS, DEBOUNCE_300_MS } from '../../../utils/constants';
+import { PERMISSION_OPTIONS, PERMISSION_OPTIONS_MAP, DEBOUNCE_300_MS } from '../../../utils/constants';
 import { createSelectOptions } from '../../../utils/selectHelpers';
 
 import { bindActionCreators } from 'redux';
@@ -14,8 +14,6 @@ import { requestSearchPermissionGroups } from '../../../actions/search';
 
 import { getStyleApplicationFn } from '../../../utils/styleHelpers';
 const s = getStyleApplicationFn();
-
-const SELECT_PERMISSION_OPTIONS = createSelectOptions(PERMISSION_OPTIONS);
 
 const CardPermissions = ({ selectedPermission, onChangePermission, permissionGroups, onChangePermissionGroups, isSearchingPermissionGroups, permissionGroupOptions, requestSearchPermissionGroups }) => {
   const loadOptions = (inputValue) => {
@@ -28,11 +26,11 @@ const CardPermissions = ({ selectedPermission, onChangePermission, permissionGro
         value={selectedPermission}
         onChange={onChangePermission}
         placeholder="Select permissions..."
-        options={SELECT_PERMISSION_OPTIONS}
+        options={PERMISSION_OPTIONS}
         isSearchable
         menuShouldScrollIntoView
       />
-      <AnimateHeight height={selectedPermission.value === PERMISSION_OPTIONS[2] ? 'auto' : 0}>
+      <AnimateHeight height={selectedPermission.value === PERMISSION_OPTIONS_MAP.SPECIFIC_GROUPS ? 'auto' : 0}>
         <Select
           value={permissionGroups}
           onChange={onChangePermissionGroups}

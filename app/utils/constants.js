@@ -45,7 +45,6 @@ export const MODAL_TYPE = {
 	CONFIRM_UP_TO_DATE_SAVE: 'CONFIRM_UP_TO_DATE_SAVE',
 }
 
-
 export const EDITOR_TYPE = {
 	DESCRIPTION: 'DESCRIPTION',
 	ANSWER: 'ANSWER',
@@ -59,8 +58,9 @@ export const CARD_STATUS_OPTIONS = {
 	NOT_DOCUMENTED: 5,
 }
 
+export const AUTO_REMIND_VALUE = -1;
 export const VERIFICATION_INTERVAL_OPTIONS = [
-	{ label: 'Auto-Remind', value: -1 },
+	{ label: 'Auto-Remind', value: AUTO_REMIND_VALUE },
 	{ label: '2 Weeks', value: 1 },
 	{ label: '1 Month', value: 2 },
 	{ label: '3 Months', value: 3 },
@@ -68,10 +68,15 @@ export const VERIFICATION_INTERVAL_OPTIONS = [
 	{ label: '1 Year', value: 5 },
 ]
 
+export const PERMISSION_OPTIONS_MAP = {
+	ANYONE: 'ANYONE',
+	JUST_ME: 'JUST_ME',
+	SPECIFIC_GROUPS: 'SPECIFIC_GROUPS',	
+}
 export const PERMISSION_OPTIONS = [
-	'Anyone',
-	'Just Me',
-	'Specific Groups',
+	{ label: 'Anyone', value: PERMISSION_OPTIONS_MAP.ANYONE },
+	{ label: 'Just Me', value: PERMISSION_OPTIONS_MAP.JUST_ME },
+	{ label: 'Specific Groups', value: PERMISSION_OPTIONS_MAP.SPECIFIC_GROUPS },
 ]
 
 // Search types
