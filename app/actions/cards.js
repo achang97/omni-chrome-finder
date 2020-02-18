@@ -101,6 +101,10 @@ export function updateCardPermissions(permissions) {
   return { type: types.UPDATE_CARD_PERMISSIONS, payload: { permissions } };
 }
 
+export function updateCardPermissionGroups(permissionGroups) {
+  return { type: types.UPDATE_CARD_PERMISSION_GROUPS, payload: { permissionGroups } };
+}
+
 export function openCardModal(modalType) {
   return { type: types.OPEN_CARD_MODAL, payload: { modalType } };
 }
@@ -127,4 +131,17 @@ export function openCardSideDock() {
 
 export function closeCardSideDock() {
   return { type: types.CLOSE_CARD_SIDE_DOCK, payload: { } };
+}
+
+
+export function requestCreateCard() {
+  return { type: types.CREATE_CARD_REQUEST, payload: {} };
+}
+
+export function handleCreateCardSuccess() {
+  return { type: types.CREATE_CARD_SUCCESS, payload: {} };
+}
+
+export function handleCreateCardError(error) {
+  return { type: types.CREATE_CARD_ERROR, payload: { error } };
 }

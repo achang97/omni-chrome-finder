@@ -6,6 +6,7 @@ import ask from './ask';
 import create from './create';
 import navigate from './navigate';
 import tasks from './tasks';
+import search from './search';
 import { persistStore, persistReducer } from 'redux-persist'
 import { getStorageName } from '../utils/constants';
 import { syncStorage } from 'redux-persist-webextension-storage'
@@ -14,7 +15,7 @@ import { LOGOUT } from '../actions/actionTypes';
 const authPersistConfig = {
   key: getStorageName('auth'),
   storage: syncStorage,
-  whitelist: ['isLoggedIn', 'refreshToken', 'token'],
+  whitelist: ['isLoggedIn', 'refreshToken', 'token', 'user'],
 }
 
 const appReducer = combineReducers({
@@ -24,7 +25,8 @@ const appReducer = combineReducers({
   ask,
   create,
   navigate,
-  tasks
+  tasks,
+  search,
 });
 
 const rootReducer = (state, action) => {

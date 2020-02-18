@@ -4,10 +4,7 @@ import { MdCheck, MdArrowDropDown, MdMoreHoriz, MdModeEdit, MdThumbUp, MdBookmar
 import { default as SlackIcon } from "../../../assets/images/icons/Slack_Mark.svg";
 
 import { FaSlack } from "react-icons/fa";
-import { bindActionCreators } from 'redux';
 import { EditorState } from 'draft-js';
-import { connect } from 'react-redux';
-import * as cardActions from '../../../actions/cards';
 import TextEditor from '../../editors/TextEditor';
 import Button from '../../common/Button';
 import Modal from '../../common/Modal';
@@ -19,6 +16,10 @@ import { Resizable } from 're-resizable';
 import Dropzone from '../../common/Dropzone';
 import CardSideDock from '../CardSideDock';
 import CardCreateModal from '../CardCreateModal';
+
+import { bindActionCreators } from 'redux';
+import { connect } from 'react-redux';
+import * as cardActions from '../../../actions/cards';
 
 import {
   CARD_STATUS_OPTIONS,
@@ -353,7 +354,7 @@ class CardContent extends Component {
   	return (
   		<div className={s("message-manager-container bg-purple-light mx-lg mb-lg rounded-lg flex-grow overflow-auto")}>
 		  	{currMessages.map(({ senderName, time, message, selected }, i) => ((isEditing || selected) &&
-  				<div className={s(`flex p-reg   ${ i % 2 === 0 ? '' : 'bg-purple-gray-10' } `)}>
+  				<div key={i} className={s(`flex p-reg   ${ i % 2 === 0 ? '' : 'bg-purple-gray-10' } `)}>
   					<div className={s("message-photo-container rounded-lg bg-purple-reg flex-shrink-0 text-white flex justify-center mr-reg items-center shadow-md")}>
   						<MdPerson />
   					</div>
@@ -378,7 +379,7 @@ class CardContent extends Component {
   }
 
   renderAnswer = () => {
-  	const { isEditing, editorEnabled, selectedMessages } = this.props;
+  	const { isEditing, editorEnabled, selectedMessages, messages } = this.props;
   	return (
   		<div className={s('p-2xl flex-grow min-h-0 flex flex-col min-h-0 relative')}>
         { isEditing ?
@@ -404,15 +405,17 @@ class CardContent extends Component {
 	        			/>
 	        		</div>
 	        	}
-	        	<Button 
-	        		text={"Manage Message Display"}
-	        		color={"transparent"}
-	        		className={s("flex justify-between shadow-none")}
-	        		icon={ <FaSlack /> } 
-	        		onClick={() => this.props.openCardModal(MODAL_TYPE.THREAD)}
-	        		iconLeft={false}
-	        		underline
-	        	/>       	
+            { messages.length !== 0 &&
+              <Button 
+                text={"Manage Message Display"}
+                color={"transparent"}
+                className={s("flex justify-between shadow-none")}
+                icon={ <FaSlack /> } 
+                onClick={() => this.props.openCardModal(MODAL_TYPE.THREAD)}
+                iconLeft={false}
+                underline
+              />   
+            }
         	</div>) :
         	<TextEditor 
         		onEditorStateChange={this.onAnswerEditorStateChange} 

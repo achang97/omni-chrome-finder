@@ -3,7 +3,7 @@ import _ from 'underscore';
 import { EditorState } from 'draft-js';
 import { removeIndex, updateIndex } from '../utils/arrayHelpers';
 import { createSelectValue } from '../utils/selectHelpers';
-import { CARD_STATUS_OPTIONS, EDITOR_TYPE, CARD_DIMENSIONS, MODAL_TYPE, VERIFICATION_INTERVAL_OPTIONS, PERMISSION_OPTIONS, USER_OPTIONS } from '../utils/constants';
+import { CARD_STATUS_OPTIONS, EDITOR_TYPE, CARD_DIMENSIONS, MODAL_TYPE, VERIFICATION_INTERVAL_OPTIONS, PERMISSION_OPTIONS } from '../utils/constants';
 
 const PLACEHOLDER_MESSAGES = [
   {
@@ -47,11 +47,11 @@ export default function cards(state = initialState, action) {
   }
 
   const createActiveCardEdits = (card) => {
-    const { owners, attachments, tags, keywords, permissions, verificationInterval, question, answerEditorState, descriptionEditorState, messages } = card;
+    const { owners, attachments, tags, keywords, permissions, permissionGroups, verificationInterval, question, answerEditorState, descriptionEditorState, messages } = card;
     return {
       ...card,
       isEditing: true,
-      edits: { owners, attachments, tags, keywords, permissions, verificationInterval, question, answerEditorState, descriptionEditorState, messages }
+      edits: { owners, attachments, tags, keywords, permissions, permissionGroups, verificationInterval, question, answerEditorState, descriptionEditorState, messages }
     };
   }
 
@@ -92,13 +92,13 @@ export default function cards(state = initialState, action) {
           cardStatus: CARD_STATUS_OPTIONS.NOT_DOCUMENTED,
           modalOpen: { ...cardInfo.modalOpen, [MODAL_TYPE.CREATE]: createModalOpen },
           editorEnabled: { ...cardInfo.editorEnabled, [EDITOR_TYPE.ANSWER]: true },
-          messages: PLACEHOLDER_MESSAGES, // [],
-          owners: [USER_OPTIONS[0]], // TODO: add yourself by default
+          messages: [],
           attachments: [],
           tags: [],
           keywords: [],
-          verificationInterval: createSelectValue(VERIFICATION_INTERVAL_OPTIONS[0]),
+          verificationInterval: VERIFICATION_INTERVAL_OPTIONS[0],
           permissions: createSelectValue(PERMISSION_OPTIONS[0]),
+          permissionGroups: [],
         });
       } else {
         // Will have to update this section in the future
@@ -263,6 +263,10 @@ export default function cards(state = initialState, action) {
       const { permissions } = payload;
       return updateActiveCardEdits({ permissions });
     }
+    case types.UPDATE_CARD_PERMISSION_GROUPS: {
+      const { permissionGroups } = payload;
+      return updateActiveCardEdits({ permissionGroups: permissionGroups || [] });
+    }
 
     case types.EDIT_CARD: {
       const { activeCard } = state;
@@ -277,6 +281,17 @@ export default function cards(state = initialState, action) {
       const { activeCard } = state;
       const newCardState = updateActiveCard({ isEditing: false, ...activeCard.edits });
       return { ...newCardState, cards: getUpdatedCards() };
+    }
+
+    case types.CREATE_CARD_REQUEST: {
+      return { ...state, isCreatingCard: true, createError: null, createSuccess: null };
+    }
+    case types.CREATE_CARD_SUCCESS: {
+      return { ...initialState, isCreatingCard: false, createSuccess: true };
+    }
+    case types.CREATE_CARD_ERROR: {
+      const { error } = payload;
+      return { ...state, isCreatingCard: false, createSuccess: false, createError: error };
     }
 
     case types.CLOSE_ALL_CARDS: {

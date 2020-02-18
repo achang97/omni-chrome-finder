@@ -2,17 +2,32 @@ import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 
 import { IoMdAdd } from 'react-icons/io';
+import _ from 'underscore';
 
 import CardUser from './CardUser';
 import CircleButton from '../../common/CircleButton';
 import PlaceholderImg from '../../common/PlaceholderImg';
 import Select from '../../common/Select';
 
-import { USER_OPTIONS } from '../../../utils/constants';
+import { bindActionCreators } from 'redux';
+import { connect } from 'react-redux';
+import { requestSearchUsers } from '../../../actions/search';
+
+import { DEBOUNCE_300_MS } from '../../../utils/constants';
 import { createSelectOptions, simpleInputFilter } from '../../../utils/selectHelpers';
 
 import { getStyleApplicationFn } from '../../../utils/styleHelpers';
 const s = getStyleApplicationFn();
+
+@connect(
+  state => ({
+  	userOptions: state.search.users,
+  	isSearchingUsers: state.search.isSearchingUsers,
+  }),
+  dispatch => bindActionCreators({
+    requestSearchUsers,
+  }, dispatch)
+)
 
 class CardUsers extends Component {
 	constructor(props) {
@@ -22,8 +37,12 @@ class CardUsers extends Component {
 		}
 	}
 
+	loadOptions = (inputValue) => {
+		this.props.requestSearchUsers(inputValue);
+	}
+
 	render() {
-		const { className, isEditable, users, onUserClick, onRemoveClick, onAdd } = this.props;
+		const { className, isEditable, userOptions, isSearchingUsers, users, onUserClick, onRemoveClick, onAdd } = this.props;
 		const showSelect = this.state.showSelect || this.props.showSelect;
 		return (
 			<div className={s(`card-users-container ${className}`)}>
@@ -31,20 +50,23 @@ class CardUsers extends Component {
 					<Select
 						className={s("w-full mb-sm")}
 			            value={null}
-			            options={USER_OPTIONS}
+			            options={userOptions.filter(userOption => !users.some(user => user._id === userOption._id))}
 			            onChange={option => onAdd(option)}
+			            onInputChange={_.debounce(this.loadOptions, DEBOUNCE_300_MS)}
+			            onFocus={() => this.loadOptions("")}
 			            isSearchable
 			            menuShouldScrollIntoView
 			            isClearable={false}
 			            placeholder={"Add users..."}
 			            getOptionLabel={option => option.name}
-			            getOptionValue={option => option}
-			            formatOptionLabel={({ id, name, img }) => (
+			            getOptionValue={option => option._id}
+			            formatOptionLabel={({ _id, name, img }) => (
 							<div className={s("flex items-center")}>
 								<PlaceholderImg src={img} name={name} className={s("h-3xl w-3xl rounded-full mr-sm")} />
 								<div> {name} </div>
 							</div>
 			           	)}
+			            noOptionsMessage={() => isSearchingUsers ? 'Searching users...' : 'No options' }
 					/>
 				}
 				{ users.map(({ id, name, img }, i) => (

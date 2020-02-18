@@ -18,6 +18,7 @@ const s = getStyleApplicationFn(style);
 @connect(
   state => ({
   	...state.create,
+    user: state.auth.user,
   }),
   dispatch =>
     bindActionCreators(
@@ -35,10 +36,15 @@ export default class Create extends Component {
   }  
 
 	openCard = (createModalOpen=false) => {
-    const { openCard, clearCreatePanel, question, descriptionEditorState, answerEditorState } = this.props;
+    const { openCard, clearCreatePanel, question, descriptionEditorState, answerEditorState, user: { _id, firstname, lastname, img } } = this.props;
 
     // Open card with random ID and clear out Create panel
-    const newCardInfo = { question, descriptionEditorState, answerEditorState };
+    const newCardInfo = {
+      question,
+      descriptionEditorState,
+      answerEditorState,
+      owners: [{ _id, name: `${firstname} ${lastname}`, img }] // Add own user by default
+    };
     openCard(newCardInfo, createModalOpen, true);
     clearCreatePanel();
   }
