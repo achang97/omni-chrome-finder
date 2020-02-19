@@ -15,3 +15,17 @@ export function updateIndex(array, index, newElement) {
 	arrayCopy[index] = newElement;
 	return arrayCopy;
 }
+
+/*
+ * Returns an array of extracted ids.
+ */
+export function getArrayIds(array) {
+	return array.map(elem => elem._id);
+}
+
+/*
+ * Returns an array of extracted fields.
+ */
+export function getArrayField(array, field) {
+	return array.map(elem => elem[field]);
+}

@@ -11,74 +11,23 @@ import Tabs from '../../components/common/Tabs/Tabs';
 import Tab from '../../components/common/Tabs/Tab';
 import { colors } from '../../styles/colors';
 
+import Loader from '../../components/common/Loader';
 import ScrollContainer from '../../components/common/ScrollContainer';
 import SuggestionCard from '../../components/suggestions/SuggestionCard';
 import SuggestionPreview from '../../components/suggestions/SuggestionPreview';
 import Button from '../../components/common/Button';
 import Triangle from '../../components/common/Triangle';
 
-import { CARD_STATUS_OPTIONS, NAVIGATE_TAB_OPTIONS } from '../../utils/constants';
+import { CARD_STATUS_OPTIONS, NAVIGATE_TAB_OPTIONS, SEARCH_TYPES } from '../../utils/constants';
 
 import style from "./navigate.css";
 import { getStyleApplicationFn } from '../../utils/styleHelpers';
 const s = getStyleApplicationFn(style);
 
-const PLACEHOLDER_CARDS = [
-  {
-    heading: "How do I delete a user?",
-    headingDescription: 'This is a test 1!',
-    description:
-      "But stream software offline. Professor install angel sector anywhere create at components smart But stream software offline. Professor install angel sector anywhere create at components smart But stream software offline. Professor install angel sector anywhere create at components smart ",
-    datePosted: "2 days ago",
-    cardStatus: CARD_STATUS_OPTIONS.UP_TO_DATE,
-  },
-  {
-    heading: "How do I delete a user?",
-    headingDescription: 'This is a test 2!',
-    description:
-      "But stream software offline. Professor install angel sector anywhere create at components smart…",
-
-    datePosted: "2 days ago",
-    cardStatus: CARD_STATUS_OPTIONS.NEEDS_VERIFICATION,
-  },
-  {
-    heading: "How do I delete a user?",
-    headingDescription: 'This is a test 3! This is a test 3! This is a test 3! This is a test 3! This is a test 3! This is a test 3! This is a test 3! This is a test 3!',
-    description:
-      "But stream software offline. Professor install angel sector anywhere create at components smart…",
-
-    datePosted: "2 days ago",
-    cardStatus: CARD_STATUS_OPTIONS.UP_TO_DATE,
-  },
-  {
-    heading: "How do I delete a user?",
-    description:
-      "But stream software offline. Professor install angel sector anywhere create at components smart…",
-
-    datePosted: "2 days ago",
-    cardStatus: CARD_STATUS_OPTIONS.OUT_OF_DATE,
-  },
-  {
-    heading: "How do I delete a user?",
-    description:
-      "But stream software offline. Professor install angel sector anywhere create at components smart…",
-
-    datePosted: "2 days ago",
-    cardStatus: CARD_STATUS_OPTIONS.UP_TO_DATE,
-  },
-  {
-    heading: "How do I delete a user?",
-    description:
-      "But stream software offline. Professor install angel sector anywhere create at components smart…",
-
-    datePosted: "2 days ago",
-    cardStatus: CARD_STATUS_OPTIONS.UP_TO_DATE,
-  }
-];
-
 @connect(
   state => ({
     ...state.navigate,
+    ...state.search[SEARCH_TYPES.SIDEBAR]
   }),
   dispatch =>
   bindActionCreators(
@@ -96,7 +45,7 @@ export default class Navigate extends Component {
     updateNavigateTab(tabIndex);
   }
   render() {
-    const { tabIndex, filterTags, updateFilterTags, removeFilterTag } = this.props;
+    const { tabIndex, filterTags, updateFilterTags, removeFilterTag, cards, isSearchingCards } = this.props;
     return (
       <div className={s("flex flex-col flex-grow")}>
         <div className={s("horizontal-separator m-0")}></div>
@@ -117,8 +66,6 @@ export default class Navigate extends Component {
               showPlaceholder={true}
               showSelect={false}
             />
-
-
           </div>
         <div>
           <Tabs
@@ -142,38 +89,46 @@ export default class Navigate extends Component {
           </Tabs>
         </div>
         <div className={s("py-lg")}>
-          <ScrollContainer
-            scrollContainerClassName={s(`navigate-card-container flex flex-col`)}
-            list={PLACEHOLDER_CARDS}
-            relative={false}
-            renderScrollElement={(card) => (
-              <SuggestionCard
-                heading={card.heading}
-                headingDescription={card.headingDescription}
-                description={card.description}
-                datePosted={card.datePosted}
-                cardStatus={card.cardStatus}
-                className={s("navigate-suggestion-card cursor-pointer mx-lg mb-reg")}
-                onClick={() => console.log('hi')/*OPEN CARD HERE*/}
-                showMoreMenu
-              />
-            )}
-            renderOverflowElement={(card) => (
-              <div className={s("flex")}>
-                <SuggestionPreview {...card} />
-                <Triangle
-                  size={10}
-                  color={'white'}
-                  direction="left"
-                  className={s("mt-lg")}
-                  outlineSize={1}
-                  outlineColor={colors.gray.light}
+          { cards.length === 0 && (isSearchingCards ?
+            <Loader size="md" /> :
+            <div className={s("text-gray-light text-sm text-center")}> No results </div>
+          )}
+          { cards.length !== 0 &&
+            <ScrollContainer
+              scrollContainerClassName={s(`navigate-card-container flex flex-col`)}
+              list={cards}
+              renderScrollElement={({ _id, question, answer, updatedAt, status }) => (
+                <SuggestionCard
+                  _id={_id}
+                  question={question}
+                  answer={answer}
+                  datePosted={updatedAt}
+                  cardStatus={status}
+                  className={s("navigate-suggestion-card mx-lg mb-reg")}
+                  showMoreMenu
                 />
-              </div>
-            )}
-            footer={false && this.renderExternalDocumentationResults()}
-            position="left"
-          />
+              )}
+              renderOverflowElement={({ _id, question, description, answer }) => (
+                <div className={s("flex")}>
+                  <SuggestionPreview
+                    _id={_id}
+                    question={question}
+                    questionDescription={description}
+                    answer={answer}
+                  />
+                  <Triangle
+                    size={10}
+                    color={'white'}
+                    direction="left"
+                    className={s("mt-sm")}
+                    outlineSize={1}
+                    outlineColor={colors.gray.light}
+                  />
+                </div>
+              )}
+              position="left"
+            />
+          }
         </div>
       </div>
     );

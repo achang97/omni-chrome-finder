@@ -10,6 +10,8 @@ import { FaRegDotCircle, FaPaperPlane, FaMinus } from 'react-icons/fa';
 import ReactPlayer from 'react-player';
 import TextEditor from '../../components/editors/TextEditor';
 import Button from '../../components/common/Button';
+import Loader from '../../components/common/Loader';
+import Modal from '../../components/common/Modal';
 import CircleButton from '../../components/common/CircleButton';
 import _ from 'underscore';
 
@@ -25,8 +27,9 @@ import CardAttachment from "../../components/cards/CardAttachment";
 
 import { colors } from '../../styles/colors';
 import { expandDock } from '../../actions/display';
+import { requestSearchCards } from '../../actions/search';
 import * as askActions from '../../actions/ask';
-import { ASK_INTEGRATIONS } from '../../utils/constants';
+import { ASK_INTEGRATIONS, DEBOUNCE_60_HZ, SEARCH_TYPES } from '../../utils/constants';
 
 import style from "./ask.css";
 import { getStyleApplicationFn, isOverflowing } from '../../utils/styleHelpers';
@@ -49,11 +52,13 @@ const PLACEHOLDER_RECIPIENT_OPTIONS = createSelectOptions([
 @connect(
   state => ({
     dockExpanded: state.display.dockExpanded,
+    ...state.search[SEARCH_TYPES.POPOUT],
     ...state.ask,
   }),
   dispatch => bindActionCreators({
     expandDock,
-    ...askActions
+    ...askActions,
+    requestSearchCards,
   }, dispatch)
 )
 
@@ -88,7 +93,7 @@ class Ask extends Component {
         >
           {ASK_INTEGRATIONS.map((integration) => (
             <Tab key={integration} value={integration}>
-              <div className={s(integration !== activeIntegration ? 'ask-integrations-tab-text' : 'primary-underline')}>
+              <div className={s(integration !== activeIntegration ? 'underline-border border-purple-gray-20' : 'primary-underline')}>
                 {integration}
               </div>
             </Tab>
@@ -303,7 +308,7 @@ class Ask extends Component {
             this.renderChannelRecipient(rest, i) :
             this.renderIndividualRecipient(rest, i)
           )}
-          renderOverflowElement={({ type, id, name, mentions, isDropdownOpen, isDropdownSelectOpen }, i) => ( type === 'channel' &&
+          renderOverflowElement={({ type, id, name, mentions, isDropdownOpen, isDropdownSelectOpen }, i) => ( type === 'channel' ?
             <RecipientDropdown
               name={name}
               mentions={mentions}
@@ -312,7 +317,8 @@ class Ask extends Component {
               onAddMention={(newMention) => updateAskRecipient(i, { mentions: _.union(mentions, [newMention]) })}
               onRemoveMention={(removeMention) => updateAskRecipient(i, { mentions: _.without(mentions, removeMention) })}
               onClose={() => updateAskRecipient(i, { isDropdownOpen: false, isDropdownSelectOpen: false })}
-            />
+            /> : 
+            null
           )}
           position="top"
           matchDimensions={true}
@@ -326,24 +332,51 @@ class Ask extends Component {
   }
 
   renderFooterButton = () => {
+    const { questionTitle, questionDescription, recipients, requestAskQuestion, isAskingQuestion } = this.props;
     return (
       <Button
         className={s('self-stretch justify-between rounded-t-none rounded-br-none rounded-bl-reg text-reg')}
         color="primary"
         text="Ask Question"
+        disabled={questionTitle === '' || !questionDescription.getCurrentContent().hasText() || recipients.length === 0 || isAskingQuestion}
         iconLeft={false}
-        icon={
+        icon={ isAskingQuestion ?
+          <Loader className={s("h-3xl w-3xl")} size="sm" color="white" /> :
           <span className={s("rounded-full h-3xl w-3xl flex justify-center items-center bg-white text-purple-reg")}>
             <FaPaperPlane />
           </span>
         }
+        onClick={requestAskQuestion}
       />
     )
   }
 
-  renderExpandedAskPage = () => {
+  renderResultModal = (isOpen, title, content) => {
+    const { clearAskQuestionInfo } = this.props;
     return (
-      <div className={s('flex flex-col flex-1 min-h-0')}>
+      <Modal 
+        isOpen={isOpen} 
+        onRequestClose={clearAskQuestionInfo}
+        bodyClassName={s("overflow-none flex flex-col rounded-b-lg p-reg")}
+        className={s("bg-purple-light")}
+        overlayClassName={s("rounded-b-lg")}
+        title={title}
+      >
+        <div className={s("mb-sm")}> { content } </div>
+        <Button
+          text="Ok"
+          color="primary"
+          className={s("p-sm")}
+          onClick={clearAskQuestionInfo}
+        /> 
+      </Modal>
+    );
+  }
+
+  renderExpandedAskPage = () => {
+    const { askError, askSuccess } = this.props;
+    return (
+      <div className={s('flex flex-col flex-1 min-h-0 relative')}>
         <div className={s('flex flex-col flex-1 overflow-y-auto bg-purple-light')} ref={this.expandedPageRef}>
           <div className={s("p-lg bg-white")}>
             { this.renderTabHeader() }
@@ -352,6 +385,10 @@ class Ask extends Component {
           { this.renderRecipientSelection() }
         </div>
         { this.renderFooterButton() }
+
+        {/* Modals */}
+        { this.renderResultModal(!!askError, 'Ask Error', askError) }
+        { this.renderResultModal(askSuccess, 'Ask Success', 'Successfully sent question!') }
       </div>
     );
   };
@@ -362,14 +399,25 @@ class Ask extends Component {
     expandDock();
   }
 
+  debouncedRequestSearch = _.debounce(() => {
+    const { requestSearchCards, searchText } = this.props;
+    requestSearchCards(SEARCH_TYPES.POPOUT, searchText);
+  }, DEBOUNCE_60_HZ)
+
+  updateMinifiedAskPageText = (e) => {
+    const { updateAskSearchText } = this.props;
+    updateAskSearchText(e.target.value);
+    this.debouncedRequestSearch();
+  }
+
   renderMinifiedAskPage = () => {
-    const { expandDock, updateAskSearchText, searchText } = this.props;
+    const { expandDock, searchText, cards, isSearchingCards } = this.props;
     const showRelatedQuestions = searchText.length > 0;
 
     return (
       <div className={s("p-lg overflow-y-auto")}>
         <input
-          onChange={e => updateAskSearchText(e.target.value)}
+          onChange={this.updateMinifiedAskPageText}
           value={searchText}
           placeholder="Let's find what you're looking for"
           className={s("w-full")}
@@ -387,7 +435,11 @@ class Ask extends Component {
             onClick={() => this.expandDock()}
           />
         </div>
-        <SuggestionPanel isVisible={showRelatedQuestions} />
+        <SuggestionPanel
+          isVisible={showRelatedQuestions}
+          cards={cards}
+          isLoading={isSearchingCards}
+        />
       </div>
     );
   };

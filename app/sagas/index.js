@@ -1,8 +1,14 @@
 import { all, spawn } from 'redux-saga/effects';
-import watchDisplayRequests from './display';
+import watchAuthRequests from './auth';
+import watchSearchRequests from './search';
+import watchAskRequests from './ask';
+import watchCardsRequests from './cards';
 
 export default function* rootSaga(dispatch, getState) {
   yield all([
-    watchDisplayRequests(),
+    watchAuthRequests(),
+    watchSearchRequests(),
+    watchAskRequests(),
+    watchCardsRequests(),
   ]);
 }

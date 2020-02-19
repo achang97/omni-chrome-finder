@@ -10,7 +10,7 @@ import {
   addCardOwner, removeCardOwner,
   updateCardTags, removeCardTag,
   updateCardKeywords,
-  updateCardVerificationInterval, updateCardPermissions,
+  updateCardVerificationInterval, updateCardPermissions, updateCardPermissionGroups,
 } from '../../../actions/cards';
 
 import { MdClose } from 'react-icons/md';
@@ -20,6 +20,7 @@ import CardSection from '../CardSection';
 import CardUsers from '../CardUsers';
 import CardTags from '../CardTags';
 import CardAttachment from '../CardAttachment';
+import CardPermissions from '../CardPermissions';
 
 import Select from '../../common/Select';
 import Button from '../../common/Button';
@@ -33,46 +34,31 @@ import { getStyleApplicationFn } from '../../../utils/styleHelpers';
 const s = getStyleApplicationFn(style);
 
 const SELECT_PERMISSION_OPTIONS = createSelectOptions(PERMISSION_OPTIONS);
-const SELECT_VERIFICATION_INTERVAL_OPTIONS = createSelectOptions(VERIFICATION_INTERVAL_OPTIONS);
 
 const SIDE_DOCK_TRANSITION_MS = 300;
 
-@connect(
-  state => ({
-    ...state.cards.activeCard,
-  }),
-  dispatch => bindActionCreators({
-    closeCardSideDock,
-    addCardOwner, removeCardOwner,
-    removeCardAttachment,
-    updateCardTags, removeCardTag,
-    updateCardKeywords,
-    updateCardVerificationInterval, updateCardPermissions,
-  }, dispatch)
-)
-
-class CardSideDock extends Component {
-  closeSideDock = () => {
-    this.props.closeCardSideDock();
+const CardSideDock = (props) => {
+  const closeSideDock = () => {
+    props.closeCardSideDock();
   }
 
-  getAttribute = (attribute) => {
-    const { isEditing, edits } = this.props;
-    return isEditing ? edits[attribute] : this.props[attribute];
+  const getAttribute = (attribute) => {
+    const { isEditing, edits } = props;
+    return isEditing ? edits[attribute] : props[attribute];
   }
 
-  renderHeader = () => (
+  const renderHeader = () => (
     <div className={s("flex justify-between text-purple-gray-50 mb-sm")}>
       <div className={s("text-xs")}> Card Information </div>
-      <button onClick={this.closeSideDock}>
+      <button onClick={closeSideDock}>
         <MdClose />
       </button>
     </div>
   );
 
-  renderOwners = () => {
-    const { isEditing, addCardOwner, removeCardOwner } = this.props;
-    const currOwners = this.getAttribute('owners');
+  const renderOwners = () => {
+    const { isEditing, addCardOwner, removeCardOwner } = props;
+    const currOwners = getAttribute('owners');
     return (
       <CardSection className={s("mt-reg")} title="Owner(s)">
         <CardUsers
@@ -85,9 +71,9 @@ class CardSideDock extends Component {
     );
   }
 
-  renderAttachments = () => {
-    const { removeCardAttachment, isEditable } = this.props; 
-    const currAttachments = this.getAttribute('attachments');
+  const renderAttachments = () => {
+    const { removeCardAttachment, isEditable } = props; 
+    const currAttachments = getAttribute('attachments');
 
     return (
       <CardSection className={s("mt-lg")} title="Attachments">
@@ -111,9 +97,9 @@ class CardSideDock extends Component {
     );
   }
 
-  renderTags = () => {
-    const { isEditing, updateCardTags, removeCardTag } = this.props;
-    const currTags = this.getAttribute('tags');
+  const renderTags = () => {
+    const { isEditing, updateCardTags, removeCardTag } = props;
+    const currTags = getAttribute('tags');
 
     return (
       <CardSection className={s("mt-lg")} title="Tags">
@@ -128,9 +114,9 @@ class CardSideDock extends Component {
     )
   }
 
-  renderKeywords = () => {
-    const { isEditing, updateCardKeywords } = this.props;
-    const currKeywords = this.getAttribute('keywords');
+  const renderKeywords = () => {
+    const { isEditing, updateCardKeywords } = props;
+    const currKeywords = getAttribute('keywords');
     return (
       <CardSection className={s("mt-lg")} title="Keywords">
         { isEditing ?
@@ -142,7 +128,7 @@ class CardSideDock extends Component {
             menuShouldScrollIntoView
             isClearable={false}
             placeholder={"Add keywords..."}
-            creatable={true}
+            type="creatable"
             components={{ DropdownIndicator: null }}
             noOptionsMessage={({ inputValue }) => currKeywords.some(keyword => keyword.value === inputValue) ?
               "Keyword already exists" : "Begin typing to add a keyword"
@@ -168,10 +154,11 @@ class CardSideDock extends Component {
     );
   }
 
-  renderAdvanced = () => {
-    const { isEditing, updateCardPermissions, updateCardVerificationInterval } = this.props;
-    const currVerificationInterval = this.getAttribute('verificationInterval');
-    const currPermissions = this.getAttribute('permissions');
+  const renderAdvanced = () => {
+    const { isEditing, updateCardPermissions, updateCardPermissionGroups, updateCardVerificationInterval } = props;
+    const currVerificationInterval = getAttribute('verificationInterval');
+    const currPermissions = getAttribute('permissions');
+    const currPermissionGroups = getAttribute('permissionGroups');
 
     return (
       <CardSection className={s("mt-lg")} title="Advanced">
@@ -180,7 +167,7 @@ class CardSideDock extends Component {
           <Select
             value={currVerificationInterval}
             onChange={updateCardVerificationInterval}
-            options={SELECT_VERIFICATION_INTERVAL_OPTIONS}
+            options={VERIFICATION_INTERVAL_OPTIONS}
             placeholder="Select verification interval..."
             isSearchable
             menuShouldScrollIntoView
@@ -189,13 +176,11 @@ class CardSideDock extends Component {
         </div>
         <div>
           <div className={s("text-gray-reg text-xs mb-xs")}> Permissions </div>
-          <Select
-            value={currPermissions}
-            onChange={updateCardPermissions}
-            placeholder="Select permissions..."
-            options={SELECT_PERMISSION_OPTIONS}
-            isSearchable
-            menuShouldScrollIntoView
+          <CardPermissions
+            selectedPermission={currPermissions}
+            onChangePermission={updateCardPermissions}
+            permissionGroups={currPermissionGroups}
+            onChangePermissionGroups={updateCardPermissionGroups}
             isDisabled={!isEditing}
           />
         </div>
@@ -203,7 +188,7 @@ class CardSideDock extends Component {
     );
   }
 
-  renderFooter = () => {
+  const renderFooter = () => {
     return (
       <div className={s("pt-lg")}>
         <div className={s("text-sm font-medium")}>
@@ -228,8 +213,8 @@ class CardSideDock extends Component {
     );
   }
 
-  renderOverlay = () => {
-    const { sideDockOpen } = this.props;
+  const renderOverlay = () => {
+    const { sideDockOpen } = props;
 
     const baseStyle = getBaseAnimationStyle(SIDE_DOCK_TRANSITION_MS);
 
@@ -241,14 +226,14 @@ class CardSideDock extends Component {
         unmountOnExit
       >
         {state => (  
-          <div className={s("card-side-dock-overlay")} style={{ ...baseStyle, ...FADE_IN_TRANSITIONS[state] }} onClick={this.closeSideDock} />
+          <div className={s("card-side-dock-overlay")} style={{ ...baseStyle, ...FADE_IN_TRANSITIONS[state] }} onClick={closeSideDock} />
         )}
       </Transition>
     );
   }
 
-  render() {
-    const { sideDockOpen, cardStatus } = this.props;
+  const render = () => {
+    const { sideDockOpen, cardStatus } = props;
 
     const baseStyle = getBaseAnimationStyle(SIDE_DOCK_TRANSITION_MS);
     const transitionStyles = {
@@ -262,7 +247,7 @@ class CardSideDock extends Component {
 
     return (
       <div className={s("card-side-dock-container")}>
-        { this.renderOverlay() }
+        { renderOverlay() }
         <Transition
           in={sideDockOpen}
           timeout={SIDE_DOCK_TRANSITION_MS}
@@ -271,19 +256,33 @@ class CardSideDock extends Component {
         >
           {state => (
             <div className={s("card-side-dock overflow-auto")} style={{ ...baseStyle, ...transitionStyles[state] }}>
-              { this.renderHeader() }
-              { !isNewCard && this.renderOwners() }
-              { this.renderAttachments() }
-              { !isNewCard && this.renderTags() }
-              { !isNewCard && this.renderKeywords() }
-              { !isNewCard && this.renderAdvanced() }
-              { !isNewCard && this.renderFooter() }
+              { renderHeader() }
+              { !isNewCard && renderOwners() }
+              { renderAttachments() }
+              { !isNewCard && renderTags() }
+              { !isNewCard && renderKeywords() }
+              { !isNewCard && renderAdvanced() }
+              { !isNewCard && renderFooter() }
             </div>
           )}
         </Transition>
       </div>
     );
   }
+
+  return render();
 }
 
-export default CardSideDock;
+export default connect(
+  state => ({
+    ...state.cards.activeCard,
+  }),
+  dispatch => bindActionCreators({
+    closeCardSideDock,
+    addCardOwner, removeCardOwner,
+    removeCardAttachment,
+    updateCardTags, removeCardTag,
+    updateCardKeywords,
+    updateCardVerificationInterval, updateCardPermissions, updateCardPermissionGroups,
+  }, dispatch)
+)(CardSideDock);

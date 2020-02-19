@@ -101,6 +101,10 @@ export function updateCardPermissions(permissions) {
   return { type: types.UPDATE_CARD_PERMISSIONS, payload: { permissions } };
 }
 
+export function updateCardPermissionGroups(permissionGroups) {
+  return { type: types.UPDATE_CARD_PERMISSION_GROUPS, payload: { permissionGroups } };
+}
+
 export function openCardModal(modalType) {
   return { type: types.OPEN_CARD_MODAL, payload: { modalType } };
 }
@@ -117,14 +121,62 @@ export function cancelEditCard() {
   return { type: types.CANCEL_EDIT_CARD, payload: {} }
 }
 
-export function saveCard() {
-  return { type: types.SAVE_CARD, payload: { } };
-}
-
 export function openCardSideDock() {
   return { type: types.OPEN_CARD_SIDE_DOCK, payload: { } };
 }
 
 export function closeCardSideDock() {
   return { type: types.CLOSE_CARD_SIDE_DOCK, payload: { } };
+}
+
+/* API REQUESTS */
+export function requestGetCard() {
+  return { type: types.GET_CARD_REQUEST, payload: {} };
+}
+
+export function handleGetCardSuccess(id, card) {
+  return { type: types.GET_CARD_SUCCESS, payload: { id, card } };
+}
+
+export function handleGetCardError(id, error) {
+  return { type: types.GET_CARD_ERROR, payload: { id, error } };
+}
+
+
+export function requestCreateCard() {
+  return { type: types.CREATE_CARD_REQUEST, payload: {} };
+}
+
+export function handleCreateCardSuccess(id, card) {
+  return { type: types.CREATE_CARD_SUCCESS, payload: { id, card } };
+}
+
+export function handleCreateCardError(id, error) {
+  return { type: types.CREATE_CARD_ERROR, payload: { id, error } };
+}
+
+
+export function requestUpdateCard() {
+  return { type: types.UPDATE_CARD_REQUEST, payload: {} };
+}
+
+export function handleUpdateCardSuccess(id, card) {
+  return { type: types.UPDATE_CARD_SUCCESS, payload: { id, card } };
+}
+
+export function handleUpdateCardError(id, error) {
+  return { type: types.UPDATE_CARD_ERROR, payload: { id, error } };
+}
+
+
+export function requestDeleteCard() {
+  return { type: types.DELETE_CARD_REQUEST, payload: {} };
+}
+
+export function handleDeleteCardSuccess(id) {
+  return { type: types.DELETE_CARD_SUCCESS, payload: { id } };
+}
+
+export function handleDeleteCardError(id, error) {
+  return { type: types.DELETE_CARD_ERROR, payload: { id, error } };
 }

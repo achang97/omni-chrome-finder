@@ -29,7 +29,7 @@ export default function create(state = initialState, action) {
       return { ...state, descriptionEditorState: editorState };
     }
     case types.CLEAR_CREATE_PANEL: {
-      return { ...state, question: '', answerEditorState: EditorState.createEmpty(), descriptionEditorState: EditorState.createEmpty() };
+      return { ...initialState, isDescriptionEditorShown: state.isDescriptionEditorShown };
     }
 
     default:

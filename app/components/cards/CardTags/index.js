@@ -3,26 +3,31 @@ import PropTypes from 'prop-types';
 
 import { IoMdAdd } from 'react-icons/io';
 import { MdClose, MdLock } from 'react-icons/md';
+import _ from 'underscore';
 
 import CardTag from './CardTag';
 import Select from '../../common/Select';
 
-import { NOOP, TAG_OPTIONS } from '../../../utils/constants';
-import { createSelectOptions } from '../../../utils/selectHelpers';
+import { NOOP, DEBOUNCE_60_HZ } from '../../../utils/constants';
+import { createSelectOptions, simpleInputFilter } from '../../../utils/selectHelpers';
+
+import { bindActionCreators } from 'redux';
+import { connect } from 'react-redux';
+import { requestSearchTags } from '../../../actions/search';
 
 import style from './card-tags.css';
 import { getStyleApplicationFn } from '../../../utils/styleHelpers';
 const s = getStyleApplicationFn(style);
 
-const SELECT_TAG_OPTIONS = createSelectOptions(TAG_OPTIONS, ({ tag, id, isLocked }) => ({
-	label: (
-		<div className={s("flex items-center")}>
-			<div> {tag} </div>
-			{ isLocked && <MdLock className={s("ml-xs")} /> }
-		</div>
-	),
-	value: { tag, id, isLocked }
-}));
+@connect(
+  state => ({
+  	tagOptions: state.search.tags,
+  	isSearchingTags: state.search.isSearchingTags,
+  }),
+  dispatch => bindActionCreators({
+    requestSearchTags,
+  }, dispatch)
+)
 
 class CardTags extends Component {
 	constructor(props) {
@@ -79,12 +84,18 @@ class CardTags extends Component {
 		}
 	}
 
-	renderTag = ({ label, value }, i) => {
-		const { tag, id, isLocked } = value;
+	renderOptionLabel = ({ name, locked }) => (
+		<div className={s("flex items-center")}>
+			<div> {name} </div>
+			{ locked && <MdLock className={s("ml-xs")} /> }
+		</div>
+	);
+
+	renderTag = ({ name, id, locked }, i) => {
 		const { maxWidth, tags, onTagClick, onRemoveClick, isEditable } = this.props;
 		const { firstHiddenIndex } = this.state;
 		return (
-			<Fragment key={tag}>
+			<Fragment key={name}>
 				{i === firstHiddenIndex &&
 					<CardTag
 						text={`+${tags.length - firstHiddenIndex}`}
@@ -93,8 +104,8 @@ class CardTags extends Component {
 					/>
 				}
 				<CardTag
-					key={tag}
-					text={label}
+					key={name}
+					text={this.renderOptionLabel({ name, locked })}
 					ref={maxWidth && ((instance)=>{this.tagRefs[i] = instance;})}
 					className={s(`flex items-center mr-xs mb-xs ${maxWidth ? `whitespace-no-wrap ${i >= firstHiddenIndex ? 'invisible' : ''}` : ''}`)}
 					onClick={onTagClick}
@@ -104,8 +115,12 @@ class CardTags extends Component {
 		)
 	}
 
+	loadOptions = (inputValue) => {
+		this.props.requestSearchTags(inputValue);
+	}
+
 	render() {
-		const { className, tags, onChange, onTagClick, onRemoveClick, maxWidth, isEditable, showPlaceholder } = this.props;
+		const { className, tags, tagOptions, isSearchingTags, onChange, onTagClick, onRemoveClick, maxWidth, isEditable, showPlaceholder } = this.props;
 		const { firstHiddenIndex } = this.state;
 		const containerStyle = this.getContainerStyle();
 
@@ -118,13 +133,19 @@ class CardTags extends Component {
 					<Select
 						className={s("w-full")}
 			            value={tags}
-			            options={SELECT_TAG_OPTIONS}
+			            options={tagOptions}
 			            onChange={onChange}
+			            onInputChange={_.debounce(this.loadOptions, DEBOUNCE_60_HZ)}
+			            onFocus={() => this.loadOptions("")}
 			            isSearchable
 			            isMulti
 			            menuShouldScrollIntoView
 			            isClearable={false}
 			            placeholder={"Add tags..."}
+			            getOptionLabel={option => option.name}
+			            getOptionValue={option => option._id}
+			            formatOptionLabel={this.renderOptionLabel}
+			            noOptionsMessage={() => isSearchingTags ? 'Searching tags...' : 'No options' }
 					/> :
 					<React.Fragment>
 						{ tags.map((tag, i) => this.renderTag(tag, i)) }

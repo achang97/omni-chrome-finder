@@ -4,6 +4,7 @@ import { MdClose } from 'react-icons/md';
 import { FaGoogleDrive } from 'react-icons/fa';
 
 import ScrollContainer from '../../common/ScrollContainer';
+import Loader from '../../common/Loader';
 import SuggestionCard from '../SuggestionCard';
 import SuggestionPreview from '../SuggestionPreview';
 import Button from '../../common/Button';
@@ -15,59 +16,6 @@ import { CARD_STATUS_OPTIONS } from '../../../utils/constants';
 import style from './suggestion-panel.css';
 import { getStyleApplicationFn } from '../../../utils/styleHelpers';
 const s = getStyleApplicationFn(style);
-
-const PLACEHOLDER_CARDS = [
-  {
-    heading: "How do I delete a user?",
-    headingDescription: 'This is a test 1!',
-    description:
-      "But stream software offline. Professor install angel sector anywhere create at components smart But stream software offline. Professor install angel sector anywhere create at components smart But stream software offline. Professor install angel sector anywhere create at components smart ",
-    datePosted: "2 days ago",
-    cardStatus: CARD_STATUS_OPTIONS.UP_TO_DATE,
-  },
-  {
-    heading: "How do I delete a user?",
-    headingDescription: 'This is a test 2!',
-    description:
-      "But stream software offline. Professor install angel sector anywhere create at components smart…",
-
-    datePosted: "2 days ago",
-    cardStatus: CARD_STATUS_OPTIONS.NEEDS_VERIFICATION,
-  },
-  {
-    heading: "How do I delete a user?",
-    headingDescription: 'This is a test 3! This is a test 3! This is a test 3! This is a test 3! This is a test 3! This is a test 3! This is a test 3! This is a test 3!',
-    description:
-      "But stream software offline. Professor install angel sector anywhere create at components smart…",
-
-    datePosted: "2 days ago",
-    cardStatus: CARD_STATUS_OPTIONS.UP_TO_DATE,
-  },
-  {
-    heading: "How do I delete a user?",
-    description:
-      "But stream software offline. Professor install angel sector anywhere create at components smart…",
-
-    datePosted: "2 days ago",
-    cardStatus: CARD_STATUS_OPTIONS.OUT_OF_DATE,
-  },
-  {
-    heading: "How do I delete a user?",
-    description:
-      "But stream software offline. Professor install angel sector anywhere create at components smart…",
-
-    datePosted: "2 days ago",
-    cardStatus: CARD_STATUS_OPTIONS.UP_TO_DATE,
-  },
-  {
-    heading: "How do I delete a user?",
-    description:
-      "But stream software offline. Professor install angel sector anywhere create at components smart…",
-
-    datePosted: "2 days ago",
-    cardStatus: CARD_STATUS_OPTIONS.UP_TO_DATE,
-  }
-];
 
 const PLACEHOLDER_RESULTS = [
   {
@@ -135,7 +83,7 @@ class SuggestionPanel extends Component {
   }
 
   render() {
-    const { isVisible } = this.props;
+    const { isVisible, cards, isLoading } = this.props;
     const { showResults } = this.state;
 
     if (!isVisible) {
@@ -146,37 +94,48 @@ class SuggestionPanel extends Component {
       <div className={s("suggestion-panel pt-reg w-full flex flex-col rounded-lg bg-purple-light shadow-xl border-gray-200 border border-solid")}>
         <div>
           <div className={s("px-reg text-purple-gray-50 text-sm mb-sm")}>
-            30 results
+            {cards.length} result{cards.length !== 1 && 's'}
           </div>
-          <ScrollContainer
-            scrollContainerClassName={s(`suggestion-panel-card-container ${showResults ? 'suggestion-panel-card-container-lg' : ''} flex flex-col`)}
-            list={PLACEHOLDER_CARDS}
-            renderScrollElement={(card) => (
-              <SuggestionCard
-                heading={card.heading}
-                headingDescription={card.headingDescription}
-                description={card.description}
-                datePosted={card.datePosted}
-                cardStatus={card.cardStatus}
-                className={s("mx-sm")}
-              />
-            )}
-            renderOverflowElement={(card) => (
-              <div className={s("flex")}>
-                <SuggestionPreview {...card} />
-                <Triangle
-                  size={10}
-                  color={colors.purple.light}
-                  direction="left"
-                  className={s("mt-lg")}
-                  outlineSize={1}
-                  outlineColor={colors.gray.light}
+          { cards.length === 0 && (isLoading ?
+            <Loader size="md" /> :
+            <div className={s("text-gray-light text-sm text-center")}> No results </div>
+          )}
+          { cards.length !== 0 &&
+            <ScrollContainer
+              scrollContainerClassName={s(`suggestion-panel-card-container ${showResults ? 'suggestion-panel-card-container-lg' : ''} flex flex-col`)}
+              list={cards}
+              renderScrollElement={({ _id, question, answer, updatedAt, status }) => (
+                <SuggestionCard
+                  _id={_id}
+                  question={question}
+                  answer={answer}
+                  datePosted={updatedAt}
+                  cardStatus={status}
+                  className={s("mx-sm")}
                 />
-              </div>
-            )}
-            footer={showResults && this.renderExternalDocumentationResults()}
-            position="left"
-          />
+              )}
+              renderOverflowElement={({ _id, question, description, answer }) => (
+                <div className={s("flex")}>
+                  <SuggestionPreview
+                    _id={_id}
+                    question={question}
+                    questionDescription={description}
+                    answer={answer}
+                  />
+                  <Triangle
+                    size={10}
+                    color={colors.purple.light}
+                    direction="left"
+                    className={s("mt-sm")}
+                    outlineSize={1}
+                    outlineColor={colors.gray.light}
+                  />
+                </div>
+              )}
+              footer={showResults && this.renderExternalDocumentationResults()}
+              position="left"
+            />
+          }
           { !showResults && this.renderFooter() }
           <Triangle
             size={10}
@@ -194,6 +153,12 @@ class SuggestionPanel extends Component {
 
 SuggestionPanel.propTypes = {
   isVisible: PropTypes.bool.isRequired,
+  cards: PropTypes.array.isRequired,
+  isLoading: PropTypes.bool,
+}
+
+SuggestionPanel.defaultProps = {
+  isLoading: false,
 }
 
 export default SuggestionPanel;
