@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import { MdCheck, MdArrowDropDown, MdMoreHoriz, MdModeEdit, MdThumbUp, MdBookmarkBorder, MdPerson, MdAttachment } from "react-icons/md";
+import Timeago from 'react-timeago';
 import { default as SlackIcon } from "../../../assets/images/icons/Slack_Mark.svg";
 
 import { FaSlack } from "react-icons/fa";
@@ -9,6 +10,7 @@ import TextEditor from '../../editors/TextEditor';
 import Button from '../../common/Button';
 import Modal from '../../common/Modal';
 import CheckBox from '../../common/CheckBox';
+import Loader from '../../common/Loader';
 
 import CardStatus from '../CardStatus';
 import CardTags from '../CardTags';
@@ -54,13 +56,27 @@ class CardContent extends Component {
   }
 
   componentDidMount() {
-  	this.setState({ footerHeight: this.footerRef.clientHeight });
+    if (!this.props.hasLoaded) {
+      this.loadCard();
+    }
+
+    if (this.footerRef) {
+      this.setState({ footerHeight: this.footerRef.clientHeight });
+    }
   }
 
   componentDidUpdate(prevProps, prevState) {
-  	if (prevState.footerHeight !== this.footerRef.clientHeight) {
+    if (prevProps._id !== this.props._id && !this.props.hasLoaded && !this.props.isGettingCard) {
+      this.loadCard();
+    }
+
+  	if (this.footerRef && prevState.footerHeight !== this.footerRef.clientHeight) {
   		this.setState({ footerHeight: this.footerRef.clientHeight });
   	}
+  }
+
+  loadCard = () => {
+    this.props.requestGetCard();
   }
 
   getAttribute = (attribute) => {
@@ -131,7 +147,7 @@ class CardContent extends Component {
   }
 
   renderHeader = () => {
-  	const { id, isEditing, tags, attachments, sideDockOpen, openCardSideDock, closeCardSideDock, editorEnabled, descriptionSectionHeight, cardsWidth, addCardAttachments } = this.props;
+  	const { isEditing, tags, updatedAt, attachments, sideDockOpen, openCardSideDock, closeCardSideDock, editorEnabled, descriptionSectionHeight, cardsWidth, addCardAttachments } = this.props;
     const currAttachments = this.getAttribute('attachments');
 
     return (
@@ -147,7 +163,7 @@ class CardContent extends Component {
         enable={{ top:false, right:false, bottom:true, left:false, topRight:false, bottomRight:true, bottomLeft:false, topLeft:false }}
       >
         <strong className={s("text-xs text-purple-reg pt-xs pb-sm flex items-center justify-between opacity-75")}>
-          <div>2 Days Ago</div>
+          <div> <Timeago date={updatedAt} live={false} /> </div>
           <div className={s("flex items-center")}>
             <button onClick={openCardSideDock}>
             	<MdMoreHoriz />
@@ -161,7 +177,7 @@ class CardContent extends Component {
           	value={this.props.edits.question}
           	onChange={this.updateQuestionValue}
         	/> :
-        	<div className={s("text-2xl font-semibold")}>{this.props.question} ({id})</div>
+        	<div className={s("text-2xl font-semibold")}>{this.props.question}</div>
         }
         { isEditing ?
           (<div className={s('flex-grow min-h-0 flex flex-col min-h-0')}>
@@ -220,7 +236,7 @@ class CardContent extends Component {
             />  
             <div className={s("flex flex-shrink-0 z-10 bg-purple-light ml-sm")}>
           	  <Button 
-          	  	text={"2"}
+          	  	text={attachments.length}
           	  	iconLeft={false}
           	  	icon={<MdAttachment className={s("ml-xs")} />}
           	  	color={"secondary"}
@@ -427,7 +443,7 @@ class CardContent extends Component {
         		readOnly
       		/>
         }
-        { !isEditing && 
+        { !isEditing && messages.length !== 0 &&
         	<Button
         		text={"Thread"}
         		onClick={() => this.props.openCardModal(MODAL_TYPE.THREAD)}
@@ -451,7 +467,7 @@ class CardContent extends Component {
   }
 
   renderFooter = () => {
-  	const { id, isEditing, cardStatus, openCardModal, question, edits } = this.props;
+  	const { isEditing, cardStatus, openCardModal, question, edits } = this.props;
   	return (
   		<div className={s("flex-shrink-0 min-h-0")} ref={element => this.footerRef = element}>
   			{ isEditing ?
@@ -516,7 +532,16 @@ class CardContent extends Component {
   }
 
   render() {
-    const { id, isEditing, tags, sideDockOpen, closeCardModal, modalOpen, openCardSideDock, closeCardSideDock, cardStatus } = this.props;
+    const { hasLoaded, isGettingCard, isEditing, tags, sideDockOpen, closeCardModal, modalOpen, openCardSideDock, closeCardSideDock, cardStatus } = this.props;
+    
+    if (!hasLoaded || isGettingCard) {
+      return (
+        <div className={s("flex flex-col h-full justify-center")}>
+          <Loader />
+        </div>
+      );
+    }
+
     return (
       <div className={s("flex-grow flex flex-col min-h-0 relative")}>
       	<div className={s("flex-grow flex flex-col min-h-0")}>

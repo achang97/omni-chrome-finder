@@ -9,8 +9,12 @@ export const getContentStateFromEditorState = (editorState) => {
 	}
 }
 
+export const getContentStateFromString = (contentStateString) => {
+	return convertFromRaw(JSON.parse(contentStateString));
+}
+
 export const getContentStateHTMLFromString = (contentStateString) => {
-	return stateToHTML(convertFromRaw(JSON.parse(contentStateString)));
+	return stateToHTML(getContentStateFromString(contentStateString));
 }
 
 export const getEditorStateFromContentState = (contentStateString) => {

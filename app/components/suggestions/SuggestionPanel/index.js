@@ -104,21 +104,23 @@ class SuggestionPanel extends Component {
             <ScrollContainer
               scrollContainerClassName={s(`suggestion-panel-card-container ${showResults ? 'suggestion-panel-card-container-lg' : ''} flex flex-col`)}
               list={cards}
-              renderScrollElement={({ question, content_state_answer, updatedAt, status }) => (
+              renderScrollElement={({ _id, question, answer, updatedAt, status }) => (
                 <SuggestionCard
+                  _id={_id}
                   question={question}
-                  answer={content_state_answer}
+                  answer={answer}
                   datePosted={updatedAt}
                   cardStatus={status}
                   className={s("mx-sm")}
                 />
               )}
-              renderOverflowElement={({ question, content_state_description, content_state_answer }) => (
+              renderOverflowElement={({ _id, question, description, answer }) => (
                 <div className={s("flex")}>
                   <SuggestionPreview
+                    _id={_id}
                     question={question}
-                    questionDescription={content_state_description}
-                    answer={content_state_answer}
+                    questionDescription={description}
+                    answer={answer}
                   />
                   <Triangle
                     size={10}
@@ -155,7 +157,7 @@ SuggestionPanel.propTypes = {
   isLoading: PropTypes.bool,
 }
 
-SuggestionCard.defaultProps = {
+SuggestionPanel.defaultProps = {
   isLoading: false,
 }
 

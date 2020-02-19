@@ -2,6 +2,7 @@ import * as types from '../actions/actionTypes';
 import _ from 'underscore';
 import { EditorState } from 'draft-js';
 import { removeIndex, updateIndex } from '../utils/arrayHelpers';
+import { convertCardToFrontendFormat } from '../utils/cardHelpers';
 import { CARD_STATUS_OPTIONS, EDITOR_TYPE, CARD_DIMENSIONS, MODAL_TYPE, VERIFICATION_INTERVAL_OPTIONS, PERMISSION_OPTIONS } from '../utils/constants';
 
 const PLACEHOLDER_MESSAGES = [
@@ -34,6 +35,16 @@ const initialState = {
   showCloseModal: false,
 };
 
+const BASE_CARD_STATE = {
+  isEditing: false, 
+  sideDockOpen: false, 
+  modalOpen: { [MODAL_TYPE.CREATE]: false, [MODAL_TYPE.THREAD]: false, [MODAL_TYPE.CONFIRM_CLOSE]: false, [MODAL_TYPE.CONFIRM_CLOSE_UNDOCUMENTED]: false, [MODAL_TYPE.CONFIRM_UP_TO_DATE]: false, [MODAL_TYPE.CONFIRM_UP_TO_DATE_SAVE]: false },
+  editorEnabled: { [EDITOR_TYPE.DESCRIPTION]: false, [EDITOR_TYPE.ANSWER]: false },
+  descriptionSectionHeight: CARD_DIMENSIONS.MIN_QUESTION_HEIGHT,
+  edits: {},
+  hasLoaded: true,
+}
+
 export default function cards(state = initialState, action) {
   const { type, payload = {} } = action;
 
@@ -43,6 +54,25 @@ export default function cards(state = initialState, action) {
 
   const updateActiveCardEdits = (newEditsInfo) => {
     return updateActiveCard({}, newEditsInfo);
+  }
+
+  const updateCardWithId = (id, newInfo, updateCardsArray=false) => {
+    // TODO FIX
+    if (id === state.activeCard._id && !updateCardsArray) {
+      return updateActiveCard(newInfo);
+    } else if (id === state.activeCard._id && updateCardsArray) {
+      const newActiveCard = { ...state.activeCard, ...newInfo };
+      return {
+        ...state,
+        activeCard: newActiveCard,
+        cards: state.cards.map(card => card._id === id ? newActiveCard : card ),
+      };
+    } else {
+      return {
+        ...state,
+        cards: state.cards.map(card => card._id === id ? { ...card, ...newInfo } : card )
+      };
+    }
   }
 
   const createActiveCardEdits = (card) => {
@@ -59,6 +89,16 @@ export default function cards(state = initialState, action) {
     return updateIndex(cards, activeCardIndex, activeCard);
   }
 
+  const setActiveCardIndex = (index) => {
+    const { activeCard, activeCardIndex, cards } = state;
+
+    if (index === activeCardIndex) {
+      return state;
+    }
+
+    return {...state, activeCardIndex: index, activeCard: cards[index], cards: getUpdatedCards() };
+  }
+
   switch (type) {
     case types.ADJUST_CARDS_DIMENSIONS: {
       const { newWidth, newHeight } = payload;
@@ -69,20 +109,15 @@ export default function cards(state = initialState, action) {
       const { card, isNewCard, createModalOpen } = payload;
       const { cards, activeCardIndex } = state;
 
-      // Check if card is already open
-      if (!isNewCard && cards.some(({ _id: currId }) => currId === card._id)) {
-        return state;
+      // TODO: Check if card is already open. If so, should switch to that tab.
+      if (!isNewCard) {
+        const currIndex = cards.findIndex(({ _id: currId }) => currId === card._id);
+        if (currIndex !== -1) {
+          return setActiveCardIndex(currIndex);
+        }
       }
 
-      let cardInfo = {
-        isEditing: false, 
-        sideDockOpen: false, 
-        modalOpen: { [MODAL_TYPE.CREATE]: false, [MODAL_TYPE.THREAD]: false, [MODAL_TYPE.CONFIRM_CLOSE]: false, [MODAL_TYPE.CONFIRM_CLOSE_UNDOCUMENTED]: false, [MODAL_TYPE.CONFIRM_UP_TO_DATE]: false, [MODAL_TYPE.CONFIRM_UP_TO_DATE_SAVE]: false },
-        editorEnabled: { [EDITOR_TYPE.DESCRIPTION]: false, [EDITOR_TYPE.ANSWER]: false },
-        descriptionSectionHeight: CARD_DIMENSIONS.MIN_QUESTION_HEIGHT,
-        edits: {},
-        ...card,
-      };
+      let cardInfo = { ...BASE_CARD_STATE, ...card };
 
       if (isNewCard) {
         cardInfo = createActiveCardEdits({
@@ -101,10 +136,7 @@ export default function cards(state = initialState, action) {
         });
       } else {
         // Will have to update this section in the future
-        cardInfo = {
-          ...cardInfo,
-          messages: PLACEHOLDER_MESSAGES,
-        }
+        cardInfo = { ...cardInfo, hasLoaded: false };
       }
 
       let newCards = activeCardIndex === -1 ? [] : getUpdatedCards();
@@ -114,13 +146,7 @@ export default function cards(state = initialState, action) {
     }
     case types.SET_ACTIVE_CARD_INDEX: {
       const { index } = payload;
-      const { activeCard, activeCardIndex, cards } = state;
-
-      if (index === activeCardIndex) {
-        return state;
-      }
-
-      return {...state, activeCardIndex: index, activeCard: cards[index], cards: getUpdatedCards() };
+      return setActiveCardIndex(index);
     }
     case types.CLOSE_CARD: {
       const { index } = payload;
@@ -276,16 +302,32 @@ export default function cards(state = initialState, action) {
       return updateActiveCard({ isEditing: false, edits: {} });
     }
 
+    /* API REQUESTS */
+    case types.GET_CARD_REQUEST: {
+      return updateActiveCard({ isGettingCard: true, getError: null });
+    }
+    case types.GET_CARD_SUCCESS: {
+      const { id, card } = payload;
+      const newInfo = { isGettingCard: false, hasLoaded: true, ...convertCardToFrontendFormat(card), ...BASE_CARD_STATE };
+      return updateCardWithId(id, newInfo, true);
+    }
+    case types.GET_CARD_ERROR: {
+      const { id, error } = payload;
+      return updateCardWithId(id, { isGettingCard: false, getError: error });
+    }
+
+
     case types.CREATE_CARD_REQUEST: {
-      return { ...state, isCreatingCard: true, createError: null };
+      return updateActiveCard({ isCreatingCard: true, createError: null });
     }
     case types.CREATE_CARD_SUCCESS: {
-      const { card } = payload;
-      return { ...state, isCreatingCard: false };
+      const { id, card } = payload;
+      const newInfo = { isCreatingCard: false, ...convertCardToFrontendFormat(card), ...BASE_CARD_STATE };
+      return updateCardWithId(id, newInfo, true);
     }
     case types.CREATE_CARD_ERROR: {
-      const { error } = payload;
-      return { ...state, isCreatingCard: false, createError: error };
+      const { id, error } = payload;
+      return updateCardWithId(id, { isCreatingCard: false, createError: error });
     }
 
     case types.CLOSE_ALL_CARDS: {

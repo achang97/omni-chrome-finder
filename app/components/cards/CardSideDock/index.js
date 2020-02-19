@@ -10,7 +10,7 @@ import {
   addCardOwner, removeCardOwner,
   updateCardTags, removeCardTag,
   updateCardKeywords,
-  updateCardVerificationInterval, updateCardPermissions,
+  updateCardVerificationInterval, updateCardPermissions, updateCardPermissionGroups,
 } from '../../../actions/cards';
 
 import { MdClose } from 'react-icons/md';
@@ -20,6 +20,7 @@ import CardSection from '../CardSection';
 import CardUsers from '../CardUsers';
 import CardTags from '../CardTags';
 import CardAttachment from '../CardAttachment';
+import CardPermissions from '../CardPermissions';
 
 import Select from '../../common/Select';
 import Button from '../../common/Button';
@@ -154,9 +155,10 @@ const CardSideDock = (props) => {
   }
 
   const renderAdvanced = () => {
-    const { isEditing, updateCardPermissions, updateCardVerificationInterval } = props;
+    const { isEditing, updateCardPermissions, updateCardPermissionGroups, updateCardVerificationInterval } = props;
     const currVerificationInterval = getAttribute('verificationInterval');
     const currPermissions = getAttribute('permissions');
+    const currPermissionGroups = getAttribute('permissionGroups');
 
     return (
       <CardSection className={s("mt-lg")} title="Advanced">
@@ -174,13 +176,11 @@ const CardSideDock = (props) => {
         </div>
         <div>
           <div className={s("text-gray-reg text-xs mb-xs")}> Permissions </div>
-          <Select
-            value={currPermissions}
-            onChange={updateCardPermissions}
-            placeholder="Select permissions..."
-            options={SELECT_PERMISSION_OPTIONS}
-            isSearchable
-            menuShouldScrollIntoView
+          <CardPermissions
+            selectedPermission={currPermissions}
+            onChangePermission={updateCardPermissions}
+            permissionGroups={currPermissionGroups}
+            onChangePermissionGroups={updateCardPermissionGroups}
             isDisabled={!isEditing}
           />
         </div>
@@ -283,6 +283,6 @@ export default connect(
     removeCardAttachment,
     updateCardTags, removeCardTag,
     updateCardKeywords,
-    updateCardVerificationInterval, updateCardPermissions,
+    updateCardVerificationInterval, updateCardPermissions, updateCardPermissionGroups,
   }, dispatch)
 )(CardSideDock);

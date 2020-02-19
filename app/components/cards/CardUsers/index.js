@@ -69,11 +69,11 @@ class CardUsers extends Component {
 			            noOptionsMessage={() => isSearchingUsers ? 'Searching users...' : 'No options' }
 					/>
 				}
-				{ users.map(({ id, name, img }, i) => (
+				{ users.map(({ id, name, firstname, lastname, img }, i) => (
 					<CardUser
 						key={id}
 						size="md"
-						name={name}
+						name={name || `${firstname} ${lastname}`}
 						img={img}
 						className={s("mr-reg")}
 						onClick={onUserClick}

@@ -91,11 +91,11 @@ class CardTags extends Component {
 		</div>
 	);
 
-	renderTag = ({ tag, id, locked }, i) => {
+	renderTag = ({ name, id, locked }, i) => {
 		const { maxWidth, tags, onTagClick, onRemoveClick, isEditable } = this.props;
 		const { firstHiddenIndex } = this.state;
 		return (
-			<Fragment key={tag}>
+			<Fragment key={name}>
 				{i === firstHiddenIndex &&
 					<CardTag
 						text={`+${tags.length - firstHiddenIndex}`}
@@ -104,8 +104,8 @@ class CardTags extends Component {
 					/>
 				}
 				<CardTag
-					key={tag}
-					text={this.renderOptionLabel({ tag, locked })}
+					key={name}
+					text={this.renderOptionLabel({ name, locked })}
 					ref={maxWidth && ((instance)=>{this.tagRefs[i] = instance;})}
 					className={s(`flex items-center mr-xs mb-xs ${maxWidth ? `whitespace-no-wrap ${i >= firstHiddenIndex ? 'invisible' : ''}` : ''}`)}
 					onClick={onTagClick}

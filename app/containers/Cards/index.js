@@ -48,7 +48,7 @@ export default class Cards extends Component {
     }
   }
 
-  cardStateChanged = (index) => {
+  getCurrentCard = (index) => {
     const { cards, activeCardIndex, activeCard } = this.props;
 
     // Get updated current card
@@ -57,12 +57,24 @@ export default class Cards extends Component {
       currentCard = activeCard;
     }
 
-    // Check Question
-    if (currentCard.question !== currentCard.edits.question) return true;
-    // Check Description
-    if (currentCard.descriptionEditorState.getCurrentContent() !== currentCard.edits.descriptionEditorState.getCurrentContent()) return true;
-    // Check Answer
-    if (currentCard.answerEditorState.getCurrentContent() !== currentCard.edits.answerEditorState.getCurrentContent()) return true;
+    return currentCard;
+  }
+
+  cardStateChanged = (index) => {
+    const { cards, activeCardIndex, activeCard } = this.props;
+
+    const currentCard = this.getCurrentCard(index);
+    const editAttributes = Object.keys(currentCard.edits);
+
+    if (editAttributes.length === 0) return false;
+
+    let i;
+    for (i = 0; i < editAttributes.length; i++) {
+      const editAttribute = editAttributes[i];
+      if (JSON.stringify(currentCard[editAttribute]) !== JSON.stringify(currentCard.edits[editAttribute])) {
+        return true;
+      }
+    }
 
     return false;
   }
@@ -71,10 +83,8 @@ export default class Cards extends Component {
     const { cards, closeCard, openCardModal, activeCardIndex, activeCard } = this.props;
     e.stopPropagation();
 
-    let currentCard = cards[index];
-    if (index === activeCardIndex ) { 
-      currentCard = activeCard;
-    }
+    const currentCard = this.getCurrentCard(index);
+
     // Check to make sure edit state is different than saved state
     if (this.cardStateChanged(index)) {
       if (index !== activeCardIndex) this.updateTab(index);
@@ -179,9 +189,9 @@ export default class Cards extends Component {
               card = activeCard;
             }
 
-            const { isEditing, question, edits, id } = card;
+            const { isEditing, question, edits, _id } = card;
             return (
-              <Tab key={id}>
+              <Tab key={_id}>
                 <div className={s("truncate")}> { (!isEditing ? question : edits.question ) || 'Untitled' } </div>
                 <div className={s("flex ml-xs")}>
                   <div onClick={(e) => this.closeCard(e, i)} className={s("mr-reg")}>

@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
+import PropTypes from 'prop-types';
+
 import Button from '../../common/Button';
-import ReactHtmlParser from 'react-html-parser';
 
 import { getContentStateHTMLFromString } from '../../../utils/editorHelpers';
 
@@ -8,7 +9,11 @@ import style from './suggestion-preview.css';
 import { getStyleApplicationFn } from '../../../utils/styleHelpers';
 const s = getStyleApplicationFn(style);
 
-const SuggestionPreview = ({ question, questionDescription, answer }) => {
+import { bindActionCreators } from 'redux';
+import { connect } from 'react-redux';
+import { openCard } from '../../../actions/cards';
+
+const SuggestionPreview = ({ _id, question, questionDescription, answer, openCard }) => {
   return (
     <div className={s("suggestion-preview")}>
       <div className={s("bg-purple-light py-xl px-lg rounded-t-lg")}>
@@ -16,13 +21,13 @@ const SuggestionPreview = ({ question, questionDescription, answer }) => {
           { question }
         </div>
         <div className={s("mt-reg text-xs text-gray-dark font-medium")}>
-          { ReactHtmlParser(getContentStateHTMLFromString(questionDescription)) }
+          {questionDescription}
         </div>
       </div>
       <div className={s("bg-white py-xl px-lg text-sm")}>
-        { ReactHtmlParser(getContentStateHTMLFromString(answer)) }
+        {answer}
       </div>
-      <div className={s("bg-white rounded-b-lg")}>
+      <div className={s("bg-white rounded-b-lg")} onClick={() => openCard({ _id })}>
         <Button
           text="View full card"
           underline={true}
@@ -34,4 +39,17 @@ const SuggestionPreview = ({ question, questionDescription, answer }) => {
   );
 }
 
-export default SuggestionPreview;
+SuggestionPreview.propTypes = {
+  _id: PropTypes.string.isRequired,
+  question: PropTypes.string.isRequired,
+  questionDescription: PropTypes.string.isRequired,
+  answer: PropTypes.string.isRequired,
+}
+
+export default connect(
+  state => ({
+  }),
+  dispatch => bindActionCreators({
+    openCard,
+  }, dispatch)
+)(SuggestionPreview);

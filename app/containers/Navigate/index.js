@@ -97,22 +97,24 @@ export default class Navigate extends Component {
             <ScrollContainer
               scrollContainerClassName={s(`navigate-card-container flex flex-col`)}
               list={cards}
-              renderScrollElement={({ question, content_state_answer, updatedAt, status }) => (
+              renderScrollElement={({ _id, question, answer, updatedAt, status }) => (
                 <SuggestionCard
+                  _id={_id}
                   question={question}
-                  answer={content_state_answer}
+                  answer={answer}
                   datePosted={updatedAt}
                   cardStatus={status}
-                  className={s("navigate-suggestion-card cursor-pointer mx-lg mb-reg")}
+                  className={s("navigate-suggestion-card mx-lg mb-reg")}
                   showMoreMenu
                 />
               )}
-              renderOverflowElement={({ question, content_state_description, content_state_answer }) => (
+              renderOverflowElement={({ _id, question, description, answer }) => (
                 <div className={s("flex")}>
                   <SuggestionPreview
+                    _id={_id}
                     question={question}
-                    questionDescription={content_state_description}
-                    answer={content_state_answer}
+                    questionDescription={description}
+                    answer={answer}
                   />
                   <Triangle
                     size={10}

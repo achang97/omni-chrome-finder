@@ -1,7 +1,6 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import { MdCheck, MdMoreVert } from 'react-icons/md';
-import ReactHtmlParser from 'react-html-parser';
 import TimeAgo from 'react-timeago';
 
 import { getContentStateHTMLFromString } from '../../../utils/editorHelpers';
@@ -16,11 +15,23 @@ import Modal from '../../common/Modal';
 import _ from 'underscore';
 import { NOOP } from '../../../utils/constants';
 
+import { bindActionCreators } from 'redux';
+import { connect } from 'react-redux';
+import { openCard } from '../../../actions/cards';
+
 import { colors } from '../../../styles/colors';
 
 import style from './suggestion-card.css';
 import { getStyleApplicationFn } from '../../../utils/styleHelpers';
 const s = getStyleApplicationFn(style);
+
+@connect(
+  state => ({
+  }),
+  dispatch => bindActionCreators({
+    openCard,
+  }, dispatch)
+)
 
 class SuggestionCard extends Component {
   constructor(props) {
@@ -44,10 +55,10 @@ class SuggestionCard extends Component {
   }
 
   render() {
-    const { question, answer, datePosted, cardStatus, className, showMoreMenu } = this.props;
+    const { _id, question, answer, datePosted, cardStatus, className, showMoreMenu, openCard } = this.props;
     const { dropdownOpen, showDeleteModal } = this.state;
     return (
-      <div className={s(`${className} mb-sm rounded-xl p-lg bg-white`)}>
+      <div className={s(`${className} mb-sm rounded-xl p-lg bg-white cursor-pointer`)} onClick={() => openCard({ _id })}>
         <div className={s("flex flex-col")}>
           <div className={s("flex")}>
             <span className={s("flex-grow text-lg text-left font-semibold")}>
@@ -74,14 +85,14 @@ class SuggestionCard extends Component {
             }
           </div>
           <span className={s("mt-sm text-xs text-gray-dark font-medium vertical-ellipsis-2")}>
-            {ReactHtmlParser(getContentStateHTMLFromString(answer))}
+            {answer}
           </span>
         </div>
         <div className={s("mt-reg pt-reg flex-col")}>
           <div className={s("horizontal-separator mb-sm")} />
           <div className={s("flex items-center justify-between")}>
             <span className={s("block text-center text-xs text-gray-light")}>
-              <TimeAgo date={datePosted} />
+              <TimeAgo date={datePosted} live={false} />
             </span>
             <CardStatus cardStatus={cardStatus} />
           </div>
@@ -120,6 +131,7 @@ class SuggestionCard extends Component {
 }
 
 SuggestionCard.propTypes = {
+  _id: PropTypes.string.isRequired,
   question: PropTypes.string.isRequired,
   answer: PropTypes.string.isRequired,
   datePosted: PropTypes.string.isRequired,

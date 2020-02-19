@@ -15,7 +15,7 @@ import { requestSearchPermissionGroups } from '../../../actions/search';
 import { getStyleApplicationFn } from '../../../utils/styleHelpers';
 const s = getStyleApplicationFn();
 
-const CardPermissions = ({ selectedPermission, onChangePermission, permissionGroups, onChangePermissionGroups, isSearchingPermissionGroups, permissionGroupOptions, requestSearchPermissionGroups }) => {
+const CardPermissions = ({ isDisabled, selectedPermission, onChangePermission, permissionGroups, onChangePermissionGroups, isSearchingPermissionGroups, permissionGroupOptions, requestSearchPermissionGroups }) => {
   const loadOptions = (inputValue) => {
     requestSearchPermissionGroups(inputValue);
   }
@@ -27,6 +27,7 @@ const CardPermissions = ({ selectedPermission, onChangePermission, permissionGro
         onChange={onChangePermission}
         placeholder="Select permissions..."
         options={PERMISSION_OPTIONS}
+        isDisabled={isDisabled}
         isSearchable
         menuShouldScrollIntoView
       />
@@ -41,6 +42,7 @@ const CardPermissions = ({ selectedPermission, onChangePermission, permissionGro
           options={permissionGroupOptions}
           isMulti
           isSearchable
+          isDisabled={isDisabled}
           isClearable={false}
           menuShouldScrollIntoView
           getOptionLabel={option => option.permissiongroupName}
@@ -57,6 +59,11 @@ CardPermissions.propTypes = {
   onChangePermission: PropTypes.func.isRequired,
   permissionGroups: PropTypes.array.isRequired,
   onChangePermissionGroups: PropTypes.func.isRequired,
+  isDisabled: PropTypes.bool,
+}
+
+CardPermissions.defaultProps = {
+  isDisabled: false,
 }
 
 export default connect(

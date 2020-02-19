@@ -33,7 +33,7 @@ const s = getStyleApplicationFn(style);
 const CardCreateModal = (props) => {
 
   const renderOwners = () => {
-    const { edits: { owners }, addCardOwner, removeCardOwner } = props;
+    const { edits: { owners=[] }, addCardOwner, removeCardOwner } = props;
     return (
       <CardSection title="Owner(s)">
         <CardUsers
@@ -48,7 +48,7 @@ const CardCreateModal = (props) => {
   }
 
   const renderTags = () => {
-    const { edits: { tags }, updateCardTags, removeCardTag } = props;
+    const { edits: { tags=[] }, updateCardTags, removeCardTag } = props;
     return (
       <CardSection className={s("mt-reg")} title="Tags">
         <CardTags
@@ -64,7 +64,7 @@ const CardCreateModal = (props) => {
   }
 
   const renderKeywords = () => {
-    const { edits: { keywords }, updateCardKeywords } = props;
+    const { edits: { keywords=[] }, updateCardKeywords } = props;
     return (
       <CardSection
         className={s("mt-reg")}
@@ -97,7 +97,7 @@ const CardCreateModal = (props) => {
   }
 
   const renderAdvanced = () => {
-    const { edits: { verificationInterval, permissions, permissionGroups }, updateCardVerificationInterval, updateCardPermissions, updateCardPermissionGroups } = props;
+    const { edits: { verificationInterval={}, permissions={}, permissionGroups=[] }, updateCardVerificationInterval, updateCardPermissions, updateCardPermissionGroups } = props;
     return (
       <CardSection
         className={s("mt-reg")}
@@ -141,7 +141,7 @@ const CardCreateModal = (props) => {
   }
 
   const render = () => {
-    const { modalOpen, requestCreateCard, closeCardModal, edits: { question, owners, verificationInterval, permissions, permissionGroups } } = props;
+    const { modalOpen, requestCreateCard, closeCardModal, createError, edits: { question, owners=[], verificationInterval={}, permissions={}, permissionGroups=[] } } = props;
     return (
       <Modal
         isOpen={modalOpen[MODAL_TYPE.CREATE]}
@@ -155,6 +155,9 @@ const CardCreateModal = (props) => {
           { renderTags() }
           { renderKeywords() }
           { renderAdvanced() }
+          { createError &&
+            <div className={s("error-text my-sm")}> {createError} </div>
+          }
         </div>
         <Button
           text="Complete Card"
