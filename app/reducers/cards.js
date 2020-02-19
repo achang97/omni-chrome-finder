@@ -316,7 +316,6 @@ export default function cards(state = initialState, action) {
       return updateCardWithId(id, { isGettingCard: false, getError: error });
     }
 
-
     case types.CREATE_CARD_REQUEST: {
       return updateActiveCard({ isCreatingCard: true, createError: null });
     }
@@ -328,6 +327,19 @@ export default function cards(state = initialState, action) {
     case types.CREATE_CARD_ERROR: {
       const { id, error } = payload;
       return updateCardWithId(id, { isCreatingCard: false, createError: error });
+    }
+
+    case types.UPDATE_CARD_REQUEST: {
+      return updateActiveCard({ isUpdatingCard: true, updateError: null });
+    }
+    case types.UPDATE_CARD_SUCCESS: {
+      const { id, card } = payload;
+      const newInfo = { isUpdatingCard: false, ...convertCardToFrontendFormat(card), ...BASE_CARD_STATE };
+      return updateCardWithId(id, newInfo, true);
+    }
+    case types.UPDATE_CARD_ERROR: {
+      const { id, error } = payload;
+      return updateCardWithId(id, { isUpdatingCard: false, updateError: error });
     }
 
     case types.CLOSE_ALL_CARDS: {

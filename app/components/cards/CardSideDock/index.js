@@ -163,19 +163,23 @@ const CardSideDock = (props) => {
     return (
       <CardSection className={s("mt-lg")} title="Advanced">
         <div className={s("mb-sm")}>
-          <div className={s("text-gray-reg text-xs mb-xs")}> Verification Interval </div>
-          <Select
-            value={currVerificationInterval}
-            onChange={updateCardVerificationInterval}
-            options={VERIFICATION_INTERVAL_OPTIONS}
-            placeholder="Select verification interval..."
-            isSearchable
-            menuShouldScrollIntoView
-            isDisabled={!isEditing}
-          />
+          <div className={s("text-gray-reg text-xs mb-sm")}> Verification Interval </div>
+          { isEditing ?
+            <Select
+              value={currVerificationInterval}
+              onChange={updateCardVerificationInterval}
+              options={VERIFICATION_INTERVAL_OPTIONS}
+              placeholder="Select verification interval..."
+              isSearchable
+              menuShouldScrollIntoView
+            /> :
+            <div className={s("underline-border border-purple-gray-20 mb-sm text-purple-reg text-sm inline-block")}>
+              {currVerificationInterval.label}
+            </div>
+          }
         </div>
         <div>
-          <div className={s("text-gray-reg text-xs mb-xs")}> Permissions </div>
+          <div className={s("text-gray-reg text-xs mb-sm")}> Permissions </div>
           <CardPermissions
             selectedPermission={currPermissions}
             onChangePermission={updateCardPermissions}

@@ -2,6 +2,8 @@ import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 
 import Select from '../../common/Select';
+import Tabs from '../../common/Tabs/Tabs';
+import Tab from '../../common/Tabs/Tab';
 import AnimateHeight from 'react-animate-height';
 import _ from 'underscore';
 
@@ -22,22 +24,38 @@ const CardPermissions = ({ isDisabled, selectedPermission, onChangePermission, p
 
   return (
     <div>
-      <Select
-        value={selectedPermission}
-        onChange={onChangePermission}
-        placeholder="Select permissions..."
-        options={PERMISSION_OPTIONS}
-        isDisabled={isDisabled}
-        isSearchable
-        menuShouldScrollIntoView
-      />
+      { isDisabled ?
+        <div className={s("underline-border border-purple-gray-20 mb-sm text-purple-reg text-sm inline-block")}>
+          {selectedPermission.label}
+        </div> :
+        <Tabs
+          activeValue={selectedPermission}
+          className={s('mb-sm')}
+          tabClassName={s(
+            'text-sm font-normal rounded-full py-sm px-reg'
+          )}
+          inactiveTabClassName={s('text-purple-reg')}
+          activeTabClassName={s(
+            'primary-gradient text-white font-semibold'
+          )}
+          onTabClick={onChangePermission}
+          showRipple={false}
+        >
+          {PERMISSION_OPTIONS.map((permissionOption) => (
+            <Tab key={permissionOption.value} value={permissionOption}>
+              <div className={s(permissionOption.value !== selectedPermission.value ? 'underline-border border-purple-gray-20' : 'primary-underline')}>
+                {permissionOption.label}
+              </div>
+            </Tab>
+          ))}
+        </Tabs>
+      }
       <AnimateHeight height={selectedPermission.value === PERMISSION_OPTIONS_MAP.SPECIFIC_GROUPS ? 'auto' : 0}>
         <Select
           value={permissionGroups}
           onChange={onChangePermissionGroups}
           onInputChange={_.debounce(loadOptions, DEBOUNCE_60_HZ)}
           onFocus={() => loadOptions("")}
-          className={s("mt-xs")}
           placeholder="Add permission groups..."
           options={permissionGroupOptions}
           isMulti
@@ -55,7 +73,7 @@ const CardPermissions = ({ isDisabled, selectedPermission, onChangePermission, p
 }
 
 CardPermissions.propTypes = {
-  selectedPermission: PropTypes.oneOf(PERMISSION_OPTIONS).isRequired,
+  selectedPermission: PropTypes.oneOf([...PERMISSION_OPTIONS, {}]).isRequired,
   onChangePermission: PropTypes.func.isRequired,
   permissionGroups: PropTypes.array.isRequired,
   onChangePermissionGroups: PropTypes.func.isRequired,

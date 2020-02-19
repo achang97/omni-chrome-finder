@@ -8,6 +8,7 @@ import CardAttachment from '../CardAttachment';
 import CardPermissions from '../CardPermissions';
 
 import Select from '../../common/Select';
+import Loader from '../../common/Loader';
 import Button from '../../common/Button';
 import Modal from '../../common/Modal';
 
@@ -116,34 +117,32 @@ const CardCreateModal = (props) => {
           </div>
         }
       >
-        <div className={s("flex")}>
-          <div className={s("flex-1 mr-xs")}>
-            <div className={s("text-gray-reg text-xs mb-xs")}> Verification Interval </div>
-            <Select
-              value={verificationInterval}
-              onChange={updateCardVerificationInterval}
-              options={VERIFICATION_INTERVAL_OPTIONS}
-              placeholder="Select verification interval..."
-              isSearchable
-              menuShouldScrollIntoView
-            />
-          </div>
-          <div className={s("flex-1 ml-xs")}>
-            <div className={s("text-gray-reg text-xs mb-xs")}> Permissions </div>
-            <CardPermissions
-              selectedPermission={permissions}
-              onChangePermission={updateCardPermissions}
-              permissionGroups={permissionGroups}
-              onChangePermissionGroups={updateCardPermissionGroups}
-            />
-          </div>
+        <div>
+          <div className={s("text-gray-reg text-xs mb-xs")}> Verification Interval </div>
+          <Select
+            value={verificationInterval}
+            onChange={updateCardVerificationInterval}
+            options={VERIFICATION_INTERVAL_OPTIONS}
+            placeholder="Select verification interval..."
+            isSearchable
+            menuShouldScrollIntoView
+          />
+        </div>
+        <div className={s("mt-sm")}>
+          <div className={s("text-gray-reg text-xs mb-sm")}> Permissions </div>
+          <CardPermissions
+            selectedPermission={permissions}
+            onChangePermission={updateCardPermissions}
+            permissionGroups={permissionGroups}
+            onChangePermissionGroups={updateCardPermissionGroups}
+          />
         </div>
       </CardSection>
     );
   }
 
   const render = () => {
-    const { modalOpen, requestCreateCard, closeCardModal, createError, edits: { question, owners=[], verificationInterval={}, permissions={}, permissionGroups=[] } } = props;
+    const { modalOpen, requestCreateCard, closeCardModal, createError, isCreatingCard, edits: { question, owners=[], verificationInterval={}, permissions={}, permissionGroups=[] } } = props;
     return (
       <Modal
         isOpen={modalOpen[MODAL_TYPE.CREATE]}
@@ -168,11 +167,14 @@ const CardCreateModal = (props) => {
           underline
           underlineColor="purple-gray-50"
           color={"primary"}
+          iconLeft={false}
+          icon={isCreatingCard ? <Loader className={s("ml-sm")} size="sm" color="white" /> : null}
           disabled={
             owners.length === 0 ||
             !verificationInterval ||
             !permissions ||
-            (permissions.value === PERMISSION_OPTIONS_MAP.SPECIFIC_GROUPS && permissionGroups.length === 0)          
+            (permissions.value === PERMISSION_OPTIONS_MAP.SPECIFIC_GROUPS && permissionGroups.length === 0) ||
+            isCreatingCard      
           }
         />
       </Modal>

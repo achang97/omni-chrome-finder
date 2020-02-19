@@ -99,3 +99,16 @@ function* createCard() {
     yield put(handleCreateCardError(cardId, data.error));
   }
 }
+
+function* updateCard() {
+  const cardId = yield call(getActiveCardId);
+  const newCardInfo = yield call(convertCardToBackendFormat);
+
+  try {
+    const card = yield call(doPut, `/cards/${cardId}`, newCardInfo);
+    yield put(handleUpdateCardSuccess(cardId, card));
+  } catch(error) {
+    const { response: { data } } = error;
+    yield put(handleUpdateCardError(cardId, data.error));
+  }
+}

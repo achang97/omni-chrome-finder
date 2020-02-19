@@ -547,7 +547,6 @@ class CardContent extends Component {
       );      
     }
 
-
     if (!hasLoaded || isGettingCard) {
       return (
         <div className={s("flex flex-col h-full justify-center bg-purple-light")}>
