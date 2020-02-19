@@ -26,6 +26,11 @@ export default class Profile extends Component {
     return (
       <div className={s("p-lg")}>
         <Button
+          color="primary"
+          text="Connect Google"
+          className={s("mb-sm")}
+        />
+        <Button
         	color="primary"
         	onClick={logout}
         	text="Logout"
