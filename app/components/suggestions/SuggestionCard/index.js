@@ -13,7 +13,7 @@ import Triangle from '../../common/Triangle';
 import Modal from '../../common/Modal';
 
 import _ from 'underscore';
-import { NOOP } from '../../../utils/constants';
+import { NOOP, CARD_STATUS_OPTIONS } from '../../../utils/constants';
 
 import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
@@ -135,7 +135,7 @@ SuggestionCard.propTypes = {
   question: PropTypes.string.isRequired,
   answer: PropTypes.string.isRequired,
   datePosted: PropTypes.string.isRequired,
-  cardStatus: PropTypes.string.isRequired,
+  cardStatus: PropTypes.oneOf([CARD_STATUS_OPTIONS.UP_TO_DATE , CARD_STATUS_OPTIONS.OUT_OF_DATE, CARD_STATUS_OPTIONS.NEEDS_VERIFICATION, CARD_STATUS_OPTIONS.NEEDS_APPROVAL, CARD_STATUS_OPTIONS.NOT_DOCUMENTED]),
   className: PropTypes.string,
   showMoreMenu: PropTypes.bool,
 }

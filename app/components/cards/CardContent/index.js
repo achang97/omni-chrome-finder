@@ -532,11 +532,25 @@ class CardContent extends Component {
   }
 
   render() {
-    const { hasLoaded, isGettingCard, isEditing, tags, sideDockOpen, closeCardModal, modalOpen, openCardSideDock, closeCardSideDock, cardStatus } = this.props;
+    const { hasLoaded, isGettingCard, getError, isEditing, tags, sideDockOpen, closeCardModal, modalOpen, openCardSideDock, closeCardSideDock, cardStatus } = this.props;
     
+    if (!hasLoaded && getError) {
+      return (
+        <div className={s("flex flex-col h-full justify-center items-center bg-purple-light")}>
+          <div className={s("mb-sm")}> Something went wrong! </div>
+          <Button
+            color="primary"
+            text="Reload Card"
+            onClick={this.loadCard}
+          />
+        </div>
+      );      
+    }
+
+
     if (!hasLoaded || isGettingCard) {
       return (
-        <div className={s("flex flex-col h-full justify-center")}>
+        <div className={s("flex flex-col h-full justify-center bg-purple-light")}>
           <Loader />
         </div>
       );

@@ -132,7 +132,7 @@ class SuggestionPanel extends Component {
                   />
                 </div>
               )}
-              footer={showResults && this.renderExternalDocumentationResults()}
+              footer={showResults ? this.renderExternalDocumentationResults() : null}
               position="left"
             />
           }

@@ -72,8 +72,10 @@ const CardCreateModal = (props) => {
         startExpanded={false}
         preview={
           <div className={s("card-create-modal-keywords-preview")}>
-            { keywords.map(({ label }, i) => (
-              <div className={i !== keywords.length - 1 ? s('mr-xs') : ''}> {label}{i !== keywords.length - 1 && ','} </div>
+            { keywords.map(({ label, value }, i) => (
+              <div key={value} className={i !== keywords.length - 1 ? s('mr-xs') : ''}>
+                {label}{i !== keywords.length - 1 && ','}
+              </div>
             ))}
           </div>
         }

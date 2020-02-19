@@ -55,7 +55,7 @@ const CardPermissions = ({ isDisabled, selectedPermission, onChangePermission, p
 }
 
 CardPermissions.propTypes = {
-  selectedPermission: PropTypes.string.isRequired,
+  selectedPermission: PropTypes.oneOf(PERMISSION_OPTIONS).isRequired,
   onChangePermission: PropTypes.func.isRequired,
   permissionGroups: PropTypes.array.isRequired,
   onChangePermissionGroups: PropTypes.func.isRequired,
