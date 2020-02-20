@@ -2,27 +2,32 @@ import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 
 import { IoMdAdd } from 'react-icons/io';
+import _ from 'underscore';
 
 import CardUser from './CardUser';
 import CircleButton from '../../common/CircleButton';
 import PlaceholderImg from '../../common/PlaceholderImg';
 import Select from '../../common/Select';
 
-import { USER_OPTIONS } from '../../../utils/constants';
-import { createSelectOptions } from '../../../utils/selectHelpers';
+import { bindActionCreators } from 'redux';
+import { connect } from 'react-redux';
+import { requestSearchUsers } from '../../../actions/search';
+
+import { DEBOUNCE_60_HZ } from '../../../utils/constants';
+import { createSelectOptions, simpleInputFilter } from '../../../utils/selectHelpers';
 
 import { getStyleApplicationFn } from '../../../utils/styleHelpers';
 const s = getStyleApplicationFn();
 
-const SELECT_USER_OPTIONS = createSelectOptions(USER_OPTIONS, ({ id, name, img }) => ({
-	label: (
-		<div className={s("flex items-center")}>
-			<PlaceholderImg src={img} name={name} className={s("h-3xl w-3xl rounded-full mr-sm")} />
-			<div> {name} </div>
-		</div>
-	),
-	value: { id, name, img }
-}));
+@connect(
+  state => ({
+  	userOptions: state.search.users,
+  	isSearchingUsers: state.search.isSearchingUsers,
+  }),
+  dispatch => bindActionCreators({
+    requestSearchUsers,
+  }, dispatch)
+)
 
 class CardUsers extends Component {
 	constructor(props) {
@@ -32,8 +37,12 @@ class CardUsers extends Component {
 		}
 	}
 
+	loadOptions = (inputValue) => {
+		this.props.requestSearchUsers(inputValue);
+	}
+
 	render() {
-		const { className, isEditable, users, onUserClick, onRemoveClick, onAdd } = this.props;
+		const { className, isEditable, userOptions, isSearchingUsers, users, onUserClick, onRemoveClick, onAdd } = this.props;
 		const showSelect = this.state.showSelect || this.props.showSelect;
 		return (
 			<div className={s(`card-users-container ${className}`)}>
@@ -41,19 +50,30 @@ class CardUsers extends Component {
 					<Select
 						className={s("w-full mb-sm")}
 			            value={null}
-			            options={SELECT_USER_OPTIONS}
-			            onChange={({ label, value }) => onAdd(value)}
+			            options={userOptions.filter(userOption => !users.some(user => user._id === userOption._id))}
+			            onChange={option => onAdd(option)}
+			            onInputChange={_.debounce(this.loadOptions, DEBOUNCE_60_HZ)}
+			            onFocus={() => this.loadOptions("")}
 			            isSearchable
 			            menuShouldScrollIntoView
 			            isClearable={false}
 			            placeholder={"Add users..."}
+			            getOptionLabel={option => option.name}
+			            getOptionValue={option => option._id}
+			            formatOptionLabel={({ _id, name, img }) => (
+							<div className={s("flex items-center")}>
+								<PlaceholderImg src={img} name={name} className={s("h-3xl w-3xl rounded-full mr-sm")} />
+								<div> {name} </div>
+							</div>
+			           	)}
+			            noOptionsMessage={() => isSearchingUsers ? 'Searching users...' : 'No options' }
 					/>
 				}
-				{ users.map(({ id, name, img }, i) => (
+				{ users.map(({ id, name, firstname, lastname, img }, i) => (
 					<CardUser
 						key={id}
 						size="md"
-						name={name}
+						name={name || `${firstname} ${lastname}`}
 						img={img}
 						className={s("mr-reg")}
 						onClick={onUserClick}

@@ -1,17 +1,16 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import { MdCheck, MdArrowDropDown, MdMoreHoriz, MdModeEdit, MdThumbUp, MdBookmarkBorder, MdPerson, MdAttachment } from "react-icons/md";
+import Timeago from 'react-timeago';
 import { default as SlackIcon } from "../../../assets/images/icons/Slack_Mark.svg";
 
 import { FaSlack } from "react-icons/fa";
-import { bindActionCreators } from 'redux';
 import { EditorState } from 'draft-js';
-import { connect } from 'react-redux';
-import * as cardActions from '../../../actions/cards';
 import TextEditor from '../../editors/TextEditor';
 import Button from '../../common/Button';
 import Modal from '../../common/Modal';
 import CheckBox from '../../common/CheckBox';
+import Loader from '../../common/Loader';
 
 import CardStatus from '../CardStatus';
 import CardTags from '../CardTags';
@@ -19,6 +18,10 @@ import { Resizable } from 're-resizable';
 import Dropzone from '../../common/Dropzone';
 import CardSideDock from '../CardSideDock';
 import CardCreateModal from '../CardCreateModal';
+
+import { bindActionCreators } from 'redux';
+import { connect } from 'react-redux';
+import * as cardActions from '../../../actions/cards';
 
 import {
   CARD_STATUS_OPTIONS,
@@ -53,13 +56,27 @@ class CardContent extends Component {
   }
 
   componentDidMount() {
-  	this.setState({ footerHeight: this.footerRef.clientHeight });
+    if (!this.props.hasLoaded) {
+      this.loadCard();
+    }
+
+    if (this.footerRef) {
+      this.setState({ footerHeight: this.footerRef.clientHeight });
+    }
   }
 
   componentDidUpdate(prevProps, prevState) {
-  	if (prevState.footerHeight !== this.footerRef.clientHeight) {
+    if (prevProps._id !== this.props._id && !this.props.hasLoaded && !this.props.isGettingCard) {
+      this.loadCard();
+    }
+
+  	if (this.footerRef && prevState.footerHeight !== this.footerRef.clientHeight) {
   		this.setState({ footerHeight: this.footerRef.clientHeight });
   	}
+  }
+
+  loadCard = () => {
+    this.props.requestGetCard();
   }
 
   getAttribute = (attribute) => {
@@ -130,7 +147,7 @@ class CardContent extends Component {
   }
 
   renderHeader = () => {
-  	const { id, isEditing, tags, attachments, sideDockOpen, openCardSideDock, closeCardSideDock, editorEnabled, descriptionSectionHeight, cardsWidth, addCardAttachments } = this.props;
+  	const { isEditing, tags, updatedAt, attachments, sideDockOpen, openCardSideDock, closeCardSideDock, editorEnabled, descriptionSectionHeight, cardsWidth, addCardAttachments } = this.props;
     const currAttachments = this.getAttribute('attachments');
 
     return (
@@ -146,7 +163,7 @@ class CardContent extends Component {
         enable={{ top:false, right:false, bottom:true, left:false, topRight:false, bottomRight:true, bottomLeft:false, topLeft:false }}
       >
         <strong className={s("text-xs text-purple-reg pt-xs pb-sm flex items-center justify-between opacity-75")}>
-          <div>2 Days Ago</div>
+          <div> <Timeago date={updatedAt} live={false} /> </div>
           <div className={s("flex items-center")}>
             <button onClick={openCardSideDock}>
             	<MdMoreHoriz />
@@ -160,7 +177,7 @@ class CardContent extends Component {
           	value={this.props.edits.question}
           	onChange={this.updateQuestionValue}
         	/> :
-        	<div className={s("text-2xl font-semibold")}>{this.props.question} ({id})</div>
+        	<div className={s("text-2xl font-semibold")}>{this.props.question}</div>
         }
         { isEditing ?
           (<div className={s('flex-grow min-h-0 flex flex-col min-h-0')}>
@@ -215,10 +232,11 @@ class CardContent extends Component {
               tags={tags}
               onTagClick={openCardSideDock}
               maxWidth={cardsWidth * 0.5}
+              isEditable={false}
             />  
             <div className={s("flex flex-shrink-0 z-10 bg-purple-light ml-sm")}>
           	  <Button 
-          	  	text={"2"}
+          	  	text={attachments.length}
           	  	iconLeft={false}
           	  	icon={<MdAttachment className={s("ml-xs")} />}
           	  	color={"secondary"}
@@ -352,7 +370,7 @@ class CardContent extends Component {
   	return (
   		<div className={s("message-manager-container bg-purple-light mx-lg mb-lg rounded-lg flex-grow overflow-auto")}>
 		  	{currMessages.map(({ senderName, time, message, selected }, i) => ((isEditing || selected) &&
-  				<div className={s(`flex p-reg   ${ i % 2 === 0 ? '' : 'bg-purple-gray-10' } `)}>
+  				<div key={i} className={s(`flex p-reg   ${ i % 2 === 0 ? '' : 'bg-purple-gray-10' } `)}>
   					<div className={s("message-photo-container rounded-lg bg-purple-reg flex-shrink-0 text-white flex justify-center mr-reg items-center shadow-md")}>
   						<MdPerson />
   					</div>
@@ -377,7 +395,7 @@ class CardContent extends Component {
   }
 
   renderAnswer = () => {
-  	const { isEditing, editorEnabled, selectedMessages } = this.props;
+  	const { isEditing, editorEnabled, selectedMessages, messages } = this.props;
   	return (
   		<div className={s('p-2xl flex-grow min-h-0 flex flex-col min-h-0 relative')}>
         { isEditing ?
@@ -403,15 +421,17 @@ class CardContent extends Component {
 	        			/>
 	        		</div>
 	        	}
-	        	<Button 
-	        		text={"Manage Message Display"}
-	        		color={"transparent"}
-	        		className={s("flex justify-between shadow-none")}
-	        		icon={ <FaSlack /> } 
-	        		onClick={() => this.props.openCardModal(MODAL_TYPE.THREAD)}
-	        		iconLeft={false}
-	        		underline
-	        	/>       	
+            { messages.length !== 0 &&
+              <Button 
+                text={"Manage Message Display"}
+                color={"transparent"}
+                className={s("flex justify-between shadow-none")}
+                icon={ <FaSlack /> } 
+                onClick={() => this.props.openCardModal(MODAL_TYPE.THREAD)}
+                iconLeft={false}
+                underline
+              />   
+            }
         	</div>) :
         	<TextEditor 
         		onEditorStateChange={this.onAnswerEditorStateChange} 
@@ -423,7 +443,7 @@ class CardContent extends Component {
         		readOnly
       		/>
         }
-        { !isEditing && 
+        { !isEditing && messages.length !== 0 &&
         	<Button
         		text={"Thread"}
         		onClick={() => this.props.openCardModal(MODAL_TYPE.THREAD)}
@@ -447,7 +467,7 @@ class CardContent extends Component {
   }
 
   renderFooter = () => {
-  	const { id, isEditing, cardStatus, openCardModal, question, edits } = this.props;
+  	const { isEditing, cardStatus, openCardModal, question, edits } = this.props;
   	return (
   		<div className={s("flex-shrink-0 min-h-0")} ref={element => this.footerRef = element}>
   			{ isEditing ?
@@ -512,7 +532,16 @@ class CardContent extends Component {
   }
 
   render() {
-    const { id, isEditing, tags, sideDockOpen, closeCardModal, modalOpen, openCardSideDock, closeCardSideDock, cardStatus } = this.props;
+    const { hasLoaded, isGettingCard, isEditing, tags, sideDockOpen, closeCardModal, modalOpen, openCardSideDock, closeCardSideDock, cardStatus } = this.props;
+    
+    if (!hasLoaded || isGettingCard) {
+      return (
+        <div className={s("flex flex-col h-full justify-center")}>
+          <Loader />
+        </div>
+      );
+    }
+
     return (
       <div className={s("flex-grow flex flex-col min-h-0 relative")}>
       	<div className={s("flex-grow flex flex-col min-h-0")}>

@@ -1,74 +1,90 @@
-import React, { useState } from 'react';
+import React, { Component } from 'react';
+import { Link } from 'react-router-dom';
 
-import Tabs from '../../components/common/Tabs/Tabs';
-import Tab from '../../components/common/Tabs/Tab';
+import Button from '../../components/common/Button';
+import Loader from '../../components/common/Loader';
+
+import { updateLoginEmail, updateLoginPassword, requestLogin } from '../../actions/auth';
+import { bindActionCreators } from 'redux';
+import { connect } from 'react-redux';
 
 import style from './login.css';
 import { getStyleApplicationFn } from '../../utils/styleHelpers';
 const s = getStyleApplicationFn(style);
 
-const INTEGRATIONS = ['Slack', 'Email', 'Asana'];
+import logo from '../../assets/images/logos/logo.png';
 
-const Login = (props) => {
-  const [tabValue, setTabValue] = useState(0);
+@connect(
+  state => ({
+    loginEmail: state.auth.loginEmail,
+    loginPassword: state.auth.loginPassword,
+    loginError: state.auth.loginError,
+    isLoggingIn: state.auth.isLoggingIn,
+  }),
+  dispatch =>
+    bindActionCreators(
+      {
+        requestLogin,
+        updateLoginEmail,
+        updateLoginPassword,
+      },
+      dispatch
+    )
+)
 
-  const handleTabClick = (tabValue) => {
-    setTabValue(tabValue);
-  };
+class Login extends Component {
+  constructor(props) {
+    super(props);
+  }
 
-  return (
-    <div>
-      <div className={s('h-16 p-lg bg-gray-300')}>
-        <Tabs
-          activeValue={tabValue}
-          className={s('mb-lg')}
-          tabClassName={s(
-            'ask-integrations-tab text-sm font-normal rounded-full'
-          )}
-          inactiveTabClassName={s('text-purple-reg')}
-          activeTabClassName={s(
-            'ask-integrations-tab-selected text-white font-semibold'
-          )}
-          onTabClick={handleTabClick}
-          showRipple={false}
-        >
-          {INTEGRATIONS.map(integration => (
-            <Tab key={integration}>
-              <div className={s('ask-integrations-tab-text')}>
-                {' '}
-                {integration}{' '}
+  render() {
+    const { requestLogin, updateLoginEmail, loginError, updateLoginPassword, loginEmail, loginPassword, isLoggingIn } = this.props;
+
+    return (
+      <div className={s("flex-1 flex flex-col pt-3xl")}>
+        <div className={s("px-2xl")}>
+          <div className={s("text-xl")}>Welcome!</div>
+          <div className={s("text-sm text-gray-dark mt-reg mb-2xl")}>Sign in to continue</div>
+          { isLoggingIn ? 
+            <Loader className={s("mb-reg")}/> :
+            <div className={s("flex flex-col")}>
+              <div>
+                <input
+                  type="text"
+                  value={loginEmail}
+                  placeholder="Enter login email"
+                  className={s("w-full mb-reg text-xs")}
+                  onChange={(e) => updateLoginEmail(e.target.value)}
+                />
               </div>
-            </Tab>
-          ))}
-        </Tabs>
-      </div>
-      <div
-        className={s('w-full flex mx-auto p-2 items-center justify-center')}
-        style={{ minHeight: '50vh' }}
-      >
-        <div>
-          <span className={s('block text-center my-xl text-xl')}>
-            Please,sign in
-          </span>
-          <div
-            className={s(
-              'w-full flex-1 bg-gray-300 rounded-lg p-lg shadow-md text-purple-reg'
-            )}
-          >
-            <ul>
-              <li
-                className={s(
-                  'list-none cursor-pointer bg-white m-sm my-lg p-sm px-xl font-semibold rounded-lg w-full'
-                )}
-              >
-                Sign in through Slack
-              </li>
-            </ul>
-          </div>
+              <div>
+                <input
+                  type="password"
+                  value={loginPassword}
+                  placeholder="Enter password"
+                  className={s("w-full text-xs")}
+                  onChange={(e) => updateLoginPassword(e.target.value)}
+                />
+              </div>
+              <div className={s("text-xs text-gray-dark mt-reg mb-reg self-end")}>Forgot password?</div>
+            </div>
+          }
+          { loginError &&
+            <div className={s("error-text mt-reg")}> {loginError} </div>
+          }
+        </div>
+        <div className={s("bg-purple-light p-2xl rounded-lg")}>
+          <Button
+            color="primary"
+            text="Login"
+            className={s("")}
+            onClick={requestLogin}
+            disabled={loginEmail === '' || loginPassword === ''}
+          />
         </div>
       </div>
-    </div>
-  );
+    );    
+  }
 };
 
 export default Login;

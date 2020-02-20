@@ -61,3 +61,8 @@
 .modal-important {
   z-index: 201;
 }
+
+/* Error messages */
+.error-text {
+  @apply text-red-500 text-sm text-center;
+}

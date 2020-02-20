@@ -1,6 +1,7 @@
 import React from 'react';
 import ReactSelect from 'react-select';
 import CreatableSelect from 'react-select/creatable';
+import AsyncSelect from 'react-select/async';
 import PropTypes from 'prop-types';
 
 import { colors } from '../../../styles/colors';
@@ -10,8 +11,20 @@ import style from './select.css';
 import { getStyleApplicationFn } from '../../../utils/styleHelpers';
 const s = getStyleApplicationFn(style);
 
-const Select = ({ className, creatable, styles, ...rest }) => {
-  const SelectComponent = creatable ? CreatableSelect : ReactSelect;
+const Select = ({ className, type, styles, ...rest }) => {
+  let SelectComponent;
+  switch (type) {
+    case "creatable":
+      SelectComponent = CreatableSelect;
+      break;
+    case "async":
+      SelectComponent = AsyncSelect;
+      break;
+    case "default":
+    default:
+      SelectComponent = ReactSelect;
+      break;
+  }
 
   return (
     <SelectComponent
@@ -36,11 +49,11 @@ const Select = ({ className, creatable, styles, ...rest }) => {
 }
 
 Select.propTypes = {
-  creatable: PropTypes.bool,
+  type: PropTypes.oneOf(["default", "creatable", "async"])
 }
 
 Select.defaultProps = {
-  creatable: false,
+  type: "default",
   className: '',
   styles: {},
 }

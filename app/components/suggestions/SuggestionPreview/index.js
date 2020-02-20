@@ -1,25 +1,33 @@
 import React, { Component } from 'react';
+import PropTypes from 'prop-types';
+
 import Button from '../../common/Button';
+
+import { getContentStateHTMLFromString } from '../../../utils/editorHelpers';
 
 import style from './suggestion-preview.css';
 import { getStyleApplicationFn } from '../../../utils/styleHelpers';
 const s = getStyleApplicationFn(style);
 
-const SuggestionPreview = ({ heading, headingDescription, description, datePosted, isUpToDate }) => {
+import { bindActionCreators } from 'redux';
+import { connect } from 'react-redux';
+import { openCard } from '../../../actions/cards';
+
+const SuggestionPreview = ({ _id, question, questionDescription, answer, openCard }) => {
   return (
     <div className={s("suggestion-preview")}>
       <div className={s("bg-purple-light py-xl px-lg rounded-t-lg")}>
         <div className={s("text-lg font-semibold")}>
-          { heading }
+          { question }
         </div>
         <div className={s("mt-reg text-xs text-gray-dark font-medium")}>
-          { headingDescription }
+          {questionDescription}
         </div>
       </div>
       <div className={s("bg-white py-xl px-lg text-sm")}>
-        { description }
+        {answer}
       </div>
-      <div className={s("bg-white rounded-b-lg")}>
+      <div className={s("bg-white rounded-b-lg")} onClick={() => openCard({ _id })}>
         <Button
           text="View full card"
           underline={true}
@@ -31,4 +39,17 @@ const SuggestionPreview = ({ heading, headingDescription, description, datePoste
   );
 }
 
-export default SuggestionPreview;
+SuggestionPreview.propTypes = {
+  _id: PropTypes.string.isRequired,
+  question: PropTypes.string.isRequired,
+  questionDescription: PropTypes.string.isRequired,
+  answer: PropTypes.string.isRequired,
+}
+
+export default connect(
+  state => ({
+  }),
+  dispatch => bindActionCreators({
+    openCard,
+  }, dispatch)
+)(SuggestionPreview);

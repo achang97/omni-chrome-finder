@@ -100,6 +100,20 @@ export default function display(state = initialState, action) {
       return { ...state, attachments: removeIndex(state.attachments, index) }
     }
 
+    case types.ASK_QUESTION_REQUEST: {
+      return { ...state, isAskingQuestion: true, askError: null, askSuccess: null };
+    }
+    case types.ASK_QUESTION_SUCCESS: {
+      return { ...initialState, isAskingQuestion: false, askSuccess: true };
+    }
+    case types.ASK_QUESTION_ERROR: {
+      const { error } = payload;
+      return { ...state, isAskingQuestion: false, askSuccess: false, askError: error };
+    }
+    case types.CLEAR_ASK_QUESTION_INFO: {
+      return { ...state, askError: null, askSuccess: null }      
+    }
+
     default:
       return state;
   }
