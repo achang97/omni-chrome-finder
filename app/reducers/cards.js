@@ -414,6 +414,31 @@ export default function cards(state = initialState, action) {
       return updateCardWithId(id, newInfo);
     }
 
+    case types.DELETE_CARD_REQUEST: {
+      return updateActiveCard({ isDeletingCard: true, deleteError: null });
+    }
+    case types.DELETE_CARD_SUCCESS: {
+      const { id } = payload;
+      return removeCardWithId(id);
+    }
+    case types.DELETE_CARD_ERROR: {
+      const { id, error } = payload;
+
+      const currCard = getCardWithId(id); 
+      if (!currCard) {
+        return state;
+      }
+
+      const newInfo = {
+        isDeletingCard: false,
+        deleteError: error,
+        modalOpen: { ...BASE_MODAL_OPEN_STATE, [MODAL_TYPE.ERROR_DELETE]: true }
+      };
+
+      return updateCardWithId(id, newInfo);
+    }
+
+
     case types.CLOSE_ALL_CARDS: {
       return initialState;
     }

@@ -6,6 +6,7 @@ import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
 import {
   closeCardSideDock,
+  openCardModal,
   removeCardAttachment,
   addCardOwner, removeCardOwner,
   updateCardTags, removeCardTag,
@@ -24,9 +25,10 @@ import CardPermissions from '../CardPermissions';
 
 import Select from '../../common/Select';
 import Button from '../../common/Button';
+import Loader from '../../common/Loader';
 
 import { getBaseAnimationStyle } from '../../../utils/animateHelpers';
-import { PERMISSION_OPTIONS, VERIFICATION_INTERVAL_OPTIONS, FADE_IN_TRANSITIONS, CARD_STATUS_OPTIONS } from '../../../utils/constants';
+import { MODAL_TYPE, PERMISSION_OPTIONS, VERIFICATION_INTERVAL_OPTIONS, FADE_IN_TRANSITIONS, CARD_STATUS_OPTIONS } from '../../../utils/constants';
 import { createSelectOptions } from '../../../utils/selectHelpers';
 
 import style from './card-side-dock.css';
@@ -193,6 +195,7 @@ const CardSideDock = (props) => {
   }
 
   const renderFooter = () => {
+    const { isDeletingCard, openCardModal } = props;
     return (
       <div className={s("pt-lg")}>
         <div className={s("text-sm font-medium")}>
@@ -209,7 +212,9 @@ const CardSideDock = (props) => {
           className={s("justify-between mt-lg bg-white text-red-500")}
           text="Delete This Card"
           underline
+          onClick={() => openCardModal(MODAL_TYPE.CONFIRM_DELETE)}
           underlineColor="red-200"
+          disabled={isDeletingCard}
           icon={<FaRegTrashAlt />}
           iconLeft={false}
         />
@@ -283,6 +288,7 @@ export default connect(
   }),
   dispatch => bindActionCreators({
     closeCardSideDock,
+    openCardModal,
     addCardOwner, removeCardOwner,
     removeCardAttachment,
     updateCardTags, removeCardTag,

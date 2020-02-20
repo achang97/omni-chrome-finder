@@ -112,3 +112,17 @@ function* updateCard({ closeCard }) {
     yield put(handleUpdateCardError(cardId, data.error, closeCard));
   }
 }
+
+function* deleteCard() {
+  const cardId = yield call(getActiveCardId);
+
+  try {
+    yield call(doDelete, `/cards/${cardId}`);
+    yield put(handleDeleteCardSuccess(cardId));
+    // yield put(handleDeleteCardError(cardId, 'Test erorr'));
+
+  } catch(error) {
+    const { response: { data } } = error;
+    yield put(handleDeleteCardError(cardId, data.error));
+  }
+}
