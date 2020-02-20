@@ -80,7 +80,7 @@ export default class Tasks extends Component {
   constructor(props) {
     super(props);
     this.state = {
-    	sectionOpen: 'All',
+    	sectionOpen: 'ALL',
       transitionIn: false,
     }
   }  
@@ -92,7 +92,7 @@ export default class Tasks extends Component {
 
   switchOpenSection = (newSection) => {
   	const { sectionOpen } = this.state;
-  	if (newSection === sectionOpen ) this.setState({ sectionOpen: 'All'});
+  	if (newSection === sectionOpen ) this.setState({ sectionOpen: 'ALL'});
   	else this.setState({ sectionOpen: newSection });
   }
 
@@ -114,12 +114,10 @@ export default class Tasks extends Component {
 
   renderTasksList = () => {
   	const { sectionOpen } = this.state;
-  	//const { title, bgColor, borderColor, primaryButton, secondaryOption, shadow } = this.getTasksListInfo();
   	return (
   		<div className={s("flex flex-col p-reg overflow-auto")}>
   			{
 	  			NOTIFICATIONS_PLACEHOLDER.map((notification, i) => {
-	  				console.log(this.getTaskItemInfo(notification.cardStatus))
 	  				const { primaryOption, primaryAction, secondaryOption, secondaryAction } = this.getTaskItemInfo(notification.type);
 	  				return (
 	  					<TaskItem 
@@ -170,7 +168,7 @@ export default class Tasks extends Component {
   renderUnresolvedTasks = () => {
   	return (
   		<div className={s("flex flex-col min-h-0")}>
-  			{ this.state.sectionOpen === 'All' && this.renderTasksList() }
+  			{ this.state.sectionOpen === 'ALL' && this.renderTasksList() }
   			{ this.renderTaskSection({sectionTitle: TASKS_SECTIONS.NEEDS_VERIFICATION, 
         		numberNotifications: 3, 
         		icon: <IoMdAlert className={s("tasks-icon-container text-yellow-reg")}/>, }) }
