@@ -47,7 +47,7 @@ class CardTags extends Component {
 	}
 
 	componentDidUpdate(prevProps) {
-		if (prevProps.maxWidth !== this.props.maxWidth) {
+		if (prevProps.maxWidth !== this.props.maxWidth || JSON.stringify(prevProps.tags) !== JSON.stringify(this.props.tags)) {
 			const firstHiddenIndex = this.getFirstHiddenIndex();
 			this.setState({ firstHiddenIndex });
 		}

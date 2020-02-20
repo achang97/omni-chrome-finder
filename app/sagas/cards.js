@@ -27,7 +27,7 @@ export default function* watchCardsRequests() {
         break;
       }
       case UPDATE_CARD_REQUEST: {
-        yield fork(updateCard);
+        yield fork(updateCard, payload);
         break;
       }
       case DELETE_CARD_REQUEST: {
@@ -55,8 +55,8 @@ function* getCard() {
   }
 }
 
-function* convertCardToBackendFormat() {
-  const { question, answerEditorState, descriptionEditorState, owners, tags, keywords, verificationInterval, permissions, permissionGroups /*, attachments, messages */ } = yield select(state => state.cards.activeCard.edits);
+function* convertCardToBackendFormat(isNewCard) {
+  const { question, answerEditorState, descriptionEditorState, owners, tags, keywords, verificationInterval, permissions, permissionGroups, cardStatus, /*, attachments, messages */ } = yield select(state => state.cards.activeCard.edits);
   const { _id } = yield select(state => state.auth.user._id);
 
   const { contentState: descriptionContentState, text: descriptionText } = getContentStateFromEditorState(descriptionEditorState);
@@ -83,13 +83,13 @@ function* convertCardToBackendFormat() {
     keywords: getArrayField(keywords, 'value'),
     ...verificationInfo,
     ...permissionsInfo,
-    status: CARD_STATUS_OPTIONS.UP_TO_DATE,
+    status: isNewCard ? CARD_STATUS_OPTIONS.UP_TO_DATE : cardStatus,
   }
 }
 
 function* createCard() {
   const cardId = yield call(getActiveCardId);
-  const newCardInfo = yield call(convertCardToBackendFormat);
+  const newCardInfo = yield call(convertCardToBackendFormat, true);
 
   try {
     const card = yield call(doPost, '/cards', newCardInfo);
@@ -100,15 +100,15 @@ function* createCard() {
   }
 }
 
-function* updateCard() {
+function* updateCard({ closeCard }) {
   const cardId = yield call(getActiveCardId);
-  const newCardInfo = yield call(convertCardToBackendFormat);
+  const newCardInfo = yield call(convertCardToBackendFormat, false);
 
   try {
     const card = yield call(doPut, `/cards/${cardId}`, newCardInfo);
-    yield put(handleUpdateCardSuccess(cardId, card));
+    yield put(handleUpdateCardSuccess(card, closeCard));
   } catch(error) {
     const { response: { data } } = error;
-    yield put(handleUpdateCardError(cardId, data.error));
+    yield put(handleUpdateCardError(cardId, data.error, closeCard));
   }
 }

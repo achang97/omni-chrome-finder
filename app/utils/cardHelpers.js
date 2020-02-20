@@ -35,3 +35,14 @@ export function convertCardToFrontendFormat(card) {
 		attachments: [],
 	}
 }
+
+export function isValidCard(edits) {
+	const { question, answerEditorState, owners=[], verificationInterval, permissions, permissionGroups=[] } = edits;
+	return (
+		(!!question && question !== '') &&
+		(!!answerEditorState && answerEditorState.getCurrentContent().hasText()) &&
+        owners.length !== 0 &&
+        !!verificationInterval &&
+        (!!permissions && (permissions.value !== PERMISSION_OPTIONS_MAP.SPECIFIC_GROUPS || permissionGroups.length !== 0))
+	)
+}

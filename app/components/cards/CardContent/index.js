@@ -23,6 +23,7 @@ import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
 import * as cardActions from '../../../actions/cards';
 
+import { isValidCard } from '../../../utils/cardHelpers';
 import {
   CARD_STATUS_OPTIONS,
   CARD_DIMENSIONS,
@@ -114,12 +115,6 @@ class CardContent extends Component {
     
     this.disableDescriptionEditor();
     this.props.saveCard();
-
-    // Check if card is marked as not up to date
-    if (cardStatus === CARD_STATUS_OPTIONS.OUT_OF_DATE ||
-      cardStatus === CARD_STATUS_OPTIONS.NEEDS_VERIFICATION ) {
-      openCardModal(MODAL_TYPE.CONFIRM_UP_TO_DATE_SAVE);
-    }
   }
 
   saveMessages = () => {
@@ -284,7 +279,7 @@ class CardContent extends Component {
   	)
   }
 
-  renderConfirmModal = ({ modalType, title, description, onRequestClose, primaryOption="Yes", primaryFunction, secondaryOption="No", secondaryFunction }) => {
+  renderConfirmModal = ({ modalType, title, description, onRequestClose, primaryButtonProps, secondaryButtonProps }) => {
     const { modalOpen } = this.props;
     return (
       <Modal
@@ -298,19 +293,19 @@ class CardContent extends Component {
         <div className={s("p-lg flex flex-col")}> 
           <div> {description} </div>
           <div className={s("flex mt-lg")} >
+            { secondaryButtonProps &&
+              <Button 
+                color={"transparent"}
+                className={s("flex-grow mr-reg")}
+                underline
+                {...secondaryButtonProps}
+              /> 
+            }
             <Button 
-              text={secondaryOption}
-              onClick={secondaryFunction}
-              color={"transparent"}
-              className={s("flex-grow mr-reg")}
-              underline
-            /> 
-            <Button 
-              text={primaryOption}
-              onClick={primaryFunction}
               color={"primary"}
-              className={s("flex-grow ml-reg")}
+              className={s(`flex-grow ${secondaryButtonProps ? 'ml-reg' : ''}`)}
               underline
+              {...primaryButtonProps}
             />   
           </div>
         </div>
@@ -321,13 +316,6 @@ class CardContent extends Component {
   closeConfirmCloseModal = () => {
   	const { closeCardModal } = this.props;
   	closeCardModal(MODAL_TYPE.CONFIRM_CLOSE);
-  }
-
-  confirmCloseModalPrimary = () => {
-    const { closeCardModal, closeCard, activeCardIndex } = this.props;
-    closeCardModal(MODAL_TYPE.CONFIRM_CLOSE);
-    this.saveCard();
-    closeCard(activeCardIndex);
   }
 
   confirmCloseModalUndocumentedSecondary = () => {
@@ -467,7 +455,8 @@ class CardContent extends Component {
   }
 
   renderFooter = () => {
-  	const { isEditing, cardStatus, openCardModal, question, edits } = this.props;
+  	const { isUpdatingCard, isEditing, cardStatus, openCardModal, question, edits, requestUpdateCard, modalOpen } = this.props;
+
   	return (
   		<div className={s("flex-shrink-0 min-h-0")} ref={element => this.footerRef = element}>
   			{ isEditing ?
@@ -483,15 +472,11 @@ class CardContent extends Component {
 	  			  <Button
   	  				text={"Save Updates"}
           		color="primary"
-  	  				onClick={this.saveCard}
+  	  				onClick={requestUpdateCard}
+              iconLeft={false}
+              icon={isUpdatingCard && !modalOpen[MODAL_TYPE.CONFIRM_CLOSE] ? <Loader className={s("ml-sm")} size="sm" color="white" /> : null}
   	  				className={s("rounded-t-none p-lg")}
-              disabled={
-                edits.question === '' ||
-                !edits.answerEditorState.getCurrentContent().hasText() ||
-                edits.owners.length === 0 ||
-                !edits.verificationInterval ||
-                !edits.permissions
-              }
+              disabled={!isValidCard(edits) || isUpdatingCard}
   	  				underline
 	  				/>
 	        ) :
@@ -531,8 +516,107 @@ class CardContent extends Component {
   	)
   }
 
+  renderModals = () => {
+    const { closeCardModal, closeCard, requestUpdateCard, activeCardIndex, updateError, isUpdatingCard } = this.props;
+
+    return (
+      <React.Fragment>
+        { this.renderConfirmModal({ 
+          modalType: MODAL_TYPE.CONFIRM_CLOSE, 
+          title: "Save Changes", 
+          description: "You have unsaved changes on this card. Would you like to save your changes before closing?", 
+          onRequestClose: () => this.closeConfirmCloseModal(), 
+          primaryButtonProps: {
+            text: "Save",
+            onClick: () => requestUpdateCard(true),
+            iconLeft: false,
+            icon: isUpdatingCard ? <Loader className={s("ml-sm")} size="sm" color="white" /> : null
+          },
+          secondaryButtonProps: {
+            text: "No",
+            onClick: () => () => closeCard(activeCardIndex)
+          }
+        })}
+
+        { this.renderConfirmModal({ 
+          modalType: MODAL_TYPE.CONFIRM_CLOSE_UNDOCUMENTED, 
+          title: "Close Card", 
+          description: "You have not yet documented this card. All changes will be lost upon closing. Are you sure you want to close this card?" , 
+          onRequestClose: () => this.confirmCloseModalUndocumentedSecondary(), 
+          primaryButtonProps: {
+            text: "Close Card",
+            onClick: () => this.confirmCloseModalUndocumentedPrimary()
+          },
+          secondaryButtonProps: {
+            text: "No",
+            onClick: () => this.confirmCloseModalUndocumentedSecondary()
+          }
+        })}
+
+        { this.renderConfirmModal({ 
+          modalType: MODAL_TYPE.CONFIRM_UP_TO_DATE, 
+          title: "Confirm Up-to-Date", 
+          description: "Are you sure this card is now Up to Date?" , 
+          onRequestClose: () => this.closeConfirmUpToDateModal(), 
+          primaryButtonProps: {
+            text: "Yes",
+            onClick: () => this.confirmUpToDateModalPrimary()
+          },
+          secondaryButtonProps: {
+            text: "No",
+            onClick: () => this.closeConfirmUpToDateModal()
+          }
+        })}
+
+        { this.renderConfirmModal({ 
+          modalType: MODAL_TYPE.CONFIRM_UP_TO_DATE_SAVE, 
+          title: "Card Update", 
+          description: "This card was originally not labeled as up to date. Would you like to mark it as Up to Date?" , 
+          onRequestClose: () => this.closeConfirmUpToDateSaveModal(), 
+          primaryButtonProps: {
+            text: "Yes",
+            onClick: () => this.confirmUpToDateSaveModalPrimary()
+          },
+          secondaryButtonProps: {
+            text: "No",
+            onClick: () => this.closeConfirmUpToDateSaveModal()
+          }
+        })}
+
+        { this.renderConfirmModal({ 
+          modalType: MODAL_TYPE.ERROR_UPDATE, 
+          title: "Update Error", 
+          description: `${updateError} Please try again.`, 
+          onRequestClose: () => closeCardModal(MODAL_TYPE.ERROR_UPDATE), 
+          primaryButtonProps: {
+            text: "Ok",
+            onClick: () => closeCardModal(MODAL_TYPE.ERROR_UPDATE)
+          },
+        })}
+
+        { this.renderConfirmModal({ 
+          modalType: MODAL_TYPE.ERROR_UPDATE_CLOSE, 
+          title: "Update Error", 
+          description: `${updateError} Would you still like to close the card?`, 
+          onRequestClose: () => closeCardModal(MODAL_TYPE.ERROR_UPDATE_CLOSE), 
+          primaryButtonProps: {
+            text: "Yes",
+            onClick: () => closeCard(activeCardIndex)
+          },
+          secondaryButtonProps: {
+            text: "No",
+            onClick: () => closeCardModal(MODAL_TYPE.ERROR_UPDATE_CLOSE)
+          }
+        })}
+      </React.Fragment>
+    );
+  }
+
   render() {
-    const { hasLoaded, isGettingCard, getError, isEditing, tags, sideDockOpen, closeCardModal, modalOpen, openCardSideDock, closeCardSideDock, cardStatus } = this.props;
+    const {
+      hasLoaded, isGettingCard, getError,
+      isEditing, tags, sideDockOpen, closeCardModal, modalOpen, openCardSideDock, closeCardSideDock, cardStatus
+    } = this.props;
     
     if (!hasLoaded && getError) {
       return (
@@ -561,45 +645,7 @@ class CardContent extends Component {
 	        { this.renderHeader() }
 	        { this.renderAnswer() }
 	        { this.renderThreadModal() }
-          { this.renderConfirmModal({ 
-            modalType: MODAL_TYPE.CONFIRM_CLOSE, 
-            title: "Save Changes", 
-            description: "You have unsaved changes on this card. Would you like to save your changes before closing?", 
-            onRequestClose: () => this.closeConfirmCloseModal(), 
-            primaryOption: "Save", 
-            primaryFunction: () => this.confirmCloseModalPrimary(), 
-            secondaryOption: "No", 
-            secondaryFunction: () => this.props.closeCard(this.props.activeCardIndex) })}
-
-          { this.renderConfirmModal({ 
-            modalType: MODAL_TYPE.CONFIRM_CLOSE_UNDOCUMENTED, 
-            title: "Close Card", 
-            description: "You have not yet documented this card. All changes will be lost upon closing. Are you sure you want to close this card?" , 
-            onRequestClose: () => this.confirmCloseModalUndocumentedSecondary(), 
-            primaryOption: "Close Card", 
-            primaryFunction: () => this.confirmCloseModalUndocumentedPrimary(), 
-            secondaryOption: "No", 
-            secondaryFunction: () => this.confirmCloseModalUndocumentedSecondary() })}
-
-          { this.renderConfirmModal({ 
-            modalType: MODAL_TYPE.CONFIRM_UP_TO_DATE, 
-            title: "Confirm Up-to-Date", 
-            description: "Are you sure this card is now Up to Date?" , 
-            onRequestClose: () => this.closeConfirmUpToDateModal(), 
-            primaryOption: "Yes", 
-            primaryFunction: () => this.confirmUpToDateModalPrimary(), 
-            secondaryOption: "No", 
-            secondaryFunction: () => this.closeConfirmUpToDateModal() })}
-
-          { this.renderConfirmModal({ 
-            modalType: MODAL_TYPE.CONFIRM_UP_TO_DATE_SAVE, 
-            title: "Card Update", 
-            description: "This card was originally not labeled as up to date. Would you like to mark it as Up to Date?" , 
-            onRequestClose: () => this.closeConfirmUpToDateSaveModal(), 
-            primaryOption: "Yes", 
-            primaryFunction: () => this.confirmUpToDateSaveModalPrimary(), 
-            secondaryOption: "No", 
-            secondaryFunction: () => this.closeConfirmUpToDateSaveModal() })}
+          { this.renderModals() }
         </div>
         { this.renderFooter() }
         <CardSideDock />

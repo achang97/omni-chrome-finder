@@ -156,16 +156,16 @@ export function handleCreateCardError(id, error) {
 }
 
 
-export function requestUpdateCard() {
-  return { type: types.UPDATE_CARD_REQUEST, payload: {} };
+export function requestUpdateCard(closeCard=false) {
+  return { type: types.UPDATE_CARD_REQUEST, payload: { closeCard } };
 }
 
-export function handleUpdateCardSuccess(id, card) {
-  return { type: types.UPDATE_CARD_SUCCESS, payload: { id, card } };
+export function handleUpdateCardSuccess(card, closeCard) {
+  return { type: types.UPDATE_CARD_SUCCESS, payload: { closeCard, card } };
 }
 
-export function handleUpdateCardError(id, error) {
-  return { type: types.UPDATE_CARD_ERROR, payload: { id, error } };
+export function handleUpdateCardError(id, error, closeCard) {
+  return { type: types.UPDATE_CARD_ERROR, payload: { id, error, closeCard } };
 }
 
 

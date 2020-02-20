@@ -15,6 +15,7 @@ import Modal from '../../common/Modal';
 import { MdLock, MdAutorenew } from 'react-icons/md';
 
 import { PERMISSION_OPTIONS_MAP, VERIFICATION_INTERVAL_OPTIONS, CARD_STATUS_OPTIONS, MODAL_TYPE, SEARCH_TYPES } from '../../../utils/constants';
+import { isValidCard } from '../../../utils/cardHelpers';
 
 import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
@@ -142,12 +143,13 @@ const CardCreateModal = (props) => {
   }
 
   const render = () => {
-    const { modalOpen, requestCreateCard, closeCardModal, createError, isCreatingCard, edits: { question, owners=[], verificationInterval={}, permissions={}, permissionGroups=[] } } = props;
+    const { modalOpen, requestCreateCard, closeCardModal, createError, isCreatingCard, edits } = props;
+
     return (
       <Modal
         isOpen={modalOpen[MODAL_TYPE.CREATE]}
         onRequestClose={() => closeCardModal(MODAL_TYPE.CREATE)}
-        title={question}
+        title={edits.question}
         overlayClassName={s("rounded-b-lg")}
         bodyClassName={s("rounded-b-lg flex flex-col")}
       >
@@ -169,13 +171,7 @@ const CardCreateModal = (props) => {
           color={"primary"}
           iconLeft={false}
           icon={isCreatingCard ? <Loader className={s("ml-sm")} size="sm" color="white" /> : null}
-          disabled={
-            owners.length === 0 ||
-            !verificationInterval ||
-            !permissions ||
-            (permissions.value === PERMISSION_OPTIONS_MAP.SPECIFIC_GROUPS && permissionGroups.length === 0) ||
-            isCreatingCard      
-          }
+          disabled={!isValidCard(edits) || isCreatingCard}
         />
       </Modal>
     );    
