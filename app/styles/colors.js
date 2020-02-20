@@ -7,7 +7,8 @@ exports.colors = {
     checkbox: '#E0E0EB',
     'gray-10': '#777BAD1A',
     'gray-20': '#777BAD33',
-    'gray-50': '#777BAD80'
+    'gray-50': '#777BAD80',
+    'task-border': '#BDC8F94D',
   },
   gray: {
     xlight: '#211A1D0D',
@@ -22,9 +23,12 @@ exports.colors = {
     reg: '#20B56A'
   },
   yellow: {
-    reg: '#FFDC1E80'
+    reg: '#FFDC1E80',
+    light: '#FFDC1E14'
   },
   red: {
-    reg: '#EC6464'
+    reg: '#EC6464',
+    'task-border': '#EC64644D',
+    light: '#FF000D05'
   },
 };

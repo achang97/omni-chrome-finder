@@ -125,6 +125,7 @@ class CardTags extends Component {
 			            menuShouldScrollIntoView
 			            isClearable={false}
 			            placeholder={"Add tags..."}
+			            //onMenuClose={() => this.setState( { showSelect: false })}
 					/> :
 					<React.Fragment>
 						{ tags.map((tag, i) => this.renderTag(tag, i)) }

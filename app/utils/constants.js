@@ -22,6 +22,18 @@ export const NAVIGATE_TAB_OPTIONS = ['All', 'My Cards', 'Bookmarked'];
 
 // Tasks page constants
 export const TASKS_TAB_OPTIONS = ['Unresolved', 'Needs Approval'];
+export const TASKS_SECTIONS = {
+	NEEDS_VERIFICATION: "Needs Verification",
+	OUT_OF_DATE: "Out of Date",
+	UNDOCUMENTED: "Undocumented Questions",
+};
+
+export const TASKS_TYPES = {
+	NEEDS_VERIFICATION: "Needs Verification",
+	OUT_OF_DATE: "Out of Date",
+	UNDOCUMENTED: "Undocumented Questions",
+	NEEDS_APPROVAL: "Needs Approval",
+};
 
 
 // Card page constants

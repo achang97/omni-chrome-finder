@@ -19,6 +19,7 @@ const Select = ({ className, creatable, styles, ...rest }) => {
       classNamePrefix="omni-react-select"
       className={s(`select ${className}`)}
       styles={styles ? { ...customStyles, ...styles } : customStyles}
+      /*onMenuClose={() => console.log("hi")}*/
       theme={theme => ({
         ...theme,
         borderRadius: 8,
