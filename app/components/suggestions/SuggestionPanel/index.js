@@ -104,12 +104,12 @@ class SuggestionPanel extends Component {
             <ScrollContainer
               scrollContainerClassName={s(`suggestion-panel-card-container ${showResults ? 'suggestion-panel-card-container-lg' : ''} flex flex-col`)}
               list={cards}
-              renderScrollElement={({ _id, question, answer, updatedAt, status }) => (
+              renderScrollElement={({ _id, question, answer, createdAt, status }) => (
                 <SuggestionCard
                   _id={_id}
                   question={question}
                   answer={answer}
-                  datePosted={updatedAt}
+                  datePosted={createdAt}
                   cardStatus={status}
                   className={s("mx-sm")}
                 />

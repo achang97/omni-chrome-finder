@@ -23,7 +23,7 @@ import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
 import * as cardActions from '../../../actions/cards';
 
-import { isValidCard } from '../../../utils/cardHelpers';
+import { isValidCard, toggleUpvotes } from '../../../utils/cardHelpers';
 import {
   CARD_STATUS_OPTIONS,
   CARD_DIMENSIONS,
@@ -37,6 +37,8 @@ const s = getStyleApplicationFn(style);
 
 @connect(
   state => ({
+    ownUserId: state.auth.user._id,
+
     ...state.cards.activeCard,
     cardsHeight: state.cards.cardsHeight,
     cardsWidth: state.cards.cardsWidth,
@@ -142,7 +144,7 @@ class CardContent extends Component {
   }
 
   renderHeader = () => {
-  	const { isEditing, tags, updatedAt, attachments, sideDockOpen, openCardSideDock, closeCardSideDock, editorEnabled, descriptionSectionHeight, cardsWidth, addCardAttachments } = this.props;
+  	const { isEditing, tags, createdAt, attachments, sideDockOpen, openCardSideDock, closeCardSideDock, editorEnabled, descriptionSectionHeight, cardsWidth, addCardAttachments } = this.props;
     const currAttachments = this.getAttribute('attachments');
 
     return (
@@ -158,7 +160,7 @@ class CardContent extends Component {
         enable={{ top:false, right:false, bottom:true, left:false, topRight:false, bottomRight:true, bottomLeft:false, topLeft:false }}
       >
         <strong className={s("text-xs text-purple-reg pt-xs pb-sm flex items-center justify-between opacity-75")}>
-          <div> <Timeago date={updatedAt} live={false} /> </div>
+          <div> <Timeago date={createdAt} live={false} /> </div>
           <div className={s("flex items-center")}>
             <button onClick={openCardSideDock}>
             	<MdMoreHoriz />
@@ -382,7 +384,12 @@ class CardContent extends Component {
   }
 
   renderFooter = () => {
-  	const { isUpdatingCard, isEditing, cardStatus, openCardModal, question, edits, requestUpdateCard, modalOpen } = this.props;
+  	const {
+      isUpdatingCard, isEditing, cardStatus, openCardModal, question, edits, requestUpdateCard, modalOpen,
+      upvotes, ownUserId, isTogglingUpvote, requestToggleUpvote,
+    } = this.props;
+    
+    const hasUpvoted = upvotes.some(_id => _id === ownUserId);
 
   	return (
   		<div className={s("flex-shrink-0 min-h-0")} ref={element => this.footerRef = element}>
@@ -428,10 +435,13 @@ class CardContent extends Component {
 	          </div>
 	          <div className={s("flex")}>
 		          <Button 
-		          	text={"Helpful"} 
-		          	icon={<MdThumbUp className={s("mr-sm")}/>} 
+		          	text={`Helpful${upvotes.length !== 0 ? ` (${upvotes.length})` : ''}`} 
+		          	icon={<MdThumbUp className={s("mr-sm")} color={hasUpvoted ? 'gold' : ''} />} 
 		          	className={s("mr-reg")}
-		          	color={"secondary"} />
+		          	color={"secondary"}
+                disabled={isTogglingUpvote}
+                onClick={() => requestToggleUpvote(toggleUpvotes(upvotes, ownUserId))}
+              />
 		          <Button 
 		          	icon={<MdBookmarkBorder />}
 		          	color={"secondary"}

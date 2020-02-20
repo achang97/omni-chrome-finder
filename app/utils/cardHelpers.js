@@ -1,9 +1,11 @@
 import { getEditorStateFromContentState } from './editorHelpers';
 import { createSelectOptions } from './selectHelpers';
+import { getArrayIds } from './arrayHelpers';
 import { AUTO_REMIND_VALUE, VERIFICATION_INTERVAL_OPTIONS, PERMISSION_OPTIONS_MAP, PERMISSION_OPTIONS } from './constants';
+import _ from 'underscore';
 
 export function convertCardToFrontendFormat(card) {
-	const { content_state_description, content_state_answer, keywords, autoupdate, update_interval, user_permissions, permission_groups, status, /* screenrecording_urls, screenshot_urls, */ ...rest } = card;
+	const { content_state_description, content_state_answer, keywords, autoupdate, update_interval, user_permissions, permission_groups, status, upvotes, /* screenrecording_urls, screenshot_urls, */ ...rest } = card;
 
 	const verificationInterval = VERIFICATION_INTERVAL_OPTIONS.find(option => (
 		option.value === (autoupdate ? AUTO_REMIND_VALUE : update_interval)
@@ -28,12 +30,26 @@ export function convertCardToFrontendFormat(card) {
 		permissions,
 		permissionGroups: permission_groups,
 		cardStatus: status,
+		upvotes: getArrayIds(upvotes),
 		...rest,
 
 		/* TBD */
 		messages: [],
 		attachments: [],
 	}
+}
+
+export function toggleUpvotes(upvoteIds, userId) {
+	const hasUpvoted = upvoteIds.some(upvoteId => upvoteId === userId);
+
+	let newUpvotes;
+	if (!hasUpvoted) {
+		newUpvotes = _.union(upvoteIds, [userId]);
+	} else {
+		newUpvotes = _.without(upvoteIds, userId);
+	}
+
+	return newUpvotes;
 }
 
 export function isValidCard(edits) {

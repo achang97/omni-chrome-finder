@@ -169,6 +169,19 @@ export function handleUpdateCardError(id, error, closeCard) {
 }
 
 
+export function requestToggleUpvote(upvotes) {
+  return { type: types.TOGGLE_UPVOTE_REQUEST, payload: { upvotes } };
+}
+
+export function handleToggleUpvoteSuccess(card) {
+  return { type: types.TOGGLE_UPVOTE_SUCCESS, payload: { card } };
+}
+
+export function handleToggleUpvoteError(id, error, oldUpvotes) {
+  return { type: types.TOGGLE_UPVOTE_ERROR, payload: { id, error, oldUpvotes } };
+}
+
+
 export function requestDeleteCard() {
   return { type: types.DELETE_CARD_REQUEST, payload: {} };
 }

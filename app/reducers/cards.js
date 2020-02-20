@@ -414,6 +414,20 @@ export default function cards(state = initialState, action) {
       return updateCardWithId(id, newInfo);
     }
 
+    case types.TOGGLE_UPVOTE_REQUEST: {
+      const { upvotes } = payload;
+      return updateActiveCard({ isTogglingUpvote: true, toggleUpvoteError: null, upvotes });
+    }
+    case types.TOGGLE_UPVOTE_SUCCESS: {
+      const { card } = payload;
+      const newInfo = { isTogglingUpvote: false, ...convertCardToFrontendFormat(card) };
+      return updateCardWithId(card._id, newInfo, true);
+    }
+    case types.TOGGLE_UPVOTE_ERROR: {
+      const { id, error, oldUpvotes } = payload;
+      return updateCardWithId(id, { isTogglingUpvote: false, toggleUpvoteError: error, upvotes: oldUpvotes });
+    }
+
     case types.DELETE_CARD_REQUEST: {
       return updateActiveCard({ isDeletingCard: true, deleteError: null });
     }

@@ -1,21 +1,24 @@
 import { delay } from 'redux-saga';
+import _ from 'underscore';
 import { take, call, fork, all, cancel, cancelled, put, select } from 'redux-saga/effects';
 import { doGet, doPost, doPut, doDelete } from '../utils/request'
 import { getArrayIds, getArrayField } from '../utils/arrayHelpers';
 import { getContentStateFromEditorState } from '../utils/editorHelpers';
+import { toggleUpvotes } from '../utils/cardHelpers';
 import { CARD_STATUS_OPTIONS, PERMISSION_OPTIONS_MAP, AUTO_REMIND_VALUE } from '../utils/constants';
-import { GET_CARD_REQUEST, CREATE_CARD_REQUEST, UPDATE_CARD_REQUEST, DELETE_CARD_REQUEST } from '../actions/actionTypes';
+import { GET_CARD_REQUEST, CREATE_CARD_REQUEST, UPDATE_CARD_REQUEST, TOGGLE_UPVOTE_REQUEST, DELETE_CARD_REQUEST } from '../actions/actionTypes';
 import { 
   handleGetCardSuccess, handleGetCardError,
   handleCreateCardSuccess, handleCreateCardError,
   handleUpdateCardSuccess, handleUpdateCardError,
   handleDeleteCardSuccess, handleDeleteCardError,
+  handleToggleUpvoteSuccess, handleToggleUpvoteError,
 } from '../actions/cards';
 
 export default function* watchCardsRequests() {
   let action;
 
-  while (action = yield take([GET_CARD_REQUEST, CREATE_CARD_REQUEST, UPDATE_CARD_REQUEST, DELETE_CARD_REQUEST])) {
+  while (action = yield take([GET_CARD_REQUEST, CREATE_CARD_REQUEST, UPDATE_CARD_REQUEST, TOGGLE_UPVOTE_REQUEST, DELETE_CARD_REQUEST])) {
     const { type, payload } = action;
     switch (type) {
       case GET_CARD_REQUEST: {
@@ -32,6 +35,10 @@ export default function* watchCardsRequests() {
       }
       case DELETE_CARD_REQUEST: {
         yield fork(deleteCard);
+        break;
+      }
+      case TOGGLE_UPVOTE_REQUEST: {
+        yield fork(toggleUpvote, payload);
         break;
       }
     }
@@ -55,9 +62,14 @@ function* getCard() {
   }
 }
 
+function* getUserId() {
+  const _id = yield select(state => state.auth.user._id);
+  return _id;
+}
+
 function* convertCardToBackendFormat(isNewCard) {
   const { question, answerEditorState, descriptionEditorState, owners, tags, keywords, verificationInterval, permissions, permissionGroups, cardStatus, /*, attachments, messages */ } = yield select(state => state.cards.activeCard.edits);
-  const { _id } = yield select(state => state.auth.user._id);
+  const _id = yield call(getUserId);
 
   const { contentState: descriptionContentState, text: descriptionText } = getContentStateFromEditorState(descriptionEditorState);
   const { contentState: answerContentState, text: answerText } = getContentStateFromEditorState(answerEditorState);
@@ -119,10 +131,23 @@ function* deleteCard() {
   try {
     yield call(doDelete, `/cards/${cardId}`);
     yield put(handleDeleteCardSuccess(cardId));
-    // yield put(handleDeleteCardError(cardId, 'Test erorr'));
-
   } catch(error) {
     const { response: { data } } = error;
     yield put(handleDeleteCardError(cardId, data.error));
   }
 }
+
+function* toggleUpvote({ upvotes }) {
+  const cardId = yield call(getActiveCardId);
+  const userId = yield call(getUserId);
+
+  const oldUpvotes = toggleUpvotes(upvotes, userId);
+  try {
+    const card = yield call(doPut, `/cards/${cardId}`, { upvotes });
+    yield put(handleToggleUpvoteSuccess(card));
+  } catch(error) {
+    const { response: { data } } = error;
+    yield put(handleToggleUpvoteError(cardId, data.error, oldUpvotes));
+  }
+}
+
