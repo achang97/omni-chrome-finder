@@ -102,7 +102,7 @@ class App extends Component {
       location: { pathname }
     } = this.props;
     const { suggestTabVisible, jss } = this.state;
-    const showFullDock = dockExpanded || pathname !== '/ask';
+    const showFullDock = dockExpanded || (pathname !== '/ask' && pathname !== '/login');
     // Solution to CSS isolation taken from https://stackoverflow.com/a/57221293.
     return (
       <div className={s('app-container')}>
