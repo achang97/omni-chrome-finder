@@ -4,14 +4,17 @@ import Button from '../../components/common/Button';
 import { logout } from '../../actions/auth';
 import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
+import { getStorageName } from '../../utils/constants';
+
 
 import { getStyleApplicationFn } from '../../utils/styleHelpers';
 
 const s = getStyleApplicationFn();
 
-// ONLY FOR DEVELOPMENT PURPOSE.
-// PLEASE GET THIS URL FROM SERVER - GET v1/google/authurl. Need Authorization to proceed.
-const GOOGLE_AUTH_URL = 'https://accounts.google.com/o/oauth2/v2/auth?access_type=offline&scope=https%3A%2F%2Fwww.googleapis.com%2Fauth%2Fdrive.metadata.readonly&state=5e4d98d7d909825d12d772ac&response_type=code&client_id=1007579191876-ulaimk2dhh0db93dvr7k3ttoqclp5rhf.apps.googleusercontent.com&redirect_uri=http%3A%2F%2Flocalhost%3A5000%2Fv1%2Fgoogle%2Fauthcallback';
+
+const SERVER_URL = 'http://localhost:5000/v1';
+const GOOGLE_AUTH_URL = `${SERVER_URL}/google/authenticate`;
+
 @connect(
   state => ({
   }),
@@ -25,12 +28,27 @@ const GOOGLE_AUTH_URL = 'https://accounts.google.com/o/oauth2/v2/auth?access_typ
 )
 
 export default class Profile extends Component {
+
+  openGoogleLogin() {
+    //TODO: Refactor this in more beauty way.
+    //CLOSE popup on finish.
+    chrome.storage.sync.get([getStorageName('auth')], (result) => {
+      const authStr = result[getStorageName('auth')];
+      const authObj = JSON.parse(authStr);
+      const clearToken = authObj.token.replace('Bearer ', '');
+      window.open(`${GOOGLE_AUTH_URL}?auth=${clearToken}`, 'popup', 'width=600,height=600');
+    });
+  }
+
   render() {
     const { logout } = this.props;
 
     return (
       <div className={s('p-lg')}>
-        <a href={GOOGLE_AUTH_URL}>CONNECT GOOGLE</a>
+        <a
+          target="popup"
+          onClick={this.openGoogleLogin}
+        >CONNECT GOOGLE</a>
         <Button
           color="primary"
           onClick={logout}
