@@ -1,4 +1,5 @@
 import { getEditorStateFromContentState } from './editorHelpers';
+import { EditorState } from 'draft-js';
 import { createSelectOptions } from './selectHelpers';
 import { getArrayIds } from './arrayHelpers';
 import { AUTO_REMIND_VALUE, VERIFICATION_INTERVAL_OPTIONS, PERMISSION_OPTION, PERMISSION_OPTIONS } from './constants';
@@ -23,8 +24,8 @@ export function convertCardToFrontendFormat(card) {
 	const permissions = PERMISSION_OPTIONS.find(option => option.value === permissionsValue);
 
 	return {
-		descriptionEditorState: getEditorStateFromContentState(content_state_description),
-		answerEditorState: getEditorStateFromContentState(content_state_answer),
+		descriptionEditorState: content_state_description ? getEditorStateFromContentState(content_state_description) : EditorState.createEmpty(),
+		answerEditorState: content_state_answer ? getEditorStateFromContentState(content_state_answer) : EditorState.createEmpty(),
 		keywords: createSelectOptions(keywords),
 		verificationInterval,
 		permissions,

@@ -99,7 +99,7 @@ export default function cards(state = initialState, action) {
     }
   }
 
-  const createActiveCardEdits = (card) => {
+  const createCardEdits = (card) => {
     const { owners, attachments, tags, keywords, permissions, permissionGroups, verificationInterval, question, answerEditorState, descriptionEditorState, messages } = card;
     return {
       ...card,
@@ -176,7 +176,7 @@ export default function cards(state = initialState, action) {
       let cardInfo = { ...BASE_CARD_STATE, ...card };
 
       if (isNewCard) {
-        cardInfo = createActiveCardEdits({
+        cardInfo = createCardEdits({
           ...cardInfo,
           _id: `new-card-${Math.floor(Math.random() * 10001)}`,
           cardStatus: CARD_STATUS.NOT_DOCUMENTED,
@@ -190,8 +190,6 @@ export default function cards(state = initialState, action) {
           permissions: PERMISSION_OPTIONS[0],
           permissionGroups: [],
         });
-      } else if (cardInfo.isEditing) {
-        cardInfo = createActiveCardEdits({ ...cardInfo, hasLoaded: false });
       } else {
         // Will have to update this section in the future
         cardInfo = { ...cardInfo, hasLoaded: false };
@@ -336,7 +334,7 @@ export default function cards(state = initialState, action) {
 
     case types.EDIT_CARD: {
       const { activeCard } = state;
-      return { ...state, activeCard: createActiveCardEdits(activeCard) };
+      return { ...state, activeCard: createCardEdits(activeCard) };
     }
     case types.CANCEL_EDIT_CARD: { 
       const { activeCard } = state;
@@ -349,7 +347,16 @@ export default function cards(state = initialState, action) {
     }
     case types.GET_CARD_SUCCESS: {
       const { id, card } = payload;
-      const newInfo = { isGettingCard: false, hasLoaded: true, ...convertCardToFrontendFormat(card), ...BASE_CARD_STATE };
+
+      const currCard = getCardWithId(id);
+      const isEditing = currCard && currCard.isEditing;
+
+      let newCardInfo = convertCardToFrontendFormat(card);
+      if (isEditing) {
+        newCardInfo = createCardEdits(newCardInfo);
+      }
+
+      const newInfo = { isGettingCard: false, hasLoaded: true, ...BASE_CARD_STATE, ...newCardInfo, isEditing };
       return updateCardWithId(id, newInfo, true);
     }
     case types.GET_CARD_ERROR: {
