@@ -5,6 +5,8 @@ import { CHROME_MESSAGES } from '../utils/constants';
 import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
 import { toggleDock } from '../actions/display';
+import { requestGetUser } from '../actions/auth';
+import { openCard } from '../actions/cards';
 import Header from '../components/common/Header';
 import Ask from './Ask';
 import Create from './Create';
@@ -20,6 +22,7 @@ const dockPanelStyles = {
   background: 'white',
   borderRadius: '8px 0 0 8px'
 };
+
 @connect(
   state => ({
     dockVisible: state.display.dockVisible,
@@ -29,11 +32,14 @@ const dockPanelStyles = {
   dispatch =>
     bindActionCreators(
       {
-        toggleDock
+        toggleDock,
+        requestGetUser,
+        openCard,
       },
       dispatch
     )
 )
+
 class App extends Component {
   constructor(props) {
     super(props);
@@ -42,6 +48,20 @@ class App extends Component {
     };
   }
   componentDidMount() {
+    if (this.props.isLoggedIn) {
+      this.props.requestGetUser();
+      let url = window.location.href;
+      //code to pop open chrome extension
+      var patt = new RegExp("www.google.com");
+      if (url.match(patt)) {
+        let cardId = url.split("=")[1];
+        this.props.toggleDock();
+        this.props.openCard({ _id: cardId, isEditing: true });
+      }
+    }
+
+
+
     chrome.runtime.onMessage.addListener(this.listener);
     window.addEventListener('load', this.handleFirstPageLoad);
   }

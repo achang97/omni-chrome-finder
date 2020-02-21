@@ -3,7 +3,7 @@ import { call, select } from 'redux-saga/effects';
 
 let SERVER_URL;
 if (process.env.NODE_ENV === 'development') {
-  SERVER_URL = 'http://localhost:5000/v1';
+  SERVER_URL = 'http://localhost:8000/v1';
 } else {
   SERVER_URL = 'https://api.eatlateplate.com/v1';
 }

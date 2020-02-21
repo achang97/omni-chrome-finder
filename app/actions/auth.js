@@ -20,6 +20,19 @@ export function handleLoginError(error) {
   return { type: types.LOGIN_ERROR, payload: { error } };
 }
 
+export function requestGetUser() {
+  return { type: types.GET_USER_REQUEST, payload: { } };
+}
+
+export function handleGetUserSuccess(user) {
+  return { type: types.GET_USER_SUCCESS, payload: { user } };
+}
+
+export function handleGetUserError(error) {
+  return { type: types.GET_USER_ERROR, payload: { error } };
+}
+
+
 export function logout() {
 	return { type: types.LOGOUT, payload: {} }
 }

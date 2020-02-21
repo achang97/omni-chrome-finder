@@ -1,9 +1,15 @@
 // Auth
 export const UPDATE_LOGIN_EMAIL = 'UPDATE_LOGIN_EMAIL';
 export const UPDATE_LOGIN_PASSWORD = 'UPDATE_LOGIN_PASSWORD';
+
 export const LOGIN_REQUEST = 'LOGIN_REQUEST';
 export const LOGIN_SUCCESS = 'LOGIN_SUCCESS';
 export const LOGIN_ERROR = 'LOGIN_ERROR';
+
+export const GET_USER_REQUEST = 'GET_USER_REQUEST';
+export const GET_USER_SUCCESS = 'GET_USER_SUCCESS';
+export const GET_USER_ERROR = 'GET_USER_ERROR';
+
 export const SYNC_LOGIN = 'SYNC_LOGIN';
 export const LOGOUT = 'LOGOUT';
 

@@ -134,6 +134,8 @@ export default function cards(state = initialState, action) {
           permissions: PERMISSION_OPTIONS[0],
           permissionGroups: [],
         });
+      } else if (cardInfo.isEditing) {
+        cardInfo = createActiveCardEdits({ ...cardInfo, hasLoaded: false });
       } else {
         // Will have to update this section in the future
         cardInfo = { ...cardInfo, hasLoaded: false };

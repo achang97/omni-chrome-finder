@@ -54,6 +54,7 @@ const PLACEHOLDER_RECIPIENT_OPTIONS = createSelectOptions([
     dockExpanded: state.display.dockExpanded,
     ...state.search[SEARCH_TYPES.POPOUT],
     ...state.ask,
+    user: state.auth.user,
   }),
   dispatch => bindActionCreators({
     expandDock,
@@ -71,6 +72,10 @@ class Ask extends Component {
     }
 
     this.expandedPageRef = React.createRef();
+  }
+
+  componentDidUpdate(prevProps) {
+    console.log(prevProps, this.props);
   }
 
   renderTabHeader = () => {
@@ -164,7 +169,7 @@ class Ask extends Component {
       desktopSharing,
       addAskAttachments, removeAskAttachment, attachments,
     } = this.props;
-    const { isAttachmentDropdownOpen } = this.state;
+    const { isAttachmentDropdownOpen} = this.state;
 
     return (
       <div >
@@ -187,6 +192,7 @@ class Ask extends Component {
             buttonClassName={s("primary-gradient")}
           />
         </div>
+
         <div className={s('flex px-xs pt-reg')}>
           <Button
             onClick={!desktopSharing ? this.startScreenRecording : this.endScreenRecording}
@@ -374,18 +380,41 @@ class Ask extends Component {
   }
 
   renderExpandedAskPage = () => {
-    const { askError, askSuccess } = this.props;
+    const { askError, askSuccess, user } = this.props;
+    const url = "https://slack.com/oauth/authorize?client_id=902571434263.910615559953&scope=calls:read,calls:write,channels:history,channels:read,commands,files:read,groups:history,groups:read,im:history,im:read,im:write,incoming-webhook,links:read,mpim:history,mpim:read,mpim:write,pins:read,pins:write,reactions:read,reactions:write,reminders:read,reminders:write,remote_files:read,remote_files:share,remote_files:write,team:read,usergroups:read,usergroups:write,users.profile:read,users:read,users:read.email,users:write&user_scope=calls:read,calls:write,channels:history,channels:read,channels:write,dnd:read,dnd:write,emoji:read,files:read,files:write,groups:history,groups:read,groups:write,im:history,im:read,im:write,links:read,links:write,mpim:history,mpim:read,mpim:write,pins:read,pins:write,reactions:read,reactions:write,reminders:read,reminders:write,remote_files:read,remote_files:share,remote_files:write,search:read,stars:read,stars:write,team:read,usergroups:read,usergroups:write,users.profile:read,users.profile:write,users:read,users:read.email,users:write&state=" + user._id;
+
     return (
       <div className={s('flex flex-col flex-1 min-h-0 relative')}>
         <div className={s('flex flex-col flex-1 overflow-y-auto bg-purple-light')} ref={this.expandedPageRef}>
           <div className={s("p-lg bg-white")}>
             { this.renderTabHeader() }
-            { this.renderAskInputs() }
+            { !user.slack ?
+              <div>
+                <a href={url}><img alt="Add to Slack" height="40" width="139" src="https://platform.slack-edge.com/img/add_to_slack.png" srcset="https://platform.slack-edge.com/img/add_to_slack.png 1x, https://platform.slack-edge.com/img/add_to_slack@2x.png 2x" /></a>
+              </div>
+              :
+              <div>
+                { this.renderAskInputs() }
+              </div>
+            }
           </div>
-          { this.renderRecipientSelection() }
+          { !user.slack ?
+            <div>
+            </div>
+            :
+            <div>
+              { this.renderRecipientSelection() }
+            </div>
+          }
         </div>
-        { this.renderFooterButton() }
-
+        { !user.slack ?
+          <div>
+          </div>
+          :
+          <div>
+            { this.renderFooterButton() }
+          </div>
+        }
         {/* Modals */}
         { this.renderResultModal(!!askError, 'Ask Error', askError) }
         { this.renderResultModal(askSuccess, 'Ask Success', 'Successfully sent question!') }
