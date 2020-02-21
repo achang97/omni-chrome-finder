@@ -74,10 +74,6 @@ class Ask extends Component {
     this.expandedPageRef = React.createRef();
   }
 
-  componentDidUpdate(prevProps) {
-    console.log(prevProps, this.props);
-  }
-
   renderTabHeader = () => {
     const { changeAskIntegration, activeIntegration } = this.props;
 

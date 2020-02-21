@@ -6,7 +6,7 @@ import { AUTO_REMIND_VALUE, VERIFICATION_INTERVAL_OPTIONS, PERMISSION_OPTION, PE
 import _ from 'underscore';
 
 export function convertCardToFrontendFormat(card) {
-	const { content_state_description, content_state_answer, keywords, autoupdate, update_interval, user_permissions, permission_groups, status, upvotes, /* screenrecording_urls, screenshot_urls, */ ...rest } = card;
+	const { content_state_description, content_state_answer, keywords, autoupdate, update_interval, user_permissions, permission_groups, status, out_of_date_reason, upvotes, /* screenrecording_urls, screenshot_urls, */ ...rest } = card;
 
 	const verificationInterval = VERIFICATION_INTERVAL_OPTIONS.find(option => (
 		option.value === (autoupdate ? AUTO_REMIND_VALUE : update_interval)
@@ -31,6 +31,7 @@ export function convertCardToFrontendFormat(card) {
 		permissions,
 		permissionGroups: permission_groups,
 		cardStatus: status,
+		outOfDateReason: out_of_date_reason,
 		upvotes: getArrayIds(upvotes),
 		...rest,
 

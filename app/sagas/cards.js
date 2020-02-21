@@ -66,7 +66,6 @@ function* getCard() {
     const card = yield call(doGet, `/cards/${cardId}`);
     yield put(handleGetCardSuccess(cardId, card));
   } catch(error) {
-    console.log(error)
     const { response: { data } } = error;
     yield put(handleGetCardError(cardId, data.error));
   }
@@ -174,8 +173,10 @@ function* markUpToDate() {
 
 function* markOutOfDate() {
   const cardId = yield call(getActiveCardId);
+  const reason = yield select(state => state.cards.activeCard.outOfDateReasonInput);
+
   try {
-    const { updatedCard } = yield call(doPost, '/cards/outofdate', { cardId });
+    const { updatedCard } = yield call(doPost, '/cards/outofdate', { cardId, reason });
     yield put(handleMarkOutOfDateSuccess(updatedCard));
   } catch(error) {
     const { response: { data } } = error;

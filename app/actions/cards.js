@@ -41,10 +41,6 @@ export function updateCardDescriptionEditor(editorState) {
   return { type: types.UPDATE_CARD_DESCRIPTION_EDITOR, payload: { editorState } };
 }
 
-export function updateCardStatus(cardStatus) {
-  return { type: types.UPDATE_CARD_STATUS, payload: { cardStatus } };
-}
-
 export function enableCardEditor(editorType) {
   return { type: types.ENABLE_CARD_EDITOR, payload: { editorType} };
 }
@@ -129,6 +125,10 @@ export function closeCardSideDock() {
   return { type: types.CLOSE_CARD_SIDE_DOCK, payload: { } };
 }
 
+export function updateOutOfDateReason(reason) {
+  return { type: types.UPDATE_OUT_OF_DATE_REASON, payload: { reason } }
+}
+
 /* API REQUESTS */
 export function requestGetCard() {
   return { type: types.GET_CARD_REQUEST, payload: {} };
@@ -182,8 +182,21 @@ export function handleDeleteCardError(id, error) {
 }
 
 
+export function requestToggleUpvote(upvotes) {
+  return { type: types.TOGGLE_UPVOTE_REQUEST, payload: { upvotes } };
+}
+
+export function handleToggleUpvoteSuccess(card) {
+  return { type: types.TOGGLE_UPVOTE_SUCCESS, payload: { card } };
+}
+
+export function handleToggleUpvoteError(id, error, oldUpvotes) {
+  return { type: types.TOGGLE_UPVOTE_ERROR, payload: { id, error, oldUpvotes } };
+}
+
+
 export function requestMarkUpToDate() {
-  return { type: types.MARK_UP_TO_DATE_SUCCESS, payload: { } };
+  return { type: types.MARK_UP_TO_DATE_REQUEST, payload: { } };
 }
 
 export function handleMarkUpToDateSuccess(card) {

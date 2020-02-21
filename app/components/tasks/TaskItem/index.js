@@ -120,7 +120,6 @@ class TaskItem extends Component {
 
   render() {
     const { index, type, question, preview, date, primaryOption, primaryAction, secondaryOption, secondaryAction } = this.props;
-    console.log(this.props);
     const { buttonColor, buttonClassName, buttonUnderline, buttonIcon } = this.getButtonProps();
     const containerClassName = this.getContainerClass(); 
     const { headerTitle, headerIcon, headerTitleClassName } = this.getHeaderInfo();

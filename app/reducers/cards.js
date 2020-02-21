@@ -36,17 +36,16 @@ const initialState = {
 };
 
 const BASE_MODAL_OPEN_STATE = _.mapObject(MODAL_TYPE, (val, key) => false);
-const BASE_MODAL_INFO_STATE = _.mapObject(MODAL_TYPE, (val, key) => ({}))
 
 const BASE_CARD_STATE = {
   isEditing: false, 
   sideDockOpen: false, 
   modalOpen: BASE_MODAL_OPEN_STATE,
-  modalInfo: BASE_MODAL_INFO_STATE,
   editorEnabled: { [EDITOR_TYPE.DESCRIPTION]: false, [EDITOR_TYPE.ANSWER]: false },
   descriptionSectionHeight: CARD_DIMENSIONS.MIN_QUESTION_HEIGHT,
   edits: {},
   hasLoaded: true,
+  outOfDateReasonInput: '',
 }
 
 export default function cards(state = initialState, action) {
@@ -182,13 +181,14 @@ export default function cards(state = initialState, action) {
           cardStatus: CARD_STATUS.NOT_DOCUMENTED,
           modalOpen: { ...cardInfo.modalOpen, [MODAL_TYPE.CREATE]: createModalOpen },
           editorEnabled: { ...cardInfo.editorEnabled, [EDITOR_TYPE.ANSWER]: true },
-          messages: [],
-          attachments: [],
           tags: [],
           keywords: [],
           verificationInterval: VERIFICATION_INTERVAL_OPTIONS[0],
           permissions: PERMISSION_OPTIONS[0],
           permissionGroups: [],
+          upvotes: [],
+          messages: [],
+          attachments: [],
         });
       } else {
         // Will have to update this section in the future
@@ -242,13 +242,9 @@ export default function cards(state = initialState, action) {
     case types.CLOSE_CARD_MODAL: {
       const { modalType} = payload;
       const { activeCard } = state;
-      const newInfo = { modalOpen: { ...activeCard.modalOpen, [modalType]: false } };
+      const newInfo = { modalOpen: { ...activeCard.modalOpen, [modalType]: false }, outOfDateReasonInput: '' };
       return updateActiveCard(newInfo);
     }      
-    case types.UPDATE_CARD_STATUS: {
-      const { cardStatus } = payload;
-      return updateActiveCard({ cardStatus });
-    }
 
     case types.ADJUST_CARD_DESCRIPTION_SECTION_HEIGHT: {
       const { newHeight } = payload;
@@ -341,6 +337,11 @@ export default function cards(state = initialState, action) {
       return updateActiveCard({ isEditing: false, edits: {} });
     }
 
+    case types.UPDATE_OUT_OF_DATE_REASON: {
+      const { reason } = payload;
+      return updateActiveCard({ outOfDateReasonInput: reason });
+    }
+
     /* API REQUESTS */
     case types.GET_CARD_REQUEST: {
       return updateActiveCard({ isGettingCard: true, getError: null });
@@ -356,7 +357,7 @@ export default function cards(state = initialState, action) {
         newCardInfo = createCardEdits(newCardInfo);
       }
 
-      const newInfo = { isGettingCard: false, hasLoaded: true, ...BASE_CARD_STATE, ...newCardInfo, isEditing };
+      const newInfo = { ...BASE_CARD_STATE, isGettingCard: false, hasLoaded: true, ...newCardInfo };
       return updateCardWithId(id, newInfo, true);
     }
     case types.GET_CARD_ERROR: {
@@ -369,7 +370,7 @@ export default function cards(state = initialState, action) {
     }
     case types.CREATE_CARD_SUCCESS: {
       const { id, card } = payload;
-      const newInfo = { isCreatingCard: false, ...convertCardToFrontendFormat(card), ...BASE_CARD_STATE };
+      const newInfo = { ...BASE_CARD_STATE, isCreatingCard: false, ...convertCardToFrontendFormat(card) };
       return updateCardWithId(id, newInfo, true);
     }
     case types.CREATE_CARD_ERROR: {
@@ -392,7 +393,7 @@ export default function cards(state = initialState, action) {
         return removeCardWithId(id);
       }
 
-      const newInfo = { isUpdatingCard: false, ...convertCardToFrontendFormat(card), ...BASE_CARD_STATE };
+      const newInfo = { ...BASE_CARD_STATE, isUpdatingCard: false, ...convertCardToFrontendFormat(card) };
       
       const currCard = getCardWithId(card._id); 
       if (!currCard) {
@@ -410,18 +411,11 @@ export default function cards(state = initialState, action) {
     }
     case types.UPDATE_CARD_ERROR: {
       const { id, error, closeCard } = payload;
-
-      const currCard = getCardWithId(id); 
-      if (!currCard) {
-        return state;
-      }
-
       const newInfo = {
         isUpdatingCard: false,
         updateError: error,
         modalOpen: { ...BASE_MODAL_OPEN_STATE, [closeCard ? MODAL_TYPE.ERROR_UPDATE_CLOSE : MODAL_TYPE.ERROR_UPDATE]: true }
       }
-
       return updateCardWithId(id, newInfo);
     }
 
@@ -448,18 +442,11 @@ export default function cards(state = initialState, action) {
     }
     case types.DELETE_CARD_ERROR: {
       const { id, error } = payload;
-
-      const currCard = getCardWithId(id); 
-      if (!currCard) {
-        return state;
-      }
-
       const newInfo = {
         isDeletingCard: false,
         deleteError: error,
         modalOpen: { ...BASE_MODAL_OPEN_STATE, [MODAL_TYPE.ERROR_DELETE]: true }
       };
-
       return updateCardWithId(id, newInfo);
     }
 
@@ -470,7 +457,7 @@ export default function cards(state = initialState, action) {
     case types.MARK_UP_TO_DATE_SUCCESS:
     case types.MARK_OUT_OF_DATE_SUCCESS: {
       const { card } = payload;
-      const newInfo = { isMarkingStatus: false, ...convertCardToFrontendFormat(card) };
+      const newInfo = { isMarkingStatus: false, ...convertCardToFrontendFormat(card), outOfDateReasonInput: '', modalOpen: BASE_MODAL_OPEN_STATE };
       return updateCardWithId(card._id, newInfo, true);
     }
     case types.MARK_UP_TO_DATE_ERROR:
