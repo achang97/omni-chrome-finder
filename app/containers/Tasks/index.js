@@ -40,6 +40,7 @@ const NOTIFICATIONS_PLACEHOLDER = [{
 
 const UNRESOLVED_CARDS_PLACEHOLDER = [{
 	question: "How do I do this very complex task?",
+  type: TASKS_TYPES.NEEDS_APPROVAL,
 	date: "Feb 2",
 	tag: "Onboarding",
 	owners: ["Jake", "Joe"],
@@ -47,6 +48,7 @@ const UNRESOLVED_CARDS_PLACEHOLDER = [{
 
 }, {
 	question: "How do I do this very complex task?",
+  type: TASKS_TYPES.NEEDS_APPROVAL,
 	date: "Feb 2",
 	tag: "Onboarding",
 	owners: ["Jake", "Joe"],
@@ -54,6 +56,7 @@ const UNRESOLVED_CARDS_PLACEHOLDER = [{
 
 }, {
 	question: "How do I do this very complex task?",
+  type: TASKS_TYPES.NEEDS_APPROVAL,
 	date: "Feb 2",
 	tag: "Onboarding",
 	owners: ["Jake", "Joe"],
@@ -186,34 +189,22 @@ export default class Tasks extends Component {
   	return (
   		<div className={s("flex flex-col p-reg min-h-0 overflow-auto")}> 
   			{
-	  			UNRESOLVED_CARDS_PLACEHOLDER.map((card, i) => {
-	  				return (
-	  				<div className={s(`flex flex-col bg-purple-light border border-solid border-purple-task-border p-lg rounded-lg ${i > 0 ? 'mt-reg' : ''}`)}>
-	  					<div className={s("card-tag")}> 
-	  						<div>{card.tag}</div>
-	  						<MdLock className={s("ml-reg")} />
-	  					</div>
-
-	  					<div className={s("p-lg bg-white shadow-md my-lg rounded-lg shadow-md cursor-pointer")}>
-	  						<div className={s("font-semibold vertical-ellipsis-2 text-md")}>{card.question}</div>
-	  						<div className={s("text-xs text-gray-dark mt-reg vertical-ellipsis-2")}>{card.preview}</div>
-	  					</div>
-	  					<div className={s("flex items-center justify-center")}>
-	  						<div className={s("flex-grow text-gray-reg text-xs")}> {card.date} </div>
-	  						<div className={s("flex items-center justify-center text-sm text-gray-reg")}>
-	  							<div className={s("text-xs border-b border-t-0 border-r-0 border-l-0 border-solid border-gray-xlight cursor-pointer")}>Decline</div>
-	  							<Button 
-					          text={"Approve"} 
-				            color="transparent"
-				            className={s("ml-reg")}
-				            textClassName={s("text-xs font-semibold")}
-				            underline={true}
-					          //onClick={() => this.updateCardStatus(CARD_STATUS_OPTIONS.UP_TO_DATE)}
-					          />
-	  						</div>
-	  					</div>
-	  				</div>
-	  				)
+	  			UNRESOLVED_CARDS_PLACEHOLDER.map((notification, i) => {
+            const { primaryOption, primaryAction, secondaryOption, secondaryAction } = this.getTaskItemInfo(notification.type);
+            return (
+              <TaskItem 
+                index={i}
+                type={notification.type}
+                question={notification.question}
+                preview={notification.preview}
+                date={"Feb 2"}
+                primaryOption={primaryOption}
+                primaryAction={primaryAction}
+                secondaryOption={secondaryOption}
+                secondaryAction={secondaryAction}
+                transitionIn={this.state.transitionIn}
+                />
+            );
 	  			})
   			}
   		</div>

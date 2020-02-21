@@ -8,7 +8,7 @@ import { getBaseAnimationStyle } from '../../../utils/animateHelpers';
 
 import { TASKS_TYPES } from '../../../utils/constants';
 import { IoMdAlert } from 'react-icons/io'
-import { MdKeyboardArrowDown, MdKeyboardArrowUp, MdCheck, MdAdd, MdEdit, MdLock } from 'react-icons/md'
+import { MdKeyboardArrowDown, MdKeyboardArrowUp, MdCheck, MdAdd, MdEdit, MdLock, MdCheckCircle } from 'react-icons/md'
 import { AiFillMinusCircle, AiFillQuestionCircle } from "react-icons/ai";
 const PROFILE_PICTURE_URL = 'https://janecanblogdotcom.files.wordpress.com/2014/09/ashley-square-profile.jpg';
 
@@ -39,7 +39,7 @@ class TaskItem extends Component {
       case TASKS_TYPES.UNDOCUMENTED:
         return { headerTitle: "Document your question", headerTitleClassName: 'text-purple-reg', headerIcon: <AiFillQuestionCircle className={s("tasks-icon-container text-purple-reg mr-reg")}/>}
       case TASKS_TYPES.NEEDS_APPROVAL:
-        return { headerTitle: "Omni needs you to verify this card", headerTitleClassName: '', headerIcon: <AiFillQuestionCircle className={s("tasks-icon-container text-purple-reg mr-reg")}/>}
+        return { headerTitle: "Omni needs you to approve this card", headerTitleClassName: '', headerIcon: <MdCheckCircle className={s("tasks-icon-container text-purple-reg mr-reg")}/>}
       default:
         return null; 
     }
@@ -72,14 +72,14 @@ class TaskItem extends Component {
       case TASKS_TYPES.UNDOCUMENTED:
         return "tasks-undocumented-gradient";
       case TASKS_TYPES.NEEDS_APPROVAL:
-        return "";
+        return "tasks-undocumented-gradient";
       default:
         return ""; 
     }
   }
 
   renderTaskPreview = () => {
-    const { type, preview,  } = this.props;
+    const { type, preview, owners } = this.props;
     switch (type) {
       case TASKS_TYPES.NEEDS_VERIFICATION:
         return (<div className={s("text-xs text-gray-dark mt-reg vertical-ellipsis-2")}>{preview}</div>);
@@ -100,7 +100,19 @@ class TaskItem extends Component {
             <img src={SlackIcon} className={s('task-item-slack-icon rounded-full flex-shrink-0')} />
             </div>);
       case TASKS_TYPES.NEEDS_APPROVAL:
-        return "";
+        return (
+          <div className={s("flex mt-reg")}>
+            <div className={s("flex flex-shrink-0 mr-reg")}>
+              {/* Show the first owner of the card */}
+              <div className={s("flex-shrink-0")}>
+                <img src={PROFILE_PICTURE_URL} className={s('task-item-profile-picture rounded-full')} />
+              </div>
+            </div>
+              <div className={s("card-tag overflow-hidden")}> 
+                  <div className={s("truncate")}>Onboarding</div>
+                  <MdLock className={s("ml-reg flex-shrink-0")} />
+              </div>
+          </div>);
       default:
         return ""; 
     }
@@ -181,9 +193,12 @@ TaskItem.propTypes = {
   primaryAction: PropTypes.func,
   secondaryOption: PropTypes.string,
   secondaryAction: PropTypes.func,
+  owners: PropTypes.array,
 };
 
 TaskItem.defaultProps = {
+  owners: ["John", "Jack"],
+
 };
 
 export default TaskItem;
