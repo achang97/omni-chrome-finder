@@ -18,7 +18,7 @@ import SuggestionPreview from '../../components/suggestions/SuggestionPreview';
 import Button from '../../components/common/Button';
 import Triangle from '../../components/common/Triangle';
 
-import { CARD_STATUS_OPTIONS, NAVIGATE_TAB_OPTIONS, SEARCH_TYPES } from '../../utils/constants';
+import { CARD_STATUS, NAVIGATE_TAB_OPTIONS, SEARCH_TYPE } from '../../utils/constants';
 
 import style from "./navigate.css";
 import { getStyleApplicationFn } from '../../utils/styleHelpers';
@@ -27,7 +27,7 @@ const s = getStyleApplicationFn(style);
 @connect(
   state => ({
     ...state.navigate,
-    ...state.search[SEARCH_TYPES.SIDEBAR]
+    ...state.search[SEARCH_TYPE.SIDEBAR]
   }),
   dispatch =>
   bindActionCreators(

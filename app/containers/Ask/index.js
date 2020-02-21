@@ -29,7 +29,7 @@ import { colors } from '../../styles/colors';
 import { expandDock } from '../../actions/display';
 import { requestSearchCards } from '../../actions/search';
 import * as askActions from '../../actions/ask';
-import { ASK_INTEGRATIONS, DEBOUNCE_60_HZ, SEARCH_TYPES } from '../../utils/constants';
+import { ASK_INTEGRATIONS, DEBOUNCE_60_HZ, SEARCH_TYPE } from '../../utils/constants';
 
 import style from "./ask.css";
 import { getStyleApplicationFn, isOverflowing } from '../../utils/styleHelpers';
@@ -52,7 +52,7 @@ const PLACEHOLDER_RECIPIENT_OPTIONS = createSelectOptions([
 @connect(
   state => ({
     dockExpanded: state.display.dockExpanded,
-    ...state.search[SEARCH_TYPES.POPOUT],
+    ...state.search[SEARCH_TYPE.POPOUT],
     ...state.ask,
   }),
   dispatch => bindActionCreators({
@@ -401,7 +401,7 @@ class Ask extends Component {
 
   debouncedRequestSearch = _.debounce(() => {
     const { requestSearchCards, searchText } = this.props;
-    requestSearchCards(SEARCH_TYPES.POPOUT, searchText);
+    requestSearchCards(SEARCH_TYPE.POPOUT, searchText);
   }, DEBOUNCE_60_HZ)
 
   updateMinifiedAskPageText = (e) => {

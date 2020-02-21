@@ -44,7 +44,7 @@ const Button = (props) => {
 }
 
 Button.propTypes = {
-	text: PropTypes.string,
+	text: PropTypes.oneOfType([PropTypes.string, PropTypes.number]),
 	className: PropTypes.string,
 	textClassName: PropTypes.string,
 	imgClassName: PropTypes.string,

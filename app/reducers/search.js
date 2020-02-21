@@ -1,12 +1,12 @@
 import * as types from '../actions/actionTypes';
-import { SEARCH_TYPES } from '../utils/constants';
+import { SEARCH_TYPE } from '../utils/constants';
 import _ from 'underscore';
 
 const initialState = {
-  [SEARCH_TYPES.SIDEBAR]: {
+  [SEARCH_TYPE.SIDEBAR]: {
     cards: [],
   },
-  [SEARCH_TYPES.POPOUT]: {
+  [SEARCH_TYPE.POPOUT]: {
     cards: [],
   },
 

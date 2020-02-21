@@ -47,7 +47,7 @@ class CardTags extends Component {
 	}
 
 	componentDidUpdate(prevProps) {
-		if (prevProps.maxWidth !== this.props.maxWidth) {
+		if (prevProps.maxWidth !== this.props.maxWidth || JSON.stringify(prevProps.tags) !== JSON.stringify(this.props.tags)) {
 			const firstHiddenIndex = this.getFirstHiddenIndex();
 			this.setState({ firstHiddenIndex });
 		}
@@ -91,11 +91,11 @@ class CardTags extends Component {
 		</div>
 	);
 
-	renderTag = ({ name, id, locked }, i) => {
+	renderTag = ({ name, _id, locked }, i) => {
 		const { maxWidth, tags, onTagClick, onRemoveClick, isEditable } = this.props;
 		const { firstHiddenIndex } = this.state;
 		return (
-			<Fragment key={name}>
+			<Fragment key={_id}>
 				{i === firstHiddenIndex &&
 					<CardTag
 						text={`+${tags.length - firstHiddenIndex}`}
@@ -176,7 +176,11 @@ class CardTags extends Component {
 CardTags.propTypes = {
 	isEditable: PropTypes.bool.isRequired,
 	className: PropTypes.string,
-	tags: PropTypes.arrayOf(PropTypes.string).isRequired,
+	tags: PropTypes.arrayOf(PropTypes.shape({
+		name: PropTypes.string.isRequired,
+		_id: PropTypes.string.isRequired,
+		locked: PropTypes.bool.isRequired,
+	})).isRequired,
 	maxWidth: PropTypes.number,
 	onChange: PropTypes.func,
 	onTagClick: PropTypes.func,

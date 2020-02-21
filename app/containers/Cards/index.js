@@ -5,6 +5,7 @@ import _ from 'underscore';
 
 import { MdClose, MdMoreHoriz } from "react-icons/md";
 import CardContent from '../../components/cards/CardContent';
+import CardConfirmModal from '../../components/cards/CardConfirmModal';
 
 import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
@@ -15,9 +16,11 @@ import Tab from '../../components/common/Tabs/Tab';
 import Modal from '../../components/common/Modal';
 import Button from '../../components/common/Button';
 
+import { getContentStateFromEditorState } from '../../utils/editorHelpers';
+
 import { colors } from '../../styles/colors';
 import style from './cards.css';
-import { DEBOUNCE_60_HZ, CARD_DIMENSIONS, MODAL_TYPE, CARD_STATUS_OPTIONS } from '../../utils/constants';
+import { DEBOUNCE_60_HZ, CARD_DIMENSIONS, MODAL_TYPE, CARD_STATUS } from '../../utils/constants';
 import { getStyleApplicationFn } from '../../utils/styleHelpers';
 const s = getStyleApplicationFn(style);
 
@@ -71,7 +74,11 @@ export default class Cards extends Component {
     let i;
     for (i = 0; i < editAttributes.length; i++) {
       const editAttribute = editAttributes[i];
-      if (JSON.stringify(currentCard[editAttribute]) !== JSON.stringify(currentCard.edits[editAttribute])) {
+
+      if (editAttribute === 'answerEditorState' || editAttribute === 'descriptionEditorState') {
+        const hasEditorChanged = getContentStateFromEditorState(currentCard[editAttribute]).contentState !== getContentStateFromEditorState(currentCard.edits[editAttribute]).contentState;
+        if (hasEditorChanged) return true;
+      } else if (JSON.stringify(currentCard[editAttribute]) !== JSON.stringify(currentCard.edits[editAttribute])) {
         return true;
       }
     }
@@ -88,7 +95,7 @@ export default class Cards extends Component {
     // Check to make sure edit state is different than saved state
     if (this.cardStateChanged(index)) {
       if (index !== activeCardIndex) this.updateTab(index);
-      if (currentCard.cardStatus === CARD_STATUS_OPTIONS.NOT_DOCUMENTED) openCardModal(MODAL_TYPE.CONFIRM_CLOSE_UNDOCUMENTED) 
+      if (currentCard.cardStatus === CARD_STATUS.NOT_DOCUMENTED) openCardModal(MODAL_TYPE.CONFIRM_CLOSE_UNDOCUMENTED) 
       else openCardModal(MODAL_TYPE.CONFIRM_CLOSE);
     } else {
       closeCard(index);
@@ -119,34 +126,20 @@ export default class Cards extends Component {
   renderCloseModal = () => {
     const { showCloseModal, closeAllCards } = this.props;
     return (
-      <Modal
+      <CardConfirmModal
+        useModalType={false}
         isOpen={showCloseModal}
-        onRequestClose={() => this.closeCloseCardsModal()}
-        headerClassName={s("bg-purple-light")}
-        overlayClassName={s("rounded-lg")}
-        title={"Close Cards"}
-        important
-        >
-        <div className={s("p-lg flex flex-col")}> 
-          <div> One of more of the cards open have unsaved changes. All unsaved changes will be lost upon closing the cards. Are you sure you want to close your cards? </div>
-          <div className={s("flex mt-lg")} >
-            <Button 
-              text={"No"}
-              onClick={() => this.closeCloseCardsModal()}
-              color={"transparent"}
-              className={s("flex-grow mr-reg")}
-              underline
-            /> 
-            <Button 
-              text={"Close Cards"}
-              onClick={() => closeAllCards()}
-              color={"primary"}
-              className={s("flex-grow ml-reg")}
-              underline
-            />   
-          </div>
-        </div>
-      </Modal>
+        title="Close Cards"
+        description="One of more of the cards open have unsaved changes. All unsaved changes will be lost upon closing the cards. Are you sure you want to close your cards?"
+        primaryButtonProps={{
+          text: "Close Cards",
+          onClick: () => closeAllCards()
+        }}
+        secondaryButtonProps={{
+          text: "No",
+          onClick: () => this.closeCloseCardsModal(),
+        }}
+      />
     )
   }
 

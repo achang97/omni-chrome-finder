@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import { Route, Switch, Redirect, withRouter } from 'react-router-dom';
 import Dock from 'react-dock';
-import { CHROME_MESSAGES } from '../utils/constants';
+import { CHROME_MESSAGE } from '../utils/constants';
 import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
 import { toggleDock } from '../actions/display';
@@ -82,11 +82,11 @@ class App extends Component {
   listener = (msg) => {
     const { type, ...restMsg } = msg;
     switch (msg.type) {
-      case CHROME_MESSAGES.TOGGLE: {
+      case CHROME_MESSAGE.TOGGLE: {
         this.props.toggleDock();
         break;
       }
-      case CHROME_MESSAGES.TAB_UPDATE: {
+      case CHROME_MESSAGE.TAB_UPDATE: {
         const { url } = restMsg;
         this.handleTabUpdate(url);
         break;

@@ -23,19 +23,19 @@ const getPositionStyle = (isDown, isLeft) => {
 
 class Dropdown extends Component {
 	handleClickOutside = evt => {
-		// ..handling code goes here...
 		const { onClose } = this.props;
+
 		if (onClose) onClose();
 	};
 
 	render() {
-		const { isDown, isLeft, isOpen, onClose, children } = this.props;
+		const { isDown, isLeft, isOpen, onClose, children, className } = this.props;
 
 		if (!isOpen) return null;
 
 		const style = getPositionStyle(isDown, isLeft);
 		return (
-			<div style={style}>
+			<div style={style} className={className}>
 				{children}
 			</div>
 		);
@@ -47,11 +47,13 @@ Dropdown.propTypes = {
 	onClose: PropTypes.func,
 	isDown: PropTypes.bool,
 	isLeft: PropTypes.bool,
+	className: PropTypes.string,
 }
 
 Dropdown.defaultProps = {
 	isDown: true,
 	isLeft: true,
+	className: '',
 }
 
 export default onClickOutside(Dropdown);

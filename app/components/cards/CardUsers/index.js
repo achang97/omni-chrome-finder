@@ -69,9 +69,9 @@ class CardUsers extends Component {
 			            noOptionsMessage={() => isSearchingUsers ? 'Searching users...' : 'No options' }
 					/>
 				}
-				{ users.map(({ id, name, firstname, lastname, img }, i) => (
+				{ users.map(({ _id, name, firstname, lastname, img }, i) => (
 					<CardUser
-						key={id}
+						key={_id}
 						size="md"
 						name={name || `${firstname} ${lastname}`}
 						img={img}
@@ -105,8 +105,10 @@ CardUsers.propTypes = {
 	isEditable: PropTypes.bool.isRequired,
 	className: PropTypes.string,
 	users: PropTypes.arrayOf(PropTypes.shape({
-		id: PropTypes.string.isRequired,
-		name: PropTypes.string.isRequired,
+		_id: PropTypes.string.isRequired,
+		name: PropTypes.string,
+		firstname: PropTypes.string,
+		lastname: PropTypes.string,
 		img: PropTypes.string,
 	})).isRequired,
 	onRemoveClick: PropTypes.func,
