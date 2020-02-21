@@ -14,7 +14,7 @@ import Modal from '../../common/Modal';
 
 import { MdLock, MdAutorenew } from 'react-icons/md';
 
-import { PERMISSION_OPTIONS_MAP, VERIFICATION_INTERVAL_OPTIONS, CARD_STATUS_OPTIONS, MODAL_TYPE, SEARCH_TYPES } from '../../../utils/constants';
+import { PERMISSION_OPTION, VERIFICATION_INTERVAL_OPTIONS, CARD_STATUS, MODAL_TYPE, SEARCH_TYPE } from '../../../utils/constants';
 import { isValidCard } from '../../../utils/cardHelpers';
 
 import { bindActionCreators } from 'redux';

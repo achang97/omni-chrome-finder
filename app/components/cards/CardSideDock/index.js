@@ -28,7 +28,7 @@ import Button from '../../common/Button';
 import Loader from '../../common/Loader';
 
 import { getBaseAnimationStyle } from '../../../utils/animateHelpers';
-import { MODAL_TYPE, PERMISSION_OPTIONS, VERIFICATION_INTERVAL_OPTIONS, FADE_IN_TRANSITIONS, CARD_STATUS_OPTIONS } from '../../../utils/constants';
+import { MODAL_TYPE, PERMISSION_OPTIONS, VERIFICATION_INTERVAL_OPTIONS, FADE_IN_TRANSITIONS, CARD_STATUS } from '../../../utils/constants';
 import { createSelectOptions } from '../../../utils/selectHelpers';
 
 import style from './card-side-dock.css';
@@ -252,7 +252,7 @@ const CardSideDock = (props) => {
       exited:  { transform: 'translateX(100%)' },
     }
 
-    const isNewCard = cardStatus === CARD_STATUS_OPTIONS.NOT_DOCUMENTED;
+    const isNewCard = cardStatus === CARD_STATUS.NOT_DOCUMENTED;
 
     return (
       <div className={s("card-side-dock-container")}>

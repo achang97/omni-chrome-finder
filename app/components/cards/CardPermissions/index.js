@@ -7,7 +7,7 @@ import Tab from '../../common/Tabs/Tab';
 import AnimateHeight from 'react-animate-height';
 import _ from 'underscore';
 
-import { PERMISSION_OPTIONS, PERMISSION_OPTIONS_MAP, DEBOUNCE_60_HZ } from '../../../utils/constants';
+import { PERMISSION_OPTIONS, PERMISSION_OPTION, DEBOUNCE_60_HZ } from '../../../utils/constants';
 import { createSelectOptions } from '../../../utils/selectHelpers';
 
 import { bindActionCreators } from 'redux';
@@ -50,7 +50,7 @@ const CardPermissions = ({ isDisabled, selectedPermission, onChangePermission, p
           ))}
         </Tabs>
       }
-      <AnimateHeight height={selectedPermission.value === PERMISSION_OPTIONS_MAP.SPECIFIC_GROUPS ? 'auto' : 0}>
+      <AnimateHeight height={selectedPermission.value === PERMISSION_OPTION.SPECIFIC_GROUPS ? 'auto' : 0}>
         <Select
           value={permissionGroups}
           onChange={onChangePermissionGroups}

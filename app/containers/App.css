@@ -50,7 +50,8 @@
 }
 
 /* Input overrides */
-.app-container input:not([type='checkbox']), .app-container input:not([type='checkbox']):focus {
+.app-container input:not([type='checkbox']), .app-container input:not([type='checkbox']):focus,
+.app-container textarea, .app-container textarea:focus {
   all: unset;
   background: #FFFFFF;
   border: 1px solid rgba(0,2,95,0.10);
@@ -59,18 +60,27 @@
   font-size: 14px;
   letter-spacing: 0.3px;
   line-height: 22px;
-  height: 40px;
-  padding: 0px 8px;
   box-sizing: border-box;
   flex-shrink: 0;
   @apply font-medium;
 }
 
-.app-container input:not([type='checkbox']):focus {
+.app-container input:not([type='checkbox']), .app-container input:not([type='checkbox']):focus {
+  height: 40px;
+  padding: 0px 8px;
+}
+
+.app-container textarea, .app-container textarea:focus {
+  padding: 4px 8px;
+}
+
+.app-container input:not([type='checkbox']):focus,
+.app-container textarea:focus {
   @apply outline-purple-gray-10;
 }
 
-.app-container input:not([type='checkbox'])::placeholder {
+.app-container input:not([type='checkbox'])::placeholder,
+.app-container textarea::placeholder {
   @apply text-gray-dark;
 }
 

@@ -3,7 +3,7 @@ import _ from 'underscore';
 import { EditorState } from 'draft-js';
 import { removeIndex, updateIndex } from '../utils/arrayHelpers';
 import { convertCardToFrontendFormat } from '../utils/cardHelpers';
-import { CARD_STATUS_OPTIONS, EDITOR_TYPE, CARD_DIMENSIONS, MODAL_TYPE, VERIFICATION_INTERVAL_OPTIONS, PERMISSION_OPTIONS } from '../utils/constants';
+import { CARD_STATUS, EDITOR_TYPE, CARD_DIMENSIONS, MODAL_TYPE, VERIFICATION_INTERVAL_OPTIONS, PERMISSION_OPTIONS } from '../utils/constants';
 
 const PLACEHOLDER_MESSAGES = [
   {
@@ -36,11 +36,13 @@ const initialState = {
 };
 
 const BASE_MODAL_OPEN_STATE = _.mapObject(MODAL_TYPE, (val, key) => false);
+const BASE_MODAL_INFO_STATE = _.mapObject(MODAL_TYPE, (val, key) => ({}))
 
 const BASE_CARD_STATE = {
   isEditing: false, 
   sideDockOpen: false, 
   modalOpen: BASE_MODAL_OPEN_STATE,
+  modalInfo: BASE_MODAL_INFO_STATE,
   editorEnabled: { [EDITOR_TYPE.DESCRIPTION]: false, [EDITOR_TYPE.ANSWER]: false },
   descriptionSectionHeight: CARD_DIMENSIONS.MIN_QUESTION_HEIGHT,
   edits: {},
@@ -177,7 +179,7 @@ export default function cards(state = initialState, action) {
         cardInfo = createActiveCardEdits({
           ...cardInfo,
           _id: `new-card-${Math.floor(Math.random() * 10001)}`,
-          cardStatus: CARD_STATUS_OPTIONS.NOT_DOCUMENTED,
+          cardStatus: CARD_STATUS.NOT_DOCUMENTED,
           modalOpen: { ...cardInfo.modalOpen, [MODAL_TYPE.CREATE]: createModalOpen },
           editorEnabled: { ...cardInfo.editorEnabled, [EDITOR_TYPE.ANSWER]: true },
           messages: [],
@@ -374,7 +376,7 @@ export default function cards(state = initialState, action) {
       const { activeCard, cards } = state;
 
       const cardStatus = card.status;
-      const isOutdated = cardStatus === CARD_STATUS_OPTIONS.OUT_OF_DATE || cardStatus === CARD_STATUS_OPTIONS.NEEDS_VERIFICATION;
+      const isOutdated = cardStatus === CARD_STATUS.OUT_OF_DATE || cardStatus === CARD_STATUS.NEEDS_VERIFICATION;
 
       // Remove card
       if (closeCard && !isOutdated) {
@@ -452,6 +454,21 @@ export default function cards(state = initialState, action) {
       return updateCardWithId(id, newInfo);
     }
 
+    case types.MARK_UP_TO_DATE_REQUEST:
+    case types.MARK_OUT_OF_DATE_REQUEST: {
+      return updateActiveCard({ isMarkingStatus: true, markStatusError: null });
+    }
+    case types.MARK_UP_TO_DATE_SUCCESS:
+    case types.MARK_OUT_OF_DATE_SUCCESS: {
+      const { card } = payload;
+      const newInfo = { isMarkingStatus: false, ...convertCardToFrontendFormat(card) };
+      return updateCardWithId(card._id, newInfo, true);
+    }
+    case types.MARK_UP_TO_DATE_ERROR:
+    case types.MARK_OUT_OF_DATE_ERROR: {
+      const { id, error } = payload;
+      return updateCardWithId(id, { isMarkingStatus: false, markStatusError: error });
+    }
 
     case types.CLOSE_ALL_CARDS: {
       return initialState;

@@ -169,19 +169,6 @@ export function handleUpdateCardError(id, error, closeCard) {
 }
 
 
-export function requestToggleUpvote(upvotes) {
-  return { type: types.TOGGLE_UPVOTE_REQUEST, payload: { upvotes } };
-}
-
-export function handleToggleUpvoteSuccess(card) {
-  return { type: types.TOGGLE_UPVOTE_SUCCESS, payload: { card } };
-}
-
-export function handleToggleUpvoteError(id, error, oldUpvotes) {
-  return { type: types.TOGGLE_UPVOTE_ERROR, payload: { id, error, oldUpvotes } };
-}
-
-
 export function requestDeleteCard() {
   return { type: types.DELETE_CARD_REQUEST, payload: {} };
 }
@@ -192,4 +179,30 @@ export function handleDeleteCardSuccess(id) {
 
 export function handleDeleteCardError(id, error) {
   return { type: types.DELETE_CARD_ERROR, payload: { id, error } };
+}
+
+
+export function requestMarkUpToDate() {
+  return { type: types.MARK_UP_TO_DATE_SUCCESS, payload: { } };
+}
+
+export function handleMarkUpToDateSuccess(card) {
+  return { type: types.MARK_UP_TO_DATE_SUCCESS, payload: { card } };
+}
+
+export function handleMarkUpToDateError(id, error) {
+  return { type: types.MARK_UP_TO_DATE_ERROR, payload: { id, error } };
+}
+
+
+export function requestMarkOutOfDate() {
+  return { type: types.MARK_OUT_OF_DATE_REQUEST, payload: { } };
+}
+
+export function handleMarkOutOfDateSuccess(card) {
+  return { type: types.MARK_OUT_OF_DATE_SUCCESS, payload: { card } };
+}
+
+export function handleMarkOutOfDateError(id, error) {
+  return { type: types.MARK_OUT_OF_DATE_ERROR, payload: { id, error } };
 }

@@ -1,7 +1,7 @@
 import { getEditorStateFromContentState } from './editorHelpers';
 import { createSelectOptions } from './selectHelpers';
 import { getArrayIds } from './arrayHelpers';
-import { AUTO_REMIND_VALUE, VERIFICATION_INTERVAL_OPTIONS, PERMISSION_OPTIONS_MAP, PERMISSION_OPTIONS } from './constants';
+import { AUTO_REMIND_VALUE, VERIFICATION_INTERVAL_OPTIONS, PERMISSION_OPTION, PERMISSION_OPTIONS } from './constants';
 import _ from 'underscore';
 
 export function convertCardToFrontendFormat(card) {
@@ -13,11 +13,11 @@ export function convertCardToFrontendFormat(card) {
 
 	let permissionsValue;
 	if (user_permissions.length !== 0) {
-		permissionsValue = PERMISSION_OPTIONS_MAP.JUST_ME;
+		permissionsValue = PERMISSION_OPTION.JUST_ME;
 	} else if (permission_groups.length !== 0) {
-		permissionsValue = PERMISSION_OPTIONS_MAP.SPECIFIC_GROUPS;
+		permissionsValue = PERMISSION_OPTION.SPECIFIC_GROUPS;
 	} else {
-		permissionsValue = PERMISSION_OPTIONS_MAP.ANYONE;
+		permissionsValue = PERMISSION_OPTION.ANYONE;
 	}
 
 	const permissions = PERMISSION_OPTIONS.find(option => option.value === permissionsValue);
@@ -59,6 +59,6 @@ export function isValidCard(edits) {
 		(!!answerEditorState && answerEditorState.getCurrentContent().hasText()) &&
         owners.length !== 0 &&
         !!verificationInterval &&
-        (!!permissions && (permissions.value !== PERMISSION_OPTIONS_MAP.SPECIFIC_GROUPS || permissionGroups.length !== 0))
+        (!!permissions && (permissions.value !== PERMISSION_OPTION.SPECIFIC_GROUPS || permissionGroups.length !== 0))
 	)
 }

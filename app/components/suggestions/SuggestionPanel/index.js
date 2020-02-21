@@ -11,7 +11,7 @@ import Button from '../../common/Button';
 import Triangle from '../../common/Triangle';
 
 import { colors } from '../../../styles/colors';
-import { CARD_STATUS_OPTIONS } from '../../../utils/constants';
+import { CARD_STATUS } from '../../../utils/constants';
 
 import style from './suggestion-panel.css';
 import { getStyleApplicationFn } from '../../../utils/styleHelpers';

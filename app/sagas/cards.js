@@ -5,20 +5,22 @@ import { doGet, doPost, doPut, doDelete } from '../utils/request'
 import { getArrayIds, getArrayField } from '../utils/arrayHelpers';
 import { getContentStateFromEditorState } from '../utils/editorHelpers';
 import { toggleUpvotes } from '../utils/cardHelpers';
-import { CARD_STATUS_OPTIONS, PERMISSION_OPTIONS_MAP, AUTO_REMIND_VALUE } from '../utils/constants';
-import { GET_CARD_REQUEST, CREATE_CARD_REQUEST, UPDATE_CARD_REQUEST, TOGGLE_UPVOTE_REQUEST, DELETE_CARD_REQUEST } from '../actions/actionTypes';
+import { CARD_STATUS, PERMISSION_OPTION, AUTO_REMIND_VALUE } from '../utils/constants';
+import { GET_CARD_REQUEST, CREATE_CARD_REQUEST, UPDATE_CARD_REQUEST, TOGGLE_UPVOTE_REQUEST, DELETE_CARD_REQUEST, MARK_UP_TO_DATE_REQUEST, MARK_OUT_OF_DATE_REQUEST } from '../actions/actionTypes';
 import { 
   handleGetCardSuccess, handleGetCardError,
   handleCreateCardSuccess, handleCreateCardError,
   handleUpdateCardSuccess, handleUpdateCardError,
   handleDeleteCardSuccess, handleDeleteCardError,
   handleToggleUpvoteSuccess, handleToggleUpvoteError,
+  handleMarkUpToDateSuccess, handleMarkUpToDateError,
+  handleMarkOutOfDateSuccess, handleMarkOutOfDateError,
 } from '../actions/cards';
 
 export default function* watchCardsRequests() {
   let action;
 
-  while (action = yield take([GET_CARD_REQUEST, CREATE_CARD_REQUEST, UPDATE_CARD_REQUEST, TOGGLE_UPVOTE_REQUEST, DELETE_CARD_REQUEST])) {
+  while (action = yield take([GET_CARD_REQUEST, CREATE_CARD_REQUEST, UPDATE_CARD_REQUEST, TOGGLE_UPVOTE_REQUEST, DELETE_CARD_REQUEST, MARK_UP_TO_DATE_REQUEST, MARK_OUT_OF_DATE_REQUEST])) {
     const { type, payload } = action;
     switch (type) {
       case GET_CARD_REQUEST: {
@@ -39,6 +41,14 @@ export default function* watchCardsRequests() {
       }
       case TOGGLE_UPVOTE_REQUEST: {
         yield fork(toggleUpvote, payload);
+        break;
+      }
+      case MARK_UP_TO_DATE_REQUEST: {
+        yield fork(markUpToDate);
+        break;
+      }
+      case MARK_OUT_OF_DATE_REQUEST: {
+        yield fork(markOutOfDate);
         break;
       }
     }
@@ -80,8 +90,8 @@ function* convertCardToBackendFormat(isNewCard) {
   }
 
   const permissionsInfo = {
-    user_permissions: permissions.value === PERMISSION_OPTIONS_MAP.JUST_ME ? [_id] : [],
-    permission_groups: permissions.value === PERMISSION_OPTIONS_MAP.SPECIFIC_GROUPS ? permissionGroups : [],
+    user_permissions: permissions.value === PERMISSION_OPTION.JUST_ME ? [_id] : [],
+    permission_groups: permissions.value === PERMISSION_OPTION.SPECIFIC_GROUPS ? permissionGroups : [],
   }
 
   return {
@@ -95,7 +105,7 @@ function* convertCardToBackendFormat(isNewCard) {
     keywords: getArrayField(keywords, 'value'),
     ...verificationInfo,
     ...permissionsInfo,
-    status: isNewCard ? CARD_STATUS_OPTIONS.UP_TO_DATE : cardStatus,
+    status: isNewCard ? CARD_STATUS.UP_TO_DATE : cardStatus,
   }
 }
 
@@ -149,5 +159,27 @@ function* toggleUpvote({ upvotes }) {
     const { response: { data } } = error;
     yield put(handleToggleUpvoteError(cardId, data.error, oldUpvotes));
   }
+}
+
+function* markUpToDate() {
+  const cardId = yield call(getActiveCardId);
+  try {
+    const { updatedCard } = yield call(doPost, '/cards/uptodate', { cardId });
+    yield put(handleMarkUpToDateSuccess(updatedCard));
+  } catch(error) {
+    const { response: { data } } = error;
+    yield put(handleMarkUpToDateError(cardId, data.error));
+  }  
+}
+
+function* markOutOfDate() {
+  const cardId = yield call(getActiveCardId);
+  try {
+    const { updatedCard } = yield call(doPost, '/cards/outofdate', { cardId });
+    yield put(handleMarkOutOfDateSuccess(updatedCard));
+  } catch(error) {
+    const { response: { data } } = error;
+    yield put(handleMarkOutOfDateError(cardId, data.error));
+  }  
 }
 
