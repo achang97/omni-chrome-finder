@@ -37,26 +37,31 @@ const CardStatus = ({ isActionable, cardStatus, className, onDropdownOptionClick
   const { Icon: DropdownIcon, dropdownFontColor, dropdownLabel, dropdownModalType } = getDisplayInfo(dropdownStatus);
 
   const [dropdownOpen, setDropdownOpen] = useState(false);
-  const [reasonOpen, setReasonOpen] = useState(false);
   
   const onClick = () => {
     onDropdownOptionClick(dropdownStatus);
     setDropdownOpen(false);
   }
 
+  const shouldShowDropdown = dropdownOpen && isActionable;
+
   return (
     <React.Fragment>
-      <div className={s(`card-status bg-${bgColor} ${dropdownOpen ? 'rounded-b-none' : ''} ${className}`)}>
-        <div
-          className={s(`flex p-sm ${isActionable ? 'button-hover' : ''}`)}
-          style={{ color: fontColor }}
-          onClick={isActionable ? () => setDropdownOpen(!dropdownOpen) : NOOP}
-        >
-          <Icon />
-          <div className={s("ml-xs")}> {label} </div>
-          { isActionable && <MdArrowDropDown /> }
-        </div>
-        <Dropdown isOpen={dropdownOpen}>
+      <Dropdown
+        isOpen={shouldShowDropdown}
+        onToggle={setDropdownOpen}
+        className={s(`card-status bg-${bgColor} ${shouldShowDropdown ? 'rounded-b-none' : ''} ${className}`)}
+        toggler={
+          <div
+            className={s(`flex p-sm`)}
+            style={{ color: fontColor }}
+          >
+            <Icon />
+            <div className={s("ml-xs")}> {label} </div>
+            { isActionable && <MdArrowDropDown /> }
+          </div>
+        }
+        body={
           <div
             className={s("bg-white rounded-b-lg p-sm flex items-center shadow-md button-hover")}
             onClick={onClick}
@@ -64,14 +69,19 @@ const CardStatus = ({ isActionable, cardStatus, className, onDropdownOptionClick
             <DropdownIcon className={s(`text-${dropdownFontColor}`)} />
             <div className={s("ml-xs")}> {dropdownLabel} </div>
           </div>
-        </Dropdown>
-      </div>
+        }
+        disabled={!isActionable}
+      />
       { outOfDateReason &&
-        <div className={s("ml-sm relative flex")}>
-          <button className={s("bg-red-200 p-sm text-red-500 rounded-lg text-xs font-bold")} onClick={() => setReasonOpen(!reasonOpen)}>
-            ?
-          </button>
-          <Dropdown isOpen={reasonOpen}>
+        <Dropdown
+          className={s("ml-sm flex")}
+          togglerClassName={s("flex")}
+          toggler={
+            <button className={s("bg-red-200 p-sm text-red-500 rounded-lg text-xs font-bold")}>
+              ?
+            </button>
+          }
+          body={
             <div className={s("card-status-reason-dropdown")}>
               <div className={s("mb-reg text-sm")}> {outOfDateReason.reason} </div>
               <div className={s("flex items-center text-xs")}>
@@ -86,8 +96,8 @@ const CardStatus = ({ isActionable, cardStatus, className, onDropdownOptionClick
                 <Timeago live={false} date={outOfDateReason.time} />
               </div>
             </div>
-          </Dropdown>
-        </div>
+          }
+        />
       }
     </React.Fragment>
   );

@@ -66,11 +66,6 @@ const PLACEHOLDER_RECIPIENT_OPTIONS = createSelectOptions([
 class Ask extends Component {
   constructor(props) {
     super(props);
-
-    this.state = {
-      isAttachmentDropdownOpen: false,
-    }
-
     this.expandedPageRef = React.createRef();
   }
 
@@ -165,7 +160,6 @@ class Ask extends Component {
       desktopSharing,
       addAskAttachments, removeAskAttachment, attachments,
     } = this.props;
-    const { isAttachmentDropdownOpen} = this.state;
 
     return (
       <div >
@@ -211,16 +205,20 @@ class Ask extends Component {
               iconLeft={false}
             />
           </Dropzone>
-          <div className={s("ml-xs relative")}>
-            <Button
-              onClick={() => this.setState({ isAttachmentDropdownOpen: !isAttachmentDropdownOpen })}
-              className={s("bg-white py-reg px-sm")}
-              icon={<MdAttachment color={colors.purple.reg} className={s("ask-attachment-icon")} />}
-            />
-            <div className={s("ask-attachment-count")}>
-              {attachments.length}
-            </div>
-            <Dropdown isOpen={isAttachmentDropdownOpen}>
+          <Dropdown
+            className={s("ml-xs")}
+            toggler={
+              <div className={s("relative")}>
+                <Button
+                  className={s("bg-white py-reg px-sm")}
+                  icon={<MdAttachment color={colors.purple.reg} className={s("ask-attachment-icon")} />}
+                />
+                <div className={s("ask-attachment-count")}>
+                  {attachments.length}
+                </div>
+              </div>
+            }
+            body={
               <div className={s("ask-attachment-dropdown")}>
                 { attachments.length === 0 &&
                   <div className={s("text-center")}>
@@ -237,8 +235,8 @@ class Ask extends Component {
                   />
                 ))}
               </div>
-            </Dropdown>
-          </div>
+            }
+          />
         </div>
       </div>
     );

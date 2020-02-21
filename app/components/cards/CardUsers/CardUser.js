@@ -21,7 +21,7 @@ const CardUser = ({ className, name, img, size, onClick, onRemoveClick, showName
 			<CircleButton
 				content={<PlaceholderImg src={img} name={name} className={s(`w-full h-full`)} />}
 				size={size}
-				label={showName && name}
+				label={showName ? name : null}
 				labelClassName={s("card-user-label")}
 				onClick={protectedOnClick}
 			/>
