@@ -11,7 +11,7 @@ import Button from '../../common/Button';
 import Triangle from '../../common/Triangle';
 
 import { colors } from '../../../styles/colors';
-import { CARD_STATUS_OPTIONS } from '../../../utils/constants';
+import { CARD_STATUS } from '../../../utils/constants';
 
 import style from './suggestion-panel.css';
 import { getStyleApplicationFn } from '../../../utils/styleHelpers';
@@ -104,12 +104,12 @@ class SuggestionPanel extends Component {
             <ScrollContainer
               scrollContainerClassName={s(`suggestion-panel-card-container ${showResults ? 'suggestion-panel-card-container-lg' : ''} flex flex-col`)}
               list={cards}
-              renderScrollElement={({ _id, question, answer, updatedAt, status }) => (
+              renderScrollElement={({ _id, question, answer, createdAt, status }) => (
                 <SuggestionCard
                   _id={_id}
                   question={question}
                   answer={answer}
-                  datePosted={updatedAt}
+                  datePosted={createdAt}
                   cardStatus={status}
                   className={s("mx-sm")}
                 />
@@ -132,7 +132,7 @@ class SuggestionPanel extends Component {
                   />
                 </div>
               )}
-              footer={showResults && this.renderExternalDocumentationResults()}
+              footer={showResults ? this.renderExternalDocumentationResults() : null}
               position="left"
             />
           }

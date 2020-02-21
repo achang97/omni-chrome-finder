@@ -26,6 +26,7 @@ const config = {
       '2xs': '10px',
       'xs': '12px',
       'sm': '14px',
+      'md': '15px',
       'reg': '16px',
       'lg': '18px',
       'xl': '20px',

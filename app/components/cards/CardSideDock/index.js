@@ -6,6 +6,7 @@ import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
 import {
   closeCardSideDock,
+  openCardModal,
   removeCardAttachment,
   addCardOwner, removeCardOwner,
   updateCardTags, removeCardTag,
@@ -24,9 +25,10 @@ import CardPermissions from '../CardPermissions';
 
 import Select from '../../common/Select';
 import Button from '../../common/Button';
+import Loader from '../../common/Loader';
 
 import { getBaseAnimationStyle } from '../../../utils/animateHelpers';
-import { PERMISSION_OPTIONS, VERIFICATION_INTERVAL_OPTIONS, FADE_IN_TRANSITIONS, CARD_STATUS_OPTIONS } from '../../../utils/constants';
+import { MODAL_TYPE, PERMISSION_OPTIONS, VERIFICATION_INTERVAL_OPTIONS, FADE_IN_TRANSITIONS, CARD_STATUS } from '../../../utils/constants';
 import { createSelectOptions } from '../../../utils/selectHelpers';
 
 import style from './card-side-dock.css';
@@ -163,19 +165,23 @@ const CardSideDock = (props) => {
     return (
       <CardSection className={s("mt-lg")} title="Advanced">
         <div className={s("mb-sm")}>
-          <div className={s("text-gray-reg text-xs mb-xs")}> Verification Interval </div>
-          <Select
-            value={currVerificationInterval}
-            onChange={updateCardVerificationInterval}
-            options={VERIFICATION_INTERVAL_OPTIONS}
-            placeholder="Select verification interval..."
-            isSearchable
-            menuShouldScrollIntoView
-            isDisabled={!isEditing}
-          />
+          <div className={s("text-gray-reg text-xs mb-sm")}> Verification Interval </div>
+          { isEditing ?
+            <Select
+              value={currVerificationInterval}
+              onChange={updateCardVerificationInterval}
+              options={VERIFICATION_INTERVAL_OPTIONS}
+              placeholder="Select verification interval..."
+              isSearchable
+              menuShouldScrollIntoView
+            /> :
+            <div className={s("underline-border border-purple-gray-20 mb-sm text-purple-reg text-sm inline-block")}>
+              {currVerificationInterval.label}
+            </div>
+          }
         </div>
         <div>
-          <div className={s("text-gray-reg text-xs mb-xs")}> Permissions </div>
+          <div className={s("text-gray-reg text-xs mb-sm")}> Permissions </div>
           <CardPermissions
             selectedPermission={currPermissions}
             onChangePermission={updateCardPermissions}
@@ -189,6 +195,7 @@ const CardSideDock = (props) => {
   }
 
   const renderFooter = () => {
+    const { isDeletingCard, openCardModal } = props;
     return (
       <div className={s("pt-lg")}>
         <div className={s("text-sm font-medium")}>
@@ -205,7 +212,9 @@ const CardSideDock = (props) => {
           className={s("justify-between mt-lg bg-white text-red-500")}
           text="Delete This Card"
           underline
+          onClick={() => openCardModal(MODAL_TYPE.CONFIRM_DELETE)}
           underlineColor="red-200"
+          disabled={isDeletingCard}
           icon={<FaRegTrashAlt />}
           iconLeft={false}
         />
@@ -243,7 +252,7 @@ const CardSideDock = (props) => {
       exited:  { transform: 'translateX(100%)' },
     }
 
-    const isNewCard = cardStatus === CARD_STATUS_OPTIONS.NOT_DOCUMENTED;
+    const isNewCard = cardStatus === CARD_STATUS.NOT_DOCUMENTED;
 
     return (
       <div className={s("card-side-dock-container")}>
@@ -279,6 +288,7 @@ export default connect(
   }),
   dispatch => bindActionCreators({
     closeCardSideDock,
+    openCardModal,
     addCardOwner, removeCardOwner,
     removeCardAttachment,
     updateCardTags, removeCardTag,

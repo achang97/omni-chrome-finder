@@ -8,12 +8,14 @@ import CardAttachment from '../CardAttachment';
 import CardPermissions from '../CardPermissions';
 
 import Select from '../../common/Select';
+import Loader from '../../common/Loader';
 import Button from '../../common/Button';
 import Modal from '../../common/Modal';
 
 import { MdLock, MdAutorenew } from 'react-icons/md';
 
-import { PERMISSION_OPTIONS_MAP, VERIFICATION_INTERVAL_OPTIONS, CARD_STATUS_OPTIONS, MODAL_TYPE, SEARCH_TYPES } from '../../../utils/constants';
+import { PERMISSION_OPTION, VERIFICATION_INTERVAL_OPTIONS, CARD_STATUS, MODAL_TYPE, SEARCH_TYPE } from '../../../utils/constants';
+import { isValidCard } from '../../../utils/cardHelpers';
 
 import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
@@ -72,8 +74,10 @@ const CardCreateModal = (props) => {
         startExpanded={false}
         preview={
           <div className={s("card-create-modal-keywords-preview")}>
-            { keywords.map(({ label }, i) => (
-              <div className={i !== keywords.length - 1 ? s('mr-xs') : ''}> {label}{i !== keywords.length - 1 && ','} </div>
+            { keywords.map(({ label, value }, i) => (
+              <div key={value} className={i !== keywords.length - 1 ? s('mr-xs') : ''}>
+                {label}{i !== keywords.length - 1 && ','}
+              </div>
             ))}
           </div>
         }
@@ -114,39 +118,38 @@ const CardCreateModal = (props) => {
           </div>
         }
       >
-        <div className={s("flex")}>
-          <div className={s("flex-1 mr-xs")}>
-            <div className={s("text-gray-reg text-xs mb-xs")}> Verification Interval </div>
-            <Select
-              value={verificationInterval}
-              onChange={updateCardVerificationInterval}
-              options={VERIFICATION_INTERVAL_OPTIONS}
-              placeholder="Select verification interval..."
-              isSearchable
-              menuShouldScrollIntoView
-            />
-          </div>
-          <div className={s("flex-1 ml-xs")}>
-            <div className={s("text-gray-reg text-xs mb-xs")}> Permissions </div>
-            <CardPermissions
-              selectedPermission={permissions}
-              onChangePermission={updateCardPermissions}
-              permissionGroups={permissionGroups}
-              onChangePermissionGroups={updateCardPermissionGroups}
-            />
-          </div>
+        <div>
+          <div className={s("text-gray-reg text-xs mb-xs")}> Verification Interval </div>
+          <Select
+            value={verificationInterval}
+            onChange={updateCardVerificationInterval}
+            options={VERIFICATION_INTERVAL_OPTIONS}
+            placeholder="Select verification interval..."
+            isSearchable
+            menuShouldScrollIntoView
+          />
+        </div>
+        <div className={s("mt-sm")}>
+          <div className={s("text-gray-reg text-xs mb-sm")}> Permissions </div>
+          <CardPermissions
+            selectedPermission={permissions}
+            onChangePermission={updateCardPermissions}
+            permissionGroups={permissionGroups}
+            onChangePermissionGroups={updateCardPermissionGroups}
+          />
         </div>
       </CardSection>
     );
   }
 
   const render = () => {
-    const { modalOpen, requestCreateCard, closeCardModal, createError, edits: { question, owners=[], verificationInterval={}, permissions={}, permissionGroups=[] } } = props;
+    const { modalOpen, requestCreateCard, closeCardModal, createError, isCreatingCard, edits } = props;
+
     return (
       <Modal
         isOpen={modalOpen[MODAL_TYPE.CREATE]}
         onRequestClose={() => closeCardModal(MODAL_TYPE.CREATE)}
-        title={question}
+        title={edits.question}
         overlayClassName={s("rounded-b-lg")}
         bodyClassName={s("rounded-b-lg flex flex-col")}
       >
@@ -166,12 +169,9 @@ const CardCreateModal = (props) => {
           underline
           underlineColor="purple-gray-50"
           color={"primary"}
-          disabled={
-            owners.length === 0 ||
-            !verificationInterval ||
-            !permissions ||
-            (permissions.value === PERMISSION_OPTIONS_MAP.SPECIFIC_GROUPS && permissionGroups.length === 0)          
-          }
+          iconLeft={false}
+          icon={isCreatingCard ? <Loader className={s("ml-sm")} size="sm" color="white" /> : null}
+          disabled={!isValidCard(edits) || isCreatingCard}
         />
       </Modal>
     );    

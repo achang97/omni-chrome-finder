@@ -2,7 +2,7 @@ import { delay } from 'redux-saga';
 import { take, call, fork, all, cancel, cancelled, put, select } from 'redux-saga/effects';
 import { doGet, doPost, doPut, doDelete } from '../utils/request'
 import { getContentStateFromEditorState } from '../utils/editorHelpers';
-import { CARD_STATUS_OPTIONS } from '../utils/constants';
+import { CARD_STATUS } from '../utils/constants';
 import { ASK_QUESTION_REQUEST } from '../actions/actionTypes';
 import { 
   handleAskQuestionSuccess, handleAskQuestionError,
@@ -31,7 +31,7 @@ function* askQuestion() {
       question: questionTitle,
       description: descriptionText,
       content_state_description: descriptionContentState,
-      status: CARD_STATUS_OPTIONS.NOT_DOCUMENTED,
+      status: CARD_STATUS.NOT_DOCUMENTED,
     });
     yield put(handleAskQuestionSuccess());
   } catch(error) {

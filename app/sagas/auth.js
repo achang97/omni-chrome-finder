@@ -28,6 +28,7 @@ export default function* watchAuthRequests() {
 function* login() {
   try {
     const { loginEmail, loginPassword } = yield select(state => state.auth);
+    console.log(loginEmail, loginPassword)
     const { userJson, token, refreshToken } = yield call(doPost, '/users/login', { email: loginEmail, password: loginPassword });
     yield put(handleLoginSuccess(userJson, token, refreshToken));
   } catch(error) {
