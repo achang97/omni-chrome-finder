@@ -55,24 +55,20 @@ class Dropdown extends Component {
 	}
 
 	render() {
-		const { isDown, isLeft, toggler, body, disabled, className, togglerClassName } = this.props;
+		const { isDown, isLeft, toggler, body, disabled, isTogglerRelative, className, togglerClassName } = this.props;
 		const isOpen = this.props.isOpen !== undefined ? this.props.isOpen : this.state.isOpen;
 
 		const style = getPositionStyle(isDown, isLeft);
 
 		return (
-			<div className={s(`relative ${className}`)}>
+			<div className={s(`${isTogglerRelative ? 'relative' : ''} ${className}`)}>
 				<div
 					onClick={!disabled ? this.onToggleClick : NOOP}
 					className={s(`${togglerClassName} ${!disabled ? 'button-hover' : ''}`)}
 				>
 					{toggler}
 				</div>
-				{ isOpen &&
-					<div style={style}>
-						{body}
-					</div>
-				}
+				{ isOpen && React.cloneElement(body, { style }) }
 			</div>
 		);
 	}
@@ -86,6 +82,7 @@ Dropdown.propTypes = {
 	isOpen: PropTypes.bool,
 	onToggle: PropTypes.func,
 	disabled: PropTypes.bool,
+	isTogglerRelative: PropTypes.bool,
 	className: PropTypes.string,
 	togglerClassName: PropTypes.string,	
 }
@@ -94,6 +91,7 @@ Dropdown.defaultProps = {
 	isDown: true,
 	isLeft: true,
 	disabled: false,
+	isTogglerRelative: true,
 	className: '',
 	togglerClassName: '',
 }

@@ -31,13 +31,15 @@
   width: 175px;
 }
 
-.ask-recipient-scroll-max {
-  max-height: 150px;
-}
-
 .ask-recipient {
 	height: 15px;
 	@apply m-xs relative text-purple-reg font-semibold text-xs rounded-lg flex justify-between items-center p-reg;
+}
+
+.ask-recipient-dropdown {
+  @apply text-xs pb-reg pt-sm shadow-md rounded-t-lg flex flex-col w-full;
+  max-height: 150px;
+  background: #e8ebf5;
 }
 
 .ask-recipient-mentions-count {
