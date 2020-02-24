@@ -29,3 +29,12 @@ export function getArrayIds(array) {
 export function getArrayField(array, field) {
 	return array.map(elem => elem[field]);
 }
+
+/*
+ *
+ */
+export function getArrayWithout(array, withoutArray, field) {
+	return array.filter(elem => !withoutArray.some(withoutElem => (
+		field ? elem[field] === withoutElem[field] : elem === withoutElem
+	)));
+}

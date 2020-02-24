@@ -7,12 +7,6 @@ import style from './recipient-dropdown-body.css';
 import { getStyleApplicationFn } from '../../../utils/styleHelpers';
 const s = getStyleApplicationFn(style);
 
-const PLACEHOLDER_MENTION_OPTIONS = [
-  { id: 'u1', name: 'Akshay' },
-  { id: 'u2', name: 'Chetan' },
-  { id: 'u3', name: 'Andrew' },
-]
-
 class RecipientDropdownBody extends Component {
   constructor(props) {
     super(props);
@@ -23,13 +17,6 @@ class RecipientDropdownBody extends Component {
     }
 
     this.inputRef = React.createRef();
-  }
-
-  componentDidUpdate(prevProps) {
-    if (!prevProps.isOpen && this.props.isOpen) {
-      // NOTE: HACKY SOLUTION. Should not have to use setTimeout.
-      setTimeout(() => this.inputRef.current.focus(), 0);
-    }
   }
 
   handleChange = (e) => {
@@ -67,27 +54,28 @@ class RecipientDropdownBody extends Component {
   }
 
   getMentionOptions = () => {
-    const { mentions } = this.props;
+    const { mentions, mentionOptions } = this.props;
     const { mentionInputText } = this.state;
 
-    return PLACEHOLDER_MENTION_OPTIONS
+    return mentionOptions
       .filter(mention => (
         !mentions.some(currMention => currMention.id === mention.id) &&
-        mention.name.toLowerCase().includes(mentionInputText.trim().toLowerCase())
+        `@${mention.name.toLowerCase()}`.includes(mentionInputText.trim().toLowerCase())
       ));
   }
 
   render() {
-    const { mentions, isDropdownOpen, isOpen, onRemoveMention } = this.props;
+    const { mentions, isDropdownOpen } = this.props;
     const { mentionInputText, selectedIndex } = this.state;
 
     const addMentionOptions = this.getMentionOptions();
 
     return (
-      <div className={s("recipient-dropdown-select")}>
+      <div className={s("flex flex-col min-h-0")}>
         <div className={s("px-xs")}>
           <input 
             ref={this.inputRef}
+            autoFocus
             className={s("recipient-dropdown-input w-full")}
             placeholder="@mention"
             onChange={e => this.handleChange(e)}
@@ -97,7 +85,7 @@ class RecipientDropdownBody extends Component {
           />
           <div className={s("horizontal-separator")} />
         </div>
-        <div className={s("overflow-auto my-xs text-purple-reg")}>
+        <div className={s("recipient-dropdown-select-options")}>
           { addMentionOptions.length === 0 ?
             <div className={s("px-sm text-center font-normal")}> No mention options </div> :
             addMentionOptions.map((mention, i) => (
@@ -118,11 +106,15 @@ class RecipientDropdownBody extends Component {
 }
 
 RecipientDropdownBody.propTypes = {
+  mentionOptions: PropTypes.arrayOf(PropTypes.shape({
+    id: PropTypes.string.isRequired,
+    name: PropTypes.string.isRequired,
+  })),
   mentions: PropTypes.arrayOf(PropTypes.shape({
+    id: PropTypes.string.isRequired,
     name: PropTypes.string.isRequired,
   })).isRequired,
   onAddMention: PropTypes.func.isRequired,
-  onRemoveMention: PropTypes.func.isRequired,
 }
 
 RecipientDropdownBody.defaultProps = {

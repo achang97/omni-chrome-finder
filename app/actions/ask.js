@@ -52,6 +52,21 @@ export function removeAskAttachment(index) {
   return { type: types.REMOVE_ASK_ATTACHMENT, payload: { index } }
 }
 
+/* API Requests */
+export function requestGetSlackConversations() {
+  return { type: types.GET_SLACK_CONVERSATIONS_REQUEST, payload: {} }
+}
+
+export function handleGetSlackConversationsSuccess(conversations) {
+  return { type: types.GET_SLACK_CONVERSATIONS_SUCCESS, payload: { conversations } }
+}
+
+export function handleGetSlackConversationsError(error) {
+  return { type: types.GET_SLACK_CONVERSATIONS_ERROR, payload: { error } }
+}
+
+
+
 export function requestAskQuestion() {
   return { type: types.ASK_QUESTION_REQUEST, payload: { } };
 }
@@ -67,3 +82,4 @@ export function handleAskQuestionError(error) {
 export function clearAskQuestionInfo() {
   return { type: types.CLEAR_ASK_QUESTION_INFO, payload: { } }
 }
+

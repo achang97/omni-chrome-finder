@@ -23,6 +23,7 @@ const initialState = {
   screenRecordingError: null,
 
   attachments: [],
+  slackConversations: [],
 };
 
 export default function display(state = initialState, action) {
@@ -98,6 +99,18 @@ export default function display(state = initialState, action) {
     case types.REMOVE_ASK_ATTACHMENT: {
       const { index } = payload;
       return { ...state, attachments: removeIndex(state.attachments, index) }
+    }
+
+    case types.GET_SLACK_CONVERSATIONS_REQUEST: {
+      return { ...state, isGettingSlackConversations: true, getSlackConversationsError: null }
+    }
+    case types.GET_SLACK_CONVERSATIONS_SUCCESS: {
+      const { conversations } = payload;
+      return { ...state, isGettingSlackConversations: false, slackConversations: conversations }
+    }
+    case types.GET_SLACK_CONVERSATIONS_ERROR: {
+      const { error } = payload;
+      return { ...state, isGettingSlackConversations: false, getSlackConversationsError: error }
     }
 
     case types.ASK_QUESTION_REQUEST: {

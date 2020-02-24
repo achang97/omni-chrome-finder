@@ -85,7 +85,7 @@
 }
 
 .text-editor-dropdown-container-md, .text-editor-dropdown-container-lg {
-	border-radius: 8px !important;
+	@apply rounded-lg !important;
 	background-color: #BDC8F926 !important;
 	color: #7A7DAF !important;
 	border: 0 !important;
@@ -105,47 +105,48 @@
 	border-top-color: #7A7DAF !important;
 }
 
-.text-editor-dropdown-container-md + div:not(.text-editor-dropdown-container-md),
-.text-editor-dropdown-container-lg + div:not(.text-editor-dropdown-container-lg) {
+.text-editor-dropdown-container-md + div:not(.text-editor-dropdown-container-md):not([aria-label="rdw-link-control"]),
+.text-editor-dropdown-container-lg + div:not(.text-editor-dropdown-container-lg):not([aria-label="rdw-link-control"]) {
 	right: 5px !important;
 	left: unset !important;
 	height: auto !important;
+	@apply rounded-lg shadow-md !important;
 }
 
-.text-editor-dropdown-container-md + div:not(.text-editor-dropdown-container-md) > label,
-.text-editor-dropdown-container-lg + div:not(.text-editor-dropdown-container-lg) > label {
+.text-editor-dropdown-container-md + div:not(.text-editor-dropdown-container-md):not([aria-label="rdw-link-control"]) > label,
+.text-editor-dropdown-container-lg + div:not(.text-editor-dropdown-container-lg):not([aria-label="rdw-link-control"]) > label {
 	@apply mb-xs text-xs text-gray-dark !important;
 }
 
 /* Hide checkbox */
-.text-editor-dropdown-container-md + div:not(.text-editor-dropdown-container-md) > label:nth-last-child(2),
-.text-editor-dropdown-container-lg + div:not(.text-editor-dropdown-container-lg) > label:nth-last-child(2) {
+.text-editor-dropdown-container-md + div:not(.text-editor-dropdown-container-md):not([aria-label="rdw-link-control"]) > label:nth-last-child(2),
+.text-editor-dropdown-container-lg + div:not(.text-editor-dropdown-container-lg):not([aria-label="rdw-link-control"]) > label:nth-last-child(2) {
 	display: none !important;
 }
 
-.text-editor-dropdown-container-md + div:not(.text-editor-dropdown-container-md) > input,
-.text-editor-dropdown-container-lg + div:not(.text-editor-dropdown-container-lg) > input {
+.text-editor-dropdown-container-md + div:not(.text-editor-dropdown-container-md):not([aria-label="rdw-link-control"]) > input,
+.text-editor-dropdown-container-lg + div:not(.text-editor-dropdown-container-lg):not([aria-label="rdw-link-control"]) > input {
 	@apply mb-sm !important;
 }
 
-.text-editor-dropdown-container-md + div:not(.text-editor-dropdown-container-md) > span,
-.text-editor-dropdown-container-lg + div:not(.text-editor-dropdown-container-lg) > span {
+.text-editor-dropdown-container-md + div:not(.text-editor-dropdown-container-md):not([aria-label="rdw-link-control"]) > span,
+.text-editor-dropdown-container-lg + div:not(.text-editor-dropdown-container-lg):not([aria-label="rdw-link-control"]) > span {
 	@apply flex items-center justify-between m-0 !important;
 }
 
-.text-editor-dropdown-container-md + div:not(.text-editor-dropdown-container-md) > span > button,
-.text-editor-dropdown-container-lg + div:not(.text-editor-dropdown-container-lg) > span  > button {
+.text-editor-dropdown-container-md + div:not(.text-editor-dropdown-container-md):not([aria-label="rdw-link-control"]) > span > button,
+.text-editor-dropdown-container-lg + div:not(.text-editor-dropdown-container-lg):not([aria-label="rdw-link-control"]) > span  > button {
 	@apply flex-1 mt-sm p-xs text-sm text-center !important;
 }
 
-.text-editor-dropdown-container-md + div:not(.text-editor-dropdown-container-md) > span > button:first-child,
-.text-editor-dropdown-container-lg + div:not(.text-editor-dropdown-container-lg) > span  > button:first-child {
+.text-editor-dropdown-container-md + div:not(.text-editor-dropdown-container-md):not([aria-label="rdw-link-control"]) > span > button:first-child,
+.text-editor-dropdown-container-lg + div:not(.text-editor-dropdown-container-lg):not([aria-label="rdw-link-control"]) > span  > button:first-child {
 	@apply text-white rounded-l-lg !important;
 	background: linear-gradient(143deg, #777BAD 0%, #A0A1CD 100%) !important;
 }
 
-.text-editor-dropdown-container-md + div:not(.text-editor-dropdown-container-md) > span > button:last-child,
-.text-editor-dropdown-container-lg + div:not(.text-editor-dropdown-container-lg) > span  > button:last-child {
+.text-editor-dropdown-container-md + div:not(.text-editor-dropdown-container-md):not([aria-label="rdw-link-control"]) > span > button:last-child,
+.text-editor-dropdown-container-lg + div:not(.text-editor-dropdown-container-lg):not([aria-label="rdw-link-control"]) > span  > button:last-child {
 	@apply bg-purple-gray-10 rounded-r-lg !important;
 }
 

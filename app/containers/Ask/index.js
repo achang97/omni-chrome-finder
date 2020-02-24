@@ -29,25 +29,12 @@ import { colors } from '../../styles/colors';
 import { expandDock } from '../../actions/display';
 import { requestSearchCards } from '../../actions/search';
 import * as askActions from '../../actions/ask';
-import { ASK_INTEGRATIONS, DEBOUNCE_60_HZ, SEARCH_TYPE } from '../../utils/constants';
+import { ASK_INTEGRATIONS, DEBOUNCE_60_HZ, SEARCH_TYPE, SLACK_RECIPIENT_TYPE } from '../../utils/constants';
 
 import style from "./ask.css";
 import { getStyleApplicationFn, isOverflowing } from '../../utils/styleHelpers';
 import { createSelectOptions } from '../../utils/selectHelpers';
 const s = getStyleApplicationFn(style);
-
-const PLACEHOLDER_RECIPIENT_OPTIONS = createSelectOptions([
-  { id: 'c1', type: 'channel', name: 'Design' },
-  { id: 'u1', type: 'user', name: 'Akshay' },
-  { id: 'u2', type: 'user', name: 'Chetan' },
-  { id: 'u3', type: 'user', name: 'Andrew' },
-  { id: 'u4', type: 'user', name: 'Fernando' },
-  { id: 'u5', type: 'user', name: 'Chetan Really Long Name Wow ASDf ASdf ASdf asdf !!!' },  
-  { id: 'u6', type: 'user', name: 'Roger' },
-  { id: 'u7', type: 'user', name: 'Mike' },
-  { id: 'u8', type: 'channel', name: 'Engineering' },
-  { id: 'u9', type: 'channel', name: 'Frontend' },
-], (option) => ({ label: `${option.type === 'channel' ? '#' : '@'} ${option.name}`, value: option }));
 
 @connect(
   state => ({
@@ -66,6 +53,24 @@ const PLACEHOLDER_RECIPIENT_OPTIONS = createSelectOptions([
 class Ask extends Component {
   constructor(props) {
     super(props);
+  }
+  
+  componentDidMount() {
+    if (this.isLoggedInSlack()) {
+      this.props.requestGetSlackConversations();
+    }
+  }
+
+  componentDidUpdate(prevProps) {
+    const prevPropsSlack = prevProps.user && prevProps.user.integrations.slack.access_token;
+    const currPropsSlack = this.isLoggedInSlack();
+    if (!prevPropsSlack && currPropsSlack) {
+      this.props.requestGetSlackConversations();
+    }
+  }
+
+  isLoggedInSlack = () => {
+    return this.props.user && this.props.user.integrations.slack.access_token;
   }
 
   renderTabHeader = () => {
@@ -256,7 +261,7 @@ class Ask extends Component {
     );
   }
 
-  renderChannelRecipient = ({ id, name, mentions, isDropdownOpen, isDropdownSelectOpen }, index) => {
+  renderChannelRecipient = ({ id, name, mentions, members, isDropdownOpen, isDropdownSelectOpen }, index) => {
     const { removeAskRecipient, updateAskRecipient } = this.props;
 
     return (
@@ -276,11 +281,11 @@ class Ask extends Component {
             <div className={s("ask-recipient-dropdown")}>
               { mentions.length === 0 ?
                 <div className={s("text-center text-purple-reg font-normal")}> No current mentions </div> :
-                <div className={s("overflow-auto px-sm text-purple-reg")}>
+                <div className={s("overflow-auto px-reg text-purple-reg")}>
                   { mentions.map((mention) => (
                     <div key={mention.id} className={s("flex justify-between items-center py-xs")}>
                       <div className={s("min-w-0 truncate font-semibold")}> @{mention.name} </div>
-                      <button onClick={() => onRemoveMention(mention)}>
+                      <button onClick={() => updateAskRecipient(index, { mentions: _.without(mentions, mention)})}>
                         <MdClose className={s("text-purple-reg")} />
                       </button>
                     </div>
@@ -304,10 +309,9 @@ class Ask extends Component {
           body={ 
             <div className={s("ask-recipient-dropdown")}>
               <RecipientDropdownBody
-                isOpen={isDropdownSelectOpen}
                 mentions={mentions}
+                mentionOptions={members}
                 onAddMention={(newMention) => updateAskRecipient(index, { mentions: _.union(mentions, [newMention]) })}
-                onRemoveMention={(removeMention) => updateAskRecipient(index, { mentions: _.without(mentions, removeMention) })}
               />
             </div>
           }
@@ -320,16 +324,21 @@ class Ask extends Component {
   }
 
   renderRecipientSelection = () => {
-    const { recipients, addAskRecipient, updateAskRecipient } = this.props;
+    const {
+      recipients, addAskRecipient, updateAskRecipient,
+      slackConversations, isGettingSlackConversations, getSlackConversationsError,
+    } = this.props;
 
     return (
       <div className={s("bg-purple-light flex-1 flex flex-col p-lg")}>
         <div className={s("text-purple-reg text-xs mb-reg")}>Send to channel/person</div>
         <Select
           value={null}
-          onChange={({ label, value }) => addAskRecipient(value)}
+          onChange={addAskRecipient}
           placeholder="Enter name"
-          options={PLACEHOLDER_RECIPIENT_OPTIONS.filter(({ value: recipient }) => !recipients.some(currRecipient => currRecipient.id === recipient.id))}
+          options={slackConversations}
+          getOptionLabel={option => `${option.type === SLACK_RECIPIENT_TYPE.CHANNEL ? '#' : '@'}${option.name}`}
+          getOptionValue={option => option.id}
           isSearchable
           menuShouldScrollIntoView
         />
@@ -339,7 +348,7 @@ class Ask extends Component {
           </div>
         }
         <div className={s("my-xs flex flex-wrap content-start")}>
-          { recipients.map(({ type, ...rest }, i) => (type === 'channel' ?
+          { recipients.map(({ type, ...rest }, i) => (type === SLACK_RECIPIENT_TYPE.CHANNEL ?
             this.renderChannelRecipient(rest, i) :
             this.renderIndividualRecipient(rest, i)
           ))}
@@ -392,23 +401,25 @@ class Ask extends Component {
 
   renderExpandedAskPage = () => {
     const { askError, askSuccess, user } = this.props;
-    const url = "https://slack.com/oauth/authorize?client_id=902571434263.910615559953&scope=calls:read,calls:write,channels:history,channels:read,commands,files:read,groups:history,groups:read,im:history,im:read,im:write,incoming-webhook,links:read,mpim:history,mpim:read,mpim:write,pins:read,pins:write,reactions:read,reactions:write,reminders:read,reminders:write,remote_files:read,remote_files:share,remote_files:write,team:read,usergroups:read,usergroups:write,users.profile:read,users:read,users:read.email,users:write&user_scope=calls:read,calls:write,channels:history,channels:read,channels:write,dnd:read,dnd:write,emoji:read,files:read,files:write,groups:history,groups:read,groups:write,im:history,im:read,im:write,links:read,links:write,mpim:history,mpim:read,mpim:write,pins:read,pins:write,reactions:read,reactions:write,reminders:read,reminders:write,remote_files:read,remote_files:share,remote_files:write,search:read,stars:read,stars:write,team:read,usergroups:read,usergroups:write,users.profile:read,users.profile:write,users:read,users:read.email,users:write&state=" + user._id;
+    const url = "https://slack.com/oauth/authorize?client_id=902571434263.910615559953&scope=chat:write:user,calls:read,calls:write,channels:history,channels:read,commands,files:read,groups:history,groups:read,im:history,im:read,im:write,incoming-webhook,links:read,mpim:history,mpim:read,mpim:write,pins:read,pins:write,reactions:read,reactions:write,reminders:read,reminders:write,remote_files:read,remote_files:share,remote_files:write,team:read,usergroups:read,usergroups:write,users.profile:read,users:read,users:read.email,users:write&user_scope=calls:read,calls:write,channels:history,channels:read,channels:write,dnd:read,dnd:write,emoji:read,files:read,files:write,groups:history,groups:read,groups:write,im:history,im:read,im:write,links:read,links:write,mpim:history,mpim:read,mpim:write,pins:read,pins:write,reactions:read,reactions:write,reminders:read,reminders:write,remote_files:read,remote_files:share,remote_files:write,search:read,stars:read,stars:write,team:read,usergroups:read,usergroups:write,users.profile:read,users.profile:write,users:read,users:read.email,users:write&state=" + user._id;
+
+    const isLoggedInSlack = this.isLoggedInSlack();
 
     return (
       <div className={s('flex flex-col flex-1 min-h-0 relative')}>
         <div className={s('flex flex-col flex-1 overflow-y-auto bg-purple-light')}>
           <div className={s("p-lg bg-white")}>
             { this.renderTabHeader() }
-            { !user.slack ?
+            { !isLoggedInSlack ?
               <div>
                 <a href={url}><img alt="Add to Slack" height="40" width="139" src="https://platform.slack-edge.com/img/add_to_slack.png" srcset="https://platform.slack-edge.com/img/add_to_slack.png 1x, https://platform.slack-edge.com/img/add_to_slack@2x.png 2x" /></a>
               </div> :
               this.renderAskInputs()
             }
           </div>
-          { user.slack && this.renderRecipientSelection() }
+          { isLoggedInSlack && this.renderRecipientSelection() }
         </div>
-        { user.slack && this.renderFooterButton() }
+        { isLoggedInSlack && this.renderFooterButton() }
         {/* Modals */}
         { this.renderResultModal(!!askError, 'Ask Error', askError) }
         { this.renderResultModal(askSuccess, 'Ask Success', 'Successfully sent question!') }

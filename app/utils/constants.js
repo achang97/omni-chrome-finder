@@ -21,6 +21,11 @@ export const FADE_IN_TRANSITIONS = {
 // Ask page constants
 export const ASK_INTEGRATIONS = ['Slack', 'Email', 'Asana'];
 
+export const SLACK_RECIPIENT_TYPE = {
+	CHANNEL: 'channel',
+	USER: 'user',
+}
+
 // Navigate page constants
 export const NAVIGATE_TAB_OPTIONS = ['All', 'My Cards', 'Bookmarked'];
 

@@ -32,10 +32,35 @@ import style from './card-create-modal.css';
 import { getStyleApplicationFn } from '../../../utils/styleHelpers';
 const s = getStyleApplicationFn(style);
 
-const CardCreateModal = (props) => {
+@connect(
+  state => ({
+    ...state.cards.activeCard,
+  }),
+  dispatch => bindActionCreators({
+    requestCreateCard,
+    closeCardModal,
+    addCardOwner, removeCardOwner,
+    updateCardTags, removeCardTag,
+    updateCardKeywords,
+    updateCardVerificationInterval, updateCardPermissions, updateCardPermissionGroups
+  }, dispatch)
+)
 
-  const renderOwners = () => {
-    const { edits: { owners=[] }, addCardOwner, removeCardOwner } = props;
+class CardCreateModal extends Component {
+  constructor(props) {
+    super(props);
+
+    this.bottomRef = React.createRef();
+  }
+
+  componentDidUpdate(prevProps) {
+    if (!prevProps.createError && this.props.createError) {
+      this.bottomRef.current.scrollIntoView({ behavior: "smooth", block: "end" });
+    }
+  }
+
+  renderOwners = () => {
+    const { edits: { owners=[] }, addCardOwner, removeCardOwner } = this.props;
     return (
       <CardSection title="Owner(s)">
         <CardUsers
@@ -49,8 +74,8 @@ const CardCreateModal = (props) => {
     );
   }
 
-  const renderTags = () => {
-    const { edits: { tags=[] }, updateCardTags, removeCardTag } = props;
+  renderTags = () => {
+    const { edits: { tags=[] }, updateCardTags, removeCardTag } = this.props;
     return (
       <CardSection className={s("mt-reg")} title="Tags">
         <CardTags
@@ -65,8 +90,8 @@ const CardCreateModal = (props) => {
     )
   }
 
-  const renderKeywords = () => {
-    const { edits: { keywords=[] }, updateCardKeywords } = props;
+  renderKeywords = () => {
+    const { edits: { keywords=[] }, updateCardKeywords } = this.props;
     return (
       <CardSection
         className={s("mt-reg")}
@@ -100,8 +125,8 @@ const CardCreateModal = (props) => {
     );
   }
 
-  const renderAdvanced = () => {
-    const { edits: { verificationInterval={}, permissions={}, permissionGroups=[] }, updateCardVerificationInterval, updateCardPermissions, updateCardPermissionGroups } = props;
+  renderAdvanced = () => {
+    const { edits: { verificationInterval={}, permissions={}, permissionGroups=[] }, updateCardVerificationInterval, updateCardPermissions, updateCardPermissionGroups } = this.props;
     return (
       <CardSection
         className={s("mt-reg")}
@@ -142,8 +167,8 @@ const CardCreateModal = (props) => {
     );
   }
 
-  const render = () => {
-    const { modalOpen, requestCreateCard, closeCardModal, createError, isCreatingCard, edits } = props;
+  render() {
+    const { modalOpen, requestCreateCard, closeCardModal, createError, isCreatingCard, edits } = this.props;
 
     return (
       <Modal
@@ -154,13 +179,14 @@ const CardCreateModal = (props) => {
         bodyClassName={s("rounded-b-lg flex flex-col")}
       >
         <div className={s("flex-grow overflow-auto p-lg")}>
-          { renderOwners() }
-          { renderTags() }
-          { renderKeywords() }
-          { renderAdvanced() }
+          { this.renderOwners() }
+          { this.renderTags() }
+          { this.renderKeywords() }
+          { this.renderAdvanced() }
           { createError &&
             <div className={s("error-text my-sm")}> {createError} </div>
           }
+          <div ref={this.bottomRef} />
         </div>
         <Button
           text="Complete Card"
@@ -176,20 +202,6 @@ const CardCreateModal = (props) => {
       </Modal>
     );    
   }
-
-  return render();
 }
 
-export default connect(
-  state => ({
-    ...state.cards.activeCard,
-  }),
-  dispatch => bindActionCreators({
-    requestCreateCard,
-    closeCardModal,
-    addCardOwner, removeCardOwner,
-    updateCardTags, removeCardTag,
-    updateCardKeywords,
-    updateCardVerificationInterval, updateCardPermissions, updateCardPermissionGroups
-  }, dispatch)
-)(CardCreateModal);
+export default CardCreateModal;
