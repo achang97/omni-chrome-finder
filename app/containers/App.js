@@ -47,28 +47,33 @@ class App extends Component {
       suggestTabVisible: false
     };
   }
+
   componentDidMount() {
     if (this.props.isLoggedIn) {
       this.props.requestGetUser();
-      let url = window.location.href;
-      //code to pop open chrome extension
-      var patt = new RegExp("www.google.com");
-      if (url.match(patt)) {
-        let cardId = url.split("=")[1];
-        this.props.toggleDock();
-        this.props.openCard({ _id: cardId, isEditing: true });
-      }
+      this.openChromeExtension();
     }
-
-
 
     chrome.runtime.onMessage.addListener(this.listener);
     window.addEventListener('load', this.handleFirstPageLoad);
   }
+
   componentWillUnmount() {
     chrome.runtime.onMessage.removeListener(this.listener);
     window.removeEventListener('load', this.handleFirstPageLoad);
   }
+
+  openChromeExtension = () => {
+    // let url = window.location.href;
+    // //code to pop open chrome extension
+    // var patt = new RegExp("www.google.com");
+    // if (url.match(patt)) {
+    //   let cardId = url.split("=")[1];
+    //   this.props.toggleDock();
+    //   this.props.openCard({ _id: cardId, isEditing: true });
+    // }
+  }
+
   getPageText = () => {
     // TODO: Basic version that is website agnostic, simply removes chrome extension code, scripts,
     // and styles from DOM and gets inner text. Future version should look at specific divs (ie. title
@@ -85,20 +90,22 @@ class App extends Component {
     });
     return docCopy.body.innerText;
   };
+
   handleFirstPageLoad = () => {
     this.handleTabUpdate(window.location.href);
   };
+
   handleTabUpdate = (url) => {
     // Placeholder code for AI Suggest, code should be written in another file eventually
     // Case 1: Matches specific email page in Gmail
     if (/https:\/\/mail\.google\.com\/mail\/u\/\d+\/#inbox\/.+/.test(url)) {
       this.setState({ suggestTabVisible: true });
       const text = this.getPageText();
-      console.log(text);
     } else {
       this.setState({ suggestTabVisible: false });
     }
   };
+
   listener = (msg) => {
     const { type, ...restMsg } = msg;
     switch (msg.type) {
@@ -113,6 +120,7 @@ class App extends Component {
       }
     }
   };
+
   render() {
     const {
       dockVisible,

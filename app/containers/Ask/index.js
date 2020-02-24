@@ -22,7 +22,7 @@ import SuggestionPanel from "../../components/suggestions/SuggestionPanel";
 import ScrollContainer from '../../components/common/ScrollContainer';
 import Dropzone from '../../components/common/Dropzone';
 import Dropdown from '../../components/common/Dropdown';
-import RecipientDropdown from "../../components/ask/RecipientDropdown";
+import RecipientDropdownBody from "../../components/ask/RecipientDropdownBody";
 import CardAttachment from "../../components/cards/CardAttachment";
 
 import { colors } from '../../styles/colors';
@@ -66,16 +66,6 @@ const PLACEHOLDER_RECIPIENT_OPTIONS = createSelectOptions([
 class Ask extends Component {
   constructor(props) {
     super(props);
-
-    this.state = {
-      isAttachmentDropdownOpen: false,
-    }
-
-    this.expandedPageRef = React.createRef();
-  }
-
-  componentDidUpdate(prevProps) {
-    console.log(prevProps, this.props);
   }
 
   renderTabHeader = () => {
@@ -169,7 +159,6 @@ class Ask extends Component {
       desktopSharing,
       addAskAttachments, removeAskAttachment, attachments,
     } = this.props;
-    const { isAttachmentDropdownOpen} = this.state;
 
     return (
       <div >
@@ -215,16 +204,20 @@ class Ask extends Component {
               iconLeft={false}
             />
           </Dropzone>
-          <div className={s("ml-xs relative")}>
-            <Button
-              onClick={() => this.setState({ isAttachmentDropdownOpen: !isAttachmentDropdownOpen })}
-              className={s("bg-white py-reg px-sm")}
-              icon={<MdAttachment color={colors.purple.reg} className={s("ask-attachment-icon")} />}
-            />
-            <div className={s("ask-attachment-count")}>
-              {attachments.length}
-            </div>
-            <Dropdown isOpen={isAttachmentDropdownOpen}>
+          <Dropdown
+            className={s("ml-xs")}
+            toggler={
+              <div className={s("relative")}>
+                <Button
+                  className={s("bg-white py-reg px-sm")}
+                  icon={<MdAttachment color={colors.purple.reg} className={s("ask-attachment-icon")} />}
+                />
+                <div className={s("ask-attachment-count")}>
+                  {attachments.length}
+                </div>
+              </div>
+            }
+            body={
               <div className={s("ask-attachment-dropdown")}>
                 { attachments.length === 0 &&
                   <div className={s("text-center")}>
@@ -241,8 +234,8 @@ class Ask extends Component {
                   />
                 ))}
               </div>
-            </Dropdown>
-          </div>
+            }
+          />
         </div>
       </div>
     );
@@ -269,16 +262,56 @@ class Ask extends Component {
     return (
       <div key={id} className={s(`bg-purple-gray-10 ask-recipient ${isDropdownOpen || isDropdownSelectOpen ? 'rounded-t-none' : ''}`)}>
         <span className={s("truncate")}> # {name} </span>
-        <div
-          className={s("ask-recipient-mentions-count button-hover")}
-          onClick={() => updateAskRecipient(index, { isDropdownOpen: true, isDropdownSelectOpen: false })}
-        >
-          {mentions.length}
-        </div>
+        <Dropdown
+          isOpen={isDropdownOpen}
+          onToggle={isDropdownOpen => updateAskRecipient(index, { isDropdownOpen })}
+          isDown={false}
+          isTogglerRelative={false}
+          toggler={
+            <div className={s("ask-recipient-mentions-count button-hover")}>
+              {mentions.length}
+            </div>
+          }
+          body={ 
+            <div className={s("ask-recipient-dropdown")}>
+              { mentions.length === 0 ?
+                <div className={s("text-center text-purple-reg font-normal")}> No current mentions </div> :
+                <div className={s("overflow-auto px-sm text-purple-reg")}>
+                  { mentions.map((mention) => (
+                    <div key={mention.id} className={s("flex justify-between items-center py-xs")}>
+                      <div className={s("min-w-0 truncate font-semibold")}> @{mention.name} </div>
+                      <button onClick={() => onRemoveMention(mention)}>
+                        <MdClose className={s("text-purple-reg")} />
+                      </button>
+                    </div>
+                  ))}
+                </div>
+              }
+            </div>
+          }
+        />
         <div className={s("vertical-separator bg-purple-gray-50")} />
-        <button onClick={() => updateAskRecipient(index, { isDropdownOpen: false, isDropdownSelectOpen: true })}>
-          <IoMdAdd className={s("text-purple-reg mr-xs")} />
-        </button>
+        <Dropdown
+          isOpen={isDropdownSelectOpen}
+          onToggle={isDropdownSelectOpen => updateAskRecipient(index, { isDropdownSelectOpen })}
+          isDown={false}
+          isTogglerRelative={false}
+          toggler={
+            <button>
+              <IoMdAdd className={s("text-purple-reg mr-xs")} />
+            </button>
+          }
+          body={ 
+            <div className={s("ask-recipient-dropdown")}>
+              <RecipientDropdownBody
+                isOpen={isDropdownSelectOpen}
+                mentions={mentions}
+                onAddMention={(newMention) => updateAskRecipient(index, { mentions: _.union(mentions, [newMention]) })}
+                onRemoveMention={(removeMention) => updateAskRecipient(index, { mentions: _.without(mentions, removeMention) })}
+              />
+            </div>
+          }
+        />
         <button onClick={() => removeAskRecipient(index)}>
           <MdClose className={s("text-purple-reg")} />
         </button>
@@ -305,34 +338,12 @@ class Ask extends Component {
             No current recipients
           </div>
         }
-        <ScrollContainer
-          className={s("my-xs flex flex-col flex-1")}
-          scrollContainerClassName={s(`flex-1 flex flex-wrap content-start ${isOverflowing(this.expandedPageRef.current) ? 'ask-recipient-scroll-max' : ''}`)}
-          scrollElementClassName={s("min-w-0")}
-          list={recipients}
-          renderScrollElement={({ type, ...rest }, i) => (type === 'channel' ?
+        <div className={s("my-xs flex flex-wrap content-start")}>
+          { recipients.map(({ type, ...rest }, i) => (type === 'channel' ?
             this.renderChannelRecipient(rest, i) :
             this.renderIndividualRecipient(rest, i)
-          )}
-          renderOverflowElement={({ type, id, name, mentions, isDropdownOpen, isDropdownSelectOpen }, i) => ( type === 'channel' ?
-            <RecipientDropdown
-              name={name}
-              mentions={mentions}
-              isDropdownOpen={isDropdownOpen}
-              isDropdownSelectOpen={isDropdownSelectOpen}
-              onAddMention={(newMention) => updateAskRecipient(i, { mentions: _.union(mentions, [newMention]) })}
-              onRemoveMention={(removeMention) => updateAskRecipient(i, { mentions: _.without(mentions, removeMention) })}
-              onClose={() => updateAskRecipient(i, { isDropdownOpen: false, isDropdownSelectOpen: false })}
-            /> : 
-            null
-          )}
-          position="top"
-          matchDimensions={true}
-          showCondition={({ type, isDropdownOpen, isDropdownSelectOpen }) => (
-            type === 'channel' && (isDropdownOpen || isDropdownSelectOpen)
-          )}
-          marginAdjust={true}
-        />
+          ))}
+        </div>
       </div>
     );    
   }
@@ -385,36 +396,19 @@ class Ask extends Component {
 
     return (
       <div className={s('flex flex-col flex-1 min-h-0 relative')}>
-        <div className={s('flex flex-col flex-1 overflow-y-auto bg-purple-light')} ref={this.expandedPageRef}>
+        <div className={s('flex flex-col flex-1 overflow-y-auto bg-purple-light')}>
           <div className={s("p-lg bg-white")}>
             { this.renderTabHeader() }
             { !user.slack ?
               <div>
                 <a href={url}><img alt="Add to Slack" height="40" width="139" src="https://platform.slack-edge.com/img/add_to_slack.png" srcset="https://platform.slack-edge.com/img/add_to_slack.png 1x, https://platform.slack-edge.com/img/add_to_slack@2x.png 2x" /></a>
-              </div>
-              :
-              <div>
-                { this.renderAskInputs() }
-              </div>
+              </div> :
+              this.renderAskInputs()
             }
           </div>
-          { !user.slack ?
-            <div>
-            </div>
-            :
-            <div>
-              { this.renderRecipientSelection() }
-            </div>
-          }
+          { user.slack && this.renderRecipientSelection() }
         </div>
-        { !user.slack ?
-          <div>
-          </div>
-          :
-          <div>
-            { this.renderFooterButton() }
-          </div>
-        }
+        { user.slack && this.renderFooterButton() }
         {/* Modals */}
         { this.renderResultModal(!!askError, 'Ask Error', askError) }
         { this.renderResultModal(askSuccess, 'Ask Success', 'Successfully sent question!') }

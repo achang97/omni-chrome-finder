@@ -11,7 +11,7 @@ import style from './card-users.css';
 import { getStyleApplicationFn } from '../../../utils/styleHelpers';
 const s = getStyleApplicationFn(style);
 
-const CardUser = ({ className, name, img, size, onClick, onRemoveClick, ...rest }) => {
+const CardUser = ({ className, name, img, size, onClick, onRemoveClick, showName, ...rest }) => {
 	const protectedOnClick = () => {
 		if (onClick) onClick({ img, name });
 	}
@@ -21,7 +21,7 @@ const CardUser = ({ className, name, img, size, onClick, onRemoveClick, ...rest 
 			<CircleButton
 				content={<PlaceholderImg src={img} name={name} className={s(`w-full h-full`)} />}
 				size={size}
-				label={name}
+				label={showName ? name : null}
 				labelClassName={s("card-user-label")}
 				onClick={protectedOnClick}
 			/>
@@ -44,11 +44,13 @@ CardUser.propTypes = {
 	]),
 	onClick: PropTypes.func,
 	onRemoveClick: PropTypes.func,
+	showName: PropTypes.bool,
 }
 
 CardUser.defaultProps = {
 	className: '',
 	size: 'md',
+	showName: true,
 }
 
 export default CardUser;

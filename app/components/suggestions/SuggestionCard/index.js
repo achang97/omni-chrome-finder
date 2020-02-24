@@ -37,13 +37,8 @@ class SuggestionCard extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      dropdownOpen: false,
       showDeleteModal: false,
     }
-  }
-
-  toggleDropdown = () => {
-    this.setState({ dropdownOpen: !this.state.dropdownOpen });
   }
 
   openDeleteModal = () => {
@@ -66,9 +61,11 @@ class SuggestionCard extends Component {
             </span>
             { showMoreMenu &&
               <div className={s("flex-shrink-0 relative")}>
-                <div className={s("cursor-pointer")} onClick={() => this.toggleDropdown()}><MdMoreVert /></div>
-                <Dropdown isOpen={ dropdownOpen }>
-                  <div className={s("navigate-more-dropdown")}>
+                <Dropdown
+                  className={s("ml-xs")}
+                  toggler={ <MdMoreVert /> }
+                  body={
+                    <div className={s("navigate-more-dropdown")}>
                       <Button 
                         text={"Share Card"}
                         className={"shadow-none border-b"}
@@ -78,9 +75,9 @@ class SuggestionCard extends Component {
                         className={"shadow-none"}
                         onClick={() => this.openDeleteModal()}
                       />
-                    
-                  </div>
-                </Dropdown>
+                    </div>
+                  }
+                />
               </div>
             }
           </div>

@@ -160,7 +160,12 @@ class CardContent extends Component {
   }
 
   renderHeader = () => {
-  	const { isEditing, tags, createdAt, attachments, sideDockOpen, openCardSideDock, closeCardSideDock, editorEnabled, descriptionSectionHeight, cardsWidth, addCardAttachments } = this.props;
+  	const {
+      isEditing, tags, createdAt, outOfDateReason,
+      sideDockOpen, openCardSideDock, closeCardSideDock,
+      editorEnabled, descriptionSectionHeight, cardsWidth,
+      attachments, addCardAttachments
+    } = this.props;
     const currAttachments = this.getAttribute('attachments');
 
     return (
@@ -260,6 +265,7 @@ class CardContent extends Component {
               <CardStatus
                 cardStatus={this.props.cardStatus}
                 isActionable
+                outOfDateReason={outOfDateReason}
                 onDropdownOptionClick={this.cardStatusOnClick}
               />
             </div>
@@ -449,7 +455,7 @@ class CardContent extends Component {
 		              className={s("ml-reg text-green-reg bg-green-xlight")}
 		              underline={false}
 			          	icon={<MdCheck className={s("mr-sm")} />} 
-			          	onClick={() => this.updateCardStatus(CARD_STATUS.UP_TO_DATE)}
+			          	onClick={() => openCardModal(MODAL_TYPE.CONFIRM_UP_TO_DATE)}
 			          />
 		      		}
 	          </div>
@@ -505,6 +511,7 @@ class CardContent extends Component {
       requestDeleteCard, deleteError, isDeletingCard, 
       requestUpdateCard, updateError, isUpdatingCard,
       requestMarkUpToDate, requestMarkOutOfDate, isMarkingStatus, markStatusError,
+      outOfDateReasonInput, updateOutOfDateReason,
     } = this.props;
 
     return (
@@ -542,12 +549,14 @@ class CardContent extends Component {
                 type="textarea"
                 className={s("w-full")}
                 placeholder="Please explain why this card is out of date."
+                value={outOfDateReasonInput}
+                onChange={e => updateOutOfDateReason(e.target.value)}
               />
             </div>
           }
           error={markStatusError}
           primaryButtonProps={{
-            text: "Yes",
+            text: "Confirm and send to owner",
             onClick: requestMarkOutOfDate,
             ...this.getModalLoaderProps(isMarkingStatus)
           }}
@@ -558,7 +567,7 @@ class CardContent extends Component {
           description="Are you sure this card is now Up to Date?"
           error={markStatusError}
           primaryButtonProps={{
-            text: "Confirm and send to owner",
+            text: "Yes",
             onClick: requestMarkUpToDate,
             ...this.getModalLoaderProps(isMarkingStatus)
           }}

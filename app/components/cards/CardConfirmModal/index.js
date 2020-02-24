@@ -39,14 +39,14 @@ const CardConfirmModal = ({ isOpen, modalType, useModalType, title, description,
           { showSecondary &&
             <Button 
               color={"transparent"}
-              className={s("flex-grow mr-reg")}
+              className={s("flex-1 mr-reg")}
               underline
               {...secondaryButtonProps}
             /> 
           }
           <Button 
             color={"primary"}
-            className={s(`flex-grow ${showSecondary ? 'ml-reg' : ''}`)}
+            className={s(`flex-1 ${showSecondary ? 'ml-reg' : ''}`)}
             underline
             {...primaryButtonProps}
           />   
