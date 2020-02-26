@@ -3,11 +3,14 @@ import { call, select } from 'redux-saga/effects';
 
 let SERVER_URL;
 if (process.env.NODE_ENV === 'development') {
-  SERVER_URL = 'http://localhost:5000/v1';
+  SERVER_URL = 'http://localhost:8000/v1';
 } else {
   SERVER_URL = 'https://api.eatlateplate.com/v1';
 }
 
+function isValidResponse(response) {
+  return response.status >= 200 && response.status < 300;
+}
 
 //export const SERVER_URL = 'https://api.joinhomemade.com'//'http://localhost:8000'
 export function* doPost(path, data) {
@@ -18,7 +21,7 @@ export function* doPost(path, data) {
 
   try {
     const response = yield call([axios, axios.post], url, data, config)
-    if (response.status !== 200 && response.status !== 201) {
+    if (!isValidResponse(response)) {
       throw { response }
     }
     return response.data
@@ -37,7 +40,7 @@ export function* doPut(path, data) {
 
   try {
     const response = yield call([axios, axios.put], url, data, config)
-    if (response.status !== 200 && response.status !== 201) {
+    if (!isValidResponse(response)) {
       throw { response }
     }
     return response.data
@@ -56,7 +59,7 @@ export function* doGet(path, data) {
 
   try {
     const response = yield call([axios, axios.get], url, { params: { ...data}, ...config });
-    if (response.status !== 200 && response.status !== 201) {
+    if (!isValidResponse(response)) {
       throw { response }
     }
     return response.data
@@ -75,7 +78,7 @@ export function* doDelete(path, data) {
 
   try {
     const response = yield call([axios, axios.delete], url, {...config, data })
-    if (response.status !== 200 && response.status !== 201) {
+    if (!isValidResponse(response)) {
       throw { response }
     }
     return response.data

@@ -76,6 +76,18 @@ export default function auth(state = initialState, action) {
       const { error } = payload;
       return { ...state, isSavingUser: false, userSaveError: error }
     }
+    
+    case types.GET_USER_REQUEST: {
+      return { ...state, isGettingUser: true, getUserError: null };
+    }
+    case types.GET_USER_SUCCESS: {
+      const { user } = payload;
+      return { ...state, isGettingUser: false, user };
+    }
+    case types.GET_USER_ERROR: {
+      const { error } = payload;
+      return { ...state, isGettingUser: false, getUserError: error };
+    }
 
     default:
       return state;

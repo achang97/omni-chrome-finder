@@ -1,10 +1,12 @@
 import React, { Component } from 'react';
 import { Route, Switch, Redirect, withRouter } from 'react-router-dom';
 import Dock from 'react-dock';
-import { CHROME_MESSAGES } from '../utils/constants';
+import { CHROME_MESSAGE } from '../utils/constants';
 import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
 import { toggleDock } from '../actions/display';
+import { requestGetUser } from '../actions/auth';
+import { openCard } from '../actions/cards';
 import Header from '../components/common/Header';
 import Ask from './Ask';
 import Create from './Create';
@@ -20,6 +22,7 @@ const dockPanelStyles = {
   background: 'white',
   borderRadius: '8px 0 0 8px'
 };
+
 @connect(
   state => ({
     dockVisible: state.display.dockVisible,
@@ -29,11 +32,14 @@ const dockPanelStyles = {
   dispatch =>
     bindActionCreators(
       {
-        toggleDock
+        toggleDock,
+        requestGetUser,
+        openCard,
       },
       dispatch
     )
 )
+
 class App extends Component {
   constructor(props) {
     super(props);
@@ -41,14 +47,33 @@ class App extends Component {
       suggestTabVisible: false
     };
   }
+
   componentDidMount() {
+    if (this.props.isLoggedIn) {
+      this.props.requestGetUser();
+      this.openChromeExtension();
+    }
+
     chrome.runtime.onMessage.addListener(this.listener);
     window.addEventListener('load', this.handleFirstPageLoad);
   }
+
   componentWillUnmount() {
     chrome.runtime.onMessage.removeListener(this.listener);
     window.removeEventListener('load', this.handleFirstPageLoad);
   }
+
+  openChromeExtension = () => {
+    // let url = window.location.href;
+    // //code to pop open chrome extension
+    // var patt = new RegExp("www.google.com");
+    // if (url.match(patt)) {
+    //   let cardId = url.split("=")[1];
+    //   this.props.toggleDock();
+    //   this.props.openCard({ _id: cardId, isEditing: true });
+    // }
+  }
+
   getPageText = () => {
     // TODO: Basic version that is website agnostic, simply removes chrome extension code, scripts,
     // and styles from DOM and gets inner text. Future version should look at specific divs (ie. title
@@ -65,34 +90,37 @@ class App extends Component {
     });
     return docCopy.body.innerText;
   };
+
   handleFirstPageLoad = () => {
     this.handleTabUpdate(window.location.href);
   };
+
   handleTabUpdate = (url) => {
     // Placeholder code for AI Suggest, code should be written in another file eventually
     // Case 1: Matches specific email page in Gmail
     if (/https:\/\/mail\.google\.com\/mail\/u\/\d+\/#inbox\/.+/.test(url)) {
       this.setState({ suggestTabVisible: true });
       const text = this.getPageText();
-      console.log(text);
     } else {
       this.setState({ suggestTabVisible: false });
     }
   };
+
   listener = (msg) => {
     const { type, ...restMsg } = msg;
     switch (msg.type) {
-      case CHROME_MESSAGES.TOGGLE: {
+      case CHROME_MESSAGE.TOGGLE: {
         this.props.toggleDock();
         break;
       }
-      case CHROME_MESSAGES.TAB_UPDATE: {
+      case CHROME_MESSAGE.TAB_UPDATE: {
         const { url } = restMsg;
         this.handleTabUpdate(url);
         break;
       }
     }
   };
+
   render() {
     const {
       dockVisible,

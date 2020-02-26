@@ -2,7 +2,7 @@
 export const getStorageName = (name) => `OMNI_EXTENSION_${name}`;
 
 // Messages
-export const CHROME_MESSAGES = {
+export const CHROME_MESSAGE = {
 	TOGGLE: 'TOGGLE',
 	TAB_UPDATE: 'TAB_UPDATE',
 }
@@ -59,10 +59,15 @@ export const CARD_DIMENSIONS = {
 export const MODAL_TYPE = {
 	THREAD: 'THREAD',
 	CREATE: 'CREATE',
+	ERROR_UPDATE: 'ERROR_UPDATE',
+	ERROR_UPDATE_CLOSE: 'ERROR_UPDATE_CLOSE',
+	ERROR_DELETE: 'ERROR_DELETE',
 	CONFIRM_CLOSE: 'CONFIRM_CLOSE',
 	CONFIRM_CLOSE_UNDOCUMENTED: 'CONFIRM_CLOSE_UNDOCUMENTED',
 	CONFIRM_UP_TO_DATE: 'CONFIRM_UP_TO_DATE',
+	CONFIRM_OUT_OF_DATE: 'CONFIRM_OUT_OF_DATE',
 	CONFIRM_UP_TO_DATE_SAVE: 'CONFIRM_UP_TO_DATE_SAVE',
+	CONFIRM_DELETE: 'CONFIRM_DELETE',
 }
 
 export const EDITOR_TYPE = {
@@ -70,7 +75,7 @@ export const EDITOR_TYPE = {
 	ANSWER: 'ANSWER',
 }
 
-export const CARD_STATUS_OPTIONS = {
+export const CARD_STATUS = {
 	UP_TO_DATE: 1,
 	OUT_OF_DATE: 2,
 	NEEDS_VERIFICATION: 3,
@@ -88,19 +93,19 @@ export const VERIFICATION_INTERVAL_OPTIONS = [
 	{ label: '1 Year', value: 5 },
 ]
 
-export const PERMISSION_OPTIONS_MAP = {
+export const PERMISSION_OPTION = {
 	ANYONE: 'ANYONE',
 	JUST_ME: 'JUST_ME',
 	SPECIFIC_GROUPS: 'SPECIFIC_GROUPS',	
 }
 export const PERMISSION_OPTIONS = [
-	{ label: 'Anyone', value: PERMISSION_OPTIONS_MAP.ANYONE },
-	{ label: 'Just Me', value: PERMISSION_OPTIONS_MAP.JUST_ME },
-	{ label: 'Specific Groups', value: PERMISSION_OPTIONS_MAP.SPECIFIC_GROUPS },
+	{ label: 'Anyone', value: PERMISSION_OPTION.ANYONE },
+	{ label: 'Just Me', value: PERMISSION_OPTION.JUST_ME },
+	{ label: 'Specific Groups', value: PERMISSION_OPTION.SPECIFIC_GROUPS },
 ]
 
 // Search types
-export const SEARCH_TYPES = {
+export const SEARCH_TYPE = {
 	POPOUT: 'POPOUT',
 	SIDEBAR: 'SIDEBAR',
 	CARDS: 'CARDS',

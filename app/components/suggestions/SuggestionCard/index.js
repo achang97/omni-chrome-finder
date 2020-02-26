@@ -13,7 +13,7 @@ import Triangle from '../../common/Triangle';
 import Modal from '../../common/Modal';
 
 import _ from 'underscore';
-import { NOOP } from '../../../utils/constants';
+import { NOOP, CARD_STATUS } from '../../../utils/constants';
 
 import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
@@ -37,13 +37,8 @@ class SuggestionCard extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      dropdownOpen: false,
       showDeleteModal: false,
     }
-  }
-
-  toggleDropdown = () => {
-    this.setState({ dropdownOpen: !this.state.dropdownOpen });
   }
 
   openDeleteModal = () => {
@@ -66,9 +61,11 @@ class SuggestionCard extends Component {
             </span>
             { showMoreMenu &&
               <div className={s("flex-shrink-0 relative")}>
-                <div className={s("cursor-pointer")} onClick={() => this.toggleDropdown()}><MdMoreVert /></div>
-                <Dropdown isOpen={ dropdownOpen }>
-                  <div className={s("navigate-more-dropdown")}>
+                <Dropdown
+                  className={s("ml-xs")}
+                  toggler={ <MdMoreVert /> }
+                  body={
+                    <div className={s("navigate-more-dropdown")}>
                       <Button 
                         text={"Share Card"}
                         className={"shadow-none border-b"}
@@ -78,9 +75,9 @@ class SuggestionCard extends Component {
                         className={"shadow-none"}
                         onClick={() => this.openDeleteModal()}
                       />
-                    
-                  </div>
-                </Dropdown>
+                    </div>
+                  }
+                />
               </div>
             }
           </div>
@@ -135,7 +132,7 @@ SuggestionCard.propTypes = {
   question: PropTypes.string.isRequired,
   answer: PropTypes.string.isRequired,
   datePosted: PropTypes.string.isRequired,
-  cardStatus: PropTypes.string.isRequired,
+  cardStatus: PropTypes.oneOf([CARD_STATUS.UP_TO_DATE , CARD_STATUS.OUT_OF_DATE, CARD_STATUS.NEEDS_VERIFICATION, CARD_STATUS.NEEDS_APPROVAL, CARD_STATUS.NOT_DOCUMENTED]),
   className: PropTypes.string,
   showMoreMenu: PropTypes.bool,
 }

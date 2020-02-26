@@ -12,25 +12,25 @@ import { AiFillMinusCircle, AiFillQuestionCircle } from "react-icons/ai";
 
 import * as tasksActions from '../../actions/tasks';
 import style from "./tasks.css";
-import { TASKS_TAB_OPTIONS, CARD_STATUS_OPTIONS, TASKS_SECTIONS, TASKS_TYPES } from '../../utils/constants';
+import { TASKS_TAB_OPTIONS, CARD_STATUS, TASKS_SECTIONS, TASKS_TYPES } from '../../utils/constants';
 
 import { getStyleApplicationFn } from '../../utils/styleHelpers';
 const s = getStyleApplicationFn(style);
 
 const NOTIFICATIONS_PLACEHOLDER = [{
-	cardStatus: CARD_STATUS_OPTIONS.NEEDS_VERIFICATION,
+	cardStatus: CARD_STATUS.NEEDS_VERIFICATION,
 	type: TASKS_TYPES.NEEDS_VERIFICATION,
 	question: "How do I delete a user in this app?",
 	flaggedBy: "John",
 	preview: "You probably build websites and think your shit is special. You think your 13 megabyte parallax-ative home page is going to get you some fucking Awwward banner you can glue to the top corner of your site.",
 }, {
-	cardStatus: CARD_STATUS_OPTIONS.NEEDS_VERIFICATION,
+	cardStatus: CARD_STATUS.NEEDS_VERIFICATION,
 	type: TASKS_TYPES.OUT_OF_DATE,
 	question: "How do I set a new permission group for a select set of users?",
 	flaggedBy: "Jack",
 	preview: "You probably build websites and think your shit is special. You think your 13 megabyte parallax-ative home page is going to get you some fucking Awwward banner you can glue to the top corner of your site.",
 }, {
-	cardStatus: CARD_STATUS_OPTIONS.NEEDS_VERIFICATION,
+	cardStatus: CARD_STATUS.NEEDS_VERIFICATION,
 	type: TASKS_TYPES.UNDOCUMENTED,
 	question: "How do I set a new permission group for a select set of users?",
 	flaggedBy: "Jack",
