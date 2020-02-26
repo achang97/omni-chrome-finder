@@ -155,7 +155,7 @@ export default class Profile extends Component {
                 :
                 <div>
                   <div className={s('text-reg font-semibold mt-xs')}> {user.firstname} {user.lastname}</div>
-                  <div className={s('text-sm text-gray-dark mt-sm')}> {MOCK_USER.bio}</div>
+                  <div className={s('text-sm text-gray-dark mt-sm')}> {user.bio}</div>
                 </div>
               }
             </div>
