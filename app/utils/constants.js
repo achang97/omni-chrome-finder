@@ -39,6 +39,14 @@ export const TASKS_TYPES = {
 	NEEDS_APPROVAL: "Needs Approval",
 };
 
+// Profile Page Constants
+export const PROFILE_SETTING_SECTIONS = {
+	AUTOFIND_PERMISSIONS: "Autofind Permissions",
+	COMMUNICATION_INTEGRATIONS: "Communication Integrations"
+}
+export const AUTOFIND_PERMISSIONS = "Autofind Permissions";
+export const COMMUNICATION_INTEGRATIONS = "Communication Integrations";
+
 // Card page constants
 export const CARD_DIMENSIONS = {
 	MIN_QUESTION_HEIGHT: 180,

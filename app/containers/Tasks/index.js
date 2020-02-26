@@ -1,7 +1,6 @@
 import React, { Component, PropTypes } from 'react';
 import Tabs from '../../components/common/Tabs/Tabs';
 import Tab from '../../components/common/Tabs/Tab';
-import Button from '../../components/common/Button';
 import TaskItem from '../../components/tasks/TaskItem';
 
 import { bindActionCreators } from 'redux';

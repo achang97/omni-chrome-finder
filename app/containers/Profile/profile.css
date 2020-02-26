@@ -1,0 +1,36 @@
+.profile-profile-picture {
+	height: 72px;
+	width: 72px;
+}
+
+.profile-edit-container {
+	height: 25px;
+	width: 25px;
+}
+
+.profile-about-input {
+	border-radius: 0 !important;
+	border: 0 !important;
+	box-shadow: 0 !important;
+	padding: 0 !important;
+	height: 30px !important;
+	border-bottom: 1px solid #211A1D40 !important;
+}
+
+.profile-about-input:focus {
+	box-shadow: none !important;
+}
+
+.profile-edit-photo-icon {
+	bottom: calc(50% - 12.5px) !important;
+	right: calc(50% - 12.5px) !important;
+}
+
+.shadow-light {
+	box-shadow: 0 10px 30px 0 rgba(33,26,29,0.05) !important;
+}
+
+.profile-integration-img-container {
+	height: 32px;
+	width: 32px;
+}

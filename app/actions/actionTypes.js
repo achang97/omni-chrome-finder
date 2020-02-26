@@ -6,6 +6,13 @@ export const LOGIN_SUCCESS = 'LOGIN_SUCCESS';
 export const LOGIN_ERROR = 'LOGIN_ERROR';
 export const SYNC_LOGIN = 'SYNC_LOGIN';
 export const LOGOUT = 'LOGOUT';
+export const CHANGE_FIRSTNAME = 'CHANGE_FIRSTNAME';
+export const CHANGE_LASTNAME = 'CHANGE_LASTNAME';
+export const CHANGE_BIO = 'CHANGE_BIO';
+export const SAVE_USER_REQUEST = 'SAVE_USER_REQUEST';
+export const SAVE_USER_SUCCESS = 'SAVE_USER_SUCCESS';
+export const SAVE_USER_ERROR = 'SAVE_USER_ERROR';
+export const EDIT_USER = 'EDIT_USER';
 
 // Display
 export const EXPAND_DOCK = 'EXPAND_DOCK';
