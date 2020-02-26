@@ -6,7 +6,7 @@ import { getArrayIds, getArrayField } from '../utils/arrayHelpers';
 import { getContentStateFromEditorState } from '../utils/editorHelpers';
 import { toggleUpvotes } from '../utils/cardHelpers';
 import { CARD_STATUS, PERMISSION_OPTION, AUTO_REMIND_VALUE } from '../utils/constants';
-import { GET_CARD_REQUEST, CREATE_CARD_REQUEST, UPDATE_CARD_REQUEST, TOGGLE_UPVOTE_REQUEST, DELETE_CARD_REQUEST, MARK_UP_TO_DATE_REQUEST, MARK_OUT_OF_DATE_REQUEST } from '../actions/actionTypes';
+import { GET_CARD_REQUEST, CREATE_CARD_REQUEST, UPDATE_CARD_REQUEST, TOGGLE_UPVOTE_REQUEST, DELETE_CARD_REQUEST, MARK_UP_TO_DATE_REQUEST, MARK_OUT_OF_DATE_REQUEST, ADD_BOOKMARK_REQUEST, REMOVE_BOOKMARK_REQUEST } from '../actions/actionTypes';
 import { 
   handleGetCardSuccess, handleGetCardError,
   handleCreateCardSuccess, handleCreateCardError,
@@ -15,12 +15,14 @@ import {
   handleToggleUpvoteSuccess, handleToggleUpvoteError,
   handleMarkUpToDateSuccess, handleMarkUpToDateError,
   handleMarkOutOfDateSuccess, handleMarkOutOfDateError,
+  handleAddBookmarkSuccess, handleAddBookmarkError,
+  handleRemoveBookmarkSuccess, handleRemoveBookmarkError,
 } from '../actions/cards';
 
 export default function* watchCardsRequests() {
   let action;
 
-  while (action = yield take([GET_CARD_REQUEST, CREATE_CARD_REQUEST, UPDATE_CARD_REQUEST, TOGGLE_UPVOTE_REQUEST, DELETE_CARD_REQUEST, MARK_UP_TO_DATE_REQUEST, MARK_OUT_OF_DATE_REQUEST])) {
+  while (action = yield take([GET_CARD_REQUEST, CREATE_CARD_REQUEST, UPDATE_CARD_REQUEST, TOGGLE_UPVOTE_REQUEST, DELETE_CARD_REQUEST, MARK_UP_TO_DATE_REQUEST, MARK_OUT_OF_DATE_REQUEST, ADD_BOOKMARK_REQUEST, REMOVE_BOOKMARK_REQUEST])) {
     const { type, payload } = action;
     switch (type) {
       case GET_CARD_REQUEST: {
@@ -49,6 +51,14 @@ export default function* watchCardsRequests() {
       }
       case MARK_OUT_OF_DATE_REQUEST: {
         yield fork(markOutOfDate);
+        break;
+      }
+      case ADD_BOOKMARK_REQUEST: {
+        yield fork(addBookmark, payload);
+        break;
+      }
+      case REMOVE_BOOKMARK_REQUEST: {
+        yield fork(removeBookmark, payload);
         break;
       }
     }
@@ -184,4 +194,25 @@ function* markOutOfDate() {
     yield put(handleMarkOutOfDateError(cardId, data.error));
   }  
 }
+
+function* addBookmark({ cardId }) {
+  try {
+    yield call(doPost, `/cards/${cardId}/bookmark`);
+    yield put(handleAddBookmarkSuccess(cardId));
+  } catch(error) {
+    const { response: { data } } = error;
+    yield put(handleAddBookmarkError(cardId, data.error));
+  }
+}
+
+function* removeBookmark({ cardId }) {
+  try {
+    yield call(doPost, `/cards/${cardId}/bookmark/remove`);
+    yield put(handleRemoveBookmarkSuccess(cardId));
+  } catch(error) {
+    const { response: { data } } = error;
+    yield put(handleRemoveBookmarkError(cardId, data.error));
+  }
+}
+
 

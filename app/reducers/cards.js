@@ -445,6 +445,21 @@ export default function cards(state = initialState, action) {
       return updateCardWithId(id, { isMarkingStatus: false, markStatusError: error });
     }
 
+    case types.ADD_BOOKMARK_REQUEST:
+    case types.REMOVE_BOOKMARK_REQUEST: {
+      return updateActiveCard({ isUpdatingBookmark: true, bookmarkError: null });
+    }
+    case types.ADD_BOOKMARK_SUCCESS:
+    case types.REMOVE_BOOKMARK_SUCCESS: {
+      const { cardId } = payload;
+      return updateCardWithId(cardId, { isUpdatingBookmark: false });
+    }
+    case types.ADD_BOOKMARK_ERROR:
+    case types.REMOVE_BOOKMARK_ERROR: {
+      const { cardId, error } = payload;
+      return updateCardWithId(cardId, { isUpdatingBookmark: false, bookmarkError: error });
+    }
+
     case types.CLOSE_ALL_CARDS: {
       return initialState;
     }

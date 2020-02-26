@@ -1,4 +1,5 @@
 import * as types from '../actions/actionTypes';
+import _ from 'underscore';
 
 const initialState = {
   user: {},
@@ -56,6 +57,17 @@ export default function display(state = initialState, action) {
     case types.SAVE_USER_ERROR: {
       const { error } = payload;
       return { ...state, isSavingUser: false, userSaveError: error }
+    }
+
+    case types.ADD_BOOKMARK_REQUEST:
+    case types.REMOVE_BOOKMARK_ERROR: {
+      const { cardId } = payload;
+      return { ...state, user: { ...state.user, bookmarkIds: _.union(state.user.bookmarks, [cardId]) } };
+    }
+    case types.REMOVE_BOOKMARK_REQUEST:
+    case types.ADD_BOOKMARK_ERROR: {
+      const { cardId } = payload;
+      return { ...state, user: { ...state.user, bookmarkIds: _.without(state.user.bookmarks, cardId) } };
     }
 
     default:

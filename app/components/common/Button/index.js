@@ -13,6 +13,7 @@ const getClassNames = (color, underline) => {
 			}
 		case 'secondary':
 		case 'transparent':
+		case 'gold':
 			return {
 				outerClassName: `button-${color}`,
 				innerClassName: underline ? `button-underline-${color}` : ''
@@ -53,7 +54,7 @@ Button.propTypes = {
 	onClick: PropTypes.func,
 	icon: PropTypes.element,
 	iconLeft: PropTypes.bool,
-	color: PropTypes.oneOf(["primary", "secondary", "transparent"]),
+	color: PropTypes.oneOf(["primary", "secondary", "transparent", "gold"]),
 	disabled: PropTypes.bool,
 }
 

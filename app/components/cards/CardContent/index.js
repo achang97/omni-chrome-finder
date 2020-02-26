@@ -38,7 +38,7 @@ const s = getStyleApplicationFn(style);
 
 @connect(
   state => ({
-    ownUserId: state.profile.user._id,
+    user: state.profile.user,
 
     ...state.cards.activeCard,
     cardsHeight: state.cards.cardsHeight,
@@ -409,11 +409,14 @@ class CardContent extends Component {
 
   renderFooter = () => {
   	const {
-      isUpdatingCard, isEditing, cardStatus, openCardModal, question, edits, requestUpdateCard, modalOpen,
-      upvotes, ownUserId, isTogglingUpvote, requestToggleUpvote,
+      isUpdatingCard, isEditing, _id, cardStatus, openCardModal, question, edits, requestUpdateCard, modalOpen,
+      upvotes, user, isTogglingUpvote, requestToggleUpvote,
+      requestAddBookmark, requestRemoveBookmark, isUpdatingBookmark,
     } = this.props;
     
-    const hasUpvoted = upvotes.some(_id => _id === ownUserId);
+    const hasUpvoted = upvotes.some(_id => _id === user._id);
+    const hasBookmarked = user.bookmarkIds.some(bookmarkId => bookmarkId === _id);
+    const bookmarkOnClick = hasBookmarked ? requestRemoveBookmark : requestAddBookmark;
 
   	return (
   		<div className={s("flex-shrink-0 min-h-0")} ref={element => this.footerRef = element}>
@@ -460,16 +463,19 @@ class CardContent extends Component {
 	          <div className={s("flex")}>
 		          <Button 
 		          	text={`Helpful${upvotes.length !== 0 ? ` (${upvotes.length})` : ''}`} 
-		          	icon={<MdThumbUp className={s("mr-sm")} color={hasUpvoted ? 'gold' : ''} />} 
+		          	icon={<MdThumbUp className={s("mr-sm")} />} 
 		          	className={s("mr-reg")}
-		          	color={"secondary"}
+		          	color={hasUpvoted ? 'gold' : 'secondary'}
                 disabled={isTogglingUpvote}
-                onClick={() => requestToggleUpvote(toggleUpvotes(upvotes, ownUserId))}
+                onClick={() => requestToggleUpvote(toggleUpvotes(upvotes, user._id))}
               />
 		          <Button 
 		          	icon={<MdBookmarkBorder />}
 		          	color={"secondary"}
-		          	/>
+                color={hasBookmarked ? 'gold' : 'secondary'}
+                disabled={isUpdatingBookmark}
+                onClick={() => bookmarkOnClick(_id)}
+		          />
 	          </div>
 	        </div> 
 	    	}
