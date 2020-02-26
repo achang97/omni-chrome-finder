@@ -5,7 +5,7 @@ import { CHROME_MESSAGE } from '../utils/constants';
 import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
 import { toggleDock } from '../actions/display';
-import { requestGetUser } from '../actions/auth';
+import { requestGetUser } from '../actions/profile';
 import { openCard } from '../actions/cards';
 import Header from '../components/common/Header';
 import Ask from './Ask';
@@ -27,7 +27,7 @@ const dockPanelStyles = {
   state => ({
     dockVisible: state.display.dockVisible,
     dockExpanded: state.display.dockExpanded,
-    isLoggedIn: state.auth.isLoggedIn,
+    isLoggedIn: !!state.auth.token,
   }),
   dispatch =>
     bindActionCreators(
@@ -64,14 +64,19 @@ class App extends Component {
   }
 
   openChromeExtension = () => {
-    // let url = window.location.href;
-    // //code to pop open chrome extension
-    // var patt = new RegExp("www.google.com");
-    // if (url.match(patt)) {
-    //   let cardId = url.split("=")[1];
-    //   this.props.toggleDock();
-    //   this.props.openCard({ _id: cardId, isEditing: true });
-    // }
+    const url = window.location.href;
+    //code to pop open chrome extension
+    const patt = /https:\/\/www\.google\.com\/webhp\?sxsrf=([A-Za-z0-9]{24})/;
+    const res = url.match(patt);
+
+    if (res) {
+      const cardId = res[1];
+      if (!this.props.dockVisible) {
+        this.props.toggleDock();
+      }
+      this.props.openCard({ _id: cardId, isEditing: true });
+      window.history.replaceState({}, window.location.title, 'https://www.google.com');
+    }
   }
 
   getPageText = () => {

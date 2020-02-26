@@ -2,11 +2,11 @@ import { getEditorStateFromContentState } from './editorHelpers';
 import { EditorState } from 'draft-js';
 import { createSelectOptions } from './selectHelpers';
 import { getArrayIds } from './arrayHelpers';
-import { AUTO_REMIND_VALUE, VERIFICATION_INTERVAL_OPTIONS, PERMISSION_OPTION, PERMISSION_OPTIONS } from './constants';
+import { AUTO_REMIND_VALUE, VERIFICATION_INTERVAL_OPTIONS, PERMISSION_OPTION, PERMISSION_OPTIONS, CARD_STATUS } from './constants';
 import _ from 'underscore';
 
 export function convertCardToFrontendFormat(card) {
-	const { content_state_description, content_state_answer, keywords, autoupdate, update_interval, user_permissions, permission_groups, status, out_of_date_reason, upvotes, /* screenrecording_urls, screenshot_urls, */ ...rest } = card;
+	const { content_state_description, content_state_answer, keywords, autoupdate, update_interval, user_permissions, permission_groups, status, out_of_date_reason, upvotes, slackReplies, /* screenrecording_urls, screenshot_urls, */ ...rest } = card;
 
 	const verificationInterval = VERIFICATION_INTERVAL_OPTIONS.find(option => (
 		option.value === (autoupdate ? AUTO_REMIND_VALUE : update_interval)
@@ -33,10 +33,10 @@ export function convertCardToFrontendFormat(card) {
 		cardStatus: status,
 		outOfDateReason: out_of_date_reason,
 		upvotes: getArrayIds(upvotes),
+		slackReplies: slackReplies.map(reply => ({ ...reply, selected: status !== CARD_STATUS.NOT_DOCUMENTED })),
 		...rest,
 
 		/* TBD */
-		messages: [],
 		attachments: [],
 	}
 }

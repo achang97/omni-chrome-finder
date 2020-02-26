@@ -20,7 +20,7 @@ import { isValidCard } from '../../../utils/cardHelpers';
 import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
 import { 
-  requestCreateCard,
+  requestCreateCard, requestUpdateCard,
   closeCardModal,
   addCardOwner, removeCardOwner,
   updateCardTags, removeCardTag,
@@ -37,7 +37,7 @@ const s = getStyleApplicationFn(style);
     ...state.cards.activeCard,
   }),
   dispatch => bindActionCreators({
-    requestCreateCard,
+    requestCreateCard, requestUpdateCard,
     closeCardModal,
     addCardOwner, removeCardOwner,
     updateCardTags, removeCardTag,
@@ -168,7 +168,13 @@ class CardCreateModal extends Component {
   }
 
   render() {
-    const { modalOpen, requestCreateCard, closeCardModal, createError, isCreatingCard, edits } = this.props;
+    const { modalOpen, requestCreateCard, requestUpdateCard, closeCardModal, createError, isCreatingCard, isUpdatingCard, edits, _id } = this.props;
+
+    const isExistingCard = _id !== undefined;
+    const isLoading = isExistingCard ? isUpdatingCard : isCreatingCard;
+    const onClick = isExistingCard ?
+      () => requestUpdateCard({ isUndocumented: true }) :
+      requestCreateCard;
 
     return (
       <Modal
@@ -190,14 +196,14 @@ class CardCreateModal extends Component {
         </div>
         <Button
           text="Complete Card"
-          onClick={requestCreateCard}
+          onClick={onClick}
           className={s("flex-shrink-0 rounded-t-none")}
           underline
           underlineColor="purple-gray-50"
           color={"primary"}
           iconLeft={false}
-          icon={isCreatingCard ? <Loader className={s("ml-sm")} size="sm" color="white" /> : null}
-          disabled={!isValidCard(edits) || isCreatingCard}
+          icon={isLoading ? <Loader className={s("ml-sm")} size="sm" color="white" /> : null}
+          disabled={!isValidCard(edits) || isLoading}
         />
       </Modal>
     );    

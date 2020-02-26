@@ -18,7 +18,7 @@ const s = getStyleApplicationFn(style);
 @connect(
   state => ({
   	...state.create,
-    user: state.auth.user,
+    user: state.profile.user,
   }),
   dispatch =>
     bindActionCreators(

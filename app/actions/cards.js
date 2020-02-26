@@ -156,8 +156,9 @@ export function handleCreateCardError(id, error) {
 }
 
 
-export function requestUpdateCard(closeCard=false) {
-  return { type: types.UPDATE_CARD_REQUEST, payload: { closeCard } };
+export function requestUpdateCard(payload) {
+  payload = { isUndocumented: false, closeCard: false, ...payload };
+  return { type: types.UPDATE_CARD_REQUEST, payload };
 }
 
 export function handleUpdateCardSuccess(card, closeCard) {

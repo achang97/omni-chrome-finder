@@ -39,8 +39,8 @@ function* askQuestion() {
       })),
       question: questionTitle,
       description: descriptionText,
+      content_state_description: descriptionContentState,
     });
-
     yield put(handleAskQuestionSuccess());
   } catch(error) {
     const { response: { data } } = error;

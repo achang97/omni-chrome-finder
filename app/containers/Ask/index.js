@@ -41,7 +41,7 @@ const s = getStyleApplicationFn(style);
     dockExpanded: state.display.dockExpanded,
     ...state.search[SEARCH_TYPE.POPOUT],
     ...state.ask,
-    user: state.auth.user,
+    user: state.profile.user,
   }),
   dispatch => bindActionCreators({
     expandDock,

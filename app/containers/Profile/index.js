@@ -12,7 +12,7 @@ import { PROFILE_SETTING_SECTIONS, INTEGRATIONS, AUTOFIND_PERMISSIONS } from '..
 import { MdKeyboardArrowDown, MdKeyboardArrowUp } from 'react-icons/md'
 import { IoMdCamera } from "react-icons/io";
 
-import { changeFirstname, changeLastname, changeBio, requestSaveUser, editUser } from '../../actions/auth';
+import { changeFirstname, changeLastname, changeBio, requestSaveUser, editUser } from '../../actions/profile';
 
 import Loader from '../../components/common/Loader';
 import { getStyleApplicationFn } from '../../utils/styleHelpers';
@@ -34,7 +34,7 @@ const MOCK_USER = {
 
 @connect(
   state => ({
-    ...state.auth
+    ...state.profile
   }),
   dispatch =>
     bindActionCreators(

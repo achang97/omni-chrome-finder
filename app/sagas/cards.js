@@ -72,12 +72,12 @@ function* getCard() {
 }
 
 function* getUserId() {
-  const _id = yield select(state => state.auth.user._id);
+  const _id = yield select(state => state.profile.user._id);
   return _id;
 }
 
 function* convertCardToBackendFormat(isNewCard) {
-  const { question, answerEditorState, descriptionEditorState, owners, tags, keywords, verificationInterval, permissions, permissionGroups, cardStatus, /*, attachments, messages */ } = yield select(state => state.cards.activeCard.edits);
+  const { question, answerEditorState, descriptionEditorState, owners, tags, keywords, verificationInterval, permissions, permissionGroups, cardStatus, slackReplies, /*, attachments */ } = yield select(state => state.cards.activeCard.edits);
   const _id = yield call(getUserId);
 
   const { contentState: descriptionContentState, text: descriptionText } = getContentStateFromEditorState(descriptionEditorState);
@@ -102,6 +102,7 @@ function* convertCardToBackendFormat(isNewCard) {
     owners: getArrayIds(owners),
     tags:  getArrayIds(tags),
     keywords: getArrayField(keywords, 'value'),
+    slackReplies: slackReplies.filter(({ selected }) => selected),
     ...verificationInfo,
     ...permissionsInfo,
     status: isNewCard ? CARD_STATUS.UP_TO_DATE : cardStatus,
@@ -121,9 +122,9 @@ function* createCard() {
   }
 }
 
-function* updateCard({ closeCard }) {
+function* updateCard({ isUndocumented, closeCard }) {
   const cardId = yield call(getActiveCardId);
-  const newCardInfo = yield call(convertCardToBackendFormat, false);
+  const newCardInfo = yield call(convertCardToBackendFormat, isUndocumented);
 
   try {
     const card = yield call(doPut, `/cards/${cardId}`, newCardInfo);

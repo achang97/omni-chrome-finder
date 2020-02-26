@@ -6,12 +6,14 @@ export const LOGIN_REQUEST = 'LOGIN_REQUEST';
 export const LOGIN_SUCCESS = 'LOGIN_SUCCESS';
 export const LOGIN_ERROR = 'LOGIN_ERROR';
 
+export const SYNC_LOGIN = 'SYNC_LOGIN';
+export const LOGOUT = 'LOGOUT';
+
+// Profile
 export const GET_USER_REQUEST = 'GET_USER_REQUEST';
 export const GET_USER_SUCCESS = 'GET_USER_SUCCESS';
 export const GET_USER_ERROR = 'GET_USER_ERROR';
 
-export const SYNC_LOGIN = 'SYNC_LOGIN';
-export const LOGOUT = 'LOGOUT';
 export const CHANGE_FIRSTNAME = 'CHANGE_FIRSTNAME';
 export const CHANGE_LASTNAME = 'CHANGE_LASTNAME';
 export const CHANGE_BIO = 'CHANGE_BIO';
@@ -19,6 +21,10 @@ export const SAVE_USER_REQUEST = 'SAVE_USER_REQUEST';
 export const SAVE_USER_SUCCESS = 'SAVE_USER_SUCCESS';
 export const SAVE_USER_ERROR = 'SAVE_USER_ERROR';
 export const EDIT_USER = 'EDIT_USER';
+
+export const TOGGLE_BOOKMARK_REQUEST = 'TOGGLE_BOOKMARK_REQUEST';
+export const TOGGLE_BOOKMARK_SUCCESS = 'TOGGLE_BOOKMARK_SUCCESS';
+export const TOGGLE_BOOKMARK_ERROR = 'TOGGLE_BOOKMARK_ERROR';
 
 // Display
 export const EXPAND_DOCK = 'EXPAND_DOCK';

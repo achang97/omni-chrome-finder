@@ -5,27 +5,6 @@ import { removeIndex, updateIndex } from '../utils/arrayHelpers';
 import { convertCardToFrontendFormat } from '../utils/cardHelpers';
 import { CARD_STATUS, EDITOR_TYPE, CARD_DIMENSIONS, MODAL_TYPE, VERIFICATION_INTERVAL_OPTIONS, PERMISSION_OPTIONS } from '../utils/constants';
 
-const PLACEHOLDER_MESSAGES = [
-  {
-    senderName: 'Chetan Rane',
-    message: 'Savings her pleased are several started females met. Short her not among being any. Thing of judge fruit charm views do. Miles mr an forty along as he. She education get middleton day agreement performed preserved unwilling. Do however as pleased offence outward beloved by present. By outward neither he so covered amiable greater. Juvenile proposal betrayed he an informed weddings followed. Precaution day see imprudence sympathize principles. At full leaf give quit to in they up.',
-    time: 'Today at 3:52 PM',
-    selected: true,
-  },
-  {
-    senderName: 'Andrew Chang',
-    message: 'What up bro how u doin',
-    time: 'Today at 3:52 PM',
-    selected: true,
-  },
-  {
-    senderName: 'Chetan Rane',
-    message: 'Savings her pleased are several started females met. Short her not among being any. Thing of judge fruit charm views do. Miles mr an forty along as he. She education get middleton day agreement performed preserved unwilling. Do however as pleased offence outward beloved by present. By outward neither he so covered amiable greater. Juvenile proposal betrayed he an informed weddings followed. Precaution day see imprudence sympathize principles. At full leaf give quit to in they up.',
-    time: 'Today at 3:52 PM',
-    selected: true,
-  },
-];
-
 const initialState = {
   cards: [],
   cardsWidth: CARD_DIMENSIONS.DEFAULT_CARDS_WIDTH,
@@ -99,11 +78,11 @@ export default function cards(state = initialState, action) {
   }
 
   const createCardEdits = (card) => {
-    const { owners, attachments, tags, keywords, permissions, permissionGroups, verificationInterval, question, answerEditorState, descriptionEditorState, messages } = card;
+    const { owners, attachments, tags, keywords, permissions, permissionGroups, verificationInterval, question, answerEditorState, descriptionEditorState, slackReplies } = card;
     return {
       ...card,
       isEditing: true,
-      edits: { owners, attachments, tags, keywords, permissions, permissionGroups, verificationInterval, question, answerEditorState, descriptionEditorState, messages }
+      edits: { owners, attachments, tags, keywords, permissions, permissionGroups, verificationInterval, question, answerEditorState, descriptionEditorState, slackReplies }
     };
   }
 
@@ -187,7 +166,7 @@ export default function cards(state = initialState, action) {
           permissions: PERMISSION_OPTIONS[0],
           permissionGroups: [],
           upvotes: [],
-          messages: [],
+          slackReplies: [],
           attachments: [],
         });
       } else {
@@ -268,13 +247,13 @@ export default function cards(state = initialState, action) {
       const { messageIndex } = payload;
       const { activeCard } = state;
       
-      const messages = activeCard.edits.messages;
-      const newMessages = updateIndex(messages, messageIndex, { ...messages[messageIndex], selected: !messages[messageIndex].selected });
-      return updateActiveCardEdits({ messages: newMessages });
+      const slackReplies = activeCard.edits.slackReplies;
+      const newSlackReplies = updateIndex(slackReplies, messageIndex, { ...slackReplies[messageIndex], selected: !slackReplies[messageIndex].selected });
+      return updateActiveCardEdits({ slackReplies: newSlackReplies });
     }
     case types.CANCEL_EDIT_CARD_MESSAGES: {
       const { activeCard } = state;
-      return updateActiveCardEdits({ messages: activeCard.messages });
+      return updateActiveCardEdits({ slackReplies: activeCard.slackReplies });
     }
 
     case types.ADD_CARD_ATTACHMENTS: {
@@ -390,7 +369,7 @@ export default function cards(state = initialState, action) {
 
       // Remove card
       if (closeCard && !isOutdated) {
-        return removeCardWithId(id);
+        return removeCardWithId(card._id);
       }
 
       const newInfo = { ...BASE_CARD_STATE, isUpdatingCard: false, ...convertCardToFrontendFormat(card) };
