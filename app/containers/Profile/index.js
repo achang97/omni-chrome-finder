@@ -1,6 +1,7 @@
 import React, { Component, PropTypes } from 'react';
 import Button from '../../components/common/Button';
 import CheckBox from '../../components/common/CheckBox';
+import PlaceholderImg from '../../components/common/PlaceholderImg';
 
 import { logout } from '../../actions/auth';
 import { bindActionCreators } from 'redux';
@@ -20,9 +21,6 @@ const s = getStyleApplicationFn(style);
 
 import { default as SlackIcon } from "../../assets/images/icons/Slack_Mark.svg";
 import { default as GoogleDriveIcon } from "../../assets/images/icons/GoogleDrive_Icon.svg";
-
-const PROFILE_PICTURE_URL = 'https://janecanblogdotcom.files.wordpress.com/2014/09/ashley-square-profile.jpg';
-
 
 const SERVER_URL = 'http://localhost:5000/v1';
 const GOOGLE_AUTH_URL = `${SERVER_URL}/google/authenticate`;
@@ -91,7 +89,7 @@ export default class Profile extends Component {
           :
           <div className={s('flex')}>
             <div className={s('mr-reg relative')}>
-              <img src={PROFILE_PICTURE_URL} className={s(`profile-profile-picture rounded-full ${isEditingAbout ? 'opacity-50' : ''}`)} />
+              <PlaceholderImg name={user.firstname + ' ' + user.lastname} src={user.profilePic}  className={s(`profile-profile-picture rounded-full ${isEditingAbout ? 'opacity-50' : ''}`)}/>
               {
                 isEditingAbout ?
                 <div className={s('absolute profile-edit-photo-icon bg-purple-light rounded-full profile-edit-container flex cursor-pointer')}>
