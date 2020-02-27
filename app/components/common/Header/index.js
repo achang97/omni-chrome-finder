@@ -8,16 +8,16 @@ import { connect } from 'react-redux';
 
 import Tabs from '../Tabs/Tabs';
 import Tab from '../Tabs/Tab';
+import PlaceholderImg from '../PlaceholderImg';
 
 import { colors } from '../../../styles/colors';
 import style from './header.css';
 import { getStyleApplicationFn } from '../../../utils/styleHelpers';
 const s = getStyleApplicationFn(style);
 
-const PROFILE_PICTURE_URL = 'https://janecanblogdotcom.files.wordpress.com/2014/09/ashley-square-profile.jpg';
-
 @connect(
   state => ({
+    user: state.profile.user,
   }),
   dispatch => bindActionCreators({
   }, dispatch)
@@ -33,7 +33,7 @@ class Header extends Component {
   }
 
   render() {
-    const { location: { pathname } } = this.props;
+    const { location: { pathname }, user } = this.props;
 
     return (
       <div className={s('px-sm bg-purple-xlight')}>
@@ -50,7 +50,7 @@ class Header extends Component {
           <Tab label="Cards" key="cards" value="/navigate" />
           <Tab label={<MdNotificationsActive />} key="tasks" value="/tasks" tabContainerClassName={s('ml-auto')} />
           <Tab key="profile" value="/profile" >
-            <img src={PROFILE_PICTURE_URL} className={s('header-profile-picture rounded-full')} />
+            <PlaceholderImg name={user.firstname + ' ' + user.lastname} src={user.img} className={s('header-profile-picture')} />
           </Tab>
         </Tabs>
       </div>

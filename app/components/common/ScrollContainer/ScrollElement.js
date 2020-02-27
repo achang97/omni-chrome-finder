@@ -50,19 +50,20 @@ class HoverableScrollElement extends Component {
 	}
 
 	getMarginAdjustment = () => {
-		const { position, marginAdjust } = this.props;
-
-		if (!marginAdjust) {
-			return { marginTop: 0, marginLeft: 0, marginBottom: 0, marginRight: 0 };
-		}
+		const { position, horizontalMarginAdjust, verticalMarginAdjust } = this.props;
 
 		const { marginTop, marginLeft, marginBottom, marginRight } = window.getComputedStyle(this.elemRef.current.children[0]);
 		return {
-			marginTop: this.getMarginNumber(marginTop),
-			marginLeft: this.getMarginNumber(marginLeft),
-			marginBottom: this.getMarginNumber(marginBottom),
-			marginRight: this.getMarginNumber(marginRight)
+			marginTop: verticalMarginAdjust ? this.getMarginNumber(marginTop) : 0,
+			marginLeft: horizontalMarginAdjust ? this.getMarginNumber(marginLeft) : 0,
+			marginBottom: verticalMarginAdjust ? this.getMarginNumber(marginBottom) : 0,
+			marginRight: horizontalMarginAdjust ? this.getMarginNumber(marginRight) : 0
 		};
+	}
+
+	getPositionAdjustment = () => {
+		const { positionAdjust } = this.props;
+		return { top: 0, left: 0, right: 0, bottom: 0, ...positionAdjust };
 	}
 
 	showOverflowElement = () => {
@@ -73,6 +74,7 @@ class HoverableScrollElement extends Component {
 
 		const { top, bottom, left, right, height, width } = shownElem.getBoundingClientRect();
 		const { top: parentTop, bottom: parentBottom, left: parentLeft, right: parentRight } = this.elemRef.current.offsetParent.getBoundingClientRect();
+		const { top: adjustTop, bottom: adjustBottom, left: adjustLeft, right: adjustRight } = this.getPositionAdjustment();
 
 		// Show element to get proper measurements		
 		overflowElem.style.display = 'block';
@@ -83,23 +85,23 @@ class HoverableScrollElement extends Component {
 
 		switch (position) {
 			case "left": {
-				overflowElem.style.right = `${parentRight - right + width - marginLeft}px`;
-				overflowElem.style.top = `${(top < 0 ? 0 : top - parentTop) + marginTop}px`;
+				overflowElem.style.right = `${parentRight - right + width - marginLeft + adjustRight}px`;
+				overflowElem.style.top = `${(top < parentTop ? 0 : top - parentTop) + marginTop + adjustTop}px`;
 				break;
 			}
 			case "right": {
-				overflowElem.style.left = `${left - parentLeft + width - marginRight}px`;
-				overflowElem.style.top = `${(top < 0 ? 0 : top - parentTop) + marginTop}px`;
+				overflowElem.style.left = `${left - parentLeft + width - marginRight + adjustLeft}px`;
+				overflowElem.style.top = `${(top < parentTop ? 0 : top - parentTop) + marginTop + adjustTop}px`;
 				break;
 			}
 			case "top": {
-				overflowElem.style.right = `${parentRight - right + marginRight}px`;
-				overflowElem.style.bottom = `${parentBottom - bottom + height - marginTop}px`;
+				overflowElem.style.right = `${parentRight - right + marginRight + adjustRight}px`;
+				overflowElem.style.bottom = `${parentBottom - bottom + height - marginTop + adjustBottom}px`;
 				break;				
 			}
 			case "bottom": {
-				overflowElem.style.right = `${parentRight - right + marginRight}px`;
-				overflowElem.style.top = `${top - parentTop + height - marginBottom}px`;
+				overflowElem.style.right = `${parentRight - right + marginRight + adjustRight}px`;
+				overflowElem.style.top = `${top - parentTop + height - marginBottom + adjustTop}px`;
 				break;				
 			}
 		}
@@ -119,7 +121,7 @@ class HoverableScrollElement extends Component {
 	}
 
 	render() {
-		const { scrollElement, scrollElementClassName, overflowElement, marginAdjust, showCondition, matchDimensions, position, ...rest } = this.props;
+		const { scrollElement, scrollElementClassName, overflowElement, horizontalMarginAdjust, verticalMarginAdjust, showCondition, matchDimensions, position, ...rest } = this.props;
 
 		return (
 			<div
@@ -152,7 +154,14 @@ HoverableScrollElement.propTypes = {
 	]).isRequired,
 	position: PropTypes.oneOf(["top", "left", "bottom", "right"]).isRequired,
 	matchDimensions: PropTypes.bool.isRequired,
-	marginAdjust: PropTypes.bool.isRequired,
+	horizontalMarginAdjust: PropTypes.bool.isRequired,
+	verticalMarginAdjust: PropTypes.bool.isRequired,
+	positionAdjust: PropTypes.shape({
+		top: PropTypes.number,
+		bottom: PropTypes.number,
+		left: PropTypes.number,
+		right: PropTypes.number,
+	})
 }
 
 HoverableScrollElement.defaultProps = {

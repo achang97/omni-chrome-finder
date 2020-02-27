@@ -20,9 +20,11 @@ const SuggestionPreview = ({ _id, question, questionDescription, answer, openCar
         <div className={s("text-lg font-semibold")}>
           { question }
         </div>
-        <div className={s("mt-reg text-xs text-gray-dark font-medium")}>
-          {questionDescription}
-        </div>
+        { questionDescription &&
+          <div className={s("mt-reg text-xs text-gray-dark font-medium")}>
+            {questionDescription}
+          </div>
+        }
       </div>
       <div className={s("bg-white py-xl px-lg text-sm")}>
         {answer}
@@ -42,7 +44,7 @@ const SuggestionPreview = ({ _id, question, questionDescription, answer, openCar
 SuggestionPreview.propTypes = {
   _id: PropTypes.string.isRequired,
   question: PropTypes.string.isRequired,
-  questionDescription: PropTypes.string.isRequired,
+  questionDescription: PropTypes.string,
   answer: PropTypes.string.isRequired,
 }
 

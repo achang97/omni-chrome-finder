@@ -27,7 +27,12 @@ export const SLACK_RECIPIENT_TYPE = {
 }
 
 // Navigate page constants
-export const NAVIGATE_TAB_OPTIONS = ['All', 'My Cards', 'Bookmarked'];
+export const NAVIGATE_TAB_OPTION = {
+	ALL: 'All',
+	MY_CARDS: 'My Cards',
+	BOOKMARKED: 'Bookmarked',
+}
+export const NAVIGATE_TAB_OPTIONS = [NAVIGATE_TAB_OPTION.ALL, NAVIGATE_TAB_OPTION.MY_CARDS, NAVIGATE_TAB_OPTION.BOOKMARKED];
 
 // Tasks page constants
 export const TASKS_TAB_OPTIONS = ['Unresolved', 'Needs Approval'];

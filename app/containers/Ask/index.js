@@ -435,7 +435,7 @@ class Ask extends Component {
 
   debouncedRequestSearch = _.debounce(() => {
     const { requestSearchCards, searchText } = this.props;
-    requestSearchCards(SEARCH_TYPE.POPOUT, searchText);
+    requestSearchCards(SEARCH_TYPE.POPOUT, { q: searchText });
   }, DEBOUNCE_60_HZ)
 
   updateMinifiedAskPageText = (e) => {

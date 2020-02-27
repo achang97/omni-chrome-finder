@@ -9,6 +9,8 @@ if (process.env.NODE_ENV === 'development') {
   SERVER_URL = 'https://api.eatlateplate.com/v1';
 }
 
+exports.SERVER_URL = SERVER_URL;
+
 function isValidResponse(response) {
   return response.status >= 200 && response.status < 300;
 }

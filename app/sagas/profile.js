@@ -37,7 +37,7 @@ function* getUser() {
 
 function* updateUser() {
   try {
-    const { user, userEdits } = yield select(state => state.auth);
+    const { user, userEdits } = yield select(state => state.profile);
     const { userJson } = yield call(doPut, '/users', { user, update: userEdits });
     yield put(handleSaveUserSuccess(userJson));
   } catch(error) {
