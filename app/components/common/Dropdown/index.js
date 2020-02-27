@@ -78,7 +78,7 @@ Dropdown.propTypes = {
 	isDown: PropTypes.bool,
 	isLeft: PropTypes.bool,
 	toggler: PropTypes.element.isRequired,
-	body: PropTypes.element.isRequired,
+	body: PropTypes.element,
 	isOpen: PropTypes.bool,
 	onToggle: PropTypes.func,
 	disabled: PropTypes.bool,

@@ -9,9 +9,9 @@ function setUpAuthSync(store) {
         const oldValueJSON = oldValue ? JSON.parse(oldValue) : oldValue;
         const newValueJSON = newValue ? JSON.parse(newValue) : newValue;
 
-        if (!newValueJSON.isLoggedIn) {
+        if (!newValueJSON.token) {
           store.dispatch({ type: types.LOGOUT });
-        } else if (newValueJSON.isLoggedIn) {
+        } else if (newValueJSON.token) {
           store.dispatch({ type: types.SYNC_LOGIN, payload: newValueJSON });
         }
       }

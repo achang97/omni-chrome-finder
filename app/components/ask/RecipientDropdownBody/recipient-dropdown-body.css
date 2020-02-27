@@ -1,5 +1,5 @@
-.recipient-dropdown-select {
-	height: 150px;
+.recipient-dropdown-select-options {
+	@apply overflow-auto my-xs text-purple-reg flex-1;
 }
 
 .recipient-dropdown-input {

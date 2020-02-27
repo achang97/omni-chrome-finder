@@ -7,6 +7,7 @@ import create from './create';
 import navigate from './navigate';
 import tasks from './tasks';
 import search from './search';
+import profile from './profile';
 import { persistStore, persistReducer } from 'redux-persist'
 import { getStorageName } from '../utils/constants';
 import { syncStorage } from 'redux-persist-webextension-storage'
@@ -15,11 +16,18 @@ import { LOGOUT } from '../actions/actionTypes';
 const authPersistConfig = {
   key: getStorageName('auth'),
   storage: syncStorage,
-  whitelist: ['isLoggedIn', 'refreshToken', 'token', 'user'],
+  whitelist: ['refreshToken', 'token'],
+}
+
+const profilePersistConfig = {
+  key: getStorageName('profile'),
+  storage: syncStorage,
+  whitelist: ['user'],
 }
 
 const appReducer = combineReducers({
   auth: persistReducer(authPersistConfig, auth),
+  profile: persistReducer(profilePersistConfig, profile),
   display,
   cards,
   ask,
@@ -31,11 +39,15 @@ const appReducer = combineReducers({
 
 const rootReducer = (state, action) => {
   if (action.type === LOGOUT) {
-    // REMOVE EVERYTHING
+    // Remove all persist information
     syncStorage.removeItem(`persist:${getStorageName('auth')}`);
+    syncStorage.removeItem(`persist:${getStorageName('profile')}`);
+
+    // Dispatch action to sync logout across tabs
     chrome.storage.sync.set({
-      [getStorageName('auth')]: JSON.stringify({ user: {}, token: null, refreshToken: null, isLoggedIn: false })
+      [getStorageName('auth')]: JSON.stringify({ user: {}, token: null, refreshToken: null })
     });
+
     state = undefined;
   }
   return appReducer(state, action);

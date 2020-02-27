@@ -120,7 +120,7 @@ class CardTags extends Component {
 	}
 
 	render() {
-		const { className, tags, tagOptions, isSearchingTags, onChange, onTagClick, onRemoveClick, maxWidth, isEditable, showPlaceholder } = this.props;
+		const { className, tags, tagOptions, isSearchingTags, onChange, onTagClick, onRemoveClick, maxWidth, isEditable, showPlaceholder, hideSelectOnBlur } = this.props;
 		const { firstHiddenIndex } = this.state;
 		const containerStyle = this.getContainerStyle();
 
@@ -142,6 +142,7 @@ class CardTags extends Component {
 			            menuShouldScrollIntoView
 			            isClearable={false}
 			            placeholder={"Add tags..."}
+			            onBlur={hideSelectOnBlur ? () => this.setState({ showSelect: false }) : NOOP}
 			            getOptionLabel={option => option.name}
 			            getOptionValue={option => option._id}
 			            formatOptionLabel={this.renderOptionLabel}
@@ -187,6 +188,7 @@ CardTags.propTypes = {
 	onRemoveClick: PropTypes.func,
 	showPlaceholder: PropTypes.bool,
 	showSelect: PropTypes.bool,
+	hideSelectOnBlur: PropTypes.bool,
 }
 
 CardTags.defaultProps = {
@@ -194,6 +196,7 @@ CardTags.defaultProps = {
 	size: 'md',
 	showPlaceholder: false,
 	showSelect: false,
+	hideSelectOnBlur: false,
 }
 
 export default CardTags;

@@ -156,8 +156,9 @@ export function handleCreateCardError(id, error) {
 }
 
 
-export function requestUpdateCard(closeCard=false) {
-  return { type: types.UPDATE_CARD_REQUEST, payload: { closeCard } };
+export function requestUpdateCard(payload) {
+  payload = { isUndocumented: false, closeCard: false, ...payload };
+  return { type: types.UPDATE_CARD_REQUEST, payload };
 }
 
 export function handleUpdateCardSuccess(card, closeCard) {
@@ -219,3 +220,31 @@ export function handleMarkOutOfDateSuccess(card) {
 export function handleMarkOutOfDateError(id, error) {
   return { type: types.MARK_OUT_OF_DATE_ERROR, payload: { id, error } };
 }
+
+
+
+export function requestAddBookmark(cardId) {
+  return { type: types.ADD_BOOKMARK_REQUEST, payload: { cardId } };
+}
+
+export function handleAddBookmarkSuccess(cardId) {
+  return { type: types.ADD_BOOKMARK_SUCCESS, payload: { cardId } };
+}
+
+export function handleAddBookmarkError(cardId, error) {
+  return { type: types.ADD_BOOKMARK_ERROR, payload: { cardId, error } };
+}
+
+
+export function requestRemoveBookmark(cardId) {
+  return { type: types.REMOVE_BOOKMARK_REQUEST, payload: { cardId } };
+}
+
+export function handleRemoveBookmarkSuccess(cardId) {
+  return { type: types.REMOVE_BOOKMARK_SUCCESS, payload: { cardId } };
+}
+
+export function handleRemoveBookmarkError(cardId, error) {
+  return { type: types.REMOVE_BOOKMARK_ERROR, payload: { cardId, error } };
+}
+

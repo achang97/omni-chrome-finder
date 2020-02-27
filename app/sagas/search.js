@@ -39,7 +39,7 @@ function* searchCards({ type, query }) {
   try {
     let cards = [];
     if (query !== '') {
-      cards = yield call(doGet, '/cards/query', { q: query });
+      cards = yield call(doGet, '/cards/query', query);
     }
     yield put(handleSearchCardsSuccess(type, cards));
   } catch(error) {

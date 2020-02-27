@@ -3,6 +3,7 @@ import watchAuthRequests from './auth';
 import watchSearchRequests from './search';
 import watchAskRequests from './ask';
 import watchCardsRequests from './cards';
+import watchProfileRequests from './profile';
 
 export default function* rootSaga(dispatch, getState) {
   yield all([
@@ -10,5 +11,6 @@ export default function* rootSaga(dispatch, getState) {
     watchSearchRequests(),
     watchAskRequests(),
     watchCardsRequests(),
+    watchProfileRequests()
   ]);
 }

@@ -20,7 +20,7 @@ import { isValidCard } from '../../../utils/cardHelpers';
 import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
 import { 
-  requestCreateCard,
+  requestCreateCard, requestUpdateCard,
   closeCardModal,
   addCardOwner, removeCardOwner,
   updateCardTags, removeCardTag,
@@ -32,10 +32,35 @@ import style from './card-create-modal.css';
 import { getStyleApplicationFn } from '../../../utils/styleHelpers';
 const s = getStyleApplicationFn(style);
 
-const CardCreateModal = (props) => {
+@connect(
+  state => ({
+    ...state.cards.activeCard,
+  }),
+  dispatch => bindActionCreators({
+    requestCreateCard, requestUpdateCard,
+    closeCardModal,
+    addCardOwner, removeCardOwner,
+    updateCardTags, removeCardTag,
+    updateCardKeywords,
+    updateCardVerificationInterval, updateCardPermissions, updateCardPermissionGroups
+  }, dispatch)
+)
 
-  const renderOwners = () => {
-    const { edits: { owners=[] }, addCardOwner, removeCardOwner } = props;
+class CardCreateModal extends Component {
+  constructor(props) {
+    super(props);
+
+    this.bottomRef = React.createRef();
+  }
+
+  componentDidUpdate(prevProps) {
+    if (!prevProps.createError && this.props.createError) {
+      this.bottomRef.current.scrollIntoView({ behavior: "smooth", block: "end" });
+    }
+  }
+
+  renderOwners = () => {
+    const { edits: { owners=[] }, addCardOwner, removeCardOwner } = this.props;
     return (
       <CardSection title="Owner(s)">
         <CardUsers
@@ -49,8 +74,8 @@ const CardCreateModal = (props) => {
     );
   }
 
-  const renderTags = () => {
-    const { edits: { tags=[] }, updateCardTags, removeCardTag } = props;
+  renderTags = () => {
+    const { edits: { tags=[] }, updateCardTags, removeCardTag } = this.props;
     return (
       <CardSection className={s("mt-reg")} title="Tags">
         <CardTags
@@ -65,8 +90,8 @@ const CardCreateModal = (props) => {
     )
   }
 
-  const renderKeywords = () => {
-    const { edits: { keywords=[] }, updateCardKeywords } = props;
+  renderKeywords = () => {
+    const { edits: { keywords=[] }, updateCardKeywords } = this.props;
     return (
       <CardSection
         className={s("mt-reg")}
@@ -100,8 +125,8 @@ const CardCreateModal = (props) => {
     );
   }
 
-  const renderAdvanced = () => {
-    const { edits: { verificationInterval={}, permissions={}, permissionGroups=[] }, updateCardVerificationInterval, updateCardPermissions, updateCardPermissionGroups } = props;
+  renderAdvanced = () => {
+    const { edits: { verificationInterval={}, permissions={}, permissionGroups=[] }, updateCardVerificationInterval, updateCardPermissions, updateCardPermissionGroups } = this.props;
     return (
       <CardSection
         className={s("mt-reg")}
@@ -142,8 +167,14 @@ const CardCreateModal = (props) => {
     );
   }
 
-  const render = () => {
-    const { modalOpen, requestCreateCard, closeCardModal, createError, isCreatingCard, edits } = props;
+  render() {
+    const { modalOpen, requestCreateCard, requestUpdateCard, closeCardModal, createError, isCreatingCard, isUpdatingCard, edits, _id } = this.props;
+
+    const isExistingCard = _id !== undefined;
+    const isLoading = isExistingCard ? isUpdatingCard : isCreatingCard;
+    const onClick = isExistingCard ?
+      () => requestUpdateCard({ isUndocumented: true }) :
+      requestCreateCard;
 
     return (
       <Modal
@@ -154,42 +185,29 @@ const CardCreateModal = (props) => {
         bodyClassName={s("rounded-b-lg flex flex-col")}
       >
         <div className={s("flex-grow overflow-auto p-lg")}>
-          { renderOwners() }
-          { renderTags() }
-          { renderKeywords() }
-          { renderAdvanced() }
+          { this.renderOwners() }
+          { this.renderTags() }
+          { this.renderKeywords() }
+          { this.renderAdvanced() }
           { createError &&
             <div className={s("error-text my-sm")}> {createError} </div>
           }
+          <div ref={this.bottomRef} />
         </div>
         <Button
           text="Complete Card"
-          onClick={requestCreateCard}
+          onClick={onClick}
           className={s("flex-shrink-0 rounded-t-none")}
           underline
           underlineColor="purple-gray-50"
           color={"primary"}
           iconLeft={false}
-          icon={isCreatingCard ? <Loader className={s("ml-sm")} size="sm" color="white" /> : null}
-          disabled={!isValidCard(edits) || isCreatingCard}
+          icon={isLoading ? <Loader className={s("ml-sm")} size="sm" color="white" /> : null}
+          disabled={!isValidCard(edits) || isLoading}
         />
       </Modal>
     );    
   }
-
-  return render();
 }
 
-export default connect(
-  state => ({
-    ...state.cards.activeCard,
-  }),
-  dispatch => bindActionCreators({
-    requestCreateCard,
-    closeCardModal,
-    addCardOwner, removeCardOwner,
-    updateCardTags, removeCardTag,
-    updateCardKeywords,
-    updateCardVerificationInterval, updateCardPermissions, updateCardPermissionGroups
-  }, dispatch)
-)(CardCreateModal);
+export default CardCreateModal;

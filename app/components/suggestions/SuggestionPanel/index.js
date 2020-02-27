@@ -66,7 +66,7 @@ class SuggestionPanel extends Component {
           <div className={s("p-lg my-sm")}>
             <div className={s("flex justify-between items-center mb-lg")}>
               <div className={s("text-purple-reg font-semibold")}> Found in your {source} </div>
-              <MdClose color={colors.purple['gray-50']} onClick={() => this.setState({ showResults: false })} />
+              <MdClose className={s("button-hover")} color={colors.purple['gray-50']} onClick={() => this.setState({ showResults: false })} />
             </div>
             { results.map(({ title }) => (
               <div className={s("suggestion-panel-external-result flex justify-between items-center shadow-sm rounded-lg p-lg mb-sm")}>

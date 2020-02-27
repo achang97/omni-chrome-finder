@@ -1,8 +1,11 @@
 import * as types from './actionTypes';
 
-/* Create behavior */
-export function updateNavigateTab(tabIndex) {
-  return { type: types.UPDATE_NAVIGATE_TAB, payload: { tabIndex } };
+export function updateNavigateSearchText(text) {
+	return { type: types.UPDATE_NAVIGATE_SEARCH_TEXT, payload: { text } }
+}
+
+export function updateNavigateTab(activeTab) {
+  return { type: types.UPDATE_NAVIGATE_TAB, payload: { activeTab } };
 }
 
 export function updateFilterTags(newTags) {

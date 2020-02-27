@@ -1,5 +1,6 @@
 import axios from 'axios'
-import { call, select } from 'redux-saga/effects';
+import { call, select, put } from 'redux-saga/effects';
+import { logout } from '../actions/auth';
 
 let SERVER_URL;
 if (process.env.NODE_ENV === 'development') {
@@ -8,11 +9,12 @@ if (process.env.NODE_ENV === 'development') {
   SERVER_URL = 'https://api.eatlateplate.com/v1';
 }
 
+exports.SERVER_URL = SERVER_URL;
+
 function isValidResponse(response) {
   return response.status >= 200 && response.status < 300;
 }
 
-//export const SERVER_URL = 'https://api.joinhomemade.com'//'http://localhost:8000'
 export function* doPost(path, data) {
   const url = `${SERVER_URL}${path}`
 
@@ -90,11 +92,7 @@ export function* doDelete(path, data) {
 }
 
 export function* checkToken() {
-  const {
-    auth: {
-      token, refreshToken
-    }
-  } = yield select()
+  const { token, refreshToken } = yield select(state => state.auth)
 
   if(!token) return
 
@@ -109,16 +107,12 @@ export function* checkToken() {
     const { data } = yield call([axios, axios.post], url, { refreshToken }, config)
     yield put(updateAuthToken(data.token))
   } else if(timeRemaining <= 0) { // logout!
-    yield put(logoutUser())
+    yield put(logout())
   }
 }
 
 function *getConfig() {
-  const {
-    auth: {
-      token
-    }
-  } = yield select()
+  const token = yield select(state => state.auth.token)
 
   let config = {}
 

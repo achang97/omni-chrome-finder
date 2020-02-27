@@ -70,7 +70,7 @@ class Login extends Component {
             </div>
           }
           { loginError &&
-            <div className={s("error-text mt-reg")}> {loginError} </div>
+            <div className={s("error-text my-reg")}> {loginError} </div>
           }
         </div>
         <div className={s("bg-purple-light p-2xl rounded-lg")}>

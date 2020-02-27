@@ -12,9 +12,11 @@ import { PROFILE_SETTING_SECTIONS, INTEGRATIONS, AUTOFIND_PERMISSIONS } from '..
 import { MdKeyboardArrowDown, MdKeyboardArrowUp } from 'react-icons/md'
 import { IoMdCamera } from "react-icons/io";
 
-import { changeFirstname, changeLastname, changeBio, requestSaveUser, editUser } from '../../actions/auth';
+import { changeFirstname, changeLastname, changeBio, requestSaveUser, editUser, requestGetUser } from '../../actions/profile';
 
 import Loader from '../../components/common/Loader';
+import { SERVER_URL } from '../../utils/request';
+
 import { getStyleApplicationFn } from '../../utils/styleHelpers';
 import style from './profile.css';
 const s = getStyleApplicationFn(style);
@@ -22,7 +24,6 @@ const s = getStyleApplicationFn(style);
 import { default as SlackIcon } from "../../assets/images/icons/Slack_Mark.svg";
 import { default as GoogleDriveIcon } from "../../assets/images/icons/GoogleDrive_Icon.svg";
 
-const SERVER_URL = 'http://localhost:5000/v1';
 const GOOGLE_AUTH_URL = `${SERVER_URL}/google/authenticate`;
 
 const MOCK_USER = {
@@ -34,7 +35,7 @@ const MOCK_USER = {
 
 @connect(
   state => ({
-    ...state.auth
+    ...state.profile
   }),
   dispatch =>
     bindActionCreators(
@@ -44,7 +45,8 @@ const MOCK_USER = {
         changeBio,
         requestSaveUser,
         editUser,
-        logout
+        requestGetUser,
+        logout,
       },
       dispatch
     )
@@ -60,6 +62,10 @@ export default class Profile extends Component {
       },
       isEditingAbout: false,
     }
+  }
+
+  componentDidMount() {
+    this.props.requestGetUser();
   }
 
   openGoogleLogin() {
@@ -89,7 +95,7 @@ export default class Profile extends Component {
           :
           <div className={s('flex')}>
             <div className={s('mr-reg relative')}>
-              <PlaceholderImg name={user.firstname + ' ' + user.lastname} src={user.profilePic}  className={s(`profile-profile-picture rounded-full ${isEditingAbout ? 'opacity-50' : ''}`)}/>
+              <PlaceholderImg name={user.firstname + ' ' + user.lastname} src={user.img}  className={s(`profile-profile-picture rounded-full ${isEditingAbout ? 'opacity-50' : ''}`)}/>
               {
                 isEditingAbout ?
                 <div className={s('absolute profile-edit-photo-icon bg-purple-light rounded-full profile-edit-container flex cursor-pointer')}>

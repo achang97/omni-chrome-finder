@@ -1,9 +1,11 @@
 import * as types from '../actions/actionTypes';
 import { removeIndex } from '../utils/arrayHelpers';
+import { NAVIGATE_TAB_OPTION } from '../utils/constants';
 import _ from 'underscore';
 
 const initialState = {
-  tabIndex: 0,
+  activeTab: NAVIGATE_TAB_OPTION.ALL,
+  searchText: '',
   filterTags: [],
 };
 
@@ -12,8 +14,13 @@ export default function navigate(state = initialState, action) {
 
   switch (type) {
     case types.UPDATE_NAVIGATE_TAB: {
-      const { tabIndex } = payload;
-      return { ...state, tabIndex };
+      const { activeTab } = payload;
+      return { ...state, activeTab };
+    }
+
+    case types.UPDATE_NAVIGATE_SEARCH_TEXT: {
+      const { text } = payload;
+      return { ...state, searchText: text };
     }
 
     case types.UPDATE_FILTER_TAGS: {

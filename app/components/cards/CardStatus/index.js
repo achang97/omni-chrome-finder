@@ -31,6 +31,10 @@ const getDisplayInfo = (cardStatus) => {
 }
 
 const CardStatus = ({ isActionable, cardStatus, className, onDropdownOptionClick, outOfDateReason }) => {
+  if (![CARD_STATUS.UP_TO_DATE, CARD_STATUS.OUT_OF_DATE, CARD_STATUS.NEEDS_VERIFICATION].includes(cardStatus)) {
+    return null;
+  }
+
   const { label, Icon, bgColor, fontColor } = getDisplayInfo(cardStatus);
 
   const dropdownStatus = cardStatus === CARD_STATUS.UP_TO_DATE ? CARD_STATUS.OUT_OF_DATE : CARD_STATUS.UP_TO_DATE;

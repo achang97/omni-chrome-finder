@@ -7,7 +7,7 @@ import style from './scroll-container.css';
 import { getStyleApplicationFn } from '../../../utils/styleHelpers';
 const s = getStyleApplicationFn(style);
 
-const ScrollContainer = ({ list, renderScrollElement, renderOverflowElement, footer, showCondition, marginAdjust, matchDimensions, scrollY, className, scrollContainerClassName, scrollElementClassName, children, position, relative }) => {
+const ScrollContainer = ({ list, renderScrollElement, renderOverflowElement, footer, showCondition, positionAdjust, horizontalMarginAdjust, verticalMarginAdjust, matchDimensions, scrollY, className, scrollContainerClassName, scrollElementClassName, children, position, relative }) => {
 	return (
 		<div className={s(`relative ${className}`)}>
 			<div className={s(`overflow-x-hidden overflow-y-auto ${scrollContainerClassName}`)}>
@@ -20,7 +20,8 @@ const ScrollContainer = ({ list, renderScrollElement, renderOverflowElement, foo
 						position={position}
 						showCondition={showCondition === 'hover' ? 'hover' : showCondition(listElem, i)}
 						matchDimensions={matchDimensions}
-						marginAdjust={marginAdjust}
+						horizontalMarginAdjust={horizontalMarginAdjust}
+						verticalMarginAdjust={verticalMarginAdjust}
 					/>
 				))}
 				{ footer }
@@ -43,7 +44,14 @@ ScrollContainer.propTypes = {
 	footer: PropTypes.element,
 	position: PropTypes.oneOf(["top", "left", "bottom", "right"]),
 	matchDimensions: PropTypes.bool,
-	marginAdjust: PropTypes.bool,
+	horizontalMarginAdjust: PropTypes.bool,
+	verticalMarginAdjust: PropTypes.bool,
+	positionAdjust: PropTypes.shape({
+		top: PropTypes.number,
+		bottom: PropTypes.number,
+		left: PropTypes.number,
+		right: PropTypes.number,
+	})
 }
 
 ScrollContainer.defaultProps = {
@@ -53,7 +61,8 @@ ScrollContainer.defaultProps = {
 	scrollElementClassName: '',
 	position: 'left',
 	matchDimensions: false,
-	marginAdjust: false,
+	horizontalMarginAdjust: false,
+	verticalMarginAdjust: false,
 }
 
 export default ScrollContainer;

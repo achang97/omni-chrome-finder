@@ -38,7 +38,7 @@ const s = getStyleApplicationFn(style);
 
 @connect(
   state => ({
-    ownUserId: state.auth.user._id,
+    user: state.profile.user,
 
     ...state.cards.activeCard,
     cardsHeight: state.cards.cardsHeight,
@@ -308,19 +308,17 @@ class CardContent extends Component {
   }
 
   renderMessageList = () => {
-  	const { isEditing, messages, edits } = this.props;
-    const currMessages = isEditing ? edits.messages : messages;
+  	const { isEditing, slackReplies, edits } = this.props;
+    const currSlackReplies = isEditing ? edits.slackReplies : slackReplies;
   	return (
   		<div className={s("message-manager-container bg-purple-light mx-lg mb-lg rounded-lg flex-grow overflow-auto")}>
-		  	{currMessages.map(({ senderName, time, message, selected }, i) => ((isEditing || selected) &&
-  				<div key={i} className={s(`flex p-reg   ${ i % 2 === 0 ? '' : 'bg-purple-gray-10' } `)}>
-  					<div className={s("message-photo-container rounded-lg bg-purple-reg flex-shrink-0 text-white flex justify-center mr-reg items-center shadow-md")}>
-  						<MdPerson />
-  					</div>
+		  	{currSlackReplies.map(({ id, senderName, senderImageUrl, message, selected }, i) => ((isEditing || selected) &&
+  				<div key={id} className={s(`flex p-reg   ${ i % 2 === 0 ? '' : 'bg-purple-gray-10' } `)}>
+            <img src={senderImageUrl} className={s("message-photo-container rounded-lg flex-shrink-0 flex justify-center mr-reg shadow-md")}/>
   					<div className={s("flex flex-col flex-grow")}> 
   						<div className={s("flex items-end")}>
   							<div className={s("text-sm font-semibold mr-reg")}> { senderName } </div>
-  							<div className={s("text-sm text-gray-dark")}> { time } </div>
+  							{/*<div className={s("text-sm text-gray-dark")}> { time } </div>*/}
   						</div>
   						<div className={s("mt-sm text-sm")}> {message} </div>
   					</div>
@@ -328,7 +326,7 @@ class CardContent extends Component {
   						<CheckBox 
   							isSelected={selected} 
   							toggleCheckbox={() => this.toggleSelectedMessage(i)}
-  							className={s("flex-shrink-0 margin-xs")}
+  							className={s("flex-shrink-0 margin-sm")}
               />
   					}
   				</div>
@@ -338,7 +336,7 @@ class CardContent extends Component {
   }
 
   renderAnswer = () => {
-  	const { isEditing, editorEnabled, selectedMessages, messages } = this.props;
+  	const { isEditing, editorEnabled, selectedMessages, slackReplies } = this.props;
   	return (
   		<div className={s('p-2xl flex-grow min-h-0 flex flex-col min-h-0 relative')}>
         { isEditing ?
@@ -364,7 +362,7 @@ class CardContent extends Component {
 	        			/>
 	        		</div>
 	        	}
-            { messages.length !== 0 &&
+            { slackReplies.length !== 0 &&
               <Button 
                 text={"Manage Message Display"}
                 color={"transparent"}
@@ -386,7 +384,7 @@ class CardContent extends Component {
         		readOnly
       		/>
         }
-        { !isEditing && messages.length !== 0 &&
+        { !isEditing && slackReplies.length !== 0 &&
         	<Button
         		text={"Thread"}
         		onClick={() => this.props.openCardModal(MODAL_TYPE.THREAD)}
@@ -411,11 +409,14 @@ class CardContent extends Component {
 
   renderFooter = () => {
   	const {
-      isUpdatingCard, isEditing, cardStatus, openCardModal, question, edits, requestUpdateCard, modalOpen,
-      upvotes, ownUserId, isTogglingUpvote, requestToggleUpvote,
+      isUpdatingCard, isEditing, _id, cardStatus, openCardModal, question, edits, requestUpdateCard, modalOpen,
+      upvotes, user, isTogglingUpvote, requestToggleUpvote,
+      requestAddBookmark, requestRemoveBookmark, isUpdatingBookmark,
     } = this.props;
     
-    const hasUpvoted = upvotes.some(_id => _id === ownUserId);
+    const hasUpvoted = upvotes.some(_id => _id === user._id);
+    const hasBookmarked = user.bookmarkIds.some(bookmarkId => bookmarkId === _id);
+    const bookmarkOnClick = hasBookmarked ? requestRemoveBookmark : requestAddBookmark;
 
   	return (
   		<div className={s("flex-shrink-0 min-h-0")} ref={element => this.footerRef = element}>
@@ -462,16 +463,19 @@ class CardContent extends Component {
 	          <div className={s("flex")}>
 		          <Button 
 		          	text={`Helpful${upvotes.length !== 0 ? ` (${upvotes.length})` : ''}`} 
-		          	icon={<MdThumbUp className={s("mr-sm")} color={hasUpvoted ? 'gold' : ''} />} 
+		          	icon={<MdThumbUp className={s("mr-sm")} />} 
 		          	className={s("mr-reg")}
-		          	color={"secondary"}
+		          	color={hasUpvoted ? 'gold' : 'secondary'}
                 disabled={isTogglingUpvote}
-                onClick={() => requestToggleUpvote(toggleUpvotes(upvotes, ownUserId))}
+                onClick={() => requestToggleUpvote(toggleUpvotes(upvotes, user._id))}
               />
 		          <Button 
 		          	icon={<MdBookmarkBorder />}
 		          	color={"secondary"}
-		          	/>
+                color={hasBookmarked ? 'gold' : 'secondary'}
+                disabled={isUpdatingBookmark}
+                onClick={() => bookmarkOnClick(_id)}
+		          />
 	          </div>
 	        </div> 
 	    	}
@@ -522,7 +526,7 @@ class CardContent extends Component {
           description="You have unsaved changes on this card. Would you like to save your changes before closing?"
           primaryButtonProps={{
             text: "Save",
-            onClick: () => requestUpdateCard(true),
+            onClick: () => requestUpdateCard({ closeCard: true }),
             ...this.getModalLoaderProps(isUpdatingCard)
           }}
           secondaryButtonProps={{
