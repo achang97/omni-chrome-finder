@@ -2,7 +2,7 @@ import * as types from '../actions/actionTypes';
 import _ from 'underscore';
 import { EditorState } from 'draft-js';
 import { removeIndex, updateIndex } from '../utils/arrayHelpers';
-import { convertCardToFrontendFormat } from '../utils/cardHelpers';
+import { convertCardToFrontendFormat, generateCardId } from '../utils/cardHelpers';
 import { CARD_STATUS, EDITOR_TYPE, CARD_DIMENSIONS, MODAL_TYPE, VERIFICATION_INTERVAL_OPTIONS, PERMISSION_OPTIONS } from '../utils/constants';
 
 const initialState = {
@@ -156,7 +156,7 @@ export default function cards(state = initialState, action) {
       if (isNewCard) {
         cardInfo = createCardEdits({
           ...cardInfo,
-          _id: `new-card-${Math.floor(Math.random() * 10001)}`,
+          _id: generateCardId(),
           cardStatus: CARD_STATUS.NOT_DOCUMENTED,
           modalOpen: { ...cardInfo.modalOpen, [MODAL_TYPE.CREATE]: createModalOpen },
           editorEnabled: { ...cardInfo.editorEnabled, [EDITOR_TYPE.ANSWER]: true },

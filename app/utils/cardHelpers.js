@@ -64,3 +64,11 @@ export function isValidCard(edits) {
         (!!permissions && (permissions.value !== PERMISSION_OPTION.SPECIFIC_GROUPS || permissionGroups.length !== 0))
 	)
 }
+
+export function generateCardId() {
+	return `new-card-${Math.floor(Math.random() * 10001)}`;
+}
+
+export function isExistingCard(id) {
+	return !id.startsWith('new-card-');
+}
