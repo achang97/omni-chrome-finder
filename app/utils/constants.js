@@ -40,12 +40,28 @@ export const TASKS_TYPES = {
 };
 
 // Profile Page Constants
-export const PROFILE_SETTING_SECTIONS = {
-	AUTOFIND_PERMISSIONS: "Autofind Permissions",
-	COMMUNICATION_INTEGRATIONS: "Communication Integrations"
+export const INTEGRATIONS = {
+	GOOGLE: "google",
+	SLACK : "slack",
 }
-export const AUTOFIND_PERMISSIONS = "Autofind Permissions";
-export const COMMUNICATION_INTEGRATIONS = "Communication Integrations";
+export const AUTOFIND_PERMISSIONS = {
+	ZENDESK: "zendesk",
+	HELPSCOUT: "helpscout",
+}
+export const PROFILE_SETTING_SECTIONS = {
+	KNOWLEDGE_BASE_INTEGRATIONS: { 
+		title: "Knowledge Base Integrations",
+		integrations: [INTEGRATIONS.GOOGLE],
+	},
+	COMMUNICATION_INTEGRATIONS: {
+		title: "Communication Integrations",
+		integrations: [INTEGRATIONS.SLACK],
+	},
+	AUTOFIND_PERMISSIONS: {
+		title: "Autofind Permissions",
+		permissions: [ AUTOFIND_PERMISSIONS.ZENDESK, AUTOFIND_PERMISSIONS.HELPSCOUT ],
+	}
+}
 
 // Card page constants
 export const CARD_DIMENSIONS = {

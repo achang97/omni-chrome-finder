@@ -1,12 +1,13 @@
 import React, { Component, PropTypes } from 'react';
 import Button from '../../components/common/Button';
+import CheckBox from '../../components/common/CheckBox';
 
 import { logout } from '../../actions/auth';
 import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
 import { getStorageName } from '../../utils/constants';
 import { MdEdit } from 'react-icons/md'
-import { PROFILE_SETTING_SECTIONS } from '../../utils/constants';
+import { PROFILE_SETTING_SECTIONS, INTEGRATIONS, AUTOFIND_PERMISSIONS } from '../../utils/constants';
 import { MdKeyboardArrowDown, MdKeyboardArrowUp } from 'react-icons/md'
 import { IoMdCamera } from "react-icons/io";
 
@@ -18,7 +19,7 @@ import style from './profile.css';
 const s = getStyleApplicationFn(style);
 
 import { default as SlackIcon } from "../../assets/images/icons/Slack_Mark.svg";
-import { default as GmailIcon } from "../../assets/images/icons/Gmail_Icon.svg";
+import { default as GoogleDriveIcon } from "../../assets/images/icons/GoogleDrive_Icon.svg";
 
 const PROFILE_PICTURE_URL = 'https://janecanblogdotcom.files.wordpress.com/2014/09/ashley-square-profile.jpg';
 
@@ -27,33 +28,10 @@ const SERVER_URL = 'http://localhost:5000/v1';
 const GOOGLE_AUTH_URL = `${SERVER_URL}/google/authenticate`;
 
 const MOCK_USER = {
-  team: "Omni Support",
-  role: "Admin",
-  name: "Chetan Rane",
-  bio: "COO @ Omni",
-  integrations: {
-    SLACK: {
-      isSignedIn: true,
-    },
-    GOOGLE: {
-      isSignedIn: false,
-    }
+  autofindPermissions: {
+    zendesk: true,
+    helpscout: false,
   }
-}
-
-const MOCK_INTEGRATIONS = {
-  SLACK: {
-    logo: SlackIcon,
-    title: "Slack",
-    onSignIn: () => { return },
-    onSignOut: () => { return } ,
-  },
-  GOOGLE: {
-    logo: GmailIcon,
-    title: "Google",
-    onSignIn: () => { return } ,
-    onSignOut: () => { return } ,
-  },
 }
 
 @connect(
@@ -67,7 +45,8 @@ const MOCK_INTEGRATIONS = {
         changeLastname,
         changeBio,
         requestSaveUser,
-        editUser
+        editUser,
+        logout
       },
       dispatch
     )
@@ -78,8 +57,8 @@ export default class Profile extends Component {
     super(props);
     this.state = {
       sectionOpen: {
-        [ PROFILE_SETTING_SECTIONS.AUTOFIND_PERMISSIONS ] : false,
-        [ PROFILE_SETTING_SECTIONS.COMMUNICATION_INTEGRATIONS ]: false,
+        [ PROFILE_SETTING_SECTIONS.KNOWLEDGE_BASE_INTEGRATIONS.title ] : false,
+        [ PROFILE_SETTING_SECTIONS.COMMUNICATION_INTEGRATIONS.title ]: false,
       },
       isEditingAbout: false,
     }
@@ -155,7 +134,7 @@ export default class Profile extends Component {
                 :
                 <div>
                   <div className={s('text-reg font-semibold mt-xs')}> {user.firstname} {user.lastname}</div>
-                  <div className={s('text-sm text-gray-dark mt-sm')}> {MOCK_USER.bio}</div>
+                  <div className={s('text-sm text-gray-dark mt-sm')}> {user.bio}</div>
                 </div>
               }
             </div>
@@ -183,80 +162,151 @@ export default class Profile extends Component {
     )
   }
 
-  renderIntegrationsSection = () => {
-    const { sectionOpen } = this.state;
-    if (sectionOpen[PROFILE_SETTING_SECTIONS.AUTOFIND_PERMISSIONS]) {
-      return (
-        <div className={s("flex flex-col bg-purple-light px-reg pt-xl pb-reg rounded-lg")}>
-          <div className={s("flex items-center mb-reg justify-between")}>
-            <div className={s("text-purple-reg text-sm")}>{PROFILE_SETTING_SECTIONS.AUTOFIND_PERMISSIONS}</div>
-            <MdKeyboardArrowUp className={s("text-gray-dark cursor-pointer")}
-            onClick={() => this.setState({ sectionOpen: { ...sectionOpen, [ PROFILE_SETTING_SECTIONS.AUTOFIND_PERMISSIONS ] : false } })}/>
-          </div>
-          {
-            Object.keys(MOCK_USER.integrations).map((integration, i) => {
-              const { isSignedIn } = MOCK_USER.integrations[integration];
-              const { title, logo, onSignIn, onSignOut } = MOCK_INTEGRATIONS[integration];
-              return (
-                <div className={s(`flex bg-white p-reg justify-between border border-solid border-gray-xlight items-center rounded-lg ${ i > 0 ? 'mt-sm' : '' }`)}>
-                  <div className={s("flex items-center")}>
-                    <div className={s("profile-integration-img-container flex rounded-full border border-solid border-gray-light mr-reg")}> 
-                      <img src={logo} className={s('m-auto')} />
-                    </div>
-                    <div className={s("text-sm ")}> {title} </div>
-                  </div>
-                  {
-                    isSignedIn ?
-                    <Button
-                      text="Sign In"
-                      color="transparent"
-                      className={s("p-reg")}
-                      />
-                    :
-                    <Button
-                      text="Connected"
-                      color="secondary"
-                      className={s("text-green-reg bg-green-xlight p-reg")}
-                      icon={<MdKeyboardArrowDown className={s("ml-reg")} />}
-                      iconLeft={false}
-                      />
-                  }
-                </div>
-              )
-            })
-          }
-        </div>
-      ) 
-    } 
-    else {
-      return (
-        <div className={s("flex items-center border border-solid border-gray-light rounded-lg py-xl px-reg justify-between bg-white cursor-pointer")}
-             onClick={() => this.setState({ sectionOpen: { ...sectionOpen, [ PROFILE_SETTING_SECTIONS.AUTOFIND_PERMISSIONS ] : true } })}>
-          <div className={s("text-purple-reg text-sm")}>{PROFILE_SETTING_SECTIONS.AUTOFIND_PERMISSIONS}</div>
-          <MdKeyboardArrowDown className={s("text-gray-dark")}/>
-        </div>
-      )
+  getIntegrationInfo = (integration) => {
+    switch (integration) {
+      case INTEGRATIONS.GOOGLE:
+        return { title: "Google Drive", logo: GoogleDriveIcon, onSignIn: () => this.openGoogleLogin(), onSignOut: () => { return } }
+      case INTEGRATIONS.SLACK:
+        return { title: "Slack", logo: SlackIcon, onSignIn: () => { return }, onSignOut: () => { return } }
+      default:
+        return {}; 
     }
+  }
+
+  getPermissionInfo = (permission) => {
+    switch (permission) {
+      case AUTOFIND_PERMISSIONS.ZENDESK:
+        return { title: "Zendesk", logo: GoogleDriveIcon, onEnable: () => { return }, onDisable: () => { return } }
+      case AUTOFIND_PERMISSIONS.HELPSCOUT:
+        return { title: "Helpscout", logo: SlackIcon, onEnable: () => { return }, onDisable: () => { return } }
+      default:
+        return {}; 
+    }
+  }
+
+  renderAutofindPermissions = (profileSettingSection) => {
+    const isEnabled = true;
+    return (
+      <div> 
+        {
+          profileSettingSection.permissions.map((permission, i) => {
+            const { title, logo } = this.getPermissionInfo(permission);
+            const isEnabled = MOCK_USER.autofindPermissions[permission];
+            return(
+              <div className={s(`flex bg-white p-reg justify-between border border-solid border-gray-xlight items-center rounded-lg ${ i > 0 ? 'mt-sm' : '' }`)}>
+                <div className={s("flex items-center")}>
+                  <div className={s("profile-integration-img-container flex rounded-full border border-solid border-gray-light mr-reg")}> 
+                    <img src={logo} className={s('m-auto profile-integration-img')} />
+                  </div>
+                  <div className={s("text-sm ")}> {title} </div>
+                </div>
+                <CheckBox 
+                  isSelected={isEnabled} 
+                  toggleCheckbox={() => { return }}
+                  className={s("flex-shrink-0 margin-xs")}
+                  unselectedClassName={s("bg-white")}
+                  selectedClassName={s("bg-purple-reg text-white")}
+                />
+              </div>
+            )
+          })
+        }
+      </div>
+    )
+  }
+
+  renderIntegrations = (profileSettingSection) => {
+    const { user } = this.props;
+    return(
+      <div> 
+        {
+          profileSettingSection.integrations.map((integration, i ) => {
+            const isSignedIn = user.integrations[integration].access_token !== undefined;
+            const { title, logo, onSignIn, onSignOut } = this.getIntegrationInfo(integration);
+            return (
+              <div className={s(`flex bg-white p-reg justify-between border border-solid border-gray-xlight items-center rounded-lg ${ i > 0 ? 'mt-sm' : '' }`)}>
+                <div className={s("flex items-center")}>
+                  <div className={s("profile-integration-img-container flex rounded-full border border-solid border-gray-light mr-reg")}> 
+                    <img src={logo} className={s('m-auto profile-integration-img')} />
+                  </div>
+                  <div className={s("text-sm ")}> {title} </div>
+                </div>
+                {
+                  isSignedIn ?
+                  <Button
+                    text="Connected"
+                    color="secondary"
+                    className={s("text-green-reg bg-green-xlight p-reg")}
+                    icon={<MdKeyboardArrowDown className={s("ml-reg")} />}
+                    iconLeft={false}
+                    />
+                  :
+                  <Button
+                    text="Sign In"
+                    color="transparent"
+                    className={s("p-reg")}
+                    onClick={() => onSignIn()}
+                    />
+                }
+              </div>
+            )
+          })
+        }
+      </div>
+    )
+  }
+
+  renderIntegrationsSection = () => {
+    const { user } = this.props;
+    const { sectionOpen } = this.state;
+    return(
+      <div className={s('flex flex-col overflow-auto flex-grow')}>
+      {
+        Object.values(PROFILE_SETTING_SECTIONS).map((profileSettingSection, j) => {
+          if(sectionOpen[profileSettingSection.title]) {
+            return (
+              <div className={s(`flex flex-col bg-purple-light px-reg pt-xl pb-reg rounded-lg ${ j > 0 ? 'mt-reg' : '' }`)}>
+                <div className={s("flex items-center mb-reg justify-between")}>
+                  <div className={s("text-purple-reg text-sm")}>{profileSettingSection.title}</div>
+                  <MdKeyboardArrowUp className={s("text-gray-dark cursor-pointer")}
+                  onClick={() => this.setState({ sectionOpen: { ...sectionOpen, [ profileSettingSection.title ] : false } })}/>
+                </div>
+                {
+                  profileSettingSection.title === PROFILE_SETTING_SECTIONS.AUTOFIND_PERMISSIONS.title ?
+                  this.renderAutofindPermissions(profileSettingSection)
+                  :
+                  this.renderIntegrations(profileSettingSection)
+                }
+              </div>
+            )
+          } else {
+            return (
+              <div className={s(`flex items-center border border-solid border-gray-light rounded-lg py-xl px-reg justify-between bg-white cursor-pointer ${ j > 0 ? 'mt-reg' : '' }`)}
+                   onClick={() => this.setState({ sectionOpen: { ...sectionOpen, [ profileSettingSection.title ] : true } })}>
+                <div className={s("text-purple-reg text-sm")}>{ profileSettingSection.title }</div>
+                <MdKeyboardArrowDown className={s("text-gray-dark")}/>
+              </div>
+            )
+          }
+        })
+      } 
+      </div>
+    )
   }
 
   render() {
     const { logout, user } = this.props;
     const { sectionOpen } = this.state;
     return (
-      <div className={s('flex flex-col p-lg')}>
+      <div className={s('flex flex-col p-lg min-h-0 flex-grow')}>
         { this.renderAboutSection() }
         { this.renderMetricsSection() }
         <div className={s("horizontal-separator my-reg")} ></div>
         { this.renderIntegrationsSection() }
-        <a
-          target="popup"
-          onClick={this.openGoogleLogin}
-        >CONNECT GOOGLE</a>
-        <Button
-          color="primary"
-          onClick={logout}
-          text="Logout"
-        />
+        <div className={s('flex justify-between')}>
+          <div className={s('text-sm text-gray-dark')}> {user.email} </div>
+          <div className={s('text-sm text-purple-reg underline cursor-pointer')} onClick={() => logout()}> Logout </div>
+        </div>
       </div>
     );
   }
