@@ -34,3 +34,7 @@
 	height: 32px;
 	width: 32px;
 }
+
+.profile-integration-img {
+	max-height: 20px;
+}
