@@ -44,11 +44,11 @@ const s = getStyleApplicationFn(style);
 
 export default class Navigate extends Component {
   updateTab = (newTab) => {
-    const { updateNavigateTab, updateSearchText, updateFilterTags, activeTab } = this.props;
+    const { updateNavigateTab, updateNavigateSearchText, updateFilterTags, activeTab } = this.props;
 
     if (newTab !== activeTab) {
       // Clear search text and tags
-      updateSearchText('');
+      updateNavigateSearchText('');
       updateFilterTags([]);
     }
 

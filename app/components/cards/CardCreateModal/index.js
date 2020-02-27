@@ -15,7 +15,7 @@ import Modal from '../../common/Modal';
 import { MdLock, MdAutorenew } from 'react-icons/md';
 
 import { PERMISSION_OPTION, VERIFICATION_INTERVAL_OPTIONS, CARD_STATUS, MODAL_TYPE, SEARCH_TYPE } from '../../../utils/constants';
-import { isValidCard } from '../../../utils/cardHelpers';
+import { isValidCard, isExistingCard } from '../../../utils/cardHelpers';
 
 import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
@@ -170,9 +170,9 @@ class CardCreateModal extends Component {
   render() {
     const { modalOpen, requestCreateCard, requestUpdateCard, closeCardModal, createError, isCreatingCard, isUpdatingCard, edits, _id } = this.props;
 
-    const isExistingCard = _id !== undefined;
-    const isLoading = isExistingCard ? isUpdatingCard : isCreatingCard;
-    const onClick = isExistingCard ?
+    const isExisting = isExistingCard(_id);
+    const isLoading = isExisting ? isUpdatingCard : isCreatingCard;
+    const onClick = isExisting ?
       () => requestUpdateCard({ isUndocumented: true }) :
       requestCreateCard;
 
