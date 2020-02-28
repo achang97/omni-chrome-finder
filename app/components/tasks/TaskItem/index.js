@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import Button from '../../common/Button';
+import PlaceholderImg from '../../common/PlaceholderImg';
 import { default as SlackIcon } from "../../../assets/images/icons/Slack_Mark.svg";
 
 import { Transition } from 'react-transition-group';
@@ -79,7 +80,7 @@ class TaskItem extends Component {
   }
 
   renderTaskPreview = () => {
-    const { type, preview, owners } = this.props;
+    const { type, preview, owners, reasonOutdated } = this.props;
     switch (type) {
       case TASKS_TYPES.NEEDS_VERIFICATION:
         return (<div className={s("text-xs text-gray-dark mt-reg vertical-ellipsis-2")}>{preview}</div>);
@@ -87,10 +88,10 @@ class TaskItem extends Component {
         return (
           <div className={s("flex mt-reg")}>
             <div className={s("mr-sm mt-reg flex-shrink-0")}>
-              <img src={PROFILE_PICTURE_URL} className={s('task-item-profile-picture rounded-full')} />
+              <PlaceholderImg name={reasonOutdated.sender.firstname + ' ' + reasonOutdated.sender.lastname} src={reasonOutdated.sender.profilePic} className={s('task-item-profile-picture rounded-full')}/>
             </div>
             <div className={s("bg-gray-xlight p-reg rounded-lg w-full vertical-ellipsis-2 text-xs")}>
-              This card was too thicc for me. Make it less thicc
+              {reasonOutdated.reason === '' ? 'No reason specified.' : reasonOutdated.reason}
             </div>
           </div>
         )
@@ -193,10 +194,12 @@ TaskItem.propTypes = {
   secondaryOption: PropTypes.string,
   secondaryAction: PropTypes.func,
   owners: PropTypes.array,
+  reasonOutdated: PropTypes.object,
 };
 
 TaskItem.defaultProps = {
   owners: ["John", "Jack"],
+  reasonOutdated: {}
 
 };
 

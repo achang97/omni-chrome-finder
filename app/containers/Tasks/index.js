@@ -9,7 +9,9 @@ import { colors } from '../../styles/colors';
 import { IoMdAlert } from 'react-icons/io'
 import { MdKeyboardArrowDown, MdKeyboardArrowUp, MdCheck, MdAdd, MdEdit, MdLock } from 'react-icons/md'
 import { AiFillMinusCircle, AiFillQuestionCircle } from "react-icons/ai";
+import Timeago from 'react-timeago';
 
+import { openCard } from '../../actions/cards';
 import * as tasksActions from '../../actions/tasks';
 import style from "./tasks.css";
 import { TASKS_TAB_OPTIONS, CARD_STATUS, TASKS_SECTIONS, TASKS_TYPES } from '../../utils/constants';
@@ -73,6 +75,7 @@ const UNRESOLVED_CARDS_PLACEHOLDER = [{
   bindActionCreators(
     {
       ...tasksActions,
+      openCard,
     },
     dispatch
   )
@@ -87,6 +90,10 @@ export default class Tasks extends Component {
     }
   }  
 
+  componentDidMount() {
+    this.props.requestGetTasks();
+  }
+
   updateTab = (tabIndex) => {
     const { updateTasksTab } = this.props;
     updateTasksTab(tabIndex);
@@ -99,12 +106,13 @@ export default class Tasks extends Component {
   }
 
 
-  getTaskItemInfo = (type) => {
+  getTaskItemInfo = (type, task) => {
+    const { openCard, requestMarkUpToDateFromTasks } = this.props;
     switch (type) {
       case TASKS_TYPES.NEEDS_VERIFICATION:
-        return { primaryOption: "Mark as Up to Date", secondaryOption: "Edit", primaryAction: () => { return }, secondaryAction: () => { return } };
+        return { primaryOption: "Mark as Up to Date", secondaryOption: "Edit", primaryAction: () => { requestMarkUpToDateFromTasks(task.card._id) }, secondaryAction: () => { openCard({ _id: task.card._id, isEditing: true }) } };
       case TASKS_TYPES.OUT_OF_DATE:
-        return { primaryOption: "Edit", secondaryOption: "Mark as Up to Date", primaryAction: () => { return }, secondaryAction: () => { return } };
+        return { primaryOption: "Edit", secondaryOption: "Mark as Up to Date", primaryAction: () => { openCard({ _id: task.card._id, isEditing: true }) }, secondaryAction: () => { requestMarkUpToDateFromTasks(task.card._id) } };
       case TASKS_TYPES.UNDOCUMENTED:
         return { primaryOption: "Create Card", secondaryOption: "Dismiss", primaryAction: () => { return }, secondaryAction: () => { return } };
       case TASKS_TYPES.NEEDS_APPROVAL:
@@ -116,25 +124,30 @@ export default class Tasks extends Component {
 
   renderTasksList = () => {
   	const { sectionOpen } = this.state;
+    const { tasks } = this.props;
   	return (
   		<div className={s("flex flex-col p-reg overflow-auto")}>
   			{
-	  			NOTIFICATIONS_PLACEHOLDER.map((notification, i) => {
-	  				const { primaryOption, primaryAction, secondaryOption, secondaryAction } = this.getTaskItemInfo(notification.type);
-	  				return (
-	  					<TaskItem 
-	  						index={i}
-	  						type={notification.type}
-	  						question={notification.question}
-	  						preview={notification.preview}
-	  						date={"Feb 2"}
-	  						primaryOption={primaryOption}
-	  						primaryAction={primaryAction}
-	  						secondaryOption={secondaryOption}
-	  						secondaryAction={secondaryAction}
-                transitionIn={this.state.transitionIn}
-	  						/>
-	  				);
+	  			tasks.map((task, i) => {
+            if (!task.resolved) { 
+            	const { primaryOption, primaryAction, secondaryOption, secondaryAction } = this.getTaskItemInfo(TASKS_TYPES.OUT_OF_DATE, task);
+  	  				return (
+  	  					<TaskItem 
+  	  						index={i}
+  	  						type={TASKS_TYPES.OUT_OF_DATE}
+  	  						question={task.question}
+  	  						preview={task.card.description}
+  	  						date={<Timeago date={task.createdAt} live={false} />}
+  	  						primaryOption={primaryOption}
+  	  						primaryAction={primaryAction}
+  	  						secondaryOption={secondaryOption}
+  	  						secondaryAction={secondaryAction}
+                  transitionIn={this.state.transitionIn}
+
+                  reasonOutdated={task.card.out_of_date_reason}
+  	  						/>
+  	  				);
+            } else { return(null)}
 	  			})
   			}
   		</div>
@@ -216,6 +229,7 @@ export default class Tasks extends Component {
 
   render() {
   	const { tabIndex } = this.props;
+    console.log(this.props.tasks);
     return (
       <div className={s("flex flex-col min-h-0")}>
           <Tabs

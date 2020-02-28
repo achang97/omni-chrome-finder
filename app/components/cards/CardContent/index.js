@@ -582,7 +582,8 @@ class CardContent extends Component {
           description="This card was originally not labeled as up to date. Would you like to mark it as Up to Date?"
           primaryButtonProps={{
             text: "Yes",
-            onClick: () => this.confirmUpToDateSaveModalPrimary()
+            onClick: requestMarkUpToDate,
+            ...this.getModalLoaderProps(isMarkingStatus)
           }}
         />
         <CardConfirmModal
