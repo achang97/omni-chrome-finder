@@ -6,10 +6,15 @@ import { FiMaximize2 } from "react-icons/fi";
 import { MdAdd } from "react-icons/md";
 import { EditorState } from 'draft-js';
 import TextEditor from '../../components/editors/TextEditor';
+import SuggestionPanel from "../../components/suggestions/SuggestionPanel";
+import _ from 'underscore';
 
 import { openCard } from '../../actions/cards';
+import { requestSearchCards } from '../../actions/search';
 import * as createActions from '../../actions/create';
 import { showDescriptionEditor } from '../../actions/create';
+
+import { DEBOUNCE_60_HZ, SEARCH_TYPE } from '../../utils/constants';
 
 import style from "./create.css";
 import { getStyleApplicationFn } from '../../utils/styleHelpers';
@@ -24,6 +29,7 @@ const s = getStyleApplicationFn(style);
     bindActionCreators(
       {
         openCard,
+        requestSearchCards,
         ...createActions,
       },
       dispatch
@@ -49,17 +55,16 @@ export default class Create extends Component {
     clearCreatePanel();
   }
 
-  updateQuestionValue = (event) => {
-  	this.props.updateCreateQuestion(event.target.value);
-  }
-
   render() {
     const {
       showCreateDescriptionEditor, isDescriptionEditorShown, 
-      question,
+      question, updateCreateQuestion,
       descriptionEditorState, updateCreateDescriptionEditor,
       answerEditorState, updateCreateAnswerEditor,
     } = this.props;
+
+    const showRelatedQuestions = question.length > 0;
+
     return (
       <div className={s('flex flex-col flex-1 min-h-0')}>
         <div className={s("p-lg flex flex-col flex-grow")}>
@@ -78,7 +83,7 @@ export default class Create extends Component {
             	placeholder="Question"
             	className={s("w-full my-xl")}
             	value={question}
-            	onChange={this.updateQuestionValue}
+            	onChange={e => updateCreateQuestion(e.target.value)}
           	/>
           {
           	isDescriptionEditorShown ?
@@ -103,9 +108,7 @@ export default class Create extends Component {
             editorState={answerEditorState} 
             editorType="EXTENSION"
           />
-
         </div>
-
         <Button
 	        className={s('self-stretch justify-between rounded-t-none rounded-br-none rounded-bl-reg text-reg flex-shrink-0')}
 	        onClick={() => this.openCard(true)}
@@ -119,6 +122,10 @@ export default class Create extends Component {
 	          </span>
 	        }
 	      />
+        <SuggestionPanel
+          isVisible={showRelatedQuestions}
+          query={question}
+        />
       </div>
     );
   }

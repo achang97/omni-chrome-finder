@@ -2,6 +2,7 @@ import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import { MdClose } from 'react-icons/md';
 import { FaGoogleDrive } from 'react-icons/fa';
+import _ from 'underscore';
 
 import ScrollContainer from '../../common/ScrollContainer';
 import Loader from '../../common/Loader';
@@ -10,8 +11,12 @@ import SuggestionPreview from '../SuggestionPreview';
 import Button from '../../common/Button';
 import Triangle from '../../common/Triangle';
 
+import { requestSearchCards } from '../../../actions/search';
+import { bindActionCreators } from 'redux';
+import { connect } from 'react-redux';
+
 import { colors } from '../../../styles/colors';
-import { CARD_STATUS } from '../../../utils/constants';
+import { CARD_STATUS, SEARCH_TYPE, SEARCH_INFINITE_SCROLL_OFFSET, DEBOUNCE_60_HZ } from '../../../utils/constants';
 
 import style from './suggestion-panel.css';
 import { getStyleApplicationFn } from '../../../utils/styleHelpers';
@@ -35,27 +40,64 @@ const PLACEHOLDER_RESULTS = [
   }
 ]
 
+@connect(
+  state => ({
+    ...state.search.cards[SEARCH_TYPE.POPOUT],
+  }),
+  dispatch =>
+  bindActionCreators(
+    {
+      requestSearchCards,
+    },
+    dispatch
+  )
+)
+
 class SuggestionPanel extends Component {
   constructor(props) {
     super(props);
 
     this.state = {
-      showResults: false
+      showResults: false,
     }
   }
 
-  renderFooter = () => {
+  componentDidMount() {
+    if (this.props.query !== '') {
+      this.requestSearchCards(true);
+    }
+  }
+
+  componentDidUpdate(prevProps) {
+    if (prevProps.query !== this.props.query) {
+      this.debouncedRequestSearch();
+    }
+  }
+
+  requestSearchCards = (clearCards) => {
+    this.props.requestSearchCards(SEARCH_TYPE.POPOUT, { q: this.props.query }, clearCards);
+  }
+
+  debouncedRequestSearch = _.debounce(() => {
+    const { hasSearched } = this.state;
+    this.requestSearchCards(true);
+  }, DEBOUNCE_60_HZ)
+
+  renderScrollFooter = () => {
+    const { isSearchingCards, showResults } = this.props;
     return (
-      <div className={s("suggestion-panel-footer footer flex-col bg-white justify-center items-center mt-sm")}>
-        <Button
-          text="Show results from your current documentation"
-          underline={true}
-          onClick={() => this.setState({ showResults: true }, () => this.externalResults.scrollIntoView({ behavior: "smooth" }))}
-          color="transparent"
-          className={s("self-stretch rounded-none shadow-none py-lg")}
-        />
+      <div>
+        { isSearchingCards && <Loader size="sm" className={s("my-sm")} /> }
+        { showResults && this.renderExternalDocumentationResults() }
       </div>
-    );
+    )
+  }
+
+  handleOnBottom = () => {
+    const { hasReachedLimit, isSearchingCards } = this.props;
+    if (!hasReachedLimit && !isSearchingCards) {
+      this.requestSearchCards(false);
+    }
   }
 
   renderExternalDocumentationResults = () => {
@@ -82,8 +124,22 @@ class SuggestionPanel extends Component {
     );
   }
 
+  renderFooter = () => {
+    return (
+      <div className={s("suggestion-panel-footer flex-col bg-white justify-center items-center mt-sm")}>
+        <Button
+          text="Show results from your current documentation"
+          underline={true}
+          onClick={() => this.setState({ showResults: true }, () => this.externalResults.scrollIntoView({ behavior: "smooth" }))}
+          color="transparent"
+          className={s("self-stretch rounded-none shadow-none py-lg")}
+        />
+      </div>
+    );
+  }
+
   render() {
-    const { isVisible, cards, isLoading } = this.props;
+    const { isVisible, cards, isSearchingCards } = this.props;
     const { showResults } = this.state;
 
     if (!isVisible) {
@@ -96,7 +152,7 @@ class SuggestionPanel extends Component {
           <div className={s("px-reg text-purple-gray-50 text-sm mb-sm")}>
             {cards.length} result{cards.length !== 1 && 's'}
           </div>
-          { cards.length === 0 && (isLoading ?
+          { cards.length === 0 && (isSearchingCards ?
             <Loader size="md" /> :
             <div className={s("text-gray-light text-sm text-center")}> No results </div>
           )}
@@ -132,8 +188,10 @@ class SuggestionPanel extends Component {
                   />
                 </div>
               )}
-              footer={showResults ? this.renderExternalDocumentationResults() : null}
               position="left"
+              onBottom={this.handleOnBottom}
+              bottomOffset={SEARCH_INFINITE_SCROLL_OFFSET}
+              footer={this.renderScrollFooter()}
             />
           }
           { !showResults && this.renderFooter() }
@@ -153,12 +211,6 @@ class SuggestionPanel extends Component {
 
 SuggestionPanel.propTypes = {
   isVisible: PropTypes.bool.isRequired,
-  cards: PropTypes.array.isRequired,
-  isLoading: PropTypes.bool,
-}
-
-SuggestionPanel.defaultProps = {
-  isLoading: false,
 }
 
 export default SuggestionPanel;

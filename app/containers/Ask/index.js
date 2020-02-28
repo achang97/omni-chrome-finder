@@ -39,7 +39,6 @@ const s = getStyleApplicationFn(style);
 @connect(
   state => ({
     dockExpanded: state.display.dockExpanded,
-    ...state.search[SEARCH_TYPE.POPOUT],
     ...state.ask,
     user: state.profile.user,
   }),
@@ -433,25 +432,14 @@ class Ask extends Component {
     expandDock();
   }
 
-  debouncedRequestSearch = _.debounce(() => {
-    const { requestSearchCards, searchText } = this.props;
-    requestSearchCards(SEARCH_TYPE.POPOUT, { q: searchText });
-  }, DEBOUNCE_60_HZ)
-
-  updateMinifiedAskPageText = (e) => {
-    const { updateAskSearchText } = this.props;
-    updateAskSearchText(e.target.value);
-    this.debouncedRequestSearch();
-  }
-
   renderMinifiedAskPage = () => {
-    const { expandDock, searchText, cards, isSearchingCards } = this.props;
+    const { expandDock, searchText, updateAskSearchText, requestSearchCards } = this.props;
     const showRelatedQuestions = searchText.length > 0;
 
     return (
       <div className={s("p-lg overflow-y-auto")}>
         <input
-          onChange={this.updateMinifiedAskPageText}
+          onChange={e => updateAskSearchText(e.target.value)}
           value={searchText}
           placeholder="Let's find what you're looking for"
           className={s("w-full")}
@@ -471,8 +459,7 @@ class Ask extends Component {
         </div>
         <SuggestionPanel
           isVisible={showRelatedQuestions}
-          cards={cards}
-          isLoading={isSearchingCards}
+          query={searchText}
         />
       </div>
     );

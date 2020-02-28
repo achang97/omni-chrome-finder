@@ -1,12 +1,15 @@
 import React, { Component } from 'react';
 import { Route, Switch, Redirect, withRouter } from 'react-router-dom';
 import Dock from 'react-dock';
-import { CHROME_MESSAGE } from '../utils/constants';
+import { CHROME_MESSAGE, CARD_URL_REGEX } from '../utils/constants';
+import queryString from 'query-string'
+
 import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
 import { toggleDock } from '../actions/display';
 import { requestGetUser } from '../actions/profile';
 import { openCard } from '../actions/cards';
+
 import Header from '../components/common/Header';
 import Ask from './Ask';
 import Create from './Create';
@@ -16,6 +19,7 @@ import Cards from './Cards';
 import Profile from './Profile';
 import Login from './Login';
 import style from './App.css';
+
 import { getStyleApplicationFn } from '../utils/styleHelpers';
 const s = getStyleApplicationFn(style);
 const dockPanelStyles = {
@@ -65,17 +69,18 @@ class App extends Component {
 
   openChromeExtension = () => {
     const url = window.location.href;
-    //code to pop open chrome extension
-    const patt = /https:\/\/www\.google\.com\/webhp\?sxsrf=([A-Za-z0-9]{24})/;
-    const res = url.match(patt);
+    const res = url.match(CARD_URL_REGEX);
 
     if (res) {
-      const cardId = res[1];
+      const { edit, sxsrf } = queryString.parse(window.location.search);
       if (!this.props.dockVisible) {
         this.props.toggleDock();
       }
-      this.props.openCard({ _id: cardId, isEditing: true });
-      window.history.replaceState({}, window.location.title, 'https://www.google.com');
+      this.props.openCard({ _id: sxsrf, isEditing: edit === 'true' });
+
+      // Strip off everything after .com. NOTE: For now, assume we will be on .com website 
+      // (likely will be addomni.com)
+      window.history.replaceState({}, window.location.title, url.substring(0, url.indexOf('.com') + 4));
     }
   }
 

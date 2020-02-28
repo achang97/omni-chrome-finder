@@ -15,3 +15,16 @@ export function updateFilterTags(newTags) {
 export function removeFilterTag(index) {
 	return { type: types.REMOVE_FILTER_TAG, payload: { index } };
 }
+
+
+export function requestDeleteNavigateCard(id) {
+  return { type: types.DELETE_NAVIGATE_CARD_REQUEST, payload: { id } };
+}
+
+export function handleDeleteNavigateCardSuccess(id) {
+  return { type: types.DELETE_NAVIGATE_CARD_SUCCESS, payload: { id } };
+}
+
+export function handleDeleteNavigateCardError(id, error) {
+  return { type: types.DELETE_NAVIGATE_CARD_ERROR, payload: { id, error } };
+}
