@@ -29,6 +29,7 @@ import { colors } from '../../styles/colors';
 import { expandDock } from '../../actions/display';
 import { requestSearchCards } from '../../actions/search';
 import * as askActions from '../../actions/ask';
+import { generateFileKey } from '../../utils/fileHelpers';
 import { ASK_INTEGRATIONS, DEBOUNCE_60_HZ, SEARCH_TYPE, SLACK_RECIPIENT_TYPE } from '../../utils/constants';
 
 import style from "./ask.css";
@@ -108,7 +109,7 @@ class Ask extends Component {
   }
 
   startScreenRecording = () => {
-    const { addAskScreenRecordingChunk, startAskScreenRecording, askScreenRecordingError } = this.props;
+    const { addAskScreenRecordingChunk, startAskScreenRecording, handleAskScreenRecordingError } = this.props;
     navigator.mediaDevices
       .getDisplayMedia({
         audio: false,
@@ -139,29 +140,34 @@ class Ask extends Component {
         startAskScreenRecording(stream, mediaRecorder);
       })
       .catch(error => {
-        askScreenRecordingError(error);
+        handleAskScreenRecordingError(error);
       });
   };
 
   endScreenRecording = () => {
-    const { mediaRecorder, localStream, recordedChunks, screenRecordings, endAskScreenRecording } = this.props;
+    const { mediaRecorder, localStream, recordedChunks, screenRecordings, endAskScreenRecording, requestAddAskAttachment } = this.props;
 
     mediaRecorder.stop();
     localStream.getTracks().forEach(track => track.stop());
-    const recordingBlob = new Blob(recordedChunks, { type: 'video/webm' });
+    endAskScreenRecording();
 
-    const reader = new FileReader();
-    reader.readAsDataURL(recordingBlob);
-    reader.onloadend = () => endAskScreenRecording(reader.result);
+    const recording = new File(recordedChunks, `Screen Record ${new Date()}`, { type: 'video/webm' });
+    requestAddAskAttachment(recording);
   };
 
+  addAskAttachments = (files) => {
+    const { requestAddAskAttachment } = this.props;
+    files.forEach(file => {
+      requestAddAskAttachment(generateFileKey(), file);
+    })
+  }
 
   renderAskInputs = () => {
     const {
       questionTitle, updateAskQuestionTitle,
       questionDescription, updateAskQuestionDescription,
       desktopSharing,
-      addAskAttachments, removeAskAttachment, attachments,
+      requestRemoveAskAttachment, attachments,
     } = this.props;
 
     return (
@@ -195,11 +201,12 @@ class Ask extends Component {
             underlineColor="red-200"
             icon={<FaRegDotCircle className={s("ml-sm text-red-500")} />}
             iconLeft={false}
+            disabled={!navigator.mediaDevices}
           />
           <Dropzone
             className={s("mx-xs flex-1 border border-dashed")}
             style={{ borderColor: colors.gray.light }}
-            onDrop={acceptedFiles => addAskAttachments(acceptedFiles)}
+            onDrop={acceptedFiles => this.addAskAttachments(acceptedFiles)}
           >
             <Button
               className={s("ask-attachment-button bg-white text-purple-reg shadow-none")}
@@ -228,13 +235,16 @@ class Ask extends Component {
                     No current attachments
                   </div>
                 }
-                { attachments.map(({ type, data }, i) => (
+                { attachments.map(({ name, key, location, isLoading, error }, i) => (
                   <CardAttachment
-                    type={type === 'recording' ? 'video' : data.type}
-                    filename={type === 'recording' ? 'Screen Recording' : data.name}
+                    key={key}
+                    fileName={name}
+                    url={location}
+                    isLoading={isLoading}
+                    error={error}
                     textClassName={s("truncate")}
                     removeIconClassName={s("ml-auto")}
-                    onRemoveClick={() => removeAskAttachment(i)}
+                    onRemoveClick={() => requestRemoveAskAttachment(key)}
                   />
                 ))}
               </div>

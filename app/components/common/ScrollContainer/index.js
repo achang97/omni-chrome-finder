@@ -14,7 +14,7 @@ const ScrollContainer = ({ list, renderScrollElement, renderOverflowElement, foo
 			<div className={s(`overflow-x-hidden overflow-y-auto ${scrollContainerClassName}`)} ref={ref}>
 				{ list.map((listElem, i) => (
 					<ScrollElement
-						key={i}
+						key={`scroll-element-${i}`}
 						scrollElement={renderScrollElement(listElem, i)}
 						overflowElement={renderOverflowElement(listElem, i)}
 						scrollElementClassName={scrollElementClassName}

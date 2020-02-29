@@ -36,21 +36,40 @@ export function startAskScreenRecording(stream, mediaRecorder) {
   return { type: types.START_ASK_SCREEN_RECORDING, payload: { stream, mediaRecorder } };
 }
 
-export function endAskScreenRecording(screenRecording) {
-  return { type: types.END_ASK_SCREEN_RECORDING, payload: { screenRecording } };
+export function endAskScreenRecording() {
+  return { type: types.END_ASK_SCREEN_RECORDING, payload: { } };
 }
 
-export function askScreenRecordingError(error) {
+export function handleAskScreenRecordingError(error) {
   return { type: types.ASK_SCREEN_RECORDING_ERROR, payload: { error } }
 }
 
-export function addAskAttachments(attachments) {
-  return { type: types.ADD_ASK_ATTACHMENTS, payload: { attachments } }
+
+export function requestAddAskAttachment(key, file) {
+  return { type: types.ADD_ASK_ATTACHMENT_REQUEST, payload: { key, file } }
 }
 
-export function removeAskAttachment(index) {
-  return { type: types.REMOVE_ASK_ATTACHMENT, payload: { index } }
+export function handleAddAskAttachmentSuccess(key, attachment) {
+  return { type: types.ADD_ASK_ATTACHMENT_SUCCESS, payload: { key, attachment } }
 }
+
+export function handleAddAskAttachmentError(key, error) {
+  return { type: types.ADD_ASK_ATTACHMENT_ERROR, payload: { key, error } }
+}
+
+
+export function requestRemoveAskAttachment(key) {
+  return { type: types.REMOVE_ASK_ATTACHMENT_REQUEST, payload: { key } }
+}
+
+export function handleRemoveAskAttachmentSuccess(key) {
+  return { type: types.REMOVE_ASK_ATTACHMENT_SUCCESS, payload: { key } }
+}
+
+export function handleRemoveAskAttachmentError(key, error) {
+  return { type: types.REMOVE_ASK_ATTACHMENT_ERROR, payload: { key, error } }
+}
+
 
 /* API Requests */
 export function requestGetSlackConversations() {
@@ -64,7 +83,6 @@ export function handleGetSlackConversationsSuccess(conversations) {
 export function handleGetSlackConversationsError(error) {
   return { type: types.GET_SLACK_CONVERSATIONS_ERROR, payload: { error } }
 }
-
 
 
 export function requestAskQuestion() {

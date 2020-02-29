@@ -85,13 +85,16 @@ const CardSideDock = (props) => {
           </div>
         }
         <div className={s("flex flex-wrap")}>
-          { currAttachments.map(({ type, data }, i) => (
+          { currAttachments.map(({ name, key, location, isLoading, error }, i) => (
             <CardAttachment
-              type={type === 'recording' ? 'video' : data.type}
-              filename={type === 'recording' ? 'Screen Recording' : data.name}
+              key={key}
+              fileName={name}
+              url={location}
+              isLoading={isLoading}
+              error={error}
               className={s("min-w-0")}
               textClassName={s("truncate")}
-              onRemoveClick={isEditable ? () => removeCardAttachment(i) : null}
+              onRemoveClick={isEditable ? () => requestRemoveAskAttachment(key) : null}
             />
           ))}
         </div>
