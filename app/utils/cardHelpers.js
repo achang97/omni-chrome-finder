@@ -2,6 +2,7 @@ import { getEditorStateFromContentState } from './editorHelpers';
 import { EditorState } from 'draft-js';
 import { createSelectOptions } from './selectHelpers';
 import { getArrayIds } from './arrayHelpers';
+import { getContentStateFromEditorState } from './editorHelpers';
 import { AUTO_REMIND_VALUE, VERIFICATION_INTERVAL_OPTIONS, PERMISSION_OPTION, PERMISSION_OPTIONS, CARD_STATUS } from './constants';
 import _ from 'underscore';
 
@@ -71,4 +72,24 @@ export function generateCardId() {
 
 export function isExistingCard(id) {
 	return !id.startsWith('new-card-');
+}
+
+export function cardStateChanged(card) {
+	const editAttributes = Object.keys(card.edits);
+
+    if (editAttributes.length === 0) return false;
+
+    let i;
+    for (i = 0; i < editAttributes.length; i++) {
+      const editAttribute = editAttributes[i];
+
+      if (editAttribute === 'answerEditorState' || editAttribute === 'descriptionEditorState') {
+        const hasEditorChanged = getContentStateFromEditorState(card[editAttribute]).contentState !== getContentStateFromEditorState(card.edits[editAttribute]).contentState;
+        if (hasEditorChanged) return true;
+      } else if (JSON.stringify(card[editAttribute]) !== JSON.stringify(card.edits[editAttribute])) {
+        return true;
+      }
+    }
+
+    return false;
 }

@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
-import { MdCheck, MdArrowDropDown, MdMoreHoriz, MdModeEdit, MdThumbUp, MdBookmarkBorder, MdPerson, MdAttachment } from "react-icons/md";
+import { MdCheck, MdArrowDropDown, MdMoreHoriz, MdModeEdit, MdThumbUp, MdBookmarkBorder, MdPerson, MdAttachment, MdKeyboardArrowLeft } from "react-icons/md";
 import Timeago from 'react-timeago';
 import { default as SlackIcon } from "../../../assets/images/icons/Slack_Mark.svg";
 
@@ -24,7 +24,7 @@ import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
 import * as cardActions from '../../../actions/cards';
 
-import { isValidCard, toggleUpvotes } from '../../../utils/cardHelpers';
+import { isValidCard, toggleUpvotes, cardStateChanged } from '../../../utils/cardHelpers';
 import {
   CARD_STATUS,
   CARD_DIMENSIONS,
@@ -159,12 +159,22 @@ class CardContent extends Component {
     }
   }
 
+  cancelEditCard = () => {
+    const { cancelEditCard, openCardModal } = this.props;
+    console.log(this.props);
+    if (cardStateChanged(this.props)) {
+      openCardModal(MODAL_TYPE.CONFIRM_CLOSE_EDIT);
+    } else {
+      cancelEditCard();
+    }
+  }
+
   renderHeader = () => {
   	const {
       isEditing, tags, createdAt, outOfDateReason,
       sideDockOpen, openCardSideDock, closeCardSideDock,
       editorEnabled, descriptionSectionHeight, cardsWidth,
-      attachments, addCardAttachments
+      attachments, addCardAttachments, openCardModal
     } = this.props;
     const currAttachments = this.getAttribute('attachments');
 
@@ -181,7 +191,14 @@ class CardContent extends Component {
         enable={{ top:false, right:false, bottom:true, left:false, topRight:false, bottomRight:true, bottomLeft:false, topLeft:false }}
       >
         <strong className={s("text-xs text-purple-reg pt-xs pb-sm flex items-center justify-between opacity-75")}>
-          <div> <Timeago date={createdAt} live={false} /> </div>
+          { isEditing ? 
+            <div className={s('flex cursor-pointer')} onClick={() => { this.cancelEditCard() }}>
+              <MdKeyboardArrowLeft className={s('text-gray-dark')}/>
+              <div className={s('underline text-purple-reg')}> Back to View </div>
+            </div>
+            :
+            <div> <Timeago date={createdAt} live={false} /> </div>
+          }
           <div className={s("flex items-center")}>
             <button onClick={openCardSideDock}>
             	<MdMoreHoriz />
@@ -501,6 +518,12 @@ class CardContent extends Component {
     updateCardStatus(CARD_STATUS.UP_TO_DATE);
   }
 
+  confirmCloseEditModalSecondary = () => {
+    const { cancelEditCard, closeCardModal } = this.props;
+    closeCardModal(MODAL_TYPE.CONFIRM_CLOSE_EDIT);
+    cancelEditCard();
+  }
+
   getModalLoaderProps = (loaderCondition, defaultIcon) => {
     return {
       iconLeft: false,
@@ -515,7 +538,7 @@ class CardContent extends Component {
       requestDeleteCard, deleteError, isDeletingCard, 
       requestUpdateCard, updateError, isUpdatingCard,
       requestMarkUpToDate, requestMarkOutOfDate, isMarkingStatus, markStatusError,
-      outOfDateReasonInput, updateOutOfDateReason,
+      outOfDateReasonInput, updateOutOfDateReason, cancelEditCard
     } = this.props;
 
     return (
@@ -622,6 +645,20 @@ class CardContent extends Component {
             text: "Delete",
             onClick: () => requestDeleteCard(activeCardIndex),
             ...this.getModalLoaderProps(isDeletingCard)
+          }}
+        />
+        <CardConfirmModal
+          modalType={MODAL_TYPE.CONFIRM_CLOSE_EDIT} 
+          title="Confirm Go Back"
+          description="You have unsaved changes on this card. Would you like to save them?"
+          primaryButtonProps={{
+            text: "Save",
+            onClick: () => requestUpdateCard({ closeCard: false }),
+            ...this.getModalLoaderProps(isUpdatingCard)
+          }}
+          secondaryButtonProps={{
+            text: "No",
+            onClick: () => this.confirmCloseEditModalSecondary(),
           }}
         />
       </React.Fragment>
