@@ -470,7 +470,7 @@ class CardContent extends Component {
 	          		<Button 
 			          	text={"Mark as Up-to-Date"} 
 		              color="secondary"
-		              className={s("ml-reg text-green-reg bg-green-xlight")}
+		              className={s("ml-reg text-green-reg")}
 		              underline={false}
 			          	icon={<MdCheck className={s("mr-sm")} />} 
 			          	onClick={() => openCardModal(MODAL_TYPE.CONFIRM_UP_TO_DATE)}
