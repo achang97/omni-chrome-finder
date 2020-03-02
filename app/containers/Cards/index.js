@@ -16,7 +16,7 @@ import Tab from '../../components/common/Tabs/Tab';
 import Modal from '../../components/common/Modal';
 import Button from '../../components/common/Button';
 
-import { getContentStateFromEditorState } from '../../utils/editorHelpers';
+import { cardStateChanged } from '../../utils/cardHelpers';
 
 import { colors } from '../../styles/colors';
 import style from './cards.css';
@@ -64,26 +64,8 @@ export default class Cards extends Component {
   }
 
   cardStateChanged = (index) => {
-    const { cards, activeCardIndex, activeCard } = this.props;
-
     const currentCard = this.getCurrentCard(index);
-    const editAttributes = Object.keys(currentCard.edits);
-
-    if (editAttributes.length === 0) return false;
-
-    let i;
-    for (i = 0; i < editAttributes.length; i++) {
-      const editAttribute = editAttributes[i];
-
-      if (editAttribute === 'answerEditorState' || editAttribute === 'descriptionEditorState') {
-        const hasEditorChanged = getContentStateFromEditorState(currentCard[editAttribute]).contentState !== getContentStateFromEditorState(currentCard.edits[editAttribute]).contentState;
-        if (hasEditorChanged) return true;
-      } else if (JSON.stringify(currentCard[editAttribute]) !== JSON.stringify(currentCard.edits[editAttribute])) {
-        return true;
-      }
-    }
-
-    return false;
+    return cardStateChanged(currentCard);
   }
 
   closeCard = (e, index) => {
