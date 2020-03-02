@@ -13,6 +13,7 @@ import { showDescriptionEditor } from '../../actions/create';
 
 import style from "./create.css";
 import { getStyleApplicationFn } from '../../utils/styleHelpers';
+import { EDITOR_TYPE } from '../../utils/constants';
 const s = getStyleApplicationFn(style);
 
 @connect(
@@ -86,6 +87,7 @@ export default class Create extends Component {
 	            onEditorStateChange={updateCreateDescriptionEditor} 
 	            editorState={descriptionEditorState} 
 	            editorType="EXTENSION"
+              editorRole={EDITOR_TYPE.DESCRIPTION}
 	          />
           	:
 	          <Button
@@ -102,6 +104,7 @@ export default class Create extends Component {
             onEditorStateChange={updateCreateAnswerEditor} 
             editorState={answerEditorState} 
             editorType="EXTENSION"
+            editorRole={EDITOR_TYPE.ANSWER}
           />
 
         </div>

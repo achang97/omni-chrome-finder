@@ -223,6 +223,7 @@ class CardContent extends Component {
 	        			wrapperClassName={s('card-description-text-editor-wrapper-edit flex flex-col flex-grow min-h-0 my-reg')} 
 	        			editorClassName={s('text-editor overflow-auto bg-white')} 
 	        			toolbarClassName={s('text-editor-toolbar')}
+                editorRole={EDITOR_TYPE.DESCRIPTION}
 	        			autoFocus
               /> :
  					    <div className={s("flex-grow my-reg flex flex-col flex-grow min-h-0")} onClick={() => this.enableDescriptionEditor()} >
@@ -234,6 +235,7 @@ class CardContent extends Component {
 	        				editorClassName={s('text-editor card-description-text-editor-view overflow-auto')} 
 	        				toolbarClassName={s('')}
 	        				toolbarHidden
+                  editorRole={EDITOR_TYPE.DESCRIPTION}
 	        				readOnly
                 />
         			</div>
@@ -248,7 +250,7 @@ class CardContent extends Component {
                 </div>
               }
 	        		<Dropzone className={s("ml-auto")} onDrop={addCardAttachments}>
-                <p className={s("m-0 text-sm text-purple-reg p-sm")}>Drag Files Here or Click to Add</p>
+                <p className={s("m-0 text-sm text-purple-reg p-sm py-0")}>Drag Files Here or Click to Add</p>
               </Dropzone>
 				    </div>
       		</div>) : 
@@ -258,6 +260,7 @@ class CardContent extends Component {
       			editorClassName={s('text-editor card-description-text-editor-view overflow-auto')} 
       			toolbarClassName={''} 
       			toolbarHidden
+            editorRole={EDITOR_TYPE.DESCRIPTION}
       			readOnly
           />
         }
@@ -365,6 +368,7 @@ class CardContent extends Component {
 		        		wrapperClassName={'card-answer-text-editor-wrapper-edit flex flex-col flex-grow min-h-0 my-reg'} 
 		        		editorClassName={'text-editor overflow-auto'} 
 		        		toolbarClassName={'text-editor-toolbar'}
+                editorRole={EDITOR_TYPE.ANSWER}
 		        		autoFocus
               /> :
 		        	<div className={s("flex-grow mb-reg flex flex-col flex-grow min-h-0")} onClick={() => this.enableAnswerEditor()} >
@@ -374,6 +378,7 @@ class CardContent extends Component {
 			        		wrapperClassName={'card-answer-text-editor-wrapper-inactive cursor-pointer flex flex-col flex-grow min-h-0'} 
 			        		editorClassName={'text-editor card-answer-text-editor-view overflow-auto'} 
 			        		toolbarClassName={s('')}
+                  editorRole={EDITOR_TYPE.ANSWER}
 		        			toolbarHidden
 		        			readOnly
 	        			/>
@@ -397,6 +402,7 @@ class CardContent extends Component {
         		wrapperClassName={'text-editor-wrapper flex-grow flex flex-col min-h-0'} 
         		editorClassName={'text-editor card-answer-text-editor-view overflow-auto'} 
         		toolbarClassName={''} 
+            editorRole={EDITOR_TYPE.ANSWER}
         		toolbarHidden
         		readOnly
       		/>

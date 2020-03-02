@@ -7,6 +7,7 @@ import { CARD_TOOLBAR_PROPS, EXTENSION_TOOLBAR_PROPS } from './TextEditorProps.j
 
 import style from './text-editor.css';
 import { getStyleApplicationFn } from '../../../utils/styleHelpers';
+import { EDITOR_TYPE } from '../../../utils/constants';
 const s = getStyleApplicationFn(style);
 
 export default class TextEditor extends Component {
@@ -23,7 +24,7 @@ export default class TextEditor extends Component {
   }
 
 	render() {
-    let { editorState, wrapperClassName, editorClassName, toolbarClassName, onEditorStateChange, toolbarHidden, readOnly, editorType } = this.props;
+    let { editorState, wrapperClassName, editorClassName, toolbarClassName, onEditorStateChange, toolbarHidden, readOnly, editorType, editorRole } = this.props;
 		
     if (editorClassName === '') {
       editorClassName = editorType === 'CARD' ? 'text-editor' : 'text-editor-extension';
@@ -40,6 +41,7 @@ export default class TextEditor extends Component {
 	        toolbar={editorType === 'CARD' ? CARD_TOOLBAR_PROPS : EXTENSION_TOOLBAR_PROPS}
           toolbarHidden={toolbarHidden}
           readOnly={readOnly}
+          placeholder={editorRole === EDITOR_TYPE.DESCRIPTION ? "Add a description here" : "Add an answer here"}
 	      />
 		)
 	}
@@ -55,6 +57,7 @@ TextEditor.propTypes = {
   readOnly: PropTypes.bool,
   autoFocus: PropTypes.bool,
   editorType: PropTypes.oneOf(['CARD', 'EXTENSION']),
+  editorRole: PropTypes.oneOf([EDITOR_TYPE])
 }
 
 
@@ -66,4 +69,5 @@ TextEditor.defaultProps = {
   readOnly: false,
   autoFocus: false,
   editorType: 'CARD',
+  editorRole: EDITOR_TYPE.DESCRIPTION,
 }
