@@ -183,7 +183,7 @@ class CardContent extends Component {
       return { 
               ...defaultProps,
               wrapperClassName: 'rounded-0', 
-              editorClassName: 'text-editor card-description-text-editor-view p-0', 
+              editorClassName: 'text-editor card-text-editor-view p-0', 
              }
     }
     else {
@@ -198,8 +198,8 @@ class CardContent extends Component {
       } else {
         return { 
               ...defaultProps,
-              wrapperClassName: 'card-description-text-editor-wrapper-inactive', 
-              editorClassName: 'card-description-text-editor-view', 
+              wrapperClassName: 'card-text-editor-wrapper-inactive', 
+              editorClassName: 'card-text-editor-view', 
               editorState: editorRole === EDITOR_TYPE.DESCRIPTION ? edits.descriptionEditorState : edits.answerEditorState,
               onClick: editorRole === EDITOR_TYPE.DESCRIPTION ? () => this.enableDescriptionEditor() : () => this.enableAnswerEditor(),
             }
@@ -232,7 +232,7 @@ class CardContent extends Component {
       isEditing, tags, createdAt, outOfDateReason,
       sideDockOpen, openCardSideDock, closeCardSideDock,
       editorEnabled, descriptionSectionHeight, cardsWidth,
-      attachments, addCardAttachments, openCardModal
+      attachments, addCardAttachments, openCardModal, cardStatus
     } = this.props;
     const currAttachments = this.getAttribute('attachments');
 
@@ -249,14 +249,18 @@ class CardContent extends Component {
         enable={{ top:false, right:false, bottom:true, left:false, topRight:false, bottomRight:true, bottomLeft:false, topLeft:false }}
       >
         <strong className={s("text-xs text-purple-reg pt-xs pb-sm flex items-center justify-between opacity-75")}>
-          { isEditing ? 
+          {/* Case 1: Card is documented and in edit*/}
+          { (isEditing && cardStatus !== CARD_STATUS.NOT_DOCUMENTED) &&
             <div className={s('flex cursor-pointer')} onClick={() => { this.cancelEditCard() }}>
               <MdKeyboardArrowLeft className={s('text-gray-dark')}/>
               <div className={s('underline text-purple-reg')}> Back to View </div>
             </div>
-            :
-            <div> <Timeago date={createdAt} live={false} /> </div>
           }
+          {/* Case 2: Card is not yet documented */}
+          { (isEditing && cardStatus === CARD_STATUS.NOT_DOCUMENTED) && <div> New Card </div> }
+
+          {/* Case 3: Card is documented and not in edit */}
+          { !isEditing && <div> <Timeago date={createdAt} live={false} /> </div> }
           <div className={s("flex items-center")}>
             <button onClick={openCardSideDock}>
             	<MdMoreHoriz />

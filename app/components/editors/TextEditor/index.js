@@ -4,7 +4,8 @@ import { Editor } from 'react-draft-wysiwyg';
 import 'react-draft-wysiwyg/dist/react-draft-wysiwyg.css';
 import PropTypes from 'prop-types';
 import { CARD_TOOLBAR_PROPS, EXTENSION_TOOLBAR_PROPS } from './TextEditorProps.js';
-import { MdTextFormat } from "react-icons/md";
+import { MdTextFormat, MdKeyboardArrowLeft } from "react-icons/md";
+import { IoMdArrowDropleft, IoMdArrowDropright } from "react-icons/io";
 import { CircleButton } from '../../common/CircleButton';
 
 import style from './text-editor.css';
@@ -15,18 +16,42 @@ const s = getStyleApplicationFn(style);
 export default class TextEditor extends Component {
 	constructor(props) {
     	super(props);
-    	this.state = {}
+    	this.state = {
+        hideToolbar: true,
+      }
       this.setDomEditorRef = editorRef => this.domEditor = editorRef;
   }
 
   componentDidMount() {
-    if (this.props.autoFocus && this.domEditor !== null) {
+    const { autoFocus, toolbarHidden } = this.props;
+    const { hideToolbar } = this.state;
+
+    if (autoFocus && this.domEditor !== null) {
       this.domEditor.focus();
+    }
+    if (hideToolbar !== toolbarHidden) {
+      this.setState( { hideToolbar: toolbarHidden } );
     }
   }
 
+  componentDidUpdate(prevProps, prevState) {
+    const { toolbarHidden } = this.props;
+
+    if ( (prevState.hideToolbar !== toolbarHidden) && ( prevState.hideToolbar !== true ) ) {
+      this.setState( { hideToolbar: toolbarHidden } );
+    }
+  }
+
+  toggleToolbar = () => {
+    const { hideToolbar } = this.state;
+
+    this.setState( { hideToolbar: !hideToolbar } );
+    this.domEditor.focus();
+  }
+
 	render() {
-    let { editorState, className, wrapperClassName, editorClassName, toolbarClassName, onEditorStateChange, toolbarHidden, readOnly, editorType, editorRole, onClick } = this.props;
+    let { editorState, className, wrapperClassName, editorClassName, toolbarClassName, onEditorStateChange, readOnly, editorType, editorRole, onClick } = this.props;
+    const { hideToolbar } = this.state;
 
     if (editorClassName === '') {
       editorClassName = editorType === 'CARD' ? 'text-editor' : 'text-editor-extension';
@@ -40,17 +65,29 @@ export default class TextEditor extends Component {
           editorRef={this.setDomEditorRef}
 	        editorState={editorState}
 	        wrapperClassName={s(wrapperClassName)}
-	        editorClassName={s(editorClassName )}
+	        editorClassName={s(`${editorClassName} ${hideToolbar ? 'rounded-lg' : ''}`)}
 	        toolbarClassName={s(toolbarClassName)}
 	        onEditorStateChange={onEditorStateChange}
 	        toolbar={editorType === 'CARD' ? CARD_TOOLBAR_PROPS : EXTENSION_TOOLBAR_PROPS}
-          toolbarHidden={toolbarHidden}
+          toolbarHidden={hideToolbar}
           readOnly={readOnly}
           placeholder={editorRole === EDITOR_TYPE.DESCRIPTION ? "Add a description here" : "Add an answer here"}
 	      />
-        <div className={s('text-editor-toggle-rte-button absolute bottom-0 right-0 text-white rounded-full')}>
-          <MdTextFormat />
-        </div>
+        {
+          !readOnly &&
+          <div className={s('text-editor-toggle-rte-button absolute top-0 right-0 text-white mt-sm flex justify-center items-center text-lg shadow-md flex cursor-pointer')}
+          onClick={ () => this.toggleToolbar() }>
+            { hideToolbar ?
+              <div>
+                <IoMdArrowDropleft className={s('text-editor-toggle-arrow')}/>
+                <MdTextFormat />
+              </div> :
+              <div>
+                <IoMdArrowDropright className={s('text-editor-toggle-arrow')}/>
+              </div>
+            }
+          </div>
+        }
       </div>
 		)
 	}
