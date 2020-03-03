@@ -12,7 +12,7 @@ export default function display(state = initialState, action) {
 
   switch (type) {
     case types.LOGIN_SUCCESS:
-    case types.SYNC_LOGIN: {
+    case types.SYNC_AUTH_INFO: {
       const { user } = payload;
       return { ...state, user };
     }
