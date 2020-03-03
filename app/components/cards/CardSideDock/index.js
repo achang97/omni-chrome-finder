@@ -124,7 +124,7 @@ const CardSideDock = (props) => {
             />
           ))}
         </div>
-        { fileAttachments.length !== 0 &&
+        { fileAttachments.length !== 0 && screenRecordings.length !== 0 &&
           <div className={s("my-sm text-sm text-gray-light")}> Screen Recordings </div>
         }
         <div className={s("flex flex-wrap")}>

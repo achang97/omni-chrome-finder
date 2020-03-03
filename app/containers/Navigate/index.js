@@ -54,8 +54,6 @@ export default class Navigate extends Component {
     const { updateNavigateSearchText, updateFilterTags } = this.props;
 
     if (prevProps.activeTab !== this.props.activeTab) {
-      updateNavigateSearchText('');
-      updateFilterTags([]);
       this.requestSearchCards(true);
     } else if (JSON.stringify(prevProps.filterTags) !== JSON.stringify(this.props.filterTags)) {
       this.requestSearchCards(true);
@@ -64,9 +62,12 @@ export default class Navigate extends Component {
 
   requestSearchCards = (clearCards) => {
     const { requestSearchCards, searchText, filterTags, activeTab, user } = this.props;
-
-    let queryParams = { q: searchText, tags: getArrayIds(filterTags) };
+    let queryParams = { q: searchText };
     switch (activeTab) {
+      case NAVIGATE_TAB_OPTION.ALL: {
+        queryParams.tags = getArrayIds(filterTags);
+        break;
+      }
       case NAVIGATE_TAB_OPTION.MY_CARDS: {
         queryParams.owners = [user._id];
         break;

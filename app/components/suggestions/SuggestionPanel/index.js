@@ -77,12 +77,12 @@ class SuggestionPanel extends Component {
   }, DEBOUNCE_60_HZ)
 
   renderScrollFooter = () => {
-    const { isSearchingCards } = this.props;
-    const { showResults} = this.state;
+    const { isSearchingCards, cards } = this.props;
+    const { showResults } = this.state;
 
     return (
       <div>
-        { isSearchingCards && <Loader size="sm" className={s("my-sm")} /> }
+        { isSearchingCards && cards.length !== 0 && <Loader size="sm" className={s("my-sm")} /> }
         <AnimateHeight
           height={showResults ? 'auto' : 0}
           onAnimationEnd={newHeight => newHeight !== 0 && this.externalResults.current.scrollIntoView({ behavior: "smooth" })}
@@ -94,8 +94,8 @@ class SuggestionPanel extends Component {
   }
 
   handleOnBottom = () => {
-    const { hasReachedLimit, isSearchingCards } = this.props;
-    if (!hasReachedLimit && !isSearchingCards) {
+    const { hasReachedLimit, isSearchingCards, cards } = this.props;
+    if (!hasReachedLimit && !isSearchingCards && cards.length !== 0) {
       this.requestSearchCards(false);
     }
   }
@@ -174,44 +174,42 @@ class SuggestionPanel extends Component {
               }
             </div>
           }
-          { cards.length !== 0 &&
-            <ScrollContainer
-              scrollContainerClassName={s(`suggestion-panel-card-container ${showResults ? 'suggestion-panel-card-container-lg' : ''} flex flex-col`)}
-              list={cards}
-              renderScrollElement={({ _id, question, answer, createdAt, status }) => (
-                <SuggestionCard
+          <ScrollContainer
+            scrollContainerClassName={s(`suggestion-panel-card-container ${showResults ? 'suggestion-panel-card-container-lg' : ''} flex flex-col`)}
+            list={cards}
+            renderScrollElement={({ _id, question, answer, createdAt, status }) => (
+              <SuggestionCard
+                _id={_id}
+                question={question}
+                answer={answer}
+                datePosted={createdAt}
+                cardStatus={status}
+                className={s("mx-sm")}
+              />
+            )}
+            renderOverflowElement={({ _id, question, description, answer }) => (
+              <div className={s("flex")}>
+                <SuggestionPreview
                   _id={_id}
                   question={question}
+                  questionDescription={description}
                   answer={answer}
-                  datePosted={createdAt}
-                  cardStatus={status}
-                  className={s("mx-sm")}
                 />
-              )}
-              renderOverflowElement={({ _id, question, description, answer }) => (
-                <div className={s("flex")}>
-                  <SuggestionPreview
-                    _id={_id}
-                    question={question}
-                    questionDescription={description}
-                    answer={answer}
-                  />
-                  <Triangle
-                    size={10}
-                    color={colors.purple.light}
-                    direction="left"
-                    className={s("mt-sm")}
-                    outlineSize={1}
-                    outlineColor={colors.gray.light}
-                  />
-                </div>
-              )}
-              position="left"
-              onBottom={this.handleOnBottom}
-              bottomOffset={SEARCH_INFINITE_SCROLL_OFFSET}
-              footer={this.renderScrollFooter()}
-            />
-          }
+                <Triangle
+                  size={10}
+                  color={colors.purple.light}
+                  direction="left"
+                  className={s("mt-sm")}
+                  outlineSize={1}
+                  outlineColor={colors.gray.light}
+                />
+              </div>
+            )}
+            position="left"
+            onBottom={this.handleOnBottom}
+            bottomOffset={SEARCH_INFINITE_SCROLL_OFFSET}
+            footer={this.renderScrollFooter()}
+          />
           { !showResults && this.renderFooter() }
           <Triangle
             size={10}

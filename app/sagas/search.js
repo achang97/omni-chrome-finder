@@ -46,14 +46,13 @@ function* searchCards({ type, query, clearCards }) {
     }
 
     const externalResults = [];
-    if (type === SEARCH_TYPE.POPOUT) {
+    if (type === SEARCH_TYPE.POPOUT && query.q !== '') {
       const googleResults = yield call(doGet, '/google/drive/query', { q: query.q });
       externalResults.push({ source: DOCUMENTATION_TYPE.GOOGLE_DRIVE, results: googleResults });
     }
 
     yield put(handleSearchCardsSuccess(type, cards, externalResults, clearCards));
   } catch(error) {
-    console.log(error)
     const { response: { data } } = error;
     yield put(handleSearchCardsError(type, data.error));
   }
