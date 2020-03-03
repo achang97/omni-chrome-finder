@@ -19,7 +19,6 @@ import Tabs from '../../components/common/Tabs/Tabs';
 import Tab from '../../components/common/Tabs/Tab';
 import Select from '../../components/common/Select';
 import SuggestionPanel from "../../components/suggestions/SuggestionPanel";
-import ScrollContainer from '../../components/common/ScrollContainer';
 import Dropzone from '../../components/common/Dropzone';
 import Dropdown from '../../components/common/Dropdown';
 import RecipientDropdownBody from "../../components/ask/RecipientDropdownBody";

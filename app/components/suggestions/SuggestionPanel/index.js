@@ -104,11 +104,13 @@ class SuggestionPanel extends Component {
     const { baseUrl, icon } = DOCUMENTATION_DISPLAY_INFO[source];
     return (
       <div className={s("my-sm")} key={source}>
-        { results.map(({ name, id }) => (
-          <div key={id} className={s("suggestion-panel-external-result flex justify-between items-center shadow-sm rounded-lg p-lg mb-sm")}>
-            <div className={s("suggestion-panel-external-result-text text-blue-600 text-sm")}> {name} </div>
-            <div className={s("bg-white rounded-full w-2xl h-2xl flex items-center justify-center")}>
-              <img src={icon} className={s("w-10/12 h-10/12")} />
+        { results.map(({ name, id, webViewLink, iconLink }) => (
+          <div key={id} className={s("suggestion-panel-external-result")}>
+            <a target="_blank" href={webViewLink}>
+              <div className={s("suggestion-panel-external-result-text")}> {name} </div>
+            </a>
+            <div className={s("suggestion-panel-external-result-icon")}>
+              <img src={iconLink} />
             </div>
           </div>
         ))}
@@ -142,7 +144,7 @@ class SuggestionPanel extends Component {
     return (
       <div className={s("suggestion-panel-footer flex-col bg-white justify-center items-center mt-sm")}>
         <Button
-          text={`Show results from your current documentation ${numExternalResults !== 0 && `(${numExternalResults})`}`}
+          text={`Show results from your current documentation ${numExternalResults !== 0 ? `(${numExternalResults})` : ''}`}
           underline={true}
           onClick={() => this.setState({ showResults: true })}
           color="transparent"
