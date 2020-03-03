@@ -31,7 +31,7 @@ export function getArrayField(array, field) {
 }
 
 /*
- *
+ * Gets array minus the elements in a specified withoutArray and by a specified field.
  */
 export function getArrayWithout(array, withoutArray, field) {
 	return array.filter(elem => !withoutArray.some(withoutElem => (

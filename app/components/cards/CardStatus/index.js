@@ -50,7 +50,7 @@ const CardStatus = ({ isActionable, cardStatus, className, onDropdownOptionClick
   const shouldShowDropdown = dropdownOpen && isActionable;
 
   return (
-    <React.Fragment>
+    <div onClick={e => e.stopPropagation()}>
       <Dropdown
         isOpen={shouldShowDropdown}
         onToggle={setDropdownOpen}
@@ -103,7 +103,7 @@ const CardStatus = ({ isActionable, cardStatus, className, onDropdownOptionClick
           }
         />
       }
-    </React.Fragment>
+    </div>
   );
 }
 

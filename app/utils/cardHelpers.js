@@ -36,9 +36,6 @@ export function convertCardToFrontendFormat(card) {
 		upvotes: getArrayIds(upvotes),
 		slackReplies: slackReplies.map(reply => ({ ...reply, selected: status !== CARD_STATUS.NOT_DOCUMENTED })),
 		...rest,
-
-		/* TBD */
-		attachments: [],
 	}
 }
 

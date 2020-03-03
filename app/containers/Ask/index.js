@@ -2,12 +2,12 @@ import React, { Component } from 'react';
 import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
 import { withRouter } from 'react-router-dom';
+import moment from 'moment';
 
 import { MdChevronRight, MdPictureInPicture, MdClose, MdCloudUpload, MdAttachment } from 'react-icons/md';
 import { IoMdAdd } from 'react-icons/io';
 import { FaRegDotCircle, FaPaperPlane, FaMinus } from 'react-icons/fa';
 
-import ReactPlayer from 'react-player';
 import TextEditor from '../../components/editors/TextEditor';
 import Button from '../../components/common/Button';
 import Loader from '../../components/common/Loader';
@@ -29,6 +29,7 @@ import { colors } from '../../styles/colors';
 import { expandDock } from '../../actions/display';
 import { requestSearchCards } from '../../actions/search';
 import * as askActions from '../../actions/ask';
+import { generateFileKey } from '../../utils/fileHelpers';
 import { ASK_INTEGRATIONS, DEBOUNCE_60_HZ, SEARCH_TYPE, SLACK_RECIPIENT_TYPE } from '../../utils/constants';
 
 import style from "./ask.css";
@@ -39,7 +40,6 @@ const s = getStyleApplicationFn(style);
 @connect(
   state => ({
     dockExpanded: state.display.dockExpanded,
-    ...state.search[SEARCH_TYPE.POPOUT],
     ...state.ask,
     user: state.profile.user,
   }),
@@ -109,7 +109,7 @@ class Ask extends Component {
   }
 
   startScreenRecording = () => {
-    const { addAskScreenRecordingChunk, startAskScreenRecording, askScreenRecordingError } = this.props;
+    const { addAskScreenRecordingChunk, startAskScreenRecording, handleAskScreenRecordingError } = this.props;
     navigator.mediaDevices
       .getDisplayMedia({
         audio: false,
@@ -140,29 +140,37 @@ class Ask extends Component {
         startAskScreenRecording(stream, mediaRecorder);
       })
       .catch(error => {
-        askScreenRecordingError(error);
+        handleAskScreenRecordingError(error);
       });
   };
 
   endScreenRecording = () => {
-    const { mediaRecorder, localStream, recordedChunks, screenRecordings, endAskScreenRecording } = this.props;
+    const { mediaRecorder, localStream, recordedChunks, screenRecordings, endAskScreenRecording, requestAddAskAttachment } = this.props;
 
-    mediaRecorder.stop();
-    localStream.getTracks().forEach(track => track.stop());
-    const recordingBlob = new Blob(recordedChunks, { type: 'video/webm' });
+    if (mediaRecorder && localStream) {
+      mediaRecorder.stop();
+      localStream.getTracks().forEach(track => track.stop());
+      endAskScreenRecording();
 
-    const reader = new FileReader();
-    reader.readAsDataURL(recordingBlob);
-    reader.onloadend = () => endAskScreenRecording(reader.result);
+      const now = moment().format('DD.MM.YYYY HH:mm:ss');
+      const recording = new File(recordedChunks, `Screen Recording ${now}.webm`, { type: 'video/webm' });
+      requestAddAskAttachment(generateFileKey(), recording);
+    }
   };
 
+  addAskAttachments = (files) => {
+    const { requestAddAskAttachment } = this.props;
+    files.forEach(file => {
+      requestAddAskAttachment(generateFileKey(), file);
+    })
+  }
 
   renderAskInputs = () => {
     const {
       questionTitle, updateAskQuestionTitle,
       questionDescription, updateAskQuestionDescription,
       desktopSharing,
-      addAskAttachments, removeAskAttachment, attachments,
+      requestRemoveAskAttachment, attachments,
     } = this.props;
 
     return (
@@ -196,11 +204,12 @@ class Ask extends Component {
             underlineColor="red-200"
             icon={<FaRegDotCircle className={s("ml-sm text-red-500")} />}
             iconLeft={false}
+            disabled={!navigator.mediaDevices}
           />
           <Dropzone
             className={s("mx-xs flex-1 border border-dashed")}
             style={{ borderColor: colors.gray.light }}
-            onDrop={acceptedFiles => addAskAttachments(acceptedFiles)}
+            onDrop={acceptedFiles => this.addAskAttachments(acceptedFiles)}
           >
             <Button
               className={s("ask-attachment-button bg-white text-purple-reg shadow-none")}
@@ -229,13 +238,16 @@ class Ask extends Component {
                     No current attachments
                   </div>
                 }
-                { attachments.map(({ type, data }, i) => (
+                { attachments.map(({ name, key, location, isLoading, error }, i) => (
                   <CardAttachment
-                    type={type === 'recording' ? 'video' : data.type}
-                    filename={type === 'recording' ? 'Screen Recording' : data.name}
+                    key={key}
+                    fileName={name}
+                    url={location}
+                    isLoading={isLoading}
+                    error={error}
                     textClassName={s("truncate")}
                     removeIconClassName={s("ml-auto")}
-                    onRemoveClick={() => removeAskAttachment(i)}
+                    onRemoveClick={() => requestRemoveAskAttachment(key)}
                   />
                 ))}
               </div>
@@ -412,7 +424,7 @@ class Ask extends Component {
             { this.renderTabHeader() }
             { !isLoggedInSlack ?
               <div>
-                <a href={url}><img alt="Add to Slack" height="40" width="139" src="https://platform.slack-edge.com/img/add_to_slack.png" srcset="https://platform.slack-edge.com/img/add_to_slack.png 1x, https://platform.slack-edge.com/img/add_to_slack@2x.png 2x" /></a>
+                <a target="_blank" href={url}><img alt="Add to Slack" height="40" width="139" src="https://platform.slack-edge.com/img/add_to_slack.png" srcset="https://platform.slack-edge.com/img/add_to_slack.png 1x, https://platform.slack-edge.com/img/add_to_slack@2x.png 2x" /></a>
               </div> :
               this.renderAskInputs()
             }
@@ -433,25 +445,14 @@ class Ask extends Component {
     expandDock();
   }
 
-  debouncedRequestSearch = _.debounce(() => {
-    const { requestSearchCards, searchText } = this.props;
-    requestSearchCards(SEARCH_TYPE.POPOUT, { q: searchText });
-  }, DEBOUNCE_60_HZ)
-
-  updateMinifiedAskPageText = (e) => {
-    const { updateAskSearchText } = this.props;
-    updateAskSearchText(e.target.value);
-    this.debouncedRequestSearch();
-  }
-
   renderMinifiedAskPage = () => {
-    const { expandDock, searchText, cards, isSearchingCards } = this.props;
+    const { expandDock, searchText, updateAskSearchText, requestSearchCards } = this.props;
     const showRelatedQuestions = searchText.length > 0;
 
     return (
       <div className={s("p-lg overflow-y-auto")}>
         <input
-          onChange={this.updateMinifiedAskPageText}
+          onChange={e => updateAskSearchText(e.target.value)}
           value={searchText}
           placeholder="Let's find what you're looking for"
           className={s("w-full")}
@@ -471,8 +472,7 @@ class Ask extends Component {
         </div>
         <SuggestionPanel
           isVisible={showRelatedQuestions}
-          cards={cards}
-          isLoading={isSearchingCards}
+          query={searchText}
         />
       </div>
     );

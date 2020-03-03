@@ -34,8 +34,10 @@ class Dropdown extends Component {
 		}
 	}
 
-	handleClickOutside = evt => {
+	handleClickOutside = e => {
 		const { onToggle } = this.props;
+
+		e.stopPropagation();
 
 		if (onToggle) {
 			onToggle(false);
@@ -44,10 +46,12 @@ class Dropdown extends Component {
 		}
 	};
 
-	onToggleClick = () => {
+	onToggleClick = (e) => {
 		const { disabled, onToggle, isOpen } = this.props;
 
-		if (onToggle) {
+		if (disabled) {
+			NOOP();
+		} else if (onToggle) {
 			onToggle(!isOpen);
 		} else {
 			this.setState({ isOpen: !this.state.isOpen })
@@ -61,9 +65,13 @@ class Dropdown extends Component {
 		const style = getPositionStyle(isDown, isLeft);
 
 		return (
-			<div className={s(`${isTogglerRelative ? 'relative' : ''} ${className}`)}>
+			<div
+				className={s(`${isTogglerRelative ? 'relative' : ''} ${className}`)}
+				onClick={(e) => e.stopPropagation()}
+				onMouseOver={(e) => e.stopPropagation()}
+			>
 				<div
-					onClick={!disabled ? this.onToggleClick : NOOP}
+					onClick={this.onToggleClick}
 					className={s(`${togglerClassName} ${!disabled ? 'button-hover' : ''}`)}
 				>
 					{toggler}
