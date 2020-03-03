@@ -25,6 +25,7 @@ import { connect } from 'react-redux';
 import * as cardActions from '../../../actions/cards';
 
 import { isValidCard, toggleUpvotes, cardStateChanged } from '../../../utils/cardHelpers';
+import { generateFileKey } from '../../../utils/fileHelpers';
 import {
   CARD_STATUS,
   CARD_DIMENSIONS,
@@ -161,7 +162,6 @@ class CardContent extends Component {
 
   cancelEditCard = () => {
     const { cancelEditCard, openCardModal } = this.props;
-    console.log(this.props);
     if (cardStateChanged(this.props)) {
       openCardModal(MODAL_TYPE.CONFIRM_CLOSE_EDIT);
     } else {
@@ -169,13 +169,21 @@ class CardContent extends Component {
     }
   }
 
+  addCardAttachments = (files) => {
+    const { requestAddCardAttachment } = this.props;
+    files.forEach(file => {
+      requestAddCardAttachment(generateFileKey(), file);
+    })
+  }
+
   renderHeader = () => {
   	const {
       isEditing, tags, createdAt, outOfDateReason,
       sideDockOpen, openCardSideDock, closeCardSideDock,
       editorEnabled, descriptionSectionHeight, cardsWidth,
-      attachments, addCardAttachments, openCardModal
+      attachments
     } = this.props;
+    
     const currAttachments = this.getAttribute('attachments');
 
     return (
@@ -243,11 +251,11 @@ class CardContent extends Component {
                 <div className={s("flex items-center")}>
                   <div className={s("flex text-purple-reg text-sm cursor-pointer underline-border border-purple-gray-20 items-center")} onClick={openCardSideDock}> 
                     <MdAttachment className={s("mr-sm")} />
-                    <div> {currAttachments.length} Attachments</div>
+                    <div> {currAttachments.length} Attachment{currAttachments.length !== 0 && 's'}</div>
                   </div>
                 </div>
               }
-	        		<Dropzone className={s("ml-auto")} onDrop={addCardAttachments}>
+	        		<Dropzone className={s("ml-auto")} onDrop={this.addCardAttachments}>
                 <p className={s("m-0 text-sm text-purple-reg p-sm")}>Drag Files Here or Click to Add</p>
               </Dropzone>
 				    </div>

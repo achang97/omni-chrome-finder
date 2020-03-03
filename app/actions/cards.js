@@ -61,14 +61,6 @@ export function cancelEditCardMessages() {
   return { type: types.CANCEL_EDIT_CARD_MESSAGES, payload: {} };
 }
 
-export function addCardAttachments(attachments) {
-  return { type: types.ADD_CARD_ATTACHMENTS, payload: { attachments } };
-}
-
-export function removeCardAttachment(index) {
-  return { type: types.REMOVE_CARD_ATTACHMENT, payload: { index } };
-}
-
 export function addCardOwner(owner) {
   return { type: types.ADD_CARD_OWNER, payload: { owner } };
 }
@@ -130,16 +122,34 @@ export function updateOutOfDateReason(reason) {
 }
 
 /* API REQUESTS */
+export function requestAddCardAttachment(key, file) {
+  return { type: types.ADD_CARD_ATTACHMENT_REQUEST, payload: { key, file } };
+}
+
+export function handleAddCardAttachmentSuccess(cardId, key, attachment) {
+  return { type: types.ADD_CARD_ATTACHMENT_SUCCESS, payload: { cardId, key, attachment } };
+}
+
+export function handleAddCardAttachmentError(cardId, key, error) {
+  return { type: types.ADD_CARD_ATTACHMENT_ERROR, payload: { cardId, key, error } };
+}
+
+
+export function removeCardAttachment(index) {
+  return { type: types.REMOVE_CARD_ATTACHMENT, payload: { index } };
+}
+
+
 export function requestGetCard() {
   return { type: types.GET_CARD_REQUEST, payload: {} };
 }
 
-export function handleGetCardSuccess(id, card) {
-  return { type: types.GET_CARD_SUCCESS, payload: { id, card } };
+export function handleGetCardSuccess(cardId, card) {
+  return { type: types.GET_CARD_SUCCESS, payload: { cardId, card } };
 }
 
-export function handleGetCardError(id, error) {
-  return { type: types.GET_CARD_ERROR, payload: { id, error } };
+export function handleGetCardError(cardId, error) {
+  return { type: types.GET_CARD_ERROR, payload: { cardId, error } };
 }
 
 
@@ -147,12 +157,12 @@ export function requestCreateCard() {
   return { type: types.CREATE_CARD_REQUEST, payload: {} };
 }
 
-export function handleCreateCardSuccess(id, card) {
-  return { type: types.CREATE_CARD_SUCCESS, payload: { id, card } };
+export function handleCreateCardSuccess(cardId, card) {
+  return { type: types.CREATE_CARD_SUCCESS, payload: { cardId, card } };
 }
 
-export function handleCreateCardError(id, error) {
-  return { type: types.CREATE_CARD_ERROR, payload: { id, error } };
+export function handleCreateCardError(cardId, error) {
+  return { type: types.CREATE_CARD_ERROR, payload: { cardId, error } };
 }
 
 
@@ -165,8 +175,8 @@ export function handleUpdateCardSuccess(card, closeCard) {
   return { type: types.UPDATE_CARD_SUCCESS, payload: { closeCard, card } };
 }
 
-export function handleUpdateCardError(id, error, closeCard) {
-  return { type: types.UPDATE_CARD_ERROR, payload: { id, error, closeCard } };
+export function handleUpdateCardError(cardId, error, closeCard) {
+  return { type: types.UPDATE_CARD_ERROR, payload: { cardId, error, closeCard } };
 }
 
 
@@ -174,12 +184,12 @@ export function requestDeleteCard() {
   return { type: types.DELETE_CARD_REQUEST, payload: {} };
 }
 
-export function handleDeleteCardSuccess(id) {
-  return { type: types.DELETE_CARD_SUCCESS, payload: { id } };
+export function handleDeleteCardSuccess(cardId) {
+  return { type: types.DELETE_CARD_SUCCESS, payload: { cardId } };
 }
 
-export function handleDeleteCardError(id, error) {
-  return { type: types.DELETE_CARD_ERROR, payload: { id, error } };
+export function handleDeleteCardError(cardId, error) {
+  return { type: types.DELETE_CARD_ERROR, payload: { cardId, error } };
 }
 
 
@@ -191,8 +201,8 @@ export function handleToggleUpvoteSuccess(card) {
   return { type: types.TOGGLE_UPVOTE_SUCCESS, payload: { card } };
 }
 
-export function handleToggleUpvoteError(id, error, oldUpvotes) {
-  return { type: types.TOGGLE_UPVOTE_ERROR, payload: { id, error, oldUpvotes } };
+export function handleToggleUpvoteError(cardId, error, oldUpvotes) {
+  return { type: types.TOGGLE_UPVOTE_ERROR, payload: { cardId, error, oldUpvotes } };
 }
 
 
@@ -204,8 +214,8 @@ export function handleMarkUpToDateSuccess(card) {
   return { type: types.MARK_UP_TO_DATE_SUCCESS, payload: { card } };
 }
 
-export function handleMarkUpToDateError(id, error) {
-  return { type: types.MARK_UP_TO_DATE_ERROR, payload: { id, error } };
+export function handleMarkUpToDateError(cardId, error) {
+  return { type: types.MARK_UP_TO_DATE_ERROR, payload: { cardId, error } };
 }
 
 
@@ -217,8 +227,8 @@ export function handleMarkOutOfDateSuccess(card) {
   return { type: types.MARK_OUT_OF_DATE_SUCCESS, payload: { card } };
 }
 
-export function handleMarkOutOfDateError(id, error) {
-  return { type: types.MARK_OUT_OF_DATE_ERROR, payload: { id, error } };
+export function handleMarkOutOfDateError(cardId, error) {
+  return { type: types.MARK_OUT_OF_DATE_ERROR, payload: { cardId, error } };
 }
 
 

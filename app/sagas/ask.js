@@ -3,7 +3,7 @@ import { take, call, fork, all, cancel, cancelled, put, select } from 'redux-sag
 import { doGet, doPost, doPut, doDelete } from '../utils/request'
 import { getContentStateFromEditorState } from '../utils/editorHelpers';
 import { SLACK_RECIPIENT_TYPE } from '../utils/constants';
-import { isUploadedFile } from '../utils/fileHelpers';
+import { convertAttachmentsToBackendFormat, isUploadedFile } from '../utils/fileHelpers';
 import { ASK_QUESTION_REQUEST, GET_SLACK_CONVERSATIONS_REQUEST, ADD_ASK_ATTACHMENT_REQUEST, REMOVE_ASK_ATTACHMENT_REQUEST } from '../actions/actionTypes';
 import { 
   handleAskQuestionSuccess, handleAskQuestionError,
@@ -51,7 +51,7 @@ function* askQuestion() {
       question: questionTitle,
       description: descriptionText,
       content_state_description: descriptionContentState,
-      attachments: attachments.map(({ key, location, name }) => ({ key, location, name })),
+      attachments: convertAttachmentsToBackendFormat(attachments),
     });
     yield put(handleAskQuestionSuccess());
   } catch(error) {

@@ -94,7 +94,7 @@ const CardSideDock = (props) => {
               error={error}
               className={s("min-w-0")}
               textClassName={s("truncate")}
-              onRemoveClick={isEditable ? () => requestRemoveAskAttachment(key) : null}
+              onRemoveClick={isEditable ? () => removeCardAttachment(i) : null}
             />
           ))}
         </div>

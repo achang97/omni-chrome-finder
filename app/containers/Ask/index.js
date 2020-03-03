@@ -2,12 +2,12 @@ import React, { Component } from 'react';
 import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
 import { withRouter } from 'react-router-dom';
+import moment from 'moment';
 
 import { MdChevronRight, MdPictureInPicture, MdClose, MdCloudUpload, MdAttachment } from 'react-icons/md';
 import { IoMdAdd } from 'react-icons/io';
 import { FaRegDotCircle, FaPaperPlane, FaMinus } from 'react-icons/fa';
 
-import ReactPlayer from 'react-player';
 import TextEditor from '../../components/editors/TextEditor';
 import Button from '../../components/common/Button';
 import Loader from '../../components/common/Loader';
@@ -147,12 +147,15 @@ class Ask extends Component {
   endScreenRecording = () => {
     const { mediaRecorder, localStream, recordedChunks, screenRecordings, endAskScreenRecording, requestAddAskAttachment } = this.props;
 
-    mediaRecorder.stop();
-    localStream.getTracks().forEach(track => track.stop());
-    endAskScreenRecording();
+    if (mediaRecorder && localStream) {
+      mediaRecorder.stop();
+      localStream.getTracks().forEach(track => track.stop());
+      endAskScreenRecording();
 
-    const recording = new File(recordedChunks, `Screen Record ${new Date()}`, { type: 'video/webm' });
-    requestAddAskAttachment(recording);
+      const now = moment().format('DD.MM.YYYY HH:mm:ss');
+      const recording = new File(recordedChunks, `Screen Recording ${now}.webm`, { type: 'video/webm' });
+      requestAddAskAttachment(generateFileKey(), recording);
+    }
   };
 
   addAskAttachments = (files) => {

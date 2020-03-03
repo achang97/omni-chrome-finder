@@ -5,3 +5,9 @@ export function generateFileKey() {
 export function isUploadedFile(key) {
 	return !key.startsWith('new-file-');
 }
+
+export function convertAttachmentsToBackendFormat(attachments) {
+    return attachments
+	    .filter(({ key }) => isUploadedFile(key))
+	    .map(({ key, location, name }) => ({ key, location, name }));
+} 
