@@ -110,7 +110,7 @@ function* convertCardToBackendFormat(isNewCard) {
     answer: answerText,
     content_state_answer: answerContentState,
     owners: getArrayIds(owners),
-    tags:  getArrayIds(tags),
+    tags:  tags,
     keywords: getArrayField(keywords, 'value'),
     slackReplies: slackReplies.filter(({ selected }) => selected),
     ...verificationInfo,
