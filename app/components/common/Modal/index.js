@@ -24,7 +24,10 @@ const Modal = ({ isOpen, transitionMs, shouldCloseOnOutsideClick, showHeader, cl
 	};
 
 	return (
-		<div>
+		<div
+			onClick={(e) => e.stopPropagation()}
+			onMouseOver={(e) => e.stopPropagation()}
+		>
 			<Transition
 				in={isOpen}
 				timeout={transitionMs}

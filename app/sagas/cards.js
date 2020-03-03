@@ -5,8 +5,9 @@ import { doGet, doPost, doPut, doDelete } from '../utils/request'
 import { getArrayIds, getArrayField } from '../utils/arrayHelpers';
 import { getContentStateFromEditorState } from '../utils/editorHelpers';
 import { toggleUpvotes } from '../utils/cardHelpers';
+import { convertAttachmentsToBackendFormat } from '../utils/fileHelpers';
 import { CARD_STATUS, PERMISSION_OPTION, AUTO_REMIND_VALUE } from '../utils/constants';
-import { GET_CARD_REQUEST, CREATE_CARD_REQUEST, UPDATE_CARD_REQUEST, TOGGLE_UPVOTE_REQUEST, DELETE_CARD_REQUEST, MARK_UP_TO_DATE_REQUEST, MARK_OUT_OF_DATE_REQUEST, ADD_BOOKMARK_REQUEST, REMOVE_BOOKMARK_REQUEST } from '../actions/actionTypes';
+import { GET_CARD_REQUEST, CREATE_CARD_REQUEST, UPDATE_CARD_REQUEST, TOGGLE_UPVOTE_REQUEST, DELETE_CARD_REQUEST, MARK_UP_TO_DATE_REQUEST, MARK_OUT_OF_DATE_REQUEST, ADD_BOOKMARK_REQUEST, REMOVE_BOOKMARK_REQUEST, ADD_CARD_ATTACHMENT_REQUEST } from '../actions/actionTypes';
 import { 
   handleGetCardSuccess, handleGetCardError,
   handleCreateCardSuccess, handleCreateCardError,
@@ -17,12 +18,13 @@ import {
   handleMarkOutOfDateSuccess, handleMarkOutOfDateError,
   handleAddBookmarkSuccess, handleAddBookmarkError,
   handleRemoveBookmarkSuccess, handleRemoveBookmarkError,
+  handleAddCardAttachmentSuccess, handleAddCardAttachmentError,
 } from '../actions/cards';
 
 export default function* watchCardsRequests() {
   let action;
 
-  while (action = yield take([GET_CARD_REQUEST, CREATE_CARD_REQUEST, UPDATE_CARD_REQUEST, TOGGLE_UPVOTE_REQUEST, DELETE_CARD_REQUEST, MARK_UP_TO_DATE_REQUEST, MARK_OUT_OF_DATE_REQUEST, ADD_BOOKMARK_REQUEST, REMOVE_BOOKMARK_REQUEST])) {
+  while (action = yield take([GET_CARD_REQUEST, CREATE_CARD_REQUEST, UPDATE_CARD_REQUEST, TOGGLE_UPVOTE_REQUEST, DELETE_CARD_REQUEST, MARK_UP_TO_DATE_REQUEST, MARK_OUT_OF_DATE_REQUEST, ADD_BOOKMARK_REQUEST, REMOVE_BOOKMARK_REQUEST, ADD_CARD_ATTACHMENT_REQUEST])) {
     const { type, payload } = action;
     switch (type) {
       case GET_CARD_REQUEST: {
@@ -61,6 +63,10 @@ export default function* watchCardsRequests() {
         yield fork(removeBookmark, payload);
         break;
       }
+      case ADD_CARD_ATTACHMENT_REQUEST: {
+        yield fork(addAttachment, payload);
+        break;
+      }
     }
   }
 }
@@ -76,6 +82,7 @@ function* getCard() {
     const card = yield call(doGet, `/cards/${cardId}`);
     yield put(handleGetCardSuccess(cardId, card));
   } catch(error) {
+    console.log(error)
     const { response: { data } } = error;
     yield put(handleGetCardError(cardId, data.error));
   }
@@ -87,7 +94,7 @@ function* getUserId() {
 }
 
 function* convertCardToBackendFormat(isNewCard) {
-  const { question, answerEditorState, descriptionEditorState, owners, tags, keywords, verificationInterval, permissions, permissionGroups, cardStatus, slackReplies, /*, attachments */ } = yield select(state => state.cards.activeCard.edits);
+  const { question, answerEditorState, descriptionEditorState, owners, tags, keywords, verificationInterval, permissions, permissionGroups, cardStatus, slackReplies, attachments } = yield select(state => state.cards.activeCard.edits);
   const _id = yield call(getUserId);
 
   const { contentState: descriptionContentState, text: descriptionText } = getContentStateFromEditorState(descriptionEditorState);
@@ -113,6 +120,7 @@ function* convertCardToBackendFormat(isNewCard) {
     tags:  getArrayIds(tags),
     keywords: getArrayField(keywords, 'value'),
     slackReplies: slackReplies.filter(({ selected }) => selected),
+    attachments: convertAttachmentsToBackendFormat(attachments),
     ...verificationInfo,
     ...permissionsInfo,
     status: isNewCard ? CARD_STATUS.UP_TO_DATE : cardStatus,
@@ -213,6 +221,21 @@ function* removeBookmark({ cardId }) {
     const { response: { data } } = error;
     yield put(handleRemoveBookmarkError(cardId, data.error));
   }
+}
+
+function* addAttachment({ key, file }) {
+  const cardId = yield call(getActiveCardId);
+
+  try {
+    const formData = new FormData();
+    formData.append('file', file);
+
+    const attachment = yield call(doPost, '/files/upload', formData, true);
+    yield put(handleAddCardAttachmentSuccess(cardId, key, attachment));
+  } catch(error) {
+    const { response: { data } } = error;
+    yield put(handleAddCardAttachmentError(cardId, key, data.error));
+  }  
 }
 
 

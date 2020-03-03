@@ -5,6 +5,7 @@ import watchAskRequests from './ask';
 import watchCardsRequests from './cards';
 import watchProfileRequests from './profile';
 import watchTasksRequests from './tasks';
+import watchNavigateRequests from './navigate';
 
 export default function* rootSaga(dispatch, getState) {
   yield all([
@@ -14,5 +15,6 @@ export default function* rootSaga(dispatch, getState) {
     watchCardsRequests(),
     watchProfileRequests(),
     watchTasksRequests(),
+    watchNavigateRequests()
   ]);
 }

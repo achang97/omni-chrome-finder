@@ -33,6 +33,17 @@ export default function navigate(state = initialState, action) {
       return { ...state, filterTags: removeIndex(filterTags, index) };
     }
 
+    case types.DELETE_NAVIGATE_CARD_REQUEST: {
+      return { ...state, isDeletingCard: true, deleteError: null }
+    }
+    case types.DELETE_NAVIGATE_CARD_SUCCESS: {
+      return { ...state, isDeletingCard: false }
+    }
+    case types.DELETE_NAVIGATE_CARD_ERROR: {
+      const { error } = payload;
+      return { ...state, isDeletingCard: false, deleteError: error }
+    }
+
     default:
       return state;
   }

@@ -49,6 +49,12 @@
   cursor: default !important;
 }
 
+/* Anchor tag override */
+.app-container a {
+  color: inherit !important;
+  text-decoration: none !important;
+}
+
 /* Input overrides */
 .app-container input:not([type='checkbox']), .app-container input:not([type='checkbox']):focus,
 .app-container textarea, .app-container textarea:focus {

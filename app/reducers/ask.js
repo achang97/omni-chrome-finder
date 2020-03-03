@@ -29,6 +29,13 @@ const initialState = {
 export default function display(state = initialState, action) {
   const { type, payload = {} } = action;
 
+  const updateAttachmentByKey = (key, newInfo) => {
+    return {
+      ...state,
+      attachments: state.attachments.map(currAttachment => currAttachment.key === key ? { ...currAttachment, ...newInfo } : currAttachment)
+    }
+  }
+
   switch (type) {
     case types.UPDATE_ASK_SEARCH_TEXT: {
       const { text } = payload;
@@ -83,22 +90,37 @@ export default function display(state = initialState, action) {
       return { ...state, recordedChunks: [...state.recordedChunks, recordingChunk] }
     }
     case types.END_ASK_SCREEN_RECORDING: {
-      const { screenRecording } = payload;
-      return { ...state, desktopSharing: false, localStream: null, mediaRecorder: null, recordedChunks: [], screenRecordingError: null, attachments: [...state.attachments, { type: 'recording', data: screenRecording }] };
+      return { ...state, desktopSharing: false, localStream: null, mediaRecorder: null, recordedChunks: [], screenRecordingError: null };
     }
     case types.ASK_SCREEN_RECORDING_ERROR: {
       const { error } = payload;
       return { ...state, desktopSharing: false, localStream: null, mediaRecorder: null, recordedChunks: [], screenRecordingError: error }
     }
 
-    case types.ADD_ASK_ATTACHMENTS: {
-      const { attachments } = payload;
-      const newAttachments = attachments.map(attachment => ({ type: 'attachment', data: attachment }))
-      return { ...state, attachments: [...state.attachments, ...newAttachments] }
+    case types.ADD_ASK_ATTACHMENT_REQUEST: {
+      const { key, file } = payload;
+      return { ...state, attachments: [...state.attachments, { key, name: file.name, isLoading: true, error: null }] };
     }
-    case types.REMOVE_ASK_ATTACHMENT: {
-      const { index } = payload;
-      return { ...state, attachments: removeIndex(state.attachments, index) }
+    case types.ADD_ASK_ATTACHMENT_SUCCESS: {
+      const { key, attachment } = payload;
+      return updateAttachmentByKey(key, { isLoading: false, ...attachment });
+    }
+    case types.ADD_ASK_ATTACHMENT_ERROR: {
+      const { key, error } = payload;
+      return updateAttachmentByKey(key, { isLoading: false, error: 'Upload failed. This file will not be attached.' });
+    }
+
+    case types.REMOVE_ASK_ATTACHMENT_REQUEST: {
+      const { key } = payload;
+      return updateAttachmentByKey(key, { isLoading: true });
+    }
+    case types.REMOVE_ASK_ATTACHMENT_SUCCESS: {
+      const { key } = payload;
+      return { ...state, attachments: state.attachments.filter(attachment => attachment.key !== key) };
+    }
+    case types.REMOVE_ASK_ATTACHMENT_ERROR: {
+      const { key, error } = payload;
+      return updateAttachmentByKey(key, { isLoading: false, error: 'Failed to remove file. Please try again.' });
     }
 
     case types.GET_SLACK_CONVERSATIONS_REQUEST: {

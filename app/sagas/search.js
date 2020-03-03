@@ -35,13 +35,15 @@ export default function* watchSearchRequests() {
   }
 }
 
-function* searchCards({ type, query }) {
+function* searchCards({ type, query, clearCards }) {
   try {
+    const page = yield select(state => state.search.cards[type].page);
     let cards = [];
-    if (query !== '') {
-      cards = yield call(doGet, '/cards/query', query);
+    if (!query.ids || query.ids.length !== 0) {
+      cards = yield call(doGet, '/cards/query', { ...query, page });
     }
-    yield put(handleSearchCardsSuccess(type, cards));
+
+    yield put(handleSearchCardsSuccess(type, cards, clearCards));
   } catch(error) {
     const { response: { data } } = error;
     yield put(handleSearchCardsError(type, data.error));

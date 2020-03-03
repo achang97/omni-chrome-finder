@@ -8,6 +8,7 @@ import { openCard } from '../../actions/cards';
 import { requestSearchCards } from '../../actions/search';
 
 import CardTags from '../../components/cards/CardTags';
+import AnimateHeight from 'react-animate-height';
 import Tabs from '../../components/common/Tabs/Tabs';
 import Tab from '../../components/common/Tabs/Tab';
 import { colors } from '../../styles/colors';
@@ -20,7 +21,8 @@ import Button from '../../components/common/Button';
 import Triangle from '../../components/common/Triangle';
 import _ from 'underscore';
 
-import { CARD_STATUS, NAVIGATE_TAB_OPTIONS, SEARCH_TYPE, DEBOUNCE_60_HZ } from '../../utils/constants';
+import { getArrayIds } from '../../utils/arrayHelpers'
+import { CARD_STATUS, SEARCH_INFINITE_SCROLL_OFFSET, NAVIGATE_TAB_OPTION, NAVIGATE_TAB_OPTIONS, SEARCH_TYPE, DEBOUNCE_60_HZ } from '../../utils/constants';
 
 import style from "./navigate.css";
 import { getStyleApplicationFn } from '../../utils/styleHelpers';
@@ -29,7 +31,8 @@ const s = getStyleApplicationFn(style);
 @connect(
   state => ({
     ...state.navigate,
-    ...state.search[SEARCH_TYPE.SIDEBAR]
+    ...state.search.cards[SEARCH_TYPE.NAVIGATE],
+    user: state.profile.user,
   }),
   dispatch =>
   bindActionCreators(
@@ -43,32 +46,43 @@ const s = getStyleApplicationFn(style);
 )
 
 export default class Navigate extends Component {
-  updateTab = (newTab) => {
-    const { updateNavigateTab, updateNavigateSearchText, updateFilterTags, activeTab } = this.props;
-
-    if (newTab !== activeTab) {
-      // Clear search text and tags
-      updateNavigateSearchText('');
-      updateFilterTags([]);
-    }
-
-    updateNavigateTab(newTab);
-  }
-
   componentDidMount() {
     this.requestSearchCards();
   }
 
-  componentDidUpdate() {
+  componentDidUpdate(prevProps) {
+    const { updateNavigateSearchText, updateFilterTags } = this.props;
 
+    if (prevProps.activeTab !== this.props.activeTab) {
+      updateNavigateSearchText('');
+      updateFilterTags([]);
+      this.requestSearchCards(true);
+    } else if (JSON.stringify(prevProps.filterTags) !== JSON.stringify(this.props.filterTags)) {
+      this.requestSearchCards(true);
+    }
   }
 
-  requestSearchCards = () => {
-    const { requestSearchCards, searchText } = this.props;
-    requestSearchCards(SEARCH_TYPE.SIDEBAR, { q: searchText });
+  requestSearchCards = (clearCards) => {
+    const { requestSearchCards, searchText, filterTags, activeTab, user } = this.props;
+
+    let queryParams = { q: searchText, tags: getArrayIds(filterTags) };
+    switch (activeTab) {
+      case NAVIGATE_TAB_OPTION.MY_CARDS: {
+        queryParams.owners = [user._id];
+        break;
+      }
+      case NAVIGATE_TAB_OPTION.BOOKMARKED: {
+        queryParams.ids = user.bookmarkIds;
+        break;
+      }
+    }
+
+    requestSearchCards(SEARCH_TYPE.NAVIGATE, queryParams, clearCards);
   }
 
-  debouncedRequestSearch = _.debounce(this.requestSearchCards, DEBOUNCE_60_HZ)
+  debouncedRequestSearch = _.debounce(() => {
+    this.requestSearchCards(true);
+  }, DEBOUNCE_60_HZ)
 
   updateSearchText = (e) => {
     const { updateNavigateSearchText } = this.props;
@@ -76,12 +90,20 @@ export default class Navigate extends Component {
     this.debouncedRequestSearch();
   }
 
+  handleOnBottom = () => {
+    const { hasReachedLimit, isSearchingCards } = this.props;
+    if (!hasReachedLimit && !isSearchingCards) {
+      this.requestSearchCards();
+    }
+  }
+
   render() {
     const {
-      activeTab,
+      activeTab, updateNavigateTab,
       filterTags, updateFilterTags, removeFilterTag,
       cards, isSearchingCards,
       searchText,
+      requestDeleteNavigateCard, isDeletingCard, deleteError,
     } = this.props;
 
     return (
@@ -97,15 +119,17 @@ export default class Navigate extends Component {
           	/>
           	<div className={s("navigate-search-input-icon-container bg-white flex flex-col items-center justify-center text-purple-reg rounded-r-lg pr-reg")}> <MdSearch /> </div>
         	</div>
-        	<div className={s("my-reg text-xs")}> Filter cards by tags </div>
-          <CardTags
-            isEditable={true}
-            tags={filterTags}
-            onChange={updateFilterTags}
-            onRemoveClick={removeFilterTag}
-            showPlaceholder={true}
-            hideSelectOnBlur={true}
-          />
+          <AnimateHeight height={activeTab === NAVIGATE_TAB_OPTION.ALL ? 'auto' : 0}>
+          	<div className={s("my-reg text-xs")}> Filter cards by tags </div>
+            <CardTags
+              isEditable={true}
+              tags={filterTags}
+              onChange={updateFilterTags}
+              onRemoveClick={removeFilterTag}
+              showPlaceholder={true}
+              hideSelectOnBlur={true}
+            />
+          </AnimateHeight>
         </div>
         <div>
           <Tabs
@@ -113,7 +137,7 @@ export default class Navigate extends Component {
             className={s("flex-1 flex")}
             tabClassName={s("bg-purple-xlight flex flex-col text-xs font-medium flex items-center justify-between opacity-100")}
             activeTabClassName={s("bg-purple-xlight")}
-            onTabClick={this.updateTab}
+            onTabClick={updateNavigateTab}
             showRipple={false}
             color={colors.purple.reg}
           >
@@ -138,7 +162,7 @@ export default class Navigate extends Component {
         }
         { cards.length !== 0 &&
           <ScrollContainer
-            className={s("min-h-0")}
+            className={s("min-h-0 flex-1")}
             scrollContainerClassName={s(`flex flex-col h-full`)}
             verticalMarginAdjust={true}
             list={cards}
@@ -151,6 +175,11 @@ export default class Navigate extends Component {
                 cardStatus={status}
                 className={s(`navigate-suggestion-card mx-reg mb-reg ${i === 0 ? 'my-reg' : ''}`)}
                 showMoreMenu
+                deleteProps={{
+                  onClick: requestDeleteNavigateCard,
+                  isLoading: isDeletingCard,
+                  error: deleteError,
+                }}
               />
             )}
             renderOverflowElement={({ _id, question, description, answer }) => (
@@ -172,6 +201,9 @@ export default class Navigate extends Component {
               </div>
             )}
             position="left"
+            onBottom={this.handleOnBottom}
+            bottomOffset={SEARCH_INFINITE_SCROLL_OFFSET}
+            footer={isSearchingCards ? <Loader size="sm" className={s("my-sm")} /> : null}
           />
         }
       </div>

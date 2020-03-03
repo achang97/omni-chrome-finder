@@ -15,11 +15,11 @@ function isValidResponse(response) {
   return response.status >= 200 && response.status < 300;
 }
 
-export function* doPost(path, data) {
+export function* doPost(path, data, isForm=false) {
   const url = `${SERVER_URL}${path}`
 
   // yield call(checkToken)
-  const config = yield call(getConfig)
+  const config = yield call(getConfig, isForm)
 
   try {
     const response = yield call([axios, axios.post], url, data, config)
@@ -34,11 +34,11 @@ export function* doPost(path, data) {
   }
 }
 
-export function* doPut(path, data) {
+export function* doPut(path, data, isForm=false) {
   const url = `${SERVER_URL}${path}`
 
   // yield call(checkToken)
-  const config = yield call(getConfig)
+  const config = yield call(getConfig, isForm)
 
   try {
     const response = yield call([axios, axios.put], url, data, config)
@@ -53,11 +53,11 @@ export function* doPut(path, data) {
   }
 }
 
-export function* doGet(path, data) {
+export function* doGet(path, data, isForm=false) {
   const url = `${SERVER_URL}${path}`
 
   // yield call(checkToken)
-  const config = yield call(getConfig)
+  const config = yield call(getConfig, isForm)
 
   try {
     const response = yield call([axios, axios.get], url, { params: { ...data}, ...config });
@@ -72,11 +72,11 @@ export function* doGet(path, data) {
   }
 }
 
-export function* doDelete(path, data) {
+export function* doDelete(path, data, isForm=false) {
   const url = `${SERVER_URL}${path}`
 
   // yield call(checkToken)
-  const config = yield call(getConfig)
+  const config = yield call(getConfig, isForm)
 
   try {
     const response = yield call([axios, axios.delete], url, {...config, data })
@@ -103,7 +103,7 @@ export function* checkToken() {
   if (timeRemaining < (exp - iat) / 2 && timeRemaining > 0) {
     // TODO:  v User
     const url = `${SERVER_URL}/users/refreshToken`
-    const config = yield call(getConfig)
+    const config = yield call(getConfig, false);
     const { data } = yield call([axios, axios.post], url, { refreshToken }, config)
     yield put(updateAuthToken(data.token))
   } else if(timeRemaining <= 0) { // logout!
@@ -111,7 +111,7 @@ export function* checkToken() {
   }
 }
 
-function *getConfig() {
+function *getConfig(isForm) {
   const token = yield select(state => state.auth.token)
 
   let config = {}
@@ -120,6 +120,10 @@ function *getConfig() {
     config.headers = {
       'Authorization': token
     }
+  }
+
+  if (isForm) {
+    config.headers['Content-Type'] = 'multipart/form-data';
   }
 
   return config

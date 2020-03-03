@@ -12,7 +12,7 @@ function setUpAuthSync(store) {
         if (!newValueJSON.token) {
           store.dispatch({ type: types.LOGOUT });
         } else if (newValueJSON.token) {
-          store.dispatch({ type: types.SYNC_LOGIN, payload: newValueJSON });
+          store.dispatch({ type: types.SYNC_AUTH_INFO, payload: newValueJSON });
         }
       }
     }
