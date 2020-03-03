@@ -12,6 +12,7 @@
 }
 
 .card-side-dock-video-wrapper {
-	@apply w-1/2;
+	@apply w-1/2 p-xs;
 	height: min-content;
+	box-sizing: border-box;
 }

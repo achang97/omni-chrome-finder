@@ -73,7 +73,6 @@ export default class Profile extends Component {
     //TODO: Refactor this in more beauty way.
     //CLOSE popup on finish.
     const clearToken = this.props.token.replace('Bearer ', '');
-    console.log(clearToken)
     window.open(`${GOOGLE_AUTH_URL}?auth=${clearToken}`, 'popup', 'width=600,height=600');
   }
 
