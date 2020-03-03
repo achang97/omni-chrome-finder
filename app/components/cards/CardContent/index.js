@@ -169,6 +169,64 @@ class CardContent extends Component {
     }
   }
 
+  getTextEditorProps = (editorRole) => {
+    const { isEditing, editorEnabled, descriptionEditorState, edits, answerEditorState } = this.props;
+
+    let defaultProps;
+    if (editorRole === EDITOR_TYPE.DESCRIPTION) {
+      defaultProps = { wrapperClassName: '', toolbarHidden: true, readOnly: true, editorState: descriptionEditorState, onEditorStateChange: this.onDescriptionEditorStateChange, onClick: undefined };
+    } else {
+      defaultProps = { wrapperClassName: '', toolbarHidden: true, readOnly: true, editorState: answerEditorState, onEditorStateChange: this.onAnswerEditorStateChange, onClick: undefined };
+    }
+
+    if(!isEditing) {
+      return { 
+              ...defaultProps,
+              wrapperClassName: 'rounded-0', 
+              editorClassName: 'text-editor card-description-text-editor-view p-0', 
+             }
+    }
+    else {
+      if (editorEnabled[editorRole]) {
+        return { 
+              ...defaultProps,
+              editorClassName: 'bg-white', 
+              editorState: editorRole === EDITOR_TYPE.DESCRIPTION ? edits.descriptionEditorState : edits.answerEditorState,
+              toolbarHidden: false,
+              readOnly: false,
+            }
+      } else {
+        return { 
+              ...defaultProps,
+              wrapperClassName: 'card-description-text-editor-wrapper-inactive', 
+              editorClassName: 'card-description-text-editor-view', 
+              editorState: editorRole === EDITOR_TYPE.DESCRIPTION ? edits.descriptionEditorState : edits.answerEditorState,
+              onClick: editorRole === EDITOR_TYPE.DESCRIPTION ? () => this.enableDescriptionEditor() : () => this.enableAnswerEditor(),
+            }
+      }
+    }
+    return {}
+  }
+
+  renderTextEditor = (editorRole) => {
+    const { wrapperClassName, editorClassName, editorState, toolbarHidden, readOnly, onEditorStateChange, onClick } = this.getTextEditorProps(editorRole);
+    return (
+      <TextEditor 
+          className={s('my-reg')}
+          onClick={ () => onClick && onClick() }
+          onEditorStateChange={onEditorStateChange} 
+          editorState={editorState} 
+          wrapperClassName={s(`flex flex-col flex-grow min-h-0 ${ wrapperClassName }`)} 
+          editorClassName={s(`text-editor overflow-auto ${ editorClassName }`)} 
+          toolbarClassName={s('text-editor-toolbar')}
+          editorRole={ editorRole }
+          toolbarHidden={ toolbarHidden }
+          readOnly={ readOnly }
+          autoFocus
+        />
+    )
+  }
+
   renderHeader = () => {
   	const {
       isEditing, tags, createdAt, outOfDateReason,
@@ -214,55 +272,23 @@ class CardContent extends Component {
         	/> :
         	<div className={s("text-2xl font-semibold")}>{this.props.question}</div>
         }
-        { isEditing ?
-          (<div className={s('flex-grow min-h-0 flex flex-col min-h-0')}>
-	        	{ editorEnabled[EDITOR_TYPE.DESCRIPTION] ?
-          		<TextEditor 
-          			onEditorStateChange={this.onDescriptionEditorStateChange} 
-          			editorState={this.props.edits.descriptionEditorState} 
-	        			wrapperClassName={s('card-description-text-editor-wrapper-edit flex flex-col flex-grow min-h-0 my-reg')} 
-	        			editorClassName={s('text-editor overflow-auto bg-white')} 
-	        			toolbarClassName={s('text-editor-toolbar')}
-                editorRole={EDITOR_TYPE.DESCRIPTION}
-	        			autoFocus
-              /> :
- 					    <div className={s("flex-grow my-reg flex flex-col flex-grow min-h-0")} onClick={() => this.enableDescriptionEditor()} >
-            		<TextEditor
-            			onClick={() => this.enableDescriptionEditor()}
-            			onEditorStateChange={this.onDescriptionEditorStateChange} 
-            			editorState={this.props.edits.descriptionEditorState}
-	        				wrapperClassName={s('card-description-text-editor-wrapper-inactive cursor-pointer flex flex-col flex-grow min-h-0')} 
-	        				editorClassName={s('text-editor card-description-text-editor-view overflow-auto')} 
-	        				toolbarClassName={s('')}
-	        				toolbarHidden
-                  editorRole={EDITOR_TYPE.DESCRIPTION}
-	        				readOnly
-                />
-        			</div>
-        		}
-        		<div className={s("flex justify-between")}>
-              { currAttachments.length !== 0 &&
-                <div className={s("flex items-center")}>
-                  <div className={s("flex text-purple-reg text-sm cursor-pointer underline-border border-purple-gray-20 items-center")} onClick={openCardSideDock}> 
-                    <MdAttachment className={s("mr-sm")} />
-                    <div> {currAttachments.length} Attachments</div>
-                  </div>
+        <div className={s('flex-grow min-h-0 flex flex-col min-h-0')}>
+          { this.renderTextEditor(EDITOR_TYPE.DESCRIPTION) }
+        </div>
+        { isEditing &&
+          <div className={s("flex justify-between")}>
+            { currAttachments.length !== 0 &&
+              <div className={s("flex items-center")}>
+                <div className={s("flex text-purple-reg text-sm cursor-pointer underline-border border-purple-gray-20 items-center")} onClick={openCardSideDock}> 
+                  <MdAttachment className={s("mr-sm")} />
+                  <div> {currAttachments.length} Attachments</div>
                 </div>
-              }
-	        		<Dropzone className={s("ml-auto")} onDrop={addCardAttachments}>
-                <p className={s("m-0 text-sm text-purple-reg p-sm py-0")}>Drag Files Here or Click to Add</p>
-              </Dropzone>
-				    </div>
-      		</div>) : 
-      		<TextEditor 
-      			editorState={this.props.descriptionEditorState} 
-      			wrapperClassName={s('text-editor-wrapper card-description-text-editor-wrapper-view flex-grow flex flex-col min-h-0 my-reg')} 
-      			editorClassName={s('text-editor card-description-text-editor-view overflow-auto')} 
-      			toolbarClassName={''} 
-      			toolbarHidden
-            editorRole={EDITOR_TYPE.DESCRIPTION}
-      			readOnly
-          />
+              </div>
+            }
+            <Dropzone className={s("ml-auto")} onDrop={addCardAttachments}>
+              <p className={s("m-0 text-sm text-purple-reg p-sm py-0")}>Drag Files Here or Click to Add</p>
+            </Dropzone>
+          </div>
         }
         { !isEditing &&
           <div className={s("flex items-center justify-between")}>
@@ -359,53 +385,20 @@ class CardContent extends Component {
   	const { isEditing, editorEnabled, selectedMessages, slackReplies } = this.props;
   	return (
   		<div className={s('p-2xl flex-grow min-h-0 flex flex-col min-h-0 relative')}>
-        { isEditing ?
-        	(<div className={s('flex-grow min-h-0 flex flex-col min-h-0')}>
-        	  { editorEnabled[EDITOR_TYPE.ANSWER] ?
-		        	<TextEditor 
-		        		onEditorStateChange={this.onAnswerEditorStateChange} 
-		        		editorState={this.props.edits.answerEditorState} 
-		        		wrapperClassName={'card-answer-text-editor-wrapper-edit flex flex-col flex-grow min-h-0 my-reg'} 
-		        		editorClassName={'text-editor overflow-auto'} 
-		        		toolbarClassName={'text-editor-toolbar'}
-                editorRole={EDITOR_TYPE.ANSWER}
-		        		autoFocus
-              /> :
-		        	<div className={s("flex-grow mb-reg flex flex-col flex-grow min-h-0")} onClick={() => this.enableAnswerEditor()} >
-			        	<TextEditor 
-			        		onEditorStateChange={this.onAnswerEditorStateChange} 
-			        		editorState={this.props.edits.answerEditorState} 
-			        		wrapperClassName={'card-answer-text-editor-wrapper-inactive cursor-pointer flex flex-col flex-grow min-h-0'} 
-			        		editorClassName={'text-editor card-answer-text-editor-view overflow-auto'} 
-			        		toolbarClassName={s('')}
-                  editorRole={EDITOR_TYPE.ANSWER}
-		        			toolbarHidden
-		        			readOnly
-	        			/>
-	        		</div>
-	        	}
-            { slackReplies.length !== 0 &&
-              <Button 
-                text={"Manage Message Display"}
-                color={"transparent"}
-                className={s("flex justify-between shadow-none")}
-                icon={ <FaSlack /> } 
-                onClick={() => this.props.openCardModal(MODAL_TYPE.THREAD)}
-                iconLeft={false}
-                underline
-              />   
-            }
-        	</div>) :
-        	<TextEditor 
-        		onEditorStateChange={this.onAnswerEditorStateChange} 
-        		editorState={this.props.answerEditorState} 
-        		wrapperClassName={'text-editor-wrapper flex-grow flex flex-col min-h-0'} 
-        		editorClassName={'text-editor card-answer-text-editor-view overflow-auto'} 
-        		toolbarClassName={''} 
-            editorRole={EDITOR_TYPE.ANSWER}
-        		toolbarHidden
-        		readOnly
-      		/>
+        <div className={s('flex-grow min-h-0 flex flex-col min-h-0')}>
+          { this.renderTextEditor(EDITOR_TYPE.ANSWER) }
+        </div>
+        {
+          isEditing && slackReplies.length !== 0 &&
+          <Button 
+            text={"Manage Message Display"}
+            color={"transparent"}
+            className={s("flex justify-between shadow-none")}
+            icon={ <FaSlack /> } 
+            onClick={() => this.props.openCardModal(MODAL_TYPE.THREAD)}
+            iconLeft={false}
+            underline
+          />  
         }
         { !isEditing && slackReplies.length !== 0 &&
         	<Button
