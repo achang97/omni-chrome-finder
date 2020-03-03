@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import Button from '../../common/Button';
 import PlaceholderImg from '../../common/PlaceholderImg';
-import { default as SlackIcon } from "../../../assets/images/icons/Slack_Mark.svg";
+import SlackIcon from "../../../assets/images/icons/Slack_Mark.svg";
 
 import { Transition } from 'react-transition-group';
 import { getBaseAnimationStyle } from '../../../utils/animateHelpers';

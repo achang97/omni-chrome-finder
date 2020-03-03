@@ -21,8 +21,8 @@ import { getStyleApplicationFn } from '../../utils/styleHelpers';
 import style from './profile.css';
 const s = getStyleApplicationFn(style);
 
-import { default as SlackIcon } from "../../assets/images/icons/Slack_Mark.svg";
-import { default as GoogleDriveIcon } from "../../assets/images/icons/GoogleDrive_Icon.svg";
+import SlackIcon from "../../assets/images/icons/Slack_Mark.svg";
+import GoogleDriveIcon from "../../assets/images/icons/GoogleDrive_Icon.svg";
 
 const GOOGLE_AUTH_URL = `${SERVER_URL}/google/authenticate`;
 
