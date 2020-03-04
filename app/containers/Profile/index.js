@@ -21,8 +21,8 @@ import { getStyleApplicationFn } from '../../utils/styleHelpers';
 import style from './profile.css';
 const s = getStyleApplicationFn(style);
 
-import { default as SlackIcon } from "../../assets/images/icons/Slack_Mark.svg";
-import { default as GoogleDriveIcon } from "../../assets/images/icons/GoogleDrive_Icon.svg";
+import SlackIcon from "../../assets/images/icons/Slack_Mark.svg";
+import GoogleDriveIcon from "../../assets/images/icons/GoogleDrive_Icon.svg";
 
 const GOOGLE_AUTH_URL = `${SERVER_URL}/google/authenticate`;
 
@@ -73,7 +73,6 @@ export default class Profile extends Component {
     //TODO: Refactor this in more beauty way.
     //CLOSE popup on finish.
     const clearToken = this.props.token.replace('Bearer ', '');
-    console.log(clearToken)
     window.open(`${GOOGLE_AUTH_URL}?auth=${clearToken}`, 'popup', 'width=600,height=600');
   }
 

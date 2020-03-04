@@ -14,8 +14,14 @@ export default function navigate(state = initialState, action) {
 
   switch (type) {
     case types.UPDATE_NAVIGATE_TAB: {
-      const { activeTab } = payload;
-      return { ...state, activeTab };
+      const { activeTab: newTab } = payload;
+
+      if (newTab === state.activeTab) {
+        return state;
+      }
+
+      // Clear all information on change
+      return { ...state, activeTab: newTab, searchText: '', filterTags: [] };
     }
 
     case types.UPDATE_NAVIGATE_SEARCH_TEXT: {

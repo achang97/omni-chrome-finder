@@ -141,6 +141,10 @@ export const SEARCH_TYPE = {
 
 export const SEARCH_INFINITE_SCROLL_OFFSET = 100;
 
+export const DOCUMENTATION_TYPE = {
+	GOOGLE_DRIVE: 'Google Drive',
+}
+
 
 // Misc.
 const NOOP = () => {};

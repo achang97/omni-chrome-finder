@@ -26,6 +26,9 @@ import CardPermissions from '../CardPermissions';
 import Select from '../../common/Select';
 import Button from '../../common/Button';
 import Loader from '../../common/Loader';
+import VideoPlayer from '../../common/VideoPlayer';
+
+import { isUploadedFile } from '../../../utils/fileHelpers';
 
 import { getBaseAnimationStyle } from '../../../utils/animateHelpers';
 import { MODAL_TYPE, PERMISSION_OPTIONS, VERIFICATION_INTERVAL_OPTIONS, FADE_IN_TRANSITIONS, CARD_STATUS } from '../../../utils/constants';
@@ -73,9 +76,32 @@ const CardSideDock = (props) => {
     );
   }
 
+  const splitAttachments = (attachments) => {
+    const { isEditable } = props;
+
+    if (isEditable) {
+      return { fileAttachments: attachments, screenRecordings: [] };
+    } else {
+      const fileAttachments = [];
+      const screenRecordings = [];
+
+      attachments.forEach(attachment => {
+        if (attachment.name.endsWith('.webm')) {
+          screenRecordings.push(attachment);
+        } else {
+          fileAttachments.push(attachment);
+        }
+      });
+
+      return { fileAttachments, screenRecordings };
+    }
+  }
+
   const renderAttachments = () => {
     const { removeCardAttachment, isEditable } = props; 
     const currAttachments = getAttribute('attachments');
+
+    const { fileAttachments, screenRecordings } = splitAttachments(currAttachments);
 
     return (
       <CardSection className={s("mt-lg")} title="Attachments">
@@ -85,7 +111,7 @@ const CardSideDock = (props) => {
           </div>
         }
         <div className={s("flex flex-wrap")}>
-          { currAttachments.map(({ name, key, location, isLoading, error }, i) => (
+          { fileAttachments.map(({ name, key, location, isLoading, error }, i) => (
             <CardAttachment
               key={key}
               fileName={name}
@@ -96,6 +122,20 @@ const CardSideDock = (props) => {
               textClassName={s("truncate")}
               onRemoveClick={isEditable ? () => removeCardAttachment(i) : null}
             />
+          ))}
+        </div>
+        { fileAttachments.length !== 0 && screenRecordings.length !== 0 &&
+          <div className={s("my-sm text-sm text-gray-light")}> Screen Recordings </div>
+        }
+        <div className={s("flex flex-wrap")}>
+          { screenRecordings.map(({ name, key, location, isLoading, error }) => (
+            <div className={s("card-side-dock-video-wrapper")}>
+              <VideoPlayer
+                url={location}
+                className={s("w-full")}
+              />
+              <div className={s("truncate text-xs mt-xs")}> {name} </div>
+            </div>
           ))}
         </div>
       </CardSection>

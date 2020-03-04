@@ -9,6 +9,10 @@ class HoverableScrollElement extends Component {
 	constructor(props) {
 		super(props);
 
+		this.state = {
+			overflowInfo: { top: false, bottom: false, right: false, left: false }
+		}
+
 		this.elemRef = React.createRef();
 		this.overflowElemRef = React.createRef();
 	}
@@ -39,7 +43,7 @@ class HoverableScrollElement extends Component {
 	}
 
 	onMouseOut = (e) => {
-		const { showCondition } = this.props;
+		const { showCondition } = this.props;		
 		if (showCondition === 'hover') {
 			this.hideOverflowElement();
 		}		
@@ -66,6 +70,17 @@ class HoverableScrollElement extends Component {
 		return { top: 0, left: 0, right: 0, bottom: 0, ...positionAdjust };
 	}
 
+	resetOverflow = (top, bottom, left, right) => { 
+		this.setState({
+			overflowInfo: {
+				top: top < 0,
+				bottom: bottom >= window.innerHeight,
+				left: left < 0,
+				right: right >= window.innerWidth
+			}
+		});
+	}
+
 	showOverflowElement = () => {
 		const { position, matchDimensions } = this.props;
 
@@ -79,19 +94,21 @@ class HoverableScrollElement extends Component {
 		// Show element to get proper measurements		
 		overflowElem.style.display = 'block';
 		const { top: overflowTop, bottom: overflowBottom, left: overflowLeft, right: overflowRight, height: overflowHeight, width: overflowWidth } = overflowElem.getBoundingClientRect();
+		this.resetOverflow(overflowTop, overflowBottom, overflowLeft, overflowRight);
 
 		// Get margin of child
 		const { marginTop, marginLeft, marginBottom, marginRight } = this.getMarginAdjustment();
+		const maxTop = window.innerHeight - overflowHeight - parentTop;
 
 		switch (position) {
 			case "left": {
 				overflowElem.style.right = `${parentRight - right + width - marginLeft + adjustRight}px`;
-				overflowElem.style.top = `${(top < parentTop ? 0 : top - parentTop) + marginTop + adjustTop}px`;
+				overflowElem.style.top = `${Math.min((top < parentTop ? 0 : top - parentTop) + marginTop + adjustTop, maxTop)}px`;
 				break;
 			}
 			case "right": {
 				overflowElem.style.left = `${left - parentLeft + width - marginRight + adjustLeft}px`;
-				overflowElem.style.top = `${(top < parentTop ? 0 : top - parentTop) + marginTop + adjustTop}px`;
+				overflowElem.style.top = `${Math.min((top < parentTop ? 0 : top - parentTop) + marginTop + adjustTop, maxTop)}px`;
 				break;
 			}
 			case "top": {
@@ -118,10 +135,12 @@ class HoverableScrollElement extends Component {
 	hideOverflowElement = () => {
 		const overflowElem = this.overflowElemRef.current;
 		overflowElem.style.display = 'none';
+		this.setState({ top: false, bottom: false, right: false, left: false });
 	}
 
 	render() {
-		const { scrollElement, scrollElementClassName, overflowElement, horizontalMarginAdjust, verticalMarginAdjust, showCondition, matchDimensions, position, ...rest } = this.props;
+		const { element, index, renderScrollElement, renderOverflowElement, scrollElementClassName, overflowElement, horizontalMarginAdjust, verticalMarginAdjust, showCondition, matchDimensions, position, ...rest } = this.props;
+		const { overflowInfo } = this.state;
 
 		return (
 			<div
@@ -131,13 +150,13 @@ class HoverableScrollElement extends Component {
 				ref={this.elemRef}
 				{...rest}
 			>
-				{ scrollElement }
+				{ renderScrollElement(element, index) }
 				<div
 					className={s("scroll-container-overflow-elem")}
 					style={{ display: 'none' }}
 					ref={this.overflowElemRef}
 				>
-					{ overflowElement }
+					{ renderOverflowElement(element, index, overflowInfo) }
 				</div>
 			</div> 
 		)
@@ -146,8 +165,10 @@ class HoverableScrollElement extends Component {
 
 HoverableScrollElement.propTypes = {
 	scrollElementClassName: PropTypes.string,
-	scrollElement: PropTypes.element.isRequired,
-	overflowElement: PropTypes.element,
+	element: PropTypes.any.isRequired,
+	index: PropTypes.number.isRequired,
+	renderScrollElement: PropTypes.func.isRequired,
+	renderOverflowElement: PropTypes.func.isRequired,
 	showCondition: PropTypes.oneOfType([
 		PropTypes.oneOf(["hover"]),
 		PropTypes.bool
