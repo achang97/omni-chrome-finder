@@ -78,7 +78,7 @@ export default function display(state = initialState, action) {
     case types.UPDATE_ASK_RECIPIENT: {
       const { index, newInfo } = payload;
       const { recipients } = state;
-      return { ...state, recipients: updateIndex(recipients, index, { ...recipients[index], ...newInfo }) }
+      return { ...state, recipients: updateIndex(recipients, index, newInfo, true) }
     }
 
     case types.START_ASK_SCREEN_RECORDING: {
@@ -121,6 +121,11 @@ export default function display(state = initialState, action) {
     case types.REMOVE_ASK_ATTACHMENT_ERROR: {
       const { key, error } = payload;
       return updateAttachmentByKey(key, { isLoading: false, error: 'Failed to remove file. Please try again.' });
+    }
+
+    case types.UPDATE_ASK_ATTACHMENT_NAME: {
+      const { key, name } = payload;
+      return updateAttachmentByKey(key, { name });
     }
 
     case types.GET_SLACK_CONVERSATIONS_REQUEST: {

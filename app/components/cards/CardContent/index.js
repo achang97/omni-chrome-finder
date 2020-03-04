@@ -673,6 +673,7 @@ class CardContent extends Component {
       <React.Fragment>
         { MODALS.map(({ modalType, ...rest }) => (
           <CardConfirmModal
+            key={modalType}
             isOpen={modalOpen[modalType]}
             onRequestClose={() => closeCardModal(modalType)}
             {...rest}

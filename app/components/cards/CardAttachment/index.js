@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import PropTypes from 'prop-types';
 import ReactTooltip from 'react-tooltip'
 
@@ -8,7 +8,9 @@ import Loader from '../../common/Loader';
 import { IoIosVideocam } from 'react-icons/io';
 import { AiFillPicture } from 'react-icons/ai';
 import { FaFileAlt } from 'react-icons/fa';
-import { MdClose, MdError } from 'react-icons/md';
+import { MdClose, MdError, MdFileDownload } from 'react-icons/md';
+
+import { NOOP } from '../../../utils/constants';
  
 import style from './card-attachment.css';
 import { getStyleApplicationFn } from '../../../utils/styleHelpers';
@@ -25,7 +27,10 @@ const getAttachmentProps = (type) => {
   }
 }
 
-const CardAttachment = ({ fileName, url, onClick, onRemoveClick, className, textClassName, removeIconClassName, fileTypeIconClassName, isLoading, error, ...rest }) => {
+const CardAttachment = ({ fileName, url, onClick, onRemoveClick, className, textClassName, removeIconClassName, fileTypeIconClassName, isEditable, onFileNameChange, isLoading, error, ...rest }) => {
+  const [isHoveringIcon, setHoverIcon] = useState(false);
+  const [isEditingFileName, toggleEditFileName] = useState(false);
+
   const onRemove = (e) => {
     e.stopPropagation();
     onRemoveClick();
@@ -39,18 +44,39 @@ const CardAttachment = ({ fileName, url, onClick, onRemoveClick, className, text
     leftIcon = <Loader size={10} />;
   } else if (error) {
     leftIcon = <MdError />;
+  } else if (isHoveringIcon) {
+    leftIcon = <MdFileDownload />;
   } else {
     leftIcon = <Icon />;
   }
 
   return (
     <div data-tip data-for="card-attachment" onClick={onClick} className={s(`card-attachment button-hover ${error ? 'text-red-500' : `text-${color}`} ${className}`)} {...rest}>
-      <div className={s(`card-attachment-file-icon ${fileTypeIconClassName}`)}> { leftIcon } </div>
-      { url ?
-        <a href={url} download className={fileNameClassName}> {fileName} </a> :
-        <div className={fileNameClassName}> {fileName} </div>
-      }
-      { onRemoveClick &&
+      <div
+        className={s(`card-attachment-file-icon ${fileTypeIconClassName}`)}
+        onMouseOver={() => setHoverIcon(true)}
+        onMouseOut={() => setHoverIcon(false)}
+      >
+        { isHoveringIcon && url ? 
+          <a href={url} download> {leftIcon} </a> :
+          leftIcon
+        }
+      </div>
+      <div className={s('card-attachment-filename-wrapper')}>
+        { isEditingFileName && isEditable ?
+          <input
+            placeholder="File Name"
+            value={fileName}
+            autoFocus
+            onChange={e => onFileNameChange(e.target.value)}
+            onBlur={() => toggleEditFileName(false)}
+          /> :
+          <div className={s(`card-attachment-filename ${fileNameClassName}`)} onClick={() => !isLoading && toggleEditFileName(true)}>
+            {fileName}
+          </div>
+        }
+      </div>
+      { isEditable && onRemoveClick && !isLoading &&
         <MdClose onClick={onRemove} className={s(`card-attachment-remove-icon ${removeIconClassName}`)} />
       }
       { error &&
@@ -73,6 +99,8 @@ CardAttachment.propTypes = {
   removeIconClassName: PropTypes.string,
   fileTypeIconClassName: PropTypes.string,
   isLoading: PropTypes.bool,
+  isEditable: PropTypes.bool,
+  onFileNameChange: PropTypes.func,
 }
 
 CardAttachment.defaultProps = {
@@ -81,6 +109,8 @@ CardAttachment.defaultProps = {
   removeIconClassName: '',
   fileTypeIconClassName: '',
   isLoading: false,
+  isEditable: false,
+  onFileNameChange: NOOP,
 }
 
 export default CardAttachment;

@@ -151,10 +151,9 @@ class Ask extends Component {
       localStream.getTracks().forEach(track => track.stop());
       endAskScreenRecording();
 
-
-      // const now = moment().format('DD.MM.YYYY HH:mm:ss');
-      // const recording = new File(recordedChunks, `Screen Recording ${now}.webm`, { type: 'video/webm' });
-      // requestAddAskAttachment(generateFileKey(), recording);
+      const now = moment().format('DD.MM.YYYY HH:mm:ss');
+      const recording = new File(recordedChunks, `Screen Recording ${now}.webm`, { type: 'video/webm' });
+      requestAddAskAttachment(generateFileKey(), recording);
     }
   };
 
@@ -170,7 +169,7 @@ class Ask extends Component {
       questionTitle, updateAskQuestionTitle,
       questionDescription, updateAskQuestionDescription,
       desktopSharing,
-      requestRemoveAskAttachment, attachments,
+      requestRemoveAskAttachment, attachments, updateAskAttachmentName,
     } = this.props;
 
     return (
@@ -247,6 +246,8 @@ class Ask extends Component {
                     error={error}
                     textClassName={s("truncate")}
                     removeIconClassName={s("ml-auto")}
+                    isEditable={true}
+                    onFileNameChange={(fileName) => updateAskAttachmentName(key, fileName)}
                     onRemoveClick={() => requestRemoveAskAttachment(key)}
                   />
                 ))}

@@ -78,11 +78,11 @@ export default class TextEditor extends Component {
           <div className={s('text-editor-toggle-rte-button absolute top-0 right-0 text-white mt-sm flex justify-center items-center text-lg shadow-md flex cursor-pointer')}
           onClick={ () => this.toggleToolbar() }>
             { hideToolbar ?
-              <div>
+              <div className={s("flex")}>
                 <IoMdArrowDropleft className={s('text-editor-toggle-arrow')}/>
                 <MdTextFormat />
               </div> :
-              <div>
+              <div className={s("flex")}>
                 <IoMdArrowDropright className={s('text-editor-toggle-arrow')}/>
               </div>
             }

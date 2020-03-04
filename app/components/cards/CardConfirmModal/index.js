@@ -13,7 +13,7 @@ import { closeCardModal } from '../../../actions/cards';
 import { getStyleApplicationFn } from '../../../utils/styleHelpers';
 const s = getStyleApplicationFn();
 
-const CardConfirmModal = ({ isOpen, title, description, body, error, onRequestClose, primaryButtonProps, secondaryButtonProps, showSecondary }) => {
+const CardConfirmModal = ({ isOpen, title, description, body, error, onRequestClose, primaryButtonProps, secondaryButtonProps, showSecondary, ...rest }) => {
   if (!secondaryButtonProps) {
     secondaryButtonProps = { text: "No", onClick: onRequestClose };
   }
@@ -27,7 +27,8 @@ const CardConfirmModal = ({ isOpen, title, description, body, error, onRequestCl
       className={s("")}
       title={title}
       important
-      >
+      {...rest}
+    >
       <div className={s("p-lg flex flex-col")}> 
         { description && <div> {description} </div> }
         { body }

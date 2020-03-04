@@ -7,7 +7,7 @@ import { connect } from 'react-redux';
 import {
   closeCardSideDock,
   openCardModal,
-  removeCardAttachment,
+  removeCardAttachment, updateCardAttachmentName,
   addCardOwner, removeCardOwner,
   updateCardTags, removeCardTag,
   updateCardKeywords,
@@ -77,9 +77,9 @@ const CardSideDock = (props) => {
   }
 
   const splitAttachments = (attachments) => {
-    const { isEditable } = props;
+    const { isEditing } = props;
 
-    if (isEditable) {
+    if (isEditing) {
       return { fileAttachments: attachments, screenRecordings: [] };
     } else {
       const fileAttachments = [];
@@ -98,7 +98,7 @@ const CardSideDock = (props) => {
   }
 
   const renderAttachments = () => {
-    const { removeCardAttachment, isEditable } = props; 
+    const { removeCardAttachment, updateCardAttachmentName, isEditing } = props; 
     const currAttachments = getAttribute('attachments');
 
     const { fileAttachments, screenRecordings } = splitAttachments(currAttachments);
@@ -112,16 +112,19 @@ const CardSideDock = (props) => {
         }
         <div className={s("flex flex-wrap")}>
           { fileAttachments.map(({ name, key, location, isLoading, error }, i) => (
-            <CardAttachment
-              key={key}
-              fileName={name}
-              url={location}
-              isLoading={isLoading}
-              error={error}
-              className={s("min-w-0")}
-              textClassName={s("truncate")}
-              onRemoveClick={isEditable ? () => removeCardAttachment(i) : null}
-            />
+            <div key={key}>
+              <CardAttachment
+                fileName={name}
+                url={location}
+                isLoading={isLoading}
+                error={error}
+                className={s("min-w-0")}
+                textClassName={s("truncate")}
+                isEditable={isEditing}
+                onFileNameChange={(fileName) => updateCardAttachmentName(i, fileName)}
+                onRemoveClick={() => removeCardAttachment(i)}
+              />
+            </div>
           ))}
         </div>
         { fileAttachments.length !== 0 && screenRecordings.length !== 0 &&
@@ -129,7 +132,7 @@ const CardSideDock = (props) => {
         }
         <div className={s("flex flex-wrap")}>
           { screenRecordings.map(({ name, key, location, isLoading, error }) => (
-            <div className={s("card-side-dock-video-wrapper")}>
+            <div className={s("card-side-dock-video-wrapper")} key={key}>
               <VideoPlayer
                 url={location}
                 className={s("w-full")}
@@ -333,7 +336,7 @@ export default connect(
     closeCardSideDock,
     openCardModal,
     addCardOwner, removeCardOwner,
-    removeCardAttachment,
+    removeCardAttachment, updateCardAttachmentName,
     updateCardTags, removeCardTag,
     updateCardKeywords,
     updateCardVerificationInterval, updateCardPermissions, updateCardPermissionGroups,
