@@ -151,9 +151,10 @@ class Ask extends Component {
       localStream.getTracks().forEach(track => track.stop());
       endAskScreenRecording();
 
-      const now = moment().format('DD.MM.YYYY HH:mm:ss');
-      const recording = new File(recordedChunks, `Screen Recording ${now}.webm`, { type: 'video/webm' });
-      requestAddAskAttachment(generateFileKey(), recording);
+
+      // const now = moment().format('DD.MM.YYYY HH:mm:ss');
+      // const recording = new File(recordedChunks, `Screen Recording ${now}.webm`, { type: 'video/webm' });
+      // requestAddAskAttachment(generateFileKey(), recording);
     }
   };
 
@@ -179,6 +180,7 @@ class Ask extends Component {
             placeholder="Question"
             onChange={e => updateAskQuestionTitle(e.target.value)}
             value={questionTitle}
+            autoFocus
             className={s("w-full mb-reg")}
           />
           <TextEditor 
@@ -193,7 +195,6 @@ class Ask extends Component {
             buttonClassName={s("primary-gradient")}
           />
         </div>
-
         <div className={s('flex px-xs pt-reg')}>
           <Button
             onClick={!desktopSharing ? this.startScreenRecording : this.endScreenRecording}
@@ -455,6 +456,7 @@ class Ask extends Component {
           value={searchText}
           placeholder="Let's find what you're looking for"
           className={s("w-full")}
+          autoFocus
         />
         <div className={s('mt-lg flex flex-row justify-center items-center')}>
           <span className={s('flex-1 text-gray-dark ml-sm text-xs font-medium')}>
