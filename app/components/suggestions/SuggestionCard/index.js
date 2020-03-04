@@ -178,7 +178,6 @@ class SuggestionCard extends Component {
             { modal ?
               (modalOpen[buttonType] && modal) :
               <CardConfirmModal
-                useModalType={false}
                 isOpen={modalOpen[buttonType]}
                 onRequestClose={() => this.toggleModal(buttonType)}
                 {...modalProps}
