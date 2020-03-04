@@ -2,20 +2,23 @@ import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 
 import ScrollElement from './ScrollElement';
+import BottomScrollListener from 'react-bottom-scroll-listener'
 
 import style from './scroll-container.css';
 import { getStyleApplicationFn } from '../../../utils/styleHelpers';
 const s = getStyleApplicationFn(style);
 
-const ScrollContainer = ({ list, renderScrollElement, renderOverflowElement, footer, showCondition, positionAdjust, horizontalMarginAdjust, verticalMarginAdjust, matchDimensions, scrollY, className, scrollContainerClassName, scrollElementClassName, children, position, relative }) => {
-	return (
-		<div className={s(`relative ${className}`)}>
-			<div className={s(`overflow-x-hidden overflow-y-auto ${scrollContainerClassName}`)}>
+const ScrollContainer = ({ list, renderScrollElement, renderOverflowElement, footer, showCondition, positionAdjust, horizontalMarginAdjust, verticalMarginAdjust, matchDimensions, scrollY, className, scrollContainerClassName, scrollElementClassName, children, position, relative, onBottom, bottomOffset }) => {
+	const renderBody = (ref) => {
+		return (
+			<div className={s(`overflow-x-hidden overflow-y-auto ${scrollContainerClassName}`)} ref={ref}>
 				{ list.map((listElem, i) => (
 					<ScrollElement
-						key={i}
-						scrollElement={renderScrollElement(listElem, i)}
-						overflowElement={renderOverflowElement(listElem, i)}
+						key={`scroll-element-${i}`}
+						element={listElem}
+						index={i}
+						renderScrollElement={renderScrollElement}
+						renderOverflowElement={renderOverflowElement}
 						scrollElementClassName={scrollElementClassName}
 						position={position}
 						showCondition={showCondition === 'hover' ? 'hover' : showCondition(listElem, i)}
@@ -26,8 +29,19 @@ const ScrollContainer = ({ list, renderScrollElement, renderOverflowElement, foo
 				))}
 				{ footer }
 			</div>
+		);		
+	}
+
+	return (
+		<div className={s(`relative ${className}`)}>
+			{ onBottom ?
+				<BottomScrollListener onBottom={onBottom} offset={bottomOffset}>
+					{scrollRef =>  renderBody(scrollRef)}
+				</BottomScrollListener> :
+				renderBody()
+			}
 		</div>
-	)
+	);	
 }
 
 ScrollContainer.propTypes = {
@@ -51,7 +65,9 @@ ScrollContainer.propTypes = {
 		bottom: PropTypes.number,
 		left: PropTypes.number,
 		right: PropTypes.number,
-	})
+	}),
+	onBottom: PropTypes.func,
+	bottomOffset: PropTypes.number,
 }
 
 ScrollContainer.defaultProps = {
@@ -63,6 +79,7 @@ ScrollContainer.defaultProps = {
 	matchDimensions: false,
 	horizontalMarginAdjust: false,
 	verticalMarginAdjust: false,
+	bottomOffset: 0,
 }
 
 export default ScrollContainer;

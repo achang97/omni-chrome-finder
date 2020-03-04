@@ -10,3 +10,9 @@
 	width: 300px;
     @apply absolute top-0 bottom-0 right-0 bg-purple-light p-2xl pointer-events-auto rounded-l-lg shadow-lg;
 }
+
+.card-side-dock-video-wrapper {
+	@apply w-1/2 p-xs;
+  	box-sizing: border-box;
+	height: min-content;
+}

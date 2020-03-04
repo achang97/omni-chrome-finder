@@ -29,15 +29,9 @@ export default function auth(state = initialState, action) {
   	}
   	case types.LOGIN_SUCCESS: {
   		const { user, token, refreshToken } = payload;
-
-      // Dispatch an action to sync login across tabs
-      chrome.storage.sync.set({
-        [getStorageName('auth')]: JSON.stringify({ user, token, refreshToken })
-      });
-
   		return { ...state, isLoggingIn: false, token, refreshToken };
   	}
-    case types.SYNC_LOGIN: {
+    case types.SYNC_AUTH_INFO: {
       const { token, refreshToken } = payload;
       return { ...state, isLoggingIn: false, loginError: null, token, refreshToken };
     }

@@ -14,8 +14,14 @@ export default function navigate(state = initialState, action) {
 
   switch (type) {
     case types.UPDATE_NAVIGATE_TAB: {
-      const { activeTab } = payload;
-      return { ...state, activeTab };
+      const { activeTab: newTab } = payload;
+
+      if (newTab === state.activeTab) {
+        return state;
+      }
+
+      // Clear all information on change
+      return { ...state, activeTab: newTab, searchText: '', filterTags: [] };
     }
 
     case types.UPDATE_NAVIGATE_SEARCH_TEXT: {
@@ -31,6 +37,17 @@ export default function navigate(state = initialState, action) {
       const { index } = payload;
       const { filterTags } = state;
       return { ...state, filterTags: removeIndex(filterTags, index) };
+    }
+
+    case types.DELETE_NAVIGATE_CARD_REQUEST: {
+      return { ...state, isDeletingCard: true, deleteError: null }
+    }
+    case types.DELETE_NAVIGATE_CARD_SUCCESS: {
+      return { ...state, isDeletingCard: false }
+    }
+    case types.DELETE_NAVIGATE_CARD_ERROR: {
+      const { error } = payload;
+      return { ...state, isDeletingCard: false, deleteError: error }
     }
 
     default:

@@ -31,17 +31,17 @@ export default function cards(state = initialState, action) {
   const { type, payload = {} } = action;
 
   /* General helpers */
-  const getIndexWithId = (id) => {
+  const getIndexById = (id) => {
     return state.cards.findIndex(card => card._id === id);
   }
 
-  const getCardWithId = (id) => {
+  const getCardById = (id) => {
     const { activeCard, cards } = state;
     if (id === activeCard._id) {
       return activeCard;
     }
 
-    const index = getIndexWithId(id);
+    const index = getIndexById(id);
     if (index === -1) {
       return null;
     } else {
@@ -51,14 +51,14 @@ export default function cards(state = initialState, action) {
 
   /* Edit Card helper functions */
   const updateActiveCard = (newInfo, newEditsInfo={}) => {
-    return { ...state, activeCard: { ...state.activeCard, ...newInfo, edits: { ...state.activeCard.edits, ...newEditsInfo } } };
+    return { ...state, activeCard: { ...state.activeCard, edits: { ...state.activeCard.edits, ...newEditsInfo }, ...newInfo } };
   }
 
   const updateActiveCardEdits = (newEditsInfo) => {
     return updateActiveCard({}, newEditsInfo);
   }
 
-  const updateCardWithId = (id, newInfo, updateCardsArray=false) => {
+  const updateCardById = (id, newInfo, updateCardsArray=false) => {
     // TODO FIX
     if (id === state.activeCard._id && !updateCardsArray) {
       return updateActiveCard(newInfo);
@@ -91,6 +91,22 @@ export default function cards(state = initialState, action) {
     return updateIndex(cards, activeCardIndex, activeCard);
   }
 
+  const updateAttachmentsByKey = (cardId, key, newInfo) => {
+    const currCard = getCardById(cardId); 
+    if (!currCard) {
+      return state;
+    }
+
+    const newCardInfo = {
+      edits: {
+        ...currCard.edits,
+        attachments: currCard.edits.attachments.map(currAttachment => currAttachment.key === key ? { ...currAttachment, ...newInfo } : currAttachment)
+      }
+    }
+
+    return updateCardById(cardId, newCardInfo);
+  }
+
   /* Card removal functions */
   const removeCardAtIndex = (index) => {
     const { activeCardIndex, cards, activeCard } = state;
@@ -113,8 +129,8 @@ export default function cards(state = initialState, action) {
     return { ...state, cards: newCards, activeCardIndex: newActiveCardIndex, activeCard: newActiveCard };
   }
 
-  const removeCardWithId = (id) => {
-    const index = getIndexWithId(id);
+  const removeCardById = (id) => {
+    const index = getIndexById(id);
     if (index !== -1) {
       return removeCardAtIndex(index);
     } else {
@@ -145,7 +161,7 @@ export default function cards(state = initialState, action) {
 
       // TODO: Check if card is already open. If so, should switch to that tab.
       if (!isNewCard) {
-        const currIndex = getIndexWithId(card._id);
+        const currIndex = getIndexById(card._id);
         if (currIndex !== -1) {
           return setActiveCardIndex(currIndex);
         }
@@ -256,18 +272,6 @@ export default function cards(state = initialState, action) {
       return updateActiveCardEdits({ slackReplies: activeCard.slackReplies });
     }
 
-    case types.ADD_CARD_ATTACHMENTS: {
-      const { attachments } = payload;
-      const { activeCard: { edits } } = state; 
-      const newAttachments = attachments.map(attachment => ({ type: 'attachment', data: attachment }));
-      return updateActiveCardEdits({ attachments: [...edits.attachments, ...newAttachments] });
-    }
-    case types.REMOVE_CARD_ATTACHMENT: {
-      const { index } = payload;
-      const { activeCard: { edits } } = state; 
-      return updateActiveCardEdits({ attachments: removeIndex(edits.attachments, index) });
-    }
-
     case types.ADD_CARD_OWNER: {
       const { owner } = payload;
       const { activeCard: { edits } } = state; 
@@ -322,13 +326,33 @@ export default function cards(state = initialState, action) {
     }
 
     /* API REQUESTS */
+    case types.ADD_CARD_ATTACHMENT_REQUEST: {
+      const { key, file } = payload;
+      const { activeCard: { edits } } = state; 
+      return updateActiveCardEdits({ attachments: [...edits.attachments, { key, name: file.name, isLoading: true, error: null }] });
+    }
+    case types.ADD_CARD_ATTACHMENT_SUCCESS: {
+      const { cardId, key, attachment } = payload;
+      return updateAttachmentsByKey(cardId, key, { isLoading: false, ...attachment });
+    }
+    case types.ADD_CARD_ATTACHMENT_ERROR: {
+      const { key, error } = payload;
+      return updateAttachmentsByKey(cardId, key, { isLoading: false, error });
+    }
+
+    case types.REMOVE_CARD_ATTACHMENT: {
+      const { index } = payload;
+      const { activeCard: { edits } } = state; 
+      return updateActiveCardEdits({ attachments: removeIndex(edits.attachments, index) });
+    }
+
     case types.GET_CARD_REQUEST: {
       return updateActiveCard({ isGettingCard: true, getError: null });
     }
     case types.GET_CARD_SUCCESS: {
-      const { id, card } = payload;
+      const { cardId, card } = payload;
 
-      const currCard = getCardWithId(id);
+      const currCard = getCardById(cardId);
       const isEditing = currCard && currCard.isEditing;
 
       let newCardInfo = convertCardToFrontendFormat(card);
@@ -337,24 +361,24 @@ export default function cards(state = initialState, action) {
       }
 
       const newInfo = { ...BASE_CARD_STATE, isGettingCard: false, hasLoaded: true, ...newCardInfo };
-      return updateCardWithId(id, newInfo, true);
+      return updateCardById(cardId, newInfo, true);
     }
     case types.GET_CARD_ERROR: {
-      const { id, error } = payload;
-      return updateCardWithId(id, { isGettingCard: false, getError: error });
+      const { cardId, error } = payload;
+      return updateCardById(cardId, { isGettingCard: false, getError: error });
     }
 
     case types.CREATE_CARD_REQUEST: {
       return updateActiveCard({ isCreatingCard: true, createError: null });
     }
     case types.CREATE_CARD_SUCCESS: {
-      const { id, card } = payload;
+      const { cardId, card } = payload;
       const newInfo = { ...BASE_CARD_STATE, isCreatingCard: false, ...convertCardToFrontendFormat(card) };
-      return updateCardWithId(id, newInfo, true);
+      return updateCardById(cardId, newInfo, true);
     }
     case types.CREATE_CARD_ERROR: {
-      const { id, error } = payload;
-      return updateCardWithId(id, { isCreatingCard: false, createError: error });
+      const { cardId, error } = payload;
+      return updateCardById(cardId, { isCreatingCard: false, createError: error });
     }
 
     case types.UPDATE_CARD_REQUEST: {
@@ -369,12 +393,12 @@ export default function cards(state = initialState, action) {
 
       // Remove card
       if (closeCard && !isOutdated) {
-        return removeCardWithId(card._id);
+        return removeCardById(card._id);
       }
 
       const newInfo = { ...BASE_CARD_STATE, isUpdatingCard: false, ...convertCardToFrontendFormat(card) };
       
-      const currCard = getCardWithId(card._id); 
+      const currCard = getCardById(card._id); 
       if (!currCard) {
         return state;
       }
@@ -386,16 +410,16 @@ export default function cards(state = initialState, action) {
         newInfo.modalOpen = { ...currCard.modalOpen, [MODAL_TYPE.CONFIRM_CLOSE]: false }
       }
 
-      return updateCardWithId(card._id, newInfo, true);
+      return updateCardById(card._id, newInfo, true);
     }
     case types.UPDATE_CARD_ERROR: {
-      const { id, error, closeCard } = payload;
+      const { cardId, error, closeCard } = payload;
       const newInfo = {
         isUpdatingCard: false,
         updateError: error,
         modalOpen: { ...BASE_MODAL_OPEN_STATE, [closeCard ? MODAL_TYPE.ERROR_UPDATE_CLOSE : MODAL_TYPE.ERROR_UPDATE]: true }
       }
-      return updateCardWithId(id, newInfo);
+      return updateCardById(cardId, newInfo);
     }
 
     case types.TOGGLE_UPVOTE_REQUEST: {
@@ -405,28 +429,28 @@ export default function cards(state = initialState, action) {
     case types.TOGGLE_UPVOTE_SUCCESS: {
       const { card } = payload;
       const newInfo = { isTogglingUpvote: false, ...convertCardToFrontendFormat(card) };
-      return updateCardWithId(card._id, newInfo, true);
+      return updateCardById(card._id, newInfo, true);
     }
     case types.TOGGLE_UPVOTE_ERROR: {
-      const { id, error, oldUpvotes } = payload;
-      return updateCardWithId(id, { isTogglingUpvote: false, toggleUpvoteError: error, upvotes: oldUpvotes });
+      const { cardId, error, oldUpvotes } = payload;
+      return updateCardById(cardId, { isTogglingUpvote: false, toggleUpvoteError: error, upvotes: oldUpvotes });
     }
 
     case types.DELETE_CARD_REQUEST: {
       return updateActiveCard({ isDeletingCard: true, deleteError: null });
     }
     case types.DELETE_CARD_SUCCESS: {
-      const { id } = payload;
-      return removeCardWithId(id);
+      const { cardId } = payload;
+      return removeCardById(cardId);
     }
     case types.DELETE_CARD_ERROR: {
-      const { id, error } = payload;
+      const { cardId, error } = payload;
       const newInfo = {
         isDeletingCard: false,
         deleteError: error,
         modalOpen: { ...BASE_MODAL_OPEN_STATE, [MODAL_TYPE.ERROR_DELETE]: true }
       };
-      return updateCardWithId(id, newInfo);
+      return updateCardById(cardId, newInfo);
     }
 
     case types.MARK_UP_TO_DATE_REQUEST:
@@ -437,12 +461,12 @@ export default function cards(state = initialState, action) {
     case types.MARK_OUT_OF_DATE_SUCCESS: {
       const { card } = payload;
       const newInfo = { isMarkingStatus: false, ...convertCardToFrontendFormat(card), outOfDateReasonInput: '', modalOpen: BASE_MODAL_OPEN_STATE };
-      return updateCardWithId(card._id, newInfo, true);
+      return updateCardById(card._id, newInfo, true);
     }
     case types.MARK_UP_TO_DATE_ERROR:
     case types.MARK_OUT_OF_DATE_ERROR: {
-      const { id, error } = payload;
-      return updateCardWithId(id, { isMarkingStatus: false, markStatusError: error });
+      const { cardId, error } = payload;
+      return updateCardById(cardId, { isMarkingStatus: false, markStatusError: error });
     }
 
     case types.ADD_BOOKMARK_REQUEST:
@@ -452,12 +476,12 @@ export default function cards(state = initialState, action) {
     case types.ADD_BOOKMARK_SUCCESS:
     case types.REMOVE_BOOKMARK_SUCCESS: {
       const { cardId } = payload;
-      return updateCardWithId(cardId, { isUpdatingBookmark: false });
+      return updateCardById(cardId, { isUpdatingBookmark: false });
     }
     case types.ADD_BOOKMARK_ERROR:
     case types.REMOVE_BOOKMARK_ERROR: {
       const { cardId, error } = payload;
-      return updateCardWithId(cardId, { isUpdatingBookmark: false, bookmarkError: error });
+      return updateCardById(cardId, { isUpdatingBookmark: false, bookmarkError: error });
     }
 
     case types.CLOSE_ALL_CARDS: {

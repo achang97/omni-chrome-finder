@@ -1,11 +1,13 @@
-// Function to get storage key names
+// General app constants
 export const getStorageName = (name) => `OMNI_EXTENSION_${name}`;
 
-// Messages
 export const CHROME_MESSAGE = {
 	TOGGLE: 'TOGGLE',
 	TAB_UPDATE: 'TAB_UPDATE',
 }
+
+export const CARD_URL_BASE = 'https://www.google.com/webhp?sxsrf=';
+export const CARD_URL_REGEX = /https:\/\/www\.google\.com\/webhp\?sxsrf=([A-Za-z0-9]{24})/;
 
 // Debounce / Animations
 export const DEBOUNCE_60_HZ = 166;
@@ -131,12 +133,18 @@ export const PERMISSION_OPTIONS = [
 	{ label: 'Specific Groups', value: PERMISSION_OPTION.SPECIFIC_GROUPS },
 ]
 
-// Search types
+// Search constants
 export const SEARCH_TYPE = {
 	POPOUT: 'POPOUT',
-	SIDEBAR: 'SIDEBAR',
-	CARDS: 'CARDS',
+	NAVIGATE: 'NAVIGATE',
 }
+
+export const SEARCH_INFINITE_SCROLL_OFFSET = 100;
+
+export const DOCUMENTATION_TYPE = {
+	GOOGLE_DRIVE: 'Google Drive',
+}
+
 
 // Misc.
 const NOOP = () => {};

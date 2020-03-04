@@ -5,7 +5,7 @@ import style from './circle-button.css';
 import { getStyleApplicationFn } from '../../../utils/styleHelpers';
 const s = getStyleApplicationFn(style);
 
-const CircleButton = ({ size, onClick, content, label, containerClassName, buttonClassName, labelClassName }) => {
+const CircleButton = ({ size, onClick, content, label, containerClassName, buttonClassName, labelClassName, ...rest }) => {
 	let buttonStyle;
 	switch (size) {
 		case 'sm':
@@ -23,7 +23,7 @@ const CircleButton = ({ size, onClick, content, label, containerClassName, butto
 	}
 
 	return (
-		<div className={s(`circle-button-container ${containerClassName}`)}>
+		<div className={s(`circle-button-container ${containerClassName}`)} {...rest}>
 			<div
 				className={s(`circle-button button-hover ${buttonClassName}`)}
 				onClick={onClick}

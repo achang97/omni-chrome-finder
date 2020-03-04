@@ -21,8 +21,8 @@ import { getStyleApplicationFn } from '../../utils/styleHelpers';
 import style from './profile.css';
 const s = getStyleApplicationFn(style);
 
-import { default as SlackIcon } from "../../assets/images/icons/Slack_Mark.svg";
-import { default as GoogleDriveIcon } from "../../assets/images/icons/GoogleDrive_Icon.svg";
+import SlackIcon from "../../assets/images/icons/Slack_Mark.svg";
+import GoogleDriveIcon from "../../assets/images/icons/GoogleDrive_Icon.svg";
 
 const GOOGLE_AUTH_URL = `${SERVER_URL}/google/authenticate`;
 
@@ -35,7 +35,8 @@ const MOCK_USER = {
 
 @connect(
   state => ({
-    ...state.profile
+    ...state.profile,
+    token: state.auth.token,
   }),
   dispatch =>
     bindActionCreators(
@@ -71,12 +72,8 @@ export default class Profile extends Component {
   openGoogleLogin() {
     //TODO: Refactor this in more beauty way.
     //CLOSE popup on finish.
-    chrome.storage.sync.get([getStorageName('auth')], (result) => {
-      const authStr = result[getStorageName('auth')];
-      const authObj = JSON.parse(authStr);
-      const clearToken = authObj.token.replace('Bearer ', '');
-      window.open(`${GOOGLE_AUTH_URL}?auth=${clearToken}`, 'popup', 'width=600,height=600');
-    });
+    const clearToken = this.props.token.replace('Bearer ', '');
+    window.open(`${GOOGLE_AUTH_URL}?auth=${clearToken}`, 'popup', 'width=600,height=600');
   }
 
   saveUser = () => {

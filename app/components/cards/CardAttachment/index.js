@@ -1,13 +1,15 @@
 import React from 'react';
 import PropTypes from 'prop-types';
+import ReactTooltip from 'react-tooltip'
 
 import CardTag from '../CardTags/CardTag';
+import Loader from '../../common/Loader';
 
 import { IoIosVideocam } from 'react-icons/io';
 import { AiFillPicture } from 'react-icons/ai';
 import { FaFileAlt } from 'react-icons/fa';
-import { MdClose } from 'react-icons/md';
-
+import { MdClose, MdError } from 'react-icons/md';
+ 
 import style from './card-attachment.css';
 import { getStyleApplicationFn } from '../../../utils/styleHelpers';
 const s = getStyleApplicationFn(style);
@@ -23,34 +25,54 @@ const getAttachmentProps = (type) => {
   }
 }
 
-const CardAttachment = ({ filename, type, onClick, onRemoveClick, className, textClassName, removeIconClassName, fileTypeIconClassName, ...rest }) => {
+const CardAttachment = ({ fileName, url, onClick, onRemoveClick, className, textClassName, removeIconClassName, fileTypeIconClassName, isLoading, error, ...rest }) => {
   const onRemove = (e) => {
     e.stopPropagation();
     onRemoveClick();
   }
 
-  const { color, underlineColor, Icon } = getAttachmentProps(type);
+  const { color, underlineColor, Icon } = getAttachmentProps();
+  const fileNameClassName = s(`underline-border ${error ? 'border-red-200' : `border-${underlineColor}`} ${textClassName}`);
+
+  let leftIcon;
+  if (isLoading) {
+    leftIcon = <Loader size={10} />;
+  } else if (error) {
+    leftIcon = <MdError />;
+  } else {
+    leftIcon = <Icon />;
+  }
 
   return (
-    <div onClick={onClick} {...rest} className={s(`card-attachment button-hover text-${color} ${className}`)}>
-      <Icon className={s(`card-attachment-file-icon ${fileTypeIconClassName}`)} />
-      <div className={s(`underline-border border-${underlineColor} ${textClassName}`)}> {filename} </div>
+    <div data-tip data-for="card-attachment" onClick={onClick} className={s(`card-attachment button-hover ${error ? 'text-red-500' : `text-${color}`} ${className}`)} {...rest}>
+      <div className={s(`card-attachment-file-icon ${fileTypeIconClassName}`)}> { leftIcon } </div>
+      { url ?
+        <a href={url} download className={fileNameClassName}> {fileName} </a> :
+        <div className={fileNameClassName}> {fileName} </div>
+      }
       { onRemoveClick &&
         <MdClose onClick={onRemove} className={s(`card-attachment-remove-icon ${removeIconClassName}`)} />
+      }
+      { error &&
+        <ReactTooltip id="card-attachment" type="error" effect="float">
+          <span className={s("font-normal text-xs")}> {error} </span>
+        </ReactTooltip>
       }
     </div> 
   )
 }
 
 CardAttachment.propTypes = {
-  filename: PropTypes.string.isRequired,
-  type: PropTypes.oneOf(["video", "image", "file"]),
+  fileName: PropTypes.string.isRequired,
+  url: PropTypes.string,
+  error: PropTypes.string,
   onClick: PropTypes.func,
   onRemoveClick: PropTypes.func,
   className: PropTypes.string,
   textClassName: PropTypes.string,
   removeIconClassName: PropTypes.string,
   fileTypeIconClassName: PropTypes.string,
+  isLoading: PropTypes.bool,
 }
 
 CardAttachment.defaultProps = {
@@ -58,6 +80,7 @@ CardAttachment.defaultProps = {
   textClassName: '',
   removeIconClassName: '',
   fileTypeIconClassName: '',
+  isLoading: false,
 }
 
 export default CardAttachment;

@@ -1,5 +1,5 @@
 import React from "react"
-import { default as SlackIcon } from "../../assets/images/icons/Slack_Mark.svg"
+import SlackIcon from "../../assets/images/icons/Slack_Mark.svg"
 
 
 import GlobalStyle from '../../styles/global.css';

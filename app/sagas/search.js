@@ -1,6 +1,7 @@
 import { delay } from 'redux-saga';
 import { take, call, fork, all, cancel, cancelled, put, select } from 'redux-saga/effects';
 import { doGet, doPost, doPut, doDelete } from '../utils/request'
+import { SEARCH_TYPE, DOCUMENTATION_TYPE } from '../utils/constants';
 import { SEARCH_CARDS_REQUEST, SEARCH_TAGS_REQUEST, SEARCH_USERS_REQUEST, SEARCH_PERMISSION_GROUPS_REQUEST } from '../actions/actionTypes';
 import { 
   handleSearchCardsSuccess, handleSearchCardsError,
@@ -35,13 +36,22 @@ export default function* watchSearchRequests() {
   }
 }
 
-function* searchCards({ type, query }) {
+function* searchCards({ type, query, clearCards }) {
   try {
+    const page = yield select(state => state.search.cards[type].page);
+
     let cards = [];
-    if (query !== '') {
-      cards = yield call(doGet, '/cards/query', query);
+    if (!query.ids || query.ids.length !== 0) {
+      cards = yield call(doGet, '/cards/query', { ...query, page });
     }
-    yield put(handleSearchCardsSuccess(type, cards));
+
+    const externalResults = [];
+    if (type === SEARCH_TYPE.POPOUT && query.q !== '') {
+      const googleResults = yield call(doGet, '/google/drive/query', { q: query.q });
+      externalResults.push({ source: DOCUMENTATION_TYPE.GOOGLE_DRIVE, results: googleResults });
+    }
+
+    yield put(handleSearchCardsSuccess(type, cards, externalResults, clearCards));
   } catch(error) {
     const { response: { data } } = error;
     yield put(handleSearchCardsError(type, data.error));

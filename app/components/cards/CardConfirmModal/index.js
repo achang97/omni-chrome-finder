@@ -15,7 +15,13 @@ const s = getStyleApplicationFn();
 
 
 const CardConfirmModal = ({ isOpen, modalType, useModalType, title, description, body, error, onRequestClose, primaryButtonProps, secondaryButtonProps, showSecondary, closeCardModal, modalOpen }) => {
-  const closeModal = () => closeCardModal(modalType);
+  const closeModal = () => {
+    if (onRequestClose) {
+      onRequestClose();
+    } else if (useModalType) {
+      closeCardModal(modalType);
+    }
+  };
   
   if (!secondaryButtonProps) {
     secondaryButtonProps = { text: "No", onClick: closeModal };
@@ -24,7 +30,7 @@ const CardConfirmModal = ({ isOpen, modalType, useModalType, title, description,
   return (
     <Modal
       isOpen={useModalType ? modalOpen[modalType] : isOpen}
-      onRequestClose={onRequestClose || closeModal}
+      onRequestClose={closeModal}
       headerClassName={s("bg-purple-light")}
       overlayClassName={s("rounded-b-lg")}
       className={s("")}
@@ -62,7 +68,7 @@ CardConfirmModal.propTypes = {
   useModalType: PropTypes.bool,
   title: PropTypes.string.isRequired,
   description: PropTypes.string,
-  body: PropTypes.elem,
+  body: PropTypes.element,
   error: PropTypes.string,
   onRequestClose: PropTypes.func,
   primaryButtonProps: PropTypes.shape({
