@@ -93,7 +93,7 @@ class RecipientDropdownBody extends Component {
                 key={mention.id}
                 className={s(`px-sm py-xs button-hover ${selectedIndex === i ? 'bg-purple-gray-10' : ''}`)}
                 onClick={() => this.onAddMention(mention)}
-                onMouseOver={() => this.setState({ selectedIndex: i })}
+                onMouseEnter={() => this.setState({ selectedIndex: i })}
               >
                 <div className={s("w-full truncate font-semibold")}> @{mention.name} </div>
               </div>

@@ -4,10 +4,11 @@ import ReactTooltip from 'react-tooltip'
 
 import CardTag from '../CardTags/CardTag';
 import Loader from '../../common/Loader';
-
-import { IoIosVideocam } from 'react-icons/io';
-import { AiFillPicture } from 'react-icons/ai';
-import { FaFileAlt } from 'react-icons/fa';
+import {
+  FaFileImage, FaFileAudio, FaFileVideo,
+  FaFilePdf, FaFileWord, FaFileExcel, FaFilePowerpoint,
+  FaFileAlt, FaFileCode, FaFileArchive,
+} from 'react-icons/fa';
 import { MdClose, MdError, MdFileDownload } from 'react-icons/md';
 
 import { NOOP } from '../../../utils/constants';
@@ -16,18 +17,68 @@ import style from './card-attachment.css';
 import { getStyleApplicationFn } from '../../../utils/styleHelpers';
 const s = getStyleApplicationFn(style);
 
-const getAttachmentProps = (type) => {
-  switch (type) {
-    case 'video':
-      return { color: 'red-500', underlineColor: 'red-200', Icon: IoIosVideocam }
-    case 'image':
-      return { color: 'purple-reg', underlineColor: 'purple-grey-50', Icon: AiFillPicture }
-    default:
-      return { color: 'blue-500', underlineColor: 'blue-200', Icon: FaFileAlt }
+const COLORS = {
+  IMAGE: { color: 'purple-reg', underlineColor: 'purple-grey-50' },
+  AUDIO_VIDEO: { color: 'red-500', underlineColor: 'red-200' },
+  EXCEL: { color: 'green-500', underlineColor: 'green-200' },
+  POWERPOINT: { color: 'orange-500', underlineColor: 'orange-200' },
+  CODE: { color: 'teal-500', underlineColor: 'teal-200' },
+  PDF: { color: 'yellow-500', underlineColor: 'yellow-200' },
+  ARCHIVE: { color: 'gray-500', underlineColor: 'gray-200' },
+  DEFAULT: { color: 'blue-500', underlineColor: 'blue-200' }
+}
+
+function getAttachmentProps(type) {
+  if (type && type.startsWith('image')) {
+    return { ...COLORS.IMAGE, Icon: FaFileImage };
+  } else if (type && type.startsWith('audio')) {
+    return { ...COLORS.AUDIO_VIDEO, Icon: FaFileAudio };
+  } else if (type && type.startsWith('video')) {
+    return { ...COLORS.AUDIO_VIDEO, Icon: FaFileVideo };
+  } else {
+    switch (type) {
+      case 'application/msword':
+      case 'application/vnd.ms-word':
+      case 'application/vnd.oasis.opendocument.text':
+      case 'application/vnd.openxmlformats-officedocument.wordprocessingml':
+      case 'application/vnd.openxmlformats-officedocument.wordprocessingml.document': {
+        return { ...COLORS.DEFAULT, Icon: FaFileWord };
+      }
+      case 'application/vnd.ms-excel':
+      case 'application/vnd.openxmlformats-officedocument.spreadsheetml':
+      case 'application/vnd.oasis.opendocument.spreadsheet':
+      case 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet': {
+        return { ...COLORS.EXCEL, Icon: FaFileExcel };
+      }
+      case 'application/vnd.ms-powerpoint':
+      case 'application/vnd.openxmlformats-officedocument.presentationml':
+      case 'application/vnd.oasis.opendocument.presentation':
+      case 'application/vnd.openxmlformats-officedocument.presentationml.presentation': {
+        return { ...COLORS.POWERPOINT, Icon: FaFilePowerpoint };
+      }
+      case 'text/html':
+      case 'application/json': {
+        return { ...COLORS.CODE, Icon: FaFileCode };
+      }
+      case 'application/pdf': {
+        return { ...COLORS.PDF, Icon: FaFilePdf };
+      }
+      case 'application/gzip':
+      case 'application/zip':
+      case 'application/x-zip-compressed':
+      case 'application/zip':
+      case 'application/octet-stream': {
+        return { ...COLORS.ARCHIVE, Icon: FaFileArchive };
+      }
+      case 'text/plain':
+      default: {
+        return { ...COLORS.DEFAULT, Icon: FaFileAlt }
+      }
+    }
   }
 }
 
-const CardAttachment = ({ fileName, url, onClick, onRemoveClick, className, textClassName, removeIconClassName, fileTypeIconClassName, isEditable, onFileNameChange, isLoading, error, ...rest }) => {
+const CardAttachment = ({ fileName, type, url, onClick, onRemoveClick, className, textClassName, removeIconClassName, typeIconClassName, isEditable, onFileNameChange, isLoading, error, ...rest }) => {
   const [isHoveringIcon, setHoverIcon] = useState(false);
   const [isEditingFileName, toggleEditFileName] = useState(false);
 
@@ -36,28 +87,31 @@ const CardAttachment = ({ fileName, url, onClick, onRemoveClick, className, text
     onRemoveClick();
   }
 
-  const { color, underlineColor, Icon } = getAttachmentProps();
+  const { color, underlineColor, Icon } = getAttachmentProps(type);
   const fileNameClassName = s(`underline-border ${error ? 'border-red-200' : `border-${underlineColor}`} ${textClassName}`);
+
+  const isDownloadable = isHoveringIcon && url;
+  const isInputTogglable = isEditable && !isLoading;
 
   let leftIcon;
   if (isLoading) {
     leftIcon = <Loader size={10} />;
   } else if (error) {
     leftIcon = <MdError />;
-  } else if (isHoveringIcon) {
+  } else if (isDownloadable) {
     leftIcon = <MdFileDownload />;
   } else {
     leftIcon = <Icon />;
   }
 
   return (
-    <div data-tip data-for="card-attachment" onClick={onClick} className={s(`card-attachment button-hover ${error ? 'text-red-500' : `text-${color}`} ${className}`)} {...rest}>
+    <div data-tip data-for="card-attachment" onClick={onClick} className={s(`card-attachment ${error ? 'text-red-500' : `text-${color}`} ${className}`)} {...rest}>
       <div
-        className={s(`card-attachment-file-icon ${fileTypeIconClassName}`)}
-        onMouseOver={() => setHoverIcon(true)}
-        onMouseOut={() => setHoverIcon(false)}
+        className={s(`card-attachment-file-icon ${isDownloadable ? 'button-hover' : ''} ${typeIconClassName}`)}
+        onMouseEnter={() => setHoverIcon(true)}
+        onMouseLeave={() => setHoverIcon(false)}
       >
-        { isHoveringIcon && url ? 
+        { isDownloadable ? 
           <a href={url} download> {leftIcon} </a> :
           leftIcon
         }
@@ -71,13 +125,13 @@ const CardAttachment = ({ fileName, url, onClick, onRemoveClick, className, text
             onChange={e => onFileNameChange(e.target.value)}
             onBlur={() => toggleEditFileName(false)}
           /> :
-          <div className={s(`card-attachment-filename ${fileNameClassName}`)} onClick={() => !isLoading && toggleEditFileName(true)}>
+          <div className={s(`card-attachment-filename ${isInputTogglable ? 'button-hover' : ''} ${fileNameClassName}`)} onClick={() => isInputTogglable && toggleEditFileName(true)}>
             {fileName}
           </div>
         }
       </div>
       { isEditable && onRemoveClick && !isLoading &&
-        <MdClose onClick={onRemove} className={s(`card-attachment-remove-icon ${removeIconClassName}`)} />
+        <MdClose onClick={onRemove} className={s(`card-attachment-remove-icon button-hover ${removeIconClassName}`)} />
       }
       { error &&
         <ReactTooltip id="card-attachment" type="error" effect="float">
@@ -90,6 +144,7 @@ const CardAttachment = ({ fileName, url, onClick, onRemoveClick, className, text
 
 CardAttachment.propTypes = {
   fileName: PropTypes.string.isRequired,
+  type: PropTypes.string.isRequired,
   url: PropTypes.string,
   error: PropTypes.string,
   onClick: PropTypes.func,
@@ -97,7 +152,7 @@ CardAttachment.propTypes = {
   className: PropTypes.string,
   textClassName: PropTypes.string,
   removeIconClassName: PropTypes.string,
-  fileTypeIconClassName: PropTypes.string,
+  typeIconClassName: PropTypes.string,
   isLoading: PropTypes.bool,
   isEditable: PropTypes.bool,
   onFileNameChange: PropTypes.func,
@@ -107,7 +162,7 @@ CardAttachment.defaultProps = {
   className: '',
   textClassName: '',
   removeIconClassName: '',
-  fileTypeIconClassName: '',
+  typeIconClassName: '',
   isLoading: false,
   isEditable: false,
   onFileNameChange: NOOP,

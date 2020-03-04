@@ -237,9 +237,10 @@ class Ask extends Component {
                     No current attachments
                   </div>
                 }
-                { attachments.map(({ name, key, location, isLoading, error }, i) => (
+                { attachments.map(({ name, key, mimetype, location, isLoading, error }, i) => (
                   <CardAttachment
                     key={key}
+                    type={mimetype}
                     fileName={name}
                     url={location}
                     isLoading={isLoading}

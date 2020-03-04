@@ -99,7 +99,7 @@ export default function display(state = initialState, action) {
 
     case types.ADD_ASK_ATTACHMENT_REQUEST: {
       const { key, file } = payload;
-      return { ...state, attachments: [...state.attachments, { key, name: file.name, isLoading: true, error: null }] };
+      return { ...state, attachments: [...state.attachments, { key, name: file.name, mimetype: file.type, isLoading: true, error: null }] };
     }
     case types.ADD_ASK_ATTACHMENT_SUCCESS: {
       const { key, attachment } = payload;

@@ -329,7 +329,7 @@ export default function cards(state = initialState, action) {
     case types.ADD_CARD_ATTACHMENT_REQUEST: {
       const { key, file } = payload;
       const { activeCard: { edits } } = state; 
-      return updateActiveCardEdits({ attachments: [...edits.attachments, { key, name: file.name, isLoading: true, error: null }] });
+      return updateActiveCardEdits({ attachments: [...edits.attachments, { key, name: file.name, mimetype: file.type, isLoading: true, error: null }] });
     }
     case types.ADD_CARD_ATTACHMENT_SUCCESS: {
       const { cardId, key, attachment } = payload;
