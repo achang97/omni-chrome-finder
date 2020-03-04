@@ -4,6 +4,7 @@ import _ from 'underscore';
 
 const BASE_CARDS_STATE = {
   cards: [],
+  externalResults: [],
   page: 0,
   hasReachedLimit: false,
 }
@@ -34,7 +35,7 @@ export default function navigate(state = initialState, action) {
       };
     }
     case types.SEARCH_CARDS_SUCCESS: {
-      const { type, cards, clearCards } = payload;
+      const { type, cards, externalResults, clearCards } = payload;
       const currSearchState = state.cards[type];
       return {
         ...state,
@@ -44,6 +45,7 @@ export default function navigate(state = initialState, action) {
             ...currSearchState,
             isSearchingCards: false,
             cards: clearCards ? cards : [...currSearchState.cards, ...cards],
+            externalResults: externalResults || currSearchState.externalResults,
             page: clearCards ? 1 : currSearchState.page + 1,
             hasReachedLimit: cards.length === 0
           }          

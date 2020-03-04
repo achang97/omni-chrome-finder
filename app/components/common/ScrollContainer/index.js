@@ -15,8 +15,10 @@ const ScrollContainer = ({ list, renderScrollElement, renderOverflowElement, foo
 				{ list.map((listElem, i) => (
 					<ScrollElement
 						key={`scroll-element-${i}`}
-						scrollElement={renderScrollElement(listElem, i)}
-						overflowElement={renderOverflowElement(listElem, i)}
+						element={listElem}
+						index={i}
+						renderScrollElement={renderScrollElement}
+						renderOverflowElement={renderOverflowElement}
 						scrollElementClassName={scrollElementClassName}
 						position={position}
 						showCondition={showCondition === 'hover' ? 'hover' : showCondition(listElem, i)}

@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import { MdCheck, MdArrowDropDown, MdMoreHoriz, MdModeEdit, MdThumbUp, MdBookmarkBorder, MdPerson, MdAttachment, MdKeyboardArrowLeft } from "react-icons/md";
 import Timeago from 'react-timeago';
-import { default as SlackIcon } from "../../../assets/images/icons/Slack_Mark.svg";
+import SlackIcon from "../../../assets/images/icons/Slack_Mark.svg";
 
 import { FaSlack } from "react-icons/fa";
 import { EditorState } from 'draft-js';
