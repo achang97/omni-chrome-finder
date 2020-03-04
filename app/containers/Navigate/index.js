@@ -183,8 +183,8 @@ export default class Navigate extends Component {
                 }}
               />
             )}
-            renderOverflowElement={({ _id, question, description, answer }) => (
-              <div className={s("flex")}>
+            renderOverflowElement={({ _id, question, description, answer }, i, overflowInfo) => (
+              <div className={s(`flex ${overflowInfo.bottom ? 'items-end' : ''}`)}>
                 <SuggestionPreview
                   _id={_id}
                   question={question}
@@ -195,7 +195,7 @@ export default class Navigate extends Component {
                   size={10}
                   color={'white'}
                   direction="left"
-                  className={s("mt-sm")}
+                  className={s("my-sm")}
                   outlineSize={1}
                   outlineColor={colors.gray.light}
                 />

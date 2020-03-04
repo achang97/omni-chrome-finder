@@ -189,8 +189,8 @@ class SuggestionPanel extends Component {
                 className={s("mx-sm")}
               />
             )}
-            renderOverflowElement={({ _id, question, description, answer }) => (
-              <div className={s("flex")}>
+            renderOverflowElement={({ _id, question, description, answer }, i, overflowInfo) => (
+              <div className={s(`flex ${overflowInfo.bottom ? 'items-end' : ''}`)}>
                 <SuggestionPreview
                   _id={_id}
                   question={question}
@@ -201,7 +201,7 @@ class SuggestionPanel extends Component {
                   size={10}
                   color={colors.purple.light}
                   direction="left"
-                  className={s("mt-sm")}
+                  className={s("my-sm")}
                   outlineSize={1}
                   outlineColor={colors.gray.light}
                 />
