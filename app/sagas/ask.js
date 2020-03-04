@@ -44,8 +44,9 @@ function* askQuestion() {
     const { contentState: descriptionContentState, text: descriptionText } = getContentStateFromEditorState(questionDescription);
 
     yield call(doPost, '/slack/sendUserMessage', {
-      channels: recipients.map(({ id, type, mentions }) => ({
+      channels: recipients.map(({ id, name, type, mentions }) => ({
         id,
+        name,
         mentions: type === SLACK_RECIPIENT_TYPE.CHANNEL ? mentions.map(mention => mention.id) : null
       })),
       question: questionTitle,
