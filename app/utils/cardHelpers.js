@@ -14,9 +14,9 @@ export function convertCardToFrontendFormat(card) {
 	));
 
 	let permissionsValue;
-	if (user_permissions.length !== 0) {
+	if (user_permissions && user_permissions.length !== 0) {
 		permissionsValue = PERMISSION_OPTION.JUST_ME;
-	} else if (permission_groups.length !== 0) {
+	} else if (permission_groups && permission_groups.length !== 0) {
 		permissionsValue = PERMISSION_OPTION.SPECIFIC_GROUPS;
 	} else {
 		permissionsValue = PERMISSION_OPTION.ANYONE;
