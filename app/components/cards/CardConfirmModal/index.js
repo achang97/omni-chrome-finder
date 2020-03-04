@@ -13,30 +13,22 @@ import { closeCardModal } from '../../../actions/cards';
 import { getStyleApplicationFn } from '../../../utils/styleHelpers';
 const s = getStyleApplicationFn();
 
-
-const CardConfirmModal = ({ isOpen, modalType, useModalType, title, description, body, error, onRequestClose, primaryButtonProps, secondaryButtonProps, showSecondary, closeCardModal, modalOpen }) => {
-  const closeModal = () => {
-    if (onRequestClose) {
-      onRequestClose();
-    } else if (useModalType) {
-      closeCardModal(modalType);
-    }
-  };
-  
+const CardConfirmModal = ({ isOpen, title, description, body, error, onRequestClose, primaryButtonProps, secondaryButtonProps, showSecondary, ...rest }) => {
   if (!secondaryButtonProps) {
-    secondaryButtonProps = { text: "No", onClick: closeModal };
+    secondaryButtonProps = { text: "No", onClick: onRequestClose };
   }
 
   return (
     <Modal
-      isOpen={useModalType ? modalOpen[modalType] : isOpen}
-      onRequestClose={closeModal}
+      isOpen={isOpen}
+      onRequestClose={onRequestClose}
       headerClassName={s("bg-purple-light")}
       overlayClassName={s("rounded-b-lg")}
       className={s("")}
       title={title}
       important
-      >
+      {...rest}
+    >
       <div className={s("p-lg flex flex-col")}> 
         { description && <div> {description} </div> }
         { body }
@@ -63,14 +55,12 @@ const CardConfirmModal = ({ isOpen, modalType, useModalType, title, description,
 }
 
 CardConfirmModal.propTypes = {
-  isOpen: PropTypes.bool,
-  modalType: PropTypes.oneOf(Object.values(MODAL_TYPE)),
-  useModalType: PropTypes.bool,
+  isOpen: PropTypes.bool.isRequired,
   title: PropTypes.string.isRequired,
   description: PropTypes.string,
   body: PropTypes.element,
   error: PropTypes.string,
-  onRequestClose: PropTypes.func,
+  onRequestClose: PropTypes.func.isRequired,
   primaryButtonProps: PropTypes.shape({
     text: PropTypes.oneOfType([PropTypes.string, PropTypes.number]).isRequired,
     onClick: PropTypes.func.isRequired,
@@ -84,14 +74,6 @@ CardConfirmModal.propTypes = {
 
 CardConfirmModal.defaultProps = {
   showSecondary: true,
-  useModalType: true,
 }
 
-export default connect(
-  state => ({
-    modalOpen: state.cards.activeCard.modalOpen,
-  }),
-  dispatch => bindActionCreators({
-    closeCardModal,
-  }, dispatch)
-)(CardConfirmModal);
+export default CardConfirmModal;

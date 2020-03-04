@@ -116,6 +116,7 @@ export default class Navigate extends Component {
             	placeholder="Search all knowledge"
             	className={s("navigate-search-input flex-grow rounded-r-none border-r-none")}
               value={searchText}
+              autoFocus
               onChange={this.updateSearchText}
           	/>
           	<div className={s("navigate-search-input-icon-container bg-white flex flex-col items-center justify-center text-purple-reg rounded-r-lg pr-reg")}> <MdSearch /> </div>

@@ -78,8 +78,8 @@ class VideoPlayer extends Component {
 
 VideoPlayer.propTypes = {
 	url: PropTypes.string,
-  fullscreenControlBarItems: PropTypes.arrayOf(CONTROL_BAR_COMPONENT_LIST),
-  minimizedControlBarItems: PropTypes.arrayOf(CONTROL_BAR_COMPONENT_LIST),
+  fullscreenControlBarItems: PropTypes.arrayOf(PropTypes.oneOf(CONTROL_BAR_COMPONENT_LIST)),
+  minimizedControlBarItems: PropTypes.arrayOf(PropTypes.oneOf(CONTROL_BAR_COMPONENT_LIST)),
 }
 
 VideoPlayer.defaultProps = {

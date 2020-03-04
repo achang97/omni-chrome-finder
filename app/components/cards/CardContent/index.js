@@ -378,7 +378,9 @@ class CardContent extends Component {
   							<div className={s("text-sm font-semibold mr-reg")}> { senderName } </div>
   							{/*<div className={s("text-sm text-gray-dark")}> { time } </div>*/}
   						</div>
-  						<div className={s("mt-sm text-sm")}> {message} </div>
+  						<div className={s("mt-sm text-sm")}>
+                {message}
+              </div>
   					</div>
   					{isEditing &&
   						<CheckBox 
@@ -549,130 +551,134 @@ class CardContent extends Component {
       requestDeleteCard, deleteError, isDeletingCard, 
       requestUpdateCard, updateError, isUpdatingCard,
       requestMarkUpToDate, requestMarkOutOfDate, isMarkingStatus, markStatusError,
-      outOfDateReasonInput, updateOutOfDateReason, cancelEditCard
+      outOfDateReasonInput, updateOutOfDateReason, cancelEditCard,
+      modalOpen
     } = this.props;
+
+    const MODALS = [
+      {
+        modalType: MODAL_TYPE.CONFIRM_CLOSE,
+        title: "Save Changes",
+        description: "You have unsaved changes on this card. Would you like to save your changes before closing?",
+        primaryButtonProps: {
+          text: "Save",
+          onClick: () => requestUpdateCard({ closeCard: true }),
+          ...this.getModalLoaderProps(isUpdatingCard)
+        },
+        secondaryButtonProps: {
+          text: "No",
+          onClick: () => closeCard(activeCardIndex)
+        }
+      }, {
+        modalType: MODAL_TYPE.CONFIRM_CLOSE_UNDOCUMENTED,
+        title: "Close Card",
+        description: "You have not yet documented this card. All changes will be lost upon closing. Are you sure you want to close this card?",
+        primaryButtonProps: {
+          text: "Close Card",
+          onClick: this.confirmCloseModalUndocumentedPrimary
+        }
+      }, {
+        modalType: MODAL_TYPE.CONFIRM_OUT_OF_DATE,
+        title: "Are you sure this card needs to be updated?",
+        body: (
+          <div>
+            <div className={s("text-xs text-gray-light mb-xs")}> Reason for Update </div>
+            <textarea
+              type="textarea"
+              className={s("w-full")}
+              placeholder="Please explain why this card is out of date."
+              value={outOfDateReasonInput}
+              onChange={e => updateOutOfDateReason(e.target.value)}
+            />
+          </div>
+        ),
+        error: markStatusError,
+        primaryButtonProps: {
+          text: "Confirm and send to owner",
+          onClick: requestMarkOutOfDate,
+          ...this.getModalLoaderProps(isMarkingStatus)
+        }
+      }, {
+        modalType: MODAL_TYPE.CONFIRM_UP_TO_DATE,
+        title: "Confirm Up-to-Date",
+        description: "Are you sure this card is now Up to Date?",
+        error: markStatusError,
+        primaryButtonProps: {
+          text: "Yes",
+          onClick: requestMarkUpToDate,
+          ...this.getModalLoaderProps(isMarkingStatus)
+        }
+      }, {
+        modalType: MODAL_TYPE.CONFIRM_UP_TO_DATE_SAVE,
+        title: "Card Update",
+        description: "This card was originally not labeled as up to date. Would you like to mark it as Up to Date?",
+        primaryButtonProps: {
+          text: "Yes",
+          onClick: requestMarkUpToDate,
+          ...this.getModalLoaderProps(isMarkingStatus)
+        }
+      }, {
+        modalType: MODAL_TYPE.ERROR_UPDATE,
+        title: "Update Error",
+        description: `${updateError} Please try again.`,
+        primaryButtonProps: {
+          text: "Ok",
+          onClick: () => closeCardModal(MODAL_TYPE.ERROR_UPDATE)
+        },
+        showSecondary: false    
+      }, {
+        modalType: MODAL_TYPE.ERROR_UPDATE_CLOSE,
+        title: "Update Error",
+        description: `${updateError} Would you still like to close the card?`,
+        primaryButtonProps: {
+          text: "Yes",
+          onClick: () => closeCard(activeCardIndex)
+        }
+      }, {
+        modalType: MODAL_TYPE.ERROR_DELETE,
+        title: "Deletion Error",
+        description: `${deleteError} Please try again.`,
+        primaryButtonProps: {
+          text: "Ok",
+          onClick: () => closeCardModal(MODAL_TYPE.ERROR_DELETE),
+        },
+        showSecondary: false
+      }, {
+        modalType: MODAL_TYPE.CONFIRM_DELETE, 
+        title: "Confirm Deletion",
+        description: "Deletion is permanent. All information will be lost upon closing. Are you sure you want to delete this card?",
+        primaryButtonProps: {
+          text: "Delete",
+          onClick: () => requestDeleteCard(activeCardIndex),
+          ...this.getModalLoaderProps(isDeletingCard)
+        }       
+      }, {
+        modalType: MODAL_TYPE.CONFIRM_CLOSE_EDIT,
+        title: "Confirm Go Back",
+        description: "You have unsaved changes on this card. Would you like to save them?",
+        primaryButtonProps: {
+          text: "Save",
+          onClick: () => requestUpdateCard({ closeCard: false }),
+          ...this.getModalLoaderProps(isUpdatingCard)
+        },
+        secondaryButtonProps: {
+          text: "No",
+          onClick: this.confirmCloseEditModalSecondary,
+        }
+      }
+    ]
+
 
     return (
       <React.Fragment>
-        <CardConfirmModal
-          modalType={MODAL_TYPE.CONFIRM_CLOSE} 
-          title="Save Changes"
-          description="You have unsaved changes on this card. Would you like to save your changes before closing?"
-          primaryButtonProps={{
-            text: "Save",
-            onClick: () => requestUpdateCard({ closeCard: true }),
-            ...this.getModalLoaderProps(isUpdatingCard)
-          }}
-          secondaryButtonProps={{
-            text: "No",
-            onClick: () => closeCard(activeCardIndex)
-          }}
-        />
-        <CardConfirmModal
-          modalType={MODAL_TYPE.CONFIRM_CLOSE_UNDOCUMENTED} 
-          title="Close Card"
-          description="You have not yet documented this card. All changes will be lost upon closing. Are you sure you want to close this card?"
-          primaryButtonProps={{
-            text: "Close Card",
-            onClick: this.confirmCloseModalUndocumentedPrimary
-          }}
-        />
-        <CardConfirmModal
-          modalType={MODAL_TYPE.CONFIRM_OUT_OF_DATE} 
-          title="Are you sure this card needs to be updated?"
-          body={
-            <div>
-              <div className={s("text-xs text-gray-light mb-xs")}> Reason for Update </div>
-              <textarea
-                type="textarea"
-                className={s("w-full")}
-                placeholder="Please explain why this card is out of date."
-                value={outOfDateReasonInput}
-                onChange={e => updateOutOfDateReason(e.target.value)}
-              />
-            </div>
-          }
-          error={markStatusError}
-          primaryButtonProps={{
-            text: "Confirm and send to owner",
-            onClick: requestMarkOutOfDate,
-            ...this.getModalLoaderProps(isMarkingStatus)
-          }}
-        />
-        <CardConfirmModal
-          modalType={MODAL_TYPE.CONFIRM_UP_TO_DATE} 
-          title="Confirm Up-to-Date"
-          description="Are you sure this card is now Up to Date?"
-          error={markStatusError}
-          primaryButtonProps={{
-            text: "Yes",
-            onClick: requestMarkUpToDate,
-            ...this.getModalLoaderProps(isMarkingStatus)
-          }}
-        />
-        <CardConfirmModal
-          modalType={MODAL_TYPE.CONFIRM_UP_TO_DATE_SAVE} 
-          title="Card Update"
-          description="This card was originally not labeled as up to date. Would you like to mark it as Up to Date?"
-          primaryButtonProps={{
-            text: "Yes",
-            onClick: requestMarkUpToDate,
-            ...this.getModalLoaderProps(isMarkingStatus)
-          }}
-        />
-        <CardConfirmModal
-          modalType={MODAL_TYPE.ERROR_UPDATE} 
-          title="Update Error"
-          description={`${updateError} Please try again.`}
-          primaryButtonProps={{
-            text: "Ok",
-            onClick: () => closeCardModal(MODAL_TYPE.ERROR_UPDATE)
-          }}
-          showSecondary={false}
-        />
-        <CardConfirmModal
-          modalType={MODAL_TYPE.ERROR_UPDATE_CLOSE} 
-          title="Update Error"
-          description={`${updateError} Would you still like to close the card?`}
-          primaryButtonProps={{
-            text: "Yes",
-            onClick: () => closeCard(activeCardIndex)
-          }}
-        />
-        <CardConfirmModal
-          modalType={MODAL_TYPE.ERROR_DELETE} 
-          title="Deletion Error"
-          description={`${deleteError} Please try again.`}
-          primaryButtonProps={{
-            text: "Ok",
-            onClick: () => closeCardModal(MODAL_TYPE.ERROR_DELETE),
-          }}
-          showSecondary={false}
-        />
-        <CardConfirmModal
-          modalType={MODAL_TYPE.CONFIRM_DELETE} 
-          title="Confirm Deletion"
-          description="Deletion is permanent. All information will be lost upon closing. Are you sure you want to delete this card?"
-          primaryButtonProps={{
-            text: "Delete",
-            onClick: () => requestDeleteCard(activeCardIndex),
-            ...this.getModalLoaderProps(isDeletingCard)
-          }}
-        />
-        <CardConfirmModal
-          modalType={MODAL_TYPE.CONFIRM_CLOSE_EDIT} 
-          title="Confirm Go Back"
-          description="You have unsaved changes on this card. Would you like to save them?"
-          primaryButtonProps={{
-            text: "Save",
-            onClick: () => requestUpdateCard({ closeCard: false }),
-            ...this.getModalLoaderProps(isUpdatingCard)
-          }}
-          secondaryButtonProps={{
-            text: "No",
-            onClick: () => this.confirmCloseEditModalSecondary(),
-          }}
-        />
+        { MODALS.map(({ modalType, ...rest }) => (
+          <CardConfirmModal
+            key={modalType}
+            isOpen={modalOpen[modalType]}
+            onRequestClose={() => closeCardModal(modalType)}
+            {...rest}
+          />
+        ))}
       </React.Fragment>
     );
   }

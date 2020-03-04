@@ -14,7 +14,7 @@
 	border-radius: 8px 0 0 8px;
 	background-image: linear-gradient(143deg, #777BAD 0%, #A0A1CD 100%);
 	height: 36px;
-	z-index: 99;
+	z-index: 10;
 }
 
 .text-editor-toggle-rte-button:hover {

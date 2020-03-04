@@ -40,6 +40,10 @@ const s = getStyleApplicationFn(style);
 export default class Create extends Component {
 	constructor(props) {
     super(props);
+
+    this.state = {
+      questionInputFocused: true,
+    }
   }  
 
 	openCard = (createModalOpen=false) => {
@@ -64,7 +68,7 @@ export default class Create extends Component {
       answerEditorState, updateCreateAnswerEditor,
     } = this.props;
 
-    const showRelatedQuestions = question.length > 0;
+    const showRelatedQuestions = question.length > 0 && this.state.questionInputFocused;
 
     return (
       <div className={s('flex flex-col flex-1 min-h-0')}>
@@ -81,11 +85,14 @@ export default class Create extends Component {
         		/>
         	</div>
         	<input
-            	placeholder="Question"
-            	className={s("w-full my-xl")}
-            	value={question}
-            	onChange={e => updateCreateQuestion(e.target.value)}
-          	/>
+          	placeholder="Question"
+          	className={s("w-full my-xl")}
+          	value={question}
+          	onChange={e => updateCreateQuestion(e.target.value)}
+            autoFocus
+            onFocus={() => this.setState({ questionInputFocused: true })}
+            onBlur={() => this.setState({ questionInputFocused: false })}
+        	/>
           {
           	isDescriptionEditorShown ?
           	<TextEditor 

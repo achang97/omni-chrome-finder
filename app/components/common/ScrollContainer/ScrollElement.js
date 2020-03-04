@@ -35,14 +35,14 @@ class HoverableScrollElement extends Component {
 		}
 	}
 
-	onMouseOver = (e) => {
+	onMouseEnter = (e) => {
 		const { showCondition } = this.props;
 		if (showCondition === 'hover') {
 			this.showOverflowElement(e);
 		}
 	}
 
-	onMouseOut = (e) => {
+	onMouseLeave = (e) => {
 		const { showCondition } = this.props;		
 		if (showCondition === 'hover') {
 			this.hideOverflowElement();
@@ -144,8 +144,8 @@ class HoverableScrollElement extends Component {
 
 		return (
 			<div
-				onMouseOver={this.onMouseOver}
-				onMouseOut={this.onMouseOut}
+				onMouseEnter={this.onMouseEnter}
+				onMouseLeave={this.onMouseLeave}
 				className={s(`scroll-container-elem ${scrollElementClassName}`)}
 				ref={this.elemRef}
 				{...rest}
