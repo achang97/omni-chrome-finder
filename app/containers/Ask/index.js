@@ -187,12 +187,6 @@ class Ask extends Component {
             editorState={questionDescription} 
             editorType="EXTENSION"
           />
-          <CircleButton
-            content={<IoMdAdd color="white" /> }
-            size="sm"
-            containerClassName={s('absolute z-10 ask-text-editor-add-button')}
-            buttonClassName={s("primary-gradient")}
-          />
         </div>
         <div className={s('flex px-xs pt-reg')}>
           <Button

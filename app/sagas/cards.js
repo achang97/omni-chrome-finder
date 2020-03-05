@@ -89,7 +89,6 @@ function* getCard() {
     const card = yield call(doGet, `/cards/${cardId}`);
     yield put(handleGetCardSuccess(cardId, card));
   } catch(error) {
-    console.log(error)
     const { response: { data } } = error;
     yield put(handleGetCardError(cardId, data.error));
   }

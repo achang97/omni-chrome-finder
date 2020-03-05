@@ -252,7 +252,6 @@ export default class Tasks extends Component {
 
   render() {
   	const { tabIndex } = this.props;
-    //console.log(this.props.tasks);
     return (
       <div className={s("flex flex-col min-h-0 flex-grow")}>
           <Tabs
