@@ -4,6 +4,9 @@ export const getStorageName = (name) => `OMNI_EXTENSION_${name}`;
 export const CHROME_MESSAGE = {
 	TOGGLE: 'TOGGLE',
 	TAB_UPDATE: 'TAB_UPDATE',
+	SEARCH: 'SEARCH',
+	ASK: 'ASK',
+	CREATE: 'CREATE',
 }
 
 export const CARD_URL_BASE = 'https://www.google.com/webhp?sxsrf=';

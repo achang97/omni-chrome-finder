@@ -106,7 +106,7 @@ class SuggestionPanel extends Component {
       <div className={s("my-sm")} key={source}>
         { results.map(({ name, id, webViewLink, iconLink }) => (
           <div key={id} className={s("suggestion-panel-external-result")}>
-            <a target="_blank" href={webViewLink}>
+            <a target="_blank" className={s("min-w-0")} href={webViewLink}>
               <div className={s("suggestion-panel-external-result-text")}> {name} </div>
             </a>
             <div className={s("suggestion-panel-external-result-icon")}>
@@ -118,15 +118,27 @@ class SuggestionPanel extends Component {
     );
   }
 
-  renderExternalDocumentationResults = () => {
+  countExternalResults = () => {
     const { externalResults } = this.props;
+    let numExternalResults = 0;
+    externalResults.forEach(({ results }) => numExternalResults += results.length);
+    return numExternalResults;
+  }
+
+  renderExternalDocumentationResults = () => {
+    const { externalResults, cards } = this.props;
+
+    const numExternalResults = this.countExternalResults();
+    if (numExternalResults === 0) {
+      return null;
+    }
 
     return (
-      <div className={s("footer flex-col bg-purple-light justify-center items-center mt-sm")} ref={this.externalResults}>
-        <div className={s("horizontal-separator")} />
+      <div className={s("flex-col bg-purple-light justify-center items-center")} ref={this.externalResults}>
+        { cards.length !== 0 && <div className={s("horizontal-separator my-sm")} /> }
         <div className={s("p-lg")}>
           <div className={s("flex justify-between items-center mb-lg")}>
-            <div className={s("text-purple-reg font-semibold")}> Found in your documentation </div>
+            <div className={s("text-purple-reg font-semibold")}> Found in your documentation ({numExternalResults}) </div>
             <MdClose className={s("button-hover")} color={colors.purple['gray-50']} onClick={() => this.setState({ showResults: false })} />
           </div>
           { externalResults.map(this.renderExternalSourceResults)}
@@ -136,10 +148,11 @@ class SuggestionPanel extends Component {
   }
 
   renderFooter = () => {
-    const { externalResults } = this.props;
+    const numExternalResults = this.countExternalResults();
 
-    let numExternalResults = 0;
-    externalResults.forEach(({ results }) => numExternalResults += results.length);
+    if (numExternalResults === 0) {
+      return null;
+    }
 
     return (
       <div className={s("suggestion-panel-footer flex-col bg-white justify-center items-center mt-sm")}>
@@ -158,6 +171,8 @@ class SuggestionPanel extends Component {
     const { isVisible, cards, isSearchingCards } = this.props;
     const { showResults } = this.state;
 
+    const numExternalResults = this.countExternalResults();
+
     if (!isVisible) {
       return null;
     }
@@ -166,19 +181,17 @@ class SuggestionPanel extends Component {
       <div className={s("suggestion-panel pt-reg w-full flex flex-col rounded-lg bg-purple-light shadow-xl border-gray-200 border border-solid")}>
         <div>
           <div className={s("px-reg text-purple-gray-50 text-sm mb-sm")}>
-            {cards.length} result{cards.length !== 1 && 's'}
+            {cards.length} card{cards.length !== 1 && 's'}
           </div>
-          { cards.length === 0 && 
-            <div className={s("my-reg")}>
-              { isSearchingCards ?
-                <Loader size="md" /> :
-                <div className={s("text-gray-light text-sm text-center")}> No results </div>
-              }
-            </div>
-          }
           <ScrollContainer
             scrollContainerClassName={s(`suggestion-panel-card-container ${showResults ? 'suggestion-panel-card-container-lg' : ''} flex flex-col`)}
             list={cards}
+            placeholder={ isSearchingCards ?
+              <Loader size="md" className={s("my-reg")} /> :
+              (numExternalResults !== 0 && !showResults && 
+                <div className={s("text-gray-light text-sm my-reg text-center")}> No results </div>
+              )
+            }
             renderScrollElement={({ _id, question, answer, createdAt, status }) => (
               <SuggestionCard
                 _id={_id}

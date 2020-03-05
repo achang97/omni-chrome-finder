@@ -154,60 +154,58 @@ export default class Navigate extends Component {
             }
           </Tabs>
         </div>
-        { cards.length === 0 && 
-          <div className={s("py-lg")}>
-            { isSearchingCards ?
-              <Loader size="md" /> :
-              <div className={s("text-gray-light text-sm text-center")}> No results </div>
-            }
-          </div>
-        }
-        { cards.length !== 0 &&
-          <ScrollContainer
-            className={s("min-h-0 flex-1")}
-            scrollContainerClassName={s(`flex flex-col h-full`)}
-            verticalMarginAdjust={true}
-            list={cards}
-            renderScrollElement={({ _id, question, answer, updatedAt, status }, i) => (
-              <SuggestionCard
+        <ScrollContainer
+          className={s("min-h-0 flex-1")}
+          scrollContainerClassName={s(`flex flex-col h-full`)}
+          verticalMarginAdjust={true}
+          list={cards}
+          placeholder={
+            <div className={s("py-lg")}>
+              { isSearchingCards ?
+                <Loader size="md" /> :
+                <div className={s("text-gray-light text-sm text-center")}> No results </div>
+              }
+            </div>
+          }
+          renderScrollElement={({ _id, question, answer, updatedAt, status }, i) => (
+            <SuggestionCard
+              _id={_id}
+              question={question}
+              answer={answer}
+              datePosted={updatedAt}
+              cardStatus={status}
+              className={s(`navigate-suggestion-card mx-reg mb-reg ${i === 0 ? 'my-reg' : ''}`)}
+              showMoreMenu
+              deleteProps={{
+                onClick: requestDeleteNavigateCard,
+                isLoading: isDeletingCard,
+                error: deleteError,
+              }}
+            />
+          )}
+          renderOverflowElement={({ _id, question, description, answer }, i, overflowInfo) => (
+            <div className={s(`flex ${overflowInfo.bottom ? 'items-end' : ''}`)}>
+              <SuggestionPreview
                 _id={_id}
                 question={question}
+                questionDescription={description}
                 answer={answer}
-                datePosted={updatedAt}
-                cardStatus={status}
-                className={s(`navigate-suggestion-card mx-reg mb-reg ${i === 0 ? 'my-reg' : ''}`)}
-                showMoreMenu
-                deleteProps={{
-                  onClick: requestDeleteNavigateCard,
-                  isLoading: isDeletingCard,
-                  error: deleteError,
-                }}
               />
-            )}
-            renderOverflowElement={({ _id, question, description, answer }, i, overflowInfo) => (
-              <div className={s(`flex ${overflowInfo.bottom ? 'items-end' : ''}`)}>
-                <SuggestionPreview
-                  _id={_id}
-                  question={question}
-                  questionDescription={description}
-                  answer={answer}
-                />
-                <Triangle
-                  size={10}
-                  color={'white'}
-                  direction="left"
-                  className={s("my-sm")}
-                  outlineSize={1}
-                  outlineColor={colors.gray.light}
-                />
-              </div>
-            )}
-            position="left"
-            onBottom={this.handleOnBottom}
-            bottomOffset={SEARCH_INFINITE_SCROLL_OFFSET}
-            footer={isSearchingCards ? <Loader size="sm" className={s("my-sm")} /> : null}
-          />
-        }
+              <Triangle
+                size={10}
+                color={'white'}
+                direction="left"
+                className={s("my-sm")}
+                outlineSize={1}
+                outlineColor={colors.gray.light}
+              />
+            </div>
+          )}
+          position="left"
+          onBottom={this.handleOnBottom}
+          bottomOffset={SEARCH_INFINITE_SCROLL_OFFSET}
+          footer={isSearchingCards && cards.length !== 0 ? <Loader size="sm" className={s("my-sm")} /> : null}
+        />
       </div>
     );
   }

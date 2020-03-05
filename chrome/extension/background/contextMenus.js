@@ -1,41 +1,67 @@
-let windowId = 0;
-const CONTEXT_MENU_ID = 'example_context_menu';
+import { CHROME_MESSAGE } from '../../../app/utils/constants';
 
-function closeIfExist() {
-  if (windowId > 0) {
-    chrome.windows.remove(windowId);
-    windowId = chrome.windows.WINDOW_ID_NONE;
-  }
+const IDS = {
+  PARENT: 'PARENT_MENU_ID',
+  SEARCH: 'SEARCH_MENU_ID',
+  ASK: 'ASK_MENU_ID',
+  CREATE: 'CREATE_MENU_ID',
 }
 
-function popWindow(type) {
-  closeIfExist();
-  const options = {
-    type: 'popup',
-    left: 100,
-    top: 100,
-    width: 800,
-    height: 475,
-  };
-  if (type === 'open') {
-    options.url = 'window.html';
-    chrome.windows.create(options, (win) => {
-      windowId = win.id;
-    });
-  }
-}
-
-chrome.contextMenus.create({
-  id: CONTEXT_MENU_ID,
-  title: 'React Chrome Extension Example',
+const BASE_CONTEXT_MENU_PROPS = {
   contexts: ['all'],
   documentUrlPatterns: [
     'https://*/*', 'http://*/*',
   ]
+}
+
+const ACTION_MENU_ITEMS = [
+  {
+    title: 'Ask Question',
+    id: IDS.ASK,   
+  }, {
+    title: 'Create Card',
+    id: IDS.CREATE,    
+  }, {
+    title: 'Search Omni',
+    id: IDS.SEARCH,
+  }, 
+]
+
+// Create Main Menu
+chrome.contextMenus.create({
+  id: IDS.PARENT,
+  title: 'Omni',
+  ...BASE_CONTEXT_MENU_PROPS
 });
 
-chrome.contextMenus.onClicked.addListener((event) => {
-  if (event.menuItemId === CONTEXT_MENU_ID) {
-    popWindow('open');
+ACTION_MENU_ITEMS.forEach(({ title, id }) => {
+  chrome.contextMenus.create({
+    parentId: IDS.PARENT,
+    title,
+    id,
+    ...BASE_CONTEXT_MENU_PROPS
+  });  
+})
+
+
+chrome.contextMenus.onClicked.addListener(({ menuItemId, selectionText='' }, tab) => {
+  const tabId = tab.id;
+
+  switch (menuItemId) {
+    case IDS.SEARCH:
+      chrome.tabs.sendMessage(tabId, { type: CHROME_MESSAGE.SEARCH, payload: { selectionText } });
+      break;
+    case IDS.ASK:
+      chrome.tabs.sendMessage(tabId, { type: CHROME_MESSAGE.ASK, payload: { selectionText } });
+      break;
+    case IDS.CREATE: {
+      chrome.tabs.sendMessage(tabId, { type: CHROME_MESSAGE.CREATE, payload: { selectionText } });
+      break;
+    }
   }
+
+
 });
+
+
+

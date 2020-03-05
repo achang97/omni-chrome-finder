@@ -10,12 +10,10 @@
     "48": "img/icon-48.png",
     "128": "img/icon-128.png"
   },
-  "web_accessible_resources": [
-    "inject.html"
-  ],
   "background": {
+    "persistent": false,
     "page": "background.html"
   },
-  "permissions": ["activeTab", "storage", "<all_urls>"],
+  "permissions": ["activeTab", "storage", "<all_urls>", "contextMenus"],
   "content_security_policy": "default-src 'self'; script-src 'self' http://localhost:3000 https://localhost:3000 'unsafe-eval'; connect-src http://localhost:3000 https://localhost:3000; style-src * 'unsafe-inline' 'self' blob:; img-src 'self' data:;"
 }
