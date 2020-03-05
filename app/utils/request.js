@@ -28,7 +28,6 @@ function* doRequest(requestType, path, data, extraParams={}) {
   // Read extra params
   const { isForm=false, cancelToken } = extraParams;
 
-
   // yield call(checkToken)
   const config = yield call(getConfig, isForm);
   config.cancelToken = cancelToken;  

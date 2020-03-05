@@ -56,10 +56,6 @@ const rootReducer = (state, action) => {
       break;
     }
     case LOGOUT: {
-      // Remove all persist information
-      syncStorage.removeItem(`persist:${getStorageName('auth')}`);
-      syncStorage.removeItem(`persist:${getStorageName('profile')}`);
-
       // Dispatch action to sync logout across tabs
       chrome.storage.sync.set({
         [getStorageName('auth')]: JSON.stringify({ user: {}, token: null, refreshToken: null }),
@@ -69,6 +65,8 @@ const rootReducer = (state, action) => {
       break;
     }
   }
+
+  syncStorage.getItem(`persist:${getStorageName('profile')}`).then(res => console.log(res));
 
   return appReducer(state, action);
 }
