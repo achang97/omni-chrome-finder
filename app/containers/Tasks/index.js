@@ -1,4 +1,4 @@
-import React, { Component, PropTypes } from 'react';
+import React, { Fragment, Component, PropTypes } from 'react';
 import Tabs from '../../components/common/Tabs/Tabs';
 import Tab from '../../components/common/Tabs/Tab';
 import TaskItem from '../../components/tasks/TaskItem';
@@ -6,8 +6,9 @@ import TaskItem from '../../components/tasks/TaskItem';
 import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
 import { colors } from '../../styles/colors';
-import { IoMdAlert } from 'react-icons/io'
-import { MdKeyboardArrowDown, MdKeyboardArrowUp, MdCheck, MdAdd, MdEdit, MdLock } from 'react-icons/md'
+import { FaDotCircle } from 'react-icons/fa';
+import { IoMdAlert } from 'react-icons/io';
+import { MdKeyboardArrowDown, MdKeyboardArrowUp, MdCheck, MdAdd, MdEdit, MdLock, MdNotifications } from 'react-icons/md';
 import { AiFillMinusCircle, AiFillQuestionCircle } from "react-icons/ai";
 import Timeago from 'react-timeago';
 
@@ -18,26 +19,6 @@ import { TASKS_TAB_OPTIONS, CARD_STATUS, TASKS_SECTIONS, TASKS_TYPES } from '../
 
 import { getStyleApplicationFn } from '../../utils/styleHelpers';
 const s = getStyleApplicationFn(style);
-
-const NOTIFICATIONS_PLACEHOLDER = [{
-	cardStatus: CARD_STATUS.NEEDS_VERIFICATION,
-	type: TASKS_TYPES.NEEDS_VERIFICATION,
-	question: "How do I delete a user in this app?",
-	flaggedBy: "John",
-	preview: "You probably build websites and think your shit is special. You think your 13 megabyte parallax-ative home page is going to get you some fucking Awwward banner you can glue to the top corner of your site.",
-}, {
-	cardStatus: CARD_STATUS.NEEDS_VERIFICATION,
-	type: TASKS_TYPES.OUT_OF_DATE,
-	question: "How do I set a new permission group for a select set of users?",
-	flaggedBy: "Jack",
-	preview: "You probably build websites and think your shit is special. You think your 13 megabyte parallax-ative home page is going to get you some fucking Awwward banner you can glue to the top corner of your site.",
-}, {
-	cardStatus: CARD_STATUS.NEEDS_VERIFICATION,
-	type: TASKS_TYPES.UNDOCUMENTED,
-	question: "How do I set a new permission group for a select set of users?",
-	flaggedBy: "Jack",
-	preview: "You probably build websites and think your shit is special. You think your 13 megabyte parallax-ative home page is going to get you some fucking Awwward banner you can glue to the top corner of your site.",
-}];
 
 const UNRESOLVED_CARDS_PLACEHOLDER = [{
 	question: "How do I do this very complex task?",
@@ -85,13 +66,36 @@ export default class Tasks extends Component {
   constructor(props) {
     super(props);
     this.state = {
-    	sectionOpen: 'ALL',
-      transitionIn: false,
+    	sectionOpen: TASKS_SECTIONS.ALL,
+
+      allTasks: [],
+      needsVerificationTasks: [],
+      outOfDateTasks: [],
+      undocumentedTasks: [],
     }
   }  
 
   componentDidMount() {
-    this.props.requestGetTasks();
+    const { requestGetTasks } = this.props;
+    requestGetTasks();
+
+  }
+
+  componentDidUpdate(prevProps) {
+    const { tasks } = this.props;
+    if(tasks !== prevProps.tasks) {
+      this.setState({
+        allTasks: tasks.filter((task) => { return (!task.resolved && TASKS_SECTIONS.ALL.types.includes(task.status))} ),
+        needsVerificationTasks: tasks.filter((task) => { return (!task.resolved && TASKS_SECTIONS.NEEDS_VERIFICATION.types.includes(task.status))} ),
+        outOfDateTasks: tasks.filter((task) => { return (!task.resolved && TASKS_SECTIONS.OUT_OF_DATE.types.includes(task.status))} ),
+        undocumentedTasks: tasks.filter((task) => { return (!task.resolved && TASKS_SECTIONS.UNDOCUMENTED.types.includes(task.status))} ),
+      })
+    }
+
+    // Typical usage (don't forget to compare props):
+    if (this.props.userID !== prevProps.userID) {
+      this.fetchData(this.props.userID);
+    }
   }
 
   updateTab = (tabIndex) => {
@@ -101,7 +105,7 @@ export default class Tasks extends Component {
 
   switchOpenSection = (newSection) => {
   	const { sectionOpen } = this.state;
-  	if (newSection === sectionOpen ) this.setState({ sectionOpen: 'ALL'});
+  	if (newSection === sectionOpen ) this.setState({ sectionOpen: TASKS_SECTIONS.ALL});
   	else this.setState({ sectionOpen: newSection });
   }
 
@@ -114,7 +118,7 @@ export default class Tasks extends Component {
       case TASKS_TYPES.OUT_OF_DATE:
         return { primaryOption: "Edit", secondaryOption: "Mark as Up to Date", primaryAction: () => { openCard({ _id: task.card._id, isEditing: true }) }, secondaryAction: () => { requestMarkUpToDateFromTasks(task.card._id) } };
       case TASKS_TYPES.UNDOCUMENTED:
-        return { primaryOption: "Create Card", secondaryOption: "Dismiss", primaryAction: () => { return }, secondaryAction: () => { return } };
+        return { primaryOption: "Create Card", secondaryOption: "Dismiss", primaryAction: () => { openCard({ _id: task.card._id, isEditing: true }) }, secondaryAction: () => { return } };
       case TASKS_TYPES.NEEDS_APPROVAL:
         return { primaryOption: "Approve", secondaryOption: "Decline", primaryAction: () => { return }, secondaryAction: () => { return } };
       default:
@@ -122,77 +126,101 @@ export default class Tasks extends Component {
     }
   }
 
-  renderTasksList = () => {
-  	const { sectionOpen } = this.state;
-    const { tasks } = this.props;
+  
+
+  renderTasksList = (filteredTasks) => {
   	return (
   		<div className={s("flex flex-col p-reg overflow-auto")}>
   			{
-	  			tasks.map((task, i) => {
-            if (!task.resolved) { 
-            	const { primaryOption, primaryAction, secondaryOption, secondaryAction } = this.getTaskItemInfo(TASKS_TYPES.OUT_OF_DATE, task);
-  	  				return (
-  	  					<TaskItem 
-  	  						index={i}
-  	  						type={TASKS_TYPES.OUT_OF_DATE}
-  	  						question={task.question}
-  	  						preview={task.card.description}
-  	  						date={<Timeago date={task.createdAt} live={false} />}
-  	  						primaryOption={primaryOption}
-  	  						primaryAction={primaryAction}
-  	  						secondaryOption={secondaryOption}
-  	  						secondaryAction={secondaryAction}
-                  transitionIn={this.state.transitionIn}
-
-                  reasonOutdated={task.card.out_of_date_reason}
-  	  						/>
-  	  				);
-            } else { return(null)}
+	  			filteredTasks.map((task, i) => {
+          	const { primaryOption, primaryAction, secondaryOption, secondaryAction } = this.getTaskItemInfo(task.status, task);
+	  				return (
+	  					<TaskItem 
+	  						index={i}
+	  						type={task.status}
+	  						question={task.question}
+	  						preview={task.card.description}
+	  						date={<Timeago date={task.createdAt} live={false} />}
+	  						primaryOption={primaryOption}
+	  						primaryAction={primaryAction}
+	  						secondaryOption={secondaryOption}
+	  						secondaryAction={secondaryAction}
+                reasonOutdated={task.card.outOfDateReason}
+	  						/>
+	  				);
 	  			})
   			}
   		</div>
   	)
   }
 
-  renderTaskSection = ({ sectionTitle, numberNotifications, icon}) => {
-  	const { sectionOpen } = this.state;
-  	const isSectionOpen = sectionOpen === sectionTitle;
-  	return (
-  		<div className={s(`${isSectionOpen ? 'min-h-0 flex flex-col' : ''}`)}>
-				<div className={s(`${isSectionOpen ? 'bg-white' : 'tasks-section-container'} flex items-center p-reg py-xs cursor-pointer`)} onClick={() => this.switchOpenSection(sectionTitle)}>
-		      	<div className={s("flex flex-grow items-center")}>
-		      		{ icon }
-		      		<div className={s("ml-reg text-sm font-semibold")}>{sectionTitle}</div>
-		      		<div className={s("ml-reg text-sm")}>({numberNotifications})</div>
-		      	</div>
-		      	{
-		      		sectionOpen === sectionTitle ?
-		      		<MdKeyboardArrowUp className={s("flex-shrink-0 text-purple-reg")}/>
-		      		:
-		      		<MdKeyboardArrowDown className={s("flex-shrink-0 text-purple-reg")}/>
-		      	}
-	      </div>
-	      {
-	      	sectionTitle === sectionOpen ?
-	      	this.renderTasksList() : null
-	      }
-      </div>
-  	)
+  getTaskSectionProps(section) {
+    const { allTasks, needsVerificationTasks, outOfDateTasks, undocumentedTasks } = this.state;
+    switch (section) {
+      case TASKS_SECTIONS.ALL:
+        return { sectionTitle: TASKS_SECTIONS.ALL.title, 
+          icon: <MdNotifications className={s("all-tasks-icon-container rounded-full")}/>,
+          filteredTasks: allTasks };
+      case TASKS_SECTIONS.NEEDS_VERIFICATION:
+        return { sectionTitle: TASKS_SECTIONS.NEEDS_VERIFICATION.title, 
+          icon: <IoMdAlert className={s("tasks-icon-container text-yellow-reg")}/>,
+          filteredTasks: needsVerificationTasks, };
+      case TASKS_SECTIONS.OUT_OF_DATE:
+        return { sectionTitle: TASKS_SECTIONS.OUT_OF_DATE.title, 
+          icon: <AiFillMinusCircle className={s("tasks-icon-container text-red-reg ")}/>,
+          filteredTasks: outOfDateTasks, };
+      case TASKS_SECTIONS.UNDOCUMENTED:
+        return { sectionTitle: TASKS_SECTIONS.UNDOCUMENTED.title, 
+          icon: <AiFillQuestionCircle className={s("tasks-icon-container text-purple-reg")}/>,
+          filteredTasks: undocumentedTasks, };
+      default:
+        return {}; 
+    }
   }
 
   renderUnresolvedTasks = () => {
+    const { sectionOpen } = this.state;
   	return (
-  		<div className={s("flex flex-col min-h-0")}>
-  			{ this.state.sectionOpen === 'ALL' && this.renderTasksList() }
-  			{ this.renderTaskSection({sectionTitle: TASKS_SECTIONS.NEEDS_VERIFICATION, 
-        		numberNotifications: 3, 
-        		icon: <IoMdAlert className={s("tasks-icon-container text-yellow-reg")}/>, }) }
-        { this.renderTaskSection({sectionTitle: TASKS_SECTIONS.OUT_OF_DATE, 
-        		numberNotifications: 7, 
-        		icon: <AiFillMinusCircle className={s("tasks-icon-container text-red-reg ")}/>, }) }
-        { this.renderTaskSection({sectionTitle: TASKS_SECTIONS.UNDOCUMENTED, 
-        		numberNotifications: 2, 
-        		icon: <AiFillQuestionCircle className={s("tasks-icon-container text-purple-reg")}/>, }) }
+  		<div className={s("flex flex-col min-h-0 flex-grow")}>
+        { Object.keys(TASKS_SECTIONS).map((section) => 
+          {
+            const { sectionTitle, icon, filteredTasks } = this.getTaskSectionProps(TASKS_SECTIONS[section]);
+            const isSectionOpen = sectionOpen === TASKS_SECTIONS[section];
+            const isAllTasksSection = TASKS_SECTIONS[section] === TASKS_SECTIONS.ALL;
+
+            return(
+              <React.Fragment>
+                { 
+                  (filteredTasks.length > 0) &&
+                  <div className={s(`${isSectionOpen ? 'min-h-0 flex flex-col flex-grow' : ''}`)}>
+                    <div className={s(`${isSectionOpen ? 'bg-white' : 'tasks-section-container'} flex items-center p-reg py-xs cursor-pointer`)} onClick={() => this.switchOpenSection(TASKS_SECTIONS[section])}>
+                        <div className={s("flex flex-grow items-center")}>
+                          { icon }
+                          <div className={s("ml-reg text-sm font-semibold")}>{sectionTitle}</div>
+                          { !isAllTasksSection &&  <div className={s("ml-reg text-sm")}>({ filteredTasks.length })</div> }
+                        </div>
+                        {
+                          !isAllTasksSection &&
+                            <React.Fragment>
+                              {
+                                isSectionOpen ? 
+                                <MdKeyboardArrowUp className={s("flex-shrink-0 text-purple-reg")}/>
+                                :
+                                <MdKeyboardArrowDown className={s("flex-shrink-0 text-purple-reg")}/>
+                              }
+                            </React.Fragment>
+                        }
+                    </div>
+                    {
+                      isSectionOpen ?
+                      this.renderTasksList(filteredTasks) : null
+                    }
+                  </div>
+                }
+              </React.Fragment>
+            )
+          }
+        )}
   		</div>
   	)
   }
@@ -214,7 +242,6 @@ export default class Tasks extends Component {
                 primaryAction={primaryAction}
                 secondaryOption={secondaryOption}
                 secondaryAction={secondaryAction}
-                transitionIn={this.state.transitionIn}
                 />
             );
 	  			})
@@ -223,15 +250,11 @@ export default class Tasks extends Component {
   	)
   }
 
-  showNotifs = () => {
-    this.setState({transitionIn: !this.state.transitionIn});
-  }
-
   render() {
   	const { tabIndex } = this.props;
-    console.log(this.props.tasks);
+    //console.log(this.props.tasks);
     return (
-      <div className={s("flex flex-col min-h-0")}>
+      <div className={s("flex flex-col min-h-0 flex-grow")}>
           <Tabs
             activeValue={tabIndex}
             className={s("flex flex-shrink-0")}
@@ -251,7 +274,6 @@ export default class Tasks extends Component {
               })
             }
           </Tabs>
-          <div onClick={() => this.showNotifs()}> Hello </div>
           { tabIndex === 0 ? 
           	this.renderUnresolvedTasks()
           	:

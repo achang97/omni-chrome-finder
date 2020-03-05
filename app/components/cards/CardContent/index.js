@@ -24,7 +24,7 @@ import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
 import * as cardActions from '../../../actions/cards';
 
-import { isValidCard, toggleUpvotes, cardStateChanged } from '../../../utils/cardHelpers';
+import { hasValidEdits, toggleUpvotes, cardStateChanged } from '../../../utils/cardHelpers';
 import { generateFileKey } from '../../../utils/fileHelpers';
 import {
   CARD_STATUS,
@@ -467,7 +467,7 @@ class CardContent extends Component {
               iconLeft={false}
               icon={isUpdatingCard && !modalOpen[MODAL_TYPE.CONFIRM_CLOSE] ? <Loader className={s("ml-sm")} size="sm" color="white" /> : null}
   	  				className={s("rounded-t-none p-lg")}
-              disabled={!isValidCard(edits) || isUpdatingCard}
+              disabled={!hasValidEdits(edits) || isUpdatingCard}
   	  				underline
 	  				/>
 	        ) :

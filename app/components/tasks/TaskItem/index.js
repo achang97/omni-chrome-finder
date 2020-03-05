@@ -4,9 +4,6 @@ import Button from '../../common/Button';
 import PlaceholderImg from '../../common/PlaceholderImg';
 import SlackIcon from "../../../assets/images/icons/Slack_Mark.svg";
 
-import { Transition } from 'react-transition-group';
-import { getBaseAnimationStyle } from '../../../utils/animateHelpers';
-
 import { TASKS_TYPES } from '../../../utils/constants';
 import { IoMdAlert } from 'react-icons/io'
 import { MdKeyboardArrowDown, MdKeyboardArrowUp, MdCheck, MdAdd, MdEdit, MdLock, MdCheckCircle } from 'react-icons/md'
@@ -88,7 +85,7 @@ class TaskItem extends Component {
         return (
           <div className={s("flex mt-reg")}>
             <div className={s("mr-sm mt-reg flex-shrink-0")}>
-              <PlaceholderImg name={reasonOutdated.sender.firstname + ' ' + reasonOutdated.sender.lastname} src={reasonOutdated.sender.profilePic} className={s('task-item-profile-picture rounded-full')}/>
+              <PlaceholderImg name={reasonOutdated.sender.firstname + ' ' + reasonOutdated.sender.lastname} src={reasonOutdated.sender.profilePic} className={s('task-item-profile-picture rounded-full text-xs')}/>
             </div>
             <div className={s("bg-gray-xlight p-reg rounded-lg w-full vertical-ellipsis-2 text-xs")}>
               {reasonOutdated.reason === '' ? 'No reason specified.' : reasonOutdated.reason}
@@ -125,24 +122,8 @@ class TaskItem extends Component {
     const containerClassName = this.getContainerClass(); 
     const { headerTitle, headerIcon, headerTitleClassName } = this.getHeaderInfo();
 
-
-    const baseStyle = getBaseAnimationStyle(SIDE_DOCK_TRANSITION_MS);
-    const transitionStyles = {
-      entering: { transform: 'translateX(0%)' },
-      entered:  { transform: 'translateX(0%)' },
-      exiting:  { transform: 'translateX(100%)' },
-      exited:  { transform: 'translateX(100%)' },
-    }
-
     return (
-      <Transition
-          in={this.props.transitionIn}
-          timeout={SIDE_DOCK_TRANSITION_MS}
-          mountOnEnter
-          unmountOnExit
-        >
-          {state => (
-      <div className={s(`flex flex-col ${containerClassName} p-lg rounded-lg ${index > 0 ? 'mt-reg' : ''}`)} style={{ ...baseStyle, ...transitionStyles[state] }}>
+      <div className={s(`flex flex-col ${containerClassName} p-lg rounded-lg ${index > 0 ? 'mt-reg' : ''}`)} >
         
         <div className={s("flex items-center")}>
           {headerIcon}
@@ -177,8 +158,6 @@ class TaskItem extends Component {
           </div>
         </div>
       </div>
-      )}
-          </Transition>
     );
   }
 }
@@ -188,7 +167,7 @@ TaskItem.propTypes = {
   type: PropTypes.oneOf([TASKS_TYPES.NEEDS_VERIFICATION, TASKS_TYPES.OUT_OF_DATE, TASKS_TYPES.UNDOCUMENTED, TASKS_TYPES.NEEDS_APPROVAL]),
   question: PropTypes.string,
   preview: PropTypes.string,
-  date: PropTypes.string,
+  date: PropTypes.object,
   primaryOption: PropTypes.string,
   primaryAction: PropTypes.func,
   secondaryOption: PropTypes.string,

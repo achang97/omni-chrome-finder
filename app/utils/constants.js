@@ -36,21 +36,6 @@ export const NAVIGATE_TAB_OPTION = {
 }
 export const NAVIGATE_TAB_OPTIONS = [NAVIGATE_TAB_OPTION.ALL, NAVIGATE_TAB_OPTION.MY_CARDS, NAVIGATE_TAB_OPTION.BOOKMARKED];
 
-// Tasks page constants
-export const TASKS_TAB_OPTIONS = ['Unresolved', 'Needs Approval'];
-export const TASKS_SECTIONS = {
-	NEEDS_VERIFICATION: "Needs Verification",
-	OUT_OF_DATE: "Out of Date",
-	UNDOCUMENTED: "Undocumented Questions",
-};
-
-export const TASKS_TYPES = {
-	NEEDS_VERIFICATION: "Needs Verification",
-	OUT_OF_DATE: "Out of Date",
-	UNDOCUMENTED: "Undocumented Questions",
-	NEEDS_APPROVAL: "Needs Approval",
-};
-
 // Profile Page Constants
 export const INTEGRATIONS = {
 	GOOGLE: "google",
@@ -132,6 +117,23 @@ export const PERMISSION_OPTIONS = [
 	{ label: 'Just Me', value: PERMISSION_OPTION.JUST_ME },
 	{ label: 'Specific Groups', value: PERMISSION_OPTION.SPECIFIC_GROUPS },
 ]
+
+// Tasks page constants
+export const TASKS_TAB_OPTIONS = ['Unresolved', 'Needs Approval'];
+
+export const TASKS_TYPES = {
+	NEEDS_VERIFICATION: CARD_STATUS.NEEDS_VERIFICATION,
+	OUT_OF_DATE: CARD_STATUS.OUT_OF_DATE,
+	UNDOCUMENTED: CARD_STATUS.NOT_DOCUMENTED,
+	NEEDS_APPROVAL: CARD_STATUS.NEEDS_APPROVAL,
+};
+
+export const TASKS_SECTIONS = {
+	ALL: { title: "All Tasks", types: [ TASKS_TYPES.NEEDS_VERIFICATION, TASKS_TYPES.OUT_OF_DATE, TASKS_TYPES.UNDOCUMENTED ] },
+	NEEDS_VERIFICATION: { title: "Needs Verification", types: [ TASKS_TYPES.NEEDS_VERIFICATION ] },
+	OUT_OF_DATE: { title: "Out of Date", types: [ TASKS_TYPES.OUT_OF_DATE ] },
+	UNDOCUMENTED: { title: "Undocumented Questions", types: [ TASKS_TYPES.UNDOCUMENTED ] },
+};
 
 // Search constants
 export const SEARCH_TYPE = {

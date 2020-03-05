@@ -4,7 +4,7 @@ import { take, call, fork, all, cancel, cancelled, put, select } from 'redux-sag
 import { doGet, doPost, doPut, doDelete } from '../utils/request'
 import { getArrayIds, getArrayField } from '../utils/arrayHelpers';
 import { getContentStateFromEditorState } from '../utils/editorHelpers';
-import { toggleUpvotes, isValidCard } from '../utils/cardHelpers';
+import { toggleUpvotes, hasValidEdits } from '../utils/cardHelpers';
 import { convertAttachmentsToBackendFormat } from '../utils/fileHelpers';
 import { CARD_STATUS, PERMISSION_OPTION, AUTO_REMIND_VALUE } from '../utils/constants';
 import { GET_CARD_REQUEST, CREATE_CARD_REQUEST, UPDATE_CARD_REQUEST, TOGGLE_UPVOTE_REQUEST, DELETE_CARD_REQUEST, MARK_UP_TO_DATE_REQUEST, MARK_OUT_OF_DATE_REQUEST, ADD_BOOKMARK_REQUEST, REMOVE_BOOKMARK_REQUEST, ADD_CARD_ATTACHMENT_REQUEST } from '../actions/actionTypes';
@@ -104,25 +104,25 @@ function* convertCardToBackendFormat(isNewCard) {
   const { question, answerEditorState, descriptionEditorState, owners, tags, keywords, verificationInterval, permissions, permissionGroups, cardStatus, slackReplies, attachments } = yield select(state => state.cards.activeCard.edits);
   const _id = yield call(getUserId);
 
-  const { contentState: descriptionContentState, text: descriptionText } = getContentStateFromEditorState(descriptionEditorState);
-  const { contentState: answerContentState, text: answerText } = getContentStateFromEditorState(answerEditorState);
+  const { contentState: contentStateDescription, text: descriptionText } = getContentStateFromEditorState(descriptionEditorState);
+  const { contentState: contentStateAnswer, text: answerText } = getContentStateFromEditorState(answerEditorState);
 
   const verificationInfo = { autoupdate: verificationInterval.value === AUTO_REMIND_VALUE };
   if (!verificationInfo.autoupdate) {
-    verificationInfo.update_interval = verificationInterval.value;
+    verificationInfo.updateInterval = verificationInterval.value;
   }
 
   const permissionsInfo = {
-    user_permissions: permissions.value === PERMISSION_OPTION.JUST_ME ? [_id] : [],
-    permission_groups: permissions.value === PERMISSION_OPTION.SPECIFIC_GROUPS ? permissionGroups : [],
+    userPermissions: permissions.value === PERMISSION_OPTION.JUST_ME ? [_id] : [],
+    permissionGroups: permissions.value === PERMISSION_OPTION.SPECIFIC_GROUPS ? permissionGroups : [],
   }
 
   return {
     question,
     description: descriptionText,
-    content_state_description: descriptionContentState,
+    contentStateDescription,
     answer: answerText,
-    content_state_answer: answerContentState,
+    contentStateAnswer,
     owners: getArrayIds(owners),
     tags:  tags,
     keywords: getArrayField(keywords, 'value'),
@@ -137,9 +137,9 @@ function* convertCardToBackendFormat(isNewCard) {
 function* createCard() {
   const activeCard = yield call(getActiveCard);
   const cardId = activeCard._id;
-  
+
   try {
-    if (isValidCard(activeCard)) {
+    if (hasValidEdits(activeCard.edits)) {
       const newCardInfo = yield call(convertCardToBackendFormat, true);
       const card = yield call(doPost, '/cards', newCardInfo);
       yield put(handleCreateCardSuccess(cardId, card));      
@@ -157,7 +157,7 @@ function* updateCard({ isUndocumented, closeCard }) {
   const cardId = activeCard._id;
 
   try {
-    if (isValidCard(activeCard)) {
+    if (hasValidEdits(activeCard.edits)) {
       const newCardInfo = yield call(convertCardToBackendFormat, isUndocumented);
       const card = yield call(doPut, `/cards/${cardId}`, newCardInfo);
       yield put(handleUpdateCardSuccess(card, closeCard));

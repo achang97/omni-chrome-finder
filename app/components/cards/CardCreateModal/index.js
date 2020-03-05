@@ -15,7 +15,7 @@ import Modal from '../../common/Modal';
 import { MdLock, MdAutorenew } from 'react-icons/md';
 
 import { PERMISSION_OPTION, VERIFICATION_INTERVAL_OPTIONS, CARD_STATUS, MODAL_TYPE, SEARCH_TYPE } from '../../../utils/constants';
-import { isValidCard, isExistingCard } from '../../../utils/cardHelpers';
+import { hasValidEdits, isExistingCard } from '../../../utils/cardHelpers';
 
 import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
@@ -203,7 +203,7 @@ class CardCreateModal extends Component {
           color={"primary"}
           iconLeft={false}
           icon={isLoading ? <Loader className={s("ml-sm")} size="sm" color="white" /> : null}
-          disabled={!isValidCard(edits) || isLoading}
+          disabled={!hasValidEdits(edits) || isLoading}
         />
       </Modal>
     );    
