@@ -1,4 +1,4 @@
-import axios from 'axios'
+import axios, { isCancel } from 'axios'
 import { call, select, put } from 'redux-saga/effects';
 import { logout } from '../actions/auth';
 
@@ -22,11 +22,16 @@ function isValidResponse(response) {
   return response.status >= 200 && response.status < 300;
 }
 
-function* doRequest(requestType, path, data, isForm=false) {
+function* doRequest(requestType, path, data, extraParams={}) {
   const url = `${SERVER_URL}${path}`
 
+  // Read extra params
+  const { isForm=false, cancelToken } = extraParams;
+
+
   // yield call(checkToken)
-  const config = yield call(getConfig, isForm)
+  const config = yield call(getConfig, isForm);
+  config.cancelToken = cancelToken;  
 
   try {
     let response;
@@ -54,39 +59,37 @@ function* doRequest(requestType, path, data, isForm=false) {
     }
     return response.data
   } catch (error) {
-    throw {
-      response: error.response
-    }
+    throw error;
   }
 }
 
-export function* doPost(path, data, isForm) {
+export function* doPost(path, data, extraParams) {
   try {
-    return yield call(doRequest, REQUEST_TYPE.POST, path, data, isForm);
+    return yield call(doRequest, REQUEST_TYPE.POST, path, data, extraParams);
   } catch (error) {
     throw error;
   }
 }
 
-export function* doPut(path, data, isForm) {
+export function* doPut(path, data, extraParams) {
   try {
-    return yield call(doRequest, REQUEST_TYPE.PUT, path, data, isForm);
+    return yield call(doRequest, REQUEST_TYPE.PUT, path, data, extraParams);
   } catch (error) {
     throw error;
   }
 }
 
-export function* doGet(path, data, isForm) {
+export function* doGet(path, data, extraParams) {
   try {
-    return yield call(doRequest, REQUEST_TYPE.GET, path, data, isForm);
+    return yield call(doRequest, REQUEST_TYPE.GET, path, data, extraParams);
   } catch (error) {
     throw error;
   }
 }
 
-export function* doDelete(path, data, isForm) {
+export function* doDelete(path, data, extraParams) {
   try {
-    return yield call(doRequest, REQUEST_TYPE.DELETE, path, data, isForm);
+    return yield call(doRequest, REQUEST_TYPE.DELETE, path, data, extraParams);
   } catch (error) {
     throw error;
   }

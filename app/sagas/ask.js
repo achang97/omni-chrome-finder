@@ -76,7 +76,7 @@ function* addAttachment({ key, file }) {
     const formData = new FormData();
     formData.append('file', file);
 
-    const attachment = yield call(doPost, '/files/upload', formData, true);
+    const attachment = yield call(doPost, '/files/upload', formData, { isForm: true });
     yield put(handleAddAskAttachmentSuccess(key, attachment));
   } catch(error) {
     const { response: { data } } = error;
