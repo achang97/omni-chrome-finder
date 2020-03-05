@@ -2,6 +2,13 @@ import axios from 'axios'
 import { call, select, put } from 'redux-saga/effects';
 import { logout } from '../actions/auth';
 
+const REQUEST_TYPE = {
+  POST: 'POST',
+  PUT: 'PUT',
+  GET: 'GET',
+  DELETE: 'DELETE',
+}
+
 let SERVER_URL;
 if (process.env.NODE_ENV === 'development') {
   SERVER_URL = 'http://localhost:8000/v1';
@@ -15,14 +22,33 @@ function isValidResponse(response) {
   return response.status >= 200 && response.status < 300;
 }
 
-export function* doPost(path, data, isForm=false) {
+function* doRequest(requestType, path, data, isForm=false) {
   const url = `${SERVER_URL}${path}`
 
   // yield call(checkToken)
   const config = yield call(getConfig, isForm)
 
   try {
-    const response = yield call([axios, axios.post], url, data, config)
+    let response;
+    switch (requestType) {
+      case REQUEST_TYPE.POST: {
+        response = yield call([axios, axios.post], url, data, config);
+        break;
+      }
+      case REQUEST_TYPE.PUT: {
+        response = yield call([axios, axios.put], url, data, config);
+        break;
+      }
+      case REQUEST_TYPE.GET: {
+        response = yield call([axios, axios.get], url, { params: { ...data}, ...config });
+        break;
+      }
+      case REQUEST_TYPE.DELETE: {
+        response = yield call([axios, axios.delete], url, {...config, data });
+        break;
+      }
+    }
+
     if (!isValidResponse(response)) {
       throw { response }
     }
@@ -34,60 +60,35 @@ export function* doPost(path, data, isForm=false) {
   }
 }
 
-export function* doPut(path, data, isForm=false) {
-  const url = `${SERVER_URL}${path}`
-
-  // yield call(checkToken)
-  const config = yield call(getConfig, isForm)
-
+export function* doPost(path, data, isForm) {
   try {
-    const response = yield call([axios, axios.put], url, data, config)
-    if (!isValidResponse(response)) {
-      throw { response }
-    }
-    return response.data
+    return yield call(doRequest, REQUEST_TYPE.POST, path, data, isForm);
   } catch (error) {
-    throw {
-      response: error.response
-    }
+    throw error;
   }
 }
 
-export function* doGet(path, data, isForm=false) {
-  const url = `${SERVER_URL}${path}`
-
-  // yield call(checkToken)
-  const config = yield call(getConfig, isForm)
-
+export function* doPut(path, data, isForm) {
   try {
-    const response = yield call([axios, axios.get], url, { params: { ...data}, ...config });
-    if (!isValidResponse(response)) {
-      throw { response }
-    }
-    return response.data
+    return yield call(doRequest, REQUEST_TYPE.PUT, path, data, isForm);
   } catch (error) {
-    throw {
-      response: error.response
-    }
+    throw error;
   }
 }
 
-export function* doDelete(path, data, isForm=false) {
-  const url = `${SERVER_URL}${path}`
-
-  // yield call(checkToken)
-  const config = yield call(getConfig, isForm)
-
+export function* doGet(path, data, isForm) {
   try {
-    const response = yield call([axios, axios.delete], url, {...config, data })
-    if (!isValidResponse(response)) {
-      throw { response }
-    }
-    return response.data
-  } catch(error) {
-    throw {
-      response: error.response
-    }
+    return yield call(doRequest, REQUEST_TYPE.GET, path, data, isForm);
+  } catch (error) {
+    throw error;
+  }
+}
+
+export function* doDelete(path, data, isForm) {
+  try {
+    return yield call(doRequest, REQUEST_TYPE.DELETE, path, data, isForm);
+  } catch (error) {
+    throw error;
   }
 }
 
