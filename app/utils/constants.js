@@ -152,4 +152,4 @@ export const DOCUMENTATION_TYPE = {
 
 
 // Misc.
-const NOOP = () => {};
+export const NOOP = () => {};

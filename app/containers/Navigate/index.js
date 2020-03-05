@@ -98,6 +98,55 @@ export default class Navigate extends Component {
     }
   }
 
+  renderScrollElement = ({ _id, question, answer, updatedAt, status }, i) => {
+    const { requestDeleteNavigateCard, isDeletingCard, deleteError } = this.props;
+
+    return (
+      <SuggestionCard
+        _id={_id}
+        question={question}
+        answer={answer}
+        datePosted={updatedAt}
+        cardStatus={status}
+        className={s(`navigate-suggestion-card mx-reg mb-reg ${i === 0 ? 'my-reg' : ''}`)}
+        showMoreMenu
+        deleteProps={{
+          onClick: requestDeleteNavigateCard,
+          isLoading: isDeletingCard,
+          error: deleteError,
+        }}
+      />
+    );
+  }
+
+  renderOverflowElement = ({ _id, question, description, answer }, i, positions) => {
+    const { overflow, scroll } = positions;
+
+    const overflowTop = overflow.top || 0;
+    const scrollTop = scroll.top || 0;
+    
+    const triangleMarginTop = Math.max(0, scrollTop - overflowTop);
+
+    return (
+      <div className={s("flex")}>
+        <SuggestionPreview
+          _id={_id}
+          question={question}
+          questionDescription={description}
+          answer={answer}
+        />
+        <Triangle
+          size={10}
+          color={'white'}
+          direction="left"
+          style={{ marginTop: triangleMarginTop }}
+          outlineSize={1}
+          outlineColor={colors.gray.light}
+        />
+      </div>
+    );
+  }
+
   render() {
     const {
       activeTab, updateNavigateTab,
@@ -167,40 +216,8 @@ export default class Navigate extends Component {
               }
             </div>
           }
-          renderScrollElement={({ _id, question, answer, updatedAt, status }, i) => (
-            <SuggestionCard
-              _id={_id}
-              question={question}
-              answer={answer}
-              datePosted={updatedAt}
-              cardStatus={status}
-              className={s(`navigate-suggestion-card mx-reg mb-reg ${i === 0 ? 'my-reg' : ''}`)}
-              showMoreMenu
-              deleteProps={{
-                onClick: requestDeleteNavigateCard,
-                isLoading: isDeletingCard,
-                error: deleteError,
-              }}
-            />
-          )}
-          renderOverflowElement={({ _id, question, description, answer }, i, overflowInfo) => (
-            <div className={s(`flex ${overflowInfo.bottom ? 'items-end' : ''}`)}>
-              <SuggestionPreview
-                _id={_id}
-                question={question}
-                questionDescription={description}
-                answer={answer}
-              />
-              <Triangle
-                size={10}
-                color={'white'}
-                direction="left"
-                className={s("my-sm")}
-                outlineSize={1}
-                outlineColor={colors.gray.light}
-              />
-            </div>
-          )}
+          renderScrollElement={this.renderScrollElement}
+          renderOverflowElement={this.renderOverflowElement}
           position="left"
           onBottom={this.handleOnBottom}
           bottomOffset={SEARCH_INFINITE_SCROLL_OFFSET}

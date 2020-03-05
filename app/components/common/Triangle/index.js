@@ -37,12 +37,12 @@ const getStyle = (direction, color, size, isInner) => {
 	}	
 }
 
-const Triangle = ({ direction, color, size, outlineSize, outlineColor, className }) => {
+const Triangle = ({ direction, color, size, outlineSize, outlineColor, className, style }) => {
 	const innerStyle = { ...getStyle(direction, color, size, true), top: `-${size}px`, left: `${outlineSize}px` };
 	const outerStyle = getStyle(direction, outlineColor, size + outlineSize, false);
 
 	return (
-		<div className={s(`w-0 h-0 flex items-center ${className}`)} style={outerStyle}>
+		<div className={s(`w-0 h-0 flex items-center ${className}`)} style={{ ...outerStyle, ...style }}>
 			<div className={s("w-0 h-0")} style={innerStyle}/>
 		</div>
 	)
@@ -53,6 +53,7 @@ Triangle.propTypes = {
 	color: PropTypes.string.isRequired,
 	size: PropTypes.number.isRequired,
 	className: PropTypes.string,
+	style: PropTypes.object,
 	outlineSize: PropTypes.number,
 	outlineColor: PropTypes.string,
 }
@@ -61,6 +62,7 @@ Triangle.defaultProps = {
 	className: '',
 	outlineSize: 0,
 	outlineColor: 'transparent',
+	style: {},
 }
 
 export default Triangle;

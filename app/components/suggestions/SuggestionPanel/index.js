@@ -130,7 +130,8 @@ class SuggestionPanel extends Component {
 
     const numExternalResults = this.countExternalResults();
     if (numExternalResults === 0) {
-      return null;
+      // AnimateHeight expects children prop
+      return <div />;
     }
 
     return (
@@ -167,6 +168,45 @@ class SuggestionPanel extends Component {
     );
   }
 
+  renderScrollElement = ({ _id, question, answer, createdAt, status }) => (
+    <SuggestionCard
+      _id={_id}
+      question={question}
+      answer={answer}
+      datePosted={createdAt}
+      cardStatus={status}
+      className={s("mx-sm")}
+    />
+  );
+
+  renderOverflowElement = ({ _id, question, description, answer }, i, positions) => {
+    const { overflow, scroll } = positions;
+
+    const overflowTop = overflow.top || 0;
+    const scrollTop = scroll.top || 0;
+
+    const triangleMarginTop = Math.max(0, scrollTop - overflowTop);
+
+    return (
+      <div className={s("flex")}>
+        <SuggestionPreview
+          _id={_id}
+          question={question}
+          questionDescription={description}
+          answer={answer}
+        />
+        <Triangle
+          size={10}
+          color={colors.purple.light}
+          direction="left"
+          style={{ marginTop: triangleMarginTop }}
+          outlineSize={1}
+          outlineColor={colors.gray.light}
+        />
+      </div>
+    );
+  }
+
   render() {
     const { isVisible, cards, isSearchingCards } = this.props;
     const { showResults } = this.state;
@@ -188,38 +228,13 @@ class SuggestionPanel extends Component {
             list={cards}
             placeholder={ isSearchingCards ?
               <Loader size="md" className={s("my-reg")} /> :
-              (numExternalResults !== 0 && !showResults && 
-                <div className={s("text-gray-light text-sm my-reg text-center")}> No results </div>
+              (numExternalResults !== 0 && !showResults ?
+                <div className={s("text-gray-light text-sm my-reg text-center")}> No results </div> :
+                null
               )
             }
-            renderScrollElement={({ _id, question, answer, createdAt, status }) => (
-              <SuggestionCard
-                _id={_id}
-                question={question}
-                answer={answer}
-                datePosted={createdAt}
-                cardStatus={status}
-                className={s("mx-sm")}
-              />
-            )}
-            renderOverflowElement={({ _id, question, description, answer }, i, overflowInfo) => (
-              <div className={s(`flex ${overflowInfo.bottom ? 'items-end' : ''}`)}>
-                <SuggestionPreview
-                  _id={_id}
-                  question={question}
-                  questionDescription={description}
-                  answer={answer}
-                />
-                <Triangle
-                  size={10}
-                  color={colors.purple.light}
-                  direction="left"
-                  className={s("my-sm")}
-                  outlineSize={1}
-                  outlineColor={colors.gray.light}
-                />
-              </div>
-            )}
+            renderScrollElement={this.renderScrollElement}
+            renderOverflowElement={this.renderOverflowElement}
             position="left"
             onBottom={this.handleOnBottom}
             bottomOffset={SEARCH_INFINITE_SCROLL_OFFSET}
