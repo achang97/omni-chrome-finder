@@ -174,7 +174,7 @@ class SuggestionPanel extends Component {
       question={question}
       answer={answer}
       datePosted={createdAt}
-      cardStatus={status}
+      status={status}
       className={s("mx-sm")}
     />
   );

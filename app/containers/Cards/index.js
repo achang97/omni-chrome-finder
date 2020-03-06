@@ -77,7 +77,7 @@ export default class Cards extends Component {
     // Check to make sure edit state is different than saved state
     if (this.cardStateChanged(index)) {
       if (index !== activeCardIndex) this.updateTab(index);
-      if (currentCard.cardStatus === CARD_STATUS.NOT_DOCUMENTED) openCardModal(MODAL_TYPE.CONFIRM_CLOSE_UNDOCUMENTED) 
+      if (currentCard.status === CARD_STATUS.NOT_DOCUMENTED) openCardModal(MODAL_TYPE.CONFIRM_CLOSE_UNDOCUMENTED) 
       else openCardModal(MODAL_TYPE.CONFIRM_CLOSE);
     } else {
       closeCard(index);

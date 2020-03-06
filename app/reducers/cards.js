@@ -173,7 +173,7 @@ export default function cards(state = initialState, action) {
         cardInfo = createCardEdits({
           ...cardInfo,
           _id: generateCardId(),
-          cardStatus: CARD_STATUS.NOT_DOCUMENTED,
+          status: CARD_STATUS.NOT_DOCUMENTED,
           modalOpen: { ...cardInfo.modalOpen, [MODAL_TYPE.CREATE]: createModalOpen },
           editorEnabled: { ...cardInfo.editorEnabled, [EDITOR_TYPE.ANSWER]: true },
           tags: [],

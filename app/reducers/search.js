@@ -39,6 +39,12 @@ export default function navigate(state = initialState, action) {
 
   const removeCard = (cards, cardId) => cards.filter(({ _id }) => _id !== cardId);
 
+  const removeCardByType = (type, cardId) => {
+    return updateCardStateByType(type, cardState => ({
+      cards: removeCard(cardState.cards, cardId)
+    }));
+  };
+
   const { type, payload = {} } = action;
 
   switch (type) {
@@ -54,7 +60,7 @@ export default function navigate(state = initialState, action) {
       const { type, cards, externalResults, clearCards } = payload;
       return updateCardStateByType(type, cardState => ({
         isSearchingCards: false,
-        cards: clearCards ? cards : [...cardState.cards, ...cards],
+        cards: clearCards ? cards : _.unionBy(cardState.cards, cards, '_id'),
         externalResults: externalResults || cardState.externalResults,
         page: clearCards ? 1 : cardState.page + 1,
         hasReachedLimit: cards.length === 0
@@ -68,6 +74,7 @@ export default function navigate(state = initialState, action) {
       }))
     }
 
+    // Update Cards
     case types.UPDATE_CARD_SUCCESS:
     case types.MARK_OUT_OF_DATE_SUCCESS:
     case types.MARK_UP_TO_DATE_SUCCESS: {
@@ -75,16 +82,26 @@ export default function navigate(state = initialState, action) {
       return updateAllCards((cards) => cards.map(currCard => currCard._id === card._id ? card : currCard));
     }
 
-    /* Operations that can be called from cards from Navigate tab */
+    // Add Cards
+    case types.ADD_SEARCH_CARD: {
+      const { card } = payload;
+      return updateCardStateByType(SEARCH_TYPE.NAVIGATE, cardState => ({
+        cards: _.unionBy(cardState.cards, [card], '_id')
+      }))
+    }
+
+    // Operations that can be called from cards from Navigate tab
     case types.DELETE_CARD_SUCCESS: {
       const { cardId } = payload;
       return updateAllCards((cards) => removeCard(cards, cardId));
     }
     case types.DELETE_NAVIGATE_CARD_SUCCESS: {
       const { id } = payload;
-      return updateCardStateByType(SEARCH_TYPE.NAVIGATE, cardState => ({
-        cards: removeCard(cardState.cards, id)
-      }))
+      return removeCardByType(SEARCH_TYPE.NAVIGATE, id);
+    }
+    case types.REMOVE_SEARCH_CARD: {
+      const { cardId } = payload;
+      return removeCardByType(SEARCH_TYPE.NAVIGATE, cardId);
     }
 
     case types.SEARCH_TAGS_REQUEST: {

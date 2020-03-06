@@ -107,7 +107,7 @@ export default class Navigate extends Component {
         question={question}
         answer={answer}
         datePosted={updatedAt}
-        cardStatus={status}
+        status={status}
         className={s(`navigate-suggestion-card mx-reg mb-reg ${i === 0 ? 'my-reg' : ''}`)}
         showMoreMenu
         deleteProps={{

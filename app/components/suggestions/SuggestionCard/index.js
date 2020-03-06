@@ -190,7 +190,7 @@ class SuggestionCard extends Component {
   }
 
   render() {
-    const { _id, question, answer, datePosted, cardStatus, className, openCard } = this.props;
+    const { _id, question, answer, datePosted, status, className, openCard } = this.props;
 
     return (
       <div className={s(`${className} mb-sm rounded-xl p-lg bg-white cursor-pointer`)} onClick={() => openCard({ _id })}>
@@ -211,7 +211,7 @@ class SuggestionCard extends Component {
             <span className={s("block text-center text-xs text-gray-light")}>
               <TimeAgo date={datePosted} live={false} />
             </span>
-            <CardStatus cardStatus={cardStatus} />
+            <CardStatus status={status} />
           </div>
         </div>
         { this.renderModals() }
@@ -225,7 +225,7 @@ SuggestionCard.propTypes = {
   question: PropTypes.string.isRequired,
   answer: PropTypes.string.isRequired,
   datePosted: PropTypes.string.isRequired,
-  cardStatus: PropTypes.oneOf([CARD_STATUS.UP_TO_DATE , CARD_STATUS.OUT_OF_DATE, CARD_STATUS.NEEDS_VERIFICATION, CARD_STATUS.NEEDS_APPROVAL, CARD_STATUS.NOT_DOCUMENTED]),
+  status: PropTypes.oneOf([CARD_STATUS.UP_TO_DATE , CARD_STATUS.OUT_OF_DATE, CARD_STATUS.NEEDS_VERIFICATION, CARD_STATUS.NEEDS_APPROVAL, CARD_STATUS.NOT_DOCUMENTED]),
   className: PropTypes.string,
   showMoreMenu: PropTypes.bool,
   deleteProps: PropTypes.shape({

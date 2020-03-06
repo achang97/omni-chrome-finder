@@ -216,7 +216,7 @@ class Ask extends Component {
             toggler={
               <div className={s("relative")}>
                 <Button
-                  className={s("bg-white py-reg px-sm")}
+                  className={s("bg-white py-reg")}
                   icon={<MdAttachment color={colors.purple.reg} className={s("ask-attachment-icon")} />}
                 />
                 <div className={s("ask-attachment-count")}>

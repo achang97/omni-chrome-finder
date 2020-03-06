@@ -7,7 +7,7 @@ import { AUTO_REMIND_VALUE, VERIFICATION_INTERVAL_OPTIONS, PERMISSION_OPTION, PE
 import _ from 'lodash';
 
 export function convertCardToFrontendFormat(card) {
-	const { contentStateDescription, contentStateAnswer, keywords, autoupdate, updateInterval, userPermissions, permissionGroups, status, outOfDateReason, upvotes, slackReplies, ...rest } = card;
+	const { contentStateDescription, contentStateAnswer, keywords, autoupdate, updateInterval, userPermissions, permissionGroups, outOfDateReason, upvotes, slackReplies, ...rest } = card;
 
 	const verificationInterval = VERIFICATION_INTERVAL_OPTIONS.find(option => (
 		option.value === (autoupdate ? AUTO_REMIND_VALUE : updateInterval)
@@ -31,7 +31,6 @@ export function convertCardToFrontendFormat(card) {
 		verificationInterval,
 		permissions,
 		permissionGroups,
-		cardStatus: status,
 		outOfDateReason,
 		upvotes: getArrayIds(upvotes),
 		slackReplies: slackReplies.map(reply => ({ ...reply, selected: status !== CARD_STATUS.NOT_DOCUMENTED })),

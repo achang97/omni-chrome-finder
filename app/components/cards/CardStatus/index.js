@@ -17,8 +17,8 @@ import style from './card-status.css';
 import { getStyleApplicationFn } from '../../../utils/styleHelpers';
 const s = getStyleApplicationFn(style);
 
-const getDisplayInfo = (cardStatus) => {
-  switch (cardStatus) {
+const getDisplayInfo = (status) => {
+  switch (status) {
     case CARD_STATUS.UP_TO_DATE:
       return { label: 'Up to date', dropdownLabel: 'Flag as up to date', Icon: MdCheck, bgColor: 'green-xlight', fontColor: colors.green.reg, dropdownFontColor: 'green-reg' }
     case CARD_STATUS.OUT_OF_DATE:
@@ -30,15 +30,14 @@ const getDisplayInfo = (cardStatus) => {
   }
 }
 
-const CardStatus = ({ isActionable, cardStatus, className, onDropdownOptionClick, outOfDateReason }) => {
-  if (![CARD_STATUS.UP_TO_DATE, CARD_STATUS.OUT_OF_DATE, CARD_STATUS.NEEDS_VERIFICATION].includes(cardStatus)) {
-    console.log(cardStatus)
+const CardStatus = ({ isActionable, status, className, onDropdownOptionClick, outOfDateReason }) => {
+  if (![CARD_STATUS.UP_TO_DATE, CARD_STATUS.OUT_OF_DATE, CARD_STATUS.NEEDS_VERIFICATION].includes(status)) {
     return null;
   }
 
-  const { label, Icon, bgColor, fontColor } = getDisplayInfo(cardStatus);
+  const { label, Icon, bgColor, fontColor } = getDisplayInfo(status);
 
-  const dropdownStatus = cardStatus === CARD_STATUS.UP_TO_DATE ? CARD_STATUS.OUT_OF_DATE : CARD_STATUS.UP_TO_DATE;
+  const dropdownStatus = status === CARD_STATUS.UP_TO_DATE ? CARD_STATUS.OUT_OF_DATE : CARD_STATUS.UP_TO_DATE;
   const { Icon: DropdownIcon, dropdownFontColor, dropdownLabel, dropdownModalType } = getDisplayInfo(dropdownStatus);
 
   const [dropdownOpen, setDropdownOpen] = useState(false);
@@ -77,7 +76,7 @@ const CardStatus = ({ isActionable, cardStatus, className, onDropdownOptionClick
         }
         disabled={!isActionable}
       />
-      { (cardStatus === CARD_STATUS.OUT_OF_DATE && outOfDateReason) &&
+      { (status === CARD_STATUS.OUT_OF_DATE && outOfDateReason) &&
         <Dropdown
           className={s("ml-sm flex")}
           togglerClassName={s("flex")}
@@ -109,7 +108,7 @@ const CardStatus = ({ isActionable, cardStatus, className, onDropdownOptionClick
 }
 
 CardStatus.propTypes = {
-  cardStatus: PropTypes.oneOf([CARD_STATUS.UP_TO_DATE , CARD_STATUS.OUT_OF_DATE, CARD_STATUS.NEEDS_VERIFICATION, CARD_STATUS.NEEDS_APPROVAL, CARD_STATUS.NOT_DOCUMENTED]),
+  status: PropTypes.oneOf([CARD_STATUS.UP_TO_DATE , CARD_STATUS.OUT_OF_DATE, CARD_STATUS.NEEDS_VERIFICATION, CARD_STATUS.NEEDS_APPROVAL, CARD_STATUS.NOT_DOCUMENTED]),
   isActionable: PropTypes.bool,
   className: PropTypes.string,
   onDropdownOptionClick: PropTypes.func,
