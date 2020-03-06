@@ -8,7 +8,7 @@ wrapper.id = 'omni-chrome-ext-main-container';
 wrapper.style = 'all: initial;';
 targetElem.insertBefore(wrapper, targetElem.firstChild);
 
-chrome.storage.local.get('state', (obj) => {
+chrome.storage.sync.get('state', (obj) => {
   const { state } = obj;
   const initialState = JSON.parse(state || '{}');
 

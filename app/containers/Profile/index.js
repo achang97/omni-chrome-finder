@@ -27,8 +27,6 @@ import GoogleDriveIcon from "../../assets/images/icons/GoogleDrive_Icon.svg";
 
 const GOOGLE_AUTH_URL = `${SERVER_URL}/google/authenticate`;
 
-const INTEGRATIONS_INACTIVE_HEIGHT = 62;
-
 const MOCK_USER = {
   autofindPermissions: {
     zendesk: true,
@@ -280,7 +278,7 @@ export default class Profile extends Component {
               className={s(`profile-integration ${isOpen ? 'profile-integration-active' : 'profile-integration-inactive'} ${i !== 0 ? 'mt-reg' : '' }`)}
               onClick={() => this.toggleIntegration(profileSettingSection.title)}
             >
-              <div className={s("py-sm flex items-center justify-between")}>
+              <div className={s(`py-sm flex items-center justify-between ${isOpen ? 'mb-sm' : ''}`)}>
                 <div className={s("text-purple-reg text-sm")}>{profileSettingSection.title}</div>
                 <Icon className={s("text-gray-dark cursor-pointer")} />
               </div>
