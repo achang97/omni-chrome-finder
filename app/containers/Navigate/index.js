@@ -19,7 +19,7 @@ import SuggestionCard from '../../components/suggestions/SuggestionCard';
 import SuggestionPreview from '../../components/suggestions/SuggestionPreview';
 import Button from '../../components/common/Button';
 import Triangle from '../../components/common/Triangle';
-import _ from 'underscore';
+import _ from 'lodash';
 
 import { getArrayIds } from '../../utils/arrayHelpers'
 import { CARD_STATUS, SEARCH_INFINITE_SCROLL_OFFSET, NAVIGATE_TAB_OPTION, NAVIGATE_TAB_OPTIONS, SEARCH_TYPE, DEBOUNCE_60_HZ } from '../../utils/constants';

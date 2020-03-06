@@ -19,7 +19,7 @@ import { NOOP, CARD_STATUS, CARD_URL_BASE } from '../../../utils/constants';
 import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
 import { openCard } from '../../../actions/cards';
-import _ from 'underscore';
+import _ from 'lodash';
 
 import { colors } from '../../../styles/colors';
 
@@ -45,7 +45,7 @@ class SuggestionCard extends Component {
     super(props);
     this.state = {
       dropdownOpen: false,
-      modalOpen: _.mapObject(BUTTON_TYPE, (val, key) => false),
+      modalOpen: _.mapValues(BUTTON_TYPE, () => false),
     }
   }
 

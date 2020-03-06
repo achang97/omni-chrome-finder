@@ -13,7 +13,7 @@ import Button from '../../components/common/Button';
 import Loader from '../../components/common/Loader';
 import Modal from '../../components/common/Modal';
 import CircleButton from '../../components/common/CircleButton';
-import _ from 'underscore';
+import _ from 'lodash';
 
 import Tabs from '../../components/common/Tabs/Tabs';
 import Tab from '../../components/common/Tabs/Tab';

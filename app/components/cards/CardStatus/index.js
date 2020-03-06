@@ -32,6 +32,7 @@ const getDisplayInfo = (cardStatus) => {
 
 const CardStatus = ({ isActionable, cardStatus, className, onDropdownOptionClick, outOfDateReason }) => {
   if (![CARD_STATUS.UP_TO_DATE, CARD_STATUS.OUT_OF_DATE, CARD_STATUS.NEEDS_VERIFICATION].includes(cardStatus)) {
+    console.log(cardStatus)
     return null;
   }
 

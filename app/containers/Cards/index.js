@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import Draggable from 'react-draggable';
 import { Resizable } from 're-resizable';
-import _ from 'underscore';
+import _ from 'lodash';
 
 import { MdClose, MdMoreHoriz } from "react-icons/md";
 import CardContent from '../../components/cards/CardContent';

@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import { MdClose } from 'react-icons/md';
 import AnimateHeight from 'react-animate-height';
-import _ from 'underscore';
+import _ from 'lodash';
 
 import ScrollContainer from '../../common/ScrollContainer';
 import Loader from '../../common/Loader';

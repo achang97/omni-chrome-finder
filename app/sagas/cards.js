@@ -1,5 +1,5 @@
 import { delay } from 'redux-saga';
-import _ from 'underscore';
+import _ from 'lodash';
 import { take, call, fork, all, cancel, cancelled, put, select } from 'redux-saga/effects';
 import { doGet, doPost, doPut, doDelete } from '../utils/request'
 import { getArrayIds, getArrayField } from '../utils/arrayHelpers';
@@ -164,6 +164,8 @@ function* updateCard({ isUndocumented, closeCard }) {
       yield put(handleUpdateCardError(cardId, INCOMPLETE_CARD_ERROR, closeCard));
     }
   } catch(error) {
+      console.log(error)
+
     const { response: { data } } = error;
     yield put(handleUpdateCardError(cardId, data.error, closeCard));
   }

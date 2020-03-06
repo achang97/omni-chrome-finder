@@ -1,6 +1,6 @@
 import * as types from '../actions/actionTypes';
 import { SEARCH_TYPE } from '../utils/constants';
-import _ from 'underscore';
+import _ from 'lodash';
 
 const BASE_CARDS_STATE = {
   cards: [],
@@ -10,77 +10,81 @@ const BASE_CARDS_STATE = {
 }
 
 const initialState = {
-  cards: _.mapObject(SEARCH_TYPE, (val, key) => BASE_CARDS_STATE),
+  cards: _.mapValues(SEARCH_TYPE, () => BASE_CARDS_STATE),
   tags: [],
   users: [],
   permissionGroups: [],
 };
 
 export default function navigate(state = initialState, action) {
+  const updateCardStateByType = (type, updateFn) => {
+    return {
+      ...state,
+      cards: {
+        ...state.cards,
+        [type]: { ...state.cards[type], ...updateFn(state.cards[type]) }
+      }
+    };
+  }
+
+  const updateAllCards = (updateCardsFn) => {
+    return {
+      ...state,
+      cards: _.mapValues(state.cards, (val) => ({
+        ...val,
+        cards: updateCardsFn(val.cards)
+      }))
+    };
+  };
+
+  const removeCard = (cards, cardId) => cards.filter(({ _id }) => _id !== cardId);
+
   const { type, payload = {} } = action;
 
   switch (type) {
     case types.SEARCH_CARDS_REQUEST: {
       const { type, query, clearCards } = payload;
-      return {
-        ...state,
-        cards: {
-          ...state.cards,
-          [type]: {
-            ...(clearCards ? BASE_CARDS_STATE : state.cards[type]),
-            isSearchingCards: true,
-            searchCardsError: null
-          }
-        }
-      };
+      return updateCardStateByType(type, cardState => ({
+        ...(clearCards ? BASE_CARDS_STATE : {}),
+        isSearchingCards: true,
+        searchCardsError: null
+      }));
     }
     case types.SEARCH_CARDS_SUCCESS: {
       const { type, cards, externalResults, clearCards } = payload;
-      const currSearchState = state.cards[type];
-      return {
-        ...state,
-        cards: {
-          ...state.cards,
-          [type]: {
-            ...currSearchState,
-            isSearchingCards: false,
-            cards: clearCards ? cards : [...currSearchState.cards, ...cards],
-            externalResults: externalResults || currSearchState.externalResults,
-            page: clearCards ? 1 : currSearchState.page + 1,
-            hasReachedLimit: cards.length === 0
-          }          
-        }
-      };
+      return updateCardStateByType(type, cardState => ({
+        isSearchingCards: false,
+        cards: clearCards ? cards : [...cardState.cards, ...cards],
+        externalResults: externalResults || cardState.externalResults,
+        page: clearCards ? 1 : cardState.page + 1,
+        hasReachedLimit: cards.length === 0
+      }));
     }
     case types.SEARCH_CARDS_ERROR: {
       const { type, error } = payload;
-      return {
-        ...state,
-        cards: {
-          ...state.cards,
-          [type]: {
-            ...state.cards[type],
-            isSearchingCards: false,
-            searchCardsError: error
-          }
-        }
-      }
+      return updateCardStateByType(type, cardState => ({
+        isSearchingCards: false,
+        searchCardsError: error  
+      }))
+    }
+
+    case types.UPDATE_CARD_SUCCESS:
+    case types.MARK_OUT_OF_DATE_SUCCESS:
+    case types.MARK_UP_TO_DATE_SUCCESS: {
+      const { card } = payload;
+      return updateAllCards((cards) => cards.map(currCard => currCard._id === card._id ? card : currCard));
     }
 
     /* Operations that can be called from cards from Navigate tab */
+    case types.DELETE_CARD_SUCCESS: {
+      const { cardId } = payload;
+      return updateAllCards((cards) => removeCard(cards, cardId));
+    }
     case types.DELETE_NAVIGATE_CARD_SUCCESS: {
       const { id } = payload;
-
-      return {
-        ...state,
-        cards: {
-          ...state.cards,
-          [SEARCH_TYPE.NAVIGATE]: {
-            ...state.cards[SEARCH_TYPE.NAVIGATE],
-            cards: state.cards[SEARCH_TYPE.NAVIGATE].cards.filter(({ _id }) => _id !== id),
-          }
-        }
-      }
+      return updateCardStateByType(SEARCH_TYPE.NAVIGATE, cardState => ({
+        cards: removeCard(cardState.cards, id)
+      }))
     }
 
     case types.SEARCH_TAGS_REQUEST: {

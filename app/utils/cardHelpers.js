@@ -4,7 +4,7 @@ import { createSelectOptions } from './selectHelpers';
 import { getArrayIds } from './arrayHelpers';
 import { getContentStateFromEditorState } from './editorHelpers';
 import { AUTO_REMIND_VALUE, VERIFICATION_INTERVAL_OPTIONS, PERMISSION_OPTION, PERMISSION_OPTIONS, CARD_STATUS } from './constants';
-import _ from 'underscore';
+import _ from 'lodash';
 
 export function convertCardToFrontendFormat(card) {
 	const { contentStateDescription, contentStateAnswer, keywords, autoupdate, updateInterval, userPermissions, permissionGroups, status, outOfDateReason, upvotes, slackReplies, ...rest } = card;
