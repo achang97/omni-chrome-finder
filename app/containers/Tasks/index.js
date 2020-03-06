@@ -11,6 +11,7 @@ import { IoMdAlert } from 'react-icons/io';
 import { MdKeyboardArrowDown, MdKeyboardArrowUp, MdCheck, MdAdd, MdEdit, MdLock, MdNotifications } from 'react-icons/md';
 import { AiFillMinusCircle, AiFillQuestionCircle } from "react-icons/ai";
 import Timeago from 'react-timeago';
+import Loader from '../../components/common/Loader';
 
 import { openCard } from '../../actions/cards';
 import * as tasksActions from '../../actions/tasks';
@@ -111,14 +112,17 @@ export default class Tasks extends Component {
 
 
   getTaskItemInfo = (type, task) => {
-    const { openCard, requestMarkUpToDateFromTasks } = this.props;
+    const { openCard, requestMarkUpToDateFromTasks, requestDismissTask, isUpdatingCard, isDismissingTask, markCardUpToDateError, dimissTaskError } = this.props;
     switch (type) {
       case TASKS_TYPES.NEEDS_VERIFICATION:
-        return { primaryOption: "Mark as Up to Date", secondaryOption: "Edit", primaryAction: () => { requestMarkUpToDateFromTasks(task.card._id) }, secondaryAction: () => { openCard({ _id: task.card._id, isEditing: true }) } };
+        return { primaryOption: "Mark as Up to Date", secondaryOption: "Edit", primaryAction: () => { requestMarkUpToDateFromTasks(task.card._id) }, secondaryAction: () => { openCard({ _id: task.card._id, isEditing: true }) },
+                isPrimaryLoading: isUpdatingCard, primaryError: markCardUpToDateError };
       case TASKS_TYPES.OUT_OF_DATE:
-        return { primaryOption: "Edit", secondaryOption: "Mark as Up to Date", primaryAction: () => { openCard({ _id: task.card._id, isEditing: true }) }, secondaryAction: () => { requestMarkUpToDateFromTasks(task.card._id) } };
+        return { primaryOption: "Edit", secondaryOption: "Mark as Up to Date", primaryAction: () => { openCard({ _id: task.card._id, isEditing: true }) }, secondaryAction: () => { requestMarkUpToDateFromTasks(task.card._id) },
+                isSecondaryLoading: isUpdatingCard, secondaryError: markCardUpToDateError };
       case TASKS_TYPES.UNDOCUMENTED:
-        return { primaryOption: "Create Card", secondaryOption: "Dismiss", primaryAction: () => { openCard({ _id: task.card._id, isEditing: true }) }, secondaryAction: () => { return } };
+        return { primaryOption: "Create Card", secondaryOption: "Dismiss", primaryAction: () => { openCard({ _id: task.card._id, isEditing: true }) }, secondaryAction: () => { requestDismissTask( task._id ) },
+                isSecondaryLoading: isDismissingTask, secondaryError: dimissTaskError };
       case TASKS_TYPES.NEEDS_APPROVAL:
         return { primaryOption: "Approve", secondaryOption: "Decline", primaryAction: () => { return }, secondaryAction: () => { return } };
       default:
@@ -133,7 +137,7 @@ export default class Tasks extends Component {
   		<div className={s("flex flex-col p-reg overflow-auto")}>
   			{
 	  			filteredTasks.map((task, i) => {
-          	const { primaryOption, primaryAction, secondaryOption, secondaryAction } = this.getTaskItemInfo(task.status, task);
+          	const { primaryOption, primaryAction, secondaryOption, secondaryAction, isPrimaryLoading, isSecondaryLoading, primaryError, secondaryError } = this.getTaskItemInfo(task.status, task);
 	  				return (
 	  					<TaskItem 
 	  						index={i}
@@ -143,9 +147,17 @@ export default class Tasks extends Component {
 	  						date={<Timeago date={task.createdAt} live={false} />}
 	  						primaryOption={primaryOption}
 	  						primaryAction={primaryAction}
+                isPrimaryLoading={isPrimaryLoading || false}
+                primaryError={primaryError}
 	  						secondaryOption={secondaryOption}
 	  						secondaryAction={secondaryAction}
+                isSecondaryLoading={isSecondaryLoading || false}
+                secondaryError={secondaryError}
+
+
                 reasonOutdated={task.card.outOfDateReason}
+
+
 	  						/>
 	  				);
 	  			})
@@ -179,10 +191,14 @@ export default class Tasks extends Component {
   }
 
   renderUnresolvedTasks = () => {
-    const { sectionOpen } = this.state;
+    const { sectionOpen, isGettingTasks } = this.state;
   	return (
   		<div className={s("flex flex-col min-h-0 flex-grow")}>
-        { Object.keys(TASKS_SECTIONS).map((section) => 
+        { 
+          isGettingTasks ?
+          <Loader className={s('')}/>
+          :
+          Object.keys(TASKS_SECTIONS).map((section) => 
           {
             const { sectionTitle, icon, filteredTasks } = this.getTaskSectionProps(TASKS_SECTIONS[section]);
             const isSectionOpen = sectionOpen === TASKS_SECTIONS[section];
@@ -250,9 +266,18 @@ export default class Tasks extends Component {
   	)
   }
 
+  renderNoTasksScreen = () => {
+    return (
+      <div className={s('flex flex-col items-center p-reg justify-center')}>
+        <div> No unresolved tasks </div>
+        <div> Congratulations, all your cards are verified and up to date! </div>
+      </div>
+    )
+  }
+
   render() {
-  	const { tabIndex } = this.props;
-    //console.log(this.props.tasks);
+  	const { tabIndex, tasks } = this.props;
+    console.log(this.props.tasks);
     return (
       <div className={s("flex flex-col min-h-0 flex-grow")}>
           <Tabs
@@ -275,7 +300,14 @@ export default class Tasks extends Component {
             }
           </Tabs>
           { tabIndex === 0 ? 
-          	this.renderUnresolvedTasks()
+            <React.Fragment>
+            {
+              tasks.length === 0 ?
+              this.renderNoTasksScreen()
+              :
+          	  this.renderUnresolvedTasks()
+            }
+            </React.Fragment>
           	:
           	this.renderApprovalTasks()
           }
