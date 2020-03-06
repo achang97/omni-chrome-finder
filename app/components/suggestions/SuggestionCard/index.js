@@ -2,6 +2,7 @@ import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import { MdCheck, MdMoreVert } from 'react-icons/md';
 import TimeAgo from 'react-timeago';
+import AnimateHeight from 'react-animate-height';
 
 import { getContentStateHTMLFromString } from '../../../utils/editorHelpers';
 
@@ -45,13 +46,13 @@ class SuggestionCard extends Component {
     super(props);
     this.state = {
       dropdownOpen: false,
-      modalOpen: _.mapValues(BUTTON_TYPE, () => false),
+      buttonActive: _.mapValues(BUTTON_TYPE, () => false),
     }
   }
 
   componentDidUpdate(prevProps) {
     if (this.props.deleteProps && prevProps.deleteProps.isLoading && !this.props.deleteProps.isLoading && !this.props.deleteProps.error) {
-      this.toggleModal(BUTTON_TYPE.DELETE, false);
+      this.toggleActiveButton(BUTTON_TYPE.DELETE, false);
     }
   }
 
@@ -70,11 +71,6 @@ class SuggestionCard extends Component {
       label: 'Share Card',
       buttonType: BUTTON_TYPE.SHARE,
       onClick: () => this.shareCard(),
-      modal: (
-        <div className={s("flex-1 mt-sm mx-sm p-sm text-center bg-purple-light rounded-full text-xs")}>
-          Copied link to clipboard!
-        </div>
-      )
     }];
 
     if (this.props.deleteProps) {
@@ -96,8 +92,8 @@ class SuggestionCard extends Component {
     return actions;    
   }
 
-  toggleModal = (type, value) => {
-    this.setState({ modalOpen: { ...this.state.modalOpen, [type]: value !== undefined ? value : !this.state.modalOpen[type] } })
+  toggleActiveButton = (type, value) => {
+    this.setState({ buttonActive: { ...this.state.buttonActive, [type]: value !== undefined ? value : !this.state.buttonActive[type] } })
   }
 
   shareCard = () => {
@@ -116,15 +112,15 @@ class SuggestionCard extends Component {
     document.execCommand('copy');
     document.body.removeChild(el);
 
-    this.toggleModal(BUTTON_TYPE.SHARE);
-    setTimeout(() => this.toggleModal(BUTTON_TYPE.SHARE), 3000);
+    this.toggleActiveButton(BUTTON_TYPE.SHARE);
+    setTimeout(() => this.toggleActiveButton(BUTTON_TYPE.SHARE), 3000);
   }
 
   protectedOnClick = (onClick, buttonType) => {
     if (onClick) {
       onClick();  
     } else {
-      this.toggleModal(buttonType);
+      this.toggleActiveButton(buttonType);
     }
 
     this.setState({ dropdownOpen: false });
@@ -167,22 +163,30 @@ class SuggestionCard extends Component {
     );
   }
 
+  renderShareSuccess() {
+    const { buttonActive } = this.state;
+    return (
+      <AnimateHeight height={buttonActive[BUTTON_TYPE.SHARE] ? 'auto' : 0}>
+        <div className={s("flex-1 mt-sm mx-sm p-sm text-center bg-purple-light rounded-full text-xs")}>
+          Copied link to clipboard!
+        </div>
+      </AnimateHeight>
+    )
+  }
+
   renderModals = () => {
-    const { modalOpen } = this.state;
+    const { buttonActive } = this.state;
     const actions = this.getActions();
 
     return (
       <div>
-        { actions.map(({ modal, modalProps, buttonType }) =>
+        { actions.filter(({ modalProps }) => !!modalProps).map(({ modalProps, buttonType }) =>
           <div key={buttonType}>
-            { modal ?
-              (modalOpen[buttonType] && modal) :
-              <CardConfirmModal
-                isOpen={modalOpen[buttonType]}
-                onRequestClose={() => this.toggleModal(buttonType)}
-                {...modalProps}
-              />
-            }
+            <CardConfirmModal
+              isOpen={buttonActive[buttonType]}
+              onRequestClose={() => this.toggleActiveButton(buttonType)}
+              {...modalProps}
+            />
           </div>
         )}
       </div>
@@ -214,6 +218,7 @@ class SuggestionCard extends Component {
             <CardStatus status={status} />
           </div>
         </div>
+        { this.renderShareSuccess() }
         { this.renderModals() }
       </div>
     );
