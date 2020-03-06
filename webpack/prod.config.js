@@ -3,6 +3,7 @@ const webpack = require('webpack');
 const autoprefixer = require('autoprefixer');
 const tailwindcss = require('tailwindcss');
 const tailwindConfig = require('../tailwind.config');
+require('dotenv').config();
 
 const customPath = path.join(__dirname, './customPublicPath');
 
@@ -26,7 +27,8 @@ module.exports = {
     }),
     new webpack.DefinePlugin({
       'process.env': {
-        NODE_ENV: JSON.stringify('production')
+        NODE_ENV: JSON.stringify('production'),
+        ONE_SIGNAL_APP_ID: JSON.stringify(process.env.ONE_SIGNAL_APP_ID_PROD),
       }
     })
   ],

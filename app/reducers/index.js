@@ -64,6 +64,9 @@ const rootReducer = (state, action) => {
         [getStorageName('auth')]: JSON.stringify({ user: {}, token: null, refreshToken: null }),
       });
 
+      purgeStoredState(authPersistConfig);
+      purgeStoredState(profilePersistConfig);
+
       state = undefined;
       break;
     }

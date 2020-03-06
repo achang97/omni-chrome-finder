@@ -114,20 +114,19 @@ const CardAttachment = ({ fileName, type, url, onClick, onRemoveClick, className
           leftIcon
         }
       </div>
-      <div className={s('card-attachment-filename-wrapper')}>
-        { isEditingFileName && isEditable ?
-          <input
-            placeholder="File Name"
-            value={fileName}
-            autoFocus
-            onChange={e => onFileNameChange(e.target.value)}
-            onBlur={() => toggleEditFileName(false)}
-          /> :
-          <div className={s(`card-attachment-filename ${isInputTogglable ? 'button-hover' : ''} ${fileNameClassName}`)} onClick={() => isInputTogglable && toggleEditFileName(true)}>
-            {fileName}
-          </div>
-        }
-      </div>
+      { isEditingFileName && isEditable ?
+        <input
+          placeholder="File Name"
+          value={fileName}
+          autoFocus
+          onChange={e => onFileNameChange(e.target.value)}
+          onBlur={() => toggleEditFileName(false)}
+          className={s('card-attachment-filename-input')}
+        /> :
+        <div className={s(`${isInputTogglable ? 'button-hover' : ''} ${fileNameClassName}`)} onClick={() => isInputTogglable && toggleEditFileName(true)}>
+          {fileName}
+        </div>
+      }
       { isEditable && onRemoveClick && !isLoading &&
         <MdClose onClick={onRemove} className={s(`card-attachment-remove-icon button-hover ${removeIconClassName}`)} />
       }

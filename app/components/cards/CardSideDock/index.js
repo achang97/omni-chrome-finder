@@ -288,7 +288,7 @@ const CardSideDock = (props) => {
   }
 
   const render = () => {
-    const { sideDockOpen, cardStatus } = props;
+    const { sideDockOpen, status } = props;
 
     const baseStyle = getBaseAnimationStyle(SIDE_DOCK_TRANSITION_MS);
     const transitionStyles = {
@@ -298,7 +298,7 @@ const CardSideDock = (props) => {
       exited:  { transform: 'translateX(100%)' },
     }
 
-    const isNewCard = cardStatus === CARD_STATUS.NOT_DOCUMENTED;
+    const isNewCard = status === CARD_STATUS.NOT_DOCUMENTED;
 
     return (
       <div className={s("card-side-dock-container")}>

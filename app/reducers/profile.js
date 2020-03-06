@@ -1,5 +1,5 @@
 import * as types from '../actions/actionTypes';
-import _ from 'underscore';
+import _ from 'lodash';
 
 const initialState = {
   user: {},

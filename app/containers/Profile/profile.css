@@ -30,6 +30,18 @@
 	box-shadow: 0 10px 30px 0 rgba(33,26,29,0.05) !important;
 }
 
+.profile-integration {
+	@apply p-reg rounded-lg;
+}
+
+.profile-integration-active {
+	@apply bg-purple-light;
+}
+
+.profile-integration-inactive {
+	@apply border border-solid border-gray-light bg-white cursor-pointer; 
+}
+
 .profile-integration-img-container {
 	height: 32px;
 	width: 32px;
