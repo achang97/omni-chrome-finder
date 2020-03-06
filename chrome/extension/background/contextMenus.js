@@ -59,8 +59,6 @@ chrome.contextMenus.onClicked.addListener(({ menuItemId, selectionText='' }, tab
       break;
     }
   }
-
-
 });
 
 

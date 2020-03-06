@@ -223,12 +223,13 @@ class SuggestionPanel extends Component {
           <div className={s("px-reg text-purple-gray-50 text-sm mb-sm")}>
             {cards.length} card{cards.length !== 1 && 's'}
           </div>
+          <Loader size="md" className={s("my-reg")} />
           <ScrollContainer
             scrollContainerClassName={s(`suggestion-panel-card-container ${showResults ? 'suggestion-panel-card-container-lg' : ''} flex flex-col`)}
             list={cards}
             placeholder={ isSearchingCards ?
               <Loader size="md" className={s("my-reg")} /> :
-              (numExternalResults !== 0 && !showResults ?
+              (!showResults || numExternalResults === 0 ?
                 <div className={s("text-gray-light text-sm my-reg text-center")}> No results </div> :
                 null
               )

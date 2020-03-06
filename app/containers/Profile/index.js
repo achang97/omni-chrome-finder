@@ -88,7 +88,7 @@ export default class Profile extends Component {
     return(
       <div className={s('flex flex-col')}>
         { isSavingUser ?
-          <Loader className={s("")}/>
+          <Loader />
           :
           <div className={s('flex')}>
             <div className={s('mr-reg relative')}>

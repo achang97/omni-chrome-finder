@@ -375,7 +375,7 @@ class Ask extends Component {
         disabled={questionTitle === '' || !questionDescription.getCurrentContent().hasText() || recipients.length === 0 || isAskingQuestion}
         iconLeft={false}
         icon={ isAskingQuestion ?
-          <Loader className={s("h-3xl w-3xl")} size="sm" color="white" /> :
+          <Loader className={s("h-3xl w-3xl")} color="white" /> :
           <span className={s("rounded-full h-3xl w-3xl flex justify-center items-center bg-white text-purple-reg")}>
             <FaPaperPlane />
           </span>
