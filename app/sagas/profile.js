@@ -30,6 +30,7 @@ function* getUser() {
     const { userJson } = yield call(doGet, '/users');
     yield put(handleGetUserSuccess(userJson));
   } catch(error) {
+    console.log(error)
     const { response: { data } } = error;
     yield put(handleGetUserError(data.error));
   }

@@ -333,68 +333,6 @@ class CardContent extends Component {
   	)
   }
 
-  closeThreadModal = () => {
-    const { closeCardModal, cancelEditCardMessages } = this.props;
-    closeCardModal(MODAL_TYPE.THREAD);
-    cancelEditCardMessages();
-  }
-
-  renderThreadModal = () => {
-  	const { id, isEditing, modalOpen, closeCardModal} = this.props;
-  	return (
-  		<Modal 
-    		isOpen={modalOpen[MODAL_TYPE.THREAD]} 
-    		onRequestClose={this.closeThreadModal}
-    		headerClassName={s("bg-purple-light rounded-lg")}
-    		bodyClassName={s("overflow-none flex flex-col rounded-b-lg")}
-    		className={s("bg-purple-light")}
-    		overlayClassName={s("rounded-b-lg")}
-    		shouldCloseOnOutsideClick
-    		title={isEditing ? "Unselect messages you do not want shown" : "View Slack Thread"}
-      >
-  			{this.renderMessageList()}
-    		{ isEditing &&
-    			<Button
-    				onClick={() => closeCardModal(MODAL_TYPE.THREAD)}
-	        	color={"primary"}
-	        	text={"Save"}
-	        	className={s("rounded-t-none")}
-        	/>
-    	  }	
-  	  </Modal>
-  	)
-  }
-
-  renderMessageList = () => {
-  	const { isEditing, slackReplies, edits } = this.props;
-    const currSlackReplies = isEditing ? edits.slackReplies : slackReplies;
-  	return (
-  		<div className={s("message-manager-container bg-purple-light mx-lg mb-lg rounded-lg flex-grow overflow-auto")}>
-		  	{currSlackReplies.map(({ id, senderName, senderImageUrl, message, selected }, i) => ((isEditing || selected) &&
-  				<div key={id} className={s(`flex p-reg   ${ i % 2 === 0 ? '' : 'bg-purple-gray-10' } `)}>
-            <img src={senderImageUrl} className={s("message-photo-container rounded-lg flex-shrink-0 flex justify-center mr-reg shadow-md")}/>
-  					<div className={s("flex flex-col flex-grow")}> 
-  						<div className={s("flex items-end")}>
-  							<div className={s("text-sm font-semibold mr-reg")}> { senderName } </div>
-  							{/*<div className={s("text-sm text-gray-dark")}> { time } </div>*/}
-  						</div>
-  						<div className={s("mt-sm text-sm")}>
-                {message}
-              </div>
-  					</div>
-  					{isEditing &&
-  						<CheckBox 
-  							isSelected={selected} 
-  							toggleCheckbox={() => this.toggleSelectedMessage(i)}
-  							className={s("flex-shrink-0 margin-sm")}
-              />
-  					}
-  				</div>
-	    	))}
-    	</div>
-    )
-  }
-
   renderAnswer = () => {
   	const { isEditing, editorEnabled, selectedMessages, slackReplies } = this.props;
   	return (
@@ -513,6 +451,42 @@ class CardContent extends Component {
   	)
   }
 
+  closeThreadModal = () => {
+    const { closeCardModal, cancelEditCardMessages } = this.props;
+    closeCardModal(MODAL_TYPE.THREAD);
+    cancelEditCardMessages();
+  }
+
+  renderModalThreadBody = () => {
+    const { isEditing, slackReplies, edits } = this.props;
+    const currSlackReplies = isEditing ? edits.slackReplies : slackReplies;
+    return (
+      <div className={s("message-manager-container bg-purple-light mx-lg rounded-lg flex-grow overflow-auto")}>
+        {currSlackReplies.map(({ id, senderName, senderImageUrl, message, selected }, i) => ((isEditing || selected) &&
+          <div key={id} className={s(`flex p-reg   ${ i % 2 === 0 ? '' : 'bg-purple-gray-10' } `)}>
+            <img src={senderImageUrl} className={s("message-photo-container rounded-lg flex-shrink-0 flex justify-center mr-reg shadow-md")}/>
+            <div className={s("flex flex-col flex-grow")}> 
+              <div className={s("flex items-end")}>
+                <div className={s("text-sm font-semibold mr-reg")}> { senderName } </div>
+                {/*<div className={s("text-sm text-gray-dark")}> { time } </div>*/}
+              </div>
+              <div className={s("mt-sm text-sm")}>
+                {message}
+              </div>
+            </div>
+            {isEditing &&
+              <CheckBox 
+                isSelected={selected} 
+                toggleCheckbox={() => this.toggleSelectedMessage(i)}
+                className={s("flex-shrink-0 margin-sm")}
+              />
+            }
+          </div>
+        ))}
+      </div>
+    )
+  }
+
   confirmCloseModalUndocumentedPrimary = () => {
     const { closeCardModal, closeCard, activeCardIndex } = this.props;
     closeCardModal(MODAL_TYPE.CONFIRM_CLOSE);
@@ -552,10 +526,26 @@ class CardContent extends Component {
       requestUpdateCard, updateError, isUpdatingCard,
       requestMarkUpToDate, requestMarkOutOfDate, isMarkingStatus, markStatusError,
       outOfDateReasonInput, updateOutOfDateReason, cancelEditCard,
-      modalOpen
+      modalOpen,
+      isEditing,
     } = this.props;
 
     const MODALS = [
+      {
+        modalType: MODAL_TYPE.THREAD,
+        title: isEditing ? "Unselect messages you do not want shown" : "View Slack Thread",
+        shouldCloseOnOutsideClick: true,
+        onRequestClose: this.closeThreadModal,
+        showPrimary: isEditing,
+        showSecondary: false,
+        bodyClassName: s('p-0'),
+        body: this.renderModalThreadBody(),
+        primaryButtonProps: {
+          text: "Save",
+          onClick: () => closeCardModal(MODAL_TYPE.THREAD),
+          className: s("rounded-t-none flex-1"),
+        }
+      },
       {
         modalType: MODAL_TYPE.CONFIRM_CLOSE,
         title: "Save Changes",
@@ -715,7 +705,6 @@ class CardContent extends Component {
       	<div className={s("flex-grow flex flex-col min-h-0")}>
 	        { this.renderHeader() }
 	        { this.renderAnswer() }
-	        { this.renderThreadModal() }
           { this.renderModals() }
         </div>
         { this.renderFooter() }

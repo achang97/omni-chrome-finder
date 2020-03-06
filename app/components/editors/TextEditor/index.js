@@ -75,7 +75,7 @@ export default class TextEditor extends Component {
 	      />
         {
           !readOnly &&
-          <div className={s('text-editor-toggle-rte-button absolute top-0 right-0 text-white mt-sm flex justify-center items-center text-lg shadow-md flex cursor-pointer')}
+          <div className={s('text-editor-toggle-rte-button button-hover')}
           onClick={ () => this.toggleToolbar() }>
             { hideToolbar ?
               <div className={s("flex")}>

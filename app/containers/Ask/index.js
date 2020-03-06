@@ -187,12 +187,6 @@ class Ask extends Component {
             editorState={questionDescription} 
             editorType="EXTENSION"
           />
-          <CircleButton
-            content={<IoMdAdd color="white" /> }
-            size="sm"
-            containerClassName={s('absolute z-10 ask-text-editor-add-button')}
-            buttonClassName={s("primary-gradient")}
-          />
         </div>
         <div className={s('flex px-xs pt-reg')}>
           <Button
@@ -381,7 +375,7 @@ class Ask extends Component {
         disabled={questionTitle === '' || !questionDescription.getCurrentContent().hasText() || recipients.length === 0 || isAskingQuestion}
         iconLeft={false}
         icon={ isAskingQuestion ?
-          <Loader className={s("h-3xl w-3xl")} size="sm" color="white" /> :
+          <Loader className={s("h-3xl w-3xl")} color="white" /> :
           <span className={s("rounded-full h-3xl w-3xl flex justify-center items-center bg-white text-purple-reg")}>
             <FaPaperPlane />
           </span>
@@ -415,7 +409,7 @@ class Ask extends Component {
 
   renderExpandedAskPage = () => {
     const { askError, askSuccess, user } = this.props;
-    const url = "https://slack.com/oauth/authorize?client_id=902571434263.910615559953&scope=chat:write:user,calls:read,calls:write,channels:history,channels:read,commands,files:read,groups:history,groups:read,im:history,im:read,im:write,incoming-webhook,links:read,mpim:history,mpim:read,mpim:write,pins:read,pins:write,reactions:read,reactions:write,reminders:read,reminders:write,remote_files:read,remote_files:share,remote_files:write,team:read,usergroups:read,usergroups:write,users.profile:read,users:read,users:read.email,users:write&user_scope=calls:read,calls:write,channels:history,channels:read,channels:write,dnd:read,dnd:write,emoji:read,files:read,files:write,groups:history,groups:read,groups:write,im:history,im:read,im:write,links:read,links:write,mpim:history,mpim:read,mpim:write,pins:read,pins:write,reactions:read,reactions:write,reminders:read,reminders:write,remote_files:read,remote_files:share,remote_files:write,search:read,stars:read,stars:write,team:read,usergroups:read,usergroups:write,users.profile:read,users.profile:write,users:read,users:read.email,users:write&state=" + user._id;
+    const url = "https://slack.com/oauth/authorize?client_id=902571434263.910615559953&scope=chat:write:user,calls:read,chat:write:bot,calls:write,channels:history,channels:read,commands,files:read,groups:history,groups:read,im:history,im:read,im:write,incoming-webhook,links:read,mpim:history,mpim:read,mpim:write,pins:read,pins:write,reactions:read,reactions:write,reminders:read,reminders:write,remote_files:read,remote_files:share,remote_files:write,team:read,usergroups:read,usergroups:write,users.profile:read,users:read,users:read.email,users:write&user_scope=calls:read,calls:write,channels:history,channels:read,channels:write,dnd:read,dnd:write,emoji:read,files:read,files:write,groups:history,groups:read,groups:write,im:history,im:read,im:write,links:read,links:write,mpim:history,mpim:read,mpim:write,pins:read,pins:write,reactions:read,reactions:write,reminders:read,reminders:write,remote_files:read,remote_files:share,remote_files:write,search:read,stars:read,stars:write,team:read,usergroups:read,usergroups:write,users.profile:read,users.profile:write,users:read,users:read.email,users:write&state=" + user._id;
 
     const isLoggedInSlack = this.isLoggedInSlack();
 

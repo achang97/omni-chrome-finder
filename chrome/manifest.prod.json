@@ -10,10 +10,8 @@
     "48": "img/icon-48.png",
     "128": "img/icon-128.png"
   },
-  "web_accessible_resources": [
-    "inject.html"
-  ],
   "background": {
+    "persistent": false,
     "page": "background.html"
   },
   "permissions": ["activeTab", "storage", "<all_urls>"],

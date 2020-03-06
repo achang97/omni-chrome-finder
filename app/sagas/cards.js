@@ -89,7 +89,6 @@ function* getCard() {
     const card = yield call(doGet, `/cards/${cardId}`);
     yield put(handleGetCardSuccess(cardId, card));
   } catch(error) {
-    console.log(error)
     const { response: { data } } = error;
     yield put(handleGetCardError(cardId, data.error));
   }
@@ -247,7 +246,7 @@ function* addAttachment({ key, file }) {
     const formData = new FormData();
     formData.append('file', file);
 
-    const attachment = yield call(doPost, '/files/upload', formData, true);
+    const attachment = yield call(doPost, '/files/upload', formData, { isForm: true });
     yield put(handleAddCardAttachmentSuccess(cardId, key, attachment));
   } catch(error) {
     const { response: { data } } = error;

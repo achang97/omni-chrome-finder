@@ -88,7 +88,7 @@ export default class Profile extends Component {
     return(
       <div className={s('flex flex-col')}>
         { isSavingUser ?
-          <Loader className={s("")}/>
+          <Loader />
           :
           <div className={s('flex')}>
             <div className={s('mr-reg relative')}>
@@ -194,7 +194,7 @@ export default class Profile extends Component {
             const { title, logo } = this.getPermissionInfo(permission);
             const isEnabled = MOCK_USER.autofindPermissions[permission];
             return(
-              <div className={s(`flex bg-white p-reg justify-between border border-solid border-gray-xlight items-center rounded-lg ${ i > 0 ? 'mt-sm' : '' }`)}>
+              <div key={title} className={s(`flex bg-white p-reg justify-between border border-solid border-gray-xlight items-center rounded-lg ${ i > 0 ? 'mt-sm' : '' }`)}>
                 <div className={s("flex items-center")}>
                   <div className={s("profile-integration-img-container flex rounded-full border border-solid border-gray-light mr-reg")}> 
                     <img src={logo} className={s('m-auto profile-integration-img')} />
@@ -225,7 +225,7 @@ export default class Profile extends Component {
             const isSignedIn = user.integrations[integration].access_token !== undefined;
             const { title, logo, onSignIn, onSignOut } = this.getIntegrationInfo(integration);
             return (
-              <div className={s(`flex bg-white p-reg justify-between border border-solid border-gray-xlight items-center rounded-lg ${ i > 0 ? 'mt-sm' : '' }`)}>
+              <div key={title} className={s(`flex bg-white p-reg justify-between border border-solid border-gray-xlight items-center rounded-lg ${ i > 0 ? 'mt-sm' : '' }`)}>
                 <div className={s("flex items-center")}>
                   <div className={s("profile-integration-img-container flex rounded-full border border-solid border-gray-light mr-reg")}> 
                     <img src={logo} className={s('m-auto profile-integration-img')} />
@@ -266,7 +266,7 @@ export default class Profile extends Component {
         Object.values(PROFILE_SETTING_SECTIONS).map((profileSettingSection, j) => {
           if(sectionOpen[profileSettingSection.title]) {
             return (
-              <div className={s(`flex flex-col bg-purple-light px-reg pt-xl pb-reg rounded-lg ${ j > 0 ? 'mt-reg' : '' }`)}>
+              <div key={profileSettingSection.title} className={s(`flex flex-col bg-purple-light px-reg pt-xl pb-reg rounded-lg ${ j > 0 ? 'mt-reg' : '' }`)}>
                 <div className={s("flex items-center mb-reg justify-between")}>
                   <div className={s("text-purple-reg text-sm")}>{profileSettingSection.title}</div>
                   <MdKeyboardArrowUp className={s("text-gray-dark cursor-pointer")}
@@ -282,7 +282,7 @@ export default class Profile extends Component {
             )
           } else {
             return (
-              <div className={s(`flex items-center border border-solid border-gray-light rounded-lg py-xl px-reg justify-between bg-white cursor-pointer ${ j > 0 ? 'mt-reg' : '' }`)}
+              <div key={profileSettingSection.title} className={s(`flex items-center border border-solid border-gray-light rounded-lg py-xl px-reg justify-between bg-white cursor-pointer ${ j > 0 ? 'mt-reg' : '' }`)}
                    onClick={() => this.setState({ sectionOpen: { ...sectionOpen, [ profileSettingSection.title ] : true } })}>
                 <div className={s("text-purple-reg text-sm")}>{ profileSettingSection.title }</div>
                 <MdKeyboardArrowDown className={s("text-gray-dark")}/>

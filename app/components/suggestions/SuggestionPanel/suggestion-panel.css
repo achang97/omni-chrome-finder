@@ -30,7 +30,7 @@
 }
 
 .suggestion-panel-external-result-icon {
-  @apply bg-white rounded-full w-2xl h-2xl flex items-center justify-center p-lg;
+  @apply bg-white rounded-full w-2xl h-2xl flex items-center justify-center p-lg ml-xs;
   box-sizing: border-box;
 }
 

@@ -2,10 +2,14 @@ import React, { Component } from 'react';
 import { Route, Switch, Redirect, withRouter } from 'react-router-dom';
 import Dock from 'react-dock';
 import { CHROME_MESSAGE, CARD_URL_REGEX } from '../utils/constants';
-import queryString from 'query-string'
+import queryString from 'query-string';
+import { EditorState, ContentState } from 'draft-js';
 
 import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
+import { updateAskSearchText, updateAskQuestionTitle } from '../actions/ask';
+import { updateCreateAnswerEditor } from '../actions/create';
+import { updateNavigateSearchText } from '../actions/navigate';
 import { toggleDock } from '../actions/display';
 import { requestGetUser } from '../actions/profile';
 import { openCard } from '../actions/cards';
@@ -39,6 +43,10 @@ const dockPanelStyles = {
         toggleDock,
         requestGetUser,
         openCard,
+        updateAskSearchText,
+        updateAskQuestionTitle,
+        updateCreateAnswerEditor,
+        updateNavigateSearchText,
       },
       dispatch
     )
@@ -116,16 +124,64 @@ class App extends Component {
     }
   };
 
+  handleContextMenuAction = (action, selectedText) => {
+    const {
+      isLoggedIn, dockVisible, dockExpanded, toggleDock, history,
+      updateAskSearchText, updateAskQuestionTitle,
+      updateCreateAnswerEditor,
+      updateNavigateSearchText,
+    } = this.props;
+
+    if (isLoggedIn) {
+      // Open dock
+      if (!dockVisible) {
+        toggleDock();
+      }
+
+      let url;
+      switch (action) {
+        case CHROME_MESSAGE.ASK: {
+          url = '/ask';
+
+          if (dockExpanded) {
+            updateAskQuestionTitle(selectedText);
+          } else {
+            updateAskSearchText(selectedText);
+          }
+          break;
+        }
+        case CHROME_MESSAGE.CREATE: {
+          url = '/create';
+          updateCreateAnswerEditor(EditorState.createWithContent(ContentState.createFromText(selectedText)));
+          break;
+        }        
+        case CHROME_MESSAGE.SEARCH: {
+          url = '/navigate';
+          updateNavigateSearchText(selectedText);
+          break;
+        }
+      }
+
+      history.push(url);
+    }
+  }
+
   listener = (msg) => {
-    const { type, ...restMsg } = msg;
+    const { type, payload } = msg;
     switch (msg.type) {
       case CHROME_MESSAGE.TOGGLE: {
         this.props.toggleDock();
         break;
       }
       case CHROME_MESSAGE.TAB_UPDATE: {
-        const { url } = restMsg;
+        const { url } = payload;
         this.handleTabUpdate(url);
+        break;
+      }
+      case CHROME_MESSAGE.SEARCH:
+      case CHROME_MESSAGE.ASK:
+      case CHROME_MESSAGE.CREATE: {
+        this.handleContextMenuAction(type, payload.selectionText);
         break;
       }
     }

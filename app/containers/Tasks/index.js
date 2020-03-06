@@ -1,4 +1,5 @@
 import React, { Fragment, Component, PropTypes } from 'react';
+import AnimateHeight from 'react-animate-height';
 import Tabs from '../../components/common/Tabs/Tabs';
 import Tab from '../../components/common/Tabs/Tab';
 import TaskItem from '../../components/tasks/TaskItem';
@@ -208,8 +209,8 @@ export default class Tasks extends Component {
               <React.Fragment>
                 { 
                   (filteredTasks.length > 0) &&
-                  <div className={s(`${isSectionOpen ? 'min-h-0 flex flex-col flex-grow' : ''}`)}>
-                    <div className={s(`${isSectionOpen ? 'bg-white' : 'tasks-section-container'} flex items-center p-reg py-xs cursor-pointer`)} onClick={() => this.switchOpenSection(TASKS_SECTIONS[section])}>
+                  <div className={s(`${isSectionOpen ? 'min-h-0 flex flex-col' : ''}`)}>
+                    <div className={s(`${isSectionOpen ? 'bg-white' : 'tasks-section-container'} flex items-center p-reg py-sm cursor-pointer`)} onClick={() => this.switchOpenSection(TASKS_SECTIONS[section])}>
                         <div className={s("flex flex-grow items-center")}>
                           { icon }
                           <div className={s("ml-reg text-sm font-semibold")}>{sectionTitle}</div>
@@ -227,10 +228,9 @@ export default class Tasks extends Component {
                             </React.Fragment>
                         }
                     </div>
-                    {
-                      isSectionOpen ?
-                      this.renderTasksList(filteredTasks) : null
-                    }
+                    <AnimateHeight height={isSectionOpen ? 'auto' : 0}>
+                      {this.renderTasksList(filteredTasks)}
+                    </AnimateHeight>
                   </div>
                 }
               </React.Fragment>
@@ -278,6 +278,7 @@ export default class Tasks extends Component {
   render() {
   	const { tabIndex, tasks } = this.props;
     console.log(this.props.tasks);
+
     return (
       <div className={s("flex flex-col min-h-0 flex-grow")}>
           <Tabs

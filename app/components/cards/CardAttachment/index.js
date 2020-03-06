@@ -20,10 +20,8 @@ const s = getStyleApplicationFn(style);
 const COLORS = {
   IMAGE: { color: 'purple-reg', underlineColor: 'purple-grey-50' },
   AUDIO_VIDEO: { color: 'red-500', underlineColor: 'red-200' },
-  EXCEL: { color: 'green-500', underlineColor: 'green-200' },
-  POWERPOINT: { color: 'orange-500', underlineColor: 'orange-200' },
-  CODE: { color: 'teal-500', underlineColor: 'teal-200' },
-  PDF: { color: 'yellow-500', underlineColor: 'yellow-200' },
+  EXCEL_CODE: { color: 'green-500', underlineColor: 'green-200' },
+  POWERPOINT_PDF: { color: 'orange-500', underlineColor: 'orange-200' },
   ARCHIVE: { color: 'gray-500', underlineColor: 'gray-200' },
   DEFAULT: { color: 'blue-500', underlineColor: 'blue-200' }
 }
@@ -48,20 +46,20 @@ function getAttachmentProps(type) {
       case 'application/vnd.openxmlformats-officedocument.spreadsheetml':
       case 'application/vnd.oasis.opendocument.spreadsheet':
       case 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet': {
-        return { ...COLORS.EXCEL, Icon: FaFileExcel };
+        return { ...COLORS.EXCEL_CODE, Icon: FaFileExcel };
+      }
+      case 'text/html':
+      case 'application/json': {
+        return { ...COLORS.EXCEL_CODE, Icon: FaFileCode };
       }
       case 'application/vnd.ms-powerpoint':
       case 'application/vnd.openxmlformats-officedocument.presentationml':
       case 'application/vnd.oasis.opendocument.presentation':
       case 'application/vnd.openxmlformats-officedocument.presentationml.presentation': {
-        return { ...COLORS.POWERPOINT, Icon: FaFilePowerpoint };
-      }
-      case 'text/html':
-      case 'application/json': {
-        return { ...COLORS.CODE, Icon: FaFileCode };
+        return { ...COLORS.POWERPOINT_PDF, Icon: FaFilePowerpoint };
       }
       case 'application/pdf': {
-        return { ...COLORS.PDF, Icon: FaFilePdf };
+        return { ...COLORS.POWERPOINT_PDF, Icon: FaFilePdf };
       }
       case 'application/gzip':
       case 'application/zip':

@@ -4,8 +4,9 @@ import PropTypes from 'prop-types';
 import { colors } from '../../../styles/colors';
 import { MoonLoader } from "react-spinners";
 
+import style from './loader.css';
 import { getStyleApplicationFn } from '../../../utils/styleHelpers';
-const s = getStyleApplicationFn();
+const s = getStyleApplicationFn(style);
 
 const getSize = (size) => {
 	if (typeof(size) === 'string') {
@@ -23,7 +24,7 @@ const getSize = (size) => {
 }
 
 const Loader = ({ color, size, className, centered, ...rest }) => (
-	<div className={s(`${centered ? 'flex justify-center items-center' : ''} ${className}`)}>
+	<div className={s(`loader ${centered ? 'flex justify-center items-center' : ''} ${className}`)}>
 		<MoonLoader
 			color={color}
 			size={getSize(size)}
