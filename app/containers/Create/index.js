@@ -7,7 +7,7 @@ import { MdAdd } from "react-icons/md";
 import { EditorState } from 'draft-js';
 import TextEditor from '../../components/editors/TextEditor';
 import SuggestionPanel from "../../components/suggestions/SuggestionPanel";
-import _ from 'underscore';
+import _ from 'lodash';
 
 import { openCard } from '../../actions/cards';
 import { requestSearchCards } from '../../actions/search';

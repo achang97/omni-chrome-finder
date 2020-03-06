@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 
 import { IoMdAdd } from 'react-icons/io';
-import _ from 'underscore';
+import _ from 'lodash';
 
 import CardUser from './CardUser';
 import CircleButton from '../../common/CircleButton';

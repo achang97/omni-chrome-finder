@@ -1,4 +1,5 @@
 import React, { Component, PropTypes } from 'react';
+import AnimateHeight from 'react-animate-height';
 import Button from '../../components/common/Button';
 import CheckBox from '../../components/common/CheckBox';
 import PlaceholderImg from '../../components/common/PlaceholderImg';
@@ -8,7 +9,7 @@ import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
 import { getStorageName } from '../../utils/constants';
 import { MdEdit } from 'react-icons/md'
-import { PROFILE_SETTING_SECTIONS, INTEGRATIONS, AUTOFIND_PERMISSIONS } from '../../utils/constants';
+import { PROFILE_SETTING_SECTIONS, INTEGRATIONS, AUTOFIND_PERMISSIONS, NOOP } from '../../utils/constants';
 import { MdKeyboardArrowDown, MdKeyboardArrowUp } from 'react-icons/md'
 import { IoMdCamera } from "react-icons/io";
 
@@ -25,6 +26,8 @@ import SlackIcon from "../../assets/images/icons/Slack_Mark.svg";
 import GoogleDriveIcon from "../../assets/images/icons/GoogleDrive_Icon.svg";
 
 const GOOGLE_AUTH_URL = `${SERVER_URL}/google/authenticate`;
+
+const INTEGRATIONS_INACTIVE_HEIGHT = 62;
 
 const MOCK_USER = {
   autofindPermissions: {
@@ -257,40 +260,39 @@ export default class Profile extends Component {
     )
   }
 
+  toggleIntegration = (title) => {
+    const { sectionOpen } = this.state;
+    this.setState({ sectionOpen: { ...sectionOpen, [title] : !sectionOpen[title] } });
+  }
+
   renderIntegrationsSection = () => {
     const { user } = this.props;
     const { sectionOpen } = this.state;
     return(
       <div className={s('flex flex-col overflow-auto flex-grow')}>
-      {
-        Object.values(PROFILE_SETTING_SECTIONS).map((profileSettingSection, j) => {
-          if(sectionOpen[profileSettingSection.title]) {
-            return (
-              <div key={profileSettingSection.title} className={s(`flex flex-col bg-purple-light px-reg pt-xl pb-reg rounded-lg ${ j > 0 ? 'mt-reg' : '' }`)}>
-                <div className={s("flex items-center mb-reg justify-between")}>
-                  <div className={s("text-purple-reg text-sm")}>{profileSettingSection.title}</div>
-                  <MdKeyboardArrowUp className={s("text-gray-dark cursor-pointer")}
-                  onClick={() => this.setState({ sectionOpen: { ...sectionOpen, [ profileSettingSection.title ] : false } })}/>
-                </div>
-                {
-                  profileSettingSection.title === PROFILE_SETTING_SECTIONS.AUTOFIND_PERMISSIONS.title ?
-                  this.renderAutofindPermissions(profileSettingSection)
-                  :
+        { Object.values(PROFILE_SETTING_SECTIONS).map((profileSettingSection, i) => {
+          const isOpen = sectionOpen[profileSettingSection.title];
+          const Icon = isOpen ? MdKeyboardArrowUp : MdKeyboardArrowDown;
+
+          return (
+            <div
+              key={profileSettingSection.title}
+              className={s(`profile-integration ${isOpen ? 'profile-integration-active' : 'profile-integration-inactive'} ${i !== 0 ? 'mt-reg' : '' }`)}
+              onClick={() => this.toggleIntegration(profileSettingSection.title)}
+            >
+              <div className={s("py-sm flex items-center justify-between")}>
+                <div className={s("text-purple-reg text-sm")}>{profileSettingSection.title}</div>
+                <Icon className={s("text-gray-dark cursor-pointer")} />
+              </div>
+              <AnimateHeight height={isOpen ? 'auto' : 0} animationStateClasses={{ animatingUp: s('invisible') }}>
+                { (profileSettingSection.title === PROFILE_SETTING_SECTIONS.AUTOFIND_PERMISSIONS.title ?
+                  this.renderAutofindPermissions(profileSettingSection) :
                   this.renderIntegrations(profileSettingSection)
-                }
-              </div>
-            )
-          } else {
-            return (
-              <div key={profileSettingSection.title} className={s(`flex items-center border border-solid border-gray-light rounded-lg py-xl px-reg justify-between bg-white cursor-pointer ${ j > 0 ? 'mt-reg' : '' }`)}
-                   onClick={() => this.setState({ sectionOpen: { ...sectionOpen, [ profileSettingSection.title ] : true } })}>
-                <div className={s("text-purple-reg text-sm")}>{ profileSettingSection.title }</div>
-                <MdKeyboardArrowDown className={s("text-gray-dark")}/>
-              </div>
-            )
-          }
-        })
-      } 
+                )}
+              </AnimateHeight>
+            </div>
+          );
+        })} 
       </div>
     )
   }

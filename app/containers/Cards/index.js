@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import Draggable from 'react-draggable';
 import { Resizable } from 're-resizable';
-import _ from 'underscore';
+import _ from 'lodash';
 
 import { MdClose, MdMoreHoriz } from "react-icons/md";
 import CardContent from '../../components/cards/CardContent';
@@ -77,7 +77,7 @@ export default class Cards extends Component {
     // Check to make sure edit state is different than saved state
     if (this.cardStateChanged(index)) {
       if (index !== activeCardIndex) this.updateTab(index);
-      if (currentCard.cardStatus === CARD_STATUS.NOT_DOCUMENTED) openCardModal(MODAL_TYPE.CONFIRM_CLOSE_UNDOCUMENTED) 
+      if (currentCard.status === CARD_STATUS.NOT_DOCUMENTED) openCardModal(MODAL_TYPE.CONFIRM_CLOSE_UNDOCUMENTED) 
       else openCardModal(MODAL_TYPE.CONFIRM_CLOSE);
     } else {
       closeCard(index);

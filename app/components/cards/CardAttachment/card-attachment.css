@@ -12,15 +12,7 @@
 	font-size: 13px;
 }
 
-.card-attachment-filename-wrapper {
+.card-attachment-filename-input {
+	@apply h-full w-full rounded text-xs flex-1 !important;
 	height: 20px;
-	@apply flex items-center;
-}
-
-.card-attachment-filename-wrapper > input {
-	@apply h-full w-full rounded text-xs !important;
-}
-
-.card-attachment-filename {
-	@apply flex items-center;
 }

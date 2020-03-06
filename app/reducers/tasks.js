@@ -1,6 +1,6 @@
 import * as types from '../actions/actionTypes';
 import { removeIndex } from '../utils/arrayHelpers';
-import _ from 'underscore';
+import _ from 'lodash';
 
 const initialState = {
   tabIndex: 0,
