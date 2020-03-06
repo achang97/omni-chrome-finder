@@ -14,7 +14,6 @@ import { AiFillMinusCircle, AiFillQuestionCircle } from "react-icons/ai";
 import Timeago from 'react-timeago';
 import Loader from '../../components/common/Loader';
 
-import { openCard } from '../../actions/cards';
 import * as tasksActions from '../../actions/tasks';
 import style from "./tasks.css";
 import { TASKS_TAB_OPTIONS, CARD_STATUS, TASKS_SECTIONS, TASKS_TYPES } from '../../utils/constants';
@@ -58,7 +57,6 @@ const UNRESOLVED_CARDS_PLACEHOLDER = [{
   bindActionCreators(
     {
       ...tasksActions,
-      openCard,
     },
     dispatch
   )
@@ -111,54 +109,18 @@ export default class Tasks extends Component {
   	else this.setState({ sectionOpen: newSection });
   }
 
-
-  getTaskItemInfo = (type, task) => {
-    const { openCard, requestMarkUpToDateFromTasks, requestDismissTask, isUpdatingCard, isDismissingTask, markCardUpToDateError, dimissTaskError } = this.props;
-    switch (type) {
-      case TASKS_TYPES.NEEDS_VERIFICATION:
-        return { primaryOption: "Mark as Up to Date", secondaryOption: "Edit", primaryAction: () => { requestMarkUpToDateFromTasks(task.card._id) }, secondaryAction: () => { openCard({ _id: task.card._id, isEditing: true }) },
-                isPrimaryLoading: isUpdatingCard, primaryError: markCardUpToDateError };
-      case TASKS_TYPES.OUT_OF_DATE:
-        return { primaryOption: "Edit", secondaryOption: "Mark as Up to Date", primaryAction: () => { openCard({ _id: task.card._id, isEditing: true }) }, secondaryAction: () => { requestMarkUpToDateFromTasks(task.card._id) },
-                isSecondaryLoading: isUpdatingCard, secondaryError: markCardUpToDateError };
-      case TASKS_TYPES.UNDOCUMENTED:
-        return { primaryOption: "Create Card", secondaryOption: "Dismiss", primaryAction: () => { openCard({ _id: task.card._id, isEditing: true }) }, secondaryAction: () => { requestDismissTask( task._id ) },
-                isSecondaryLoading: isDismissingTask, secondaryError: dimissTaskError };
-      case TASKS_TYPES.NEEDS_APPROVAL:
-        return { primaryOption: "Approve", secondaryOption: "Decline", primaryAction: () => { return }, secondaryAction: () => { return } };
-      default:
-        return {}; 
-    }
-  }
-
-  
-
   renderTasksList = (filteredTasks) => {
   	return (
   		<div className={s("flex flex-col p-reg overflow-auto")}>
   			{
 	  			filteredTasks.map((task, i) => {
-          	const { primaryOption, primaryAction, secondaryOption, secondaryAction, isPrimaryLoading, isSecondaryLoading, primaryError, secondaryError } = this.getTaskItemInfo(task.status, task);
 	  				return (
 	  					<TaskItem 
 	  						index={i}
+                id={task._id}
+                date={<Timeago date={task.createdAt} live={false} />}
 	  						type={task.status}
-	  						question={task.question}
-	  						preview={task.card.description}
-	  						date={<Timeago date={task.createdAt} live={false} />}
-	  						primaryOption={primaryOption}
-	  						primaryAction={primaryAction}
-                isPrimaryLoading={isPrimaryLoading || false}
-                primaryError={primaryError}
-	  						secondaryOption={secondaryOption}
-	  						secondaryAction={secondaryAction}
-                isSecondaryLoading={isSecondaryLoading || false}
-                secondaryError={secondaryError}
-
-
-                reasonOutdated={task.card.outOfDateReason}
-
-
+                card={task.card}
 	  						/>
 	  				);
 	  			})
@@ -244,24 +206,19 @@ export default class Tasks extends Component {
   renderApprovalTasks = () => {
   	return (
   		<div className={s("flex flex-col p-reg min-h-0 overflow-auto")}> 
-  			{
-	  			UNRESOLVED_CARDS_PLACEHOLDER.map((notification, i) => {
-            const { primaryOption, primaryAction, secondaryOption, secondaryAction } = this.getTaskItemInfo(notification.type);
+  			{/*
+	  			UNRESOLVED_CARDS_PLACEHOLDER.map((task, i) => {
             return (
               <TaskItem 
                 index={i}
-                type={notification.type}
-                question={notification.question}
-                preview={notification.preview}
-                date={"Feb 2"}
-                primaryOption={primaryOption}
-                primaryAction={primaryAction}
-                secondaryOption={secondaryOption}
-                secondaryAction={secondaryAction}
-                />
+                id={task._id}
+                date={<Timeago date={task.createdAt} live={false} />}
+                type={task.status}
+                card={task.card}
+              />
             );
 	  			})
-  			}
+  			*/}
   		</div>
   	)
   }

@@ -4,6 +4,10 @@ import Button from '../../common/Button';
 import PlaceholderImg from '../../common/PlaceholderImg';
 import SlackIcon from "../../../assets/images/icons/Slack_Mark.svg";
 import Loader from '../../common/Loader';
+import { bindActionCreators } from 'redux';
+import { connect } from 'react-redux';
+import { openCard } from '../../../actions/cards';
+import * as tasksActions from '../../../actions/tasks';
 
 import { TASKS_TYPES } from '../../../utils/constants';
 import { IoMdAlert } from 'react-icons/io'
@@ -16,6 +20,17 @@ import { getStyleApplicationFn } from '../../../utils/styleHelpers';
 const s = getStyleApplicationFn(style);
 
 const SIDE_DOCK_TRANSITION_MS = 300;
+
+
+@connect(
+  state => ({
+    ...state.tasks,
+  }),
+  dispatch => bindActionCreators({
+    ...tasksActions,
+    openCard,
+  }, dispatch)
+)
 
 class TaskItem extends Component {
   constructor(props) {
@@ -77,19 +92,41 @@ class TaskItem extends Component {
     }
   }
 
-  renderTaskPreview = () => {
-    const { type, preview, owners, reasonOutdated } = this.props;
+  getTaskActionsInfo = () => {
+    const { type, id, card, openCard, requestMarkUpToDateFromTasks, requestDismissTask, isUpdatingCard, isDismissingTask, markCardUpToDateError, dimissTaskError } = this.props;
+    const { _id } = card;
     switch (type) {
       case TASKS_TYPES.NEEDS_VERIFICATION:
-        return (<div className={s("text-xs text-gray-dark mt-reg vertical-ellipsis-2")}>{preview}</div>);
+        return { primaryOption: "Mark as Up to Date", secondaryOption: "Edit", primaryAction: () => { requestMarkUpToDateFromTasks(_id) }, secondaryAction: () => { openCard({ _id, isEditing: true }) },
+                isPrimaryLoading: isUpdatingCard, primaryError: markCardUpToDateError };
+      case TASKS_TYPES.OUT_OF_DATE:
+        return { primaryOption: "Edit", secondaryOption: "Mark as Up to Date", primaryAction: () => { openCard({ _id, isEditing: true }) }, secondaryAction: () => { requestMarkUpToDateFromTasks(_id) },
+                isSecondaryLoading: isUpdatingCard, secondaryError: markCardUpToDateError };
+      case TASKS_TYPES.UNDOCUMENTED:
+        return { primaryOption: "Create Card", secondaryOption: "Dismiss", primaryAction: () => { openCard({ _id, isEditing: true }) }, secondaryAction: () => { requestDismissTask( id ) },
+                isSecondaryLoading: isDismissingTask, secondaryError: dimissTaskError };
+      case TASKS_TYPES.NEEDS_APPROVAL:
+        return { primaryOption: "Approve", secondaryOption: "Decline", primaryAction: () => { return }, secondaryAction: () => { return } };
+      default:
+        return {}; 
+    }
+  }
+
+  renderTaskPreview = () => {
+    const { type, card } = this.props;
+    const { answer, outOfDateReason, owners } = card;
+
+    switch (type) {
+      case TASKS_TYPES.NEEDS_VERIFICATION:
+        return (<div className={s("text-xs text-gray-dark mt-reg vertical-ellipsis-2")}>{answer}</div>);
       case TASKS_TYPES.OUT_OF_DATE:
         return (
           <div className={s("flex mt-reg")}>
             <div className={s("mr-sm mt-reg flex-shrink-0")}>
-              <PlaceholderImg name={reasonOutdated.sender.firstname + ' ' + reasonOutdated.sender.lastname} src={reasonOutdated.sender.profilePic} className={s('task-item-profile-picture rounded-full text-xs')}/>
+              <PlaceholderImg name={outOfDateReason.sender.firstname + ' ' + outOfDateReason.sender.lastname} src={outOfDateReason.sender.profilePic} className={s('task-item-profile-picture rounded-full text-xs')}/>
             </div>
             <div className={s("bg-gray-xlight p-reg rounded-lg w-full vertical-ellipsis-2 text-xs")}>
-              {reasonOutdated.reason === '' ? 'No reason specified.' : reasonOutdated.reason}
+              {outOfDateReason.reason === '' ? 'No reason specified.' : outOfDateReason.reason}
             </div>
           </div>
         )
@@ -104,7 +141,7 @@ class TaskItem extends Component {
             <div className={s("flex flex-shrink-0 mr-reg")}>
               {/* Show the first owner of the card */}
               <div className={s("flex-shrink-0")}>
-                <img src={PROFILE_PICTURE_URL} className={s('task-item-profile-picture rounded-full')} />
+                <PlaceholderImg name={owners[0].firstname + ' ' + owners[0].lastname} src={owners[0].profilePic}  className={s('task-item-profile-picture rounded-full text-xs')}/>
               </div>
             </div>
               <div className={s("card-tag overflow-hidden")}> 
@@ -118,10 +155,15 @@ class TaskItem extends Component {
   }
 
   render() {
-    const { index, type, question, preview, date, primaryOption, primaryAction, secondaryOption, secondaryAction, isPrimaryLoading, isSecondaryLoading, primaryError, secondaryError } = this.props;
+    const { index, type, card, date } = this.props;
+    const { question } = card;
+
+
     const { buttonColor, buttonClassName, buttonUnderline, buttonIcon } = this.getButtonProps();
     const containerClassName = this.getContainerClass(); 
     const { headerTitle, headerIcon, headerTitleClassName } = this.getHeaderInfo();
+    const { primaryOption, primaryAction, isPrimaryLoading, primaryError,
+            secondaryOption, secondaryAction, isSecondaryLoading, secondaryError, } = this.getTaskActionsInfo();
 
     return (
       <div className={s(`flex flex-col ${containerClassName} p-lg rounded-lg ${index > 0 ? 'mt-reg' : ''}`)} >
@@ -140,8 +182,8 @@ class TaskItem extends Component {
               { this.renderTaskPreview() }
             </div>
 
-            {primaryError && <div> {primaryError} </div>}
-            {secondaryError && <div> {secondaryError} </div>}
+            {primaryError && <div className={s('text-xs text-red-reg')}> {primaryError} </div>}
+            {secondaryError && <div className={s('text-xs text-red-reg')}> {secondaryError} </div>}
             
             <div className={s("flex items-center justify-center")}>
               <div className={s("flex-grow text-gray-reg text-xs")}> {date} </div>
@@ -173,29 +215,13 @@ class TaskItem extends Component {
 
 TaskItem.propTypes = {
   index: PropTypes.number,
-  type: PropTypes.oneOf([TASKS_TYPES.NEEDS_VERIFICATION, TASKS_TYPES.OUT_OF_DATE, TASKS_TYPES.UNDOCUMENTED, TASKS_TYPES.NEEDS_APPROVAL]),
-  question: PropTypes.string,
-  preview: PropTypes.string,
+  id: PropTypes.string,
   date: PropTypes.object,
-  primaryOption: PropTypes.string,
-  primaryAction: PropTypes.func,
-  secondaryOption: PropTypes.string,
-  secondaryAction: PropTypes.func,
-  owners: PropTypes.array,
-  reasonOutdated: PropTypes.object,
-  isPrimaryLoading: PropTypes.bool,
-  isSecondaryLoading: PropTypes.bool,
-  primaryError: PropTypes.string,
-  secondaryError: PropTypes.string,
+  type: PropTypes.oneOf([TASKS_TYPES.NEEDS_VERIFICATION, TASKS_TYPES.OUT_OF_DATE, TASKS_TYPES.UNDOCUMENTED, TASKS_TYPES.NEEDS_APPROVAL]),
+  card: PropTypes.object,
 };
 
 TaskItem.defaultProps = {
-  owners: ["John", "Jack"],
-  reasonOutdated: {},
-  isPrimaryLoading: false,
-  isSecondaryLoading: false,
-  primaryError: null,
-  secondaryError: null,
 
 };
 
