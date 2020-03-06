@@ -3,6 +3,7 @@ import AnimateHeight from 'react-animate-height';
 import Tabs from '../../components/common/Tabs/Tabs';
 import Tab from '../../components/common/Tabs/Tab';
 import TaskItem from '../../components/tasks/TaskItem';
+import NoNotificationsImg from "../../assets/images/general/noNotifications.svg";
 
 import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
@@ -225,15 +226,16 @@ export default class Tasks extends Component {
 
   renderNoTasksScreen = () => {
     return (
-      <div className={s('flex flex-col items-center p-reg justify-center')}>
-        <div> No unresolved tasks </div>
-        <div> Congratulations, all your cards are verified and up to date! </div>
+      <div className={s('flex flex-col items-center p-reg justify-center mt-2xl')}>
+        <img src={NoNotificationsImg}  />
+        <div className={s('text-reg font-semibold')}> No unresolved tasks </div>
+        <div className={s('text-sm mt-xl text-center')}> Congratulations, all your cards are verified and up to date! </div>
       </div>
     )
   }
 
   render() {
-  	const { tabIndex, tasks } = this.props;
+  	const { tabIndex, tasks, isGettingTasks, getTasksError } = this.props;
     console.log(this.props.tasks);
 
     return (
@@ -259,11 +261,19 @@ export default class Tasks extends Component {
           </Tabs>
           { tabIndex === 0 ? 
             <React.Fragment>
+            { getTasksError && <div> {getTasksError} </div>}
             {
-              tasks.length === 0 ?
-              this.renderNoTasksScreen()
+              isGettingTasks ?
+              <Loader className={s('mt-2xl')}/>
               :
-          	  this.renderUnresolvedTasks()
+              <React.Fragment>
+              {
+                tasks.length === 0 ?
+                this.renderNoTasksScreen()
+                :
+            	  this.renderUnresolvedTasks()
+              }
+              </React.Fragment>
             }
             </React.Fragment>
           	:
