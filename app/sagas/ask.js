@@ -85,13 +85,13 @@ function* addAttachment({ key, file }) {
 }
 
 function* removeAttachment({ key }) {
-  if (isUploadedFile(key)) {
-    try {
+  try {
+    if (isUploadedFile(key)) {
       const attachment = yield call(doDelete, `/files/${key}`);
-      yield put(handleRemoveAskAttachmentSuccess(key));
-    } catch(error) {
-      const { response: { data } } = error;
-      yield put(handleRemoveAskAttachmentSuccess(key, error));
     }
-  }  
+    yield put(handleRemoveAskAttachmentSuccess(key));
+  } catch(error) {
+    const { response: { data } } = error;
+    yield put(handleRemoveAskAttachmentSuccess(key, error));
+  }
 }

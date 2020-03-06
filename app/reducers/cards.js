@@ -1,5 +1,5 @@
 import * as types from '../actions/actionTypes';
-import _ from 'underscore';
+import _ from 'lodash';
 import { EditorState } from 'draft-js';
 import { removeIndex, updateIndex } from '../utils/arrayHelpers';
 import { convertCardToFrontendFormat, generateCardId } from '../utils/cardHelpers';
@@ -14,7 +14,7 @@ const initialState = {
   showCloseModal: false,
 };
 
-const BASE_MODAL_OPEN_STATE = _.mapObject(MODAL_TYPE, (val, key) => false);
+const BASE_MODAL_OPEN_STATE = _.mapValues(MODAL_TYPE, () => false);
 
 const BASE_CARD_STATE = {
   isEditing: false, 
@@ -173,7 +173,7 @@ export default function cards(state = initialState, action) {
         cardInfo = createCardEdits({
           ...cardInfo,
           _id: generateCardId(),
-          cardStatus: CARD_STATUS.NOT_DOCUMENTED,
+          status: CARD_STATUS.NOT_DOCUMENTED,
           modalOpen: { ...cardInfo.modalOpen, [MODAL_TYPE.CREATE]: createModalOpen },
           editorEnabled: { ...cardInfo.editorEnabled, [EDITOR_TYPE.ANSWER]: true },
           tags: [],

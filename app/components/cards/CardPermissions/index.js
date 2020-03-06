@@ -5,7 +5,7 @@ import Select from '../../common/Select';
 import Tabs from '../../common/Tabs/Tabs';
 import Tab from '../../common/Tabs/Tab';
 import AnimateHeight from 'react-animate-height';
-import _ from 'underscore';
+import _ from 'lodash';
 
 import { PERMISSION_OPTIONS, PERMISSION_OPTION, DEBOUNCE_60_HZ } from '../../../utils/constants';
 import { createSelectOptions } from '../../../utils/selectHelpers';

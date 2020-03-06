@@ -115,8 +115,6 @@ class CardContent extends Component {
   }
 
   saveCard = () => {
-    const { openCardModal, cardStatus } = this.props;
-    
     this.disableDescriptionEditor();
     this.props.saveCard();
   }
@@ -239,7 +237,7 @@ class CardContent extends Component {
       isEditing, tags, createdAt, outOfDateReason,
       sideDockOpen, openCardSideDock, closeCardSideDock,
       editorEnabled, descriptionSectionHeight, cardsWidth,
-      attachments, addCardAttachments, openCardModal, cardStatus
+      attachments, addCardAttachments, openCardModal, status
     } = this.props;
     
     const currAttachments = this.getAttribute('attachments');
@@ -258,14 +256,14 @@ class CardContent extends Component {
       >
         <strong className={s("text-xs text-purple-reg pt-xs pb-sm flex items-center justify-between opacity-75")}>
           {/* Case 1: Card is documented and in edit*/}
-          { (isEditing && cardStatus !== CARD_STATUS.NOT_DOCUMENTED) &&
+          { (isEditing && status !== CARD_STATUS.NOT_DOCUMENTED) &&
             <div className={s('flex cursor-pointer')} onClick={() => { this.cancelEditCard() }}>
               <MdKeyboardArrowLeft className={s('text-gray-dark')}/>
               <div className={s('underline text-purple-reg')}> Back to View </div>
             </div>
           }
           {/* Case 2: Card is not yet documented */}
-          { (isEditing && cardStatus === CARD_STATUS.NOT_DOCUMENTED) && <div> New Card </div> }
+          { (isEditing && status === CARD_STATUS.NOT_DOCUMENTED) && <div> New Card </div> }
 
           {/* Case 3: Card is documented and not in edit */}
           { !isEditing && <div> <Timeago date={createdAt} live={false} /> </div> }
@@ -321,7 +319,7 @@ class CardContent extends Component {
           	  />
               <div className={s("vertical-separator")} />
               <CardStatus
-                cardStatus={this.props.cardStatus}
+                status={this.props.status}
                 isActionable
                 outOfDateReason={outOfDateReason}
                 onDropdownOptionClick={this.cardStatusOnClick}
@@ -377,7 +375,7 @@ class CardContent extends Component {
 
   renderFooter = () => {
   	const {
-      isUpdatingCard, isEditing, _id, cardStatus, openCardModal, question, edits, requestUpdateCard, modalOpen,
+      isUpdatingCard, isEditing, _id, status, openCardModal, question, edits, requestUpdateCard, modalOpen,
       upvotes, user, isTogglingUpvote, requestToggleUpvote,
       requestAddBookmark, requestRemoveBookmark, isUpdatingBookmark,
     } = this.props;
@@ -389,7 +387,7 @@ class CardContent extends Component {
   	return (
   		<div className={s("flex-shrink-0 min-h-0")} ref={element => this.footerRef = element}>
   			{ isEditing ?
-  				(cardStatus === CARD_STATUS.NOT_DOCUMENTED ?
+  				(status === CARD_STATUS.NOT_DOCUMENTED ?
     				<Button
   	  				text={"Add to Knowledge Base"}
           		color="primary"
@@ -417,7 +415,7 @@ class CardContent extends Component {
 		          	icon={<MdModeEdit className={s("mr-sm")} />} 
 		          	onClick={this.editCard}
 		          />
-		          { (this.props.cardStatus === CARD_STATUS.OUT_OF_DATE || this.props.cardStatus === CARD_STATUS.NEEDS_VERIFICATION)  &&
+		          { (this.props.status === CARD_STATUS.OUT_OF_DATE || this.props.status === CARD_STATUS.NEEDS_VERIFICATION)  &&
 	          		<Button 
 			          	text={"Mark as Up-to-Date"} 
 		              color="secondary"
@@ -676,7 +674,7 @@ class CardContent extends Component {
   render() {
     const {
       hasLoaded, isGettingCard, getError,
-      isEditing, tags, sideDockOpen, closeCardModal, modalOpen, openCardSideDock, closeCardSideDock, cardStatus
+      isEditing, tags, sideDockOpen, closeCardModal, modalOpen, openCardSideDock, closeCardSideDock, status
     } = this.props;
     
     if (!hasLoaded && getError) {

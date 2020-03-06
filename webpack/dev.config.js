@@ -8,6 +8,7 @@ const host = 'localhost';
 const port = 3000;
 const customPath = path.join(__dirname, './customPublicPath');
 const hotScript = 'webpack-hot-middleware/client?path=__webpack_hmr&dynamicPublicPath=true';
+require('dotenv').config();
 
 const baseDevConfig = () => ({
   devtool: 'eval-cheap-module-source-map',
@@ -38,7 +39,8 @@ const baseDevConfig = () => ({
       __HOST__: `'${host}'`,
       __PORT__: port,
       'process.env': {
-        NODE_ENV: JSON.stringify('development')
+        NODE_ENV: JSON.stringify('development'),
+        ONE_SIGNAL_APP_ID: JSON.stringify(process.env.ONE_SIGNAL_APP_ID_DEV),
       }
     })
   ],

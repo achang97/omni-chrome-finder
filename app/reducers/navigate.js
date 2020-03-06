@@ -1,7 +1,7 @@
 import * as types from '../actions/actionTypes';
 import { removeIndex } from '../utils/arrayHelpers';
 import { NAVIGATE_TAB_OPTION } from '../utils/constants';
-import _ from 'underscore';
+import _ from 'lodash';
 
 const initialState = {
   activeTab: NAVIGATE_TAB_OPTION.ALL,

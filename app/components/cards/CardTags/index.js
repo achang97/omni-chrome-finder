@@ -3,7 +3,7 @@ import PropTypes from 'prop-types';
 
 import { IoMdAdd } from 'react-icons/io';
 import { MdClose, MdLock } from 'react-icons/md';
-import _ from 'underscore';
+import _ from 'lodash';
 
 import CardTag from './CardTag';
 import Select from '../../common/Select';
