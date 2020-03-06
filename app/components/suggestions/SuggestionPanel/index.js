@@ -223,7 +223,6 @@ class SuggestionPanel extends Component {
           <div className={s("px-reg text-purple-gray-50 text-sm mb-sm")}>
             {cards.length} card{cards.length !== 1 && 's'}
           </div>
-          <Loader size="md" className={s("my-reg")} />
           <ScrollContainer
             scrollContainerClassName={s(`suggestion-panel-card-container ${showResults ? 'suggestion-panel-card-container-lg' : ''} flex flex-col`)}
             list={cards}
