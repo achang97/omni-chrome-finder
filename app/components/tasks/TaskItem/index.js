@@ -19,8 +19,6 @@ import style from './task-item.css';
 import { getStyleApplicationFn } from '../../../utils/styleHelpers';
 const s = getStyleApplicationFn(style);
 
-const SIDE_DOCK_TRANSITION_MS = 300;
-
 
 @connect(
   state => ({
@@ -155,8 +153,8 @@ class TaskItem extends Component {
   }
 
   render() {
-    const { index, type, card, date } = this.props;
-    const { question } = card;
+    const { index, type, card, date, openCard } = this.props;
+    const { _id, question } = card;
 
 
     const { buttonColor, buttonClassName, buttonUnderline, buttonIcon } = this.getButtonProps();
@@ -177,7 +175,7 @@ class TaskItem extends Component {
               <div className={s(`text-xs text-gray-reg font-semibold ${headerTitleClassName}`)}> {headerTitle} </div>
             </div>
 
-            <div className={s("p-lg bg-white shadow-md my-lg rounded-lg shadow-md cursor-pointer")}>
+            <div className={s("p-lg bg-white shadow-md my-lg rounded-lg shadow-md cursor-pointer")} onClick={() => openCard({ _id }) }>
               <div className={s("font-semibold vertical-ellipsis-2 text-md")}>{question}</div>
               { this.renderTaskPreview() }
             </div>

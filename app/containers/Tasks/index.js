@@ -236,6 +236,7 @@ export default class Tasks extends Component {
 
   render() {
   	const { tabIndex, tasks, isGettingTasks, getTasksError } = this.props;
+    const { allTasks } = this.state;
     console.log(this.props.tasks);
 
     return (
@@ -268,7 +269,7 @@ export default class Tasks extends Component {
               :
               <React.Fragment>
               {
-                tasks.length === 0 ?
+                allTasks.length === 0 ?
                 this.renderNoTasksScreen()
                 :
             	  this.renderUnresolvedTasks()
