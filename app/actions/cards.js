@@ -139,6 +139,11 @@ export function removeCardAttachment(index) {
   return { type: types.REMOVE_CARD_ATTACHMENT, payload: { index } };
 }
 
+export function updateCardAttachmentName(index, name) {
+  return { type: types.UPDATE_CARD_ATTACHMENT_NAME, payload: { index, name } };
+}
+
+
 
 export function requestGetCard() {
   return { type: types.GET_CARD_REQUEST, payload: {} };

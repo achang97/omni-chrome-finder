@@ -58,6 +58,12 @@ class Dropdown extends Component {
 		}
 	}
 
+	handleMouseBehavior = (e) => {
+		if (!this.props.disabled) {
+			e.stopPropagation();
+		}
+	}
+
 	render() {
 		const { isDown, isLeft, toggler, body, disabled, isTogglerRelative, className, togglerClassName } = this.props;
 		const isOpen = this.props.isOpen !== undefined ? this.props.isOpen : this.state.isOpen;
@@ -67,8 +73,8 @@ class Dropdown extends Component {
 		return (
 			<div
 				className={s(`${isTogglerRelative ? 'relative' : ''} ${className}`)}
-				onClick={(e) => e.stopPropagation()}
-				onMouseOver={(e) => e.stopPropagation()}
+				onClick={this.handleMouseBehavior}
+				onMouseOver={this.handleMouseBehavior}
 			>
 				<div
 					onClick={this.onToggleClick}

@@ -7,16 +7,16 @@ import { AUTO_REMIND_VALUE, VERIFICATION_INTERVAL_OPTIONS, PERMISSION_OPTION, PE
 import _ from 'underscore';
 
 export function convertCardToFrontendFormat(card) {
-	const { content_state_description, content_state_answer, keywords, autoupdate, update_interval, user_permissions, permission_groups, status, out_of_date_reason, upvotes, slackReplies, /* screenrecording_urls, screenshot_urls, */ ...rest } = card;
+	const { contentStateDescription, contentStateAnswer, keywords, autoupdate, updateInterval, userPermissions, permissionGroups, status, outOfDateReason, upvotes, slackReplies, ...rest } = card;
 
 	const verificationInterval = VERIFICATION_INTERVAL_OPTIONS.find(option => (
-		option.value === (autoupdate ? AUTO_REMIND_VALUE : update_interval)
+		option.value === (autoupdate ? AUTO_REMIND_VALUE : updateInterval)
 	));
 
 	let permissionsValue;
-	if (user_permissions && user_permissions.length !== 0) {
+	if (userPermissions && userPermissions.length !== 0) {
 		permissionsValue = PERMISSION_OPTION.JUST_ME;
-	} else if (permission_groups && permission_groups.length !== 0) {
+	} else if (permissionGroups && permissionGroups.length !== 0) {
 		permissionsValue = PERMISSION_OPTION.SPECIFIC_GROUPS;
 	} else {
 		permissionsValue = PERMISSION_OPTION.ANYONE;
@@ -25,14 +25,14 @@ export function convertCardToFrontendFormat(card) {
 	const permissions = PERMISSION_OPTIONS.find(option => option.value === permissionsValue);
 
 	return {
-		descriptionEditorState: content_state_description ? getEditorStateFromContentState(content_state_description) : EditorState.createEmpty(),
-		answerEditorState: content_state_answer ? getEditorStateFromContentState(content_state_answer) : EditorState.createEmpty(),
+		descriptionEditorState: contentStateDescription ? getEditorStateFromContentState(contentStateDescription) : EditorState.createEmpty(),
+		answerEditorState: contentStateAnswer ? getEditorStateFromContentState(contentStateAnswer) : EditorState.createEmpty(),
 		keywords: createSelectOptions(keywords),
 		verificationInterval,
 		permissions,
-		permissionGroups: permission_groups,
+		permissionGroups,
 		cardStatus: status,
-		outOfDateReason: out_of_date_reason,
+		outOfDateReason,
 		upvotes: getArrayIds(upvotes),
 		slackReplies: slackReplies.map(reply => ({ ...reply, selected: status !== CARD_STATUS.NOT_DOCUMENTED })),
 		...rest,
@@ -52,7 +52,7 @@ export function toggleUpvotes(upvoteIds, userId) {
 	return newUpvotes;
 }
 
-export function isValidCard(edits) {
+export function hasValidEdits(edits) {
 	const { question, answerEditorState, owners=[], verificationInterval, permissions, permissionGroups=[] } = edits;
 	return (
 		(!!question && question !== '') &&

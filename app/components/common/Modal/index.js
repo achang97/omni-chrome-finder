@@ -10,7 +10,7 @@ import style from './modal.css';
 import { getStyleApplicationFn } from '../../../utils/styleHelpers';
 const s = getStyleApplicationFn(style);
 
-const Modal = ({ isOpen, transitionMs, shouldCloseOnOutsideClick, showHeader, className, onRequestClose, headerClassName, overlayClassName, bodyClassName, title, children, important }) => {
+const Modal = ({ isOpen, transitionMs, shouldCloseOnOutsideClick, showHeader, className, onRequestClose, headerClassName, overlayClassName, bodyClassName, title, children, important, ...rest }) => {
 	const onOutsideClick = () => {
 		if (shouldCloseOnOutsideClick && onRequestClose) onRequestClose();
 	}
@@ -27,6 +27,7 @@ const Modal = ({ isOpen, transitionMs, shouldCloseOnOutsideClick, showHeader, cl
 		<div
 			onClick={(e) => e.stopPropagation()}
 			onMouseOver={(e) => e.stopPropagation()}
+			{...rest}
 		>
 			<Transition
 				in={isOpen}

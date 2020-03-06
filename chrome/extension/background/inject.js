@@ -41,7 +41,7 @@ chrome.tabs.onUpdated.addListener(async (tabId, changeInfo, tab) => {
   }
 
   if (!chrome.runtime.lastError) {
-    chrome.tabs.sendMessage(tabId, { type: CHROME_MESSAGE.TAB_UPDATE, url: tab.url });
+    chrome.tabs.sendMessage(tabId, { type: CHROME_MESSAGE.TAB_UPDATE, payload: { url: tab.url } });
   }
 });
 

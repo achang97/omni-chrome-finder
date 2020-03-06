@@ -169,7 +169,7 @@ class Ask extends Component {
       questionTitle, updateAskQuestionTitle,
       questionDescription, updateAskQuestionDescription,
       desktopSharing,
-      requestRemoveAskAttachment, attachments,
+      requestRemoveAskAttachment, attachments, updateAskAttachmentName,
     } = this.props;
 
     return (
@@ -179,6 +179,7 @@ class Ask extends Component {
             placeholder="Question"
             onChange={e => updateAskQuestionTitle(e.target.value)}
             value={questionTitle}
+            autoFocus
             className={s("w-full mb-reg")}
           />
           <TextEditor 
@@ -186,14 +187,7 @@ class Ask extends Component {
             editorState={questionDescription} 
             editorType="EXTENSION"
           />
-          <CircleButton
-            content={<IoMdAdd color="white" /> }
-            size="sm"
-            containerClassName={s('absolute z-10 ask-text-editor-add-button')}
-            buttonClassName={s("primary-gradient")}
-          />
         </div>
-
         <div className={s('flex px-xs pt-reg')}>
           <Button
             onClick={!desktopSharing ? this.startScreenRecording : this.endScreenRecording}
@@ -237,15 +231,18 @@ class Ask extends Component {
                     No current attachments
                   </div>
                 }
-                { attachments.map(({ name, key, location, isLoading, error }, i) => (
+                { attachments.map(({ name, key, mimetype, location, isLoading, error }, i) => (
                   <CardAttachment
                     key={key}
+                    type={mimetype}
                     fileName={name}
                     url={location}
                     isLoading={isLoading}
                     error={error}
                     textClassName={s("truncate")}
                     removeIconClassName={s("ml-auto")}
+                    isEditable={true}
+                    onFileNameChange={(fileName) => updateAskAttachmentName(key, fileName)}
                     onRemoveClick={() => requestRemoveAskAttachment(key)}
                   />
                 ))}
@@ -378,7 +375,7 @@ class Ask extends Component {
         disabled={questionTitle === '' || !questionDescription.getCurrentContent().hasText() || recipients.length === 0 || isAskingQuestion}
         iconLeft={false}
         icon={ isAskingQuestion ?
-          <Loader className={s("h-3xl w-3xl")} size="sm" color="white" /> :
+          <Loader className={s("h-3xl w-3xl")} color="white" /> :
           <span className={s("rounded-full h-3xl w-3xl flex justify-center items-center bg-white text-purple-reg")}>
             <FaPaperPlane />
           </span>
@@ -455,6 +452,7 @@ class Ask extends Component {
           value={searchText}
           placeholder="Let's find what you're looking for"
           className={s("w-full")}
+          autoFocus
         />
         <div className={s('mt-lg flex flex-row justify-center items-center')}>
           <span className={s('flex-1 text-gray-dark ml-sm text-xs font-medium')}>

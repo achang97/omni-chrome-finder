@@ -41,7 +41,7 @@ export default function* watchAuthRequests() {
 function* askQuestion() {
   try {
     const { questionTitle, questionDescription, recipients, attachments } = yield select(state => state.ask);
-    const { contentState: descriptionContentState, text: descriptionText } = getContentStateFromEditorState(questionDescription);
+    const { contentState: contentStateDescription, text: descriptionText } = getContentStateFromEditorState(questionDescription);
 
     yield call(doPost, '/slack/sendUserMessage', {
       channels: recipients.map(({ id, name, type, mentions }) => ({
@@ -51,7 +51,7 @@ function* askQuestion() {
       })),
       question: questionTitle,
       description: descriptionText,
-      content_state_description: descriptionContentState,
+      contentStateDescription,
       attachments: convertAttachmentsToBackendFormat(attachments),
     });
     yield put(handleAskQuestionSuccess());
@@ -76,7 +76,7 @@ function* addAttachment({ key, file }) {
     const formData = new FormData();
     formData.append('file', file);
 
-    const attachment = yield call(doPost, '/files/upload', formData, true);
+    const attachment = yield call(doPost, '/files/upload', formData, { isForm: true });
     yield put(handleAddAskAttachmentSuccess(key, attachment));
   } catch(error) {
     const { response: { data } } = error;

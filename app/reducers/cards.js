@@ -264,7 +264,7 @@ export default function cards(state = initialState, action) {
       const { activeCard } = state;
       
       const slackReplies = activeCard.edits.slackReplies;
-      const newSlackReplies = updateIndex(slackReplies, messageIndex, { ...slackReplies[messageIndex], selected: !slackReplies[messageIndex].selected });
+      const newSlackReplies = updateIndex(slackReplies, messageIndex, { selected: !slackReplies[messageIndex].selected }, true);
       return updateActiveCardEdits({ slackReplies: newSlackReplies });
     }
     case types.CANCEL_EDIT_CARD_MESSAGES: {
@@ -329,14 +329,14 @@ export default function cards(state = initialState, action) {
     case types.ADD_CARD_ATTACHMENT_REQUEST: {
       const { key, file } = payload;
       const { activeCard: { edits } } = state; 
-      return updateActiveCardEdits({ attachments: [...edits.attachments, { key, name: file.name, isLoading: true, error: null }] });
+      return updateActiveCardEdits({ attachments: [...edits.attachments, { key, name: file.name, mimetype: file.type, isLoading: true, error: null }] });
     }
     case types.ADD_CARD_ATTACHMENT_SUCCESS: {
       const { cardId, key, attachment } = payload;
       return updateAttachmentsByKey(cardId, key, { isLoading: false, ...attachment });
     }
     case types.ADD_CARD_ATTACHMENT_ERROR: {
-      const { key, error } = payload;
+      const { cardId, key, error } = payload;
       return updateAttachmentsByKey(cardId, key, { isLoading: false, error });
     }
 
@@ -344,6 +344,11 @@ export default function cards(state = initialState, action) {
       const { index } = payload;
       const { activeCard: { edits } } = state; 
       return updateActiveCardEdits({ attachments: removeIndex(edits.attachments, index) });
+    }
+    case types.UPDATE_CARD_ATTACHMENT_NAME: {
+      const { index, name } = payload;
+      const { activeCard: { edits } } = state; 
+      return updateActiveCardEdits({ attachments: updateIndex(edits.attachments, index, { name }, true) });
     }
 
     case types.GET_CARD_REQUEST: {

@@ -3,8 +3,17 @@
 	width: 26px;
 }
 
+.all-tasks-icon-container {
+	height: 16px;
+    width: 16px;
+    padding: 3.375px !important;
+    margin: 1.625px;
+    background-image: linear-gradient(190deg, #FFE4B8 0%, #E3C295 100%);
+    color: #B18B50;
+}
+
 .tasks-section-container {
-	background-image: linear-gradient(180deg, #FFFFFF 40%, #f4f5ff9e 100%);
+	background-image: linear-gradient(0deg, #FFFFFF 40%, #f4f5ff9e 100%);
 }
 
 .shadow-light {

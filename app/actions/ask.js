@@ -70,6 +70,10 @@ export function handleRemoveAskAttachmentError(key, error) {
   return { type: types.REMOVE_ASK_ATTACHMENT_ERROR, payload: { key, error } }
 }
 
+export function updateAskAttachmentName(key, name) {
+  return { type: types.UPDATE_ASK_ATTACHMENT_NAME, payload: { key, name } };
+}
+
 
 /* API Requests */
 export function requestGetSlackConversations() {

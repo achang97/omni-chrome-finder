@@ -50,7 +50,7 @@ const CardStatus = ({ isActionable, cardStatus, className, onDropdownOptionClick
   const shouldShowDropdown = dropdownOpen && isActionable;
 
   return (
-    <div onClick={e => e.stopPropagation()}>
+    <div onClick={e => e.stopPropagation()} className={s('flex')}>
       <Dropdown
         isOpen={shouldShowDropdown}
         onToggle={setDropdownOpen}
@@ -76,7 +76,7 @@ const CardStatus = ({ isActionable, cardStatus, className, onDropdownOptionClick
         }
         disabled={!isActionable}
       />
-      { outOfDateReason &&
+      { (cardStatus === CARD_STATUS.OUT_OF_DATE && outOfDateReason) &&
         <Dropdown
           className={s("ml-sm flex")}
           togglerClassName={s("flex")}

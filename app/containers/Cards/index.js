@@ -109,17 +109,17 @@ export default class Cards extends Component {
     const { showCloseModal, closeAllCards } = this.props;
     return (
       <CardConfirmModal
-        useModalType={false}
         isOpen={showCloseModal}
+        onRequestClose={this.closeCloseCardsModal}
         title="Close Cards"
         description="One of more of the cards open have unsaved changes. All unsaved changes will be lost upon closing the cards. Are you sure you want to close your cards?"
         primaryButtonProps={{
           text: "Close Cards",
-          onClick: () => closeAllCards()
+          onClick: closeAllCards
         }}
         secondaryButtonProps={{
           text: "No",
-          onClick: () => this.closeCloseCardsModal(),
+          onClick: this.closeCloseCardsModal,
         }}
       />
     )

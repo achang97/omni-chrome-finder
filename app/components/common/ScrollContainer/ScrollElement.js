@@ -9,12 +9,16 @@ class HoverableScrollElement extends Component {
 	constructor(props) {
 		super(props);
 
-		this.state = {
-			overflowInfo: { top: false, bottom: false, right: false, left: false }
-		}
-
 		this.elemRef = React.createRef();
 		this.overflowElemRef = React.createRef();
+
+		this.state = {
+			positions: {
+				scroll: {},
+				overflow: {},
+			},
+		}
+
 	}
 
 	componentDidMount() {
@@ -70,31 +74,22 @@ class HoverableScrollElement extends Component {
 		return { top: 0, left: 0, right: 0, bottom: 0, ...positionAdjust };
 	}
 
-	resetOverflow = (top, bottom, left, right) => { 
-		this.setState({
-			overflowInfo: {
-				top: top < 0,
-				bottom: bottom >= window.innerHeight,
-				left: left < 0,
-				right: right >= window.innerWidth
-			}
-		});
-	}
-
 	showOverflowElement = () => {
 		const { position, matchDimensions } = this.props;
 
 		const overflowElem = this.overflowElemRef.current;
 		const shownElem = this.elemRef.current;
 
-		const { top, bottom, left, right, height, width } = shownElem.getBoundingClientRect();
+		const shownElemPosition = shownElem.getBoundingClientRect();
+		const { top, bottom, left, right, height, width } = shownElemPosition;
+
 		const { top: parentTop, bottom: parentBottom, left: parentLeft, right: parentRight } = this.elemRef.current.offsetParent.getBoundingClientRect();
 		const { top: adjustTop, bottom: adjustBottom, left: adjustLeft, right: adjustRight } = this.getPositionAdjustment();
 
 		// Show element to get proper measurements		
 		overflowElem.style.display = 'block';
-		const { top: overflowTop, bottom: overflowBottom, left: overflowLeft, right: overflowRight, height: overflowHeight, width: overflowWidth } = overflowElem.getBoundingClientRect();
-		this.resetOverflow(overflowTop, overflowBottom, overflowLeft, overflowRight);
+		const overflowElemPosition = overflowElem.getBoundingClientRect();
+		const { top: overflowTop, bottom: overflowBottom, left: overflowLeft, right: overflowRight, height: overflowHeight, width: overflowWidth } = overflowElemPosition;
 
 		// Get margin of child
 		const { marginTop, marginLeft, marginBottom, marginRight } = this.getMarginAdjustment();
@@ -130,17 +125,17 @@ class HoverableScrollElement extends Component {
 				overflowElem.style.width = `${width - marginLeft - marginRight}px`;
 			}
 		}
+
+		this.setState({ position: { scroll: shownElemPosition, overflow: overflowElemPosition } })
 	}
 
 	hideOverflowElement = () => {
 		const overflowElem = this.overflowElemRef.current;
 		overflowElem.style.display = 'none';
-		this.setState({ top: false, bottom: false, right: false, left: false });
 	}
 
 	render() {
 		const { element, index, renderScrollElement, renderOverflowElement, scrollElementClassName, overflowElement, horizontalMarginAdjust, verticalMarginAdjust, showCondition, matchDimensions, position, ...rest } = this.props;
-		const { overflowInfo } = this.state;
 
 		return (
 			<div
@@ -156,7 +151,10 @@ class HoverableScrollElement extends Component {
 					style={{ display: 'none' }}
 					ref={this.overflowElemRef}
 				>
-					{ renderOverflowElement(element, index, overflowInfo) }
+					{ renderOverflowElement(element, index, {
+						scroll: this.elemRef.current ? this.elemRef.current.getBoundingClientRect() : {},
+						overflow: this.overflowElemRef.current ? this.overflowElemRef.current.getBoundingClientRect() : {}
+					})}
 				</div>
 			</div> 
 		)

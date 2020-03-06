@@ -9,5 +9,5 @@ export function isUploadedFile(key) {
 export function convertAttachmentsToBackendFormat(attachments) {
     return attachments
 	    .filter(({ key }) => isUploadedFile(key))
-	    .map(({ key, location, name }) => ({ key, location, name }));
+	    .map(({ key, location, name, mimetype }) => ({ key, location, name, mimetype }));
 } 

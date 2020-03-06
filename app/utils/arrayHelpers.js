@@ -10,9 +10,9 @@ export function removeIndex(array, index) {
 /*
  * Returns a shallow copy of array with element at index updated.
  */
-export function updateIndex(array, index, newElement) {
+export function updateIndex(array, index, newElement, merge=false) {
 	const arrayCopy = array.slice();
-	arrayCopy[index] = newElement;
+	arrayCopy[index] = merge ? { ...array[index], ...newElement } : newElement;
 	return arrayCopy;
 }
 

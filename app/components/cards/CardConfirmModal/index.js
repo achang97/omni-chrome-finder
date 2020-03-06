@@ -10,67 +10,61 @@ import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
 import { closeCardModal } from '../../../actions/cards';
 
+import style from './card-confirm-modal.css';
 import { getStyleApplicationFn } from '../../../utils/styleHelpers';
-const s = getStyleApplicationFn();
+const s = getStyleApplicationFn(style);
 
-
-const CardConfirmModal = ({ isOpen, modalType, useModalType, title, description, body, error, onRequestClose, primaryButtonProps, secondaryButtonProps, showSecondary, closeCardModal, modalOpen }) => {
-  const closeModal = () => {
-    if (onRequestClose) {
-      onRequestClose();
-    } else if (useModalType) {
-      closeCardModal(modalType);
-    }
-  };
-  
+const CardConfirmModal = ({ isOpen, title, description, body, error, onRequestClose, primaryButtonProps, secondaryButtonProps, showPrimary, showSecondary, bodyClassName, ...rest }) => {
   if (!secondaryButtonProps) {
-    secondaryButtonProps = { text: "No", onClick: closeModal };
+    secondaryButtonProps = { text: "No", onClick: onRequestClose };
   }
 
   return (
     <Modal
-      isOpen={useModalType ? modalOpen[modalType] : isOpen}
-      onRequestClose={closeModal}
+      isOpen={isOpen}
+      onRequestClose={onRequestClose}
       headerClassName={s("bg-purple-light")}
       overlayClassName={s("rounded-b-lg")}
-      className={s("")}
       title={title}
       important
-      >
-      <div className={s("p-lg flex flex-col")}> 
+      {...rest}
+    >
+      <div className={s(`card-confirm-modal-body ${bodyClassName}`)}> 
         { description && <div> {description} </div> }
         { body }
         { error && <div className={s("error-text mt-xs")}> {error} </div> }
-        <div className={s("flex mt-lg")} >
-          { showSecondary &&
-            <Button 
-              color={"transparent"}
-              className={s("flex-1 mr-reg")}
-              underline
-              {...secondaryButtonProps}
-            /> 
-          }
-          <Button 
-            color={"primary"}
-            className={s(`flex-1 ${showSecondary ? 'ml-reg' : ''}`)}
-            underline
-            {...primaryButtonProps}
-          />   
-        </div>
+        { (showPrimary || showSecondary) &&
+          <div className={s("flex mt-lg")} >
+            { showSecondary &&
+              <Button 
+                color={"transparent"}
+                className={s("flex-1 mr-reg")}
+                underline
+                {...secondaryButtonProps}
+              /> 
+            }
+            { showPrimary &&
+              <Button 
+                color={"primary"}
+                className={s(`flex-1 ${showSecondary ? 'ml-reg' : ''}`)}
+                underline
+                {...primaryButtonProps}
+              />   
+            }
+          </div>
+        }
       </div>
     </Modal>
   )
 }
 
 CardConfirmModal.propTypes = {
-  isOpen: PropTypes.bool,
-  modalType: PropTypes.oneOf(Object.values(MODAL_TYPE)),
-  useModalType: PropTypes.bool,
+  isOpen: PropTypes.bool.isRequired,
   title: PropTypes.string.isRequired,
   description: PropTypes.string,
   body: PropTypes.element,
   error: PropTypes.string,
-  onRequestClose: PropTypes.func,
+  onRequestClose: PropTypes.func.isRequired,
   primaryButtonProps: PropTypes.shape({
     text: PropTypes.oneOfType([PropTypes.string, PropTypes.number]).isRequired,
     onClick: PropTypes.func.isRequired,
@@ -79,19 +73,15 @@ CardConfirmModal.propTypes = {
     text: PropTypes.oneOfType([PropTypes.string, PropTypes.number]).isRequired,
     onClick: PropTypes.func.isRequired,
   }),
+  showPrimary: PropTypes.bool,
   showSecondary: PropTypes.bool,
+  bodyClassName: PropTypes.string,
 }
 
 CardConfirmModal.defaultProps = {
+  showPrimary: true,
   showSecondary: true,
-  useModalType: true,
+  bodyClassName: '',
 }
 
-export default connect(
-  state => ({
-    modalOpen: state.cards.activeCard.modalOpen,
-  }),
-  dispatch => bindActionCreators({
-    closeCardModal,
-  }, dispatch)
-)(CardConfirmModal);
+export default CardConfirmModal;
