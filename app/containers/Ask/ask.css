@@ -3,11 +3,6 @@
   padding-top: 56.25%; /* Player ratio: 100 / (1280 / 720) */
 }
 
-.ask-text-editor-add-button {
-  bottom: 3%;
-  right: 3%;
-}
-
 .ask-attachment-button {
   @apply flex-1 py-reg px-0 text-sm rounded-lg;
 }

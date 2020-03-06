@@ -8,10 +8,11 @@ import style from './scroll-container.css';
 import { getStyleApplicationFn } from '../../../utils/styleHelpers';
 const s = getStyleApplicationFn(style);
 
-const ScrollContainer = ({ list, renderScrollElement, renderOverflowElement, footer, showCondition, positionAdjust, horizontalMarginAdjust, verticalMarginAdjust, matchDimensions, scrollY, className, scrollContainerClassName, scrollElementClassName, children, position, relative, onBottom, bottomOffset }) => {
+const ScrollContainer = ({ list, placeholder, renderScrollElement, renderOverflowElement, header, footer, showCondition, positionAdjust, horizontalMarginAdjust, verticalMarginAdjust, matchDimensions, scrollY, className, scrollContainerClassName, scrollElementClassName, children, position, relative, onBottom, bottomOffset }) => {
 	const renderBody = (ref) => {
 		return (
 			<div className={s(`overflow-x-hidden overflow-y-auto ${scrollContainerClassName}`)} ref={ref}>
+				{ header }
 				{ list.map((listElem, i) => (
 					<ScrollElement
 						key={`scroll-element-${i}`}
@@ -27,6 +28,7 @@ const ScrollContainer = ({ list, renderScrollElement, renderOverflowElement, foo
 						verticalMarginAdjust={verticalMarginAdjust}
 					/>
 				))}
+				{ list.length === 0 && placeholder }
 				{ footer }
 			</div>
 		);		
@@ -46,6 +48,7 @@ const ScrollContainer = ({ list, renderScrollElement, renderOverflowElement, foo
 
 ScrollContainer.propTypes = {
 	list: PropTypes.arrayOf(PropTypes.any).isRequired,
+	placeholder: PropTypes.element,
 	renderScrollElement: PropTypes.func.isRequired,
 	renderOverflowElement: PropTypes.func.isRequired,
 	showCondition: PropTypes.oneOfType([
@@ -55,6 +58,7 @@ ScrollContainer.propTypes = {
 	className: PropTypes.string,
 	scrollContainerClassName: PropTypes.string,
 	scrollElementClassName: PropTypes.string,
+	header: PropTypes.element,
 	footer: PropTypes.element,
 	position: PropTypes.oneOf(["top", "left", "bottom", "right"]),
 	matchDimensions: PropTypes.bool,

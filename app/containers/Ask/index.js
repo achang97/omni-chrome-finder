@@ -187,12 +187,6 @@ class Ask extends Component {
             editorState={questionDescription} 
             editorType="EXTENSION"
           />
-          <CircleButton
-            content={<IoMdAdd color="white" /> }
-            size="sm"
-            containerClassName={s('absolute z-10 ask-text-editor-add-button')}
-            buttonClassName={s("primary-gradient")}
-          />
         </div>
         <div className={s('flex px-xs pt-reg')}>
           <Button
@@ -381,7 +375,7 @@ class Ask extends Component {
         disabled={questionTitle === '' || !questionDescription.getCurrentContent().hasText() || recipients.length === 0 || isAskingQuestion}
         iconLeft={false}
         icon={ isAskingQuestion ?
-          <Loader className={s("h-3xl w-3xl")} size="sm" color="white" /> :
+          <Loader className={s("h-3xl w-3xl")} color="white" /> :
           <span className={s("rounded-full h-3xl w-3xl flex justify-center items-center bg-white text-purple-reg")}>
             <FaPaperPlane />
           </span>

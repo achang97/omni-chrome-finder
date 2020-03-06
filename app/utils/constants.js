@@ -4,6 +4,9 @@ export const getStorageName = (name) => `OMNI_EXTENSION_${name}`;
 export const CHROME_MESSAGE = {
 	TOGGLE: 'TOGGLE',
 	TAB_UPDATE: 'TAB_UPDATE',
+	SEARCH: 'SEARCH',
+	ASK: 'ASK',
+	CREATE: 'CREATE',
 }
 
 export const CARD_URL_BASE = 'https://www.google.com/webhp?sxsrf=';
@@ -70,8 +73,8 @@ export const CARD_DIMENSIONS = {
 }
 
 export const MODAL_TYPE = {
-	THREAD: 'THREAD',
 	CREATE: 'CREATE',
+	THREAD: 'THREAD',
 	ERROR_UPDATE: 'ERROR_UPDATE',
 	ERROR_UPDATE_CLOSE: 'ERROR_UPDATE_CLOSE',
 	ERROR_DELETE: 'ERROR_DELETE',
@@ -149,4 +152,4 @@ export const DOCUMENTATION_TYPE = {
 
 
 // Misc.
-const NOOP = () => {};
+export const NOOP = () => {};
