@@ -2,7 +2,7 @@ import * as types from '../actions/actionTypes';
 import _ from 'lodash';
 
 import { ASK_INTEGRATIONS } from '../utils/constants';
-import { removeIndex, updateIndex } from '../utils/arrayHelpers';
+import { removeIndex, updateIndex } from '../utils/array';
 import { EditorState } from 'draft-js';
 
 const initialState = {

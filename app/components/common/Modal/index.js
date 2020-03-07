@@ -4,10 +4,10 @@ import { Transition } from 'react-transition-group';
 
 import { MdClose } from 'react-icons/md';
 import { FADE_IN_TRANSITIONS, NOOP } from '../../../utils/constants';
-import { getBaseAnimationStyle } from '../../../utils/animateHelpers';
+import { getBaseAnimationStyle } from '../../../utils/animate';
 
 import style from './modal.css';
-import { getStyleApplicationFn } from '../../../utils/styleHelpers';
+import { getStyleApplicationFn } from '../../../utils/style';
 const s = getStyleApplicationFn(style);
 
 const Modal = ({ isOpen, transitionMs, shouldCloseOnOutsideClick, showHeader, className, onRequestClose, headerClassName, overlayClassName, bodyClassName, title, children, important, ...rest }) => {

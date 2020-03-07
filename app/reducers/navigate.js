@@ -1,5 +1,5 @@
 import * as types from '../actions/actionTypes';
-import { removeIndex } from '../utils/arrayHelpers';
+import { removeIndex } from '../utils/array';
 import { NAVIGATE_TAB_OPTION } from '../utils/constants';
 import _ from 'lodash';
 

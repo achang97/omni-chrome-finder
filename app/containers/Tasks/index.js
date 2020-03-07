@@ -19,7 +19,7 @@ import * as tasksActions from '../../actions/tasks';
 import style from "./tasks.css";
 import { TASKS_TAB_OPTIONS, CARD_STATUS, TASKS_SECTIONS, TASKS_TYPES } from '../../utils/constants';
 
-import { getStyleApplicationFn } from '../../utils/styleHelpers';
+import { getStyleApplicationFn } from '../../utils/style';
 const s = getStyleApplicationFn(style);
 
 const UNRESOLVED_CARDS_PLACEHOLDER = [{

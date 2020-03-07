@@ -1,8 +1,8 @@
 import * as types from '../actions/actionTypes';
 import _ from 'lodash';
 import { EditorState } from 'draft-js';
-import { removeIndex, updateIndex } from '../utils/arrayHelpers';
-import { convertCardToFrontendFormat, generateCardId } from '../utils/cardHelpers';
+import { removeIndex, updateIndex } from '../utils/array';
+import { convertCardToFrontendFormat, generateCardId } from '../utils/card';
 import { CARD_STATUS, EDITOR_TYPE, CARD_DIMENSIONS, MODAL_TYPE, VERIFICATION_INTERVAL_OPTIONS, PERMISSION_OPTIONS } from '../utils/constants';
 
 const initialState = {

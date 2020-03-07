@@ -5,7 +5,7 @@ import ScrollElement from './ScrollElement';
 import BottomScrollListener from 'react-bottom-scroll-listener'
 
 import style from './scroll-container.css';
-import { getStyleApplicationFn } from '../../../utils/styleHelpers';
+import { getStyleApplicationFn } from '../../../utils/style';
 const s = getStyleApplicationFn(style);
 
 const ScrollContainer = ({ list, placeholder, renderScrollElement, renderOverflowElement, header, footer, showCondition, positionAdjust, horizontalMarginAdjust, verticalMarginAdjust, matchDimensions, scrollY, className, scrollContainerClassName, scrollElementClassName, children, position, relative, onBottom, bottomOffset }) => {

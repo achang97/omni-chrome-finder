@@ -11,7 +11,7 @@ import { connect } from 'react-redux';
 import { closeCardModal } from '../../../actions/cards';
 
 import style from './card-confirm-modal.css';
-import { getStyleApplicationFn } from '../../../utils/styleHelpers';
+import { getStyleApplicationFn } from '../../../utils/style';
 const s = getStyleApplicationFn(style);
 
 const CardConfirmModal = ({ isOpen, title, description, body, error, onRequestClose, primaryButtonProps, secondaryButtonProps, showPrimary, showSecondary, bodyClassName, ...rest }) => {

@@ -9,7 +9,7 @@ import { IoMdArrowDropleft, IoMdArrowDropright } from "react-icons/io";
 import { CircleButton } from '../../common/CircleButton';
 
 import style from './text-editor.css';
-import { getStyleApplicationFn } from '../../../utils/styleHelpers';
+import { getStyleApplicationFn } from '../../../utils/style';
 import { EDITOR_TYPE } from '../../../utils/constants';
 const s = getStyleApplicationFn(style);
 

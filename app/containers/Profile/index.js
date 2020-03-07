@@ -18,7 +18,7 @@ import { changeFirstname, changeLastname, changeBio, requestSaveUser, editUser, 
 import Loader from '../../components/common/Loader';
 import { SERVER_URL } from '../../utils/request';
 
-import { getStyleApplicationFn } from '../../utils/styleHelpers';
+import { getStyleApplicationFn } from '../../utils/style';
 import style from './profile.css';
 const s = getStyleApplicationFn(style);
 

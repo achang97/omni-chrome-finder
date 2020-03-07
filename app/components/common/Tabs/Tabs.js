@@ -3,13 +3,13 @@ import PropTypes from 'prop-types';
 import _ from 'lodash';
 import ReactResizeDetector from 'react-resize-detector';
 import { MdChevronLeft, MdChevronRight } from 'react-icons/md';
-import { animate } from '../../../utils/animateHelpers';
+import { animate } from '../../../utils/animate';
 import { DEBOUNCE_60_HZ } from '../../../utils/constants';
 
 import Tab from './Tab';
 
 import style from './tabs.css';
-import { getStyleApplicationFn } from '../../../utils/styleHelpers';
+import { getStyleApplicationFn } from '../../../utils/style';
 const s = getStyleApplicationFn(style);
 
 const CLASSNAME_PROPS = ['tabContainerClassName', 'rippleClassName', 'tabClassName', 'activeTabClassName', 'inactiveTabClassName'];

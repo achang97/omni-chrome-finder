@@ -28,12 +28,12 @@ import { colors } from '../../styles/colors';
 import { expandDock } from '../../actions/display';
 import { requestSearchCards } from '../../actions/search';
 import * as askActions from '../../actions/ask';
-import { generateFileKey } from '../../utils/fileHelpers';
+import { generateFileKey } from '../../utils/file';
 import { ASK_INTEGRATIONS, DEBOUNCE_60_HZ, SEARCH_TYPE, SLACK_RECIPIENT_TYPE } from '../../utils/constants';
 
 import style from "./ask.css";
-import { getStyleApplicationFn, isOverflowing } from '../../utils/styleHelpers';
-import { createSelectOptions } from '../../utils/selectHelpers';
+import { getStyleApplicationFn, isOverflowing } from '../../utils/style';
+import { createSelectOptions } from '../../utils/select';
 const s = getStyleApplicationFn(style);
 
 @connect(

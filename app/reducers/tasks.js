@@ -1,5 +1,5 @@
 import * as types from '../actions/actionTypes';
-import { removeIndex } from '../utils/arrayHelpers';
+import { removeIndex } from '../utils/array';
 import _ from 'lodash';
 
 const initialState = {

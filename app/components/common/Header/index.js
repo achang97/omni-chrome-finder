@@ -12,7 +12,7 @@ import PlaceholderImg from '../PlaceholderImg';
 
 import { colors } from '../../../styles/colors';
 import style from './header.css';
-import { getStyleApplicationFn } from '../../../utils/styleHelpers';
+import { getStyleApplicationFn } from '../../../utils/style';
 const s = getStyleApplicationFn(style);
 
 @connect(

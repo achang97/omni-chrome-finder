@@ -19,7 +19,7 @@ import { colors } from '../../../styles/colors';
 import { CARD_STATUS, SEARCH_TYPE, DOCUMENTATION_TYPE, SEARCH_INFINITE_SCROLL_OFFSET, DEBOUNCE_60_HZ } from '../../../utils/constants';
 
 import style from './suggestion-panel.css';
-import { getStyleApplicationFn } from '../../../utils/styleHelpers';
+import { getStyleApplicationFn } from '../../../utils/style';
 const s = getStyleApplicationFn(style);
 
 import GoogleDriveIcon from '../../../assets/images/icons/GoogleDrive_Icon.svg';

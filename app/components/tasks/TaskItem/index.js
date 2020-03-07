@@ -16,7 +16,7 @@ import { AiFillMinusCircle, AiFillQuestionCircle } from "react-icons/ai";
 const PROFILE_PICTURE_URL = 'https://janecanblogdotcom.files.wordpress.com/2014/09/ashley-square-profile.jpg';
 
 import style from './task-item.css';
-import { getStyleApplicationFn } from '../../../utils/styleHelpers';
+import { getStyleApplicationFn } from '../../../utils/style';
 const s = getStyleApplicationFn(style);
 
 
