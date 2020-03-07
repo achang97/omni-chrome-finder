@@ -10,6 +10,7 @@ const initialState = {
 
   isUpdatingCard: false,
 
+  isDismissingTask: false,
 };
 
 export default function tasks(state = initialState, action) {
@@ -34,15 +35,25 @@ export default function tasks(state = initialState, action) {
     }
 
     case types.MARK_UP_TO_DATE_FROM_TASKS_REQUEST: {
-      const { cardId } = payload;
-      return { ...state, isUpdatingCard: true, getCardUpdateError: null };
+      return { ...state, isUpdatingCard: true, markCardUpToDateError: null };
     }
     case types.MARK_UP_TO_DATE_FROM_TASKS_SUCCESS: {
       return { ...state, isUpdatingCard: false }
     }
     case types.MARK_UP_TO_DATE_FROM_TASKS_ERROR: {
       const { error } = payload;
-      return { ...state, isUpdatingCard: false, getCardUpdateError: error };
+      return { ...state, isUpdatingCard: false, markCardUpToDateError: error };
+    }
+
+    case types.DISMISS_TASK_REQUEST: {
+      return { ...state, isDismissingTask: true, dimissTaskError: null };
+    }
+    case types.DISMISS_TASK_SUCCESS: {
+      return { ...state, isDismissingTask: false };
+    }
+    case types.DISMISS_TASK_ERROR: {
+      const { error } = payload;
+      return { ...state, isDismissingTask: false, dimissTaskError: error };
     }
 
     default:

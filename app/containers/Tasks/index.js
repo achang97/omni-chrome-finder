@@ -3,6 +3,7 @@ import AnimateHeight from 'react-animate-height';
 import Tabs from '../../components/common/Tabs/Tabs';
 import Tab from '../../components/common/Tabs/Tab';
 import TaskItem from '../../components/tasks/TaskItem';
+import NoNotificationsImg from "../../assets/images/general/noNotifications.svg";
 
 import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
@@ -12,8 +13,8 @@ import { IoMdAlert } from 'react-icons/io';
 import { MdKeyboardArrowDown, MdKeyboardArrowUp, MdCheck, MdAdd, MdEdit, MdLock, MdNotifications } from 'react-icons/md';
 import { AiFillMinusCircle, AiFillQuestionCircle } from "react-icons/ai";
 import Timeago from 'react-timeago';
+import Loader from '../../components/common/Loader';
 
-import { openCard } from '../../actions/cards';
 import * as tasksActions from '../../actions/tasks';
 import style from "./tasks.css";
 import { TASKS_TAB_OPTIONS, CARD_STATUS, TASKS_SECTIONS, TASKS_TYPES } from '../../utils/constants';
@@ -57,7 +58,6 @@ const UNRESOLVED_CARDS_PLACEHOLDER = [{
   bindActionCreators(
     {
       ...tasksActions,
-      openCard,
     },
     dispatch
   )
@@ -110,43 +110,18 @@ export default class Tasks extends Component {
   	else this.setState({ sectionOpen: newSection });
   }
 
-
-  getTaskItemInfo = (type, task) => {
-    const { openCard, requestMarkUpToDateFromTasks } = this.props;
-    switch (type) {
-      case TASKS_TYPES.NEEDS_VERIFICATION:
-        return { primaryOption: "Mark as Up to Date", secondaryOption: "Edit", primaryAction: () => { requestMarkUpToDateFromTasks(task.card._id) }, secondaryAction: () => { openCard({ _id: task.card._id, isEditing: true }) } };
-      case TASKS_TYPES.OUT_OF_DATE:
-        return { primaryOption: "Edit", secondaryOption: "Mark as Up to Date", primaryAction: () => { openCard({ _id: task.card._id, isEditing: true }) }, secondaryAction: () => { requestMarkUpToDateFromTasks(task.card._id) } };
-      case TASKS_TYPES.UNDOCUMENTED:
-        return { primaryOption: "Create Card", secondaryOption: "Dismiss", primaryAction: () => { openCard({ _id: task.card._id, isEditing: true }) }, secondaryAction: () => { return } };
-      case TASKS_TYPES.NEEDS_APPROVAL:
-        return { primaryOption: "Approve", secondaryOption: "Decline", primaryAction: () => { return }, secondaryAction: () => { return } };
-      default:
-        return {}; 
-    }
-  }
-
-  
-
   renderTasksList = (filteredTasks) => {
   	return (
   		<div className={s("flex flex-col p-reg overflow-auto")}>
   			{
 	  			filteredTasks.map((task, i) => {
-          	const { primaryOption, primaryAction, secondaryOption, secondaryAction } = this.getTaskItemInfo(task.status, task);
 	  				return (
 	  					<TaskItem 
 	  						index={i}
+                id={task._id}
+                date={<Timeago date={task.createdAt} live={false} />}
 	  						type={task.status}
-	  						question={task.question}
-	  						preview={task.card.description}
-	  						date={<Timeago date={task.createdAt} live={false} />}
-	  						primaryOption={primaryOption}
-	  						primaryAction={primaryAction}
-	  						secondaryOption={secondaryOption}
-	  						secondaryAction={secondaryAction}
-                reasonOutdated={task.card.outOfDateReason}
+                card={task.card}
 	  						/>
 	  				);
 	  			})
@@ -180,10 +155,14 @@ export default class Tasks extends Component {
   }
 
   renderUnresolvedTasks = () => {
-    const { sectionOpen } = this.state;
+    const { sectionOpen, isGettingTasks } = this.state;
   	return (
   		<div className={s("flex flex-col min-h-0 flex-grow")}>
-        { Object.keys(TASKS_SECTIONS).map((section) => 
+        { 
+          isGettingTasks ?
+          <Loader className={s('')}/>
+          :
+          Object.keys(TASKS_SECTIONS).map((section) => 
           {
             const { sectionTitle, icon, filteredTasks } = this.getTaskSectionProps(TASKS_SECTIONS[section]);
             const isSectionOpen = sectionOpen === TASKS_SECTIONS[section];
@@ -228,30 +207,38 @@ export default class Tasks extends Component {
   renderApprovalTasks = () => {
   	return (
   		<div className={s("flex flex-col p-reg min-h-0 overflow-auto")}> 
-  			{
-	  			UNRESOLVED_CARDS_PLACEHOLDER.map((notification, i) => {
-            const { primaryOption, primaryAction, secondaryOption, secondaryAction } = this.getTaskItemInfo(notification.type);
+  			{/*
+	  			UNRESOLVED_CARDS_PLACEHOLDER.map((task, i) => {
             return (
               <TaskItem 
                 index={i}
-                type={notification.type}
-                question={notification.question}
-                preview={notification.preview}
-                date={"Feb 2"}
-                primaryOption={primaryOption}
-                primaryAction={primaryAction}
-                secondaryOption={secondaryOption}
-                secondaryAction={secondaryAction}
-                />
+                id={task._id}
+                date={<Timeago date={task.createdAt} live={false} />}
+                type={task.status}
+                card={task.card}
+              />
             );
 	  			})
-  			}
+  			*/}
   		</div>
   	)
   }
 
+  renderNoTasksScreen = () => {
+    return (
+      <div className={s('flex flex-col items-center p-reg justify-center mt-2xl')}>
+        <img src={NoNotificationsImg}  />
+        <div className={s('text-reg font-semibold')}> No unresolved tasks </div>
+        <div className={s('text-sm mt-xl text-center')}> Congratulations, all your cards are verified and up to date! </div>
+      </div>
+    )
+  }
+
   render() {
-  	const { tabIndex } = this.props;
+  	const { tabIndex, tasks, isGettingTasks, getTasksError } = this.props;
+    const { allTasks } = this.state;
+    console.log(this.props.tasks);
+
     return (
       <div className={s("flex flex-col min-h-0 flex-grow")}>
           <Tabs
@@ -274,7 +261,22 @@ export default class Tasks extends Component {
             }
           </Tabs>
           { tabIndex === 0 ? 
-          	this.renderUnresolvedTasks()
+            <React.Fragment>
+            { getTasksError && <div> {getTasksError} </div>}
+            {
+              isGettingTasks ?
+              <Loader className={s('mt-2xl')}/>
+              :
+              <React.Fragment>
+              {
+                allTasks.length === 0 ?
+                this.renderNoTasksScreen()
+                :
+            	  this.renderUnresolvedTasks()
+              }
+              </React.Fragment>
+            }
+            </React.Fragment>
           	:
           	this.renderApprovalTasks()
           }
