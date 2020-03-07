@@ -7,7 +7,6 @@ import PlaceholderImg from '../../components/common/PlaceholderImg';
 import { logout } from '../../actions/auth';
 import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
-import { getStorageName } from '../../utils/constants';
 import { MdEdit } from 'react-icons/md'
 import { PROFILE_SETTING_SECTIONS, INTEGRATIONS, AUTOFIND_PERMISSIONS, NOOP } from '../../utils/constants';
 import { MdKeyboardArrowDown, MdKeyboardArrowUp } from 'react-icons/md'

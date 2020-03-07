@@ -1,4 +1,4 @@
-import { getStorageName } from './constants';
+import { getStorageName } from './storage';
 import * as types from '../actions/actionTypes';
 
 function setUpAuthSync(store) {

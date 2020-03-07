@@ -1,23 +1,21 @@
 import { applyMiddleware, createStore, compose } from 'redux';
-import { persistStore } from 'redux-persist';
 import thunk from 'redux-thunk';
 import rootReducer from '../reducers';
-import storage from '../utils/storage';
+import auth from '../middleware/auth';
+import badge from '../middleware/badge';
 import createSagaMiddleware from 'redux-saga';
 import rootSaga from '../sagas';
 import setUpAuthSync from '../utils/authSync';
 
 const sagaMiddleware = createSagaMiddleware();
 
-const middlewares = applyMiddleware(sagaMiddleware, thunk);
+const middlewares = applyMiddleware(sagaMiddleware, thunk, auth, badge);
 const enhancer = compose(
   middlewares,
-  storage()
 );
 
 export default function (initialState) {
   const store = createStore(rootReducer, initialState, enhancer);
-  const persistor = persistStore(store);
 
   // Run saga
   sagaMiddleware.run(rootSaga, store.dispatch, store.getState);
@@ -29,5 +27,5 @@ export default function (initialState) {
 
   setUpAuthSync(store);
 
-  return { store, persistor };
+  return store;
 }

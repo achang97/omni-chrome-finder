@@ -1,7 +1,6 @@
 import * as types from '../actions/actionTypes';
 import _ from 'lodash';
 import { EditorState } from 'draft-js';
-import { getStorageName } from '../utils/constants';
 
 const initialState = {
   token: null,
