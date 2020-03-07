@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import { Route, Switch, Redirect, withRouter } from 'react-router-dom';
 import Dock from 'react-dock';
-import { CHROME_MESSAGE, CARD_URL_REGEX } from '../utils/constants';
+import { CHROME_MESSAGE, CARD_URL_REGEX, SLACK_URL_REGEX } from '../utils/constants';
 import queryString from 'query-string';
 import { EditorState, ContentState } from 'draft-js';
 
@@ -77,9 +77,10 @@ class App extends Component {
 
   openChromeExtension = () => {
     const url = window.location.href;
-    const res = url.match(CARD_URL_REGEX);
+    const cardRes = url.match(CARD_URL_REGEX);
+    const slackRes = url.match(SLACK_URL_REGEX);
 
-    if (res) {
+    if (cardRes) {
       const { edit, sxsrf } = queryString.parse(window.location.search);
       if (!this.props.dockVisible) {
         this.props.toggleDock();
@@ -89,6 +90,10 @@ class App extends Component {
       // Strip off everything after .com. NOTE: For now, assume we will be on .com website 
       // (likely will be addomni.com)
       window.history.replaceState({}, window.location.title, url.substring(0, url.indexOf('.com') + 4));
+    } else if (slackRes) {
+      if (!this.props.dockVisible) {
+        this.props.toggleDock();
+      }
     }
   }
 

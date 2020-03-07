@@ -11,6 +11,7 @@ export const CHROME_MESSAGE = {
 
 export const CARD_URL_BASE = 'https://www.google.com/webhp?sxsrf=';
 export const CARD_URL_REGEX = /https:\/\/www\.google\.com\/webhp\?sxsrf=([A-Za-z0-9]{24})/;
+export const SLACK_URL_REGEX = /https:\/\/www\.google\.com\/webhp\?sxsrf=/;
 
 // Debounce / Animations
 export const DEBOUNCE_60_HZ = 166;
