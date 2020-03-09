@@ -5,6 +5,8 @@
   "description": "A lightweight Q&A tool that helps you document and find information faster.",
   "browser_action": {
   },
+  "web_accessible_resources": [
+  ],
   "icons": {
     "16": "img/icon-16.png",
     "48": "img/icon-48.png",
@@ -14,6 +16,6 @@
     "persistent": false,
     "page": "background.html"
   },
-  "permissions": ["activeTab", "storage", "<all_urls>", "contextMenus"],
+  "permissions": ["activeTab", "storage", "<all_urls>", "contextMenus", "notifications"],
   "content_security_policy": "default-src 'self'; script-src 'self'; style-src * 'unsafe-inline'; img-src 'self' data:;"
 }
