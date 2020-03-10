@@ -29,7 +29,8 @@ import { expandDock } from '../../actions/display';
 import { requestSearchCards } from '../../actions/search';
 import * as askActions from '../../actions/ask';
 import { generateFileKey } from '../../utils/file';
-import { ASK_INTEGRATIONS, DEBOUNCE_60_HZ, SEARCH_TYPE, SLACK_RECIPIENT_TYPE } from '../../utils/constants';
+import { isLoggedIn } from '../../utils/auth';
+import { ASK_INTEGRATIONS, INTEGRATIONS, DEBOUNCE_60_HZ, SEARCH_TYPE, SLACK_RECIPIENT_TYPE } from '../../utils/constants';
 
 import style from "./ask.css";
 import { getStyleApplicationFn, isOverflowing } from '../../utils/style';
@@ -55,21 +56,19 @@ class Ask extends Component {
   }
   
   componentDidMount() {
-    if (this.isLoggedInSlack()) {
+    const { user } = this.props;
+
+    if (isLoggedIn(user, INTEGRATIONS.SLACK)) {
       this.props.requestGetSlackConversations();
     }
   }
 
   componentDidUpdate(prevProps) {
-    const prevPropsSlack = prevProps.user && prevProps.user.integrations.slack.access_token;
-    const currPropsSlack = this.isLoggedInSlack();
+    const prevPropsSlack = isLoggedIn(prevProps.user, INTEGRATIONS.SLACK);
+    const currPropsSlack = isLoggedIn(this.props.user, INTEGRATIONS.SLACK);
     if (!prevPropsSlack && currPropsSlack) {
       this.props.requestGetSlackConversations();
     }
-  }
-
-  isLoggedInSlack = () => {
-    return this.props.user && this.props.user.integrations.slack.access_token;
   }
 
   renderTabHeader = () => {
@@ -411,7 +410,7 @@ class Ask extends Component {
     const { askError, askSuccess, user } = this.props;
     const url = "https://slack.com/oauth/v2/authorize?client_id=902571434263.910615559953&scope=app_mentions:read,channels:history,channels:join,channels:read,chat:write,commands,files:read,groups:history,groups:read,im:history,im:read,im:write,links:read,mpim:history,mpim:read,mpim:write,reminders:read,reminders:write,remote_files:read,remote_files:share,remote_files:write,team:read,usergroups:read,usergroups:write,users.profile:read,users:read,users:read.email,users:write&user_scope=channels:history,channels:read,channels:write,chat:write,emoji:read,files:read,groups:history,groups:read,groups:write,im:history,im:read,im:write,links:read,links:write,mpim:history,mpim:read,mpim:write,reactions:read,reminders:read,reminders:write,remote_files:read,remote_files:share,search:read,team:read,usergroups:read,usergroups:write,users.profile:read,users:read,users:read.email,users:write&state=" + user._id;
 
-    const isLoggedInSlack = this.isLoggedInSlack();
+    const isLoggedInSlack = isLoggedIn(user, INTEGRATIONS.SLACK);
 
     return (
       <div className={s('flex flex-col flex-1 min-h-0 relative')}>

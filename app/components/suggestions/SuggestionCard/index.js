@@ -148,7 +148,7 @@ class SuggestionCard extends Component {
                   <Button
                     key={label} 
                     text={label}
-                    className={'shadow-none'}
+                    className={'shadow-none text-purple-reg'}
                     onClick={() => this.protectedOnClick(onClick, buttonType)}
                   />
                   { i !== actions.length - 1 &&

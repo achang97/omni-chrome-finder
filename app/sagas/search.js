@@ -2,6 +2,7 @@ import { CancelToken, isCancel } from 'axios';
 import { delay } from 'redux-saga';
 import { take, call, fork, all, cancel, cancelled, put, select } from 'redux-saga/effects';
 import { doGet, doPost, doPut, doDelete } from '../utils/request'
+import { isLoggedIn } from '../utils/auth';
 import { SEARCH_TYPE, INTEGRATIONS } from '../utils/constants';
 import { SEARCH_CARDS_REQUEST, SEARCH_TAGS_REQUEST, SEARCH_USERS_REQUEST, SEARCH_PERMISSION_GROUPS_REQUEST,  } from '../actions/actionTypes';
 import { 
@@ -19,6 +20,17 @@ const CANCEL_TYPE = {
 };
 
 const CANCEL_SOURCE = {};
+
+const DOCUMENTATION_INTEGRATIONS = [
+  {
+    integration: INTEGRATIONS.GOOGLE,
+    url: '/google/drive/query'
+  },
+  {
+    integration: INTEGRATIONS.SLACK,
+    url: '/slack/query'
+  }
+]
 
 export default function* watchSearchRequests() {
   let action;
@@ -46,10 +58,6 @@ export default function* watchSearchRequests() {
   }
 }
 
-function isLoggedIn(user, service) {
-  return user && user.integrations[service].access_token;
-}
-
 function cancelRequest(cancelType) {
   if (CANCEL_SOURCE[cancelType]) {
     CANCEL_SOURCE[cancelType].cancel();
@@ -67,14 +75,33 @@ function* searchCards({ type, query, clearCards }) {
     const user = yield select(state => state.profile.user);
 
     let cards = [];
+    let externalResults = [];
+
+    const allRequests = [];
+
     if (!query.ids || query.ids.length !== 0) {
-      cards = yield call(doGet, '/cards/query', { ...query, page }, { cancelToken });
+      allRequests.push({ url: '/cards/query', body: { ...query, page } });
     }
 
-    const externalResults = [];
-    if (type === SEARCH_TYPE.POPOUT && query.q !== '' && isLoggedIn(user, INTEGRATIONS.GOOGLE)) {
-      const googleResults = yield call(doGet, '/google/drive/query', { q: query.q }, { cancelToken });
-      externalResults.push({ source: INTEGRATIONS.GOOGLE, results: googleResults });
+    if (type === SEARCH_TYPE.POPOUT && query.q !== '') {
+      DOCUMENTATION_INTEGRATIONS.forEach(({ integration, url }) => {
+        if (isLoggedIn(user, integration)) {
+          allRequests.push({ url, integration, body: { q: query.q } })
+        }
+      });
+    }
+    
+    const results = yield all(allRequests.map(({ url, body }) => (
+      call(doGet, url, body, { cancelToken })
+    )));
+
+    if (results.length !== 0) {
+      cards = results[0];
+    }
+
+    let i;
+    for (i = 1; i < results.length; i++) {
+      externalResults.push({ integration: allRequests[i].integration, results: results[i] });
     }
 
     yield put(handleSearchCardsSuccess(type, cards, externalResults, clearCards));

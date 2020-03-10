@@ -17,6 +17,7 @@ import { changeFirstname, changeLastname, changeBio, requestSaveUser, editUser, 
 
 import Loader from '../../components/common/Loader';
 import { SERVER_URL } from '../../utils/request';
+import { isLoggedIn } from '../../utils/auth';
 
 import { getStyleApplicationFn } from '../../utils/style';
 import style from './profile.css';
@@ -218,7 +219,7 @@ export default class Profile extends Component {
       <div> 
         {
           profileSettingSection.integrations.map((integration, i ) => {
-            const isSignedIn = user.integrations[integration].access_token !== undefined;
+            const isSignedIn = isLoggedIn(user, integration);
             const { title, logo, onSignIn, onSignOut } = this.getIntegrationInfo(integration);
             return (
               <div key={title} className={s(`flex bg-white p-reg justify-between border border-solid border-gray-xlight items-center rounded-lg ${ i > 0 ? 'mt-sm' : '' }`)}>

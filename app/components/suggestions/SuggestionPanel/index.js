@@ -23,13 +23,7 @@ import { getStyleApplicationFn } from '../../../utils/style';
 const s = getStyleApplicationFn(style);
 
 import GoogleDriveIcon from '../../../assets/images/icons/GoogleDrive_Icon.svg';
-
-const DOCUMENTATION_DISPLAY_INFO = {
-  [INTEGRATIONS.GOOGLE]: {
-    icon: GoogleDriveIcon,
-    baseUrl: '',
-  }
-}
+import SlackIcon from '../../../assets/images/icons/Slack_Mark.svg';
 
 @connect(
   state => ({
@@ -100,20 +94,44 @@ class SuggestionPanel extends Component {
     }
   }
 
-  renderExternalSourceResults = ({ source, results }) => {
-    const { baseUrl, icon } = DOCUMENTATION_DISPLAY_INFO[source];
-    return (
-      <div className={s("my-sm")} key={source}>
-        { results.map(({ name, id, webViewLink, iconLink }) => (
-          <div key={id} className={s("suggestion-panel-external-result")}>
-            <a target="_blank" className={s("min-w-0")} href={webViewLink}>
-              <div className={s("suggestion-panel-external-result-text")}> {name} </div>
-            </a>
-            <div className={s("suggestion-panel-external-result-icon")}>
-              <img src={iconLink} />
+  renderExternalSourceResults = ({ integration, results }) => {
+    let renderFn;
+    switch (integration) {
+      case INTEGRATIONS.SLACK: {
+        renderFn = ({ text, link, sender, channel }) => (
+          <a target="_blank" href={link} key={link}>
+            <div key={link} className={s("suggestion-panel-external-result flex-col")}>
+              <div className={s("flex justify-between mb-xs")}>
+                <div className={s("suggestion-panel-text font-semibold text-purple-reg")}> {channel === 'Personal Message' ? 'Direct Message' : `#${channel}`} </div>
+                <div className={s("suggestion-panel-external-result-icon")}>
+                  <img src={SlackIcon} />
+                </div>
+              </div>
+              <div className={s("suggestion-panel-text suggestion-panel-sender-name")}> @{sender} </div>
+              <div className={s("text-xs vertical-ellipsis-3")}> {text} </div>
             </div>
-          </div>
-        ))}
+          </a>
+        );
+        break;
+      }
+      case INTEGRATIONS.GOOGLE: {
+        renderFn = ({ name, id, webViewLink, iconLink }) => (
+          <a target="_blank" href={webViewLink} key={id}> 
+            <div className={s("suggestion-panel-external-result items-center")}>
+              <div className={s("suggestion-panel-text suggestion-panel-link-text")}> {name} </div>
+              <div className={s("suggestion-panel-external-result-icon")}>
+                <img src={iconLink} />
+              </div>
+            </div>
+          </a>
+        );
+        break;
+      }
+    }
+
+    return (
+      <div key={integration}>
+        { results.map(result => renderFn(result)) }
       </div>
     );
   }
@@ -175,7 +193,7 @@ class SuggestionPanel extends Component {
       answer={answer}
       datePosted={createdAt}
       status={status}
-      className={s("mx-sm")}
+      className={s("mx-sm shadow-md")}
     />
   );
 
