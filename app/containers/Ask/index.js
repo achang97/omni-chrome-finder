@@ -32,6 +32,8 @@ import { generateFileKey } from '../../utils/file';
 import { isLoggedIn } from '../../utils/auth';
 import { ASK_INTEGRATIONS, INTEGRATIONS, DEBOUNCE_60_HZ, SEARCH_TYPE, SLACK_RECIPIENT_TYPE } from '../../utils/constants';
 
+import { getArrayWithout } from '../../utils/array';
+
 import style from "./ask.css";
 import { getStyleApplicationFn, isOverflowing } from '../../utils/style';
 import { createSelectOptions } from '../../utils/select';
@@ -343,7 +345,7 @@ class Ask extends Component {
           value={null}
           onChange={addAskRecipient}
           placeholder="Enter name"
-          options={slackConversations}
+          options={getArrayWithout(slackConversations, recipients, 'id')}
           getOptionLabel={option => `${option.type === SLACK_RECIPIENT_TYPE.CHANNEL ? '#' : '@'}${option.name}`}
           getOptionValue={option => option.id}
           isSearchable

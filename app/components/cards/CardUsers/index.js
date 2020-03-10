@@ -13,6 +13,7 @@ import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
 import { requestSearchUsers } from '../../../actions/search';
 
+import { getArrayWithout } from '../../../utils/array';
 import { DEBOUNCE_60_HZ } from '../../../utils/constants';
 import { createSelectOptions, simpleInputFilter } from '../../../utils/select';
 
@@ -50,7 +51,7 @@ class CardUsers extends Component {
 					<Select
 						className={s("w-full mb-sm")}
 			            value={null}
-			            options={userOptions.filter(userOption => !users.some(user => user._id === userOption._id))}
+			            options={getArrayWithout(userOptions, users, '_id')}
 			            onChange={option => onAdd(option)}
 			            onInputChange={_.debounce(this.loadOptions, DEBOUNCE_60_HZ)}
 			            onFocus={() => this.loadOptions("")}

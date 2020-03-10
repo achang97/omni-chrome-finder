@@ -37,8 +37,10 @@ class Tabs extends Component {
     }
 
     if (prevChildren.length < children.length || prevTabOptions.length < tabOptions.length) {
-      const { scrollWidth, scrollLeft } = this.tabsRef.current;
-      this.moveTabsScroll(scrollWidth - scrollLeft);
+      if (this.tabsRef.current) {
+        const { scrollWidth, scrollLeft } = this.tabsRef.current;
+        this.moveTabsScroll(scrollWidth - scrollLeft); 
+      }
     }
   }
 
