@@ -18,5 +18,8 @@ exports.copyAssets = (type) => {
   mkdir(type);
   cp(`chrome/manifest.${env}.json`, `${type}/manifest.json`);
   cp('-R', 'chrome/assets/*', type);
+
+  cp('-R', 'chrome/web_accessible/*', `${type}`);
+
   exec(`pug -O "{ env: '${env}' }" -o ${type} chrome/views/`);
 };

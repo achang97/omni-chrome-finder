@@ -1,8 +1,8 @@
-import { getEditorStateFromContentState } from './editorHelpers';
+import { getEditorStateFromContentState } from './editor';
 import { EditorState } from 'draft-js';
-import { createSelectOptions } from './selectHelpers';
-import { getArrayIds } from './arrayHelpers';
-import { getContentStateFromEditorState } from './editorHelpers';
+import { createSelectOptions } from './select';
+import { getArrayIds } from './array';
+import { getContentStateFromEditorState } from './editor';
 import { AUTO_REMIND_VALUE, VERIFICATION_INTERVAL_OPTIONS, PERMISSION_OPTION, PERMISSION_OPTIONS, CARD_STATUS } from './constants';
 import _ from 'lodash';
 

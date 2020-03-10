@@ -24,7 +24,7 @@ import Profile from './Profile';
 import Login from './Login';
 import style from './App.css';
 
-import { getStyleApplicationFn } from '../utils/styleHelpers';
+import { getStyleApplicationFn } from '../utils/style';
 const s = getStyleApplicationFn(style);
 const dockPanelStyles = {
   background: 'white',

@@ -1,21 +1,33 @@
 import React, { Component } from 'react';
 import ReactDOM from 'react-dom';
+import loadjs from 'loadjs';
+import { getStorage, getStorageName } from '../../app/utils/storage';
 import Root from '../../app/containers/Root';
 
-const targetElem = document.querySelector('body');
-const wrapper = document.createElement('div');
-wrapper.id = 'omni-chrome-ext-main-container';
-wrapper.style = 'all: initial;';
-targetElem.insertBefore(wrapper, targetElem.firstChild);
+(function() {	
+	const body = document.body;
 
-chrome.storage.local.get('state', (obj) => {
-  const { state } = obj;
-  const initialState = JSON.parse(state || '{}');
+	const wrapper = document.createElement('div');
+	wrapper.id = 'omni-chrome-ext-main-container';
+	wrapper.style = 'all: initial;';
+	body.insertBefore(wrapper, body.firstChild);
 
-  const createStore = require('../../app/store/configureStore');
+	getStorage('auth', (obj) => {
+		let initialState = {};
 
-  ReactDOM.render(
-    <Root {...createStore(initialState)} />,
-    wrapper // document.querySelector('#root')
-  );
-});
+		const currAuth = obj[getStorageName('auth')];
+		if (currAuth) {
+			const { user, token, refreshToken } = JSON.parse(currAuth);
+			initialState = {
+				auth: { token, refreshToken },
+				profile: { user }
+			};
+		}
+
+		const createStore = require('../../app/store/configureStore');
+		ReactDOM.render(
+			<Root store={createStore(initialState)} />,
+			wrapper
+		);		
+	})
+})();

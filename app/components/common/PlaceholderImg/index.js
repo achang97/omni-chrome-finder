@@ -2,7 +2,7 @@ import React from 'react';
 import PropTypes from 'prop-types';
 
 import style from './placeholder-img.css';
-import { getStyleApplicationFn } from '../../../utils/styleHelpers';
+import { getStyleApplicationFn } from '../../../utils/style';
 const s = getStyleApplicationFn(style);
 
 const NUM_COLORS = 3;

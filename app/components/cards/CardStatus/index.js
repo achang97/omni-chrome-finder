@@ -14,7 +14,7 @@ import { openCardModal } from '../../../actions/cards';
 import { colors } from '../../../styles/colors';
 
 import style from './card-status.css';
-import { getStyleApplicationFn } from '../../../utils/styleHelpers';
+import { getStyleApplicationFn } from '../../../utils/style';
 const s = getStyleApplicationFn(style);
 
 const getDisplayInfo = (status) => {

@@ -15,7 +15,7 @@ import Modal from '../../common/Modal';
 import { MdLock, MdAutorenew } from 'react-icons/md';
 
 import { PERMISSION_OPTION, VERIFICATION_INTERVAL_OPTIONS, CARD_STATUS, MODAL_TYPE, SEARCH_TYPE } from '../../../utils/constants';
-import { hasValidEdits, isExistingCard } from '../../../utils/cardHelpers';
+import { hasValidEdits, isExistingCard } from '../../../utils/card';
 
 import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
@@ -29,7 +29,7 @@ import {
 } from '../../../actions/cards';
 
 import style from './card-create-modal.css';
-import { getStyleApplicationFn } from '../../../utils/styleHelpers';
+import { getStyleApplicationFn } from '../../../utils/style';
 const s = getStyleApplicationFn(style);
 
 @connect(

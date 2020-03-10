@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import style from './button.css';
-import { getStyleApplicationFn } from '../../../utils/styleHelpers';
+import { getStyleApplicationFn } from '../../../utils/style';
 const s = getStyleApplicationFn(style);
 
 const getClassNames = (color, underline) => {

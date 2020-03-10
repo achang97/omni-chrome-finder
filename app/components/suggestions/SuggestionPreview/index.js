@@ -3,10 +3,10 @@ import PropTypes from 'prop-types';
 
 import Button from '../../common/Button';
 
-import { getContentStateHTMLFromString } from '../../../utils/editorHelpers';
+import { getContentStateHTMLFromString } from '../../../utils/editor';
 
 import style from './suggestion-preview.css';
-import { getStyleApplicationFn } from '../../../utils/styleHelpers';
+import { getStyleApplicationFn } from '../../../utils/style';
 const s = getStyleApplicationFn(style);
 
 import { bindActionCreators } from 'redux';

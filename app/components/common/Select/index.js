@@ -8,7 +8,7 @@ import { colors } from '../../../styles/colors';
 import customStyles from './customStyles';
 
 import style from './select.css';
-import { getStyleApplicationFn } from '../../../utils/styleHelpers';
+import { getStyleApplicationFn } from '../../../utils/style';
 const s = getStyleApplicationFn(style);
 
 const Select = ({ className, type, styles, ...rest }) => {

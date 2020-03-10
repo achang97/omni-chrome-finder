@@ -8,7 +8,7 @@ import PlaceholderImg from '../../common/PlaceholderImg';
 import { NOOP } from '../../../utils/constants';
 
 import style from './card-users.css';
-import { getStyleApplicationFn } from '../../../utils/styleHelpers';
+import { getStyleApplicationFn } from '../../../utils/style';
 const s = getStyleApplicationFn(style);
 
 const CardUser = ({ className, name, img, size, onClick, onRemoveClick, showName, ...rest }) => {

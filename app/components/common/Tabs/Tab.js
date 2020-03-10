@@ -3,7 +3,7 @@ import PropTypes from 'prop-types';
 import Ripples from 'react-ripples';
 
 import style from './tabs.css';
-import { getStyleApplicationFn } from '../../../utils/styleHelpers';
+import { getStyleApplicationFn } from '../../../utils/style';
 const s = getStyleApplicationFn(style);
 
 const Tab = (props) => {

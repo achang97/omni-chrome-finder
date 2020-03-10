@@ -24,8 +24,8 @@ import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
 import * as cardActions from '../../../actions/cards';
 
-import { hasValidEdits, toggleUpvotes, cardStateChanged } from '../../../utils/cardHelpers';
-import { generateFileKey } from '../../../utils/fileHelpers';
+import { hasValidEdits, toggleUpvotes, cardStateChanged } from '../../../utils/card';
+import { generateFileKey } from '../../../utils/file';
 import {
   CARD_STATUS,
   CARD_DIMENSIONS,
@@ -34,7 +34,7 @@ import {
 } from '../../../utils/constants';
 
 import style from './card-content.css';
-import { getStyleApplicationFn } from '../../../utils/styleHelpers';
+import { getStyleApplicationFn } from '../../../utils/style';
 const s = getStyleApplicationFn(style);
 
 @connect(

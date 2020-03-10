@@ -8,13 +8,13 @@ import AnimateHeight from 'react-animate-height';
 import _ from 'lodash';
 
 import { PERMISSION_OPTIONS, PERMISSION_OPTION, DEBOUNCE_60_HZ } from '../../../utils/constants';
-import { createSelectOptions } from '../../../utils/selectHelpers';
+import { createSelectOptions } from '../../../utils/select';
 
 import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
 import { requestSearchPermissionGroups } from '../../../actions/search';
 
-import { getStyleApplicationFn } from '../../../utils/styleHelpers';
+import { getStyleApplicationFn } from '../../../utils/style';
 const s = getStyleApplicationFn();
 
 const CardPermissions = ({ isDisabled, selectedPermission, onChangePermission, permissionGroups, onChangePermissionGroups, isSearchingPermissionGroups, permissionGroupOptions, requestSearchPermissionGroups }) => {

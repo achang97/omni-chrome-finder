@@ -14,7 +14,7 @@ import { MdClose, MdError, MdFileDownload } from 'react-icons/md';
 import { NOOP } from '../../../utils/constants';
  
 import style from './card-attachment.css';
-import { getStyleApplicationFn } from '../../../utils/styleHelpers';
+import { getStyleApplicationFn } from '../../../utils/style';
 const s = getStyleApplicationFn(style);
 
 const COLORS = {

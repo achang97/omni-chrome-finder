@@ -4,7 +4,7 @@ import PropTypes from 'prop-types';
 import { MdClose } from 'react-icons/md';
 
 import style from './recipient-dropdown-body.css';
-import { getStyleApplicationFn } from '../../../utils/styleHelpers';
+import { getStyleApplicationFn } from '../../../utils/style';
 const s = getStyleApplicationFn(style);
 
 class RecipientDropdownBody extends Component {

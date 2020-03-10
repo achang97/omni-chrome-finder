@@ -17,7 +17,7 @@ import { showDescriptionEditor } from '../../actions/create';
 import { DEBOUNCE_60_HZ, SEARCH_TYPE } from '../../utils/constants';
 
 import style from "./create.css";
-import { getStyleApplicationFn } from '../../utils/styleHelpers';
+import { getStyleApplicationFn } from '../../utils/style';
 import { EDITOR_TYPE } from '../../utils/constants';
 const s = getStyleApplicationFn(style);
 

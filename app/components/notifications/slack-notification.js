@@ -3,7 +3,7 @@ import SlackIcon from "../../assets/images/icons/Slack_Mark.svg"
 
 
 import GlobalStyle from '../../styles/global.css';
-import { getStyleApplicationFn } from '../../utils/styleHelpers';
+import { getStyleApplicationFn } from '../../utils/style';
 const tw = getStyleApplicationFn(GlobalStyle)
 
 export const SlackNotification = ({ message, person }) => {

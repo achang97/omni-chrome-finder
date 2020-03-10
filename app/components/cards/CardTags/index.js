@@ -9,14 +9,14 @@ import CardTag from './CardTag';
 import Select from '../../common/Select';
 
 import { NOOP, DEBOUNCE_60_HZ } from '../../../utils/constants';
-import { createSelectOptions, simpleInputFilter } from '../../../utils/selectHelpers';
+import { createSelectOptions, simpleInputFilter } from '../../../utils/select';
 
 import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
 import { requestSearchTags } from '../../../actions/search';
 
 import style from './card-tags.css';
-import { getStyleApplicationFn } from '../../../utils/styleHelpers';
+import { getStyleApplicationFn } from '../../../utils/style';
 const s = getStyleApplicationFn(style);
 
 @connect(

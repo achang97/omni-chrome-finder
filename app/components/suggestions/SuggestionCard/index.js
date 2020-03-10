@@ -4,7 +4,7 @@ import { MdCheck, MdMoreVert } from 'react-icons/md';
 import TimeAgo from 'react-timeago';
 import AnimateHeight from 'react-animate-height';
 
-import { getContentStateHTMLFromString } from '../../../utils/editorHelpers';
+import { getContentStateHTMLFromString } from '../../../utils/editor';
 
 import CardStatus from '../../cards/CardStatus';
 import CardConfirmModal from '../../cards/CardConfirmModal';
@@ -25,7 +25,7 @@ import _ from 'lodash';
 import { colors } from '../../../styles/colors';
 
 import style from './suggestion-card.css';
-import { getStyleApplicationFn } from '../../../utils/styleHelpers';
+import { getStyleApplicationFn } from '../../../utils/style';
 const s = getStyleApplicationFn(style);
 
 const BUTTON_TYPE = {
@@ -148,7 +148,7 @@ class SuggestionCard extends Component {
                   <Button
                     key={label} 
                     text={label}
-                    className={'shadow-none'}
+                    className={'shadow-none text-purple-reg'}
                     onClick={() => this.protectedOnClick(onClick, buttonType)}
                   />
                   { i !== actions.length - 1 &&

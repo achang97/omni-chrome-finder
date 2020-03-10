@@ -2,10 +2,10 @@ import { delay } from 'redux-saga';
 import _ from 'lodash';
 import { take, call, fork, all, cancel, cancelled, put, select } from 'redux-saga/effects';
 import { doGet, doPost, doPut, doDelete } from '../utils/request'
-import { getArrayIds, getArrayField } from '../utils/arrayHelpers';
-import { getContentStateFromEditorState } from '../utils/editorHelpers';
-import { toggleUpvotes, hasValidEdits } from '../utils/cardHelpers';
-import { convertAttachmentsToBackendFormat } from '../utils/fileHelpers';
+import { getArrayIds, getArrayField } from '../utils/array';
+import { getContentStateFromEditorState } from '../utils/editor';
+import { toggleUpvotes, hasValidEdits } from '../utils/card';
+import { convertAttachmentsToBackendFormat } from '../utils/file';
 import { CARD_STATUS, PERMISSION_OPTION, AUTO_REMIND_VALUE, NAVIGATE_TAB_OPTION } from '../utils/constants';
 import { GET_CARD_REQUEST, CREATE_CARD_REQUEST, UPDATE_CARD_REQUEST, TOGGLE_UPVOTE_REQUEST, DELETE_CARD_REQUEST, MARK_UP_TO_DATE_REQUEST, MARK_OUT_OF_DATE_REQUEST, ADD_BOOKMARK_REQUEST, REMOVE_BOOKMARK_REQUEST, ADD_CARD_ATTACHMENT_REQUEST } from '../actions/actionTypes';
 import { 

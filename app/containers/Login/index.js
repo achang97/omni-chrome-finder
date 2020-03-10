@@ -9,7 +9,7 @@ import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
 
 import style from './login.css';
-import { getStyleApplicationFn } from '../../utils/styleHelpers';
+import { getStyleApplicationFn } from '../../utils/style';
 const s = getStyleApplicationFn(style);
 
 import logo from '../../assets/images/logos/logo.png';

@@ -31,7 +31,7 @@
 }
 
 .profile-integration {
-	@apply p-reg rounded-lg;
+	@apply p-reg rounded-lg cursor-pointer;
 }
 
 .profile-integration-active {
@@ -39,7 +39,7 @@
 }
 
 .profile-integration-inactive {
-	@apply border border-solid border-gray-light bg-white cursor-pointer; 
+	@apply border border-solid border-gray-light bg-white; 
 }
 
 .profile-integration-img-container {

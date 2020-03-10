@@ -1,5 +1,5 @@
-import { getStorageName } from './constants';
-import * as types from '../actions/actionTypes';
+import { getStorageName } from '../../utils/storage';
+import * as types from '../../actions/actionTypes';
 
 function setUpAuthSync(store) {
   chrome.storage.onChanged.addListener(function(changes, namespace) {

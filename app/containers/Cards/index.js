@@ -16,12 +16,12 @@ import Tab from '../../components/common/Tabs/Tab';
 import Modal from '../../components/common/Modal';
 import Button from '../../components/common/Button';
 
-import { cardStateChanged } from '../../utils/cardHelpers';
+import { cardStateChanged } from '../../utils/card';
 
 import { colors } from '../../styles/colors';
 import style from './cards.css';
 import { DEBOUNCE_60_HZ, CARD_DIMENSIONS, MODAL_TYPE, CARD_STATUS } from '../../utils/constants';
-import { getStyleApplicationFn } from '../../utils/styleHelpers';
+import { getStyleApplicationFn } from '../../utils/style';
 const s = getStyleApplicationFn(style);
 
 @connect(

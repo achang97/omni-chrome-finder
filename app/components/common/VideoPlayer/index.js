@@ -8,7 +8,7 @@ import {
 import "video-react/dist/video-react.css";
 
 import style from './video-player.css';
-import { getStyleApplicationFn } from '../../../utils/styleHelpers';
+import { getStyleApplicationFn } from '../../../utils/style';
 const s = getStyleApplicationFn(style);
 
 

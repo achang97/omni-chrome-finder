@@ -6,7 +6,7 @@ import { MdClose } from 'react-icons/md';
 import { NOOP } from '../../../utils/constants';
 
 import style from './card-tags.css';
-import { getStyleApplicationFn } from '../../../utils/styleHelpers';
+import { getStyleApplicationFn } from '../../../utils/style';
 const s = getStyleApplicationFn(style);
 
 const CardTag = React.forwardRef(({ text, onClick, onRemoveClick, className, ...rest }, ref) => {

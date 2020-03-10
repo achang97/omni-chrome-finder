@@ -28,14 +28,14 @@ import Button from '../../common/Button';
 import Loader from '../../common/Loader';
 import VideoPlayer from '../../common/VideoPlayer';
 
-import { isUploadedFile } from '../../../utils/fileHelpers';
+import { isUploadedFile } from '../../../utils/file';
 
-import { getBaseAnimationStyle } from '../../../utils/animateHelpers';
+import { getBaseAnimationStyle } from '../../../utils/animate';
 import { MODAL_TYPE, PERMISSION_OPTIONS, VERIFICATION_INTERVAL_OPTIONS, FADE_IN_TRANSITIONS, CARD_STATUS } from '../../../utils/constants';
-import { createSelectOptions } from '../../../utils/selectHelpers';
+import { createSelectOptions } from '../../../utils/select';
 
 import style from './card-side-dock.css';
-import { getStyleApplicationFn } from '../../../utils/styleHelpers';
+import { getStyleApplicationFn } from '../../../utils/style';
 const s = getStyleApplicationFn(style);
 
 const SELECT_PERMISSION_OPTIONS = createSelectOptions(PERMISSION_OPTIONS);

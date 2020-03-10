@@ -1,9 +1,9 @@
 import { delay } from 'redux-saga';
 import { take, call, fork, all, cancel, cancelled, put, select } from 'redux-saga/effects';
 import { doGet, doPost, doPut, doDelete } from '../utils/request'
-import { getContentStateFromEditorState } from '../utils/editorHelpers';
+import { getContentStateFromEditorState } from '../utils/editor';
 import { SLACK_RECIPIENT_TYPE } from '../utils/constants';
-import { convertAttachmentsToBackendFormat, isUploadedFile } from '../utils/fileHelpers';
+import { convertAttachmentsToBackendFormat, isUploadedFile } from '../utils/file';
 import { ASK_QUESTION_REQUEST, GET_SLACK_CONVERSATIONS_REQUEST, ADD_ASK_ATTACHMENT_REQUEST, REMOVE_ASK_ATTACHMENT_REQUEST } from '../actions/actionTypes';
 import { 
   handleAskQuestionSuccess, handleAskQuestionError,

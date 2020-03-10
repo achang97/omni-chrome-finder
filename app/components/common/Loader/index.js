@@ -5,7 +5,7 @@ import { colors } from '../../../styles/colors';
 import { MoonLoader } from "react-spinners";
 
 import style from './loader.css';
-import { getStyleApplicationFn } from '../../../utils/styleHelpers';
+import { getStyleApplicationFn } from '../../../utils/style';
 const s = getStyleApplicationFn(style);
 
 const getSize = (size) => {

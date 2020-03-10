@@ -14,9 +14,9 @@ import { connect } from 'react-redux';
 import { requestSearchUsers } from '../../../actions/search';
 
 import { DEBOUNCE_60_HZ } from '../../../utils/constants';
-import { createSelectOptions, simpleInputFilter } from '../../../utils/selectHelpers';
+import { createSelectOptions, simpleInputFilter } from '../../../utils/select';
 
-import { getStyleApplicationFn } from '../../../utils/styleHelpers';
+import { getStyleApplicationFn } from '../../../utils/style';
 const s = getStyleApplicationFn();
 
 @connect(

@@ -1,6 +1,4 @@
 // General app constants
-export const getStorageName = (name) => `OMNI_EXTENSION_${name}`;
-
 export const CHROME_MESSAGE = {
 	TOGGLE: 'TOGGLE',
 	TAB_UPDATE: 'TAB_UPDATE',
@@ -24,8 +22,18 @@ export const FADE_IN_TRANSITIONS = {
 	exited:  { opacity: 0 },	
 }
 
+// General constants
+export const INTEGRATIONS = {
+	GOOGLE: "google",
+	SLACK : "slack",
+	EMAIL: "email",
+	ASANA: "asana",
+	ZENDESK: "zendesk",
+	HELPSCOUT: "helpscout",
+}
+
 // Ask page constants
-export const ASK_INTEGRATIONS = ['Slack', 'Email', 'Asana'];
+export const ASK_INTEGRATIONS = [INTEGRATIONS.SLACK, INTEGRATIONS.EMAIL, INTEGRATIONS.ASANA];
 
 export const SLACK_RECIPIENT_TYPE = {
 	CHANNEL: 'channel',
@@ -41,28 +49,28 @@ export const NAVIGATE_TAB_OPTION = {
 export const NAVIGATE_TAB_OPTIONS = [NAVIGATE_TAB_OPTION.ALL, NAVIGATE_TAB_OPTION.MY_CARDS, NAVIGATE_TAB_OPTION.BOOKMARKED];
 
 // Profile Page Constants
-export const INTEGRATIONS = {
-	GOOGLE: "google",
-	SLACK : "slack",
+export const PROFILE_SETTING_SECTION_TYPE = {
+	KNOWLEDGE_BASE: 'KNOWLEDGE_BASE',
+	COMMUNICATION: 'COMMUNICATION',
+	AUTOFIND: 'AUTOFIND',
 }
-export const AUTOFIND_PERMISSIONS = {
-	ZENDESK: "zendesk",
-	HELPSCOUT: "helpscout",
-}
-export const PROFILE_SETTING_SECTIONS = {
-	KNOWLEDGE_BASE_INTEGRATIONS: { 
+export const PROFILE_SETTING_SECTIONS = [
+	{ 
+		type: PROFILE_SETTING_SECTION_TYPE.KNOWLEDGE_BASE,
 		title: "Knowledge Base Integrations",
 		integrations: [INTEGRATIONS.GOOGLE],
 	},
-	COMMUNICATION_INTEGRATIONS: {
+	{
+		type: PROFILE_SETTING_SECTION_TYPE.COMMUNICATION,
 		title: "Communication Integrations",
 		integrations: [INTEGRATIONS.SLACK],
 	},
-	AUTOFIND_PERMISSIONS: {
+	{
+		type: PROFILE_SETTING_SECTION_TYPE.AUTOFIND,
 		title: "Autofind Permissions",
-		permissions: [ AUTOFIND_PERMISSIONS.ZENDESK, AUTOFIND_PERMISSIONS.HELPSCOUT ],
+		permissions: [ INTEGRATIONS.ZENDESK, INTEGRATIONS.HELPSCOUT ],
 	}
-}
+];
 
 // Card page constants
 export const CARD_DIMENSIONS = {
@@ -123,21 +131,43 @@ export const PERMISSION_OPTIONS = [
 ]
 
 // Tasks page constants
-export const TASKS_TAB_OPTIONS = ['Unresolved', 'Needs Approval'];
-
-export const TASKS_TYPES = {
+export const TASK_TYPE = {
 	NEEDS_VERIFICATION: CARD_STATUS.NEEDS_VERIFICATION,
 	OUT_OF_DATE: CARD_STATUS.OUT_OF_DATE,
 	UNDOCUMENTED: CARD_STATUS.NOT_DOCUMENTED,
 	NEEDS_APPROVAL: CARD_STATUS.NEEDS_APPROVAL,
 };
 
-export const TASKS_SECTIONS = {
-	ALL: { title: "All Tasks", types: [ TASKS_TYPES.NEEDS_VERIFICATION, TASKS_TYPES.OUT_OF_DATE, TASKS_TYPES.UNDOCUMENTED ] },
-	NEEDS_VERIFICATION: { title: "Needs Verification", types: [ TASKS_TYPES.NEEDS_VERIFICATION ] },
-	OUT_OF_DATE: { title: "Out of Date", types: [ TASKS_TYPES.OUT_OF_DATE ] },
-	UNDOCUMENTED: { title: "Undocumented Questions", types: [ TASKS_TYPES.UNDOCUMENTED ] },
+export const TASKS_TAB_OPTIONS = ['Unresolved', 'Needs Approval'];
+
+export const TASKS_SECTION_TYPE = {
+	ALL: 'ALL',
+	NEEDS_VERIFICATION: 'NEEDS_VERIFICATION',
+	OUT_OF_DATE: 'OUT_OF_DATE',
+	UNDOCUMENTED: 'UNDOCUMENTED'
 };
+export const TASKS_SECTIONS = [
+	{
+		type: TASKS_SECTION_TYPE.ALL,
+		title: "All Tasks",
+		taskTypes: [ TASK_TYPE.NEEDS_VERIFICATION, TASK_TYPE.OUT_OF_DATE, TASK_TYPE.UNDOCUMENTED ]
+	},
+	{
+		type: TASKS_SECTION_TYPE.NEEDS_VERIFICATION,
+		title: "Needs Verification",
+		taskTypes: [ TASK_TYPE.NEEDS_VERIFICATION ]
+	},
+	{
+		type: TASKS_SECTION_TYPE.OUT_OF_DATE,
+		title: "Out of Date",
+		taskTypes: [ TASK_TYPE.OUT_OF_DATE ]
+	},
+	{
+		type: TASKS_SECTION_TYPE.UNDOCUMENTED,
+		title: "Undocumented Questions",
+		taskTypes: [ TASK_TYPE.UNDOCUMENTED ]
+	},
+];
 
 // Search constants
 export const SEARCH_TYPE = {
@@ -146,11 +176,6 @@ export const SEARCH_TYPE = {
 }
 
 export const SEARCH_INFINITE_SCROLL_OFFSET = 100;
-
-export const DOCUMENTATION_TYPE = {
-	GOOGLE_DRIVE: 'Google Drive',
-}
-
 
 // Misc.
 export const NOOP = () => {};
