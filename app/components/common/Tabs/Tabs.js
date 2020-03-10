@@ -10,6 +10,7 @@ import Tab from './Tab';
 
 import style from './tabs.css';
 import { getStyleApplicationFn } from '../../../utils/style';
+
 const s = getStyleApplicationFn(style);
 
 const CLASSNAME_PROPS = ['tabContainerClassName', 'rippleClassName', 'tabClassName', 'activeTabClassName', 'inactiveTabClassName'];
@@ -23,7 +24,7 @@ class Tabs extends Component {
         start: false,
         end: false
       }
-    }
+    };
 
     this.tabsRef = React.createRef();
   }
@@ -39,18 +40,18 @@ class Tabs extends Component {
     if (prevChildren.length < children.length || prevTabOptions.length < tabOptions.length) {
       if (this.tabsRef.current) {
         const { scrollWidth, scrollLeft } = this.tabsRef.current;
-        this.moveTabsScroll(scrollWidth - scrollLeft); 
+        this.moveTabsScroll(scrollWidth - scrollLeft);
       }
     }
   }
 
-  moveTabsScroll = delta => {
-    const scrollValue = this.tabsRef.current['scrollLeft'] + delta;
+  moveTabsScroll = (delta) => {
+    const scrollValue = this.tabsRef.current.scrollLeft + delta;
     animate('scrollLeft', this.tabsRef.current, scrollValue);
   };
 
   handleScrollClick = (isStart) => {
-    this.moveTabsScroll((isStart ? -1 : 1) * this.tabsRef.current['clientWidth']);
+    this.moveTabsScroll((isStart ? -1 : 1) * this.tabsRef.current.clientWidth);
   };
 
   handleResize = _.debounce(() => {
@@ -88,10 +89,16 @@ class Tabs extends Component {
       isActive,
       value: actualValue,
       onTabClick: () => this.onTabClick(actualValue),
-      rippleClassName, tabContainerClassName, tabClassName, activeTabClassName, inactiveTabClassName,
-      color, indicatorColor, showIndicator,
+      rippleClassName,
+      tabContainerClassName,
+      tabClassName,
+      activeTabClassName,
+      inactiveTabClassName,
+      color,
+      indicatorColor,
+      showIndicator,
       showRipple,
-    }
+    };
   }
 
   renderTab = ({ label, value }, i) => {
@@ -102,7 +109,7 @@ class Tabs extends Component {
         label={label}
         {...baseTabProps}
       />
-    )
+    );
   }
 
   mergeProps = (baseProps, childProps) => {
@@ -127,7 +134,7 @@ class Tabs extends Component {
       children.map((child, i) => (
         React.cloneElement(child, this.mergeProps(this.getBaseTabProps(child.props.value, i), child.props))
       ))
-    )
+    );
   }
 
   renderScrollButton = (isStart) => {
@@ -191,7 +198,7 @@ Tabs.propTypes = {
   showIndicator: PropTypes.bool,
   showRipple: PropTypes.bool,
   scrollButtonColor: PropTypes.string,
-}
+};
 
 Tabs.defaultProps = {
   style: {},
@@ -204,6 +211,6 @@ Tabs.defaultProps = {
   inactiveTabClassName: '',
   showIndicator: true,
   showRipple: true,
-}
+};
 
 export default Tabs;

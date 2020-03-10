@@ -1,6 +1,5 @@
-import * as types from '../actions/actionTypes';
-import _ from 'lodash';
 import { EditorState } from 'draft-js';
+import * as types from '../actions/actionTypes';
 
 const initialState = {
   isDescriptionEditorShown: false,
@@ -9,7 +8,7 @@ const initialState = {
   answerEditorState: EditorState.createEmpty(),
 };
 
-export default function create(state = initialState, action) {
+export default function createReducer(state = initialState, action) {
   const { type, payload = {} } = action;
 
   switch (type) {

@@ -1,11 +1,10 @@
 import { CancelToken, isCancel } from 'axios';
-import { delay } from 'redux-saga';
-import { take, call, fork, all, cancel, cancelled, put, select } from 'redux-saga/effects';
-import { doGet, doPost, doPut, doDelete } from '../utils/request'
+import { take, call, fork, all, put, select } from 'redux-saga/effects';
+import { doGet, doPost } from '../utils/request';
 import { isLoggedIn } from '../utils/auth';
 import { SEARCH_TYPE, INTEGRATIONS } from '../utils/constants';
-import { SEARCH_CARDS_REQUEST, SEARCH_TAGS_REQUEST, SEARCH_USERS_REQUEST, SEARCH_PERMISSION_GROUPS_REQUEST,  } from '../actions/actionTypes';
-import { 
+import { SEARCH_CARDS_REQUEST, SEARCH_TAGS_REQUEST, SEARCH_USERS_REQUEST, SEARCH_PERMISSION_GROUPS_REQUEST, } from '../actions/actionTypes';
+import {
   handleSearchCardsSuccess, handleSearchCardsError,
   handleSearchTagsSuccess, handleSearchTagsError,
   handleSearchUsersSuccess, handleSearchUsersError,
@@ -30,16 +29,19 @@ const DOCUMENTATION_INTEGRATIONS = [
     integration: INTEGRATIONS.SLACK,
     url: '/slack/query'
   }
-]
+];
 
 export default function* watchSearchRequests() {
   let action;
 
-  while (action = yield take([SEARCH_CARDS_REQUEST, SEARCH_TAGS_REQUEST, SEARCH_USERS_REQUEST, SEARCH_PERMISSION_GROUPS_REQUEST])) {
+  while (action = yield take([
+    SEARCH_CARDS_REQUEST, SEARCH_TAGS_REQUEST, SEARCH_USERS_REQUEST,
+    SEARCH_PERMISSION_GROUPS_REQUEST
+  ])) {
     const { type, payload } = action;
     switch (type) {
       case SEARCH_CARDS_REQUEST: {
-        yield fork(searchCards, payload)
+        yield fork(searchCards, payload);
         break;
       }
       case SEARCH_TAGS_REQUEST: {
@@ -52,6 +54,9 @@ export default function* watchSearchRequests() {
       }
       case SEARCH_PERMISSION_GROUPS_REQUEST: {
         yield fork(searchPermissionGroups, payload);
+        break;
+      }
+      default: {
         break;
       }
     }
@@ -75,7 +80,7 @@ function* searchCards({ type, query, clearCards }) {
     const user = yield select(state => state.profile.user);
 
     let cards = [];
-    let externalResults = [];
+    const externalResults = [];
 
     const allRequests = [];
 
@@ -86,11 +91,11 @@ function* searchCards({ type, query, clearCards }) {
     if (type === SEARCH_TYPE.POPOUT && query.q !== '') {
       DOCUMENTATION_INTEGRATIONS.forEach(({ integration, url }) => {
         if (isLoggedIn(user, integration)) {
-          allRequests.push({ url, integration, body: { q: query.q } })
+          allRequests.push({ url, integration, body: { q: query.q } });
         }
       });
     }
-    
+
     const results = yield all(allRequests.map(({ url, body }) => (
       call(doGet, url, body, { cancelToken })
     )));
@@ -105,7 +110,7 @@ function* searchCards({ type, query, clearCards }) {
     }
 
     yield put(handleSearchCardsSuccess(type, cards, externalResults, clearCards));
-  } catch(error) {
+  } catch (error) {
     if (!isCancel(error)) {
       const { response: { data } } = error;
       yield put(handleSearchCardsError(type, data.error));
@@ -119,7 +124,7 @@ function* searchTags({ name }) {
   try {
     const { tags } = yield call(doPost, '/tags/queryNames', { name }, { cancelToken });
     yield put(handleSearchTagsSuccess(tags));
-  } catch(error) {
+  } catch (error) {
     if (!isCancel(error)) {
       const { response: { data } } = error;
       yield put(handleSearchTagsError(data.error));
@@ -133,7 +138,7 @@ function* searchUsers({ name }) {
   try {
     const { users } = yield call(doPost, '/users/queryNames', { name }, { cancelToken });
     yield put(handleSearchUsersSuccess(users));
-  } catch(error) {
+  } catch (error) {
     if (!isCancel(error)) {
       const { response: { data } } = error;
       yield put(handleSearchUsersError(data.error));
@@ -147,7 +152,7 @@ function* searchPermissionGroups({ name }) {
   try {
     const { permissiongroups } = yield call(doPost, '/permissiongroups/queryNames', { name }, { cancelToken });
     yield put(handleSearchPermissionGroupsSuccess(permissiongroups));
-  } catch(error) {
+  } catch (error) {
     if (!isCancel(error)) {
       const { response: { data } } = error;
       yield put(handleSearchPermissionGroupsError(data.error));

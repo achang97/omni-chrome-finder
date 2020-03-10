@@ -1,7 +1,7 @@
 import React, { Component, PropTypes } from 'react';
 import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
-import { MdSearch } from "react-icons/md";
+import { MdSearch } from 'react-icons/md';
 
 import * as navigateActions from '../../actions/navigate';
 import { openCard } from '../../actions/cards';
@@ -21,10 +21,10 @@ import Button from '../../components/common/Button';
 import Triangle from '../../components/common/Triangle';
 import _ from 'lodash';
 
-import { getArrayIds } from '../../utils/array'
+import { getArrayIds } from '../../utils/array';
 import { CARD_STATUS, SEARCH_INFINITE_SCROLL_OFFSET, NAVIGATE_TAB_OPTION, NAVIGATE_TAB_OPTIONS, SEARCH_TYPE, DEBOUNCE_60_HZ } from '../../utils/constants';
 
-import style from "./navigate.css";
+import style from './navigate.css';
 import { getStyleApplicationFn } from '../../utils/style';
 const s = getStyleApplicationFn(style);
 
@@ -62,7 +62,7 @@ export default class Navigate extends Component {
 
   requestSearchCards = (clearCards) => {
     const { requestSearchCards, searchText, filterTags, activeTab, user } = this.props;
-    let queryParams = { q: searchText };
+    const queryParams = { q: searchText };
     switch (activeTab) {
       case NAVIGATE_TAB_OPTION.ALL: {
         queryParams.tags = getArrayIds(filterTags);
@@ -124,11 +124,11 @@ export default class Navigate extends Component {
 
     const overflowTop = overflow.top || 0;
     const scrollTop = scroll.top || 0;
-    
+
     const triangleMarginTop = Math.max(0, scrollTop - overflowTop);
 
     return (
-      <div className={s("flex")}>
+      <div className={s('flex')}>
         <SuggestionPreview
           _id={_id}
           question={question}
@@ -157,62 +157,60 @@ export default class Navigate extends Component {
     } = this.props;
 
     return (
-      <div className={s("flex flex-col flex-grow min-h-0")}>
-        <div className={s("horizontal-separator m-0")} />
-        <div className={s("bg-purple-xlight p-lg flex flex-col")}>
-        	<div className={s("flex")}>
-	        	<input
-            	placeholder="Search all knowledge"
-            	className={s("navigate-search-input flex-grow rounded-r-none border-r-none")}
+      <div className={s('flex flex-col flex-grow min-h-0')}>
+        <div className={s('horizontal-separator m-0')} />
+        <div className={s('bg-purple-xlight p-lg flex flex-col')}>
+          <div className={s('flex')}>
+            <input
+              placeholder="Search all knowledge"
+              className={s('navigate-search-input flex-grow rounded-r-none border-r-none')}
               value={searchText}
               autoFocus
               onChange={this.updateSearchText}
-          	/>
-          	<div className={s("navigate-search-input-icon-container bg-white flex flex-col items-center justify-center text-purple-reg rounded-r-lg pr-reg")}> <MdSearch /> </div>
-        	</div>
+            />
+            <div className={s('navigate-search-input-icon-container bg-white flex flex-col items-center justify-center text-purple-reg rounded-r-lg pr-reg')}> <MdSearch /> </div>
+          </div>
           <AnimateHeight height={activeTab === NAVIGATE_TAB_OPTION.ALL ? 'auto' : 0}>
-          	<div className={s("my-reg text-xs")}> Filter cards by tags </div>
+            <div className={s('my-reg text-xs')}> Filter cards by tags </div>
             <CardTags
-              isEditable={true}
+              isEditable
               tags={filterTags}
               onChange={updateFilterTags}
               onRemoveClick={removeFilterTag}
-              showPlaceholder={true}
-              hideSelectOnBlur={true}
+              showPlaceholder
+              hideSelectOnBlur
             />
           </AnimateHeight>
         </div>
         <div>
           <Tabs
             activeValue={activeTab}
-            className={s("flex-1 flex")}
-            tabClassName={s("bg-purple-xlight flex flex-col text-xs font-medium flex items-center justify-between opacity-100")}
-            activeTabClassName={s("bg-purple-xlight")}
+            className={s('flex-1 flex')}
+            tabClassName={s('bg-purple-xlight flex flex-col text-xs font-medium flex items-center justify-between opacity-100')}
+            activeTabClassName={s('bg-purple-xlight')}
             onTabClick={updateNavigateTab}
             showRipple={false}
             color={colors.purple.reg}
           >
             {
-              NAVIGATE_TAB_OPTIONS.map((navigateTab) => {
-                return (
-                  <Tab tabContainerClassName={s("flex-1")} value={navigateTab} key={navigateTab}>
-                    <div>{navigateTab}</div>
-                  </Tab>
-                )
-              })
+              NAVIGATE_TAB_OPTIONS.map(navigateTab => (
+                <Tab tabContainerClassName={s('flex-1')} value={navigateTab} key={navigateTab}>
+                  <div>{navigateTab}</div>
+                </Tab>
+                ))
             }
           </Tabs>
         </div>
         <ScrollContainer
-          className={s("min-h-0 flex-1")}
-          scrollContainerClassName={s(`flex flex-col h-full`)}
-          verticalMarginAdjust={true}
+          className={s('min-h-0 flex-1')}
+          scrollContainerClassName={s('flex flex-col h-full')}
+          verticalMarginAdjust
           list={cards}
           placeholder={
-            <div className={s("py-lg")}>
+            <div className={s('py-lg')}>
               { isSearchingCards ?
                 <Loader size="md" /> :
-                <div className={s("text-gray-light text-sm text-center")}> No results </div>
+                <div className={s('text-gray-light text-sm text-center')}> No results </div>
               }
             </div>
           }
@@ -221,7 +219,7 @@ export default class Navigate extends Component {
           position="left"
           onBottom={this.handleOnBottom}
           bottomOffset={SEARCH_INFINITE_SCROLL_OFFSET}
-          footer={isSearchingCards && cards.length !== 0 ? <Loader size="sm" className={s("my-sm")} /> : null}
+          footer={isSearchingCards && cards.length !== 0 ? <Loader size="sm" className={s('my-sm')} /> : null}
         />
       </div>
     );

@@ -1,6 +1,4 @@
 import * as types from '../actions/actionTypes';
-import _ from 'lodash';
-import { EditorState } from 'draft-js';
 
 const initialState = {
   token: null,
@@ -10,7 +8,7 @@ const initialState = {
   loginPassword: '',
 };
 
-export default function auth(state = initialState, action) {
+export default function authReducer(state = initialState, action) {
   const { type, payload = {} } = action;
 
   switch (type) {
@@ -23,21 +21,21 @@ export default function auth(state = initialState, action) {
       return { ...state, loginPassword: password };
     }
 
-  	case types.LOGIN_REQUEST: {
-  		return { ...state, isLoggingIn: true, loginError: null };
-  	}
-  	case types.LOGIN_SUCCESS: {
-  		const { user, token, refreshToken } = payload;
-  		return { ...state, isLoggingIn: false, token, refreshToken };
-  	}
+    case types.LOGIN_REQUEST: {
+      return { ...state, isLoggingIn: true, loginError: null };
+    }
+    case types.LOGIN_SUCCESS: {
+      const { token, refreshToken } = payload;
+      return { ...state, isLoggingIn: false, token, refreshToken };
+    }
     case types.SYNC_AUTH_INFO: {
       const { token, refreshToken } = payload;
       return { ...state, isLoggingIn: false, loginError: null, token, refreshToken };
     }
-  	case types.LOGIN_ERROR: {
-  		const { error } = payload;
-  		return { ...state, isLoggingIn: false, loginError: error };
-  	}
+    case types.LOGIN_ERROR: {
+      const { error } = payload;
+      return { ...state, isLoggingIn: false, loginError: error };
+    }
 
     default:
       return state;

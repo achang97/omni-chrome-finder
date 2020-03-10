@@ -66,7 +66,7 @@ class App extends Component {
       }
       this.props.openCard({ _id: sxsrf, isEditing: edit === 'true' });
 
-      // Strip off everything after .com. NOTE: For now, assume we will be on .com website 
+      // Strip off everything after .com. NOTE: For now, assume we will be on .com website
       // (likely will be addomni.com)
       window.history.replaceState({}, window.location.title, url.substring(0, url.indexOf('.com') + 4));
     } else if (slackRes) {
@@ -109,9 +109,9 @@ class App extends Component {
               { isLoggedIn && <Route path="/tasks" component={Tasks} /> }
               { isLoggedIn && <Route path="/profile" component={Profile} /> }
               { !isLoggedIn && <Route path="/login" component={Login} /> }
-              
+
               {/* A catch-all route: put all other routes ABOVE here */}
-              <Redirect to={isLoggedIn ? '/ask' : '/login' } />
+              <Redirect to={isLoggedIn ? '/ask' : '/login'} />
             </Switch>
           </div>
         </Dock>

@@ -1,15 +1,15 @@
 .placeholder-img {
-	@apply flex justify-center items-center text-gray-600 w-full h-full;
+  @apply flex justify-center items-center text-gray-600 w-full h-full;
 }
 
 .placeholder-img-0 {
-	background: rgb(255, 240, 215);
+  background: rgb(255, 240, 215);
 }
 
 .placeholder-img-1 {
-	background: rgb(255, 225, 225);
+  background: rgb(255, 225, 225);
 }
 
 .placeholder-img-2 {
-	background-color: rgb(221, 249, 249);
+  background-color: rgb(221, 249, 249);
 }

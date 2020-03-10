@@ -41,20 +41,20 @@ class Login extends Component {
     const { requestLogin, updateLoginEmail, loginError, updateLoginPassword, loginEmail, loginPassword, isLoggingIn } = this.props;
 
     return (
-      <div className={s("flex-1 flex flex-col pt-3xl")}>
-        <div className={s("px-2xl")}>
-          <div className={s("text-xl")}>Welcome!</div>
-          <div className={s("text-sm text-gray-dark mt-reg mb-2xl")}>Sign in to continue</div>
-          { isLoggingIn ? 
-            <Loader className={s("mb-reg")}/> :
-            <div className={s("flex flex-col")}>
+      <div className={s('flex-1 flex flex-col pt-3xl')}>
+        <div className={s('px-2xl')}>
+          <div className={s('text-xl')}>Welcome!</div>
+          <div className={s('text-sm text-gray-dark mt-reg mb-2xl')}>Sign in to continue</div>
+          { isLoggingIn ?
+            <Loader className={s('mb-reg')} /> :
+            <div className={s('flex flex-col')}>
               <div>
                 <input
                   type="text"
                   value={loginEmail}
                   placeholder="Enter login email"
-                  className={s("w-full mb-reg text-xs")}
-                  onChange={(e) => updateLoginEmail(e.target.value)}
+                  className={s('w-full mb-reg text-xs')}
+                  onChange={e => updateLoginEmail(e.target.value)}
                 />
               </div>
               <div>
@@ -62,29 +62,29 @@ class Login extends Component {
                   type="password"
                   value={loginPassword}
                   placeholder="Enter password"
-                  className={s("w-full text-xs")}
-                  onChange={(e) => updateLoginPassword(e.target.value)}
+                  className={s('w-full text-xs')}
+                  onChange={e => updateLoginPassword(e.target.value)}
                 />
               </div>
-              <div className={s("text-xs text-gray-dark mt-reg mb-reg self-end")}>Forgot password?</div>
+              <div className={s('text-xs text-gray-dark mt-reg mb-reg self-end')}>Forgot password?</div>
             </div>
           }
           { loginError &&
-            <div className={s("error-text my-reg")}> {loginError} </div>
+            <div className={s('error-text my-reg')}> {loginError} </div>
           }
         </div>
-        <div className={s("bg-purple-light p-2xl rounded-lg")}>
+        <div className={s('bg-purple-light p-2xl rounded-lg')}>
           <Button
             color="primary"
             text="Login"
-            className={s("")}
+            className={s('')}
             onClick={requestLogin}
             disabled={loginEmail === '' || loginPassword === ''}
           />
         </div>
       </div>
-    );    
+    );
   }
-};
+}
 
 export default Login;

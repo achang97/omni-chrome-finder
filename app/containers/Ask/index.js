@@ -18,11 +18,11 @@ import _ from 'lodash';
 import Tabs from '../../components/common/Tabs/Tabs';
 import Tab from '../../components/common/Tabs/Tab';
 import Select from '../../components/common/Select';
-import SuggestionPanel from "../../components/suggestions/SuggestionPanel";
+import SuggestionPanel from '../../components/suggestions/SuggestionPanel';
 import Dropzone from '../../components/common/Dropzone';
 import Dropdown from '../../components/common/Dropdown';
-import RecipientDropdownBody from "../../components/ask/RecipientDropdownBody";
-import CardAttachment from "../../components/cards/CardAttachment";
+import RecipientDropdownBody from '../../components/ask/RecipientDropdownBody';
+import CardAttachment from '../../components/cards/CardAttachment';
 
 import { colors } from '../../styles/colors';
 import { expandDock } from '../../actions/display';
@@ -34,8 +34,8 @@ import { ASK_INTEGRATIONS, INTEGRATIONS, DEBOUNCE_60_HZ, SEARCH_TYPE, SLACK_RECI
 
 import { getArrayWithout } from '../../utils/array';
 
-import style from "./ask.css";
-import { getStyleApplicationFn, isOverflowing } from '../../utils/style';
+import style from './ask.css';
+import { getStyleApplicationFn } from '../../utils/style';
 import { createSelectOptions } from '../../utils/select';
 const s = getStyleApplicationFn(style);
 
@@ -56,7 +56,7 @@ class Ask extends Component {
   constructor(props) {
     super(props);
   }
-  
+
   componentDidMount() {
     const { user } = this.props;
 
@@ -91,7 +91,7 @@ class Ask extends Component {
           onTabClick={changeAskIntegration}
           showRipple={false}
         >
-          {ASK_INTEGRATIONS.map((integration) => (
+          {ASK_INTEGRATIONS.map(integration => (
             <Tab key={integration} value={integration}>
               <div className={s(integration !== activeIntegration ? 'underline-border border-purple-gray-20' : 'primary-underline')}>
                 {_.upperFirst(integration)}
@@ -102,10 +102,10 @@ class Ask extends Component {
         <CircleButton
           content={<IoMdAdd color={colors.purple.reg} />}
           size="md"
-          buttonClassName={s("bg-purple-light")}
+          buttonClassName={s('bg-purple-light')}
         />
-      </div>   
-    ); 
+      </div>
+    );
   }
 
   startScreenRecording = () => {
@@ -139,7 +139,7 @@ class Ask extends Component {
 
         startAskScreenRecording(stream, mediaRecorder);
       })
-      .catch(error => {
+      .catch((error) => {
         handleAskScreenRecordingError(error);
       });
   };
@@ -160,9 +160,9 @@ class Ask extends Component {
 
   addAskAttachments = (files) => {
     const { requestAddAskAttachment } = this.props;
-    files.forEach(file => {
+    files.forEach((file) => {
       requestAddAskAttachment(generateFileKey(), file);
-    })
+    });
   }
 
   renderAskInputs = () => {
@@ -175,60 +175,60 @@ class Ask extends Component {
 
     return (
       <div >
-        <div className={s("flex-col relative")}>
+        <div className={s('flex-col relative')}>
           <input
             placeholder="Question"
             onChange={e => updateAskQuestionTitle(e.target.value)}
             value={questionTitle}
             autoFocus
-            className={s("w-full mb-reg")}
+            className={s('w-full mb-reg')}
           />
-          <TextEditor 
-            onEditorStateChange={updateAskQuestionDescription} 
-            editorState={questionDescription} 
+          <TextEditor
+            onEditorStateChange={updateAskQuestionDescription}
+            editorState={questionDescription}
             editorType="EXTENSION"
           />
         </div>
         <div className={s('flex px-xs pt-reg')}>
           <Button
             onClick={!desktopSharing ? this.startScreenRecording : this.endScreenRecording}
-            className={s("ask-attachment-button ask-screen-record-shadow mr-xs bg-red-100 text-red-500")}
+            className={s('ask-attachment-button ask-screen-record-shadow mr-xs bg-red-100 text-red-500')}
             text={!desktopSharing ? 'Screen Record' : 'End Recording'}
             underline
             underlineColor="red-200"
-            icon={<FaRegDotCircle className={s("ml-sm text-red-500")} />}
+            icon={<FaRegDotCircle className={s('ml-sm text-red-500')} />}
             iconLeft={false}
             disabled={!navigator.mediaDevices}
           />
           <Dropzone
-            className={s("mx-xs flex-1 border border-dashed")}
+            className={s('mx-xs flex-1 border border-dashed')}
             style={{ borderColor: colors.gray.light }}
             onDrop={acceptedFiles => this.addAskAttachments(acceptedFiles)}
           >
             <Button
-              className={s("ask-attachment-button bg-white text-purple-reg shadow-none")}
+              className={s('ask-attachment-button bg-white text-purple-reg shadow-none')}
               text="Drag & Drop"
-              icon={<MdCloudUpload color={colors.purple.reg} className={s("ml-sm")} />}
+              icon={<MdCloudUpload color={colors.purple.reg} className={s('ml-sm')} />}
               iconLeft={false}
             />
           </Dropzone>
           <Dropdown
-            className={s("ml-xs")}
+            className={s('ml-xs')}
             toggler={
-              <div className={s("relative")}>
+              <div className={s('relative')}>
                 <Button
-                  className={s("bg-white py-reg")}
-                  icon={<MdAttachment color={colors.purple.reg} className={s("ask-attachment-icon")} />}
+                  className={s('bg-white py-reg')}
+                  icon={<MdAttachment color={colors.purple.reg} className={s('ask-attachment-icon')} />}
                 />
-                <div className={s("ask-attachment-count")}>
+                <div className={s('ask-attachment-count')}>
                   {attachments.length}
                 </div>
               </div>
             }
             body={
-              <div className={s("ask-attachment-dropdown")}>
+              <div className={s('ask-attachment-dropdown')}>
                 { attachments.length === 0 &&
-                  <div className={s("text-center")}>
+                  <div className={s('text-center')}>
                     No current attachments
                   </div>
                 }
@@ -240,10 +240,10 @@ class Ask extends Component {
                     url={location}
                     isLoading={isLoading}
                     error={error}
-                    textClassName={s("truncate")}
-                    removeIconClassName={s("ml-auto")}
-                    isEditable={true}
-                    onFileNameChange={(fileName) => updateAskAttachmentName(key, fileName)}
+                    textClassName={s('truncate')}
+                    removeIconClassName={s('ml-auto')}
+                    isEditable
+                    onFileNameChange={fileName => updateAskAttachmentName(key, fileName)}
                     onRemoveClick={() => requestRemoveAskAttachment(key)}
                   />
                 ))}
@@ -259,11 +259,11 @@ class Ask extends Component {
     const { removeAskRecipient } = this.props;
 
     return (
-      <div key={id} className={s("bg-white ask-recipient")}>
-        <span className={s("truncate")}> @ {name} </span>
+      <div key={id} className={s('bg-white ask-recipient')}>
+        <span className={s('truncate')}> @ {name} </span>
         <div>
           <button onClick={() => removeAskRecipient(index)}>
-            <MdClose className={s("text-purple-gray-50 ml-xs")} />
+            <MdClose className={s('text-purple-gray-50 ml-xs')} />
           </button>
         </div>
       </div>
@@ -275,27 +275,27 @@ class Ask extends Component {
 
     return (
       <div key={id} className={s(`bg-purple-gray-10 ask-recipient ${isDropdownOpen || isDropdownSelectOpen ? 'rounded-t-none' : ''}`)}>
-        <span className={s("truncate")}> # {name} </span>
+        <span className={s('truncate')}> # {name} </span>
         <Dropdown
           isOpen={isDropdownOpen}
           onToggle={isDropdownOpen => updateAskRecipient(index, { isDropdownOpen })}
           isDown={false}
           isTogglerRelative={false}
           toggler={
-            <div className={s("ask-recipient-mentions-count button-hover")}>
+            <div className={s('ask-recipient-mentions-count button-hover')}>
               {mentions.length}
             </div>
           }
-          body={ 
-            <div className={s("ask-recipient-dropdown")}>
+          body={
+            <div className={s('ask-recipient-dropdown')}>
               { mentions.length === 0 ?
-                <div className={s("text-center text-purple-reg font-normal")}> No current mentions </div> :
-                <div className={s("overflow-auto px-reg text-purple-reg")}>
-                  { mentions.map((mention) => (
-                    <div key={mention.id} className={s("flex justify-between items-center py-xs")}>
-                      <div className={s("min-w-0 truncate font-semibold")}> @{mention.name} </div>
-                      <button onClick={() => updateAskRecipient(index, { mentions: _.without(mentions, mention)})}>
-                        <MdClose className={s("text-purple-reg")} />
+                <div className={s('text-center text-purple-reg font-normal')}> No current mentions </div> :
+                <div className={s('overflow-auto px-reg text-purple-reg')}>
+                  { mentions.map(mention => (
+                    <div key={mention.id} className={s('flex justify-between items-center py-xs')}>
+                      <div className={s('min-w-0 truncate font-semibold')}> @{mention.name} </div>
+                      <button onClick={() => updateAskRecipient(index, { mentions: _.without(mentions, mention) })}>
+                        <MdClose className={s('text-purple-reg')} />
                       </button>
                     </div>
                   ))}
@@ -304,7 +304,7 @@ class Ask extends Component {
             </div>
           }
         />
-        <div className={s("vertical-separator bg-purple-gray-50")} />
+        <div className={s('vertical-separator bg-purple-gray-50')} />
         <Dropdown
           isOpen={isDropdownSelectOpen}
           onToggle={isDropdownSelectOpen => updateAskRecipient(index, { isDropdownSelectOpen })}
@@ -312,21 +312,21 @@ class Ask extends Component {
           isTogglerRelative={false}
           toggler={
             <button>
-              <IoMdAdd className={s("text-purple-reg mr-xs")} />
+              <IoMdAdd className={s('text-purple-reg mr-xs')} />
             </button>
           }
-          body={ 
-            <div className={s("ask-recipient-dropdown")}>
+          body={
+            <div className={s('ask-recipient-dropdown')}>
               <RecipientDropdownBody
                 mentions={mentions}
                 mentionOptions={members}
-                onAddMention={(newMention) => updateAskRecipient(index, { mentions: _.union(mentions, [newMention]) })}
+                onAddMention={newMention => updateAskRecipient(index, { mentions: _.union(mentions, [newMention]) })}
               />
             </div>
           }
         />
         <button onClick={() => removeAskRecipient(index)}>
-          <MdClose className={s("text-purple-reg")} />
+          <MdClose className={s('text-purple-reg')} />
         </button>
       </div>
     );
@@ -339,8 +339,8 @@ class Ask extends Component {
     } = this.props;
 
     return (
-      <div className={s("bg-purple-light flex-1 flex flex-col p-lg")}>
-        <div className={s("text-purple-reg text-xs mb-reg")}>Send to channel/person</div>
+      <div className={s('bg-purple-light flex-1 flex flex-col p-lg')}>
+        <div className={s('text-purple-reg text-xs mb-reg')}>Send to channel/person</div>
         <Select
           value={null}
           onChange={addAskRecipient}
@@ -352,18 +352,18 @@ class Ask extends Component {
           menuShouldScrollIntoView
         />
         { recipients.length === 0 &&
-          <div className={s("text-gray-light text-sm my-reg text-center")}>
+          <div className={s('text-gray-light text-sm my-reg text-center')}>
             No current recipients
           </div>
         }
-        <div className={s("my-xs flex flex-wrap content-start")}>
+        <div className={s('my-xs flex flex-wrap content-start')}>
           { recipients.map(({ type, ...rest }, i) => (type === SLACK_RECIPIENT_TYPE.CHANNEL ?
             this.renderChannelRecipient(rest, i) :
             this.renderIndividualRecipient(rest, i)
           ))}
         </div>
       </div>
-    );    
+    );
   }
 
   renderFooterButton = () => {
@@ -375,53 +375,53 @@ class Ask extends Component {
         text="Ask Question"
         disabled={questionTitle === '' || !questionDescription.getCurrentContent().hasText() || recipients.length === 0 || isAskingQuestion}
         iconLeft={false}
-        icon={ isAskingQuestion ?
-          <Loader className={s("h-3xl w-3xl")} color="white" /> :
-          <span className={s("rounded-full h-3xl w-3xl flex justify-center items-center bg-white text-purple-reg")}>
+        icon={isAskingQuestion ?
+          <Loader className={s('h-3xl w-3xl')} color="white" /> :
+          <span className={s('rounded-full h-3xl w-3xl flex justify-center items-center bg-white text-purple-reg')}>
             <FaPaperPlane />
           </span>
         }
         onClick={requestAskQuestion}
       />
-    )
+    );
   }
 
   renderResultModal = (isOpen, title, content) => {
     const { clearAskQuestionInfo } = this.props;
     return (
-      <Modal 
-        isOpen={isOpen} 
+      <Modal
+        isOpen={isOpen}
         onRequestClose={clearAskQuestionInfo}
-        bodyClassName={s("overflow-none flex flex-col rounded-b-lg p-reg")}
-        className={s("bg-purple-light")}
-        overlayClassName={s("rounded-b-lg")}
+        bodyClassName={s('overflow-none flex flex-col rounded-b-lg p-reg')}
+        className={s('bg-purple-light')}
+        overlayClassName={s('rounded-b-lg')}
         title={title}
       >
-        <div className={s("mb-sm")}> { content } </div>
+        <div className={s('mb-sm')}> { content } </div>
         <Button
           text="Ok"
           color="primary"
-          className={s("p-sm")}
+          className={s('p-sm')}
           onClick={clearAskQuestionInfo}
-        /> 
+        />
       </Modal>
     );
   }
 
   renderExpandedAskPage = () => {
     const { askError, askSuccess, user } = this.props;
-    const url = "https://slack.com/oauth/v2/authorize?client_id=902571434263.910615559953&scope=app_mentions:read,channels:history,channels:join,channels:read,chat:write,commands,files:read,groups:history,groups:read,im:history,im:read,im:write,links:read,mpim:history,mpim:read,mpim:write,reminders:read,reminders:write,remote_files:read,remote_files:share,remote_files:write,team:read,usergroups:read,usergroups:write,users.profile:read,users:read,users:read.email,users:write&user_scope=channels:history,channels:read,channels:write,chat:write,emoji:read,files:read,groups:history,groups:read,groups:write,im:history,im:read,im:write,links:read,links:write,mpim:history,mpim:read,mpim:write,reactions:read,reminders:read,reminders:write,remote_files:read,remote_files:share,search:read,team:read,usergroups:read,usergroups:write,users.profile:read,users:read,users:read.email,users:write&state=" + user._id;
+    const url = `https://slack.com/oauth/v2/authorize?client_id=902571434263.910615559953&scope=app_mentions:read,channels:history,channels:join,channels:read,chat:write,commands,files:read,groups:history,groups:read,im:history,im:read,im:write,links:read,mpim:history,mpim:read,mpim:write,reminders:read,reminders:write,remote_files:read,remote_files:share,remote_files:write,team:read,usergroups:read,usergroups:write,users.profile:read,users:read,users:read.email,users:write&user_scope=channels:history,channels:read,channels:write,chat:write,emoji:read,files:read,groups:history,groups:read,groups:write,im:history,im:read,im:write,links:read,links:write,mpim:history,mpim:read,mpim:write,reactions:read,reminders:read,reminders:write,remote_files:read,remote_files:share,search:read,team:read,usergroups:read,usergroups:write,users.profile:read,users:read,users:read.email,users:write&state=${user._id}`;
 
     const isLoggedInSlack = isLoggedIn(user, INTEGRATIONS.SLACK);
 
     return (
       <div className={s('flex flex-col flex-1 min-h-0 relative')}>
         <div className={s('flex flex-col flex-1 overflow-y-auto bg-purple-light')}>
-          <div className={s("p-lg bg-white")}>
+          <div className={s('p-lg bg-white')}>
             { this.renderTabHeader() }
             { !isLoggedInSlack ?
               <div>
-                <a target="_blank" href={url}><img alt="Add to Slack" height="40" width="139" src="https://platform.slack-edge.com/img/add_to_slack.png" srcset="https://platform.slack-edge.com/img/add_to_slack.png 1x, https://platform.slack-edge.com/img/add_to_slack@2x.png 2x" /></a>
+                <a target="_blank" href={url}><img alt="Add to Slack" height="40" width="139" src="https://platform.slack-edge.com/img/add_to_slack.png" srcSet="https://platform.slack-edge.com/img/add_to_slack.png 1x, https://platform.slack-edge.com/img/add_to_slack@2x.png 2x" /></a>
               </div> :
               this.renderAskInputs()
             }
@@ -438,7 +438,7 @@ class Ask extends Component {
 
   expandDock = () => {
     const { expandDock, updateAskSearchText } = this.props;
-    updateAskSearchText("");
+    updateAskSearchText('');
     expandDock();
   }
 
@@ -447,12 +447,12 @@ class Ask extends Component {
     const showRelatedQuestions = searchText.length > 0;
 
     return (
-      <div className={s("p-lg overflow-y-auto")}>
+      <div className={s('p-lg overflow-y-auto')}>
         <input
           onChange={e => updateAskSearchText(e.target.value)}
           value={searchText}
           placeholder="Let's find what you're looking for"
-          className={s("w-full")}
+          className={s('w-full')}
           autoFocus
         />
         <div className={s('mt-lg flex flex-row justify-center items-center')}>
@@ -462,9 +462,9 @@ class Ask extends Component {
           <Button
             text="Ask Question"
             color="primary"
-            className={s("justify-between")}
+            className={s('justify-between')}
             iconLeft={false}
-            icon={<MdChevronRight color="white" className={s("ml-sm")} />}
+            icon={<MdChevronRight color="white" className={s('ml-sm')} />}
             onClick={() => this.expandDock()}
           />
         </div>

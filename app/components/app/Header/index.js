@@ -13,6 +13,7 @@ import PlaceholderImg from '../../common/PlaceholderImg';
 import { colors } from '../../../styles/colors';
 import style from './header.css';
 import { getStyleApplicationFn } from '../../../utils/style';
+
 const s = getStyleApplicationFn(style);
 
 @connect(
@@ -50,7 +51,7 @@ class Header extends Component {
           <Tab label="Cards" key="cards" value="/navigate" />
           <Tab label={<MdNotificationsActive />} key="tasks" value="/tasks" tabContainerClassName={s('ml-auto')} />
           <Tab key="profile" value="/profile" >
-            <PlaceholderImg name={user.firstname + ' ' + user.lastname} src={user.img} className={s('header-profile-picture')} />
+            <PlaceholderImg name={`${user.firstname} ${user.lastname}`} src={user.img} className={s('header-profile-picture')} />
           </Tab>
         </Tabs>
       </div>

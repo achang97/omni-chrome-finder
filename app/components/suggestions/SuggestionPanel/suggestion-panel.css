@@ -15,12 +15,12 @@
 }
 
 .suggestion-panel-footer {
-	height: 50px;
+  height: 50px;
 }
 
 .suggestion-panel-external-result {
-	background-image: linear-gradient(145deg, #2196F31A 0%, #8284D81A 100%);
-	border: 1px solid rgba(0,2,95,0.10);
+  background-image: linear-gradient(145deg, #2196F31A 0%, #8284D81A 100%);
+  border: 1px solid rgba(0,2,95,0.10);
   @apply flex justify-between rounded-lg p-lg mb-sm shadow;
 }
 
@@ -35,7 +35,7 @@
 
 .suggestion-panel-link-text {
   @apply text-blue-600;
-	border-bottom: 2px solid #25456333 !important;
+  border-bottom: 2px solid #25456333 !important;
 }
 
 .suggestion-panel-external-result-icon {

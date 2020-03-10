@@ -1,27 +1,27 @@
 .tasks-verification-gradient {
-	background: rgba(211, 198, 95, 0.1);
-	/*
-	background: linear-gradient(45deg, #fff3b4, #fff6c2);*/
+  background: rgba(211, 198, 95, 0.1);
+  /*
+  background: linear-gradient(45deg, #fff3b4, #fff6c2);*/
 }
 
 .tasks-out-of-date-gradient {
-	background-color: #fff5f5 !important;
-	/*background: rgba(255,0,13,0.02);*/
-	/*background: linear-gradient(45deg, #ffa8a9, #ffc8c8);*/
-	/*background: linear-gradient(45deg, #ffbebf, #ffdada);*/
+  background-color: #fff5f5 !important;
+  /*background: rgba(255,0,13,0.02);*/
+  /*background: linear-gradient(45deg, #ffa8a9, #ffc8c8);*/
+  /*background: linear-gradient(45deg, #ffbebf, #ffdada);*/
 }
 
 .tasks-undocumented-gradient {
-	background: rgba(96,126,255,0.07);
-	/*background-color: #fff5f5 !important;*/
+  background: rgba(96,126,255,0.07);
+  /*background-color: #fff5f5 !important;*/
 }
 
 .task-item-profile-picture {
-	height: 27px;
-	width: 27px;
+  height: 27px;
+  width: 27px;
 }
 
 .task-item-slack-icon {
-	height: 16px;
-	width: 16px;
+  height: 16px;
+  width: 16px;
 }

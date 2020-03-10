@@ -1,7 +1,7 @@
 import * as types from './actionTypes';
 
 /* Card behavior */
-export function openCard(card, createModalOpen=false, isNewCard=false) {
+export function openCard(card, createModalOpen = false, isNewCard = false) {
   return { type: types.OPEN_CARD, payload: { card, isNewCard, createModalOpen } };
 }
 
@@ -26,7 +26,7 @@ export function closeModal() {
 }
 
 export function adjustCardsDimensions(newWidth, newHeight) {
-  return { type: types.ADJUST_CARDS_DIMENSIONS, payload: { newWidth, newHeight } }
+  return { type: types.ADJUST_CARDS_DIMENSIONS, payload: { newWidth, newHeight } };
 }
 
 export function updateCardQuestion(question) {
@@ -42,15 +42,15 @@ export function updateCardDescriptionEditor(editorState) {
 }
 
 export function enableCardEditor(editorType) {
-  return { type: types.ENABLE_CARD_EDITOR, payload: { editorType} };
+  return { type: types.ENABLE_CARD_EDITOR, payload: { editorType } };
 }
 
 export function disableCardEditor(editorType) {
-  return { type: types.DISABLE_CARD_EDITOR, payload: { editorType} };
+  return { type: types.DISABLE_CARD_EDITOR, payload: { editorType } };
 }
 
 export function adjustCardDescriptionSectionHeight(newHeight) {
-  return { type: types.ADJUST_CARD_DESCRIPTION_SECTION_HEIGHT, payload: { newHeight} };
+  return { type: types.ADJUST_CARD_DESCRIPTION_SECTION_HEIGHT, payload: { newHeight } };
 }
 
 export function toggleCardSelectedMessage(messageIndex) {
@@ -106,7 +106,7 @@ export function editCard() {
 }
 
 export function cancelEditCard() {
-  return { type: types.CANCEL_EDIT_CARD, payload: {} }
+  return { type: types.CANCEL_EDIT_CARD, payload: {} };
 }
 
 export function openCardSideDock() {
@@ -118,7 +118,7 @@ export function closeCardSideDock() {
 }
 
 export function updateOutOfDateReason(reason) {
-  return { type: types.UPDATE_OUT_OF_DATE_REASON, payload: { reason } }
+  return { type: types.UPDATE_OUT_OF_DATE_REASON, payload: { reason } };
 }
 
 /* API REQUESTS */
@@ -142,7 +142,6 @@ export function removeCardAttachment(index) {
 export function updateCardAttachmentName(index, name) {
   return { type: types.UPDATE_CARD_ATTACHMENT_NAME, payload: { index, name } };
 }
-
 
 
 export function requestGetCard() {
@@ -235,7 +234,6 @@ export function handleMarkOutOfDateSuccess(card) {
 export function handleMarkOutOfDateError(cardId, error) {
   return { type: types.MARK_OUT_OF_DATE_ERROR, payload: { cardId, error } };
 }
-
 
 
 export function requestAddBookmark(cardId) {

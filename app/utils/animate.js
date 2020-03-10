@@ -16,7 +16,7 @@ export function animate(property, element, to, options = {}, cb = () => {}) {
     cancelled = true;
   };
 
-  const step = timestamp => {
+  const step = (timestamp) => {
     if (cancelled) {
       cb(new Error('Animation cancelled'));
       return;
@@ -48,6 +48,6 @@ export function animate(property, element, to, options = {}, cb = () => {}) {
   return cancel;
 }
 
-export const getBaseAnimationStyle = (transitionMs) => ({
+export const getBaseAnimationStyle = transitionMs => ({
   transition: `opacity ${transitionMs}ms ease-in-out, transform ${transitionMs}ms`
 });

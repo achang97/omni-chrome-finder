@@ -1,18 +1,18 @@
 .tabs-all-container {
-	@apply flex overflow-hidden items-center;
+  @apply flex overflow-hidden items-center;
 }
 
 .tabs-tab-container {
-	@apply flex-1 overflow-auto flex max-w-full;
+  @apply flex-1 overflow-auto flex max-w-full;
 }
 
 .tab {
-    border: none;
-    background: transparent;
-    @apply p-reg;
+  border: none;
+  background: transparent;
+  @apply p-reg;
 }
 
 .tab-inactive {
-	@apply opacity-50;
+  @apply opacity-50;
 }
 

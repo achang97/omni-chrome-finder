@@ -1,7 +1,6 @@
 import * as types from '../actions/actionTypes';
 import { removeIndex } from '../utils/array';
 import { NAVIGATE_TAB_OPTION } from '../utils/constants';
-import _ from 'lodash';
 
 const initialState = {
   activeTab: NAVIGATE_TAB_OPTION.ALL,
@@ -9,7 +8,7 @@ const initialState = {
   filterTags: [],
 };
 
-export default function navigate(state = initialState, action) {
+export default function navigateReducer(state = initialState, action) {
   const { type, payload = {} } = action;
 
   switch (type) {
@@ -31,7 +30,7 @@ export default function navigate(state = initialState, action) {
 
     case types.UPDATE_FILTER_TAGS: {
       const { newTags } = payload;
-      return { ...state, filterTags: newTags || []};
+      return { ...state, filterTags: newTags || [] };
     }
     case types.REMOVE_FILTER_TAG: {
       const { index } = payload;
@@ -40,14 +39,14 @@ export default function navigate(state = initialState, action) {
     }
 
     case types.DELETE_NAVIGATE_CARD_REQUEST: {
-      return { ...state, isDeletingCard: true, deleteError: null }
+      return { ...state, isDeletingCard: true, deleteError: null };
     }
     case types.DELETE_NAVIGATE_CARD_SUCCESS: {
-      return { ...state, isDeletingCard: false }
+      return { ...state, isDeletingCard: false };
     }
     case types.DELETE_NAVIGATE_CARD_ERROR: {
       const { error } = payload;
-      return { ...state, isDeletingCard: false, deleteError: error }
+      return { ...state, isDeletingCard: false, deleteError: error };
     }
 
     default:

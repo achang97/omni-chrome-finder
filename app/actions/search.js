@@ -1,11 +1,14 @@
 import * as types from './actionTypes';
 
-export function requestSearchCards(type, query, clearCards=false) {
+export function requestSearchCards(type, query, clearCards = false) {
   return { type: types.SEARCH_CARDS_REQUEST, payload: { type, query, clearCards } };
 }
 
 export function handleSearchCardsSuccess(type, cards, externalResults, clearCards) {
-  return { type: types.SEARCH_CARDS_SUCCESS, payload: { type, cards, externalResults, clearCards } };
+  return {
+    type: types.SEARCH_CARDS_SUCCESS,
+    payload: { type, cards, externalResults, clearCards }
+  };
 }
 
 export function handleSearchCardsError(type, error) {

@@ -1,12 +1,12 @@
 .card-users-container {
-	@apply text-gray-dark flex w-full flex-wrap;
+  @apply text-gray-dark flex w-full flex-wrap;
 }
 
 .card-user {
-	@apply relative; 
+  @apply relative; 
 }
 
 .card-user-label {
-	max-width: 50px;
-	@apply truncate text-xs;
+  max-width: 50px;
+  @apply truncate text-xs;
 }

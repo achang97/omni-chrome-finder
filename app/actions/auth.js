@@ -21,5 +21,5 @@ export function handleLoginError(error) {
 }
 
 export function logout() {
-	return { type: types.LOGOUT, payload: {} };
+  return { type: types.LOGOUT, payload: {} };
 }

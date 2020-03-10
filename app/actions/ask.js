@@ -41,33 +41,33 @@ export function endAskScreenRecording() {
 }
 
 export function handleAskScreenRecordingError(error) {
-  return { type: types.ASK_SCREEN_RECORDING_ERROR, payload: { error } }
+  return { type: types.ASK_SCREEN_RECORDING_ERROR, payload: { error } };
 }
 
 
 export function requestAddAskAttachment(key, file) {
-  return { type: types.ADD_ASK_ATTACHMENT_REQUEST, payload: { key, file } }
+  return { type: types.ADD_ASK_ATTACHMENT_REQUEST, payload: { key, file } };
 }
 
 export function handleAddAskAttachmentSuccess(key, attachment) {
-  return { type: types.ADD_ASK_ATTACHMENT_SUCCESS, payload: { key, attachment } }
+  return { type: types.ADD_ASK_ATTACHMENT_SUCCESS, payload: { key, attachment } };
 }
 
 export function handleAddAskAttachmentError(key, error) {
-  return { type: types.ADD_ASK_ATTACHMENT_ERROR, payload: { key, error } }
+  return { type: types.ADD_ASK_ATTACHMENT_ERROR, payload: { key, error } };
 }
 
 
 export function requestRemoveAskAttachment(key) {
-  return { type: types.REMOVE_ASK_ATTACHMENT_REQUEST, payload: { key } }
+  return { type: types.REMOVE_ASK_ATTACHMENT_REQUEST, payload: { key } };
 }
 
 export function handleRemoveAskAttachmentSuccess(key) {
-  return { type: types.REMOVE_ASK_ATTACHMENT_SUCCESS, payload: { key } }
+  return { type: types.REMOVE_ASK_ATTACHMENT_SUCCESS, payload: { key } };
 }
 
 export function handleRemoveAskAttachmentError(key, error) {
-  return { type: types.REMOVE_ASK_ATTACHMENT_ERROR, payload: { key, error } }
+  return { type: types.REMOVE_ASK_ATTACHMENT_ERROR, payload: { key, error } };
 }
 
 export function updateAskAttachmentName(key, name) {
@@ -77,15 +77,15 @@ export function updateAskAttachmentName(key, name) {
 
 /* API Requests */
 export function requestGetSlackConversations() {
-  return { type: types.GET_SLACK_CONVERSATIONS_REQUEST, payload: {} }
+  return { type: types.GET_SLACK_CONVERSATIONS_REQUEST, payload: {} };
 }
 
 export function handleGetSlackConversationsSuccess(conversations) {
-  return { type: types.GET_SLACK_CONVERSATIONS_SUCCESS, payload: { conversations } }
+  return { type: types.GET_SLACK_CONVERSATIONS_SUCCESS, payload: { conversations } };
 }
 
 export function handleGetSlackConversationsError(error) {
-  return { type: types.GET_SLACK_CONVERSATIONS_ERROR, payload: { error } }
+  return { type: types.GET_SLACK_CONVERSATIONS_ERROR, payload: { error } };
 }
 
 
@@ -102,6 +102,6 @@ export function handleAskQuestionError(error) {
 }
 
 export function clearAskQuestionInfo() {
-  return { type: types.CLEAR_ASK_QUESTION_INFO, payload: { } }
+  return { type: types.CLEAR_ASK_QUESTION_INFO, payload: { } };
 }
 

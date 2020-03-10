@@ -1,12 +1,11 @@
-// function setBadge(todos) {
-//   if (chrome.browserAction) {
-//     chrome.browserAction.setBadgeText({ text: count > 0 ? count.toString() : '' });
-//   }
-// }
+// // function setBadge(todos) {
+// //   if (chrome.browserAction) {
+// //     chrome.browserAction.setBadgeText({ text: count > 0 ? count.toString() : '' });
+// //   }
+// // }
 
-const badgeMiddleware = store => next => action => {
-  // TODO
-  return next(action);
-}
+// const badgeMiddleware = store => next => action =>
+//   // TODO
+//   next(action);
 
-export default badgeMiddleware;
+// export default badgeMiddleware;

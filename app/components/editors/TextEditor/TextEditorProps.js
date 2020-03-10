@@ -1,5 +1,6 @@
 import style from './text-editor.css';
 import { getStyleApplicationFn } from '../../../utils/style';
+
 const s = getStyleApplicationFn(style);
 
 const BOLD_ICON = 'https://www.dropbox.com/s/16aoaoliaac3q55/Combined%20Shape.svg?dl=0';
@@ -125,7 +126,7 @@ export const CARD_TOOLBAR_PROPS = {
     undo: { className: s('text-editor-button-sm no-hover-shadow') },
     redo: { className: s('text-editor-button-sm no-hover-shadow') },
   },
-}
+};
 
 export const EXTENSION_TOOLBAR_PROPS = {
   options: ['blockType', 'inline', 'list', 'link'],
@@ -244,4 +245,4 @@ export const EXTENSION_TOOLBAR_PROPS = {
     dropdownClassName: undefined,
     options: ['undo', 'redo'],
   },
-}
+};

@@ -1,5 +1,5 @@
-import * as types from '../actions/actionTypes';
 import _ from 'lodash';
+import * as types from '../actions/actionTypes';
 
 const initialState = {
   user: {},
@@ -7,7 +7,7 @@ const initialState = {
   isEditingAbout: false,
 };
 
-export default function display(state = initialState, action) {
+export default function displayReducer(state = initialState, action) {
   const { type, payload = {} } = action;
 
   switch (type) {
@@ -29,7 +29,7 @@ export default function display(state = initialState, action) {
       return { ...state, isGettingUser: false, getUserError: error };
     }
 
-    // Changes to User 
+    // Changes to User
     case types.EDIT_USER: {
       const { firstname, lastname, bio } = state.user;
       return { ...state, isEditingAbout: true, userEdits: { firstname, lastname, bio } };
@@ -46,28 +46,34 @@ export default function display(state = initialState, action) {
       const { text } = payload;
       return { ...state, userEdits: { ...state.userEdits, bio: text } };
     }
-    
+
     case types.SAVE_USER_REQUEST: {
-      return { ...state, isSavingUser: true, userSaveError: null }
+      return { ...state, isSavingUser: true, userSaveError: null };
     }
     case types.SAVE_USER_SUCCESS: {
       const { user } = payload;
-      return { ...state, isSavingUser: false, user, userEdits: {}, isEditingAbout: false }
+      return { ...state, isSavingUser: false, user, userEdits: {}, isEditingAbout: false };
     }
     case types.SAVE_USER_ERROR: {
       const { error } = payload;
-      return { ...state, isSavingUser: false, userSaveError: error }
+      return { ...state, isSavingUser: false, userSaveError: error };
     }
 
     case types.ADD_BOOKMARK_REQUEST:
     case types.REMOVE_BOOKMARK_ERROR: {
       const { cardId } = payload;
-      return { ...state, user: { ...state.user, bookmarkIds: _.union(state.user.bookmarkIds, [cardId]) } };
+      return {
+        ...state,
+        user: { ...state.user, bookmarkIds: _.union(state.user.bookmarkIds, [cardId]) }
+      };
     }
     case types.REMOVE_BOOKMARK_REQUEST:
     case types.ADD_BOOKMARK_ERROR: {
       const { cardId } = payload;
-      return { ...state, user: { ...state.user, bookmarkIds: _.without(state.user.bookmarkIds, cardId) } };
+      return {
+        ...state,
+        user: { ...state.user, bookmarkIds: _.without(state.user.bookmarkIds, cardId) }
+      };
     }
 
     default:

@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import PropTypes from 'prop-types';
-import ReactTooltip from 'react-tooltip'
+import ReactTooltip from 'react-tooltip';
 
 import CardTag from '../CardTags/CardTag';
 import Loader from '../../common/Loader';
@@ -12,9 +12,10 @@ import {
 import { MdClose, MdError, MdFileDownload } from 'react-icons/md';
 
 import { NOOP } from '../../../utils/constants';
- 
+
 import style from './card-attachment.css';
 import { getStyleApplicationFn } from '../../../utils/style';
+
 const s = getStyleApplicationFn(style);
 
 const COLORS = {
@@ -24,7 +25,7 @@ const COLORS = {
   POWERPOINT_PDF: { color: 'orange-500', underlineColor: 'orange-200' },
   ARCHIVE: { color: 'gray-500', underlineColor: 'gray-200' },
   DEFAULT: { color: 'blue-500', underlineColor: 'blue-200' }
-}
+};
 
 function getAttachmentProps(type) {
   if (type && type.startsWith('image')) {
@@ -33,45 +34,44 @@ function getAttachmentProps(type) {
     return { ...COLORS.AUDIO_VIDEO, Icon: FaFileAudio };
   } else if (type && type.startsWith('video')) {
     return { ...COLORS.AUDIO_VIDEO, Icon: FaFileVideo };
-  } else {
-    switch (type) {
-      case 'application/msword':
-      case 'application/vnd.ms-word':
-      case 'application/vnd.oasis.opendocument.text':
-      case 'application/vnd.openxmlformats-officedocument.wordprocessingml':
-      case 'application/vnd.openxmlformats-officedocument.wordprocessingml.document': {
-        return { ...COLORS.DEFAULT, Icon: FaFileWord };
-      }
-      case 'application/vnd.ms-excel':
-      case 'application/vnd.openxmlformats-officedocument.spreadsheetml':
-      case 'application/vnd.oasis.opendocument.spreadsheet':
-      case 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet': {
-        return { ...COLORS.EXCEL_CODE, Icon: FaFileExcel };
-      }
-      case 'text/html':
-      case 'application/json': {
-        return { ...COLORS.EXCEL_CODE, Icon: FaFileCode };
-      }
-      case 'application/vnd.ms-powerpoint':
-      case 'application/vnd.openxmlformats-officedocument.presentationml':
-      case 'application/vnd.oasis.opendocument.presentation':
-      case 'application/vnd.openxmlformats-officedocument.presentationml.presentation': {
-        return { ...COLORS.POWERPOINT_PDF, Icon: FaFilePowerpoint };
-      }
-      case 'application/pdf': {
-        return { ...COLORS.POWERPOINT_PDF, Icon: FaFilePdf };
-      }
-      case 'application/gzip':
-      case 'application/zip':
-      case 'application/x-zip-compressed':
-      case 'application/zip':
-      case 'application/octet-stream': {
-        return { ...COLORS.ARCHIVE, Icon: FaFileArchive };
-      }
-      case 'text/plain':
-      default: {
-        return { ...COLORS.DEFAULT, Icon: FaFileAlt }
-      }
+  }
+  switch (type) {
+    case 'application/msword':
+    case 'application/vnd.ms-word':
+    case 'application/vnd.oasis.opendocument.text':
+    case 'application/vnd.openxmlformats-officedocument.wordprocessingml':
+    case 'application/vnd.openxmlformats-officedocument.wordprocessingml.document': {
+      return { ...COLORS.DEFAULT, Icon: FaFileWord };
+    }
+    case 'application/vnd.ms-excel':
+    case 'application/vnd.openxmlformats-officedocument.spreadsheetml':
+    case 'application/vnd.oasis.opendocument.spreadsheet':
+    case 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet': {
+      return { ...COLORS.EXCEL_CODE, Icon: FaFileExcel };
+    }
+    case 'text/html':
+    case 'application/json': {
+      return { ...COLORS.EXCEL_CODE, Icon: FaFileCode };
+    }
+    case 'application/vnd.ms-powerpoint':
+    case 'application/vnd.openxmlformats-officedocument.presentationml':
+    case 'application/vnd.oasis.opendocument.presentation':
+    case 'application/vnd.openxmlformats-officedocument.presentationml.presentation': {
+      return { ...COLORS.POWERPOINT_PDF, Icon: FaFilePowerpoint };
+    }
+    case 'application/pdf': {
+      return { ...COLORS.POWERPOINT_PDF, Icon: FaFilePdf };
+    }
+    case 'application/gzip':
+    case 'application/zip':
+    case 'application/x-zip-compressed':
+    case 'application/zip':
+    case 'application/octet-stream': {
+      return { ...COLORS.ARCHIVE, Icon: FaFileArchive };
+    }
+    case 'text/plain':
+    default: {
+      return { ...COLORS.DEFAULT, Icon: FaFileAlt };
     }
   }
 }
@@ -83,7 +83,7 @@ const CardAttachment = ({ fileName, type, url, onClick, onRemoveClick, className
   const onRemove = (e) => {
     e.stopPropagation();
     onRemoveClick();
-  }
+  };
 
   const { color, underlineColor, Icon } = getAttachmentProps(type);
   const fileNameClassName = s(`underline-border ${error ? 'border-red-200' : `border-${underlineColor}`} ${textClassName}`);
@@ -109,7 +109,7 @@ const CardAttachment = ({ fileName, type, url, onClick, onRemoveClick, className
         onMouseEnter={() => setHoverIcon(true)}
         onMouseLeave={() => setHoverIcon(false)}
       >
-        { isDownloadable ? 
+        { isDownloadable ?
           <a href={url} download> {leftIcon} </a> :
           leftIcon
         }
@@ -132,12 +132,12 @@ const CardAttachment = ({ fileName, type, url, onClick, onRemoveClick, className
       }
       { error &&
         <ReactTooltip id="card-attachment" type="error" effect="float">
-          <span className={s("font-normal text-xs")}> {error} </span>
+          <span className={s('font-normal text-xs')}> {error} </span>
         </ReactTooltip>
       }
-    </div> 
-  )
-}
+    </div>
+  );
+};
 
 CardAttachment.propTypes = {
   fileName: PropTypes.string.isRequired,
@@ -153,7 +153,7 @@ CardAttachment.propTypes = {
   isLoading: PropTypes.bool,
   isEditable: PropTypes.bool,
   onFileNameChange: PropTypes.func,
-}
+};
 
 CardAttachment.defaultProps = {
   className: '',
@@ -163,6 +163,6 @@ CardAttachment.defaultProps = {
   isLoading: false,
   isEditable: false,
   onFileNameChange: NOOP,
-}
+};
 
 export default CardAttachment;

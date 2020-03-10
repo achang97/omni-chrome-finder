@@ -3,7 +3,7 @@ import AnimateHeight from 'react-animate-height';
 import Tabs from '../../components/common/Tabs/Tabs';
 import Tab from '../../components/common/Tabs/Tab';
 import TaskItem from '../../components/tasks/TaskItem';
-import NoNotificationsImg from "../../assets/images/general/noNotifications.svg";
+import NoNotificationsImg from '../../assets/images/general/noNotifications.svg';
 
 import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
@@ -11,44 +11,44 @@ import { colors } from '../../styles/colors';
 import { FaDotCircle } from 'react-icons/fa';
 import { IoMdAlert } from 'react-icons/io';
 import { MdKeyboardArrowDown, MdKeyboardArrowUp, MdCheck, MdAdd, MdEdit, MdLock, MdNotifications } from 'react-icons/md';
-import { AiFillMinusCircle, AiFillQuestionCircle } from "react-icons/ai";
+import { AiFillMinusCircle, AiFillQuestionCircle } from 'react-icons/ai';
 import Timeago from 'react-timeago';
 import Loader from '../../components/common/Loader';
 
 import * as tasksActions from '../../actions/tasks';
-import style from "./tasks.css";
+import style from './tasks.css';
 import { CARD_STATUS, TASK_TYPE, TASKS_SECTION_TYPE, TASKS_SECTIONS, TASKS_TAB_OPTIONS } from '../../utils/constants';
 
 import { getStyleApplicationFn } from '../../utils/style';
 const s = getStyleApplicationFn(style);
 
 const UNRESOLVED_CARDS_PLACEHOLDER = [{
-	question: "How do I do this very complex task?",
+  question: 'How do I do this very complex task?',
   type: TASK_TYPE.NEEDS_APPROVAL,
-	date: "Feb 2",
-	tag: "Onboarding",
-	owners: ["Jake", "Joe"],
-	preview: "You probably build websites and think your shit is special. You think your 13 megabyte parallax-ative home page is going to get you some fucking Awwward banner you can glue to the top corner of your site.",
+  date: 'Feb 2',
+  tag: 'Onboarding',
+  owners: ['Jake', 'Joe'],
+  preview: 'You probably build websites and think your shit is special. You think your 13 megabyte parallax-ative home page is going to get you some fucking Awwward banner you can glue to the top corner of your site.',
 
 }, {
-	question: "How do I do this very complex task?",
+  question: 'How do I do this very complex task?',
   type: TASK_TYPE.NEEDS_APPROVAL,
-	date: "Feb 2",
-	tag: "Onboarding",
-	owners: ["Jake", "Joe"],
-	preview: "You probably build websites and think your shit is special. You think your 13 megabyte parallax-ative home page is going to get you some fucking Awwward banner you can glue to the top corner of your site.",
+  date: 'Feb 2',
+  tag: 'Onboarding',
+  owners: ['Jake', 'Joe'],
+  preview: 'You probably build websites and think your shit is special. You think your 13 megabyte parallax-ative home page is going to get you some fucking Awwward banner you can glue to the top corner of your site.',
 
 }, {
-	question: "How do I do this very complex task?",
+  question: 'How do I do this very complex task?',
   type: TASK_TYPE.NEEDS_APPROVAL,
-	date: "Feb 2",
-	tag: "Onboarding",
-	owners: ["Jake", "Joe"],
-	preview: "You probably build websites and think your shit is special. You think your 13 megabyte parallax-ative home page is going to get you some fucking Awwward banner you can glue to the top corner of your site.",
+  date: 'Feb 2',
+  tag: 'Onboarding',
+  owners: ['Jake', 'Joe'],
+  preview: 'You probably build websites and think your shit is special. You think your 13 megabyte parallax-ative home page is going to get you some fucking Awwward banner you can glue to the top corner of your site.',
 
 }
 
-]
+];
 
 @connect(
   state => ({
@@ -67,9 +67,9 @@ export default class Tasks extends Component {
   constructor(props) {
     super(props);
     this.state = {
-    	sectionOpen: TASKS_SECTION_TYPE.ALL,
-    }
-  }  
+      sectionOpen: TASKS_SECTION_TYPE.ALL,
+    };
+  }
 
   componentDidMount() {
     const { requestGetTasks } = this.props;
@@ -82,31 +82,27 @@ export default class Tasks extends Component {
   }
 
   switchOpenSection = (newSection) => {
-  	const { sectionOpen } = this.state;
-  	if (newSection === sectionOpen ) this.setState({ sectionOpen: TASKS_SECTION_TYPE.ALL});
-  	else this.setState({ sectionOpen: newSection });
+    const { sectionOpen } = this.state;
+    if (newSection === sectionOpen) this.setState({ sectionOpen: TASKS_SECTION_TYPE.ALL });
+    else this.setState({ sectionOpen: newSection });
   }
 
-  renderTasksList = (filteredTasks) => {
-  	return (
-  		<div className={s("flex flex-col p-reg overflow-auto")}>
-  			{
-	  			filteredTasks.map((task, i) => {
-	  				return (
-	  					<TaskItem 
-                key={task._id}
-                id={task._id}
-	  						className={i > 0 ? 'mt-reg' : ''}
-                date={<Timeago date={task.createdAt} live={false} />}
-	  						type={task.status}
-                card={task.card}
-	  						/>
-	  				);
-	  			})
-  			}
-  		</div>
-  	)
-  }
+  renderTasksList = filteredTasks => (
+    <div className={s('flex flex-col p-reg overflow-auto')}>
+      {
+          filteredTasks.map((task, i) => (
+            <TaskItem
+              key={task._id}
+              id={task._id}
+              className={i > 0 ? 'mt-reg' : ''}
+              date={<Timeago date={task.createdAt} live={false} />}
+              type={task.status}
+              card={task.card}
+            />
+            ))
+        }
+    </div>
+    )
 
   getTaskSectionProps(type) {
     const { tasks } = this.props;
@@ -114,19 +110,19 @@ export default class Tasks extends Component {
     let icon;
     switch (type) {
       case TASKS_SECTION_TYPE.ALL: {
-        icon = <MdNotifications className={s("all-tasks-icon-container rounded-full")}/>;
+        icon = <MdNotifications className={s('all-tasks-icon-container rounded-full')} />;
         break;
       }
       case TASKS_SECTION_TYPE.NEEDS_VERIFICATION: {
-        icon = <IoMdAlert className={s("tasks-icon-container text-yellow-reg")}/>;
+        icon = <IoMdAlert className={s('tasks-icon-container text-yellow-reg')} />;
         break;
       }
       case TASKS_SECTION_TYPE.OUT_OF_DATE: {
-        icon = <AiFillMinusCircle className={s("tasks-icon-container text-red-reg ")}/>;
+        icon = <AiFillMinusCircle className={s('tasks-icon-container text-red-reg ')} />;
         break;
       }
       case TASKS_SECTION_TYPE.UNDOCUMENTED: {
-        icon = <AiFillQuestionCircle className={s("tasks-icon-container text-purple-reg")}/>;
+        icon = <AiFillQuestionCircle className={s('tasks-icon-container text-purple-reg')} />;
       }
     }
 
@@ -137,40 +133,39 @@ export default class Tasks extends Component {
     const { sectionOpen } = this.state;
     const { isGettingTasks } = this.props;
 
-  	return (
-  		<div className={s("flex flex-col min-h-0 flex-grow")}>
-        { 
+    return (
+      <div className={s('flex flex-col min-h-0 flex-grow')}>
+        {
           isGettingTasks ?
-          <Loader className={s('')}/>
+            <Loader className={s('')} />
           :
-          TASKS_SECTIONS.map(({ type, title }) => 
-          {
+          TASKS_SECTIONS.map(({ type, title }) => {
             const { icon, filteredTasks } = this.getTaskSectionProps(type);
             const isSectionOpen = sectionOpen === type;
             const isAllTasksSection = type === TASKS_SECTION_TYPE.ALL;
 
-            return(
+            return (
               <React.Fragment key={type}>
-                { 
+                {
                   (filteredTasks.length > 0) &&
                   <div className={s(`${isSectionOpen ? 'min-h-0 flex flex-col' : ''}`)}>
                     <div
                       className={s(`${isSectionOpen ? 'bg-white' : 'tasks-section-container'} flex items-center p-reg py-sm cursor-pointer`)}
                       onClick={() => this.switchOpenSection(type)}
                     >
-                      <div className={s("flex flex-grow items-center")}>
+                      <div className={s('flex flex-grow items-center')}>
                         { icon }
-                        <div className={s("ml-reg text-sm font-semibold")}>{title}</div>
-                        { !isAllTasksSection &&  <div className={s("ml-reg text-sm")}>({ filteredTasks.length })</div> }
+                        <div className={s('ml-reg text-sm font-semibold')}>{title}</div>
+                        { !isAllTasksSection && <div className={s('ml-reg text-sm')}>({ filteredTasks.length })</div> }
                       </div>
                       {
                         !isAllTasksSection &&
                           <React.Fragment>
                             {
-                              isSectionOpen ? 
-                              <MdKeyboardArrowUp className={s("flex-shrink-0 text-purple-reg")}/>
+                              isSectionOpen ?
+                                <MdKeyboardArrowUp className={s('flex-shrink-0 text-purple-reg')} />
                               :
-                              <MdKeyboardArrowDown className={s("flex-shrink-0 text-purple-reg")}/>
+                                <MdKeyboardArrowDown className={s('flex-shrink-0 text-purple-reg')} />
                             }
                           </React.Fragment>
                       }
@@ -181,20 +176,19 @@ export default class Tasks extends Component {
                   </div>
                 }
               </React.Fragment>
-            )
+            );
           }
         )}
-  		</div>
-  	)
+      </div>
+    );
   }
 
-  renderApprovalTasks = () => {
-  	return (
-  		<div className={s("flex flex-col p-reg min-h-0 overflow-auto")}> 
-  			{/*
-	  			UNRESOLVED_CARDS_PLACEHOLDER.map((task, i) => {
+  renderApprovalTasks = () => (
+    <div className={s('flex flex-col p-reg min-h-0 overflow-auto')}>
+      {/*
+          UNRESOLVED_CARDS_PLACEHOLDER.map((task, i) => {
             return (
-              <TaskItem 
+              <TaskItem
                 index={i}
                 id={task._id}
                 date={<Timeago date={task.createdAt} live={false} />}
@@ -202,66 +196,61 @@ export default class Tasks extends Component {
                 card={task.card}
               />
             );
-	  			})
-  			*/}
-  		</div>
-  	)
-  }
-
-  renderNoTasksScreen = () => {
-    return (
-      <div className={s('flex flex-col items-center p-reg justify-center mt-2xl')}>
-        <img src={NoNotificationsImg}  />
-        <div className={s('text-reg font-semibold')}> No unresolved tasks </div>
-        <div className={s('text-sm mt-xl text-center')}> Congratulations, all your cards are verified and up to date! </div>
-      </div>
+          })
+        */}
+    </div>
     )
-  }
+
+  renderNoTasksScreen = () => (
+    <div className={s('flex flex-col items-center p-reg justify-center mt-2xl')}>
+      <img src={NoNotificationsImg} />
+      <div className={s('text-reg font-semibold')}> No unresolved tasks </div>
+      <div className={s('text-sm mt-xl text-center')}> Congratulations, all your cards are verified and up to date! </div>
+    </div>
+    )
 
   render() {
-  	const { tabIndex, tasks, isGettingTasks, getTasksError } = this.props;
+    const { tabIndex, tasks, isGettingTasks, getTasksError } = this.props;
     const allTasks = tasks[TASKS_SECTION_TYPE.ALL];
 
     return (
-      <div className={s("flex flex-col min-h-0 flex-grow")}>
-          <Tabs
-            activeValue={tabIndex}
-            className={s("flex flex-shrink-0")}
-            tabClassName={s("bg-purple-xlight navigate-tab flex flex-col text-xs font-medium flex items-center justify-between opacity-100")}
-            activeTabClassName={s("bg-purple-xlight font-semibold")}
-            onTabClick={this.updateTab}
-            showRipple={false}
-            color={colors.purple.reg}
-          >
-            {
-              TASKS_TAB_OPTIONS.map((tasksTab, i) => {
-                return (
-                  <Tab tabContainerClassName={s("flex-1")} key={tasksTab}>
-                    <div>{tasksTab}</div>
-                  </Tab>
-                )
-              })
+      <div className={s('flex flex-col min-h-0 flex-grow')}>
+        <Tabs
+          activeValue={tabIndex}
+          className={s('flex flex-shrink-0')}
+          tabClassName={s('bg-purple-xlight navigate-tab flex flex-col text-xs font-medium flex items-center justify-between opacity-100')}
+          activeTabClassName={s('bg-purple-xlight font-semibold')}
+          onTabClick={this.updateTab}
+          showRipple={false}
+          color={colors.purple.reg}
+        >
+          {
+              TASKS_TAB_OPTIONS.map((tasksTab, i) => (
+                <Tab tabContainerClassName={s('flex-1')} key={tasksTab}>
+                  <div>{tasksTab}</div>
+                </Tab>
+                ))
             }
-          </Tabs>
-          { tabIndex === 0 ? 
-            <React.Fragment>
+        </Tabs>
+        { tabIndex === 0 ?
+          <React.Fragment>
             { getTasksError && <div> {getTasksError} </div>}
             {
               isGettingTasks ?
-              <Loader className={s('mt-2xl')}/>
+                <Loader className={s('mt-2xl')} />
               :
-              <React.Fragment>
-              {
+                <React.Fragment>
+                  {
                 allTasks.length === 0 ?
                 this.renderNoTasksScreen()
                 :
-            	  this.renderUnresolvedTasks()
+                this.renderUnresolvedTasks()
               }
-              </React.Fragment>
+                </React.Fragment>
             }
-            </React.Fragment>
-          	:
-          	this.renderApprovalTasks()
+          </React.Fragment>
+            :
+            this.renderApprovalTasks()
           }
       </div>
     );

@@ -114,7 +114,7 @@ class ChromeMessageListener extends Component {
           url = '/create';
           updateCreateAnswerEditor(EditorState.createWithContent(ContentState.createFromText(selectedText)));
           break;
-        }        
+        }
         case CHROME_MESSAGE.SEARCH: {
           url = '/navigate';
           updateNavigateSearchText(selectedText);
@@ -150,7 +150,7 @@ class ChromeMessageListener extends Component {
   render() {
     const { suggestTabVisible } = this.state;
     const { isLoggedIn } = this.props;
-    
+
     // TODO: might move this code back to highest level App.js
     if (isLoggedIn && suggestTabVisible) {
       return <AISuggestTab />;

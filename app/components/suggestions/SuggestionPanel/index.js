@@ -20,6 +20,7 @@ import { CARD_STATUS, SEARCH_TYPE, INTEGRATIONS, SEARCH_INFINITE_SCROLL_OFFSET, 
 
 import style from './suggestion-panel.css';
 import { getStyleApplicationFn } from '../../../utils/style';
+
 const s = getStyleApplicationFn(style);
 
 import GoogleDriveIcon from '../../../assets/images/icons/GoogleDrive_Icon.svg';
@@ -44,7 +45,7 @@ class SuggestionPanel extends Component {
 
     this.state = {
       showResults: false,
-    }
+    };
 
     this.externalResults = React.createRef();
   }
@@ -76,15 +77,15 @@ class SuggestionPanel extends Component {
 
     return (
       <div>
-        { isSearchingCards && cards.length !== 0 && <Loader size="sm" className={s("my-sm")} /> }
+        { isSearchingCards && cards.length !== 0 && <Loader size="sm" className={s('my-sm')} /> }
         <AnimateHeight
           height={showResults ? 'auto' : 0}
-          onAnimationEnd={newHeight => newHeight !== 0 && this.externalResults.current.scrollIntoView({ behavior: "smooth" })}
+          onAnimationEnd={newHeight => newHeight !== 0 && this.externalResults.current.scrollIntoView({ behavior: 'smooth' })}
         >
           {this.renderExternalDocumentationResults() }
         </AnimateHeight>
       </div>
-    )
+    );
   }
 
   handleOnBottom = () => {
@@ -100,15 +101,15 @@ class SuggestionPanel extends Component {
       case INTEGRATIONS.SLACK: {
         renderFn = ({ text, link, sender, channel }) => (
           <a target="_blank" href={link} key={link}>
-            <div key={link} className={s("suggestion-panel-external-result flex-col")}>
-              <div className={s("flex justify-between mb-xs")}>
-                <div className={s("suggestion-panel-text font-semibold text-purple-reg")}> {channel === 'Personal Message' ? 'Direct Message' : `#${channel}`} </div>
-                <div className={s("suggestion-panel-external-result-icon")}>
+            <div key={link} className={s('suggestion-panel-external-result flex-col')}>
+              <div className={s('flex justify-between mb-xs')}>
+                <div className={s('suggestion-panel-text font-semibold text-purple-reg')}> {channel === 'Personal Message' ? 'Direct Message' : `#${channel}`} </div>
+                <div className={s('suggestion-panel-external-result-icon')}>
                   <img src={SlackIcon} />
                 </div>
               </div>
-              <div className={s("suggestion-panel-text suggestion-panel-sender-name")}> @{sender} </div>
-              <div className={s("text-xs vertical-ellipsis-3")}> {text} </div>
+              <div className={s('suggestion-panel-text suggestion-panel-sender-name')}> @{sender} </div>
+              <div className={s('text-xs vertical-ellipsis-3')}> {text} </div>
             </div>
           </a>
         );
@@ -116,10 +117,10 @@ class SuggestionPanel extends Component {
       }
       case INTEGRATIONS.GOOGLE: {
         renderFn = ({ name, id, webViewLink, iconLink }) => (
-          <a target="_blank" href={webViewLink} key={id}> 
-            <div className={s("suggestion-panel-external-result items-center")}>
-              <div className={s("suggestion-panel-text suggestion-panel-link-text")}> {name} </div>
-              <div className={s("suggestion-panel-external-result-icon")}>
+          <a target="_blank" href={webViewLink} key={id}>
+            <div className={s('suggestion-panel-external-result items-center')}>
+              <div className={s('suggestion-panel-text suggestion-panel-link-text')}> {name} </div>
+              <div className={s('suggestion-panel-external-result-icon')}>
                 <img src={iconLink} />
               </div>
             </div>
@@ -153,12 +154,12 @@ class SuggestionPanel extends Component {
     }
 
     return (
-      <div className={s("flex-col bg-purple-light justify-center items-center")} ref={this.externalResults}>
-        { cards.length !== 0 && <div className={s("horizontal-separator my-sm")} /> }
-        <div className={s("p-lg")}>
-          <div className={s("flex justify-between items-center mb-lg")}>
-            <div className={s("text-purple-reg font-semibold")}> Found in your documentation ({numExternalResults}) </div>
-            <MdClose className={s("button-hover")} color={colors.purple['gray-50']} onClick={() => this.setState({ showResults: false })} />
+      <div className={s('flex-col bg-purple-light justify-center items-center')} ref={this.externalResults}>
+        { cards.length !== 0 && <div className={s('horizontal-separator my-sm')} /> }
+        <div className={s('p-lg')}>
+          <div className={s('flex justify-between items-center mb-lg')}>
+            <div className={s('text-purple-reg font-semibold')}> Found in your documentation ({numExternalResults}) </div>
+            <MdClose className={s('button-hover')} color={colors.purple['gray-50']} onClick={() => this.setState({ showResults: false })} />
           </div>
           { externalResults.map(this.renderExternalSourceResults)}
         </div>
@@ -174,13 +175,13 @@ class SuggestionPanel extends Component {
     }
 
     return (
-      <div className={s("suggestion-panel-footer flex-col bg-white justify-center items-center mt-sm")}>
+      <div className={s('suggestion-panel-footer flex-col bg-white justify-center items-center mt-sm')}>
         <Button
           text={`Show results from your current documentation ${numExternalResults !== 0 ? `(${numExternalResults})` : ''}`}
-          underline={true}
+          underline
           onClick={() => this.setState({ showResults: true })}
           color="transparent"
-          className={s("self-stretch rounded-none shadow-none py-lg")}
+          className={s('self-stretch rounded-none shadow-none py-lg')}
         />
       </div>
     );
@@ -193,7 +194,7 @@ class SuggestionPanel extends Component {
       answer={answer}
       datePosted={createdAt}
       status={status}
-      className={s("mx-sm shadow-md")}
+      className={s('mx-sm shadow-md')}
     />
   );
 
@@ -206,7 +207,7 @@ class SuggestionPanel extends Component {
     const triangleMarginTop = Math.max(0, scrollTop - overflowTop);
 
     return (
-      <div className={s("flex")}>
+      <div className={s('flex')}>
         <SuggestionPreview
           _id={_id}
           question={question}
@@ -236,18 +237,18 @@ class SuggestionPanel extends Component {
     }
 
     return (
-      <div className={s("suggestion-panel pt-reg w-full flex flex-col rounded-lg bg-purple-light shadow-xl border-gray-200 border border-solid")}>
+      <div className={s('suggestion-panel pt-reg w-full flex flex-col rounded-lg bg-purple-light shadow-xl border-gray-200 border border-solid')}>
         <div>
-          <div className={s("px-reg text-purple-gray-50 text-sm mb-sm")}>
+          <div className={s('px-reg text-purple-gray-50 text-sm mb-sm')}>
             {cards.length} card{cards.length !== 1 && 's'}
           </div>
           <ScrollContainer
             scrollContainerClassName={s(`suggestion-panel-card-container ${showResults ? 'suggestion-panel-card-container-lg' : ''} flex flex-col`)}
             list={cards}
-            placeholder={ isSearchingCards ?
-              <Loader size="md" className={s("my-reg")} /> :
+            placeholder={isSearchingCards ?
+              <Loader size="md" className={s('my-reg')} /> :
               (!showResults || numExternalResults === 0 ?
-                <div className={s("text-gray-light text-sm my-reg text-center")}> No results </div> :
+                <div className={s('text-gray-light text-sm my-reg text-center')}> No results </div> :
                 null
               )
             }
@@ -263,18 +264,18 @@ class SuggestionPanel extends Component {
             size={10}
             color="white"
             direction="left"
-            className={s("absolute suggestion-panel-arrow")}
+            className={s('absolute suggestion-panel-arrow')}
             outlineSize={1}
             outlineColor={colors.gray.light}
           />
         </div>
       </div>
-    )
+    );
   }
 }
 
 SuggestionPanel.propTypes = {
   isVisible: PropTypes.bool.isRequired,
-}
+};
 
 export default SuggestionPanel;
