@@ -2,7 +2,7 @@ import { CancelToken, isCancel } from 'axios';
 import { delay } from 'redux-saga';
 import { take, call, fork, all, cancel, cancelled, put, select } from 'redux-saga/effects';
 import { doGet, doPost, doPut, doDelete } from '../utils/request'
-import { SEARCH_TYPE, DOCUMENTATION_TYPE, INTEGRATIONS } from '../utils/constants';
+import { SEARCH_TYPE, INTEGRATIONS } from '../utils/constants';
 import { SEARCH_CARDS_REQUEST, SEARCH_TAGS_REQUEST, SEARCH_USERS_REQUEST, SEARCH_PERMISSION_GROUPS_REQUEST,  } from '../actions/actionTypes';
 import { 
   handleSearchCardsSuccess, handleSearchCardsError,
@@ -74,7 +74,7 @@ function* searchCards({ type, query, clearCards }) {
     const externalResults = [];
     if (type === SEARCH_TYPE.POPOUT && query.q !== '' && isLoggedIn(user, INTEGRATIONS.GOOGLE)) {
       const googleResults = yield call(doGet, '/google/drive/query', { q: query.q }, { cancelToken });
-      externalResults.push({ source: DOCUMENTATION_TYPE.GOOGLE_DRIVE, results: googleResults });
+      externalResults.push({ source: INTEGRATIONS.GOOGLE, results: googleResults });
     }
 
     yield put(handleSearchCardsSuccess(type, cards, externalResults, clearCards));
@@ -93,7 +93,6 @@ function* searchTags({ name }) {
     const { tags } = yield call(doPost, '/tags/queryNames', { name }, { cancelToken });
     yield put(handleSearchTagsSuccess(tags));
   } catch(error) {
-    console.log(error)
     if (!isCancel(error)) {
       const { response: { data } } = error;
       yield put(handleSearchTagsError(data.error));

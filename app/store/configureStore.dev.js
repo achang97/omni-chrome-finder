@@ -5,7 +5,7 @@ import auth from '../middleware/auth';
 import badge from '../middleware/badge';
 import createSagaMiddleware from 'redux-saga';
 import rootSaga from '../sagas';
-import setUpAuthSync from '../utils/authSync';
+import setUpAuthSync from './enhancers/authSync';
 
 // If Redux DevTools Extension is installed use it, otherwise use Redux compose
 /* eslint-disable no-underscore-dangle */

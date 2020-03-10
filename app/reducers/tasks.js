@@ -1,15 +1,14 @@
 import * as types from '../actions/actionTypes';
 import { removeIndex } from '../utils/array';
+import { TASKS_SECTIONS, TASKS_SECTION_TYPE } from '../utils/constants';
 import _ from 'lodash';
 
 const initialState = {
   tabIndex: 0,
+  tasks: _.mapValues(TASKS_SECTION_TYPE, () => []),
 
   isGettingTasks: false,
-  tasks: [],
-
   isUpdatingCard: false,
-
   isDismissingTask: false,
 };
 
@@ -27,7 +26,13 @@ export default function tasks(state = initialState, action) {
     }
     case types.GET_TASKS_SUCCESS: {
       const { notifs } = payload;
-      return { ...state, isGettingTasks: false, tasks: notifs };
+
+      const tasks = {};
+      TASKS_SECTIONS.forEach(({ type, taskTypes }) => {
+        tasks[type] = notifs.filter((task) => { return (!task.resolved && taskTypes.includes(task.status))} )
+      });
+
+      return { ...state, isGettingTasks: false, tasks };
     }
     case types.GET_TASKS_ERROR: {
       const { error } = payload;

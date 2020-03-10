@@ -93,7 +93,7 @@ class Ask extends Component {
           {ASK_INTEGRATIONS.map((integration) => (
             <Tab key={integration} value={integration}>
               <div className={s(integration !== activeIntegration ? 'underline-border border-purple-gray-20' : 'primary-underline')}>
-                {integration}
+                {_.upperFirst(integration)}
               </div>
             </Tab>
           ))}

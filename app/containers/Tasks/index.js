@@ -17,14 +17,14 @@ import Loader from '../../components/common/Loader';
 
 import * as tasksActions from '../../actions/tasks';
 import style from "./tasks.css";
-import { TASKS_TAB_OPTIONS, CARD_STATUS, TASKS_SECTIONS, TASKS_TYPES } from '../../utils/constants';
+import { CARD_STATUS, TASK_TYPE, TASKS_SECTION_TYPE, TASKS_SECTIONS, TASKS_TAB_OPTIONS } from '../../utils/constants';
 
 import { getStyleApplicationFn } from '../../utils/style';
 const s = getStyleApplicationFn(style);
 
 const UNRESOLVED_CARDS_PLACEHOLDER = [{
 	question: "How do I do this very complex task?",
-  type: TASKS_TYPES.NEEDS_APPROVAL,
+  type: TASK_TYPE.NEEDS_APPROVAL,
 	date: "Feb 2",
 	tag: "Onboarding",
 	owners: ["Jake", "Joe"],
@@ -32,7 +32,7 @@ const UNRESOLVED_CARDS_PLACEHOLDER = [{
 
 }, {
 	question: "How do I do this very complex task?",
-  type: TASKS_TYPES.NEEDS_APPROVAL,
+  type: TASK_TYPE.NEEDS_APPROVAL,
 	date: "Feb 2",
 	tag: "Onboarding",
 	owners: ["Jake", "Joe"],
@@ -40,7 +40,7 @@ const UNRESOLVED_CARDS_PLACEHOLDER = [{
 
 }, {
 	question: "How do I do this very complex task?",
-  type: TASKS_TYPES.NEEDS_APPROVAL,
+  type: TASK_TYPE.NEEDS_APPROVAL,
 	date: "Feb 2",
 	tag: "Onboarding",
 	owners: ["Jake", "Joe"],
@@ -67,36 +67,13 @@ export default class Tasks extends Component {
   constructor(props) {
     super(props);
     this.state = {
-    	sectionOpen: TASKS_SECTIONS.ALL,
-
-      allTasks: [],
-      needsVerificationTasks: [],
-      outOfDateTasks: [],
-      undocumentedTasks: [],
+    	sectionOpen: TASKS_SECTION_TYPE.ALL,
     }
   }  
 
   componentDidMount() {
     const { requestGetTasks } = this.props;
     requestGetTasks();
-
-  }
-
-  componentDidUpdate(prevProps) {
-    const { tasks } = this.props;
-    if(tasks !== prevProps.tasks) {
-      this.setState({
-        allTasks: tasks.filter((task) => { return (!task.resolved && TASKS_SECTIONS.ALL.types.includes(task.status))} ),
-        needsVerificationTasks: tasks.filter((task) => { return (!task.resolved && TASKS_SECTIONS.NEEDS_VERIFICATION.types.includes(task.status))} ),
-        outOfDateTasks: tasks.filter((task) => { return (!task.resolved && TASKS_SECTIONS.OUT_OF_DATE.types.includes(task.status))} ),
-        undocumentedTasks: tasks.filter((task) => { return (!task.resolved && TASKS_SECTIONS.UNDOCUMENTED.types.includes(task.status))} ),
-      })
-    }
-
-    // Typical usage (don't forget to compare props):
-    if (this.props.userID !== prevProps.userID) {
-      this.fetchData(this.props.userID);
-    }
   }
 
   updateTab = (tabIndex) => {
@@ -106,7 +83,7 @@ export default class Tasks extends Component {
 
   switchOpenSection = (newSection) => {
   	const { sectionOpen } = this.state;
-  	if (newSection === sectionOpen ) this.setState({ sectionOpen: TASKS_SECTIONS.ALL});
+  	if (newSection === sectionOpen ) this.setState({ sectionOpen: TASKS_SECTION_TYPE.ALL});
   	else this.setState({ sectionOpen: newSection });
   }
 
@@ -117,8 +94,9 @@ export default class Tasks extends Component {
 	  			filteredTasks.map((task, i) => {
 	  				return (
 	  					<TaskItem 
-	  						index={i}
+                key={task._id}
                 id={task._id}
+	  						className={i > 0 ? 'mt-reg' : ''}
                 date={<Timeago date={task.createdAt} live={false} />}
 	  						type={task.status}
                 card={task.card}
@@ -130,66 +108,72 @@ export default class Tasks extends Component {
   	)
   }
 
-  getTaskSectionProps(section) {
-    const { allTasks, needsVerificationTasks, outOfDateTasks, undocumentedTasks } = this.state;
-    switch (section) {
-      case TASKS_SECTIONS.ALL:
-        return { sectionTitle: TASKS_SECTIONS.ALL.title, 
-          icon: <MdNotifications className={s("all-tasks-icon-container rounded-full")}/>,
-          filteredTasks: allTasks };
-      case TASKS_SECTIONS.NEEDS_VERIFICATION:
-        return { sectionTitle: TASKS_SECTIONS.NEEDS_VERIFICATION.title, 
-          icon: <IoMdAlert className={s("tasks-icon-container text-yellow-reg")}/>,
-          filteredTasks: needsVerificationTasks, };
-      case TASKS_SECTIONS.OUT_OF_DATE:
-        return { sectionTitle: TASKS_SECTIONS.OUT_OF_DATE.title, 
-          icon: <AiFillMinusCircle className={s("tasks-icon-container text-red-reg ")}/>,
-          filteredTasks: outOfDateTasks, };
-      case TASKS_SECTIONS.UNDOCUMENTED:
-        return { sectionTitle: TASKS_SECTIONS.UNDOCUMENTED.title, 
-          icon: <AiFillQuestionCircle className={s("tasks-icon-container text-purple-reg")}/>,
-          filteredTasks: undocumentedTasks, };
-      default:
-        return {}; 
+  getTaskSectionProps(type) {
+    const { tasks } = this.props;
+
+    let icon;
+    switch (type) {
+      case TASKS_SECTION_TYPE.ALL: {
+        icon = <MdNotifications className={s("all-tasks-icon-container rounded-full")}/>;
+        break;
+      }
+      case TASKS_SECTION_TYPE.NEEDS_VERIFICATION: {
+        icon = <IoMdAlert className={s("tasks-icon-container text-yellow-reg")}/>;
+        break;
+      }
+      case TASKS_SECTION_TYPE.OUT_OF_DATE: {
+        icon = <AiFillMinusCircle className={s("tasks-icon-container text-red-reg ")}/>;
+        break;
+      }
+      case TASKS_SECTION_TYPE.UNDOCUMENTED: {
+        icon = <AiFillQuestionCircle className={s("tasks-icon-container text-purple-reg")}/>;
+      }
     }
+
+    return { icon, filteredTasks: tasks[type] };
   }
 
   renderUnresolvedTasks = () => {
-    const { sectionOpen, isGettingTasks } = this.state;
+    const { sectionOpen } = this.state;
+    const { isGettingTasks } = this.props;
+
   	return (
   		<div className={s("flex flex-col min-h-0 flex-grow")}>
         { 
           isGettingTasks ?
           <Loader className={s('')}/>
           :
-          Object.keys(TASKS_SECTIONS).map((section) => 
+          TASKS_SECTIONS.map(({ type, title }) => 
           {
-            const { sectionTitle, icon, filteredTasks } = this.getTaskSectionProps(TASKS_SECTIONS[section]);
-            const isSectionOpen = sectionOpen === TASKS_SECTIONS[section];
-            const isAllTasksSection = TASKS_SECTIONS[section] === TASKS_SECTIONS.ALL;
+            const { icon, filteredTasks } = this.getTaskSectionProps(type);
+            const isSectionOpen = sectionOpen === type;
+            const isAllTasksSection = type === TASKS_SECTION_TYPE.ALL;
 
             return(
-              <React.Fragment>
+              <React.Fragment key={type}>
                 { 
                   (filteredTasks.length > 0) &&
                   <div className={s(`${isSectionOpen ? 'min-h-0 flex flex-col' : ''}`)}>
-                    <div className={s(`${isSectionOpen ? 'bg-white' : 'tasks-section-container'} flex items-center p-reg py-sm cursor-pointer`)} onClick={() => this.switchOpenSection(TASKS_SECTIONS[section])}>
-                        <div className={s("flex flex-grow items-center")}>
-                          { icon }
-                          <div className={s("ml-reg text-sm font-semibold")}>{sectionTitle}</div>
-                          { !isAllTasksSection &&  <div className={s("ml-reg text-sm")}>({ filteredTasks.length })</div> }
-                        </div>
-                        {
-                          !isAllTasksSection &&
-                            <React.Fragment>
-                              {
-                                isSectionOpen ? 
-                                <MdKeyboardArrowUp className={s("flex-shrink-0 text-purple-reg")}/>
-                                :
-                                <MdKeyboardArrowDown className={s("flex-shrink-0 text-purple-reg")}/>
-                              }
-                            </React.Fragment>
-                        }
+                    <div
+                      className={s(`${isSectionOpen ? 'bg-white' : 'tasks-section-container'} flex items-center p-reg py-sm cursor-pointer`)}
+                      onClick={() => this.switchOpenSection(type)}
+                    >
+                      <div className={s("flex flex-grow items-center")}>
+                        { icon }
+                        <div className={s("ml-reg text-sm font-semibold")}>{title}</div>
+                        { !isAllTasksSection &&  <div className={s("ml-reg text-sm")}>({ filteredTasks.length })</div> }
+                      </div>
+                      {
+                        !isAllTasksSection &&
+                          <React.Fragment>
+                            {
+                              isSectionOpen ? 
+                              <MdKeyboardArrowUp className={s("flex-shrink-0 text-purple-reg")}/>
+                              :
+                              <MdKeyboardArrowDown className={s("flex-shrink-0 text-purple-reg")}/>
+                            }
+                          </React.Fragment>
+                      }
                     </div>
                     <AnimateHeight height={isSectionOpen ? 'auto' : 0}>
                       {this.renderTasksList(filteredTasks)}
@@ -236,8 +220,7 @@ export default class Tasks extends Component {
 
   render() {
   	const { tabIndex, tasks, isGettingTasks, getTasksError } = this.props;
-    const { allTasks } = this.state;
-    console.log(this.props.tasks);
+    const allTasks = tasks[TASKS_SECTION_TYPE.ALL];
 
     return (
       <div className={s("flex flex-col min-h-0 flex-grow")}>
@@ -253,7 +236,7 @@ export default class Tasks extends Component {
             {
               TASKS_TAB_OPTIONS.map((tasksTab, i) => {
                 return (
-                  <Tab tabContainerClassName={s("flex-1")}>
+                  <Tab tabContainerClassName={s("flex-1")} key={tasksTab}>
                     <div>{tasksTab}</div>
                   </Tab>
                 )

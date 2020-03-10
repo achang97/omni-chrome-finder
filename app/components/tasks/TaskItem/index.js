@@ -9,7 +9,7 @@ import { connect } from 'react-redux';
 import { openCard } from '../../../actions/cards';
 import * as tasksActions from '../../../actions/tasks';
 
-import { TASKS_TYPES } from '../../../utils/constants';
+import { TASK_TYPE } from '../../../utils/constants';
 import { IoMdAlert } from 'react-icons/io'
 import { MdKeyboardArrowDown, MdKeyboardArrowUp, MdCheck, MdAdd, MdEdit, MdLock, MdCheckCircle } from 'react-icons/md'
 import { AiFillMinusCircle, AiFillQuestionCircle } from "react-icons/ai";
@@ -44,13 +44,13 @@ class TaskItem extends Component {
   getHeaderInfo = () => {
     const { type } = this.props;
     switch (type) {
-      case TASKS_TYPES.NEEDS_VERIFICATION:
+      case TASK_TYPE.NEEDS_VERIFICATION:
         return { headerTitle: "Omni needs you to verify this card", headerTitleClassName: '', headerIcon: <IoMdAlert className={s("tasks-icon-container text-yellow-reg mr-reg")}/> }
-      case TASKS_TYPES.OUT_OF_DATE:
+      case TASK_TYPE.OUT_OF_DATE:
         return { headerTitle: "Your card was flagged as out of date", headerTitleClassName: 'text-red-reg', headerIcon: <AiFillMinusCircle className={s("tasks-icon-container text-red-reg mr-reg")}/>}
-      case TASKS_TYPES.UNDOCUMENTED:
+      case TASK_TYPE.UNDOCUMENTED:
         return { headerTitle: "Document your question", headerTitleClassName: 'text-purple-reg', headerIcon: <AiFillQuestionCircle className={s("tasks-icon-container text-purple-reg mr-reg")}/>}
-      case TASKS_TYPES.NEEDS_APPROVAL:
+      case TASK_TYPE.NEEDS_APPROVAL:
         return { headerTitle: "Omni needs you to approve this card", headerTitleClassName: '', headerIcon: <MdCheckCircle className={s("tasks-icon-container text-purple-reg mr-reg")}/>}
       default:
         return null; 
@@ -61,13 +61,13 @@ class TaskItem extends Component {
   getButtonProps = () => {
     const { type } = this.props;
     switch (type) {
-      case TASKS_TYPES.NEEDS_VERIFICATION:
+      case TASK_TYPE.NEEDS_VERIFICATION:
         return { buttonColor: "secondary", buttonClassName: "text-green-reg", buttonUnderline: false, buttonIcon: <MdCheck className={s("ml-sm")} /> };
-      case TASKS_TYPES.OUT_OF_DATE:
+      case TASK_TYPE.OUT_OF_DATE:
         return { buttonColor: "secondary", buttonClassName: "", buttonUnderline: false, buttonIcon: <MdEdit className={s("ml-sm")} /> };
-      case TASKS_TYPES.UNDOCUMENTED:
+      case TASK_TYPE.UNDOCUMENTED:
         return { buttonColor: "secondary", buttonClassName: "", buttonUnderline: false, buttonIcon: <MdAdd className={s("ml-sm")} /> };
-      case TASKS_TYPES.NEEDS_APPROVAL:
+      case TASK_TYPE.NEEDS_APPROVAL:
         return { buttonColor: "transparent", buttonClassName: "", buttonUnderline: false, buttonIcon: <MdCheck className={s("ml-sm")} /> };
       default:
         return "";
@@ -77,13 +77,13 @@ class TaskItem extends Component {
   getContainerClass = () => {
     const { type } = this.props;
     switch (type) {
-      case TASKS_TYPES.NEEDS_VERIFICATION:
+      case TASK_TYPE.NEEDS_VERIFICATION:
         return "tasks-verification-gradient";
-      case TASKS_TYPES.OUT_OF_DATE:
+      case TASK_TYPE.OUT_OF_DATE:
         return "tasks-out-of-date-gradient";
-      case TASKS_TYPES.UNDOCUMENTED:
+      case TASK_TYPE.UNDOCUMENTED:
         return "tasks-undocumented-gradient";
-      case TASKS_TYPES.NEEDS_APPROVAL:
+      case TASK_TYPE.NEEDS_APPROVAL:
         return "tasks-undocumented-gradient";
       default:
         return ""; 
@@ -94,16 +94,16 @@ class TaskItem extends Component {
     const { type, id, card, openCard, requestMarkUpToDateFromTasks, requestDismissTask, isUpdatingCard, isDismissingTask, markCardUpToDateError, dimissTaskError } = this.props;
     const { _id } = card;
     switch (type) {
-      case TASKS_TYPES.NEEDS_VERIFICATION:
+      case TASK_TYPE.NEEDS_VERIFICATION:
         return { primaryOption: "Mark as Up to Date", secondaryOption: "Edit", primaryAction: () => { requestMarkUpToDateFromTasks(_id) }, secondaryAction: () => { openCard({ _id, isEditing: true }) },
                 isPrimaryLoading: isUpdatingCard, primaryError: markCardUpToDateError };
-      case TASKS_TYPES.OUT_OF_DATE:
+      case TASK_TYPE.OUT_OF_DATE:
         return { primaryOption: "Edit", secondaryOption: "Mark as Up to Date", primaryAction: () => { openCard({ _id, isEditing: true }) }, secondaryAction: () => { requestMarkUpToDateFromTasks(_id) },
                 isSecondaryLoading: isUpdatingCard, secondaryError: markCardUpToDateError };
-      case TASKS_TYPES.UNDOCUMENTED:
+      case TASK_TYPE.UNDOCUMENTED:
         return { primaryOption: "Create Card", secondaryOption: "Dismiss", primaryAction: () => { openCard({ _id, isEditing: true }) }, secondaryAction: () => { requestDismissTask( id ) },
                 isSecondaryLoading: isDismissingTask, secondaryError: dimissTaskError };
-      case TASKS_TYPES.NEEDS_APPROVAL:
+      case TASK_TYPE.NEEDS_APPROVAL:
         return { primaryOption: "Approve", secondaryOption: "Decline", primaryAction: () => { return }, secondaryAction: () => { return } };
       default:
         return {}; 
@@ -115,9 +115,9 @@ class TaskItem extends Component {
     const { answer, outOfDateReason, owners } = card;
 
     switch (type) {
-      case TASKS_TYPES.NEEDS_VERIFICATION:
+      case TASK_TYPE.NEEDS_VERIFICATION:
         return (<div className={s("text-xs text-gray-dark mt-reg vertical-ellipsis-2")}>{answer}</div>);
-      case TASKS_TYPES.OUT_OF_DATE:
+      case TASK_TYPE.OUT_OF_DATE:
         return (
           <div className={s("flex mt-reg")}>
             <div className={s("mr-sm mt-reg flex-shrink-0")}>
@@ -128,12 +128,12 @@ class TaskItem extends Component {
             </div>
           </div>
         )
-      case TASKS_TYPES.UNDOCUMENTED:
+      case TASK_TYPE.UNDOCUMENTED:
         return (<div className={s("text-xs text-gray-dark mt-reg flex items-center")}>
             <div className={s("flex-grow")}>Question asked through Slack</div>
             <img src={SlackIcon} className={s('task-item-slack-icon rounded-full flex-shrink-0')} />
             </div>);
-      case TASKS_TYPES.NEEDS_APPROVAL:
+      case TASK_TYPE.NEEDS_APPROVAL:
         return (
           <div className={s("flex mt-reg")}>
             <div className={s("flex flex-shrink-0 mr-reg")}>
@@ -153,7 +153,7 @@ class TaskItem extends Component {
   }
 
   render() {
-    const { index, type, card, date, openCard } = this.props;
+    const { index, type, card, date, openCard, className, key } = this.props;
     const { _id, question } = card;
 
 
@@ -164,7 +164,7 @@ class TaskItem extends Component {
             secondaryOption, secondaryAction, isSecondaryLoading, secondaryError, } = this.getTaskActionsInfo();
 
     return (
-      <div className={s(`flex flex-col ${containerClassName} p-lg rounded-lg ${index > 0 ? 'mt-reg' : ''}`)} >
+      <div className={s(`flex flex-col p-lg rounded-lg ${containerClassName} ${className}`)} key={key}>
         {
           (isPrimaryLoading || isSecondaryLoading) ?
           <Loader className={s('')}/>
@@ -215,12 +215,13 @@ TaskItem.propTypes = {
   index: PropTypes.number,
   id: PropTypes.string,
   date: PropTypes.object,
-  type: PropTypes.oneOf([TASKS_TYPES.NEEDS_VERIFICATION, TASKS_TYPES.OUT_OF_DATE, TASKS_TYPES.UNDOCUMENTED, TASKS_TYPES.NEEDS_APPROVAL]),
+  type: PropTypes.oneOf([TASK_TYPE.NEEDS_VERIFICATION, TASK_TYPE.OUT_OF_DATE, TASK_TYPE.UNDOCUMENTED, TASK_TYPE.NEEDS_APPROVAL]),
   card: PropTypes.object,
+  className: PropTypes.string,
 };
 
 TaskItem.defaultProps = {
-
+  className: '',
 };
 
 export default TaskItem;

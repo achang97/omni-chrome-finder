@@ -5,6 +5,13 @@ import { getStorage, getStorageName } from '../../app/utils/storage';
 import Root from '../../app/containers/Root';
 
 (function() {	
+	const body = document.body;
+
+	const wrapper = document.createElement('div');
+	wrapper.id = 'omni-chrome-ext-main-container';
+	wrapper.style = 'all: initial;';
+	body.insertBefore(wrapper, body.firstChild);
+
 	getStorage('auth', (obj) => {
 		let initialState = {};
 
