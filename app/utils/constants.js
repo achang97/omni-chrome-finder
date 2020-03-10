@@ -27,7 +27,9 @@ export const INTEGRATIONS = {
 	GOOGLE: "google",
 	SLACK : "slack",
 	EMAIL: "email",
-	ASANA: "asana"
+	ASANA: "asana",
+	ZENDESK: "zendesk",
+	HELPSCOUT: "helpscout",
 }
 
 // Ask page constants
@@ -47,24 +49,28 @@ export const NAVIGATE_TAB_OPTION = {
 export const NAVIGATE_TAB_OPTIONS = [NAVIGATE_TAB_OPTION.ALL, NAVIGATE_TAB_OPTION.MY_CARDS, NAVIGATE_TAB_OPTION.BOOKMARKED];
 
 // Profile Page Constants
-export const AUTOFIND_PERMISSIONS = {
-	ZENDESK: "zendesk",
-	HELPSCOUT: "helpscout",
+export const PROFILE_SETTING_SECTION_TYPE = {
+	KNOWLEDGE_BASE: 'KNOWLEDGE_BASE',
+	COMMUNICATION: 'COMMUNICATION',
+	AUTOFIND: 'AUTOFIND',
 }
-export const PROFILE_SETTING_SECTIONS = {
-	KNOWLEDGE_BASE_INTEGRATIONS: { 
+export const PROFILE_SETTING_SECTIONS = [
+	{ 
+		type: PROFILE_SETTING_SECTION_TYPE.KNOWLEDGE_BASE,
 		title: "Knowledge Base Integrations",
 		integrations: [INTEGRATIONS.GOOGLE],
 	},
-	COMMUNICATION_INTEGRATIONS: {
+	{
+		type: PROFILE_SETTING_SECTION_TYPE.COMMUNICATION,
 		title: "Communication Integrations",
 		integrations: [INTEGRATIONS.SLACK],
 	},
-	AUTOFIND_PERMISSIONS: {
+	{
+		type: PROFILE_SETTING_SECTION_TYPE.AUTOFIND,
 		title: "Autofind Permissions",
-		permissions: [ AUTOFIND_PERMISSIONS.ZENDESK, AUTOFIND_PERMISSIONS.HELPSCOUT ],
+		permissions: [ INTEGRATIONS.ZENDESK, INTEGRATIONS.HELPSCOUT ],
 	}
-}
+];
 
 // Card page constants
 export const CARD_DIMENSIONS = {

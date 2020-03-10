@@ -8,9 +8,10 @@ import { logout } from '../../actions/auth';
 import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
 import { MdEdit } from 'react-icons/md'
-import { PROFILE_SETTING_SECTIONS, INTEGRATIONS, AUTOFIND_PERMISSIONS, NOOP } from '../../utils/constants';
+import { PROFILE_SETTING_SECTION_TYPE, PROFILE_SETTING_SECTIONS, INTEGRATIONS, NOOP } from '../../utils/constants';
 import { MdKeyboardArrowDown, MdKeyboardArrowUp } from 'react-icons/md'
 import { IoMdCamera } from "react-icons/io";
+import _ from 'lodash';
 
 import { changeFirstname, changeLastname, changeBio, requestSaveUser, editUser, requestGetUser } from '../../actions/profile';
 
@@ -57,11 +58,7 @@ export default class Profile extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      sectionOpen: {
-        [ PROFILE_SETTING_SECTIONS.KNOWLEDGE_BASE_INTEGRATIONS.title ] : false,
-        [ PROFILE_SETTING_SECTIONS.COMMUNICATION_INTEGRATIONS.title ]: false,
-      },
-      isEditingAbout: false,
+      sectionOpen: _.mapValues(PROFILE_SETTING_SECTION_TYPE, () => false)
     }
   }
 
@@ -79,7 +76,6 @@ export default class Profile extends Component {
   saveUser = () => {
     const { requestSaveUser } = this.props;
     requestSaveUser();
-    this.setState({ isEditingAbout: false })
   }
 
   renderAboutSection = () => {
@@ -176,9 +172,9 @@ export default class Profile extends Component {
 
   getPermissionInfo = (permission) => {
     switch (permission) {
-      case AUTOFIND_PERMISSIONS.ZENDESK:
+      case INTEGRATIONS.ZENDESK:
         return { title: "Zendesk", logo: GoogleDriveIcon, onEnable: () => { return }, onDisable: () => { return } }
-      case AUTOFIND_PERMISSIONS.HELPSCOUT:
+      case INTEGRATIONS.HELPSCOUT:
         return { title: "Helpscout", logo: SlackIcon, onEnable: () => { return }, onDisable: () => { return } }
       default:
         return {}; 
@@ -257,9 +253,9 @@ export default class Profile extends Component {
     )
   }
 
-  toggleIntegration = (title) => {
+  toggleIntegration = (type) => {
     const { sectionOpen } = this.state;
-    this.setState({ sectionOpen: { ...sectionOpen, [title] : !sectionOpen[title] } });
+    this.setState({ sectionOpen: { ...sectionOpen, [type] : !sectionOpen[type] } });
   }
 
   renderIntegrationsSection = () => {
@@ -267,22 +263,23 @@ export default class Profile extends Component {
     const { sectionOpen } = this.state;
     return(
       <div className={s('flex flex-col overflow-auto flex-grow')}>
-        { Object.values(PROFILE_SETTING_SECTIONS).map((profileSettingSection, i) => {
-          const isOpen = sectionOpen[profileSettingSection.title];
+        { PROFILE_SETTING_SECTIONS.map((profileSettingSection, i) => {
+          const { type, title } = profileSettingSection;
+          const isOpen = sectionOpen[type];
           const Icon = isOpen ? MdKeyboardArrowUp : MdKeyboardArrowDown;
 
           return (
             <div
-              key={profileSettingSection.title}
+              key={title}
               className={s(`profile-integration ${isOpen ? 'profile-integration-active' : 'profile-integration-inactive'} ${i !== 0 ? 'mt-reg' : '' }`)}
-              onClick={() => this.toggleIntegration(profileSettingSection.title)}
+              onClick={() => this.toggleIntegration(type)}
             >
               <div className={s(`py-sm flex items-center justify-between ${isOpen ? 'mb-sm' : ''}`)}>
-                <div className={s("text-purple-reg text-sm")}>{profileSettingSection.title}</div>
+                <div className={s("text-purple-reg text-sm")}>{title}</div>
                 <Icon className={s("text-gray-dark cursor-pointer")} />
               </div>
               <AnimateHeight height={isOpen ? 'auto' : 0} animationStateClasses={{ animatingUp: s('invisible') }}>
-                { (profileSettingSection.title === PROFILE_SETTING_SECTIONS.AUTOFIND_PERMISSIONS.title ?
+                { (type === PROFILE_SETTING_SECTION_TYPE.AUTOFIND ?
                   this.renderAutofindPermissions(profileSettingSection) :
                   this.renderIntegrations(profileSettingSection)
                 )}
