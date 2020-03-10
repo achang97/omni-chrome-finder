@@ -1,0 +1,10 @@
+.ai-suggest-tab { 
+  z-index: 10000000;
+  top: 10px;
+  right: 0px;
+  @apply flex items-center fixed bg-purple-light shadow-lg p-sm rounded-lg cursor-pointer;
+}
+
+.ai-suggest-tab:hover {
+  @apply px-reg;
+}

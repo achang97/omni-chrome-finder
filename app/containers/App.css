@@ -19,12 +19,6 @@
   overflow: initial !important;
 }
 
-.app-suggest-tab { 
-  z-index: 10000000;
-  top: 10px;
-  right: 0px;
-}
-
 /* Button Overrides */
 .app-container button {
   all: unset;

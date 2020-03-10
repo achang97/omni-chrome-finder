@@ -6,9 +6,9 @@ import { withRouter } from 'react-router-dom';
 import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
 
-import Tabs from '../Tabs/Tabs';
-import Tab from '../Tabs/Tab';
-import PlaceholderImg from '../PlaceholderImg';
+import Tabs from '../../common/Tabs/Tabs';
+import Tab from '../../common/Tabs/Tab';
+import PlaceholderImg from '../../common/PlaceholderImg';
 
 import { colors } from '../../../styles/colors';
 import style from './header.css';
