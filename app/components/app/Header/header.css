@@ -1,5 +1,18 @@
-.header-profile-picture {
+.header-profile-picture, .header-badge-container {
   width: 27px;
   height: 27px;
-  @apply text-xs rounded-full border border-gray-light border-solid;
+  @apply rounded-full;
+}
+
+.header-profile-picture {
+  @apply text-xs border border-gray-light border-solid;
+}
+
+.header-badge-container {
+  @apply flex items-center justify-center relative;
+}
+
+.header-small-tab {
+  margin-left: 6px;
+  margin-right: 6px;
 }

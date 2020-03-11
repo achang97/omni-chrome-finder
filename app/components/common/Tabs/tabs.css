@@ -13,6 +13,7 @@
 }
 
 .tab-inactive {
+  border-bottom: 2px solid transparent;
   @apply opacity-50;
 }
 

@@ -43,11 +43,12 @@ export default function navigateReducer(state = initialState, action) {
 
   switch (type) {
     case types.SEARCH_CARDS_REQUEST: {
-      const { type: searchType, clearCards } = payload;
-      return updateCardStateByType(searchType, () => ({
+      const { type: searchType, query, clearCards } = payload;
+      return updateCardStateByType(searchType, (cardState) => ({
         ...(clearCards ? BASE_CARDS_STATE : {}),
         isSearchingCards: true,
-        searchCardsError: null
+        searchCardsError: null,
+        oldQuery: query || cardState.query
       }));
     }
     case types.SEARCH_CARDS_SUCCESS: {
@@ -66,6 +67,11 @@ export default function navigateReducer(state = initialState, action) {
         isSearchingCards: false,
         searchCardsError: error
       }));
+    }
+
+    case types.CLEAR_SEARCH_CARDS: {
+      const { type: searchType } = payload;
+      return updateCardStateByType(searchType, () => BASE_CARDS_STATE);
     }
 
     // Update Cards

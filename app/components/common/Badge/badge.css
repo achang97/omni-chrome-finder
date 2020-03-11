@@ -1,0 +1,16 @@
+.badge {
+  @apply flex justify-center items-center bg-purple-reg text-white absolute z-10 rounded-full p-xs bottom-0 right-0;
+  transform: translate(40%, 35%);  
+}
+
+.badge-sm {
+  height: 8px;
+  min-width: 8px;
+  @apply text-2xs;
+}
+
+.badge-md {
+  height: 12px;
+  min-width: 12px;
+  @apply text-xs;
+}

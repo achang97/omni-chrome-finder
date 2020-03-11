@@ -4,11 +4,9 @@ exports.colors = {
     light: '#F5F7FE',
     reg: '#7a7daf',
     dark: '#5453af',
-    checkbox: '#E0E0EB',
     'gray-10': '#777BAD1A',
     'gray-20': '#777BAD33',
     'gray-50': '#777BAD80',
-    'task-border': '#BDC8F94D',
   },
   gray: {
     xlight: '#211A1D0D',
@@ -16,7 +14,6 @@ exports.colors = {
     reg: '#211A1D80',
     dark: '#211A1DBF',
     overlay: '#081B3E80',
-    'checkbox-border': '#7A7BAA33',
   },
   green: {
     xlight: '#E3F2EB',
@@ -26,9 +23,11 @@ exports.colors = {
     reg: '#FFDC1E80',
     light: '#FFDC1E14'
   },
+  gold: {
+    reg: '#B18B50',
+  },
   red: {
     reg: '#EC6464',
-    'task-border': '#EC64644D',
     light: '#FF000D05'
   },
 };

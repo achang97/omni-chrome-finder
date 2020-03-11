@@ -75,6 +75,10 @@ function cancelRequest(cancelType) {
 function* searchCards({ type, query, clearCards }) {
   const cancelToken = cancelRequest(CANCEL_TYPE.CARDS);
 
+  if (!query) {
+    query = yield select(state => state.search.cards[type].oldQuery);
+  }
+
   try {
     const page = yield select(state => state.search.cards[type].page);
     const user = yield select(state => state.profile.user);
@@ -85,7 +89,12 @@ function* searchCards({ type, query, clearCards }) {
     const allRequests = [];
 
     if (!query.ids || query.ids.length !== 0) {
-      allRequests.push({ url: '/cards/query', body: { ...query, page } });
+      const body = { ...query, page };
+      if (type === SEARCH_TYPE.AI_SUGGEST) {
+        allRequests.push({ requestFn: doPost, url: '/suggest', body })
+      } else {
+        allRequests.push({ url: '/cards/query', body });
+      }
     }
 
     if (type === SEARCH_TYPE.POPOUT && query.q !== '') {
@@ -96,8 +105,8 @@ function* searchCards({ type, query, clearCards }) {
       });
     }
 
-    const results = yield all(allRequests.map(({ url, body }) => (
-      call(doGet, url, body, { cancelToken })
+    const results = yield all(allRequests.map(({ requestFn, url, body }) => (
+      call(requestFn || doGet, url, body, { cancelToken })
     )));
 
     if (results.length !== 0) {
@@ -111,6 +120,7 @@ function* searchCards({ type, query, clearCards }) {
 
     yield put(handleSearchCardsSuccess(type, cards, externalResults, clearCards));
   } catch (error) {
+      console.log(error)
     if (!isCancel(error)) {
       const { response: { data } } = error;
       yield put(handleSearchCardsError(type, data.error));

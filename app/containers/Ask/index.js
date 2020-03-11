@@ -21,6 +21,7 @@ import Select from '../../components/common/Select';
 import SuggestionPanel from '../../components/suggestions/SuggestionPanel';
 import Dropzone from '../../components/common/Dropzone';
 import Dropdown from '../../components/common/Dropdown';
+import Badge from '../../components/common/Badge';
 import RecipientDropdownBody from '../../components/ask/RecipientDropdownBody';
 import CardAttachment from '../../components/cards/CardAttachment';
 
@@ -217,12 +218,10 @@ class Ask extends Component {
             toggler={
               <div className={s('relative')}>
                 <Button
-                  className={s('bg-white py-reg')}
+                  className={s('bg-white py-reg px-sm')}
                   icon={<MdAttachment color={colors.purple.reg} className={s('ask-attachment-icon')} />}
                 />
-                <div className={s('ask-attachment-count')}>
-                  {attachments.length}
-                </div>
+                <Badge count={attachments.length} />
               </div>
             }
             body={

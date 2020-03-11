@@ -1,6 +1,6 @@
 import React, { PropTypes, Component } from 'react';
 import { Link } from 'react-router';
-import { MdNotificationsActive } from 'react-icons/md';
+import { MdNotificationsActive, MdLightbulbOutline  } from 'react-icons/md';
 import { withRouter } from 'react-router-dom';
 
 import { bindActionCreators } from 'redux';
@@ -8,7 +8,10 @@ import { connect } from 'react-redux';
 
 import Tabs from '../../common/Tabs/Tabs';
 import Tab from '../../common/Tabs/Tab';
+import Badge from '../../common/Badge';
 import PlaceholderImg from '../../common/PlaceholderImg';
+
+import { SEARCH_TYPE, TASKS_SECTION_TYPE } from '../../../utils/constants';
 
 import { colors } from '../../../styles/colors';
 import style from './header.css';
@@ -19,6 +22,8 @@ const s = getStyleApplicationFn(style);
 @connect(
   state => ({
     user: state.profile.user,
+    numAISuggestCards: state.search.cards[SEARCH_TYPE.AI_SUGGEST].cards.length,
+    numTasks: state.tasks.tasks[TASKS_SECTION_TYPE.ALL].length,
   }),
   dispatch => bindActionCreators({
   }, dispatch)
@@ -34,23 +39,38 @@ class Header extends Component {
   }
 
   render() {
-    const { location: { pathname }, user } = this.props;
+    const { location: { pathname }, user, numSuggestCards, numAISuggestCards, numTasks } = this.props;
+
+    const showAISuggest = numAISuggestCards !== 0;
 
     return (
       <div className={s('px-sm bg-purple-xlight')}>
         <Tabs
           onTabClick={this.handleTabClick}
           activeValue={pathname}
-          tabClassName={s('text-reg p-xl px-0 font-semibold flex items-center')}
-          tabContainerClassName={s('mx-reg flex align-center')}
+          tabClassName={s('text-md py-xl px-0 font-semibold flex items-center')}
+          tabContainerClassName={s('flex align-center')}
           color={colors.purple.reg}
           showRipple={false}
         >
-          <Tab label="Ask" key="ask" value="/ask" />
-          <Tab label="Create" key="create" value="/create" />
-          <Tab label="Cards" key="cards" value="/navigate" />
-          <Tab label={<MdNotificationsActive />} key="tasks" value="/tasks" tabContainerClassName={s('ml-auto')} />
-          <Tab key="profile" value="/profile" >
+          <Tab label="Ask" key="ask" value="/ask" tabContainerClassName={s("mx-reg")} />
+          <Tab label="Create" key="create" value="/create" tabContainerClassName={s("mx-reg")} />
+          <Tab label="Cards" key="cards" value="/navigate" tabContainerClassName={s("mx-reg")} />
+          { showAISuggest &&
+            <Tab key="suggest" value="/suggest" tabContainerClassName={s('header-small-tab ml-auto')}>
+              <div className={s("header-badge-container gold-gradient")}>
+                <MdLightbulbOutline className={s("text-gold-reg")} />
+                <Badge count={numAISuggestCards} size="sm" className={s("bg-gold-reg")}  />
+              </div>
+            </Tab>
+          }
+          <Tab key="tasks" value="/tasks" tabContainerClassName={s(`header-small-tab ${!showAISuggest ?'ml-auto' : ''}`)}>
+            <div className={s("header-badge-container bg-gray-xlight")}>
+              <MdNotificationsActive />
+              <Badge count={numTasks} size="sm" className={s("bg-red-500")}  />
+            </div>
+          </Tab>
+          <Tab key="profile" value="/profile" tabContainerClassName={s("mx-reg")}>
             <PlaceholderImg name={`${user.firstname} ${user.lastname}`} src={user.img} className={s('header-profile-picture')} />
           </Tab>
         </Tabs>

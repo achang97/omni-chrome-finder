@@ -1,13 +1,14 @@
 import React, { Component } from 'react';
 import { Route, Switch, Redirect, withRouter } from 'react-router-dom';
 import Dock from 'react-dock';
-import { CARD_URL_REGEX, SLACK_URL_REGEX } from '../utils/constants';
+import { CARD_URL_REGEX, SLACK_URL_REGEX, SEARCH_TYPE } from '../utils/constants';
 import queryString from 'query-string';
 
 import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
 import { toggleDock } from '../actions/display';
 import { requestGetUser } from '../actions/profile';
+import { requestGetTasks } from '../actions/tasks';
 import { openCard } from '../actions/cards';
 
 import Header from '../components/app/Header';
@@ -18,6 +19,7 @@ import Create from './Create';
 import Navigate from './Navigate';
 import Tasks from './Tasks';
 import Cards from './Cards';
+import AISuggest from './AISuggest';
 import Profile from './Profile';
 import Login from './Login';
 import style from './App.css';
@@ -34,12 +36,14 @@ const dockPanelStyles = {
     dockVisible: state.display.dockVisible,
     dockExpanded: state.display.dockExpanded,
     isLoggedIn: !!state.auth.token,
+    showAISuggest: state.search.cards[SEARCH_TYPE.AI_SUGGEST].cards.length !== 0,
   }),
   dispatch =>
     bindActionCreators(
       {
         toggleDock,
         requestGetUser,
+        requestGetTasks,
         openCard,
       },
       dispatch
@@ -48,8 +52,11 @@ const dockPanelStyles = {
 
 class App extends Component {
   componentDidMount() {
-    if (this.props.isLoggedIn) {
-      this.props.requestGetUser();
+    const { isLoggedIn, requestGetTasks, requestGetUser } = this.props;
+
+    if (isLoggedIn) {
+      requestGetUser();
+      requestGetTasks();
       this.openChromeExtension();
     }
   }
@@ -81,6 +88,7 @@ class App extends Component {
       dockVisible,
       dockExpanded,
       isLoggedIn,
+      showAISuggest,
       location: { pathname }
     } = this.props;
     const showFullDock = dockExpanded || (pathname !== '/ask' && pathname !== '/login');
@@ -108,6 +116,7 @@ class App extends Component {
               { isLoggedIn && <Route path="/navigate" component={Navigate} /> }
               { isLoggedIn && <Route path="/tasks" component={Tasks} /> }
               { isLoggedIn && <Route path="/profile" component={Profile} /> }
+              { isLoggedIn && showAISuggest && <Route path="/suggest" component={AISuggest} /> }
               { !isLoggedIn && <Route path="/login" component={Login} /> }
 
               {/* A catch-all route: put all other routes ABOVE here */}

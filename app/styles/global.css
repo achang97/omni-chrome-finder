@@ -51,9 +51,13 @@
   @apply border-t-0 border-l-0 border-r-0 border-b-2 border-solid;
 }
 
-/* Primary styles */
+/* Gradients + underlines */
 .primary-gradient {
   background: linear-gradient(143deg, #777BAD 0%, #A0A1CD 100%) !important;
+}
+
+.gold-gradient {
+  background: linear-gradient(190deg, #FFE4B8 0%, #E3C295 100%);
 }
 
 .primary-underline {

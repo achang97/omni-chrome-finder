@@ -57,7 +57,7 @@ chrome.tabs.onUpdated.addListener(async (tabId, changeInfo, tab) => {
     }
 
     if (!socket) {
-      initSocket();
+      // initSocket();
     }
   }
 });

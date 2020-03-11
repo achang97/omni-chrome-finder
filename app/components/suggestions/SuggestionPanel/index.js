@@ -4,10 +4,8 @@ import { MdClose } from 'react-icons/md';
 import AnimateHeight from 'react-animate-height';
 import _ from 'lodash';
 
-import ScrollContainer from '../../common/ScrollContainer';
+import SuggestionScrollContainer from '../SuggestionScrollContainer';
 import Loader from '../../common/Loader';
-import SuggestionCard from '../SuggestionCard';
-import SuggestionPreview from '../SuggestionPreview';
 import Button from '../../common/Button';
 import Triangle from '../../common/Triangle';
 
@@ -70,30 +68,6 @@ class SuggestionPanel extends Component {
     const { hasSearched } = this.state;
     this.requestSearchCards(true);
   }, DEBOUNCE_60_HZ)
-
-  renderScrollFooter = () => {
-    const { isSearchingCards, cards } = this.props;
-    const { showResults } = this.state;
-
-    return (
-      <div>
-        { isSearchingCards && cards.length !== 0 && <Loader size="sm" className={s('my-sm')} /> }
-        <AnimateHeight
-          height={showResults ? 'auto' : 0}
-          onAnimationEnd={newHeight => newHeight !== 0 && this.externalResults.current.scrollIntoView({ behavior: 'smooth' })}
-        >
-          {this.renderExternalDocumentationResults() }
-        </AnimateHeight>
-      </div>
-    );
-  }
-
-  handleOnBottom = () => {
-    const { hasReachedLimit, isSearchingCards, cards } = this.props;
-    if (!hasReachedLimit && !isSearchingCards && cards.length !== 0) {
-      this.requestSearchCards(false);
-    }
-  }
 
   renderExternalSourceResults = ({ integration, results }) => {
     let renderFn;
@@ -187,47 +161,8 @@ class SuggestionPanel extends Component {
     );
   }
 
-  renderScrollElement = ({ _id, question, answer, createdAt, status }) => (
-    <SuggestionCard
-      _id={_id}
-      question={question}
-      answer={answer}
-      datePosted={createdAt}
-      status={status}
-      className={s('mx-sm shadow-md')}
-    />
-  );
-
-  renderOverflowElement = ({ _id, question, description, answer }, i, positions) => {
-    const { overflow, scroll } = positions;
-
-    const overflowTop = overflow.top || 0;
-    const scrollTop = scroll.top || 0;
-
-    const triangleMarginTop = Math.max(0, scrollTop - overflowTop);
-
-    return (
-      <div className={s('flex')}>
-        <SuggestionPreview
-          _id={_id}
-          question={question}
-          questionDescription={description}
-          answer={answer}
-        />
-        <Triangle
-          size={10}
-          color={colors.purple.light}
-          direction="left"
-          style={{ marginTop: triangleMarginTop }}
-          outlineSize={1}
-          outlineColor={colors.gray.light}
-        />
-      </div>
-    );
-  }
-
   render() {
-    const { isVisible, cards, isSearchingCards } = this.props;
+    const { isVisible, cards, isSearchingCards, hasReachedLimit } = this.props;
     const { showResults } = this.state;
 
     const numExternalResults = this.countExternalResults();
@@ -242,22 +177,22 @@ class SuggestionPanel extends Component {
           <div className={s('px-reg text-purple-gray-50 text-sm mb-sm')}>
             {cards.length} card{cards.length !== 1 && 's'}
           </div>
-          <ScrollContainer
-            scrollContainerClassName={s(`suggestion-panel-card-container ${showResults ? 'suggestion-panel-card-container-lg' : ''} flex flex-col`)}
-            list={cards}
-            placeholder={isSearchingCards ?
-              <Loader size="md" className={s('my-reg')} /> :
-              (!showResults || numExternalResults === 0 ?
-                <div className={s('text-gray-light text-sm my-reg text-center')}> No results </div> :
-                null
-              )
+          <SuggestionScrollContainer
+            scrollContainerClassName={`suggestion-panel-card-container ${showResults ? 'suggestion-panel-card-container-lg' : ''}`}
+            cards={cards}
+            isSearchingCards={isSearchingCards}
+            showPlaceholder={!showResults || numExternalResults === 0}
+            triangleColor={colors.purple.light}
+            onBottom={() => this.requestSearchCards(false)}
+            hasReachedLimit={hasReachedLimit}
+            footer={
+              <AnimateHeight
+                height={showResults ? 'auto' : 0}
+                onAnimationEnd={newHeight => newHeight !== 0 && this.externalResults.current.scrollIntoView({ behavior: 'smooth' })}
+              >
+                {this.renderExternalDocumentationResults() }
+              </AnimateHeight>
             }
-            renderScrollElement={this.renderScrollElement}
-            renderOverflowElement={this.renderOverflowElement}
-            position="left"
-            onBottom={this.handleOnBottom}
-            bottomOffset={SEARCH_INFINITE_SCROLL_OFFSET}
-            footer={this.renderScrollFooter()}
           />
           { !showResults && this.renderFooter() }
           <Triangle
@@ -276,6 +211,7 @@ class SuggestionPanel extends Component {
 
 SuggestionPanel.propTypes = {
   isVisible: PropTypes.bool.isRequired,
+  query: PropTypes.string.isRequired,
 };
 
 export default SuggestionPanel;

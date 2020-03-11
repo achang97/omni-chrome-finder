@@ -4,7 +4,6 @@ import { connect } from 'react-redux';
 import { MdSearch } from 'react-icons/md';
 
 import * as navigateActions from '../../actions/navigate';
-import { openCard } from '../../actions/cards';
 import { requestSearchCards } from '../../actions/search';
 
 import CardTags from '../../components/cards/CardTags';
@@ -14,11 +13,8 @@ import Tab from '../../components/common/Tabs/Tab';
 import { colors } from '../../styles/colors';
 
 import Loader from '../../components/common/Loader';
-import ScrollContainer from '../../components/common/ScrollContainer';
-import SuggestionCard from '../../components/suggestions/SuggestionCard';
-import SuggestionPreview from '../../components/suggestions/SuggestionPreview';
+import SuggestionScrollContainer from '../../components/suggestions/SuggestionScrollContainer';
 import Button from '../../components/common/Button';
-import Triangle from '../../components/common/Triangle';
 import _ from 'lodash';
 
 import { getArrayIds } from '../../utils/array';
@@ -38,7 +34,6 @@ const s = getStyleApplicationFn(style);
   bindActionCreators(
     {
       ...navigateActions,
-      openCard,
       requestSearchCards,
     },
     dispatch
@@ -91,68 +86,12 @@ export default class Navigate extends Component {
     this.debouncedRequestSearch();
   }
 
-  handleOnBottom = () => {
-    const { hasReachedLimit, isSearchingCards } = this.props;
-    if (!hasReachedLimit && !isSearchingCards) {
-      this.requestSearchCards();
-    }
-  }
-
-  renderScrollElement = ({ _id, question, answer, updatedAt, status }, i) => {
-    const { requestDeleteNavigateCard, isDeletingCard, deleteError } = this.props;
-
-    return (
-      <SuggestionCard
-        _id={_id}
-        question={question}
-        answer={answer}
-        datePosted={updatedAt}
-        status={status}
-        className={s(`navigate-suggestion-card mx-reg mb-reg ${i === 0 ? 'my-reg' : ''}`)}
-        showMoreMenu
-        deleteProps={{
-          onClick: requestDeleteNavigateCard,
-          isLoading: isDeletingCard,
-          error: deleteError,
-        }}
-      />
-    );
-  }
-
-  renderOverflowElement = ({ _id, question, description, answer }, i, positions) => {
-    const { overflow, scroll } = positions;
-
-    const overflowTop = overflow.top || 0;
-    const scrollTop = scroll.top || 0;
-
-    const triangleMarginTop = Math.max(0, scrollTop - overflowTop);
-
-    return (
-      <div className={s('flex')}>
-        <SuggestionPreview
-          _id={_id}
-          question={question}
-          questionDescription={description}
-          answer={answer}
-        />
-        <Triangle
-          size={10}
-          color={'white'}
-          direction="left"
-          style={{ marginTop: triangleMarginTop }}
-          outlineSize={1}
-          outlineColor={colors.gray.light}
-        />
-      </div>
-    );
-  }
-
   render() {
     const {
       activeTab, updateNavigateTab,
       filterTags, updateFilterTags, removeFilterTag,
       cards, isSearchingCards,
-      searchText,
+      searchText, hasReachedLimit,
       requestDeleteNavigateCard, isDeletingCard, deleteError,
     } = this.props;
 
@@ -197,29 +136,26 @@ export default class Navigate extends Component {
                 <Tab tabContainerClassName={s('flex-1')} value={navigateTab} key={navigateTab}>
                   <div>{navigateTab}</div>
                 </Tab>
-                ))
+              ))
             }
           </Tabs>
         </div>
-        <ScrollContainer
+        <SuggestionScrollContainer
           className={s('min-h-0 flex-1')}
-          scrollContainerClassName={s('flex flex-col h-full')}
+          cards={cards}
           verticalMarginAdjust
-          list={cards}
-          placeholder={
-            <div className={s('py-lg')}>
-              { isSearchingCards ?
-                <Loader size="md" /> :
-                <div className={s('text-gray-light text-sm text-center')}> No results </div>
-              }
-            </div>
-          }
-          renderScrollElement={this.renderScrollElement}
-          renderOverflowElement={this.renderOverflowElement}
-          position="left"
-          onBottom={this.handleOnBottom}
-          bottomOffset={SEARCH_INFINITE_SCROLL_OFFSET}
-          footer={isSearchingCards && cards.length !== 0 ? <Loader size="sm" className={s('my-sm')} /> : null}
+          isSearchingCards={isSearchingCards}
+          onBottom={() => this.requestSearchCards(false)}
+          hasReachedLimit={hasReachedLimit}
+          getCardProps={(card, i) => ({
+            showMoreMenu: true,
+            deleteProps: {
+              onClick: requestDeleteNavigateCard,
+              isLoading: isDeletingCard,
+              error: deleteError,
+            },
+            className: i === 0 ? 'my-reg' : ''
+          })}
         />
       </div>
     );

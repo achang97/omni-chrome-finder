@@ -1,5 +1,5 @@
 import { setStorage } from '../utils/storage';
-import { LOGOUT, LOGIN_SUCCESS, GET_USER_SUCCESS } from '../actions/actionTypes';
+import { LOGOUT, LOGIN_SUCCESS, GET_USER_SUCCESS, GET_TASKS_REQUEST } from '../actions/actionTypes';
 
 const authMiddleware = store => next => (action) => {
   const { type, payload } = action;
@@ -7,6 +7,7 @@ const authMiddleware = store => next => (action) => {
   switch (type) {
     case LOGIN_SUCCESS:
       setStorage('auth', payload);
+      store.dispatch({ type: GET_TASKS_REQUEST });
       break;
     case GET_USER_SUCCESS: {
       const { payload: { user } } = action;

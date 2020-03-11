@@ -198,7 +198,7 @@ class SuggestionCard extends Component {
     const { _id, question, answer, datePosted, status, className, openCard } = this.props;
 
     return (
-      <div className={s(`${className} mb-sm rounded-xl p-lg bg-white cursor-pointer`)} onClick={() => openCard({ _id })}>
+      <div className={s(`${className} rounded-xl p-lg bg-white cursor-pointer`)} onClick={() => openCard({ _id })}>
         <div className={s('flex flex-col')}>
           <div className={s('flex')}>
             <span className={s('flex-grow text-lg text-left font-semibold')}>

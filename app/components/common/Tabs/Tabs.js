@@ -132,7 +132,7 @@ class Tabs extends Component {
     const { children } = this.props;
     return (
       children.map((child, i) => (
-        React.cloneElement(child, this.mergeProps(this.getBaseTabProps(child.props.value, i), child.props))
+        child && React.cloneElement(child, this.mergeProps(this.getBaseTabProps(child.props.value, i), child.props))
       ))
     );
   }

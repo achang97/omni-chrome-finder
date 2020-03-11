@@ -8,10 +8,5 @@
 }
 
 .navigate-search-input:focus {
-  box-shadow: none !important;
-  
-}
-
-.navigate-suggestion-card {
-  box-shadow: 0 10px 30px 0 rgba(33,26,29,0.05) !important;
+  box-shadow: none !important; 
 }

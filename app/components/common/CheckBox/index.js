@@ -11,7 +11,7 @@ const CheckBox = (props) => {
 
   return (
     <div
-      className={s(`checkbox-container rounded-full text-purple-reg border-gray-checkbox-border flex flex-col items-center justify-center cursor-pointer ${isSelected ? `bg-purple-checkbox border-0 ${selectedClassName}` : `bg-white ${unselectedClassName}`} ${className}`)}
+      className={s(`checkbox-container ${isSelected ? `checkbox-container-selected ${selectedClassName}` : `bg-white ${unselectedClassName}`} ${className}`)}
       onClick={toggleCheckbox}
     >
       { isSelected && <MdCheck /> }

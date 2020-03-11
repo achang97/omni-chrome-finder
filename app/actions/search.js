@@ -15,6 +15,10 @@ export function handleSearchCardsError(type, error) {
   return { type: types.SEARCH_CARDS_ERROR, payload: { type, error } };
 }
 
+export function clearSearchCards(type) {
+  return { type: types.CLEAR_SEARCH_CARDS, payload: { type } };
+}
+
 
 export function addSearchCard(card) {
   return { type: types.ADD_SEARCH_CARD, payload: { card } };

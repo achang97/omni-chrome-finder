@@ -179,9 +179,8 @@ export const TASKS_SECTIONS = [
 export const SEARCH_TYPE = {
   POPOUT: 'POPOUT',
   NAVIGATE: 'NAVIGATE',
+  AI_SUGGEST: 'AI_SUGGEST',
 };
-
-export const SEARCH_INFINITE_SCROLL_OFFSET = 100;
 
 // Misc.
 export const NOOP = () => {};
