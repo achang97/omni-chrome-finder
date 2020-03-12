@@ -36,28 +36,32 @@ function loadScript(name, tabId, cb) {
 }
 
 function initSocket() {
-  socket = io('http://localhost');
+  socket = io('http://localhost:8000');
   // socket.on('connect', () => {});
   // socket.on('event', (data) => {});
   // socket.on('disconnect', () => {});
 }
 
 chrome.tabs.onUpdated.addListener(async (tabId, changeInfo, tab) => {
-  if (changeInfo.status !== 'loading') return;
+  switch (changeInfo.status) {
+    case 'loading': {
+      const result = await isInjected(tabId);
+      if (!chrome.runtime.lastError && !result[0]) {
+        loadScript('inject', tabId);
+      }
 
-  const result = await isInjected(tabId);
-  if (!chrome.runtime.lastError) {
-    if (!result[0]) {
-      loadScript('inject', tabId);
-    } else {
-      chrome.tabs.sendMessage(tabId, {
-        type: CHROME_MESSAGE.TAB_UPDATE,
-        payload: { url: tab.url }
-      });
+      if (!socket) {
+        initSocket();
+      }
+
+      break;      
     }
-
-    if (!socket) {
-      // initSocket();
+    case 'complete': {
+      const result = await isInjected(tabId);
+      if (result[0]) {
+        chrome.tabs.sendMessage(tabId, { type: CHROME_MESSAGE.TAB_UPDATE });
+      }
+      break;
     }
   }
 });

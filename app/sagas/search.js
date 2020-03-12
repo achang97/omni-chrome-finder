@@ -91,7 +91,7 @@ function* searchCards({ type, query, clearCards }) {
     if (!query.ids || query.ids.length !== 0) {
       const body = { ...query, page };
       if (type === SEARCH_TYPE.AI_SUGGEST) {
-        allRequests.push({ requestFn: doPost, url: '/suggest', body })
+        allRequests.push({ requestFn: doPost, url: '/suggest', body });
       } else {
         allRequests.push({ url: '/cards/query', body });
       }
@@ -120,7 +120,6 @@ function* searchCards({ type, query, clearCards }) {
 
     yield put(handleSearchCardsSuccess(type, cards, externalResults, clearCards));
   } catch (error) {
-      console.log(error)
     if (!isCancel(error)) {
       const { response: { data } } = error;
       yield put(handleSearchCardsError(type, data.error));

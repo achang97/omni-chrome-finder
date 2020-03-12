@@ -19,7 +19,6 @@ import AISuggestTab from '../AISuggestTab';
     dockVisible: state.display.dockVisible,
     dockExpanded: state.display.dockExpanded,
     isLoggedIn: !!state.auth.token,
-    numAISuggestCards: state.search.cards[SEARCH_TYPE.AI_SUGGEST].cards.length,
   }),
   dispatch =>
     bindActionCreators(
@@ -39,10 +38,6 @@ import AISuggestTab from '../AISuggestTab';
 class ChromeMessageListener extends Component {
   constructor(props) {
     super(props);
-
-    this.state = {
-      url: window.location.href,
-    }
   }
 
   componentDidMount() {
@@ -66,9 +61,8 @@ class ChromeMessageListener extends Component {
   }
 
   createMutator(targetNode, config) {
-    // Callback function to execute when mutations are observed
-    var callback = (mutations) => {
-      this.handleTabUpdate(window.location.href);
+    const callback = (mutations) => {
+      this.handleTabUpdate(false);
     };
 
     // Create an observer instance linked to the callback function
@@ -79,32 +73,35 @@ class ChromeMessageListener extends Component {
   getGoogleText = () => {
     let text = '';
 
-    const mainTable = document.querySelector('table[role="presentation"]');
+    const mainTable = document.querySelector('div[role="main"] table[role="presentation"]');
 
-    const title = mainTable.querySelector('[tabindex="-1"]').innerText;
-    const emailList = mainTable.querySelector('[role="list"]');
-
-    if (!this.observer) {
-      // TODO: figure out why this submits twice
-      this.createMutator(emailList, { subtree: true, childList: true });
+    const titleDiv = mainTable.querySelector('[tabindex="-1"]');
+    if (titleDiv) {
+      text += `${titleDiv.innerText}\n\n`;
     }
 
-    text += `${title}\n\n`;
-    for (let i = 0; i < emailList.children.length; i++) {
-      const email = emailList.children[i];
+    const emailList = mainTable.querySelector('[role="list"]');
+    if (emailList) {
+      if (!this.observer) {
+        this.createMutator(emailList, { subtree: true, childList: true });
+      }
 
-      if (email.getAttribute('role') === 'listitem') {
-        let innerText;
-        if (i === emailList.children.length - 1) {
-          const emailCopy = email.cloneNode(true);
-          const removeTables = emailCopy.querySelectorAll('[role="presentation"]');
-          removeTables.forEach(table => table.remove());
-          innerText = emailCopy.innerText;
-        } else {
-          innerText = email.innerText;
+      for (let i = 0; i < emailList.children.length; i++) {
+        const email = emailList.children[i];
+
+        if (email.getAttribute('role') === 'listitem') {
+          let innerText;
+          if (i === emailList.children.length - 1) {
+            const emailCopy = email.cloneNode(true);
+            const removeTables = emailCopy.querySelectorAll('[role="presentation"]');
+            removeTables.forEach(table => table.remove());
+            innerText = emailCopy.innerText;
+          } else {
+            innerText = email.innerText;
+          }
+        
+          text += `${innerText.trim()}\n\n`;
         }
-      
-        text += `${innerText.trim()}\n\n`;
       }
     }
 
@@ -123,22 +120,24 @@ class ChromeMessageListener extends Component {
   };
 
   handleFirstPageLoad = () => {
-    this.handleTabUpdate(window.location.href);
+    this.handleTabUpdate(true);
   };
 
-  handleTabUpdate = (url) => {
-    const { requestSearchCards, clearSearchCards } = this.props;
+  handleTabUpdate = (isNewPage) => {
+    const { isLoggedIn, requestSearchCards, clearSearchCards } = this.props;
 
-    if (url !== this.state.url) {
-      this.disconnectMutatorObserver();
-      this.setState({ url });
-    }
+    if (isLoggedIn) {
+      const url = window.location.href;
+      if (isNewPage) {
+        this.disconnectMutatorObserver();
+      }
 
-    const pageText = this.getPageText(url);
-    if (pageText) {
-      requestSearchCards(SEARCH_TYPE.AI_SUGGEST, { text: pageText });
-    } else {
-      clearSearchCards(SEARCH_TYPE.AI_SUGGEST);
+      const pageText = this.getPageText(url);
+      if (pageText && pageText !== '') {
+        requestSearchCards(SEARCH_TYPE.AI_SUGGEST, { text: pageText });
+      } else if (isNewPage) {
+        clearSearchCards(SEARCH_TYPE.AI_SUGGEST);
+      }
     }
   };
 
@@ -192,8 +191,7 @@ class ChromeMessageListener extends Component {
         break;
       }
       case CHROME_MESSAGE.TAB_UPDATE: {
-        const { url } = payload;
-        this.handleTabUpdate(url);
+        this.handleTabUpdate(true);
         break;
       }
       case CHROME_MESSAGE.SEARCH:
@@ -206,14 +204,7 @@ class ChromeMessageListener extends Component {
   };
 
   render() {
-    const { isLoggedIn, numAISuggestCards } = this.props;
-
-    // TODO: might move this code back to highest level App.js
-    if (isLoggedIn && numAISuggestCards !== 0) {
-      return <AISuggestTab />;
-    }
-
-    return null;
+    return <AISuggestTab />;
   }
 }
 

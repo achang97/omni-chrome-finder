@@ -1,9 +1,10 @@
 import React, { Component } from 'react';
+import PropTypes from 'prop-types';
 import { Provider } from 'react-redux';
 import { MemoryRouter } from 'react-router';
 import App from './App';
 
-export default class Root extends Component {
+class Root extends Component {
   render() {
     const { store } = this.props;
     return (
@@ -15,3 +16,9 @@ export default class Root extends Component {
     );
   }
 }
+
+Root.propTypes = {
+  store: PropTypes.object.isRequired,
+};
+
+export default Root;
