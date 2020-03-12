@@ -2,7 +2,6 @@ import React from 'react';
 import ReactDOM from 'react-dom';
 import { getStorage, getStorageName } from '../../app/utils/storage';
 import { MAIN_CONTAINER_ID } from '../../app/utils/constants';
-import createStore from '../../app/store/configureStore';
 import Root from '../../app/containers/Root';
 
 (function () {
@@ -24,6 +23,8 @@ import Root from '../../app/containers/Root';
         profile: { user }
       };
     }
+
+    const createStore = require('../../app/store/configureStore');
 
     ReactDOM.render(
       <Root store={createStore(initialState)} />,

@@ -44,7 +44,7 @@ export default function navigateReducer(state = initialState, action) {
   switch (type) {
     case types.SEARCH_CARDS_REQUEST: {
       const { type: searchType, query, clearCards } = payload;
-      return updateCardStateByType(searchType, (cardState) => ({
+      return updateCardStateByType(searchType, cardState => ({
         ...(clearCards ? BASE_CARDS_STATE : {}),
         isSearchingCards: true,
         searchCardsError: null,

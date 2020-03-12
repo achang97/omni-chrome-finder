@@ -7,8 +7,6 @@ import auth from '../middleware/auth';
 import rootSaga from '../sagas';
 import setUpAuthSync from './enhancers/authSync';
 
-console.log(window.__REDUX_DEVTOOLS_EXTENSION_COMPOSE__, 'testing')
-
 // If Redux DevTools Extension is installed use it, otherwise use Redux compose
 /* eslint-disable no-underscore-dangle */
 const composeEnhancers = window.__REDUX_DEVTOOLS_EXTENSION_COMPOSE__ ?
