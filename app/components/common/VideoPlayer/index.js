@@ -5,10 +5,11 @@ import {
   PlayToggle, ReplayControl, ForwardControl, VolumeMenuButton, CurrentTimeDisplay, TimeDivider, DurationDisplay, ProgressControl, RemainingTimeDisplay, PlaybackRateMenuButton, FullscreenToggle
 } from 'video-react';
 
-import "video-react/dist/video-react.css";
+import 'video-react/dist/video-react.css';
 
 import style from './video-player.css';
 import { getStyleApplicationFn } from '../../../utils/style';
+
 const s = getStyleApplicationFn(style);
 
 
@@ -38,7 +39,7 @@ class VideoPlayer extends Component {
 
     this.state = {
       player: {},
-    }
+    };
   }
 
   componentDidMount() {
@@ -54,37 +55,37 @@ class VideoPlayer extends Component {
   }
 
   render() {
-  	const { url, fullscreenControlBarItems, minimizedControlBarItems, ...restProps } = this.props;
+    const { url, fullscreenControlBarItems, minimizedControlBarItems, ...restProps } = this.props;
     const { player } = this.state;
 
     const controlBarItems = (player.isFullscreen && fullscreenControlBarItems) ? fullscreenControlBarItems : minimizedControlBarItems;
 
     return (
-      <div className={s("rounded overflow-hidden")}>
-  	    <Player
-  	      ref={player => this.player = player}
-  	      {...restProps}
-  	    >
-  	      <source src={url} />
+      <div className={s('rounded overflow-hidden')}>
+        <Player
+          ref={player => this.player = player}
+          {...restProps}
+        >
+          <source src={url} />
           <BigPlayButton position="center" className={s(`video-player-big-play-button ${player.hasStarted ? 'video-player-big-play-button-hide' : ''}`)} />
-  	      <ControlBar disableDefaultControls autoHide={false} className={s("video-player-control-bar")}>
+          <ControlBar disableDefaultControls autoHide={false} className={s('video-player-control-bar')}>
             { controlBarItems.map(item => CONTROL_BAR_COMPONENT_MAP[item])}
-  	      </ControlBar>
-  	    </Player>
+          </ControlBar>
+        </Player>
       </div>
     );
   }
 }
 
 VideoPlayer.propTypes = {
-	url: PropTypes.string,
+  url: PropTypes.string,
   fullscreenControlBarItems: PropTypes.arrayOf(PropTypes.oneOf(CONTROL_BAR_COMPONENT_LIST)),
   minimizedControlBarItems: PropTypes.arrayOf(PropTypes.oneOf(CONTROL_BAR_COMPONENT_LIST)),
-}
+};
 
 VideoPlayer.defaultProps = {
   minimizedControlBarItems: ['PlayToggle', 'ProgressControl', 'FullscreenToggle'],
   fullscreenControlBarItems: CONTROL_BAR_COMPONENT_LIST,
-}
+};
 
 export default VideoPlayer;

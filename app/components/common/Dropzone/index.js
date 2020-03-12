@@ -1,7 +1,7 @@
 import React, { useMemo, useCallback } from 'react';
 import PropTypes from 'prop-types';
-import {useDropzone} from 'react-dropzone';
-import Dropzone from 'react-dropzone'
+import { useDropzone } from 'react-dropzone';
+import Dropzone from 'react-dropzone';
 import { colors } from '../../../styles/colors';
 
 const baseStyle = {
@@ -51,7 +51,7 @@ function StyledDropzone(props) {
   ]);
 
   return (
-    <div {...getRootProps({style})} className={props.className}>
+    <div {...getRootProps({ style })} className={props.className}>
       <input {...getInputProps()} />
       {props.children}
     </div>
@@ -63,12 +63,12 @@ StyledDropzone.propTypes = {
   onDrop: PropTypes.func.isRequired,
   className: PropTypes.string,
   style: PropTypes.object,
-}
+};
 
 StyledDropzone.defaultProps = {
   accept: '',
   className: '',
   style: {},
-}
+};
 
 export default StyledDropzone;

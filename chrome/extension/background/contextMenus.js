@@ -5,27 +5,27 @@ const IDS = {
   SEARCH: 'SEARCH_MENU_ID',
   ASK: 'ASK_MENU_ID',
   CREATE: 'CREATE_MENU_ID',
-}
+};
 
 const BASE_CONTEXT_MENU_PROPS = {
   contexts: ['all'],
   documentUrlPatterns: [
     'https://*/*', 'http://*/*',
   ]
-}
+};
 
 const ACTION_MENU_ITEMS = [
   {
     title: 'Ask Question',
-    id: IDS.ASK,   
+    id: IDS.ASK,
   }, {
     title: 'Create Card',
-    id: IDS.CREATE,    
+    id: IDS.CREATE,
   }, {
     title: 'Search Omni',
     id: IDS.SEARCH,
-  }, 
-]
+  },
+];
 
 // Create Main Menu
 chrome.contextMenus.create({
@@ -40,11 +40,11 @@ ACTION_MENU_ITEMS.forEach(({ title, id }) => {
     title,
     id,
     ...BASE_CONTEXT_MENU_PROPS
-  });  
-})
+  });
+});
 
 
-chrome.contextMenus.onClicked.addListener(({ menuItemId, selectionText='' }, tab) => {
+chrome.contextMenus.onClicked.addListener(({ menuItemId, selectionText = '' }, tab) => {
   const tabId = tab.id;
 
   switch (menuItemId) {
@@ -58,8 +58,9 @@ chrome.contextMenus.onClicked.addListener(({ menuItemId, selectionText='' }, tab
       chrome.tabs.sendMessage(tabId, { type: CHROME_MESSAGE.CREATE, payload: { selectionText } });
       break;
     }
+    default: {
+      break;
+    }
   }
 });
-
-
 

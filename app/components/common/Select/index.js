@@ -9,18 +9,19 @@ import customStyles from './customStyles';
 
 import style from './select.css';
 import { getStyleApplicationFn } from '../../../utils/style';
+
 const s = getStyleApplicationFn(style);
 
 const Select = ({ className, type, styles, ...rest }) => {
   let SelectComponent;
   switch (type) {
-    case "creatable":
+    case 'creatable':
       SelectComponent = CreatableSelect;
       break;
-    case "async":
+    case 'async':
       SelectComponent = AsyncSelect;
       break;
-    case "default":
+    case 'default':
     default:
       SelectComponent = ReactSelect;
       break;
@@ -42,19 +43,19 @@ const Select = ({ className, type, styles, ...rest }) => {
           primary50: colors.purple.xlight,
           primary25: colors.purple.xlight,
         },
-        })}
+      })}
     />
   );
-}
+};
 
 Select.propTypes = {
-  type: PropTypes.oneOf(["default", "creatable", "async"])
-}
+  type: PropTypes.oneOf(['default', 'creatable', 'async'])
+};
 
 Select.defaultProps = {
-  type: "default",
+  type: 'default',
   className: '',
   styles: {},
-}
+};
 
 export default Select;

@@ -20,12 +20,12 @@ const s = getStyleApplicationFn();
 const CardPermissions = ({ isDisabled, selectedPermission, onChangePermission, permissionGroups, onChangePermissionGroups, isSearchingPermissionGroups, permissionGroupOptions, requestSearchPermissionGroups }) => {
   const loadOptions = (inputValue) => {
     requestSearchPermissionGroups(inputValue);
-  }
+  };
 
   return (
     <div>
       { isDisabled ?
-        <div className={s("underline-border border-purple-gray-20 mb-sm text-purple-reg text-sm inline-block")}>
+        <div className={s('underline-border border-purple-gray-20 mb-sm text-purple-reg text-sm inline-block')}>
           {selectedPermission.label}
         </div> :
         <Tabs
@@ -41,7 +41,7 @@ const CardPermissions = ({ isDisabled, selectedPermission, onChangePermission, p
           onTabClick={onChangePermission}
           showRipple={false}
         >
-          {PERMISSION_OPTIONS.map((permissionOption) => (
+          {PERMISSION_OPTIONS.map(permissionOption => (
             <Tab key={permissionOption.value} value={permissionOption}>
               <div className={s(permissionOption.value !== selectedPermission.value ? 'underline-border border-purple-gray-20' : 'primary-underline')}>
                 {permissionOption.label}
@@ -55,7 +55,7 @@ const CardPermissions = ({ isDisabled, selectedPermission, onChangePermission, p
           value={permissionGroups}
           onChange={onChangePermissionGroups}
           onInputChange={_.debounce(loadOptions, DEBOUNCE_60_HZ)}
-          onFocus={() => loadOptions("")}
+          onFocus={() => loadOptions('')}
           placeholder="Add permission groups..."
           options={permissionGroupOptions}
           isMulti
@@ -65,12 +65,12 @@ const CardPermissions = ({ isDisabled, selectedPermission, onChangePermission, p
           menuShouldScrollIntoView
           getOptionLabel={option => option.permissiongroupName}
           getOptionValue={option => option._id}
-          noOptionsMessage={() => isSearchingPermissionGroups ? 'Searching permission groups...' : 'No options' }
+          noOptionsMessage={() => isSearchingPermissionGroups ? 'Searching permission groups...' : 'No options'}
         />
       </AnimateHeight>
     </div>
   );
-}
+};
 
 CardPermissions.propTypes = {
   selectedPermission: PropTypes.oneOf([...PERMISSION_OPTIONS, {}]).isRequired,
@@ -78,11 +78,11 @@ CardPermissions.propTypes = {
   permissionGroups: PropTypes.array.isRequired,
   onChangePermissionGroups: PropTypes.func.isRequired,
   isDisabled: PropTypes.bool,
-}
+};
 
 CardPermissions.defaultProps = {
   isDisabled: false,
-}
+};
 
 export default connect(
   state => ({

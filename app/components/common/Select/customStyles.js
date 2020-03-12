@@ -40,7 +40,7 @@ const customStyles = {
       ...provided,
       background,
       color: state.isSelected && !state.isFocused ? 'white' : 'black',
-    }
+    };
   },
   input: (provided, state) => ({
     visibility: 'visible',
@@ -61,7 +61,7 @@ const customStyles = {
     ...provided,
     color: colors.purple.reg,
     textDecorationColor: `${colors.purple['gray-50']} !important`,
-    textDecoration: 'underline'    
+    textDecoration: 'underline'
   }),
   multiValueRemove: (provided, state) => ({
     ...provided,

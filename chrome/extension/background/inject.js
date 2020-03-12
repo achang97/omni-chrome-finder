@@ -1,5 +1,5 @@
-import { CHROME_MESSAGE } from '../../../app/utils/constants';
 import io from 'socket.io-client';
+import { CHROME_MESSAGE } from '../../../app/utils/constants';
 
 let socket;
 
@@ -35,20 +35,11 @@ function loadScript(name, tabId, cb) {
   }
 }
 
-function isInjected(tabId) {
-  return chrome.tabs.executeScriptAsync(tabId, {
-    code: `var injected = window.reactExampleInjected;
-      window.reactExampleInjected = true;
-      injected;`,
-    runAt: 'document_start'
-  });
-}
-
 function initSocket() {
-  // var socket = io('http://localhost');
-  // socket.on('connect', function(){});
-  // socket.on('event', function(data){});
-  // socket.on('disconnect', function(){});
+  socket = io('http://localhost');
+  // socket.on('connect', () => {});
+  // socket.on('event', (data) => {});
+  // socket.on('disconnect', () => {});
 }
 
 chrome.tabs.onUpdated.addListener(async (tabId, changeInfo, tab) => {
@@ -57,13 +48,16 @@ chrome.tabs.onUpdated.addListener(async (tabId, changeInfo, tab) => {
   const result = await isInjected(tabId);
   if (!chrome.runtime.lastError) {
     if (!result[0]) {
-      loadScript('inject', tabId, () => console.log('Injected app!'));
+      loadScript('inject', tabId);
     } else {
-      chrome.tabs.sendMessage(tabId, { type: CHROME_MESSAGE.TAB_UPDATE, payload: { url: tab.url } });
+      chrome.tabs.sendMessage(tabId, {
+        type: CHROME_MESSAGE.TAB_UPDATE,
+        payload: { url: tab.url }
+      });
     }
 
     if (!socket) {
-      initSocket();
+      // initSocket();
     }
   }
 });

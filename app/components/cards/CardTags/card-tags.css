@@ -1,12 +1,12 @@
 .card-tags-container {
-	@apply text-gray-dark flex items-center relative;
+  @apply text-gray-dark flex items-center relative;
 }
 
 .card-tags-container-wrap {
-	@apply flex-wrap;
+  @apply flex-wrap;
 }
 
 .card-tag {
-	@apply flex items-center bg-purple-gray-10 text-purple-reg rounded-full font-semibold text-xs;
-	padding: 6px;
+  @apply flex items-center bg-purple-gray-10 text-purple-reg rounded-full font-semibold text-xs;
+  padding: 6px;
 }

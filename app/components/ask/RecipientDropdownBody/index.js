@@ -5,6 +5,7 @@ import { MdClose } from 'react-icons/md';
 
 import style from './recipient-dropdown-body.css';
 import { getStyleApplicationFn } from '../../../utils/style';
+
 const s = getStyleApplicationFn(style);
 
 class RecipientDropdownBody extends Component {
@@ -14,19 +15,19 @@ class RecipientDropdownBody extends Component {
     this.state = {
       mentionInputText: '',
       selectedIndex: 0,
-    }
+    };
 
     this.inputRef = React.createRef();
   }
 
   handleChange = (e) => {
-    this.setState({ mentionInputText: e.target.value, selectedIndex: 0 })
+    this.setState({ mentionInputText: e.target.value, selectedIndex: 0 });
   }
 
   handleKeyPress = (e, mentionOptions) => {
     const { selectedIndex } = this.state;
 
-    if (e.key === 'Enter'){
+    if (e.key === 'Enter') {
       if (selectedIndex < mentionOptions.length) {
         this.onAddMention(mentionOptions[selectedIndex]);
       }
@@ -47,9 +48,9 @@ class RecipientDropdownBody extends Component {
     }
 
     if (e.keyCode === 38) { // UP
-      this.setState({ selectedIndex: (selectedIndex + mentionOptions.length - 1) % mentionOptions.length })
+      this.setState({ selectedIndex: (selectedIndex + mentionOptions.length - 1) % mentionOptions.length });
     } else if (e.keyCode === 40) { // DOWN
-      this.setState({ selectedIndex: (selectedIndex + mentionOptions.length + 1) % mentionOptions.length })
+      this.setState({ selectedIndex: (selectedIndex + mentionOptions.length + 1) % mentionOptions.length });
     }
   }
 
@@ -71,23 +72,23 @@ class RecipientDropdownBody extends Component {
     const addMentionOptions = this.getMentionOptions();
 
     return (
-      <div className={s("flex flex-col min-h-0")}>
-        <div className={s("px-xs")}>
-          <input 
+      <div className={s('flex flex-col min-h-0')}>
+        <div className={s('px-xs')}>
+          <input
             ref={this.inputRef}
             autoFocus
-            className={s("recipient-dropdown-input w-full")}
+            className={s('recipient-dropdown-input w-full')}
             placeholder="@mention"
             onChange={e => this.handleChange(e)}
             value={mentionInputText}
             onKeyPress={e => this.handleKeyPress(e, addMentionOptions)}
             onKeyDown={e => this.handleKeyDown(e, addMentionOptions)}
           />
-          <div className={s("horizontal-separator")} />
+          <div className={s('horizontal-separator')} />
         </div>
-        <div className={s("recipient-dropdown-select-options")}>
+        <div className={s('recipient-dropdown-select-options')}>
           { addMentionOptions.length === 0 ?
-            <div className={s("px-sm text-center font-normal")}> No mention options </div> :
+            <div className={s('px-sm text-center font-normal')}> No mention options </div> :
             addMentionOptions.map((mention, i) => (
               <div
                 key={mention.id}
@@ -95,7 +96,7 @@ class RecipientDropdownBody extends Component {
                 onClick={() => this.onAddMention(mention)}
                 onMouseEnter={() => this.setState({ selectedIndex: i })}
               >
-                <div className={s("w-full truncate font-semibold")}> @{mention.name} </div>
+                <div className={s('w-full truncate font-semibold')}> @{mention.name} </div>
               </div>
             ))
           }
@@ -115,10 +116,10 @@ RecipientDropdownBody.propTypes = {
     name: PropTypes.string.isRequired,
   })).isRequired,
   onAddMention: PropTypes.func.isRequired,
-}
+};
 
 RecipientDropdownBody.defaultProps = {
 
-}
+};
 
 export default RecipientDropdownBody;

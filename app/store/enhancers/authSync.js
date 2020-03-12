@@ -2,11 +2,10 @@ import { getStorageName } from '../../utils/storage';
 import * as types from '../../actions/actionTypes';
 
 function setUpAuthSync(store) {
-  chrome.storage.onChanged.addListener(function(changes, namespace) {
-    for (const key in changes) {
-      const { oldValue, newValue } = changes[key];
+  chrome.storage.onChanged.addListener((changes, namespace) => {
+    Object.entries(changes).forEach(([key, change]) => {
+      const { newValue } = change;
       if (namespace === 'sync' && key === getStorageName('auth')) {
-        const oldValueJSON = oldValue ? JSON.parse(oldValue) : oldValue;
         const newValueJSON = newValue ? JSON.parse(newValue) : newValue;
 
         if (!newValueJSON.token && store.getState().auth.token) {
@@ -15,8 +14,8 @@ function setUpAuthSync(store) {
           store.dispatch({ type: types.SYNC_AUTH_INFO, payload: newValueJSON });
         }
       }
-    }
-  });  
+    });
+  });
 }
 
 export default setUpAuthSync;

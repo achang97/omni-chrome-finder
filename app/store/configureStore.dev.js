@@ -1,11 +1,13 @@
 import { applyMiddleware, createStore, compose } from 'redux';
 import thunk from 'redux-thunk';
+import createSagaMiddleware from 'redux-saga';
 import rootReducer from '../reducers';
 import auth from '../middleware/auth';
-import badge from '../middleware/badge';
-import createSagaMiddleware from 'redux-saga';
+// import badge from '../middleware/badge';
 import rootSaga from '../sagas';
 import setUpAuthSync from './enhancers/authSync';
+
+console.log(window.__REDUX_DEVTOOLS_EXTENSION_COMPOSE__, 'testing')
 
 // If Redux DevTools Extension is installed use it, otherwise use Redux compose
 /* eslint-disable no-underscore-dangle */
@@ -19,7 +21,7 @@ const composeEnhancers = window.__REDUX_DEVTOOLS_EXTENSION_COMPOSE__ ?
 const sagaMiddleware = createSagaMiddleware();
 
 const enhancer = composeEnhancers(
-  applyMiddleware(sagaMiddleware, thunk, auth, badge),
+  applyMiddleware(sagaMiddleware, thunk, auth, /* badge */),
 );
 
 export default function (initialState) {

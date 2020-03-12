@@ -1,25 +1,25 @@
 import React, { Component } from 'react';
 import { Route, Switch, Redirect, withRouter } from 'react-router-dom';
 import Dock from 'react-dock';
-import { CHROME_MESSAGE, CARD_URL_REGEX, SLACK_URL_REGEX } from '../utils/constants';
+import { CARD_URL_REGEX, SLACK_URL_REGEX, SEARCH_TYPE } from '../utils/constants';
 import queryString from 'query-string';
-import { EditorState, ContentState } from 'draft-js';
 
 import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
-import { updateAskSearchText, updateAskQuestionTitle } from '../actions/ask';
-import { updateCreateAnswerEditor } from '../actions/create';
-import { updateNavigateSearchText } from '../actions/navigate';
 import { toggleDock } from '../actions/display';
 import { requestGetUser } from '../actions/profile';
+import { requestGetTasks } from '../actions/tasks';
 import { openCard } from '../actions/cards';
 
-import Header from '../components/common/Header';
+import Header from '../components/app/Header';
+import ChromeMessageListener from '../components/app/ChromeMessageListener';
+
 import Ask from './Ask';
 import Create from './Create';
 import Navigate from './Navigate';
 import Tasks from './Tasks';
 import Cards from './Cards';
+import AISuggest from './AISuggest';
 import Profile from './Profile';
 import Login from './Login';
 import style from './App.css';
@@ -36,43 +36,29 @@ const dockPanelStyles = {
     dockVisible: state.display.dockVisible,
     dockExpanded: state.display.dockExpanded,
     isLoggedIn: !!state.auth.token,
+    showAISuggest: state.search.cards[SEARCH_TYPE.AI_SUGGEST].cards.length !== 0,
   }),
   dispatch =>
     bindActionCreators(
       {
         toggleDock,
         requestGetUser,
+        requestGetTasks,
         openCard,
-        updateAskSearchText,
-        updateAskQuestionTitle,
-        updateCreateAnswerEditor,
-        updateNavigateSearchText,
       },
       dispatch
     )
 )
 
 class App extends Component {
-  constructor(props) {
-    super(props);
-    this.state = {
-      suggestTabVisible: false
-    };
-  }
-
   componentDidMount() {
-    if (this.props.isLoggedIn) {
-      this.props.requestGetUser();
+    const { isLoggedIn, requestGetTasks, requestGetUser } = this.props;
+
+    if (isLoggedIn) {
+      requestGetUser();
+      requestGetTasks();
       this.openChromeExtension();
     }
-
-    chrome.runtime.onMessage.addListener(this.listener);
-    window.addEventListener('load', this.handleFirstPageLoad);
-  }
-
-  componentWillUnmount() {
-    chrome.runtime.onMessage.removeListener(this.listener);
-    window.removeEventListener('load', this.handleFirstPageLoad);
   }
 
   openChromeExtension = () => {
@@ -87,7 +73,7 @@ class App extends Component {
       }
       this.props.openCard({ _id: sxsrf, isEditing: edit === 'true' });
 
-      // Strip off everything after .com. NOTE: For now, assume we will be on .com website 
+      // Strip off everything after .com. NOTE: For now, assume we will be on .com website
       // (likely will be addomni.com)
       window.history.replaceState({}, window.location.title, url.substring(0, url.indexOf('.com') + 4));
     } else if (slackRes) {
@@ -97,123 +83,20 @@ class App extends Component {
     }
   }
 
-  getPageText = () => {
-    // TODO: Basic version that is website agnostic, simply removes chrome extension code, scripts,
-    // and styles from DOM and gets inner text. Future version should look at specific divs (ie. title
-    // and content of email for Gmail).
-    const docCopy = document.cloneNode(true);
-    const omniExt = docCopy.getElementById('omni-chrome-ext-main-container');
-    omniExt.remove();
-    const removeSelectors = ['script', 'noscript', 'style'];
-    removeSelectors.forEach((selector) => {
-      const elements = docCopy.querySelectorAll(`body ${selector}`);
-      for (const elem of elements) {
-        elem.remove();
-      }
-    });
-    return docCopy.body.innerText;
-  };
-
-  handleFirstPageLoad = () => {
-    this.handleTabUpdate(window.location.href);
-  };
-
-  handleTabUpdate = (url) => {
-    // Placeholder code for AI Suggest, code should be written in another file eventually
-    // Case 1: Matches specific email page in Gmail
-    if (/https:\/\/mail\.google\.com\/mail\/u\/\d+\/#inbox\/.+/.test(url)) {
-      this.setState({ suggestTabVisible: true });
-      const text = this.getPageText();
-    } else {
-      this.setState({ suggestTabVisible: false });
-    }
-  };
-
-  handleContextMenuAction = (action, selectedText) => {
-    const {
-      isLoggedIn, dockVisible, dockExpanded, toggleDock, history,
-      updateAskSearchText, updateAskQuestionTitle,
-      updateCreateAnswerEditor,
-      updateNavigateSearchText,
-    } = this.props;
-
-    if (isLoggedIn) {
-      // Open dock
-      if (!dockVisible) {
-        toggleDock();
-      }
-
-      let url;
-      switch (action) {
-        case CHROME_MESSAGE.ASK: {
-          url = '/ask';
-
-          if (dockExpanded) {
-            updateAskQuestionTitle(selectedText);
-          } else {
-            updateAskSearchText(selectedText);
-          }
-          break;
-        }
-        case CHROME_MESSAGE.CREATE: {
-          url = '/create';
-          updateCreateAnswerEditor(EditorState.createWithContent(ContentState.createFromText(selectedText)));
-          break;
-        }        
-        case CHROME_MESSAGE.SEARCH: {
-          url = '/navigate';
-          updateNavigateSearchText(selectedText);
-          break;
-        }
-      }
-
-      history.push(url);
-    }
-  }
-
-  listener = (msg) => {
-    const { type, payload } = msg;
-    switch (msg.type) {
-      case CHROME_MESSAGE.TOGGLE: {
-        this.props.toggleDock();
-        break;
-      }
-      case CHROME_MESSAGE.TAB_UPDATE: {
-        const { url } = payload;
-        this.handleTabUpdate(url);
-        break;
-      }
-      case CHROME_MESSAGE.SEARCH:
-      case CHROME_MESSAGE.ASK:
-      case CHROME_MESSAGE.CREATE: {
-        this.handleContextMenuAction(type, payload.selectionText);
-        break;
-      }
-    }
-  };
-
   render() {
     const {
       dockVisible,
       dockExpanded,
-      toggleDock,
       isLoggedIn,
+      showAISuggest,
       location: { pathname }
     } = this.props;
-    const { suggestTabVisible, jss } = this.state;
     const showFullDock = dockExpanded || (pathname !== '/ask' && pathname !== '/login');
 
     return (
       <div className={s('app-container')}>
+        <ChromeMessageListener />
         { isLoggedIn && dockVisible && <Cards />}
-        { isLoggedIn && suggestTabVisible && ( // TODO: move to new file and style
-          <div
-            className={s('app-suggest-tab fixed bg-white shadow-md')}
-            onClick={() => toggleDock()}
-          >
-            AI Suggest
-          </div>
-        )}
         <Dock
           position="right"
           fluid={false}
@@ -233,10 +116,11 @@ class App extends Component {
               { isLoggedIn && <Route path="/navigate" component={Navigate} /> }
               { isLoggedIn && <Route path="/tasks" component={Tasks} /> }
               { isLoggedIn && <Route path="/profile" component={Profile} /> }
+              { isLoggedIn && showAISuggest && <Route path="/suggest" component={AISuggest} /> }
               { !isLoggedIn && <Route path="/login" component={Login} /> }
-              
+
               {/* A catch-all route: put all other routes ABOVE here */}
-              <Redirect to={isLoggedIn ? '/ask' : '/login' } />
+              <Redirect to={isLoggedIn ? '/ask' : '/login'} />
             </Switch>
           </div>
         </Dock>

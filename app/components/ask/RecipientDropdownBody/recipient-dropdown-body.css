@@ -1,7 +1,7 @@
 .recipient-dropdown-select-options {
-	@apply overflow-auto my-xs text-purple-reg flex-1;
+  @apply overflow-auto my-xs text-purple-reg flex-1;
 }
 
 .recipient-dropdown-input {
-	height: 30px !important;
+  height: 30px !important;
 }

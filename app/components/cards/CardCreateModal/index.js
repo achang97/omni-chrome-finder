@@ -19,7 +19,7 @@ import { hasValidEdits, isExistingCard } from '../../../utils/card';
 
 import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
-import { 
+import {
   requestCreateCard, requestUpdateCard,
   closeCardModal,
   addCardOwner, removeCardOwner,
@@ -30,6 +30,7 @@ import {
 
 import style from './card-create-modal.css';
 import { getStyleApplicationFn } from '../../../utils/style';
+
 const s = getStyleApplicationFn(style);
 
 @connect(
@@ -37,12 +38,17 @@ const s = getStyleApplicationFn(style);
     ...state.cards.activeCard,
   }),
   dispatch => bindActionCreators({
-    requestCreateCard, requestUpdateCard,
+    requestCreateCard,
+    requestUpdateCard,
     closeCardModal,
-    addCardOwner, removeCardOwner,
-    updateCardTags, removeCardTag,
+    addCardOwner,
+    removeCardOwner,
+    updateCardTags,
+    removeCardTag,
     updateCardKeywords,
-    updateCardVerificationInterval, updateCardPermissions, updateCardPermissionGroups
+    updateCardVerificationInterval,
+    updateCardPermissions,
+    updateCardPermissionGroups
   }, dispatch)
 )
 
@@ -55,50 +61,50 @@ class CardCreateModal extends Component {
 
   componentDidUpdate(prevProps) {
     if (!prevProps.createError && this.props.createError) {
-      this.bottomRef.current.scrollIntoView({ behavior: "smooth", block: "end" });
+      this.bottomRef.current.scrollIntoView({ behavior: 'smooth', block: 'end' });
     }
   }
 
   renderOwners = () => {
-    const { edits: { owners=[] }, addCardOwner, removeCardOwner } = this.props;
+    const { edits: { owners = [] }, addCardOwner, removeCardOwner } = this.props;
     return (
       <CardSection title="Owner(s)">
         <CardUsers
-          isEditable={true}
+          isEditable
           users={owners}
           onAdd={addCardOwner}
           onRemoveClick={removeCardOwner}
-          showSelect={true}
+          showSelect
         />
       </CardSection>
     );
   }
 
   renderTags = () => {
-    const { edits: { tags=[] }, updateCardTags, removeCardTag } = this.props;
+    const { edits: { tags = [] }, updateCardTags, removeCardTag } = this.props;
     return (
-      <CardSection className={s("mt-reg")} title="Tags">
+      <CardSection className={s('mt-reg')} title="Tags">
         <CardTags
-          isEditable={true}
+          isEditable
           tags={tags}
           onChange={updateCardTags}
           onRemoveClick={removeCardTag}
-          showPlaceholder={true}
-          showSelect={true}
+          showPlaceholder
+          showSelect
         />
       </CardSection>
-    )
+    );
   }
 
   renderKeywords = () => {
-    const { edits: { keywords=[] }, updateCardKeywords } = this.props;
+    const { edits: { keywords = [] }, updateCardKeywords } = this.props;
     return (
       <CardSection
-        className={s("mt-reg")}
+        className={s('mt-reg')}
         title="Keywords"
         startExpanded={false}
         preview={
-          <div className={s("card-create-modal-keywords-preview")}>
+          <div className={s('card-create-modal-keywords-preview')}>
             { keywords.map(({ label, value }, i) => (
               <div key={value} className={i !== keywords.length - 1 ? s('mr-xs') : ''}>
                 {label}{i !== keywords.length - 1 && ','}
@@ -114,11 +120,11 @@ class CardCreateModal extends Component {
           isMulti
           menuShouldScrollIntoView
           isClearable={false}
-          placeholder={"Add keywords..."}
+          placeholder={'Add keywords...'}
           type="creatable"
           components={{ DropdownIndicator: null }}
           noOptionsMessage={({ inputValue }) => keywords.some(keyword => keyword.value === inputValue) ?
-            "Keyword already exists" : "Begin typing to add a keyword"
+            'Keyword already exists' : 'Begin typing to add a keyword'
           }
         />
       </CardSection>
@@ -126,25 +132,25 @@ class CardCreateModal extends Component {
   }
 
   renderAdvanced = () => {
-    const { edits: { verificationInterval={}, permissions={}, permissionGroups=[] }, updateCardVerificationInterval, updateCardPermissions, updateCardPermissionGroups } = this.props;
+    const { edits: { verificationInterval = {}, permissions = {}, permissionGroups = [] }, updateCardVerificationInterval, updateCardPermissions, updateCardPermissionGroups } = this.props;
     return (
       <CardSection
-        className={s("mt-reg")}
+        className={s('mt-reg')}
         title="Advanced"
         showSeparator={false}
         startExpanded={false}
         preview={
-          <div className={s("text-xs text-purple-gray-50 flex")}>
+          <div className={s('text-xs text-purple-gray-50 flex')}>
             <MdAutorenew />
-            <span className={s("ml-xs")}> {verificationInterval.label} </span>
-            <div className={s("vertical-separator mx-reg")} />
+            <span className={s('ml-xs')}> {verificationInterval.label} </span>
+            <div className={s('vertical-separator mx-reg')} />
             <MdLock />
-            <span className={s("ml-xs")}> {permissions.label} </span>
+            <span className={s('ml-xs')}> {permissions.label} </span>
           </div>
         }
       >
         <div>
-          <div className={s("text-gray-reg text-xs mb-xs")}> Verification Interval </div>
+          <div className={s('text-gray-reg text-xs mb-xs')}> Verification Interval </div>
           <Select
             value={verificationInterval}
             onChange={updateCardVerificationInterval}
@@ -154,8 +160,8 @@ class CardCreateModal extends Component {
             menuShouldScrollIntoView
           />
         </div>
-        <div className={s("mt-sm")}>
-          <div className={s("text-gray-reg text-xs mb-sm")}> Permissions </div>
+        <div className={s('mt-sm')}>
+          <div className={s('text-gray-reg text-xs mb-sm')}> Permissions </div>
           <CardPermissions
             selectedPermission={permissions}
             onChangePermission={updateCardPermissions}
@@ -181,32 +187,32 @@ class CardCreateModal extends Component {
         isOpen={modalOpen[MODAL_TYPE.CREATE]}
         onRequestClose={() => closeCardModal(MODAL_TYPE.CREATE)}
         title={edits.question}
-        overlayClassName={s("rounded-b-lg")}
-        bodyClassName={s("rounded-b-lg flex flex-col")}
+        overlayClassName={s('rounded-b-lg')}
+        bodyClassName={s('rounded-b-lg flex flex-col')}
       >
-        <div className={s("flex-grow overflow-auto p-lg")}>
+        <div className={s('flex-grow overflow-auto p-lg')}>
           { this.renderOwners() }
           { this.renderTags() }
           { this.renderKeywords() }
           { this.renderAdvanced() }
           { createError &&
-            <div className={s("error-text my-sm")}> {createError} </div>
+            <div className={s('error-text my-sm')}> {createError} </div>
           }
           <div ref={this.bottomRef} />
         </div>
         <Button
           text="Complete Card"
           onClick={onClick}
-          className={s("flex-shrink-0 rounded-t-none")}
+          className={s('flex-shrink-0 rounded-t-none')}
           underline
           underlineColor="purple-gray-50"
-          color={"primary"}
+          color={'primary'}
           iconLeft={false}
-          icon={isLoading ? <Loader className={s("ml-sm")} size="sm" color="white" /> : null}
+          icon={isLoading ? <Loader className={s('ml-sm')} size="sm" color="white" /> : null}
           disabled={!hasValidEdits(edits) || isLoading}
         />
       </Modal>
-    );    
+    );
   }
 }
 
