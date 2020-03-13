@@ -1,13 +1,14 @@
-// chrome.storage.sync.get('todos', (obj) => {
-  // let todos = obj.todos;
-  // if (todos) {
-  //   todos = JSON.parse(todos);
-  //   const len = todos.filter(todo => !todo.marked).length;
-  //   if (len > 0) {
-  //     chrome.browserAction.setBadgeText({ text: len.toString() });
-  //   }
-  // } else {
-  //   // Initial
-  //   chrome.browserAction.setBadgeText({ text: '1' });
-  // }
-// });
+import { getStorage } from '../../../app/utils/storage';
+import { colors } from '../../../app/styles/colors';
+
+chrome.browserAction.setBadgeBackgroundColor({ color: colors.purple.reg });
+
+getStorage('tasks').then((tasks) => {
+  if (tasks) {
+    // TODO: remove check for resolved tag
+    const numTasks = tasks.filter(task => !task.resolved).length;
+    if (numTasks > 0) {
+      chrome.browserAction.setBadgeText({ text: numTasks.toString() });
+    }
+  }
+});

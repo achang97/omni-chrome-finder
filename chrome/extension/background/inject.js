@@ -1,5 +1,6 @@
 import io from 'socket.io-client';
 import { CHROME_MESSAGE } from '../../../app/utils/constants';
+import { getStorage } from '../../../app/utils/storage';
 
 let socket;
 
@@ -33,6 +34,24 @@ function loadScript(name, tabId, cb) {
       chrome.tabs.executeScript(tabId, { code: fetchRes, runAt: 'document_end' }, cb);
     });
   }
+}
+
+function createNotification(notificationBody) {
+  const { type='basic', ...rest } = notificationBody;
+
+  // Create chrome notification
+  chrome.notifications.create({
+    type,
+    iconUrl: chrome.runtime.getURL('/img/icon-128.png'),
+    ...rest
+  });
+
+  // Send
+  chrome.tabs.query({ active: true, lastFocusedWindow: true }, function(tabs) {
+    // and use that tab to fill in out title and url
+    var activeTab = tabs[0];
+    chrome.tabs.sendMessage(activeTab.id, { type: CHROME_MESSAGE.NOTIFICATION_RECEIVED, payload: notificationBody });
+  });
 }
 
 function initSocket() {
@@ -71,5 +90,25 @@ chrome.browserAction.onClicked.addListener(async (tab) => {
   const result = await isInjected(tabId);
   if (!chrome.runtime.lastError && result[0]) {
     chrome.tabs.sendMessage(tabId, { type: CHROME_MESSAGE.TOGGLE });
+
+    getStorage('auth').then((auth) => {
+      const isLoggedIn = auth && auth.token;
+      if (isLoggedIn) {
+        createNotification({
+          title: 'This is a test!',
+          message: 'This is some test message.',
+          contextMessage: 'Test context message'
+        });
+      }
+    })
   }
 });
+
+chrome.notifications.onButtonClicked.addListener(async (notificationId) => {
+  chrome.tabs.sendMessage(tabId, { type: CHROME_MESSAGE.NOTIFICATION_OPENED, payload: { notificationId } });
+});
+
+
+
+
+

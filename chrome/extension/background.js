@@ -24,9 +24,6 @@ promisifyAll(chrome, [
   'browserAction',
   'contextMenus'
 ]);
-promisifyAll(chrome.storage, [
-  'local',
-]);
 
 require('./background/contextMenus');
 require('./background/inject');

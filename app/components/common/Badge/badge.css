@@ -1,6 +1,7 @@
 .badge {
   @apply flex justify-center items-center bg-purple-reg text-white absolute z-10 rounded-full p-xs bottom-0 right-0;
   transform: translate(40%, 35%);  
+  box-sizing: content-box;
 }
 
 .badge-sm {

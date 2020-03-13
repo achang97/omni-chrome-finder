@@ -5,6 +5,8 @@ export const CHROME_MESSAGE = {
   SEARCH: 'SEARCH',
   ASK: 'ASK',
   CREATE: 'CREATE',
+  NOTIFICATION_RECEIVED: 'NOTIFICATION_RECEIVED',
+  NOTIFICATION_OPENED: 'NOTIFICATION_OPENED',
 };
 
 export const MAIN_CONTAINER_ID = 'omni-chrome-ext-main-container';
