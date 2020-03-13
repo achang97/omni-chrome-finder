@@ -8,17 +8,11 @@
 }
 
 .ask-screen-record-shadow {
-	box-shadow: 0 4px 6px -1px rgba(255, 159, 159, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+  box-shadow: 0 4px 6px -1px rgba(255, 159, 159, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
 }
 
 .ask-attachment-icon {
   transform: rotate(-90deg);
-}
-
-.ask-attachment-count {
-  @apply bg-purple-reg text-white absolute z-10 rounded-full p-xs text-xs bottom-0;
-  right: 0;
-  transform: translate(40%, 35%);
 }
 
 .ask-attachment-dropdown {
@@ -27,8 +21,8 @@
 }
 
 .ask-recipient {
-	height: 15px;
-	@apply m-xs relative text-purple-reg font-semibold text-xs rounded-lg flex justify-between items-center p-reg;
+  height: 15px;
+  @apply m-xs relative text-purple-reg font-semibold text-xs rounded-lg flex justify-between items-center p-reg;
 }
 
 .ask-recipient-dropdown {
@@ -38,7 +32,7 @@
 }
 
 .ask-recipient-mentions-count {
-	@apply m-xs bg-purple-gray-50 text-purple-reg rounded-full flex justify-center items-center;
-	min-width: 10px;
-	padding: 2px 4px;
+  @apply m-xs bg-purple-gray-50 text-purple-reg rounded-full flex justify-center items-center;
+  min-width: 10px;
+  padding: 2px 4px;
 }

@@ -1,18 +1,18 @@
 .card-attachment {
-	@apply flex items-center py-xs px-sm rounded-full font-semibold text-xs;
+  @apply flex items-center py-xs px-sm rounded-full font-semibold text-xs;
 }
 
 .card-attachment-remove-icon {
-	@apply ml-xs flex-shrink-0;
+  @apply ml-xs flex-shrink-0;
 }
 
 .card-attachment-file-icon {
-	@apply mr-xs flex-shrink-0 flex items-center py-xs;
-	height: 14px;
-	font-size: 13px;
+  @apply mr-xs flex-shrink-0 flex items-center py-xs;
+  height: 14px;
+  font-size: 13px;
 }
 
 .card-attachment-filename-input {
-	@apply h-full w-full rounded text-xs flex-1 !important;
-	height: 20px;
+  @apply h-full w-full rounded text-xs flex-1 !important;
+  height: 20px;
 }

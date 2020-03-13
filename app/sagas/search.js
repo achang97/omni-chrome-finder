@@ -1,10 +1,10 @@
 import { CancelToken, isCancel } from 'axios';
-import { delay } from 'redux-saga';
-import { take, call, fork, all, cancel, cancelled, put, select } from 'redux-saga/effects';
-import { doGet, doPost, doPut, doDelete } from '../utils/request'
-import { SEARCH_TYPE, DOCUMENTATION_TYPE, INTEGRATIONS } from '../utils/constants';
-import { SEARCH_CARDS_REQUEST, SEARCH_TAGS_REQUEST, SEARCH_USERS_REQUEST, SEARCH_PERMISSION_GROUPS_REQUEST,  } from '../actions/actionTypes';
-import { 
+import { take, call, fork, all, put, select } from 'redux-saga/effects';
+import { doGet, doPost } from '../utils/request';
+import { isLoggedIn } from '../utils/auth';
+import { SEARCH_TYPE, INTEGRATIONS } from '../utils/constants';
+import { SEARCH_CARDS_REQUEST, SEARCH_TAGS_REQUEST, SEARCH_USERS_REQUEST, SEARCH_PERMISSION_GROUPS_REQUEST, } from '../actions/actionTypes';
+import {
   handleSearchCardsSuccess, handleSearchCardsError,
   handleSearchTagsSuccess, handleSearchTagsError,
   handleSearchUsersSuccess, handleSearchUsersError,
@@ -20,14 +20,28 @@ const CANCEL_TYPE = {
 
 const CANCEL_SOURCE = {};
 
+const DOCUMENTATION_INTEGRATIONS = [
+  {
+    integration: INTEGRATIONS.GOOGLE,
+    url: '/google/drive/query'
+  },
+  {
+    integration: INTEGRATIONS.SLACK,
+    url: '/slack/query'
+  }
+];
+
 export default function* watchSearchRequests() {
   let action;
 
-  while (action = yield take([SEARCH_CARDS_REQUEST, SEARCH_TAGS_REQUEST, SEARCH_USERS_REQUEST, SEARCH_PERMISSION_GROUPS_REQUEST])) {
+  while (action = yield take([
+    SEARCH_CARDS_REQUEST, SEARCH_TAGS_REQUEST, SEARCH_USERS_REQUEST,
+    SEARCH_PERMISSION_GROUPS_REQUEST
+  ])) {
     const { type, payload } = action;
     switch (type) {
       case SEARCH_CARDS_REQUEST: {
-        yield fork(searchCards, payload)
+        yield fork(searchCards, payload);
         break;
       }
       case SEARCH_TAGS_REQUEST: {
@@ -42,12 +56,11 @@ export default function* watchSearchRequests() {
         yield fork(searchPermissionGroups, payload);
         break;
       }
+      default: {
+        break;
+      }
     }
   }
-}
-
-function isLoggedIn(user, service) {
-  return user && user.integrations[service].access_token;
 }
 
 function cancelRequest(cancelType) {
@@ -62,23 +75,51 @@ function cancelRequest(cancelType) {
 function* searchCards({ type, query, clearCards }) {
   const cancelToken = cancelRequest(CANCEL_TYPE.CARDS);
 
+  if (!query) {
+    query = yield select(state => state.search.cards[type].oldQuery);
+  }
+
   try {
     const page = yield select(state => state.search.cards[type].page);
     const user = yield select(state => state.profile.user);
 
     let cards = [];
+    const externalResults = [];
+
+    const allRequests = [];
+
     if (!query.ids || query.ids.length !== 0) {
-      cards = yield call(doGet, '/cards/query', { ...query, page }, { cancelToken });
+      const body = { ...query, page };
+      if (type === SEARCH_TYPE.AI_SUGGEST) {
+        allRequests.push({ requestFn: doPost, url: '/suggest', body });
+      } else {
+        allRequests.push({ url: '/cards/query', body });
+      }
     }
 
-    const externalResults = [];
-    if (type === SEARCH_TYPE.POPOUT && query.q !== '' && isLoggedIn(user, INTEGRATIONS.GOOGLE)) {
-      const googleResults = yield call(doGet, '/google/drive/query', { q: query.q }, { cancelToken });
-      externalResults.push({ source: DOCUMENTATION_TYPE.GOOGLE_DRIVE, results: googleResults });
+    if (type === SEARCH_TYPE.POPOUT && query.q !== '') {
+      DOCUMENTATION_INTEGRATIONS.forEach(({ integration, url }) => {
+        if (isLoggedIn(user, integration)) {
+          allRequests.push({ url, integration, body: { q: query.q } });
+        }
+      });
+    }
+
+    const results = yield all(allRequests.map(({ requestFn, url, body }) => (
+      call(requestFn || doGet, url, body, { cancelToken })
+    )));
+
+    if (results.length !== 0) {
+      cards = results[0];
+    }
+
+    let i;
+    for (i = 1; i < results.length; i++) {
+      externalResults.push({ integration: allRequests[i].integration, results: results[i] });
     }
 
     yield put(handleSearchCardsSuccess(type, cards, externalResults, clearCards));
-  } catch(error) {
+  } catch (error) {
     if (!isCancel(error)) {
       const { response: { data } } = error;
       yield put(handleSearchCardsError(type, data.error));
@@ -92,8 +133,7 @@ function* searchTags({ name }) {
   try {
     const { tags } = yield call(doPost, '/tags/queryNames', { name }, { cancelToken });
     yield put(handleSearchTagsSuccess(tags));
-  } catch(error) {
-    console.log(error)
+  } catch (error) {
     if (!isCancel(error)) {
       const { response: { data } } = error;
       yield put(handleSearchTagsError(data.error));
@@ -107,7 +147,7 @@ function* searchUsers({ name }) {
   try {
     const { users } = yield call(doPost, '/users/queryNames', { name }, { cancelToken });
     yield put(handleSearchUsersSuccess(users));
-  } catch(error) {
+  } catch (error) {
     if (!isCancel(error)) {
       const { response: { data } } = error;
       yield put(handleSearchUsersError(data.error));
@@ -121,7 +161,7 @@ function* searchPermissionGroups({ name }) {
   try {
     const { permissiongroups } = yield call(doPost, '/permissiongroups/queryNames', { name }, { cancelToken });
     yield put(handleSearchPermissionGroupsSuccess(permissiongroups));
-  } catch(error) {
+  } catch (error) {
     if (!isCancel(error)) {
       const { response: { data } } = error;
       yield put(handleSearchPermissionGroupsError(data.error));

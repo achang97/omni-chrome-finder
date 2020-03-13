@@ -1,4 +1,4 @@
-import { all, spawn } from 'redux-saga/effects';
+import { all } from 'redux-saga/effects';
 import watchAuthRequests from './auth';
 import watchSearchRequests from './search';
 import watchAskRequests from './ask';
@@ -7,7 +7,7 @@ import watchProfileRequests from './profile';
 import watchTasksRequests from './tasks';
 import watchNavigateRequests from './navigate';
 
-export default function* rootSaga(dispatch, getState) {
+export default function* rootSaga() {
   yield all([
     watchAuthRequests(),
     watchSearchRequests(),

@@ -1,11 +1,10 @@
-import { delay } from 'redux-saga';
-import { take, call, fork, all, cancel, cancelled, put, select } from 'redux-saga/effects';
-import { doGet, doPost, doPut, doDelete } from '../utils/request'
-import { getContentStateFromEditorState } from '../utils/editorHelpers';
+import { take, call, fork, put, select } from 'redux-saga/effects';
+import { doGet, doPost, doDelete } from '../utils/request';
+import { getContentStateFromEditorState } from '../utils/editor';
 import { SLACK_RECIPIENT_TYPE } from '../utils/constants';
-import { convertAttachmentsToBackendFormat, isUploadedFile } from '../utils/fileHelpers';
+import { convertAttachmentsToBackendFormat, isUploadedFile } from '../utils/file';
 import { ASK_QUESTION_REQUEST, GET_SLACK_CONVERSATIONS_REQUEST, ADD_ASK_ATTACHMENT_REQUEST, REMOVE_ASK_ATTACHMENT_REQUEST } from '../actions/actionTypes';
-import { 
+import {
   handleAskQuestionSuccess, handleAskQuestionError,
   handleGetSlackConversationsSuccess, handleGetSlackConversationsError,
   handleAddAskAttachmentSuccess, handleAddAskAttachmentError,
@@ -15,11 +14,14 @@ import {
 export default function* watchAuthRequests() {
   let action;
 
-  while (action = yield take([ASK_QUESTION_REQUEST, GET_SLACK_CONVERSATIONS_REQUEST, ADD_ASK_ATTACHMENT_REQUEST, REMOVE_ASK_ATTACHMENT_REQUEST])) {
+  while (action = yield take([
+    ASK_QUESTION_REQUEST, GET_SLACK_CONVERSATIONS_REQUEST,
+    ADD_ASK_ATTACHMENT_REQUEST, REMOVE_ASK_ATTACHMENT_REQUEST
+  ])) {
     const { type, payload } = action;
     switch (type) {
       case ASK_QUESTION_REQUEST: {
-        yield fork(askQuestion)
+        yield fork(askQuestion);
         break;
       }
       case GET_SLACK_CONVERSATIONS_REQUEST: {
@@ -34,14 +36,21 @@ export default function* watchAuthRequests() {
         yield fork(removeAttachment, payload);
         break;
       }
+      default: {
+        break;
+      }
     }
   }
 }
 
 function* askQuestion() {
   try {
-    const { questionTitle, questionDescription, recipients, attachments } = yield select(state => state.ask);
-    const { contentState: contentStateDescription, text: descriptionText } = getContentStateFromEditorState(questionDescription);
+    const {
+      questionTitle, questionDescription, recipients, attachments
+    } = yield select(state => state.ask);
+    const {
+      contentState: contentStateDescription, text: descriptionText
+    } = getContentStateFromEditorState(questionDescription);
 
     yield call(doPost, '/slack/sendUserMessage', {
       channels: recipients.map(({ id, name, type, mentions }) => ({
@@ -55,7 +64,7 @@ function* askQuestion() {
       attachments: convertAttachmentsToBackendFormat(attachments),
     });
     yield put(handleAskQuestionSuccess());
-  } catch(error) {
+  } catch (error) {
     const { response: { data } } = error;
     yield put(handleAskQuestionError(data.error));
   }
@@ -65,10 +74,10 @@ function* getSlackConversations() {
   try {
     const { conversations } = yield call(doGet, '/slack/getAllConversations');
     yield put(handleGetSlackConversationsSuccess(conversations));
-  } catch(error) {
+  } catch (error) {
     const { response: { data } } = error;
     yield put(handleGetSlackConversationsError(data.error));
-  }  
+  }
 }
 
 function* addAttachment({ key, file }) {
@@ -78,20 +87,20 @@ function* addAttachment({ key, file }) {
 
     const attachment = yield call(doPost, '/files/upload', formData, { isForm: true });
     yield put(handleAddAskAttachmentSuccess(key, attachment));
-  } catch(error) {
+  } catch (error) {
     const { response: { data } } = error;
     yield put(handleAddAskAttachmentError(key, data.error));
-  }  
+  }
 }
 
 function* removeAttachment({ key }) {
   try {
     if (isUploadedFile(key)) {
-      const attachment = yield call(doDelete, `/files/${key}`);
+      yield call(doDelete, `/files/${key}`);
     }
     yield put(handleRemoveAskAttachmentSuccess(key));
-  } catch(error) {
+  } catch (error) {
     const { response: { data } } = error;
-    yield put(handleRemoveAskAttachmentSuccess(key, error));
+    yield put(handleRemoveAskAttachmentError(key, data.error));
   }
 }

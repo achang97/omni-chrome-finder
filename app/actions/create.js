@@ -6,7 +6,7 @@ export function showCreateDescriptionEditor() {
 }
 
 export function updateCreateQuestion(newValue) {
-  return { type: types.UPDATE_CREATE_QUESTION, payload: { newValue }};
+  return { type: types.UPDATE_CREATE_QUESTION, payload: { newValue } };
 }
 
 export function updateCreateAnswerEditor(editorState) {

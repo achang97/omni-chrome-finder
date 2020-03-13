@@ -1,52 +1,52 @@
 .profile-profile-picture {
-	height: 72px;
-	width: 72px;
+  height: 72px;
+  width: 72px;
 }
 
 .profile-edit-container {
-	height: 25px;
-	width: 25px;
+  height: 25px;
+  width: 25px;
 }
 
 .profile-about-input {
-	border-radius: 0 !important;
-	border: 0 !important;
-	box-shadow: 0 !important;
-	padding: 0 !important;
-	height: 30px !important;
-	border-bottom: 1px solid #211A1D40 !important;
+  border-radius: 0 !important;
+  border: 0 !important;
+  box-shadow: 0 !important;
+  padding: 0 !important;
+  height: 30px !important;
+  border-bottom: 1px solid #211A1D40 !important;
 }
 
 .profile-about-input:focus {
-	box-shadow: none !important;
+  box-shadow: none !important;
 }
 
 .profile-edit-photo-icon {
-	bottom: calc(50% - 12.5px) !important;
-	right: calc(50% - 12.5px) !important;
+  bottom: calc(50% - 12.5px) !important;
+  right: calc(50% - 12.5px) !important;
 }
 
 .shadow-light {
-	box-shadow: 0 10px 30px 0 rgba(33,26,29,0.05) !important;
+  box-shadow: 0 10px 30px 0 rgba(33,26,29,0.05) !important;
 }
 
 .profile-integration {
-	@apply p-reg rounded-lg;
+  @apply p-reg rounded-lg cursor-pointer;
 }
 
 .profile-integration-active {
-	@apply bg-purple-light;
+  @apply bg-purple-light;
 }
 
 .profile-integration-inactive {
-	@apply border border-solid border-gray-light bg-white cursor-pointer; 
+  @apply border border-solid border-gray-light bg-white; 
 }
 
 .profile-integration-img-container {
-	height: 32px;
-	width: 32px;
+  height: 32px;
+  width: 32px;
 }
 
 .profile-integration-img {
-	max-height: 20px;
+  max-height: 20px;
 }

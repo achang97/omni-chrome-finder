@@ -4,7 +4,7 @@ import { MdCheck, MdMoreVert } from 'react-icons/md';
 import TimeAgo from 'react-timeago';
 import AnimateHeight from 'react-animate-height';
 
-import { getContentStateHTMLFromString } from '../../../utils/editorHelpers';
+import { getContentStateHTMLFromString } from '../../../utils/editor';
 
 import CardStatus from '../../cards/CardStatus';
 import CardConfirmModal from '../../cards/CardConfirmModal';
@@ -25,13 +25,14 @@ import _ from 'lodash';
 import { colors } from '../../../styles/colors';
 
 import style from './suggestion-card.css';
-import { getStyleApplicationFn } from '../../../utils/styleHelpers';
+import { getStyleApplicationFn } from '../../../utils/style';
+
 const s = getStyleApplicationFn(style);
 
 const BUTTON_TYPE = {
   SHARE: 'SHARE',
   DELETE: 'DELETE'
-}
+};
 
 @connect(
   state => ({
@@ -47,7 +48,7 @@ class SuggestionCard extends Component {
     this.state = {
       dropdownOpen: false,
       buttonActive: _.mapValues(BUTTON_TYPE, () => false),
-    }
+    };
   }
 
   componentDidUpdate(prevProps) {
@@ -61,9 +62,9 @@ class SuggestionCard extends Component {
     return {
       onClick: () => onClick(_id),
       iconLeft: false,
-      icon: isLoading ? <Loader className={s("ml-sm")} size="sm" color="white" /> : null,
-      disabled: isLoading,      
-    }
+      icon: isLoading ? <Loader className={s('ml-sm')} size="sm" color="white" /> : null,
+      disabled: isLoading,
+    };
   }
 
   getActions = () => {
@@ -78,22 +79,22 @@ class SuggestionCard extends Component {
         label: 'Delete Card',
         buttonType: BUTTON_TYPE.DELETE,
         modalProps: {
-          title: "Confirm Delete Card",
-          description: "Are you sure you want to delete this card?",
+          title: 'Confirm Delete Card',
+          description: 'Are you sure you want to delete this card?',
           error: this.props.deleteProps.error,
           primaryButtonProps: {
-            text: "Delete",
+            text: 'Delete',
             ...this.getButtonProps(this.props.deleteProps)
           }
         }
       });
     }
-  
-    return actions;    
+
+    return actions;
   }
 
   toggleActiveButton = (type, value) => {
-    this.setState({ buttonActive: { ...this.state.buttonActive, [type]: value !== undefined ? value : !this.state.buttonActive[type] } })
+    this.setState({ buttonActive: { ...this.state.buttonActive, [type]: value !== undefined ? value : !this.state.buttonActive[type] } });
   }
 
   shareCard = () => {
@@ -118,7 +119,7 @@ class SuggestionCard extends Component {
 
   protectedOnClick = (onClick, buttonType) => {
     if (onClick) {
-      onClick();  
+      onClick();
     } else {
       this.toggleActiveButton(buttonType);
     }
@@ -135,24 +136,24 @@ class SuggestionCard extends Component {
     const actions = this.getActions();
 
     return (
-      <div className={s("flex-shrink-0 relative")}>
+      <div className={s('flex-shrink-0 relative')}>
         <Dropdown
-          className={s("ml-xs")}
+          className={s('ml-xs')}
           isOpen={dropdownOpen}
-          toggler={ <MdMoreVert /> }
-          onToggle={(dropdownOpen) => this.setState({ dropdownOpen })}
+          toggler={<MdMoreVert />}
+          onToggle={dropdownOpen => this.setState({ dropdownOpen })}
           body={
-            <div className={s("navigate-more-dropdown")}>
+            <div className={s('navigate-more-dropdown')}>
               { actions.map(({ label, onClick, buttonType }, i) => (
                 <div key={buttonType}>
                   <Button
-                    key={label} 
+                    key={label}
                     text={label}
-                    className={'shadow-none'}
+                    className={'shadow-none text-purple-reg'}
                     onClick={() => this.protectedOnClick(onClick, buttonType)}
                   />
                   { i !== actions.length - 1 &&
-                    <div className={s("horizontal-separator my-0")} />
+                    <div className={s('horizontal-separator my-0')} />
                   }
                 </div>
               ))}
@@ -167,11 +168,11 @@ class SuggestionCard extends Component {
     const { buttonActive } = this.state;
     return (
       <AnimateHeight height={buttonActive[BUTTON_TYPE.SHARE] ? 'auto' : 0}>
-        <div className={s("flex-1 mt-sm mx-sm p-sm text-center bg-purple-light rounded-full text-xs")}>
+        <div className={s('flex-1 mt-sm mx-sm p-sm text-center bg-purple-light rounded-full text-xs')}>
           Copied link to clipboard!
         </div>
       </AnimateHeight>
-    )
+    );
   }
 
   renderModals = () => {
@@ -197,22 +198,22 @@ class SuggestionCard extends Component {
     const { _id, question, answer, datePosted, status, className, openCard } = this.props;
 
     return (
-      <div className={s(`${className} mb-sm rounded-xl p-lg bg-white cursor-pointer`)} onClick={() => openCard({ _id })}>
-        <div className={s("flex flex-col")}>
-          <div className={s("flex")}>
-            <span className={s("flex-grow text-lg text-left font-semibold")}>
+      <div className={s(`${className} rounded-xl p-lg bg-white cursor-pointer`)} onClick={() => openCard({ _id })}>
+        <div className={s('flex flex-col')}>
+          <div className={s('flex')}>
+            <span className={s('flex-grow text-lg text-left font-semibold')}>
               {question}
             </span>
             { this.renderDropdown() }
           </div>
-          <span className={s("mt-sm text-xs text-gray-dark font-medium vertical-ellipsis-2")}>
+          <span className={s('mt-sm text-xs text-gray-dark font-medium vertical-ellipsis-2')}>
             {answer}
           </span>
         </div>
-        <div className={s("mt-reg pt-reg flex-col")}>
-          <div className={s("horizontal-separator mb-sm")} />
-          <div className={s("flex items-center justify-between")}>
-            <span className={s("block text-center text-xs text-gray-light")}>
+        <div className={s('mt-reg pt-reg flex-col')}>
+          <div className={s('horizontal-separator mb-sm')} />
+          <div className={s('flex items-center justify-between')}>
+            <span className={s('block text-center text-xs text-gray-light')}>
               <TimeAgo date={datePosted} live={false} />
             </span>
             <CardStatus status={status} />
@@ -230,7 +231,7 @@ SuggestionCard.propTypes = {
   question: PropTypes.string.isRequired,
   answer: PropTypes.string.isRequired,
   datePosted: PropTypes.string.isRequired,
-  status: PropTypes.oneOf([CARD_STATUS.UP_TO_DATE , CARD_STATUS.OUT_OF_DATE, CARD_STATUS.NEEDS_VERIFICATION, CARD_STATUS.NEEDS_APPROVAL, CARD_STATUS.NOT_DOCUMENTED]),
+  status: PropTypes.oneOf([CARD_STATUS.UP_TO_DATE, CARD_STATUS.OUT_OF_DATE, CARD_STATUS.NEEDS_VERIFICATION, CARD_STATUS.NEEDS_APPROVAL, CARD_STATUS.NOT_DOCUMENTED]),
   className: PropTypes.string,
   showMoreMenu: PropTypes.bool,
   deleteProps: PropTypes.shape({
@@ -238,11 +239,11 @@ SuggestionCard.propTypes = {
     isLoading: PropTypes.bool,
     error: PropTypes.string,
   }),
-}
+};
 
 SuggestionCard.defaultProps = {
   className: '',
   showMoreMenu: false,
-}
+};
 
 export default SuggestionCard;

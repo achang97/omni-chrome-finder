@@ -1,23 +1,19 @@
-function saveState(state) {
-  chrome.storage.local.set({ state: JSON.stringify(state) });
-}
+export const getStorageName = name => `OMNI_EXTENSION_${name}`;
 
-// todos unmarked count
-function setBadge(todos) {
-  if (chrome.browserAction) {
-    const count = todos.filter(todo => !todo.marked).length;
-    chrome.browserAction.setBadgeText({ text: count > 0 ? count.toString() : '' });
+export const setStorage = (key, value) => {
+  if (chrome.storage) {
+    return chrome.storage.sync.set({
+      [getStorageName(key)]: JSON.stringify(value)
+    });
   }
-}
 
-export default function () {
-  return next => (reducer, initialState) => {
-    const store = next(reducer, initialState);
-    // store.subscribe(() => {
-    //   const state = store.getState();
-    //   saveState(state);
-    //   setBadge(state.todos);
-    // });
-    return store;
-  };
-}
+  return null;
+};
+
+export const getStorage = (key, callback) => {
+  if (chrome.storage) {
+    return chrome.storage.sync.get(getStorageName(key), callback);
+  }
+
+  return null;
+};

@@ -1,13 +1,13 @@
 .card {
-	position: fixed !important;
-	z-index: 100000000;
+  position: fixed !important;
+  z-index: 100000000;
 }
 
 .card-tab {
-	width: 150px !important;
+  width: 150px !important;
 }
 
 .card-tab-container {
-	@apply flex flex-shrink-0 min-h-0 items-center bg-white rounded-t-lg px-reg pt-reg;
-	box-sizing: border-box;
+  @apply flex flex-shrink-0 min-h-0 items-center bg-white rounded-t-lg px-reg pt-reg;
+  box-sizing: border-box;
 }

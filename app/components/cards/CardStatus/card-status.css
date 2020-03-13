@@ -1,8 +1,8 @@
 .card-status {
-	@apply flex items-center justify-between rounded-lg font-semibold text-xs relative;
+  @apply flex items-center justify-between rounded-lg font-semibold text-xs relative;
 }
 
 .card-status-reason-dropdown {
-	@apply bg-white mt-xs rounded-lg p-reg shadow-md;
-	width: 300px;
+  @apply bg-white mt-xs rounded-lg p-reg shadow-md;
+  width: 300px;
 }

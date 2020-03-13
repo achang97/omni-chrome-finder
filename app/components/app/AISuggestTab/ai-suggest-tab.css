@@ -1,0 +1,10 @@
+.ai-suggest-tab { 
+  z-index: 10000000;
+  top: 10px;
+  right: 0px;
+  @apply fixed rounded-r-none;
+}
+
+.ai-suggest-tab:hover {
+  @apply px-xl opacity-100;
+}

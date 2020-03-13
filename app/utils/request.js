@@ -1,4 +1,4 @@
-import axios, { isCancel } from 'axios'
+import axios from 'axios';
 import { call, select, put } from 'redux-saga/effects';
 import { logout } from '../actions/auth';
 
@@ -7,7 +7,7 @@ const REQUEST_TYPE = {
   PUT: 'PUT',
   GET: 'GET',
   DELETE: 'DELETE',
-}
+};
 
 let SERVER_URL;
 if (process.env.NODE_ENV === 'development') {
@@ -22,15 +22,36 @@ function isValidResponse(response) {
   return response.status >= 200 && response.status < 300;
 }
 
-function* doRequest(requestType, path, data, extraParams={}) {
-  const url = `${SERVER_URL}${path}`
+function isUnauthorized(response) {
+  return response.status === 401;
+}
+
+function* getConfig(isForm) {
+  const token = yield select(state => state.auth.token);
+
+  const config = {};
+
+  if (token) {
+    config.headers = {
+      Authorization: token
+    };
+  }
+
+  if (isForm) {
+    config.headers['Content-Type'] = 'multipart/form-data';
+  }
+
+  return config;
+}
+
+function* doRequest(requestType, path, data, extraParams = {}) {
+  const url = `${SERVER_URL}${path}`;
 
   // Read extra params
-  const { isForm=false, cancelToken } = extraParams;
+  const { isForm = false, cancelToken } = extraParams;
 
-  // yield call(checkToken)
   const config = yield call(getConfig, isForm);
-  config.cancelToken = cancelToken;  
+  config.cancelToken = cancelToken;
 
   try {
     let response;
@@ -44,20 +65,26 @@ function* doRequest(requestType, path, data, extraParams={}) {
         break;
       }
       case REQUEST_TYPE.GET: {
-        response = yield call([axios, axios.get], url, { params: { ...data}, ...config });
+        response = yield call([axios, axios.get], url, { params: { ...data }, ...config });
         break;
       }
       case REQUEST_TYPE.DELETE: {
-        response = yield call([axios, axios.delete], url, {...config, data });
+        response = yield call([axios, axios.delete], url, { ...config, data });
+        break;
+      }
+      default: {
         break;
       }
     }
 
     if (!isValidResponse(response)) {
-      throw { response }
+      throw { response };
     }
-    return response.data
+    return response.data;
   } catch (error) {
+    if (isUnauthorized(error)) {
+      put(logout());
+    }
     throw error;
   }
 }
@@ -92,42 +119,4 @@ export function* doDelete(path, data, extraParams) {
   } catch (error) {
     throw error;
   }
-}
-
-export function* checkToken() {
-  const { token, refreshToken } = yield select(state => state.auth)
-
-  if(!token) return
-
-  // taken from web, customAxios.js
-  const { exp, iat } = jwtDecode(token)
-  const timeRemaining = exp - (Date.now() / 1000);
-
-  if (timeRemaining < (exp - iat) / 2 && timeRemaining > 0) {
-    // TODO:  v User
-    const url = `${SERVER_URL}/users/refreshToken`
-    const config = yield call(getConfig, false);
-    const { data } = yield call([axios, axios.post], url, { refreshToken }, config)
-    yield put(updateAuthToken(data.token))
-  } else if(timeRemaining <= 0) { // logout!
-    yield put(logout())
-  }
-}
-
-function *getConfig(isForm) {
-  const token = yield select(state => state.auth.token)
-
-  let config = {}
-
-  if(token) {
-    config.headers = {
-      'Authorization': token
-    }
-  }
-
-  if (isForm) {
-    config.headers['Content-Type'] = 'multipart/form-data';
-  }
-
-  return config
 }
