@@ -11,7 +11,7 @@ const REQUEST_TYPE = {
 
 let SERVER_URL;
 if (process.env.NODE_ENV === 'development') {
-  SERVER_URL = 'http://localhost:8000/v1';
+  SERVER_URL = 'https://api.addomni.com/v1';
 } else {
   SERVER_URL = 'https://api.eatlateplate.com/v1';
 }
