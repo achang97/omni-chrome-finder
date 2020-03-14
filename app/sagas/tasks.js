@@ -40,27 +40,28 @@ function* getTasks() {
     const { notifs } = yield call(doGet, '/notifications');
     yield put(handleGetTasksSuccess(notifs));
   } catch (error) {
+    console.log(error)
     const { response: { data } } = error;
     yield put(handleGetTasksError(data.error));
   }
 }
 
-function* markUpToDateFromTasks({ cardId }) {
+function* markUpToDateFromTasks({ taskId, cardId }) {
   try {
     yield call(doPost, '/cards/uptodate', { cardId });
-    yield put(handleMarkUpToDateFromTasksSuccess());
+    yield put(handleMarkUpToDateFromTasksSuccess(taskId));
   } catch (error) {
     const { response: { data } } = error;
-    yield put(handleMarkUpToDateFromTasksError(data.error));
+    yield put(handleMarkUpToDateFromTasksError(taskId, data.error));
   }
 }
 
-function* dimissTask({ notificationId }) {
+function* dimissTask({ taskId }) {
   try {
-    yield call(doPut, '/notifications', { update: { resolved: true }, notificationId });
-    yield put(handleDismissTaskSuccess());
+    yield call(doPut, '/notifications', { update: { resolved: true }, notificationId: taskId });
+    yield put(handleDismissTaskSuccess(taskId));
   } catch (error) {
     const { response: { data } } = error;
-    yield put(handleDismissTaskError(data.error));
+    yield put(handleDismissTaskError(taskId, data.error));
   }
 }

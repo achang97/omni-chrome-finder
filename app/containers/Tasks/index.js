@@ -15,7 +15,7 @@ import { AiFillMinusCircle, AiFillQuestionCircle } from 'react-icons/ai';
 import Timeago from 'react-timeago';
 import Loader from '../../components/common/Loader';
 
-import * as tasksActions from '../../actions/tasks';
+import { updateOpenSection, requestGetTasks, updateTasksTab, removeTask } from '../../actions/tasks';
 import style from './tasks.css';
 import { CARD_STATUS, TASK_TYPE, TASKS_SECTION_TYPE, TASKS_SECTIONS, TASKS_TAB_OPTIONS } from '../../utils/constants';
 
@@ -57,7 +57,10 @@ const UNRESOLVED_CARDS_PLACEHOLDER = [{
   dispatch =>
   bindActionCreators(
     {
-      ...tasksActions,
+      updateOpenSection,
+      requestGetTasks,
+      updateTasksTab,
+      removeTask
     },
     dispatch
   )
@@ -66,14 +69,16 @@ const UNRESOLVED_CARDS_PLACEHOLDER = [{
 export default class Tasks extends Component {
   constructor(props) {
     super(props);
-    this.state = {
-      sectionOpen: TASKS_SECTION_TYPE.ALL,
-    };
   }
 
   componentDidMount() {
     const { requestGetTasks } = this.props;
     requestGetTasks();
+  }
+
+  componentWillUnmount() {
+    const { updateOpenSection } = this.props;
+    updateOpenSection(TASKS_SECTION_TYPE.ALL);
   }
 
   updateTab = (tabIndex) => {
@@ -82,25 +87,32 @@ export default class Tasks extends Component {
   }
 
   switchOpenSection = (newSection) => {
-    const { sectionOpen } = this.state;
-    if (newSection === sectionOpen) this.setState({ sectionOpen: TASKS_SECTION_TYPE.ALL });
-    else this.setState({ sectionOpen: newSection });
+    const { openSection, updateOpenSection } = this.props;
+    if (newSection === openSection) {
+      updateOpenSection(TASKS_SECTION_TYPE.ALL);
+    } else {
+      updateOpenSection(newSection);
+    }
   }
 
-  renderTasksList = filteredTasks => (
+  renderTasksList = (type, filteredTasks) => (
     <div className={s('flex flex-col p-reg overflow-auto')}>
       {
-          filteredTasks.map((task, i) => (
-            <TaskItem
-              key={task._id}
-              id={task._id}
-              className={i > 0 ? 'mt-reg' : ''}
-              date={<Timeago date={task.createdAt} live={false} />}
-              type={task.status}
-              card={task.card}
-            />
-            ))
-        }
+        filteredTasks.map(({ _id, createdAt, status, card, isLoading, error, resolved }, i) => (
+          <TaskItem
+            key={_id}
+            id={_id}
+            className={i > 0 ? 'mt-reg' : ''}
+            date={createdAt}
+            type={status}
+            card={card}
+            isLoading={isLoading}
+            error={error}
+            resolved={resolved}
+            onHide={type === TASKS_SECTION_TYPE.ALL ? () => this.props.removeTask(_id) : null}
+          />
+        ))
+      }
     </div>
     )
 
@@ -130,8 +142,7 @@ export default class Tasks extends Component {
   }
 
   renderUnresolvedTasks = () => {
-    const { sectionOpen } = this.state;
-    const { isGettingTasks } = this.props;
+    const { isGettingTasks, openSection } = this.props;
 
     return (
       <div className={s('flex flex-col min-h-0 flex-grow')}>
@@ -141,7 +152,7 @@ export default class Tasks extends Component {
           :
           TASKS_SECTIONS.map(({ type, title }) => {
             const { icon, filteredTasks } = this.getTaskSectionProps(type);
-            const isSectionOpen = sectionOpen === type;
+            const isSectionOpen = openSection === type;
             const isAllTasksSection = type === TASKS_SECTION_TYPE.ALL;
 
             return (
@@ -171,7 +182,7 @@ export default class Tasks extends Component {
                       }
                     </div>
                     <AnimateHeight height={isSectionOpen ? 'auto' : 0}>
-                      {this.renderTasksList(filteredTasks)}
+                      {this.renderTasksList(type, filteredTasks)}
                     </AnimateHeight>
                   </div>
                 }

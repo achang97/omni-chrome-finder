@@ -25,7 +25,6 @@ function render(state, wrapper) {
 
   Promise.all([getStorage('auth'), getStorage('tasks')])
     .then(([auth, tasks]) => {
-      console.log(auth, tasks)
       if (auth) {
         const { user, token, refreshToken } = auth;
         initialState.auth = { token, refreshToken };

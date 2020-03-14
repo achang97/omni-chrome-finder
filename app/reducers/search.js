@@ -17,6 +17,8 @@ const initialState = {
 };
 
 export default function navigateReducer(state = initialState, action) {
+  const { type, payload = {} } = action;
+
   const updateCardStateByType = (type, updateFn) => ({
     ...state,
     cards: {
@@ -38,8 +40,6 @@ export default function navigateReducer(state = initialState, action) {
   const removeCardByType = (type, cardId) => updateCardStateByType(type, cardState => ({
     cards: removeCard(cardState.cards, cardId)
   }));
-
-  const { type, payload = {} } = action;
 
   switch (type) {
     case types.SEARCH_CARDS_REQUEST: {
@@ -74,37 +74,24 @@ export default function navigateReducer(state = initialState, action) {
       return updateCardStateByType(searchType, () => BASE_CARDS_STATE);
     }
 
-    // Update Cards
-    case types.UPDATE_CARD_SUCCESS:
-    case types.MARK_OUT_OF_DATE_SUCCESS:
-    case types.MARK_UP_TO_DATE_SUCCESS: {
-      const { card } = payload;
-      return updateAllCards(cards => cards.map(currCard => (
-        currCard._id === card._id ? card : currCard
-      )));
-    }
 
-    // Add Cards
     case types.ADD_SEARCH_CARD: {
       const { card } = payload;
       return updateCardStateByType(SEARCH_TYPE.NAVIGATE, cardState => ({
         cards: _.unionBy(cardState.cards, [card], '_id')
       }));
     }
-
-    // Operations that can be called from cards from Navigate tab
-    case types.DELETE_CARD_SUCCESS: {
-      const { cardId } = payload;
-      return updateAllCards(cards => removeCard(cards, cardId));
-    }
-    case types.DELETE_NAVIGATE_CARD_SUCCESS: {
-      const { id } = payload;
-      return removeCardByType(SEARCH_TYPE.NAVIGATE, id);
+    case types.UPDATE_SEARCH_CARD: {
+      const { card } = payload;
+      return updateAllCards(cards => cards.map(currCard => (
+        currCard._id === card._id ? card : currCard
+      )));
     }
     case types.REMOVE_SEARCH_CARD: {
       const { cardId } = payload;
-      return removeCardByType(SEARCH_TYPE.NAVIGATE, cardId);
+      return updateAllCards(cards => removeCard(cards, cardId));
     }
+
 
     case types.SEARCH_TAGS_REQUEST: {
       return { ...state, isSearchingTags: true, searchTagsError: null };

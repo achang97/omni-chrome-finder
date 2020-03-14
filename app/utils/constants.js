@@ -19,6 +19,8 @@ export const SLACK_URL_REGEX = /https:\/\/www\.google\.com\/webhp\?sxsrf=/;
 export const DEBOUNCE_60_HZ = 166;
 export const DEBOUNCE_300_MS = 300;
 
+export const TIMEOUT_3S = 3000;
+
 export const FADE_IN_TRANSITIONS = {
   entering: { opacity: 1 },
   entered: { opacity: 1 },

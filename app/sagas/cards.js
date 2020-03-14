@@ -90,11 +90,6 @@ function* getActiveCard() {
   return card;
 }
 
-function* getActiveNavigateTab() {
-  const activeNavigateTab = yield select(state => state.navigate.activeTab);
-  return activeNavigateTab;
-}
-
 function* getCard() {
   const cardId = yield call(getActiveCardId);
   try {
@@ -163,11 +158,6 @@ function* createCard() {
       const newCardInfo = yield call(convertCardToBackendFormat, true);
       const card = yield call(doPost, '/cards', newCardInfo);
       yield put(handleCreateCardSuccess(cardId, card));
-
-      const activeNavigateTab = yield call(getActiveNavigateTab);
-      if (activeNavigateTab === NAVIGATE_TAB_OPTION.MY_CARDS) {
-        yield put(addSearchCard(card));
-      }
     } else {
       yield put(handleUpdateCardError(cardId, INCOMPLETE_CARD_ERROR));
     }
@@ -249,12 +239,7 @@ function* addBookmark({ cardId }) {
   const activeCard = yield call(getActiveCard);
   try {
     yield call(doPost, `/cards/${cardId}/bookmark`);
-    yield put(handleAddBookmarkSuccess(cardId));
-
-    const activeNavigateTab = yield call(getActiveNavigateTab);
-    if (activeNavigateTab === NAVIGATE_TAB_OPTION.BOOKMARKED) {
-      yield put(addSearchCard(activeCard));
-    }
+    yield put(handleAddBookmarkSuccess(cardId, activeCard));
   } catch (error) {
     const { response: { data } } = error;
     yield put(handleAddBookmarkError(cardId, data.error));
@@ -265,11 +250,6 @@ function* removeBookmark({ cardId }) {
   try {
     yield call(doPost, `/cards/${cardId}/bookmark/remove`);
     yield put(handleRemoveBookmarkSuccess(cardId));
-
-    const activeNavigateTab = yield call(getActiveNavigateTab);
-    if (activeNavigateTab === NAVIGATE_TAB_OPTION.BOOKMARKED) {
-      yield put(removeSearchCard(cardId));
-    }
   } catch (error) {
     const { response: { data } } = error;
     yield put(handleRemoveBookmarkError(cardId, data.error));

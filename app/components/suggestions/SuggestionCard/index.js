@@ -15,7 +15,7 @@ import Triangle from '../../common/Triangle';
 import Modal from '../../common/Modal';
 import Loader from '../../common/Loader';
 
-import { NOOP, CARD_STATUS, CARD_URL_BASE } from '../../../utils/constants';
+import { NOOP, CARD_STATUS, CARD_URL_BASE, TIMEOUT_3S } from '../../../utils/constants';
 
 import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
@@ -58,9 +58,9 @@ class SuggestionCard extends Component {
   }
 
   getButtonProps = ({ isLoading, onClick }) => {
-    const { _id } = this.props;
+    const { id } = this.props;
     return {
-      onClick: () => onClick(_id),
+      onClick: () => onClick(id),
       iconLeft: false,
       icon: isLoading ? <Loader className={s('ml-sm')} size="sm" color="white" /> : null,
       disabled: isLoading,
@@ -98,11 +98,11 @@ class SuggestionCard extends Component {
   }
 
   shareCard = () => {
-    const { _id } = this.props;
+    const { id } = this.props;
 
     // Create invisible element with text
     const el = document.createElement('textarea');
-    el.value = `${CARD_URL_BASE}${_id}`;
+    el.value = `${CARD_URL_BASE}${id}`;
     el.setAttribute('readonly', '');
     el.style.position = 'absolute';
     el.style.left = '-9999px';
@@ -114,7 +114,7 @@ class SuggestionCard extends Component {
     document.body.removeChild(el);
 
     this.toggleActiveButton(BUTTON_TYPE.SHARE);
-    setTimeout(() => this.toggleActiveButton(BUTTON_TYPE.SHARE), 3000);
+    setTimeout(() => this.toggleActiveButton(BUTTON_TYPE.SHARE), TIMEOUT_3S);
   }
 
   protectedOnClick = (onClick, buttonType) => {
@@ -195,10 +195,10 @@ class SuggestionCard extends Component {
   }
 
   render() {
-    const { _id, question, answer, datePosted, status, className, openCard } = this.props;
+    const { id, question, answer, createdAt, status, className, openCard } = this.props;
 
     return (
-      <div className={s(`${className} rounded-xl p-lg bg-white cursor-pointer`)} onClick={() => openCard({ _id })}>
+      <div className={s(`${className} rounded-xl p-lg bg-white cursor-pointer`)} onClick={() => openCard({ _id: id })}>
         <div className={s('flex flex-col')}>
           <div className={s('flex')}>
             <span className={s('flex-grow text-lg text-left font-semibold')}>
@@ -214,7 +214,7 @@ class SuggestionCard extends Component {
           <div className={s('horizontal-separator mb-sm')} />
           <div className={s('flex items-center justify-between')}>
             <span className={s('block text-center text-xs text-gray-light')}>
-              <TimeAgo date={datePosted} live={false} />
+              <TimeAgo date={createdAt} live={false} />
             </span>
             <CardStatus status={status} />
           </div>
@@ -227,10 +227,10 @@ class SuggestionCard extends Component {
 }
 
 SuggestionCard.propTypes = {
-  _id: PropTypes.string.isRequired,
+  id: PropTypes.string.isRequired,
   question: PropTypes.string.isRequired,
   answer: PropTypes.string.isRequired,
-  datePosted: PropTypes.string.isRequired,
+  createdAt: PropTypes.string.isRequired,
   status: PropTypes.oneOf([CARD_STATUS.UP_TO_DATE, CARD_STATUS.OUT_OF_DATE, CARD_STATUS.NEEDS_VERIFICATION, CARD_STATUS.NEEDS_APPROVAL, CARD_STATUS.NOT_DOCUMENTED]),
   className: PropTypes.string,
   showMoreMenu: PropTypes.bool,

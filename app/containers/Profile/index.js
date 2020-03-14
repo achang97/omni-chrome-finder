@@ -273,9 +273,11 @@ export default class Profile extends Component {
             <div
               key={title}
               className={s(`profile-integration ${isOpen ? 'profile-integration-active' : 'profile-integration-inactive'} ${i !== 0 ? 'mt-reg' : ''}`)}
-              onClick={() => this.toggleIntegration(type)}
             >
-              <div className={s(`py-sm flex items-center justify-between ${isOpen ? 'mb-sm' : ''}`)}>
+              <div
+                className={s(`py-sm flex items-center justify-between ${isOpen ? 'mb-sm' : ''}`)}
+                onClick={() => this.toggleIntegration(type)}
+              >
                 <div className={s('text-purple-reg text-sm')}>{title}</div>
                 <Icon className={s('text-gray-dark cursor-pointer')} />
               </div>

@@ -13,6 +13,14 @@ function isInjected(tabId) {
   });
 }
 
+function getActiveTab() {
+  return new Promise((resolve, reject) => {
+    chrome.tabs.query({ active: true, lastFocusedWindow: true }, function(tabs) {
+      resolve(tabs[0]);
+    });
+  });
+}
+
 function loadScript(name, tabId, cb) {
   if (process.env.NODE_ENV === 'production') {
     chrome.tabs.executeScript(tabId, { file: `/js/${name}.bundle.js`, runAt: 'document_end' }, cb);
@@ -46,19 +54,39 @@ function createNotification(notificationBody) {
     ...rest
   });
 
-  // Send
-  chrome.tabs.query({ active: true, lastFocusedWindow: true }, function(tabs) {
-    // and use that tab to fill in out title and url
-    var activeTab = tabs[0];
-    chrome.tabs.sendMessage(activeTab.id, { type: CHROME_MESSAGE.NOTIFICATION_RECEIVED, payload: notificationBody });
-  });
+  getActiveTab().then(activeTab => {
+    chrome.tabs.sendMessage(activeTab.id, {
+      type: CHROME_MESSAGE.NOTIFICATION_RECEIVED,
+      payload: notificationBody
+    });
+  })
 }
 
 function initSocket() {
   socket = io('http://localhost:8000');
-  // socket.on('connect', () => {});
-  // socket.on('event', (data) => {});
-  // socket.on('disconnect', () => {});
+
+  socket.on('connect', () => {
+    console.log('Connected socket!');
+  });
+
+  socket.on('event', (data) => {
+    console.log('Socket recieved message: ' + data);
+    getStorage('auth').then((auth) => {
+      const isLoggedIn = auth && auth.token;
+      if (isLoggedIn) {
+        createNotification({
+          title: 'This is a test!',
+          message: 'This is some test message.',
+          contextMessage: 'Test context message'
+        });
+      }
+    })
+  });
+
+  socket.on('disconnect', () => {
+    console.log('Disconnected socket!');
+    socket = null;
+  });
 }
 
 chrome.tabs.onUpdated.addListener(async (tabId, changeInfo, tab) => {
@@ -90,25 +118,14 @@ chrome.browserAction.onClicked.addListener(async (tab) => {
   const result = await isInjected(tabId);
   if (!chrome.runtime.lastError && result[0]) {
     chrome.tabs.sendMessage(tabId, { type: CHROME_MESSAGE.TOGGLE });
-
-    getStorage('auth').then((auth) => {
-      const isLoggedIn = auth && auth.token;
-      if (isLoggedIn) {
-        createNotification({
-          title: 'This is a test!',
-          message: 'This is some test message.',
-          contextMessage: 'Test context message'
-        });
-      }
-    })
   }
 });
 
-chrome.notifications.onButtonClicked.addListener(async (notificationId) => {
-  chrome.tabs.sendMessage(tabId, { type: CHROME_MESSAGE.NOTIFICATION_OPENED, payload: { notificationId } });
+chrome.notifications.onClicked.addListener(async (notificationId) => {
+  getActiveTab().then(activeTab => {
+    chrome.tabs.sendMessage(activeTab.id, {
+      type: CHROME_MESSAGE.NOTIFICATION_OPENED,
+      payload: { notificationId }
+    });
+  })
 });
-
-
-
-
-
