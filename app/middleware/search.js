@@ -3,17 +3,6 @@ import { NAVIGATE_TAB_OPTION } from '../utils/constants';
 import * as types from '../actions/actionTypes';
 import { addSearchCard, updateSearchCard, removeSearchCard } from '../actions/search';
 
-
-
-//       // add bookmark
-
-//     const activeNavigateTab = yield call(getActiveNavigateTab);
-//     if (activeNavigateTab === NAVIGATE_TAB_OPTION.BOOKMARKED) {
-//       yield put(addSearchCard(activeCard));
-//     }
-
-
-
 const cardsMiddleware = store => next => (action) => {
   const { type, payload } = action;
 
@@ -23,7 +12,8 @@ const cardsMiddleware = store => next => (action) => {
     // Update cards
     case types.UPDATE_CARD_SUCCESS:
     case types.MARK_OUT_OF_DATE_SUCCESS:
-    case types.MARK_UP_TO_DATE_SUCCESS: {
+    case types.MARK_UP_TO_DATE_SUCCESS:
+    case types.MARK_UP_TO_DATE_FROM_TASKS_SUCCESS: {
       const { card } = payload;
       store.dispatch(updateSearchCard(card));
       break;

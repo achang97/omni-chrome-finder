@@ -23,7 +23,8 @@ const s = getStyleApplicationFn(style);
   state => ({
     user: state.profile.user,
     numAISuggestCards: state.search.cards[SEARCH_TYPE.AI_SUGGEST].cards.length,
-    numTasks: state.tasks.tasks[TASKS_SECTION_TYPE.ALL].length,
+    numTasks: state.tasks.tasks[TASKS_SECTION_TYPE.ALL]
+      .filter(({ resolved }) => !resolved).length,
   }),
   dispatch => bindActionCreators({
   }, dispatch)

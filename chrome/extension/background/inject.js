@@ -1,6 +1,7 @@
-import io from 'socket.io-client';
 import { CHROME_MESSAGE } from '../../../app/utils/constants';
 import { getStorage } from '../../../app/utils/storage';
+import { BASE_URL } from '../../../app/utils/request';
+import { addStorageListener } from '../../../app/utils/storage';
 
 let socket;
 
@@ -44,48 +45,64 @@ function loadScript(name, tabId, cb) {
   }
 }
 
-function createNotification(notificationBody) {
+function createNotification(notificationId, notificationBody) {
   const { type='basic', ...rest } = notificationBody;
 
   // Create chrome notification
-  chrome.notifications.create({
+  chrome.notifications.create(notificationId, {
     type,
     iconUrl: chrome.runtime.getURL('/img/icon-128.png'),
     ...rest
   });
 
   getActiveTab().then(activeTab => {
-    chrome.tabs.sendMessage(activeTab.id, {
-      type: CHROME_MESSAGE.NOTIFICATION_RECEIVED,
-      payload: notificationBody
-    });
+    if (activeTab) {
+      chrome.tabs.sendMessage(activeTab.id, {
+        type: CHROME_MESSAGE.NOTIFICATION_RECEIVED,
+        payload: { notificationId, ...notificationBody }
+      });
+    }
   })
 }
 
 function initSocket() {
-  socket = io('http://localhost:8000');
+  getStorage('auth').then((auth) => {
+    const token = auth && auth.token;
+    if (token && !socket) {
+      const protocol = process.env.NODE_ENV === 'development' ? 'ws://' : 'wss://';
+      const wsToken = token.replace('Bearer ', '');
+      socket = new WebSocket(`${protocol}${BASE_URL}/ws/generic?auth=${wsToken}`);
 
-  socket.on('connect', () => {
-    console.log('Connected socket!');
-  });
+      socket.onopen = () => {
+        console.log('Connected socket!');
+      };
 
-  socket.on('event', (data) => {
-    console.log('Socket recieved message: ' + data);
-    getStorage('auth').then((auth) => {
-      const isLoggedIn = auth && auth.token;
-      if (isLoggedIn) {
-        createNotification({
-          title: 'This is a test!',
-          message: 'This is some test message.',
-          contextMessage: 'Test context message'
+      socket.onclose = () => {
+        console.log('Disconnected socket!');
+        socket = null;
+      };
+
+      socket.onmessage = (event) => {
+        console.log('Received data from socket: ', event);
+        getStorage('auth').then((auth) => {
+          const isLoggedIn = auth && auth.token;
+          if (isLoggedIn) {
+            const { type, data: payload } = JSON.parse(event.data);
+            const { userId, notifier, card, question, status, resolved, message, _id } = payload;
+
+            createNotification(_id, {
+              title: message,
+              message: `Card: "${question}"`,
+              contextMessage: `Sent by ${notifier.name}`,
+            });
+          }
         });
-      }
-    })
-  });
+      };
 
-  socket.on('disconnect', () => {
-    console.log('Disconnected socket!');
-    socket = null;
+      socket.onerror = (error) => {
+        console.log('Socket error: ', error);
+      };
+    }
   });
 }
 
@@ -128,4 +145,14 @@ chrome.notifications.onClicked.addListener(async (notificationId) => {
       payload: { notificationId }
     });
   })
+});
+
+addStorageListener('auth', ({ newValue }) => {
+  if (!newValue.token && socket) {
+    console.log('Logged out, closing socket.');
+    socket = null;
+    socket.close();
+  } else if (newValue.token && !socket) {
+    initSocket();
+  }
 });

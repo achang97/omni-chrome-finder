@@ -12,8 +12,8 @@ export function updateOpenSection(section) {
 export function requestGetTasks() {
   return { type: types.GET_TASKS_REQUEST, payload: {} };
 }
-export function handleGetTasksSuccess(notifs) {
-  return { type: types.GET_TASKS_SUCCESS, payload: { notifs } };
+export function handleGetTasksSuccess(tasks) {
+  return { type: types.GET_TASKS_SUCCESS, payload: { tasks } };
 }
 export function handleGetTasksError(error) {
   return { type: types.GET_TASKS_ERROR, payload: { error } };
@@ -22,8 +22,8 @@ export function handleGetTasksError(error) {
 export function requestMarkUpToDateFromTasks(taskId, cardId) {
   return { type: types.MARK_UP_TO_DATE_FROM_TASKS_REQUEST, payload: { taskId, cardId } };
 }
-export function handleMarkUpToDateFromTasksSuccess(taskId) {
-  return { type: types.MARK_UP_TO_DATE_FROM_TASKS_SUCCESS, payload: { taskId } };
+export function handleMarkUpToDateFromTasksSuccess(taskId, card) {
+  return { type: types.MARK_UP_TO_DATE_FROM_TASKS_SUCCESS, payload: { taskId, card } };
 }
 export function handleMarkUpToDateFromTasksError(taskId, error) {
   return { type: types.MARK_UP_TO_DATE_FROM_TASKS_ERROR, payload: { taskId, error } };
@@ -41,4 +41,8 @@ export function handleDismissTaskError(taskId, error) {
 
 export function removeTask(taskId) {
   return { type: types.REMOVE_TASK, payload: { taskId } };
+}
+
+export function syncTasks(tasks) {
+  return { type: types.SYNC_TASKS, payload: { tasks } };
 }

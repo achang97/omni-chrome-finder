@@ -1,14 +1,13 @@
-import { getStorage } from '../../../app/utils/storage';
+import { addStorageListener } from '../../../app/utils/storage';
+import { setBadge } from '../../../app/utils/tasks';
 import { colors } from '../../../app/styles/colors';
 
 chrome.browserAction.setBadgeBackgroundColor({ color: colors.purple.reg });
 
-getStorage('tasks').then((tasks) => {
-  if (tasks) {
-    // TODO: remove check for resolved tag
+addStorageListener('tasks', ({ newValue: tasks }) => {
+  if (tasks) {        
     const numTasks = tasks.filter(task => !task.resolved).length;
-    if (numTasks > 0) {
-      chrome.browserAction.setBadgeText({ text: numTasks.toString() });
-    }
+    const numTasksString = numTasks === 0 ? "" : numTasks.toString();
+    chrome.browserAction.setBadgeText({ text: numTasksString });
   }
 });

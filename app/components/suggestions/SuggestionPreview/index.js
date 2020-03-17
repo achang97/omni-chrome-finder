@@ -18,16 +18,18 @@ const SuggestionPreview = ({ id, question, questionDescription, answer, openCard
   <div className={s('suggestion-preview')}>
     <div className={s('bg-purple-light py-xl px-lg rounded-t-lg')}>
       <div className={s('text-lg font-semibold')}>
-        { question }
+        <span> { question } </span>
       </div>
       { questionDescription &&
-      <div className={s('mt-reg text-xs text-gray-dark font-medium')}>
-        {questionDescription}
-      </div>
-        }
+        <div className={s('mt-reg text-xs text-gray-dark font-medium')}>
+          <span className={s('line-clamp-2 break-words')}> {questionDescription} </span>
+        </div>
+      }
     </div>
     <div className={s('bg-white py-xl px-lg text-sm')}>
-      {answer}
+      <span className={s('line-clamp-3 break-words')}>
+        {answer}
+      </span>
     </div>
     <div className={s('bg-white rounded-b-lg')} onClick={() => openCard({ _id: id })}>
       <Button

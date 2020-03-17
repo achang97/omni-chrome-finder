@@ -17,5 +17,5 @@
     "page": "background.html"
   },
   "permissions": ["activeTab", "storage", "<all_urls>", "contextMenus", "notifications"],
-  "content_security_policy": "default-src 'self'; script-src 'self'; style-src * 'unsafe-inline'; img-src 'self' data:;"
+  "content_security_policy": "default-src 'self'; script-src 'self'; ; connect-src wss://api.addomni.com; style-src * 'unsafe-inline'; img-src 'self' data:;"
 }

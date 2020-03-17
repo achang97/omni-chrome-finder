@@ -181,7 +181,7 @@ export default class Tasks extends Component {
                           </React.Fragment>
                       }
                     </div>
-                    <AnimateHeight height={isSectionOpen ? 'auto' : 0}>
+                    <AnimateHeight height={isSectionOpen ? 'auto' : 0} className={s('min-h-0 overflow-auto')}>
                       {this.renderTasksList(type, filteredTasks)}
                     </AnimateHeight>
                   </div>

@@ -22,7 +22,7 @@ export const SlackNotification = ({ message, person }) => (
           {person}
         </span>
       </span>
-      <span className={tw('mb-sm text-gray-600 text-sm vertical-ellipsis-2')} >
+      <span className={tw('mb-sm text-gray-600 text-sm line-clamp-2')} >
         {message}
       </span>
     </div>

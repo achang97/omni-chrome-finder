@@ -25,7 +25,7 @@ export default function* watchTasksRequests() {
         break;
       }
       case DISMISS_TASK_REQUEST: {
-        yield fork(dimissTask, payload);
+        yield fork(dismissTask, payload);
         break;
       }
       default: {
@@ -37,10 +37,9 @@ export default function* watchTasksRequests() {
 
 function* getTasks() {
   try {
-    const { notifs } = yield call(doGet, '/notifications');
-    yield put(handleGetTasksSuccess(notifs));
+    const { notifs: tasks } = yield call(doGet, '/notifications', { resolved: false });
+    yield put(handleGetTasksSuccess(tasks));
   } catch (error) {
-    console.log(error)
     const { response: { data } } = error;
     yield put(handleGetTasksError(data.error));
   }
@@ -48,15 +47,15 @@ function* getTasks() {
 
 function* markUpToDateFromTasks({ taskId, cardId }) {
   try {
-    yield call(doPost, '/cards/uptodate', { cardId });
-    yield put(handleMarkUpToDateFromTasksSuccess(taskId));
+    const { updatedCard } = yield call(doPost, '/cards/uptodate', { cardId });
+    yield put(handleMarkUpToDateFromTasksSuccess(taskId, updatedCard));
   } catch (error) {
     const { response: { data } } = error;
     yield put(handleMarkUpToDateFromTasksError(taskId, data.error));
   }
 }
 
-function* dimissTask({ taskId }) {
+function* dismissTask({ taskId }) {
   try {
     yield call(doPut, '/notifications', { update: { resolved: true }, notificationId: taskId });
     yield put(handleDismissTaskSuccess(taskId));
