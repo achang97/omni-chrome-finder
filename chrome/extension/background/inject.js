@@ -1,5 +1,6 @@
 import io from 'socket.io-client';
 import { CHROME_MESSAGE } from '../../../app/utils/constants';
+import { getStorage } from '../../../app/utils/storage';
 
 let socket;
 
@@ -9,6 +10,14 @@ function isInjected(tabId) {
       window.reactExampleInjected = true;
       injected;`,
     runAt: 'document_start'
+  });
+}
+
+function getActiveTab() {
+  return new Promise((resolve, reject) => {
+    chrome.tabs.query({ active: true, lastFocusedWindow: true }, function(tabs) {
+      resolve(tabs[0]);
+    });
   });
 }
 
@@ -35,11 +44,49 @@ function loadScript(name, tabId, cb) {
   }
 }
 
+function createNotification(notificationBody) {
+  const { type='basic', ...rest } = notificationBody;
+
+  // Create chrome notification
+  chrome.notifications.create({
+    type,
+    iconUrl: chrome.runtime.getURL('/img/icon-128.png'),
+    ...rest
+  });
+
+  getActiveTab().then(activeTab => {
+    chrome.tabs.sendMessage(activeTab.id, {
+      type: CHROME_MESSAGE.NOTIFICATION_RECEIVED,
+      payload: notificationBody
+    });
+  })
+}
+
 function initSocket() {
   socket = io('http://localhost:8000');
-  // socket.on('connect', () => {});
-  // socket.on('event', (data) => {});
-  // socket.on('disconnect', () => {});
+
+  socket.on('connect', () => {
+    console.log('Connected socket!');
+  });
+
+  socket.on('event', (data) => {
+    console.log('Socket recieved message: ' + data);
+    getStorage('auth').then((auth) => {
+      const isLoggedIn = auth && auth.token;
+      if (isLoggedIn) {
+        createNotification({
+          title: 'This is a test!',
+          message: 'This is some test message.',
+          contextMessage: 'Test context message'
+        });
+      }
+    })
+  });
+
+  socket.on('disconnect', () => {
+    console.log('Disconnected socket!');
+    socket = null;
+  });
 }
 
 chrome.tabs.onUpdated.addListener(async (tabId, changeInfo, tab) => {
@@ -72,4 +119,13 @@ chrome.browserAction.onClicked.addListener(async (tab) => {
   if (!chrome.runtime.lastError && result[0]) {
     chrome.tabs.sendMessage(tabId, { type: CHROME_MESSAGE.TOGGLE });
   }
+});
+
+chrome.notifications.onClicked.addListener(async (notificationId) => {
+  getActiveTab().then(activeTab => {
+    chrome.tabs.sendMessage(activeTab.id, {
+      type: CHROME_MESSAGE.NOTIFICATION_OPENED,
+      payload: { notificationId }
+    });
+  })
 });

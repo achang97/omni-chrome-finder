@@ -20,6 +20,10 @@ export function handleLoginError(error) {
   return { type: types.LOGIN_ERROR, payload: { error } };
 }
 
+export function syncAuthInfo(user, token, refreshToken) {
+  return { type: types.SYNC_AUTH_INFO, payload: { user, token, refreshToken } };
+}
+
 export function logout() {
   return { type: types.LOGOUT, payload: {} };
 }

@@ -183,6 +183,25 @@ class ChromeMessageListener extends Component {
     }
   }
 
+  handleNotificationsReceived = (payload) => {
+    // TODO
+    console.log(payload)
+  }
+
+  handleNotificationOpened = (notificationId) => {
+    const { isLoggedIn, dockVisible, toggleDock } = this.props;
+
+    if (!dockVisible) {
+      toggleDock();
+    }
+
+    if (isLoggedIn) {
+      // TODO: go to the right tab in tasks
+      console.log(notificationId);
+      this.props.history.push('/tasks');
+    }
+  }
+
   listener = (msg) => {
     const { type, payload } = msg;
     switch (msg.type) {
@@ -198,6 +217,14 @@ class ChromeMessageListener extends Component {
       case CHROME_MESSAGE.ASK:
       case CHROME_MESSAGE.CREATE: {
         this.handleContextMenuAction(type, payload.selectionText);
+        break;
+      }
+      case CHROME_MESSAGE.NOTIFICATION_RECEIVED: {
+        this.handleNotificationsReceived(payload);
+        break;
+      }
+      case CHROME_MESSAGE.NOTIFICATION_OPENED: {
+        this.handleNotificationOpened(payload.notificationId);
         break;
       }
     }

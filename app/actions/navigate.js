@@ -17,14 +17,14 @@ export function removeFilterTag(index) {
 }
 
 
-export function requestDeleteNavigateCard(id) {
-  return { type: types.DELETE_NAVIGATE_CARD_REQUEST, payload: { id } };
+export function requestDeleteNavigateCard(cardId) {
+  return { type: types.DELETE_NAVIGATE_CARD_REQUEST, payload: { cardId } };
 }
 
-export function handleDeleteNavigateCardSuccess(id) {
-  return { type: types.DELETE_NAVIGATE_CARD_SUCCESS, payload: { id } };
+export function handleDeleteNavigateCardSuccess(cardId) {
+  return { type: types.DELETE_NAVIGATE_CARD_SUCCESS, payload: { cardId } };
 }
 
-export function handleDeleteNavigateCardError(id, error) {
-  return { type: types.DELETE_NAVIGATE_CARD_ERROR, payload: { id, error } };
+export function handleDeleteNavigateCardError(cardId, error) {
+  return { type: types.DELETE_NAVIGATE_CARD_ERROR, payload: { cardId, error } };
 }

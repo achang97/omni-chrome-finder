@@ -22,12 +22,12 @@ export default function* watchNavigateRequests() {
   }
 }
 
-function* deleteCard({ id }) {
+function* deleteCard({ cardId }) {
   try {
-    yield call(doDelete, `/cards/${id}`);
-    yield put(handleDeleteNavigateCardSuccess(id));
+    yield call(doDelete, `/cards/${cardId}`);
+    yield put(handleDeleteNavigateCardSuccess(cardId));
   } catch (error) {
     const { response: { data } } = error;
-    yield put(handleDeleteNavigateCardError(id, data.error));
+    yield put(handleDeleteNavigateCardError(cardId, data.error));
   }
 }

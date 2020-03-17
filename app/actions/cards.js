@@ -240,8 +240,8 @@ export function requestAddBookmark(cardId) {
   return { type: types.ADD_BOOKMARK_REQUEST, payload: { cardId } };
 }
 
-export function handleAddBookmarkSuccess(cardId) {
-  return { type: types.ADD_BOOKMARK_SUCCESS, payload: { cardId } };
+export function handleAddBookmarkSuccess(cardId, card) {
+  return { type: types.ADD_BOOKMARK_SUCCESS, payload: { cardId, card } };
 }
 
 export function handleAddBookmarkError(cardId, error) {

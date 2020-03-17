@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import { Transition } from 'react-transition-group';
+import moment from 'moment';
 
 import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
@@ -40,7 +41,7 @@ import { getStyleApplicationFn } from '../../../utils/style';
 const s = getStyleApplicationFn(style);
 
 const SELECT_PERMISSION_OPTIONS = createSelectOptions(PERMISSION_OPTIONS);
-
+const DATE_FORMAT = 'MMM DD, YYYY';
 const SIDE_DOCK_TRANSITION_MS = 300;
 
 const CardSideDock = (props) => {
@@ -241,17 +242,17 @@ const CardSideDock = (props) => {
   };
 
   const renderFooter = () => {
-    const { isDeletingCard, openCardModal } = props;
+    const { isDeletingCard, openCardModal, createdAt, updatedAt } = props;
     return (
       <div className={s('pt-lg')}>
         <div className={s('text-sm font-medium')}>
           <div className={s('flex justify-between items-center')}>
             <div className={s('text-gray-reg')}> Created on: </div>
-            <div className={s('text-purple-gray-50')}> Jan 13, 2020 </div>
+            <div className={s('text-purple-gray-50')}> {moment(createdAt).format(DATE_FORMAT)} </div>
           </div>
           <div className={s('flex justify-between items-center mt-sm')}>
             <div className={s('text-gray-reg')}> Last edited: </div>
-            <div className={s('text-purple-gray-50')}> Jan 16, 2020 </div>
+            <div className={s('text-purple-gray-50')}> {moment(updatedAt).format(DATE_FORMAT)} </div>
           </div>
         </div>
         <Button

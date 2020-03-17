@@ -1,8 +1,17 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
-import { getStorage, getStorageName } from '../../app/utils/storage';
+import { getStorage } from '../../app/utils/storage';
 import { MAIN_CONTAINER_ID } from '../../app/utils/constants';
 import Root from '../../app/containers/Root';
+
+function render(state, wrapper) {
+  // Import has to be here for Redux dev tools to work
+  const createStore = require('../../app/store/configureStore');
+  ReactDOM.render(
+    <Root store={createStore(state)} />,
+    wrapper
+  );  
+}
 
 (function () {
   const body = document.body;
@@ -12,23 +21,23 @@ import Root from '../../app/containers/Root';
   wrapper.style = 'all: initial;';
   body.insertBefore(wrapper, body.firstChild);
 
-  getStorage('auth', (obj) => {
-    let initialState = {};
+  const initialState = {};
 
-    const currAuth = obj[getStorageName('auth')];
-    if (currAuth) {
-      const { user, token, refreshToken } = JSON.parse(currAuth);
-      initialState = {
-        auth: { token, refreshToken },
-        profile: { user }
-      };
-    }
+  Promise.all([getStorage('auth'), getStorage('tasks')])
+    .then(([auth, tasks]) => {
+      if (auth) {
+        const { user, token, refreshToken } = auth;
+        initialState.auth = { token, refreshToken };
+        initialState.profile = { user };
+      }
 
-    const createStore = require('../../app/store/configureStore');
+      if (tasks) {
+        initialState.tasks = tasks;
+      }
 
-    ReactDOM.render(
-      <Root store={createStore(initialState)} />,
-      wrapper
-    );
-  });
+      render(initialState, wrapper);
+    })
+    .catch((error) => {
+      render(initialState, wrapper);
+    });
 }());
