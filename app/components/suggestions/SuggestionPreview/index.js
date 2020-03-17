@@ -14,7 +14,7 @@ import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
 import { openCard } from '../../../actions/cards';
 
-const SuggestionPreview = ({ _id, question, questionDescription, answer, openCard }) => (
+const SuggestionPreview = ({ id, question, questionDescription, answer, openCard }) => (
   <div className={s('suggestion-preview')}>
     <div className={s('bg-purple-light py-xl px-lg rounded-t-lg')}>
       <div className={s('text-lg font-semibold')}>
@@ -29,7 +29,7 @@ const SuggestionPreview = ({ _id, question, questionDescription, answer, openCar
     <div className={s('bg-white py-xl px-lg text-sm')}>
       {answer}
     </div>
-    <div className={s('bg-white rounded-b-lg')} onClick={() => openCard({ _id })}>
+    <div className={s('bg-white rounded-b-lg')} onClick={() => openCard({ _id: id })}>
       <Button
         text="View full card"
         underline
@@ -41,7 +41,7 @@ const SuggestionPreview = ({ _id, question, questionDescription, answer, openCar
   );
 
 SuggestionPreview.propTypes = {
-  _id: PropTypes.string.isRequired,
+  id: PropTypes.string.isRequired,
   question: PropTypes.string.isRequired,
   questionDescription: PropTypes.string,
   answer: PropTypes.string.isRequired,

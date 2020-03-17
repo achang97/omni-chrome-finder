@@ -2,16 +2,20 @@ import { applyMiddleware, createStore, compose } from 'redux';
 import thunk from 'redux-thunk';
 import createSagaMiddleware from 'redux-saga';
 import rootReducer from '../reducers';
-import auth from '../middleware/auth';
-// import badge from '../middleware/badge';
+import authMiddleware from '../middleware/auth';
+import cardsMiddleware from '../middleware/cards';
+import tasksMiddleware from '../middleware/tasks';
 import rootSaga from '../sagas';
-import setUpAuthSync from './enhancers/authSync';
+import authEnhancer from './enhancers/auth';
+import tasksEnhancer from './enhancers/tasks';
 
 const sagaMiddleware = createSagaMiddleware();
 
-const middlewares = applyMiddleware(sagaMiddleware, thunk, auth, /* badge */);
+const middlewares = applyMiddleware(sagaMiddleware, thunk, authMiddleware, cardsMiddleware, tasksMiddleware);
 const enhancer = compose(
   middlewares,
+  authEnhancer(),
+  tasksEnhancer()
 );
 
 export default function (initialState) {
@@ -24,8 +28,6 @@ export default function (initialState) {
   store.runSaga = sagaMiddleware.run;
   store.injectedReducers = {}; // Reducer registry
   store.injectedSagas = {}; // Saga registry
-
-  setUpAuthSync(store);
 
   return store;
 }

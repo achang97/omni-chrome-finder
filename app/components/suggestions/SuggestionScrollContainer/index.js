@@ -31,10 +31,10 @@ const SuggestionScrollContainer = ({ cards, getCardProps, isSearchingCards, hasR
     const { className='', ...rest } = getCardProps ? getCardProps(card, i) : {};
     return (
       <SuggestionCard
-        _id={_id}
+        id={_id}
         question={question}
         answer={answer}
-        datePosted={createdAt}
+        createdAt={createdAt}
         status={status}
         className={s(`suggestion-scroll-container-card ${className}`)}
         {...rest}
@@ -53,7 +53,7 @@ const SuggestionScrollContainer = ({ cards, getCardProps, isSearchingCards, hasR
     return (
       <div className={s('flex')}>
         <SuggestionPreview
-          _id={_id}
+          id={_id}
           question={question}
           questionDescription={description}
           answer={answer}

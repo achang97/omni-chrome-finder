@@ -51,7 +51,7 @@ const CardStatus = ({ isActionable, status, className, onDropdownOptionClick, ou
   const shouldShowDropdown = dropdownOpen && isActionable;
 
   return (
-    <div onClick={e => e.stopPropagation()} className={s('flex')}>
+    <div onClick={e => isActionable && e.stopPropagation()} className={s('flex')}>
       <Dropdown
         isOpen={shouldShowDropdown}
         onToggle={setDropdownOpen}

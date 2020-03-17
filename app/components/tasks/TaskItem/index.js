@@ -1,5 +1,8 @@
 import React, { Fragment, Component } from 'react';
 import PropTypes from 'prop-types';
+import Timeago from 'react-timeago';
+import AnimateHeight from 'react-animate-height';
+
 import Button from '../../common/Button';
 import PlaceholderImg from '../../common/PlaceholderImg';
 import SlackIcon from '../../../assets/images/icons/Slack_Mark.svg';
@@ -7,9 +10,9 @@ import Loader from '../../common/Loader';
 import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
 import { openCard } from '../../../actions/cards';
-import * as tasksActions from '../../../actions/tasks';
+import { requestMarkUpToDateFromTasks, requestDismissTask } from '../../../actions/tasks';
 
-import { TASK_TYPE } from '../../../utils/constants';
+import { TASK_TYPE, NOOP, TIMEOUT_3S } from '../../../utils/constants';
 import { IoMdAlert } from 'react-icons/io';
 import { MdKeyboardArrowDown, MdKeyboardArrowUp, MdCheck, MdAdd, MdEdit, MdLock, MdCheckCircle } from 'react-icons/md';
 import { AiFillMinusCircle, AiFillQuestionCircle } from 'react-icons/ai';
@@ -20,13 +23,12 @@ import { getStyleApplicationFn } from '../../../utils/style';
 
 const s = getStyleApplicationFn(style);
 
-
 @connect(
   state => ({
-    ...state.tasks,
   }),
   dispatch => bindActionCreators({
-    ...tasksActions,
+    requestMarkUpToDateFromTasks,
+    requestDismissTask,
     openCard,
   }, dispatch)
 )
@@ -35,11 +37,24 @@ class TaskItem extends Component {
   constructor(props) {
     super(props);
     this.state = {
+      showItem: true
     };
   }
 
   componentDidMount() {
+    if (this.props.resolved) {
+      this.hideItem();
+    }
+  }
 
+  componentDidUpdate(prevProps) {
+    if (!prevProps.resolved && this.props.resolved) {
+      this.hideItem();
+    }
+  }
+
+  hideItem = () => {
+    setTimeout(() => this.setState({ showItem: false }), TIMEOUT_3S);
   }
 
   getHeaderInfo = () => {
@@ -57,7 +72,6 @@ class TaskItem extends Component {
         return null;
     }
   }
-
 
   getButtonProps = () => {
     const { type } = this.props;
@@ -92,40 +106,47 @@ class TaskItem extends Component {
   }
 
   getTaskActionsInfo = () => {
-    const { type, id, card, openCard, requestMarkUpToDateFromTasks, requestDismissTask, isUpdatingCard, isDismissingTask, markCardUpToDateError, dimissTaskError } = this.props;
-    const { _id } = card;
+    const {
+      type, id, card: { _id: cardId },
+      requestMarkUpToDateFromTasks, requestDismissTask, openCard
+    } = this.props;
+
     switch (type) {
       case TASK_TYPE.NEEDS_VERIFICATION:
-        return { primaryOption: 'Mark as Up to Date',
+        return {
+          primaryOption: 'Mark as Up to Date',
           secondaryOption: 'Edit',
-          primaryAction: () => { requestMarkUpToDateFromTasks(_id); },
-          secondaryAction: () => { openCard({ _id, isEditing: true }); },
-          isPrimaryLoading: isUpdatingCard,
-          primaryError: markCardUpToDateError };
+          primaryAction: () => requestMarkUpToDateFromTasks(id, cardId),
+          secondaryAction: () => openCard({ _id: cardId, isEditing: true }),
+        };
       case TASK_TYPE.OUT_OF_DATE:
-        return { primaryOption: 'Edit',
+        return {
+          primaryOption: 'Edit',
           secondaryOption: 'Mark as Up to Date',
-          primaryAction: () => { openCard({ _id, isEditing: true }); },
-          secondaryAction: () => { requestMarkUpToDateFromTasks(_id); },
-          isSecondaryLoading: isUpdatingCard,
-          secondaryError: markCardUpToDateError };
+          primaryAction: () => openCard({ _id: cardId, isEditing: true }),
+          secondaryAction: () => requestMarkUpToDateFromTasks(id, cardId),
+        };
       case TASK_TYPE.UNDOCUMENTED:
-        return { primaryOption: 'Create Card',
+        return {
+          primaryOption: 'Create Card',
           secondaryOption: 'Dismiss',
-          primaryAction: () => { openCard({ _id, isEditing: true }); },
-          secondaryAction: () => { requestDismissTask(id); },
-          isSecondaryLoading: isDismissingTask,
-          secondaryError: dimissTaskError };
+          primaryAction: () => openCard({ _id: cardId, isEditing: true }),
+          secondaryAction: () => requestDismissTask(id),
+        };
       case TASK_TYPE.NEEDS_APPROVAL:
-        return { primaryOption: 'Approve', secondaryOption: 'Decline', primaryAction: () => { return; }, secondaryAction: () => { return; } };
+        return {
+          primaryOption: 'Approve',
+          secondaryOption: 'Decline',
+          primaryAction: NOOP,
+          secondaryAction: NOOP
+        };
       default:
         return {};
     }
   }
 
   renderTaskPreview = () => {
-    const { type, card } = this.props;
-    const { answer, outOfDateReason, owners } = card;
+    const { type, card: { answer, outOfDateReason, owners } } = this.props;
 
     switch (type) {
       case TASK_TYPE.NEEDS_VERIFICATION:
@@ -166,38 +187,45 @@ class TaskItem extends Component {
   }
 
   render() {
-    const { index, type, card, date, openCard, className, key } = this.props;
-    const { _id, question } = card;
-
+    const {
+      card: { _id: cardId, question }, id, createdAt, type,
+      resolved, card, isLoading, error, className, onHide,
+      openCard, requestDismissTask, requestMarkUpToDateFromTasks, ...rest
+    } = this.props;
+    const { showItem } = this.state;
 
     const { buttonColor, buttonClassName, buttonUnderline, buttonIcon } = this.getButtonProps();
     const containerClassName = this.getContainerClass();
     const { headerTitle, headerIcon, headerTitleClassName } = this.getHeaderInfo();
-    const { primaryOption, primaryAction, isPrimaryLoading, primaryError,
-            secondaryOption, secondaryAction, isSecondaryLoading, secondaryError, } = this.getTaskActionsInfo();
+    const { primaryOption, primaryAction, secondaryOption, secondaryAction} = this.getTaskActionsInfo();
 
     return (
-      <div className={s(`flex flex-col p-lg rounded-lg ${containerClassName} ${className}`)} key={key}>
-        {
-          (isPrimaryLoading || isSecondaryLoading) ?
-            <Loader className={s('')} />
-          :
+      <AnimateHeight height={showItem ? 'auto' : 0} onAnimationEnd={onHide}>
+        <div className={s(`flex flex-col p-lg rounded-lg ${containerClassName} ${className}`)} {...rest}>
+          { resolved && 
+            <div className={s('text-sm text-center')}>
+              🎉 <span className={s('mx-sm')}> You've resolved this task! </span> 🎉
+            </div>
+          }
+          { !resolved && (isLoading ?
+            <Loader className={s('')} /> :
             <React.Fragment>
               <div className={s('flex items-center')}>
                 {headerIcon}
                 <div className={s(`text-xs text-gray-reg font-semibold ${headerTitleClassName}`)}> {headerTitle} </div>
               </div>
 
-              <div className={s('p-lg bg-white shadow-md my-lg rounded-lg shadow-md cursor-pointer')} onClick={() => openCard({ _id })}>
+              <div className={s('p-lg bg-white shadow-md my-lg rounded-lg shadow-md cursor-pointer')} onClick={() => openCard({ _id: cardId })}>
                 <div className={s('font-semibold vertical-ellipsis-2 text-md')}>{question}</div>
                 { this.renderTaskPreview() }
               </div>
 
-              {primaryError && <div className={s('text-xs text-red-reg')}> {primaryError} </div>}
-              {secondaryError && <div className={s('text-xs text-red-reg')}> {secondaryError} </div>}
+              {error && <div className={s('text-xs text-red-reg')}> {error} </div>}
 
               <div className={s('flex items-center justify-center')}>
-                <div className={s('flex-grow text-gray-reg text-xs')}> {date} </div>
+                <div className={s('flex-grow text-gray-reg text-xs')}>
+                  <Timeago date={createdAt} live={false} />
+                </div>
                 <div className={s('flex items-center justify-center text-sm text-gray-reg')}>
                   <div
                     className={s('text-xs border-b border-t-0 border-r-0 border-l-0 border-solid border-gray-xlight cursor-pointer')}
@@ -218,23 +246,29 @@ class TaskItem extends Component {
                 </div>
               </div>
             </React.Fragment>
-        }
-      </div>
+          )}
+        </div>
+      </AnimateHeight>
     );
   }
 }
 
 TaskItem.propTypes = {
-  index: PropTypes.number,
-  id: PropTypes.string,
-  date: PropTypes.object,
-  type: PropTypes.oneOf([TASK_TYPE.NEEDS_VERIFICATION, TASK_TYPE.OUT_OF_DATE, TASK_TYPE.UNDOCUMENTED, TASK_TYPE.NEEDS_APPROVAL]),
-  card: PropTypes.object,
+  id: PropTypes.string.isRequired,
+  createdAt: PropTypes.string.isRequired,
+  type: PropTypes.oneOf([TASK_TYPE.NEEDS_VERIFICATION, TASK_TYPE.OUT_OF_DATE, TASK_TYPE.UNDOCUMENTED, TASK_TYPE.NEEDS_APPROVAL]).isRequired,
+  card: PropTypes.object.isRequired,
+  resolved: PropTypes.bool.isRequired,
+  isLoading: PropTypes.bool,
+  error: PropTypes.string,
+  onHide: PropTypes.func,
   className: PropTypes.string,
 };
 
 TaskItem.defaultProps = {
   className: '',
+  onHide: NOOP,
+  isLoading: false,
 };
 
 export default TaskItem;

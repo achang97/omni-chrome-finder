@@ -5,6 +5,8 @@ export const CHROME_MESSAGE = {
   SEARCH: 'SEARCH',
   ASK: 'ASK',
   CREATE: 'CREATE',
+  NOTIFICATION_RECEIVED: 'NOTIFICATION_RECEIVED',
+  NOTIFICATION_OPENED: 'NOTIFICATION_OPENED',
 };
 
 export const MAIN_CONTAINER_ID = 'omni-chrome-ext-main-container';
@@ -16,6 +18,8 @@ export const SLACK_URL_REGEX = /https:\/\/www\.google\.com\/webhp\?sxsrf=/;
 // Debounce / Animations
 export const DEBOUNCE_60_HZ = 166;
 export const DEBOUNCE_300_MS = 300;
+
+export const TIMEOUT_3S = 3000;
 
 export const FADE_IN_TRANSITIONS = {
   entering: { opacity: 1 },
