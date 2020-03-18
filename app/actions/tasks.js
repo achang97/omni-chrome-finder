@@ -5,8 +5,8 @@ export function updateTasksTab(tabIndex) {
   return { type: types.UPDATE_TASKS_TAB, payload: { tabIndex } };
 }
 
-export function updateOpenSection(section) {
-  return { type: types.UPDATE_OPEN_SECTION, payload: { section } };
+export function updateTasksOpenSection(section) {
+  return { type: types.UPDATE_TASKS_OPEN_SECTION, payload: { section } };
 }
 
 export function requestGetTasks() {

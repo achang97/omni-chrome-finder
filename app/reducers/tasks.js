@@ -32,7 +32,7 @@ export default function tasksReducer(state = initialState, action) {
       const { tabIndex } = payload;
       return { ...state, tabIndex, openSection: tabIndex === 0 ? TASKS_SECTION_TYPE.ALL : state.openSection };
     }
-    case types.UPDATE_OPEN_SECTION: {
+    case types.UPDATE_TASKS_OPEN_SECTION: {
       const { section } = payload;
       return { ...state, openSection: section };
     }

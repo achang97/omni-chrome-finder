@@ -1,14 +1,14 @@
 import React, { Component } from 'react';
 import { Route, Switch, Redirect, withRouter } from 'react-router-dom';
 import Dock from 'react-dock';
-import { CARD_URL_REGEX, SLACK_URL_REGEX, SEARCH_TYPE } from '../utils/constants';
+import { CARD_URL_REGEX, SLACK_URL_REGEX, TASK_URL_REGEX, TASKS_SECTIONS, TASK_TYPE, TASKS_SECTION_TYPE, SEARCH_TYPE, NOOP } from '../utils/constants';
 import queryString from 'query-string';
 
 import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
 import { toggleDock } from '../actions/display';
 import { requestGetUser } from '../actions/profile';
-import { requestGetTasks } from '../actions/tasks';
+import { requestGetTasks, updateTasksOpenSection, updateTasksTab } from '../actions/tasks';
 import { openCard } from '../actions/cards';
 
 import Header from '../components/app/Header';
@@ -37,6 +37,7 @@ const dockPanelStyles = {
     dockExpanded: state.display.dockExpanded,
     isLoggedIn: !!state.auth.token,
     showAISuggest: state.search.cards[SEARCH_TYPE.AI_SUGGEST].cards.length !== 0,
+    tasks: state.tasks.tasks[TASKS_SECTION_TYPE.ALL]
   }),
   dispatch =>
     bindActionCreators(
@@ -44,6 +45,8 @@ const dockPanelStyles = {
         toggleDock,
         requestGetUser,
         requestGetTasks,
+        updateTasksTab,
+        updateTasksOpenSection,
         openCard,
       },
       dispatch
@@ -61,26 +64,65 @@ class App extends Component {
     }
   }
 
+  clearUrl = (url) => {
+    // Strip off everything after .com. NOTE: For now, assume we will be on .com website
+    // (likely will be addomni.com)
+    window.history.replaceState({}, window.location.title, url.substring(0, url.indexOf('.com') + 4));
+  }
+
   openChromeExtension = () => {
     const url = window.location.href;
-    const cardRes = url.match(CARD_URL_REGEX);
-    const slackRes = url.match(SLACK_URL_REGEX);
+    const {
+      dockVisible, tasks,
+      toggleDock, openCard, updateTasksTab, updateTasksOpenSection, history
+    } = this.props;
 
-    if (cardRes) {
-      const { edit, sxsrf } = queryString.parse(window.location.search);
-      if (!this.props.dockVisible) {
-        this.props.toggleDock();
-      }
-      this.props.openCard({ _id: sxsrf, isEditing: edit === 'true' });
+    const urlResponses = [
+      {
+        regex: CARD_URL_REGEX,
+        callback: () => {
+          const { edit, sxsrf } = queryString.parse(window.location.search);
+          openCard({ _id: sxsrf, isEditing: edit === 'true' });
+        }
+      },
+      {
+        regex: SLACK_URL_REGEX,
+        callback: NOOP,
+      },
+      {
+        regex: TASK_URL_REGEX,
+        callback: (res) => {
+          const taskId = res[1];
+          const task = tasks.find(({ _id }) => _id === taskId);
+          if (task) {
+            if (task.status === TASK_TYPE.NEEDS_APPROVAL) {
+              // Go to Needs Approval Tab
+              updateTasksTab(1);
+            } else {
+              const taskSectionType = TASKS_SECTIONS.find(({ taskTypes }) => (
+                taskTypes.length === 1 && taskTypes[0] === task.status
+              ));
 
-      // Strip off everything after .com. NOTE: For now, assume we will be on .com website
-      // (likely will be addomni.com)
-      window.history.replaceState({}, window.location.title, url.substring(0, url.indexOf('.com') + 4));
-    } else if (slackRes) {
-      if (!this.props.dockVisible) {
-        this.props.toggleDock();
+              if (taskSectionType) {
+                updateTasksOpenSection(taskSectionType.type);
+              }
+            }
+          }
+          history.push('/tasks');
+        }
       }
-    }
+    ]
+
+    urlResponses.forEach(({ regex, callback }) => {
+      const res = url.match(regex);
+      if (res) {
+        if (!dockVisible) {
+          toggleDock();
+        }
+        callback(res);
+        this.clearUrl(url);        
+      }
+    });
   }
 
   render() {

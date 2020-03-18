@@ -1,5 +1,6 @@
-import { CHROME_MESSAGE } from '../../../app/utils/constants';
-import { getStorage } from '../../../app/utils/storage';
+import _ from 'lodash';
+import { CHROME_MESSAGE, TASK_URL_BASE } from '../../../app/utils/constants';
+import { getStorage, setStorage } from '../../../app/utils/storage';
 import { BASE_URL } from '../../../app/utils/request';
 import { addStorageListener } from '../../../app/utils/storage';
 
@@ -45,24 +46,31 @@ function loadScript(name, tabId, cb) {
   }
 }
 
-function createNotification(notificationId, notificationBody) {
-  const { type='basic', ...rest } = notificationBody;
-
+function createNotification({ userId, message, notification }) {
+  const { notifier, resolver, card, question, status, resolved, _id: notificationId } = notification;
+       
   // Create chrome notification
   chrome.notifications.create(notificationId, {
-    type,
+    type: 'basic',
     iconUrl: chrome.runtime.getURL('/img/icon-128.png'),
-    ...rest
+    title: message,
+    message: `Card: "${question}"`,
+    contextMessage: `Sent by ${resolved ? resolver.name : notifier.name}`,
   });
 
-  getActiveTab().then(activeTab => {
-    if (activeTab) {
-      chrome.tabs.sendMessage(activeTab.id, {
-        type: CHROME_MESSAGE.NOTIFICATION_RECEIVED,
-        payload: { notificationId, ...notificationBody }
-      });
+  getStorage('tasks').then(tasks => {
+    console.log(tasks)
+    if (tasks) {
+      let newTasks;
+      if (resolved) {
+        newTasks = tasks.filter(({ _id }) => _id !== notificationId);
+      } else {
+        newTasks = _.unionBy(tasks, [notification], '_id');
+      }
+
+      setStorage('tasks', newTasks);
     }
-  })
+  });
 }
 
 function initSocket() {
@@ -88,13 +96,7 @@ function initSocket() {
           const isLoggedIn = auth && auth.token;
           if (isLoggedIn) {
             const { type, data: payload } = JSON.parse(event.data);
-            const { userId, notifier, card, question, status, resolved, message, _id } = payload;
-
-            createNotification(_id, {
-              title: message,
-              message: `Card: "${question}"`,
-              contextMessage: `Sent by ${notifier.name}`,
-            });
+            createNotification(payload);
           }
         });
       };
@@ -140,10 +142,14 @@ chrome.browserAction.onClicked.addListener(async (tab) => {
 
 chrome.notifications.onClicked.addListener(async (notificationId) => {
   getActiveTab().then(activeTab => {
-    chrome.tabs.sendMessage(activeTab.id, {
-      type: CHROME_MESSAGE.NOTIFICATION_OPENED,
-      payload: { notificationId }
-    });
+    if (activeTab) {
+      chrome.tabs.sendMessage(activeTab.id, {
+        type: CHROME_MESSAGE.NOTIFICATION_OPENED,
+        payload: { notificationId }
+      });
+    } else {
+      window.open(TASK_URL_BASE + notificationId, '_blank');
+    }
   })
 });
 

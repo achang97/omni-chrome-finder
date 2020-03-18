@@ -9,8 +9,9 @@ import { updateAskSearchText, updateAskQuestionTitle } from '../../../actions/as
 import { requestSearchCards, clearSearchCards } from '../../../actions/search';
 import { updateCreateAnswerEditor } from '../../../actions/create';
 import { updateNavigateSearchText } from '../../../actions/navigate';
+import { requestGetTasks, updateTasksOpenSection, updateTasksTab } from '../../../actions/tasks';
 
-import { CHROME_MESSAGE, MAIN_CONTAINER_ID, SEARCH_TYPE } from '../../../utils/constants';
+import { CHROME_MESSAGE, MAIN_CONTAINER_ID, SEARCH_TYPE, TASKS_SECTIONS, TASKS_SECTION_TYPE, TASK_TYPE} from '../../../utils/constants';
 
 import AISuggestTab from '../AISuggestTab';
 
@@ -19,6 +20,7 @@ import AISuggestTab from '../AISuggestTab';
     dockVisible: state.display.dockVisible,
     dockExpanded: state.display.dockExpanded,
     isLoggedIn: !!state.auth.token,
+    tasks: state.tasks.tasks[TASKS_SECTION_TYPE.ALL],
   }),
   dispatch =>
     bindActionCreators(
@@ -29,7 +31,10 @@ import AISuggestTab from '../AISuggestTab';
         updateCreateAnswerEditor,
         updateNavigateSearchText,
         requestSearchCards,
-        clearSearchCards 
+        clearSearchCards,
+        requestGetTasks,
+        updateTasksTab,
+        updateTasksOpenSection,
       },
       dispatch
     )
@@ -183,22 +188,41 @@ class ChromeMessageListener extends Component {
     }
   }
 
-  handleNotificationsReceived = (payload) => {
-    // TODO
-    console.log(payload)
-  }
-
   handleNotificationOpened = (notificationId) => {
-    const { isLoggedIn, dockVisible, toggleDock } = this.props;
+    const {
+      isLoggedIn, dockVisible, tasks,
+      toggleDock, requestGetTasks, updateTasksTab, updateTasksOpenSection,
+      history
+    } = this.props;
 
     if (!dockVisible) {
       toggleDock();
     }
 
     if (isLoggedIn) {
-      // TODO: go to the right tab in tasks
-      console.log(notificationId);
-      this.props.history.push('/tasks');
+      const { location: { pathname } } = history;
+
+      if (location === '/tasks') {
+        requestGetTasks();
+      }
+
+      const task = tasks.find(({ _id }) => _id === notificationId);
+      if (task) {
+        if (task.status === TASK_TYPE.NEEDS_APPROVAL) {
+          // Go to Needs Approval Tab
+          updateTasksTab(1);
+        } else {
+          const taskSectionType = TASKS_SECTIONS.find(({ taskTypes }) => (
+            taskTypes.length === 1 && taskTypes[0] === task.status
+          ));
+
+          if (taskSectionType) {
+            updateTasksOpenSection(taskSectionType.type);
+          }
+        }
+      }
+
+      history.push('/tasks');
     }
   }
 
@@ -217,10 +241,6 @@ class ChromeMessageListener extends Component {
       case CHROME_MESSAGE.ASK:
       case CHROME_MESSAGE.CREATE: {
         this.handleContextMenuAction(type, payload.selectionText);
-        break;
-      }
-      case CHROME_MESSAGE.NOTIFICATION_RECEIVED: {
-        this.handleNotificationsReceived(payload);
         break;
       }
       case CHROME_MESSAGE.NOTIFICATION_OPENED: {

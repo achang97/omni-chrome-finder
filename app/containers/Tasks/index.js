@@ -15,7 +15,7 @@ import { AiFillMinusCircle, AiFillQuestionCircle } from 'react-icons/ai';
 import Timeago from 'react-timeago';
 import Loader from '../../components/common/Loader';
 
-import { updateOpenSection, requestGetTasks, updateTasksTab, removeTask } from '../../actions/tasks';
+import { updateTasksOpenSection, requestGetTasks, updateTasksTab, removeTask } from '../../actions/tasks';
 import style from './tasks.css';
 import { CARD_STATUS, TASK_TYPE, TASKS_SECTION_TYPE, TASKS_SECTIONS, TASKS_TAB_OPTIONS } from '../../utils/constants';
 
@@ -57,7 +57,7 @@ const UNRESOLVED_CARDS_PLACEHOLDER = [{
   dispatch =>
   bindActionCreators(
     {
-      updateOpenSection,
+      updateTasksOpenSection,
       requestGetTasks,
       updateTasksTab,
       removeTask
@@ -77,8 +77,8 @@ export default class Tasks extends Component {
   }
 
   componentWillUnmount() {
-    const { updateOpenSection } = this.props;
-    updateOpenSection(TASKS_SECTION_TYPE.ALL);
+    const { updateTasksOpenSection } = this.props;
+    updateTasksOpenSection(TASKS_SECTION_TYPE.ALL);
   }
 
   updateTab = (tabIndex) => {
@@ -87,11 +87,11 @@ export default class Tasks extends Component {
   }
 
   switchOpenSection = (newSection) => {
-    const { openSection, updateOpenSection } = this.props;
+    const { openSection, updateTasksOpenSection } = this.props;
     if (newSection === openSection) {
-      updateOpenSection(TASKS_SECTION_TYPE.ALL);
+      updateTasksOpenSection(TASKS_SECTION_TYPE.ALL);
     } else {
-      updateOpenSection(newSection);
+      updateTasksOpenSection(newSection);
     }
   }
 
