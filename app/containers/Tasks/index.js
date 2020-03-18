@@ -96,7 +96,7 @@ export default class Tasks extends Component {
   }
 
   renderTasksList = (type, filteredTasks) => (
-    <div className={s('flex flex-col p-reg overflow-auto')}>
+    <div className={s('h-full flex flex-col p-reg overflow-auto')}>
       {
         filteredTasks.map(({ _id, createdAt, status, card, isLoading, error, resolved }, i) => (
           <TaskItem
@@ -114,7 +114,7 @@ export default class Tasks extends Component {
         ))
       }
     </div>
-    )
+  )
 
   getTaskSectionProps(type) {
     const { tasks } = this.props;
@@ -141,55 +141,48 @@ export default class Tasks extends Component {
     return { icon, filteredTasks: tasks[type] };
   }
 
-  renderUnresolvedTasks = () => {
-    const { isGettingTasks, openSection } = this.props;
+  renderTaskSection = ({ type, title }) => {
+    const { openSection } = this.props;
+    const { icon, filteredTasks } = this.getTaskSectionProps(type);
+    const isSectionOpen = openSection === type;
+    const isAllTasksSection = type === TASKS_SECTION_TYPE.ALL;
+
+    if (filteredTasks.length === 0) {
+      return null;
+    }
 
     return (
-      <div className={s('flex flex-col min-h-0 flex-grow')}>
-        {
-          isGettingTasks ?
-            <Loader className={s('')} />
-          :
-          TASKS_SECTIONS.map(({ type, title }) => {
-            const { icon, filteredTasks } = this.getTaskSectionProps(type);
-            const isSectionOpen = openSection === type;
-            const isAllTasksSection = type === TASKS_SECTION_TYPE.ALL;
+      <div key={type} className={s(`tasks-section-container ${isSectionOpen ? 'flex-1' : ''}`)}>
+        <div
+          className={s(`tasks-section-header ${isSectionOpen ? 'bg-white' : 'task-section-header-active'}`)}
+          onClick={() => this.switchOpenSection(type)}
+        >
+          { icon }
+          <div className={s('ml-reg text-sm font-semibold')}>{title}</div>
+          { !isAllTasksSection && <div className={s('ml-reg text-sm flex-1')}>({ filteredTasks.length })</div> }
+          { !isAllTasksSection && (isSectionOpen ?
+            <MdKeyboardArrowUp className={s('flex-shrink-0 text-purple-reg')} /> :
+            <MdKeyboardArrowDown className={s('flex-shrink-0 text-purple-reg')} />
+          )}
+        </div>
+        <div className={s('flex-1 min-h-0 overflow-auto')}>
+          <AnimateHeight height={isSectionOpen ? 'auto' : 0}>
+            {this.renderTasksList(type, filteredTasks)}
+          </AnimateHeight>
+        </div>
+      </div>
+    );
+  }
 
-            return (
-              <React.Fragment key={type}>
-                {
-                  (filteredTasks.length > 0) &&
-                  <div className={s(`${isSectionOpen ? 'min-h-0 flex flex-col' : ''}`)}>
-                    <div
-                      className={s(`${isSectionOpen ? 'bg-white' : 'tasks-section-container'} flex items-center p-reg py-sm cursor-pointer`)}
-                      onClick={() => this.switchOpenSection(type)}
-                    >
-                      <div className={s('flex flex-grow items-center')}>
-                        { icon }
-                        <div className={s('ml-reg text-sm font-semibold')}>{title}</div>
-                        { !isAllTasksSection && <div className={s('ml-reg text-sm')}>({ filteredTasks.length })</div> }
-                      </div>
-                      {
-                        !isAllTasksSection &&
-                          <React.Fragment>
-                            {
-                              isSectionOpen ?
-                                <MdKeyboardArrowUp className={s('flex-shrink-0 text-purple-reg')} />
-                              :
-                                <MdKeyboardArrowDown className={s('flex-shrink-0 text-purple-reg')} />
-                            }
-                          </React.Fragment>
-                      }
-                    </div>
-                    <AnimateHeight height={isSectionOpen ? 'auto' : 0} className={s('min-h-0 overflow-auto')}>
-                      {this.renderTasksList(type, filteredTasks)}
-                    </AnimateHeight>
-                  </div>
-                }
-              </React.Fragment>
-            );
-          }
-        )}
+  renderUnresolvedTasks = () => {
+    const { isGettingTasks } = this.props;
+
+    return (
+      <div className={s('flex flex-col h-full flex-grow')}>
+        { isGettingTasks ?
+          <Loader /> :
+          TASKS_SECTIONS.map(this.renderTaskSection)  
+        }
       </div>
     );
   }
@@ -251,12 +244,12 @@ export default class Tasks extends Component {
                 <Loader className={s('mt-2xl')} />
               :
                 <React.Fragment>
-                  {
-                allTasks.length === 0 ?
-                this.renderNoTasksScreen()
-                :
-                this.renderUnresolvedTasks()
-              }
+                  <AnimateHeight height={allTasks.length === 0 ? 'auto' : 0}>
+                    {this.renderNoTasksScreen()}
+                  </AnimateHeight>
+                  <AnimateHeight height={allTasks.length !== 0 ? 'auto' : 0} className={s('min-h-0')} contentClassName={s('h-full')}>
+                    {this.renderUnresolvedTasks()}
+                  </AnimateHeight>
                 </React.Fragment>
             }
           </React.Fragment>

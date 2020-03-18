@@ -116,7 +116,7 @@ class ChromeMessageListener extends Component {
   getPageText = (url) => {
     let text;
 
-    if (/https:\/\/mail\.google\.com\/mail\/u\/\d+\/#inbox\/.+/.test(url)) {
+    if (/https:\/\/mail\.google\.com\/mail\/u\/\d+\/(#\S+)\/.+/.test(url)) {
       // Case 1: Matches specific email page in Gmail
       text = this.getGoogleText();
     }
@@ -212,6 +212,8 @@ class ChromeMessageListener extends Component {
           // Go to Needs Approval Tab
           updateTasksTab(1);
         } else {
+          updateTasksTab(0);
+
           const taskSectionType = TASKS_SECTIONS.find(({ taskTypes }) => (
             taskTypes.length === 1 && taskTypes[0] === task.status
           ));

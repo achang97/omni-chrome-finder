@@ -99,6 +99,8 @@ class App extends Component {
               // Go to Needs Approval Tab
               updateTasksTab(1);
             } else {
+              updateTasksTab(0);
+
               const taskSectionType = TASKS_SECTIONS.find(({ taskTypes }) => (
                 taskTypes.length === 1 && taskTypes[0] === task.status
               ));

@@ -6,7 +6,7 @@ import { addStorageListener } from '../../../app/utils/storage';
 
 let socket;
 
-function isInjected(tabId) {
+function injectExtension(tabId) {
   return chrome.tabs.executeScriptAsync(tabId, {
     code: `var injected = window.reactExampleInjected;
       window.reactExampleInjected = true;
@@ -111,8 +111,8 @@ function initSocket() {
 chrome.tabs.onUpdated.addListener(async (tabId, changeInfo, tab) => {
   switch (changeInfo.status) {
     case 'loading': {
-      const result = await isInjected(tabId);
-      if (!chrome.runtime.lastError && !result[0]) {
+      const isInjected = (await injectExtension(tabId))[0];
+      if (!chrome.runtime.lastError && !isInjected) {
         loadScript('inject', tabId);
       }
 
@@ -123,8 +123,8 @@ chrome.tabs.onUpdated.addListener(async (tabId, changeInfo, tab) => {
       break;      
     }
     case 'complete': {
-      const result = await isInjected(tabId);
-      if (result[0]) {
+      const isInjected = (await injectExtension(tabId))[0];
+      if (isInjected) {
         chrome.tabs.sendMessage(tabId, { type: CHROME_MESSAGE.TAB_UPDATE });
       }
       break;
@@ -134,8 +134,8 @@ chrome.tabs.onUpdated.addListener(async (tabId, changeInfo, tab) => {
 
 chrome.browserAction.onClicked.addListener(async (tab) => {
   const tabId = tab.id;
-  const result = await isInjected(tabId);
-  if (!chrome.runtime.lastError && result[0]) {
+  const isInjected = (await injectExtension(tabId))[0];
+  if (!chrome.runtime.lastError && isInjected) {
     chrome.tabs.sendMessage(tabId, { type: CHROME_MESSAGE.TOGGLE });
   }
 });
@@ -143,12 +143,15 @@ chrome.browserAction.onClicked.addListener(async (tab) => {
 chrome.notifications.onClicked.addListener(async (notificationId) => {
   getActiveTab().then(activeTab => {
     if (activeTab) {
-      chrome.tabs.sendMessage(activeTab.id, {
+      const { windowId, id } = activeTab;
+      chrome.windows.update(windowId, { focused: true });
+      chrome.tabs.sendMessage(id, {
         type: CHROME_MESSAGE.NOTIFICATION_OPENED,
         payload: { notificationId }
-      });
+      });        
     } else {
-      window.open(TASK_URL_BASE + notificationId, '_blank');
+      const newWindow = window.open(TASK_URL_BASE + notificationId, '_blank');
+      newWindow.focus();
     }
   })
 });
