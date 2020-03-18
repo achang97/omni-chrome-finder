@@ -37,24 +37,14 @@ class TaskItem extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      showItem: true
+      showItem: !props.resolved,
     };
-  }
-
-  componentDidMount() {
-    if (this.props.resolved) {
-      this.hideItem();
-    }
   }
 
   componentDidUpdate(prevProps) {
     if (!prevProps.resolved && this.props.resolved) {
-      this.hideItem();
+      setTimeout(() => this.setState({ showItem: false }), TIMEOUT_3S);
     }
-  }
-
-  hideItem = () => {
-    setTimeout(() => this.setState({ showItem: false }), TIMEOUT_3S);
   }
 
   getHeaderInfo = () => {

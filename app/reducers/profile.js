@@ -1,7 +1,7 @@
 import _ from 'lodash';
 import * as types from '../actions/actionTypes';
 
-const initialState = {
+export const initialState = {
   user: {},
   userEdits: {},
   isEditingAbout: false,

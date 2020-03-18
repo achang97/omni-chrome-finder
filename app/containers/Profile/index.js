@@ -25,8 +25,10 @@ const s = getStyleApplicationFn(style);
 
 import SlackIcon from '../../assets/images/icons/Slack_Mark.svg';
 import GoogleDriveIcon from '../../assets/images/icons/GoogleDrive_Icon.svg';
+import ZendeskIcon from '../../assets/images/icons/Zendesk_Icon.svg';
 
 const GOOGLE_AUTH_URL = `${SERVER_URL}/google/authenticate`;
+const ZENDESK_AUTH_URL = `${SERVER_URL}/zendesk/authenticate`;
 
 const MOCK_USER = {
   autofindPermissions: {
@@ -72,6 +74,13 @@ export default class Profile extends Component {
     //CLOSE popup on finish.
     const clearToken = this.props.token.replace('Bearer ', '');
     window.open(`${GOOGLE_AUTH_URL}?auth=${clearToken}`, 'popup', 'width=600,height=600');
+  }
+
+  openZendeskLogin() {
+    //TODO: Refactor this in more beauty way.
+    //CLOSE popup on finish.
+    const clearToken = this.props.token.replace('Bearer ', '');
+    window.open(`${ZENDESK_AUTH_URL}?auth=${clearToken}`, 'popup', 'width=600,height=600');
   }
 
   saveUser = () => {
@@ -163,9 +172,11 @@ export default class Profile extends Component {
   getIntegrationInfo = (integration) => {
     switch (integration) {
       case INTEGRATIONS.GOOGLE:
-        return { title: 'Google Drive', logo: GoogleDriveIcon, onSignIn: () => this.openGoogleLogin(), onSignOut: () => { return; } };
+        return { title: 'Google Drive', logo: GoogleDriveIcon, onSignIn: () => this.openGoogleLogin(), onSignOut: () => {} };
+      case INTEGRATIONS.ZENDESK:
+        return { title: 'Zendesk', logo: ZendeskIcon, onSignIn: () => this.openZendeskLogin(), onSignOut: () => {} };
       case INTEGRATIONS.SLACK:
-        return { title: 'Slack', logo: SlackIcon, onSignIn: () => { return; }, onSignOut: () => { return; } };
+        return { title: 'Slack', logo: SlackIcon, onSignIn: () => {}, onSignOut: () => {} };
       default:
         return {};
     }

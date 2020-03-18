@@ -184,7 +184,8 @@ export default function askReducer(state = initialState, action) {
       return { ...state, isAskingQuestion: true, askError: null, askSuccess: null };
     }
     case types.ASK_QUESTION_SUCCESS: {
-      return { ...initialState, isAskingQuestion: false, askSuccess: true };
+      const { slackConversations } = state;
+      return { ...initialState, isAskingQuestion: false, askSuccess: true, slackConversations };
     }
     case types.ASK_QUESTION_ERROR: {
       const { error } = payload;

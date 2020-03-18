@@ -42,7 +42,7 @@ const s = getStyleApplicationFn(style);
 
 export default class Navigate extends Component {
   componentDidMount() {
-    this.requestSearchCards();
+    this.requestSearchCards(true);
   }
 
   componentDidUpdate(prevProps) {

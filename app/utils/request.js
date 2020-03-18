@@ -9,15 +9,19 @@ const REQUEST_TYPE = {
   DELETE: 'DELETE',
 };
 
-let SERVER_URL;
+let protocol;
+let url;
+
 if (process.env.NODE_ENV === 'development') {
-  //SERVER_URL = 'https://api.addomni.com/v1';
-  SERVER_URL = 'http://localhost:8000/v1'
+  url = 'localhost:8000';
+  protocol = 'http://';
 } else {
-  SERVER_URL = 'https://api.addomni.com/v1';
+  url = 'api.addomni.com';
+  protocol = 'https://';
 }
 
-exports.SERVER_URL = SERVER_URL;
+export const BASE_URL = `${url}/v1`;
+export const SERVER_URL = `${protocol}${BASE_URL}`;
 
 function isValidResponse(response) {
   return response.status >= 200 && response.status < 300;
