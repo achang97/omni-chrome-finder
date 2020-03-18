@@ -2,6 +2,10 @@ import React from 'react';
 import ReactDOM from 'react-dom';
 import { getStorage } from '../../app/utils/storage';
 import { MAIN_CONTAINER_ID } from '../../app/utils/constants';
+import { createSectionedTasks } from '../../app/utils/tasks';
+import { initialState as authInitialState } from '../../app/reducers/auth';
+import { initialState as profileInitialState } from '../../app/reducers/profile';
+import { initialState as tasksInitialState } from '../../app/reducers/tasks';
 import Root from '../../app/containers/Root';
 
 function render(state, wrapper) {
@@ -27,12 +31,22 @@ function render(state, wrapper) {
     .then(([auth, tasks]) => {
       if (auth) {
         const { user, token, refreshToken } = auth;
-        initialState.auth = { token, refreshToken };
-        initialState.profile = { user };
+        initialState.auth = {
+          ...authInitialState,
+          token,
+          refreshToken
+        };
+        initialState.profile = {
+          ...profileInitialState,
+          user
+        };
       }
 
       if (tasks) {
-        initialState.tasks = tasks;
+        initialState.tasks = {
+          ...tasksInitialState,
+          tasks: createSectionedTasks(tasks)
+        };
       }
 
       render(initialState, wrapper);

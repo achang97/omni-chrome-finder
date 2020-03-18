@@ -5,9 +5,10 @@ const authMiddleware = store => next => (action) => {
   const { type, payload } = action;
 
   switch (type) {
-    case types.LOGIN_SUCCESS:
+    case types.LOGIN_SUCCESS: {
       setStorage('auth', payload);
       break;
+    }
     case types.GET_USER_SUCCESS: {
       const { payload: { user } } = action;
       const { auth: { token, refreshToken } } = store.getState();

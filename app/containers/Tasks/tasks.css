@@ -13,6 +13,18 @@
 }
 
 .tasks-section-container {
+  @apply flex flex flex-col;
+}
+
+.tasks-section-header {
+  @apply flex flex-shrink-0 items-center px-reg cursor-pointer;
+}
+
+.tasks-section-container, .tasks-section-header {
+  min-height: 42px;
+}
+
+.tasks-section-header-active {
   background-image: linear-gradient(0deg, #FFFFFF 40%, #f4f5ff9e 100%);
 }
 

@@ -1,10 +1,12 @@
-import io from 'socket.io-client';
-import { CHROME_MESSAGE } from '../../../app/utils/constants';
-import { getStorage } from '../../../app/utils/storage';
+import _ from 'lodash';
+import { CHROME_MESSAGE, TASK_URL_BASE } from '../../../app/utils/constants';
+import { getStorage, setStorage } from '../../../app/utils/storage';
+import { BASE_URL } from '../../../app/utils/request';
+import { addStorageListener } from '../../../app/utils/storage';
 
 let socket;
 
-function isInjected(tabId) {
+function injectExtension(tabId) {
   return chrome.tabs.executeScriptAsync(tabId, {
     code: `var injected = window.reactExampleInjected;
       window.reactExampleInjected = true;
@@ -44,56 +46,73 @@ function loadScript(name, tabId, cb) {
   }
 }
 
-function createNotification(notificationBody) {
-  const { type='basic', ...rest } = notificationBody;
-
+function createNotification({ userId, message, notification }) {
+  const { notifier, resolver, card, question, status, resolved, _id: notificationId } = notification;
+       
   // Create chrome notification
-  chrome.notifications.create({
-    type,
+  chrome.notifications.create(notificationId, {
+    type: 'basic',
     iconUrl: chrome.runtime.getURL('/img/icon-128.png'),
-    ...rest
+    title: message,
+    message: `Card: "${question}"`,
+    contextMessage: `Sent by ${resolved ? resolver.name : notifier.name}`,
   });
 
-  getActiveTab().then(activeTab => {
-    chrome.tabs.sendMessage(activeTab.id, {
-      type: CHROME_MESSAGE.NOTIFICATION_RECEIVED,
-      payload: notificationBody
-    });
-  })
+  getStorage('tasks').then(tasks => {
+    console.log(tasks)
+    if (tasks) {
+      let newTasks;
+      if (resolved) {
+        newTasks = tasks.filter(({ _id }) => _id !== notificationId);
+      } else {
+        newTasks = _.unionBy(tasks, [notification], '_id');
+      }
+
+      setStorage('tasks', newTasks);
+    }
+  });
 }
 
 function initSocket() {
-  socket = io('http://localhost:8000');
+  getStorage('auth').then((auth) => {
+    const token = auth && auth.token;
+    if (token && !socket) {
+      const protocol = process.env.NODE_ENV === 'development' ? 'ws://' : 'wss://';
+      const wsToken = token.replace('Bearer ', '');
+      socket = new WebSocket(`${protocol}${BASE_URL}/ws/generic?auth=${wsToken}`);
 
-  socket.on('connect', () => {
-    console.log('Connected socket!');
-  });
+      socket.onopen = () => {
+        console.log('Connected socket!');
+      };
 
-  socket.on('event', (data) => {
-    console.log('Socket recieved message: ' + data);
-    getStorage('auth').then((auth) => {
-      const isLoggedIn = auth && auth.token;
-      if (isLoggedIn) {
-        createNotification({
-          title: 'This is a test!',
-          message: 'This is some test message.',
-          contextMessage: 'Test context message'
+      socket.onclose = () => {
+        console.log('Disconnected socket!');
+        socket = null;
+      };
+
+      socket.onmessage = (event) => {
+        console.log('Received data from socket: ', event);
+        getStorage('auth').then((auth) => {
+          const isLoggedIn = auth && auth.token;
+          if (isLoggedIn) {
+            const { type, data: payload } = JSON.parse(event.data);
+            createNotification(payload);
+          }
         });
-      }
-    })
-  });
+      };
 
-  socket.on('disconnect', () => {
-    console.log('Disconnected socket!');
-    socket = null;
+      socket.onerror = (error) => {
+        console.log('Socket error: ', error);
+      };
+    }
   });
 }
 
 chrome.tabs.onUpdated.addListener(async (tabId, changeInfo, tab) => {
   switch (changeInfo.status) {
     case 'loading': {
-      const result = await isInjected(tabId);
-      if (!chrome.runtime.lastError && !result[0]) {
+      const isInjected = (await injectExtension(tabId))[0];
+      if (!chrome.runtime.lastError && !isInjected) {
         loadScript('inject', tabId);
       }
 
@@ -104,8 +123,8 @@ chrome.tabs.onUpdated.addListener(async (tabId, changeInfo, tab) => {
       break;      
     }
     case 'complete': {
-      const result = await isInjected(tabId);
-      if (result[0]) {
+      const isInjected = (await injectExtension(tabId))[0];
+      if (isInjected) {
         chrome.tabs.sendMessage(tabId, { type: CHROME_MESSAGE.TAB_UPDATE });
       }
       break;
@@ -115,17 +134,34 @@ chrome.tabs.onUpdated.addListener(async (tabId, changeInfo, tab) => {
 
 chrome.browserAction.onClicked.addListener(async (tab) => {
   const tabId = tab.id;
-  const result = await isInjected(tabId);
-  if (!chrome.runtime.lastError && result[0]) {
+  const isInjected = (await injectExtension(tabId))[0];
+  if (!chrome.runtime.lastError && isInjected) {
     chrome.tabs.sendMessage(tabId, { type: CHROME_MESSAGE.TOGGLE });
   }
 });
 
 chrome.notifications.onClicked.addListener(async (notificationId) => {
   getActiveTab().then(activeTab => {
-    chrome.tabs.sendMessage(activeTab.id, {
-      type: CHROME_MESSAGE.NOTIFICATION_OPENED,
-      payload: { notificationId }
-    });
+    if (activeTab) {
+      const { windowId, id } = activeTab;
+      chrome.windows.update(windowId, { focused: true });
+      chrome.tabs.sendMessage(id, {
+        type: CHROME_MESSAGE.NOTIFICATION_OPENED,
+        payload: { notificationId }
+      });        
+    } else {
+      const newWindow = window.open(TASK_URL_BASE + notificationId, '_blank');
+      newWindow.focus();
+    }
   })
+});
+
+addStorageListener('auth', ({ newValue }) => {
+  if (!newValue.token && socket) {
+    console.log('Logged out, closing socket.');
+    socket = null;
+    socket.close();
+  } else if (newValue.token && !socket) {
+    initSocket();
+  }
 });

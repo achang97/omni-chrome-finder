@@ -1,8 +1,9 @@
 import _ from 'lodash';
 import * as types from '../actions/actionTypes';
-import { TASKS_SECTIONS, TASKS_SECTION_TYPE } from '../utils/constants';
+import { createSectionedTasks } from '../utils/tasks';
+import { TASKS_SECTION_TYPE } from '../utils/constants';
 
-const initialState = {
+export const initialState = {
   tabIndex: 0,
   openSection: TASKS_SECTION_TYPE.ALL,
   tasks: _.mapValues(TASKS_SECTION_TYPE, () => []),
@@ -19,7 +20,9 @@ export default function tasksReducer(state = initialState, action) {
     return {
       ...state,
       tasks: _.mapValues(state.tasks, (currTasks) => (
-        currTasks.map(task => ({ ...task, ...newInfo }))
+        currTasks.map((currTask) => (
+          currTask._id === taskId ? { ...currTask, ...newInfo } : currTask
+        ))
       ))
     };
   }
@@ -29,7 +32,7 @@ export default function tasksReducer(state = initialState, action) {
       const { tabIndex } = payload;
       return { ...state, tabIndex, openSection: tabIndex === 0 ? TASKS_SECTION_TYPE.ALL : state.openSection };
     }
-    case types.UPDATE_OPEN_SECTION: {
+    case types.UPDATE_TASKS_OPEN_SECTION: {
       const { section } = payload;
       return { ...state, openSection: section };
     }
@@ -38,16 +41,9 @@ export default function tasksReducer(state = initialState, action) {
       return { ...state, isGettingTasks: true, getTasksError: null };
     }
     case types.GET_TASKS_SUCCESS: {
-      const { notifs } = payload;
-
-      const tasks = {};
-      TASKS_SECTIONS.forEach(({ type: taskType, taskTypes }) => {
-        tasks[taskType] = notifs.filter(task => (
-          !task.resolved && taskTypes.includes(task.status)
-        ));
-      });
-
-      return { ...state, isGettingTasks: false, tasks };
+      const { tasks } = payload;
+      const newTasks = createSectionedTasks(tasks);
+      return { ...state, isGettingTasks: false, tasks: newTasks };
     }
     case types.GET_TASKS_ERROR: {
       const { error } = payload;
@@ -77,6 +73,14 @@ export default function tasksReducer(state = initialState, action) {
         tasks: _.mapValues(state.tasks, (currTasks) => (
           currTasks.filter(task => task._id !== taskId)
         ))
+      };
+    }
+
+    case types.SYNC_TASKS: {
+      const { tasks } = payload;
+      return {
+        ...state,
+        tasks: createSectionedTasks(tasks)
       };
     }
 

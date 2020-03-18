@@ -201,12 +201,12 @@ class SuggestionCard extends Component {
       <div className={s(`${className} rounded-xl p-lg bg-white cursor-pointer`)} onClick={() => openCard({ _id: id })}>
         <div className={s('flex flex-col')}>
           <div className={s('flex')}>
-            <span className={s('flex-grow text-lg text-left font-semibold')}>
+            <span className={s('flex-grow text-lg text-left font-semibold break-words')}>
               {question}
             </span>
             { this.renderDropdown() }
           </div>
-          <span className={s('mt-sm text-xs text-gray-dark font-medium vertical-ellipsis-2')}>
+          <span className={s('mt-sm text-xs text-gray-dark font-medium line-clamp-3 break-words')}>
             {answer}
           </span>
         </div>

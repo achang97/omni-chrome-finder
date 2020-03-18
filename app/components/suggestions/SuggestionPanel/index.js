@@ -83,7 +83,7 @@ class SuggestionPanel extends Component {
                 </div>
               </div>
               <div className={s('suggestion-panel-text suggestion-panel-sender-name')}> @{sender} </div>
-              <div className={s('text-xs vertical-ellipsis-3')}> {text} </div>
+              <div className={s('text-xs line-clamp-3')}> {text} </div>
             </div>
           </a>
         );
