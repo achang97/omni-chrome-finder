@@ -68,7 +68,7 @@ export const PROFILE_SETTING_SECTIONS = [
   {
     type: PROFILE_SETTING_SECTION_TYPE.KNOWLEDGE_BASE,
     title: 'Knowledge Base Integrations',
-    integrations: [INTEGRATIONS.GOOGLE],
+    integrations: [INTEGRATIONS.GOOGLE, INTEGRATIONS.ZENDESK],
   },
   {
     type: PROFILE_SETTING_SECTION_TYPE.COMMUNICATION,
