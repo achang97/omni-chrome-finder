@@ -11,11 +11,11 @@ export const CHROME_MESSAGE = {
 export const MAIN_CONTAINER_ID = 'omni-chrome-ext-main-container';
 
 export const CARD_URL_BASE = 'https://www.google.com/webhp?sxsrf=';
-export const CARD_URL_REGEX = /https:\/\/www\.google\.com\/webhp\?sxsrf=([A-Za-z0-9]{24})/;
-export const SLACK_URL_REGEX = /https:\/\/www\.google\.com\/webhp\?sxsrf=/;
+export const CARD_URL_REGEX = /^https:\/\/www\.google\.com\/webhp\?sxsrf=([A-Za-z0-9]{24})$/;
+export const SLACK_URL_REGEX = /^https:\/\/www\.google\.com\/webhp\?sxsrf=$/;
 
 export const TASK_URL_BASE = 'https://www.google.com/webhp?tasksxsrf=';
-export const TASK_URL_REGEX = /https:\/\/www\.google\.com\/webhp\?tasksxsrf=([A-Za-z0-9]{24})/;
+export const TASK_URL_REGEX = /^https:\/\/www\.google\.com\/webhp\?tasksxsrf=([A-Za-z0-9]{24})$/;
 
 
 export const SLACK_PROD_URL = "https://slack.com/oauth/v2/authorize?client_id=902571434263.910615559953&scope=app_mentions:read,channels:history,channels:join,channels:read,chat:write,commands,files:read,groups:history,groups:read,im:history,im:read,im:write,links:read,mpim:history,mpim:read,mpim:write,reminders:read,reminders:write,remote_files:read,remote_files:share,remote_files:write,team:read,usergroups:read,usergroups:write,users.profile:read,users:read,users:read.email,users:write&user_scope=channels:history,channels:read,channels:write,chat:write,emoji:read,files:read,groups:history,groups:read,groups:write,im:history,im:read,im:write,links:read,links:write,mpim:history,mpim:read,mpim:write,reactions:read,reminders:read,reminders:write,remote_files:read,remote_files:share,search:read,team:read,usergroups:read,usergroups:write,users.profile:read,users:read,users:read.email,users:write&state=";
@@ -166,8 +166,10 @@ export const TASKS_SECTION_TYPE = {
   ALL: 'ALL',
   NEEDS_VERIFICATION: 'NEEDS_VERIFICATION',
   OUT_OF_DATE: 'OUT_OF_DATE',
-  UNDOCUMENTED: 'UNDOCUMENTED'
+  UNDOCUMENTED: 'UNDOCUMENTED',
+  NEEDS_APPROVAL: 'NEEDS_APPROVAL',
 };
+
 export const TASKS_SECTIONS = [
   {
     type: TASKS_SECTION_TYPE.ALL,

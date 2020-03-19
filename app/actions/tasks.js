@@ -39,6 +39,16 @@ export function handleDismissTaskError(taskId, error) {
   return { type: types.DISMISS_TASK_ERROR, payload: { taskId, error } };
 }
 
+export function requestApproveCardFromTasks(taskId, cardId) {
+  return { type: types.APPROVE_CARD_FROM_TASKS_REQUEST, payload: { taskId, cardId } };
+}
+export function handleApproveCardFromTasksSuccess(taskId, card) {
+  return { type: types.APPROVE_CARD_FROM_TASKS_SUCCESS, payload: { taskId, card } };
+}
+export function handleApproveCardFromTasksError(taskId, error) {
+  return { type: types.APPROVE_CARD_FROM_TASKS_ERROR, payload: { taskId, error } };
+}
+
 export function removeTask(taskId) {
   return { type: types.REMOVE_TASK, payload: { taskId } };
 }

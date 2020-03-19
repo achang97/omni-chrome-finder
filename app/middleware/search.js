@@ -13,7 +13,8 @@ const cardsMiddleware = store => next => (action) => {
     case types.UPDATE_CARD_SUCCESS:
     case types.MARK_OUT_OF_DATE_SUCCESS:
     case types.MARK_UP_TO_DATE_SUCCESS:
-    case types.MARK_UP_TO_DATE_FROM_TASKS_SUCCESS: {
+    case types.MARK_UP_TO_DATE_FROM_TASKS_SUCCESS: 
+    case types.APPROVE_CARD_FROM_TASKS_SUCCESS: {
       const { card } = payload;
       store.dispatch(updateSearchCard(card));
       break;

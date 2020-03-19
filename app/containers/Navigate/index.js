@@ -55,6 +55,11 @@ export default class Navigate extends Component {
     }
   }
 
+  componentWillUnmount() {
+    const { updateNavigateTab } = this.props;
+    updateNavigateTab(NAVIGATE_TAB_OPTION.ALL);
+  }
+
   requestSearchCards = (clearCards) => {
     const { requestSearchCards, searchText, filterTags, activeTab, user } = this.props;
     const queryParams = { q: searchText };
