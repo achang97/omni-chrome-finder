@@ -17,6 +17,10 @@ export const SLACK_URL_REGEX = /https:\/\/www\.google\.com\/webhp\?sxsrf=/;
 export const TASK_URL_BASE = 'https://www.google.com/webhp?tasksxsrf=';
 export const TASK_URL_REGEX = /https:\/\/www\.google\.com\/webhp\?tasksxsrf=([A-Za-z0-9]{24})/;
 
+
+export const SLACK_PROD_URL = "https://slack.com/oauth/v2/authorize?client_id=902571434263.910615559953&scope=app_mentions:read,channels:history,channels:join,channels:read,chat:write,commands,files:read,groups:history,groups:read,im:history,im:read,im:write,links:read,mpim:history,mpim:read,mpim:write,reminders:read,reminders:write,remote_files:read,remote_files:share,remote_files:write,team:read,usergroups:read,usergroups:write,users.profile:read,users:read,users:read.email,users:write&user_scope=channels:history,channels:read,channels:write,chat:write,emoji:read,files:read,groups:history,groups:read,groups:write,im:history,im:read,im:write,links:read,links:write,mpim:history,mpim:read,mpim:write,reactions:read,reminders:read,reminders:write,remote_files:read,remote_files:share,search:read,team:read,usergroups:read,usergroups:write,users.profile:read,users:read,users:read.email,users:write&state=";
+export const SLACK_DEV_URL = "https://slack.com/oauth/v2/authorize?client_id=902571434263.1009616749152&scope=app_mentions:read,channels:history,channels:join,channels:read,chat:write,commands,files:read,groups:history,groups:read,im:history,im:read,im:write,links:read,mpim:history,mpim:read,mpim:write,reminders:read,reminders:write,remote_files:read,remote_files:share,remote_files:write,team:read,usergroups:read,usergroups:write,users.profile:read,users:read,users:read.email,users:write&user_scope=channels:history,channels:read,channels:write,chat:write,emoji:read,files:read,groups:history,groups:read,groups:write,im:history,im:read,im:write,links:read,links:write,mpim:history,mpim:read,mpim:write,reactions:read,reminders:read,reminders:write,remote_files:read,remote_files:share,search:read,team:read,usergroups:read,usergroups:write,users.profile:read,users:read,users:read.email,users:write&state=";
+
 // Debounce / Animations
 export const DEBOUNCE_60_HZ = 166;
 export const DEBOUNCE_300_MS = 300;
@@ -83,6 +87,12 @@ export const PROFILE_SETTING_SECTIONS = [
     permissions: [INTEGRATIONS.ZENDESK, INTEGRATIONS.HELPSCOUT],
   }
 ];
+
+export const PROFILE_NOTIFICATIONS_OPTIONS = {
+  EMAIL: 'email',
+  SLACK: 'slack',
+  CHROME: 'chrome'
+}
 
 // Card page constants
 export const CARD_DIMENSIONS = {

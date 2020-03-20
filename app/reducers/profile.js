@@ -5,6 +5,8 @@ export const initialState = {
   user: {},
   userEdits: {},
   isEditingAbout: false,
+
+  isChangingNotificationPermissions: false,
 };
 
 export default function displayReducer(state = initialState, action) {
@@ -58,6 +60,20 @@ export default function displayReducer(state = initialState, action) {
       const { error } = payload;
       return { ...state, isSavingUser: false, userSaveError: error };
     }
+
+    case types.CHANGE_NOTIFICATION_PERMISSIONS_REQUEST: {
+      const { permissions } = payload;
+      return { ...state, isChangingNotificationPermissions: true, changeNotificationPermissionsError: null };
+    }
+    case types.CHANGE_NOTIFICATION_PERMISSIONS_SUCCESS: {
+      const { user } = payload;
+      return { ...state, user, isChangingNotificationPermissions: false };
+    }
+    case types.CHANGE_NOTIFICATION_PERMISSIONS_ERROR: {
+      const { error } = payload;
+      return { ...state, isChangingNotificationPermissions: false, changeNotificationPermissionsError: error };
+    }
+
 
     case types.ADD_BOOKMARK_REQUEST:
     case types.REMOVE_BOOKMARK_ERROR: {
