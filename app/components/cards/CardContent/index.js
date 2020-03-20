@@ -171,9 +171,9 @@ class CardContent extends Component {
 
     let defaultProps;
     if (editorRole === EDITOR_TYPE.DESCRIPTION) {
-      defaultProps = { wrapperClassName: '', toolbarHidden: true, readOnly: true, editorState: descriptionEditorState, onEditorStateChange: this.onDescriptionEditorStateChange, onClick: undefined };
+      defaultProps = { className: 'my-reg', wrapperClassName: '', toolbarHidden: true, readOnly: true, editorState: descriptionEditorState, onEditorStateChange: this.onDescriptionEditorStateChange, onClick: undefined };
     } else {
-      defaultProps = { wrapperClassName: '', toolbarHidden: true, readOnly: true, editorState: answerEditorState, onEditorStateChange: this.onAnswerEditorStateChange, onClick: undefined };
+      defaultProps = { className: 'mt-sm mb-reg', wrapperClassName: '', toolbarHidden: true, readOnly: true, editorState: answerEditorState, onEditorStateChange: this.onAnswerEditorStateChange, onClick: undefined };
     }
 
     if (!isEditing) {
@@ -206,10 +206,10 @@ class CardContent extends Component {
   }
 
   renderTextEditor = (editorRole) => {
-    const { wrapperClassName, editorClassName, editorState, toolbarHidden, readOnly, onEditorStateChange, onClick } = this.getTextEditorProps(editorRole);
+    const { className, wrapperClassName, editorClassName, editorState, toolbarHidden, readOnly, onEditorStateChange, onClick } = this.getTextEditorProps(editorRole);
     return (
       <TextEditor
-        className={s('my-reg')}
+        className={s(`${className}`)}
         onClick={() => onClick && onClick()}
         onEditorStateChange={onEditorStateChange}
         editorState={editorState}
@@ -333,7 +333,7 @@ class CardContent extends Component {
   renderAnswer = () => {
     const { isEditing, editorEnabled, selectedMessages, slackReplies } = this.props;
     return (
-      <div className={s('p-2xl flex-grow min-h-0 flex flex-col min-h-0 relative')}>
+      <div className={s('px-2xl py-sm flex-grow min-h-0 flex flex-col min-h-0 relative')}>
         <div className={s('flex-grow min-h-0 flex flex-col min-h-0')}>
           { this.renderTextEditor(EDITOR_TYPE.ANSWER) }
         </div>
