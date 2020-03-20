@@ -31,8 +31,7 @@ import { requestSearchCards } from '../../actions/search';
 import * as askActions from '../../actions/ask';
 import { generateFileKey } from '../../utils/file';
 import { isLoggedIn } from '../../utils/auth';
-import { ASK_INTEGRATIONS, INTEGRATIONS, DEBOUNCE_60_HZ, SEARCH_TYPE, SLACK_RECIPIENT_TYPE,
-SLACK_PROD_URL, SLACK_DEV_URL  } from '../../utils/constants';
+import { ASK_INTEGRATIONS, INTEGRATIONS, DEBOUNCE_60_HZ, SEARCH_TYPE, SLACK_RECIPIENT_TYPE, SLACK_AUTH_URL  } from '../../utils/constants';
 
 import { getArrayWithout } from '../../utils/array';
 
@@ -419,7 +418,7 @@ class Ask extends Component {
             { this.renderTabHeader() }
             { !isLoggedInSlack ?
               <div>
-                <a target="_blank" href={`${SLACK_DEV_URL}${user._id}`}><img alt="Add to Slack" height="40" width="139" src="https://platform.slack-edge.com/img/add_to_slack.png" srcSet="https://platform.slack-edge.com/img/add_to_slack.png 1x, https://platform.slack-edge.com/img/add_to_slack@2x.png 2x" /></a>
+                <a target="_blank" href={`${SLACK_AUTH_URL}${user._id}`}><img alt="Add to Slack" height="40" width="139" src="https://platform.slack-edge.com/img/add_to_slack.png" srcSet="https://platform.slack-edge.com/img/add_to_slack.png 1x, https://platform.slack-edge.com/img/add_to_slack@2x.png 2x" /></a>
               </div> :
               this.renderAskInputs()
             }

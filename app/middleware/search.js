@@ -4,6 +4,7 @@ import * as types from '../actions/actionTypes';
 import { addSearchCard, updateSearchCard, removeSearchCard } from '../actions/search';
 
 const cardsMiddleware = store => next => (action) => {
+  const nextAction = next(action);
   const { type, payload } = action;
 
   const activeNavigateTab = store.getState().navigate.activeTab;
@@ -48,7 +49,7 @@ const cardsMiddleware = store => next => (action) => {
     }
   }
 
-  return next(action);
+  return nextAction;
 };
 
 export default cardsMiddleware;

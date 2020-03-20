@@ -221,7 +221,6 @@ export default class Tasks extends Component {
                   {this.renderNoTasksScreen()}
                 </div>
               }
-
               { tabIndex === 0 ?
                 <div className={s('flex flex-col min-h-0 flex-grow')}>
                   { TASKS_SECTIONS.map(this.renderTaskSection) }

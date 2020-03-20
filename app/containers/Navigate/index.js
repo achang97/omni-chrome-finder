@@ -69,11 +69,12 @@ export default class Navigate extends Component {
         break;
       }
       case NAVIGATE_TAB_OPTION.MY_CARDS: {
-        queryParams.includeUndocumented = true;
+        queryParams.statuses = Object.values(CARD_STATUS);
         queryParams.owners = [user._id];
         break;
       }
       case NAVIGATE_TAB_OPTION.BOOKMARKED: {
+        queryParams.statuses = Object.values(CARD_STATUS);
         queryParams.ids = user.bookmarkIds;
         break;
       }

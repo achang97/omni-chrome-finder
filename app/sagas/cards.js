@@ -4,7 +4,7 @@ import { getArrayIds, getArrayField } from '../utils/array';
 import { getContentStateFromEditorState } from '../utils/editor';
 import { toggleUpvotes, hasValidEdits } from '../utils/card';
 import { convertAttachmentsToBackendFormat } from '../utils/file';
-import { CARD_STATUS, PERMISSION_OPTION, AUTO_REMIND_VALUE, NAVIGATE_TAB_OPTION } from '../utils/constants';
+import { CARD_STATUS, PERMISSION_OPTION, NAVIGATE_TAB_OPTION } from '../utils/constants';
 import { GET_CARD_REQUEST, CREATE_CARD_REQUEST, UPDATE_CARD_REQUEST, TOGGLE_UPVOTE_REQUEST, DELETE_CARD_REQUEST, MARK_UP_TO_DATE_REQUEST, MARK_OUT_OF_DATE_REQUEST, APPROVE_CARD_REQUEST, ADD_BOOKMARK_REQUEST, REMOVE_BOOKMARK_REQUEST, ADD_CARD_ATTACHMENT_REQUEST } from '../actions/actionTypes';
 import {
   handleGetCardSuccess, handleGetCardError,
@@ -126,11 +126,6 @@ function* convertCardToBackendFormat(isNewCard) {
     contentState: contentStateAnswer, text: answerText
   } = getContentStateFromEditorState(answerEditorState);
 
-  const verificationInfo = { autoupdate: verificationInterval.value === AUTO_REMIND_VALUE };
-  if (!verificationInfo.autoupdate) {
-    verificationInfo.updateInterval = verificationInterval.value;
-  }
-
   const permissionsInfo = {
     userPermissions: permissions.value === PERMISSION_OPTION.JUST_ME ? [_id] : [],
     permissionGroups: permissions.value === PERMISSION_OPTION.SPECIFIC_GROUPS ?
@@ -148,7 +143,7 @@ function* convertCardToBackendFormat(isNewCard) {
     keywords: getArrayField(keywords, 'value'),
     slackReplies: slackReplies.filter(({ selected }) => selected),
     attachments: convertAttachmentsToBackendFormat(attachments),
-    ...verificationInfo,
+    updateInterval: verificationInterval.value,
     ...permissionsInfo,
     status: isNewCard ? CARD_STATUS.UP_TO_DATE : status,
   };

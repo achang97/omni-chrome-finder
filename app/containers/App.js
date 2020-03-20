@@ -84,12 +84,11 @@ class App extends Component {
           const { edit, sxsrf } = queryString.parse(window.location.search);
           openCard({ _id: sxsrf, isEditing: edit === 'true' });
         }
-      },
-      /*
+      },      
       {
         regex: SLACK_URL_REGEX,
         callback: NOOP,
-      },*/
+      },
       {
         regex: TASK_URL_REGEX,
         callback: (res) => {
