@@ -1,5 +1,4 @@
 import { addStorageListener } from '../../../app/utils/storage';
-import { setBadge } from '../../../app/utils/tasks';
 import { colors } from '../../../app/styles/colors';
 
 chrome.browserAction.setBadgeBackgroundColor({ color: colors.purple.reg });

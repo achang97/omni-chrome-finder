@@ -11,7 +11,7 @@ import Tab from '../../common/Tabs/Tab';
 import Badge from '../../common/Badge';
 import PlaceholderImg from '../../common/PlaceholderImg';
 
-import { SEARCH_TYPE, TASKS_SECTION_TYPE } from '../../../utils/constants';
+import { SEARCH_TYPE } from '../../../utils/constants';
 
 import { colors } from '../../../styles/colors';
 import style from './header.css';
@@ -23,8 +23,7 @@ const s = getStyleApplicationFn(style);
   state => ({
     user: state.profile.user,
     numAISuggestCards: state.search.cards[SEARCH_TYPE.AI_SUGGEST].cards.length,
-    numTasks: state.tasks.tasks[TASKS_SECTION_TYPE.ALL]
-      .filter(({ resolved }) => !resolved).length,
+    numTasks: state.tasks.tasks.filter(({ resolved }) => !resolved).length,
   }),
   dispatch => bindActionCreators({
   }, dispatch)

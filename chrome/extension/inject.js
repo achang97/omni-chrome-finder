@@ -2,7 +2,6 @@ import React from 'react';
 import ReactDOM from 'react-dom';
 import { getStorage } from '../../app/utils/storage';
 import { MAIN_CONTAINER_ID } from '../../app/utils/constants';
-import { createSectionedTasks } from '../../app/utils/tasks';
 import { initialState as authInitialState } from '../../app/reducers/auth';
 import { initialState as profileInitialState } from '../../app/reducers/profile';
 import { initialState as tasksInitialState } from '../../app/reducers/tasks';
@@ -45,7 +44,7 @@ function render(state, wrapper) {
       if (tasks) {
         initialState.tasks = {
           ...tasksInitialState,
-          tasks: createSectionedTasks(tasks)
+          tasks
         };
       }
 

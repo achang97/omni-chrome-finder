@@ -1,10 +1,11 @@
 import { take, call, fork, put } from 'redux-saga/effects';
 import { doGet, doPost, doPut } from '../utils/request';
-import { GET_TASKS_REQUEST, MARK_UP_TO_DATE_FROM_TASKS_REQUEST, DISMISS_TASK_REQUEST } from '../actions/actionTypes';
+import { GET_TASKS_REQUEST, MARK_UP_TO_DATE_FROM_TASKS_REQUEST, DISMISS_TASK_REQUEST, APPROVE_CARD_FROM_TASKS_REQUEST } from '../actions/actionTypes';
 import {
   handleGetTasksSuccess, handleGetTasksError,
   handleMarkUpToDateFromTasksSuccess, handleMarkUpToDateFromTasksError,
   handleDismissTaskSuccess, handleDismissTaskError,
+  handleApproveCardFromTasksSuccess, handleApproveCardFromTasksError,
 } from '../actions/tasks';
 
 export default function* watchTasksRequests() {
@@ -12,7 +13,7 @@ export default function* watchTasksRequests() {
 
   while (action = yield take([
     GET_TASKS_REQUEST, MARK_UP_TO_DATE_FROM_TASKS_REQUEST,
-    DISMISS_TASK_REQUEST
+    DISMISS_TASK_REQUEST, APPROVE_CARD_FROM_TASKS_REQUEST
   ])) {
     const { type, payload } = action;
     switch (type) {
@@ -21,11 +22,15 @@ export default function* watchTasksRequests() {
         break;
       }
       case MARK_UP_TO_DATE_FROM_TASKS_REQUEST: {
-        yield fork(markUpToDateFromTasks, payload);
+        yield fork(markUpToDate, payload);
         break;
       }
       case DISMISS_TASK_REQUEST: {
         yield fork(dismissTask, payload);
+        break;
+      }
+      case APPROVE_CARD_FROM_TASKS_REQUEST: {
+        yield fork(approveCard, payload);
         break;
       }
       default: {
@@ -45,7 +50,7 @@ function* getTasks() {
   }
 }
 
-function* markUpToDateFromTasks({ taskId, cardId }) {
+function* markUpToDate({ taskId, cardId }) {
   try {
     const { updatedCard } = yield call(doPost, '/cards/uptodate', { cardId });
     yield put(handleMarkUpToDateFromTasksSuccess(taskId, updatedCard));
@@ -62,5 +67,15 @@ function* dismissTask({ taskId }) {
   } catch (error) {
     const { response: { data } } = error;
     yield put(handleDismissTaskError(taskId, data.error));
+  }
+}
+
+function* approveCard({ taskId, cardId }) {
+  try {
+    const { updatedCard } = yield call(doPost, '/cards/approve', { cardId });
+    yield put(handleApproveCardFromTasksSuccess(taskId, updatedCard));
+  } catch (error) {
+    const { response: { data } } = error;
+    yield put(handleApproveCardFromTasksError(taskId, data.error));
   }
 }

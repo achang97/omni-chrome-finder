@@ -236,6 +236,20 @@ export function handleMarkOutOfDateError(cardId, error) {
 }
 
 
+export function requestApproveCard() {
+  return { type: types.APPROVE_CARD_REQUEST, payload: { } };
+}
+
+export function handleApproveCardSuccess(card) {
+  return { type: types.APPROVE_CARD_SUCCESS, payload: { card } };
+}
+
+export function handleApproveCardError(cardId, error) {
+  return { type: types.APPROVE_CARD_ERROR, payload: { cardId, error } };
+}
+
+
+
 export function requestAddBookmark(cardId) {
   return { type: types.ADD_BOOKMARK_REQUEST, payload: { cardId } };
 }

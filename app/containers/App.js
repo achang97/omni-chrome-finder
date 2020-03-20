@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import { Route, Switch, Redirect, withRouter } from 'react-router-dom';
 import Dock from 'react-dock';
-import { CARD_URL_REGEX, SLACK_URL_REGEX, TASK_URL_REGEX, TASKS_SECTIONS, TASK_TYPE, TASKS_SECTION_TYPE, SEARCH_TYPE, NOOP } from '../utils/constants';
+import { CARD_URL_REGEX, SLACK_URL_REGEX, TASK_URL_REGEX, TASKS_SECTIONS, TASKS_SECTION_TYPE, TASK_TYPE, SEARCH_TYPE, NOOP } from '../utils/constants';
 import queryString from 'query-string';
 
 import { bindActionCreators } from 'redux';
@@ -37,7 +37,7 @@ const dockPanelStyles = {
     dockExpanded: state.display.dockExpanded,
     isLoggedIn: !!state.auth.token,
     showAISuggest: state.search.cards[SEARCH_TYPE.AI_SUGGEST].cards.length !== 0,
-    tasks: state.tasks.tasks[TASKS_SECTION_TYPE.ALL]
+    tasks: state.tasks.tasks
   }),
   dispatch =>
     bindActionCreators(
@@ -84,12 +84,11 @@ class App extends Component {
           const { edit, sxsrf } = queryString.parse(window.location.search);
           openCard({ _id: sxsrf, isEditing: edit === 'true' });
         }
-      },
-      /*
+      },      
       {
         regex: SLACK_URL_REGEX,
         callback: NOOP,
-      },*/
+      },
       {
         regex: TASK_URL_REGEX,
         callback: (res) => {
@@ -101,14 +100,10 @@ class App extends Component {
               updateTasksTab(1);
             } else {
               updateTasksTab(0);
-
               const taskSectionType = TASKS_SECTIONS.find(({ taskTypes }) => (
                 taskTypes.length === 1 && taskTypes[0] === task.status
               ));
-
-              if (taskSectionType) {
-                updateTasksOpenSection(taskSectionType.type);
-              }
+              updateTasksOpenSection(taskSectionType ? taskSectionType.type : TASKS_SECTION_TYPE.ALL);
             }
           }
           history.push('/tasks');

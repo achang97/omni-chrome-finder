@@ -5,19 +5,19 @@ import { getEditorStateFromContentState, getContentStateFromEditorState } from '
 import { createSelectOptions } from './select';
 import { getArrayIds } from './array';
 import {
-  AUTO_REMIND_VALUE, VERIFICATION_INTERVAL_OPTIONS, PERMISSION_OPTION,
+  VERIFICATION_INTERVAL_OPTIONS, PERMISSION_OPTION,
   PERMISSION_OPTIONS, CARD_STATUS
 } from './constants';
 
 export function convertCardToFrontendFormat(card) {
   const {
-    contentStateDescription, contentStateAnswer, keywords, autoupdate,
+    contentStateDescription, contentStateAnswer, keywords,
     updateInterval, userPermissions, permissionGroups, outOfDateReason,
     upvotes, slackReplies, ...rest
   } = card;
 
   const verificationInterval = VERIFICATION_INTERVAL_OPTIONS.find(option => (
-    option.value === (autoupdate ? AUTO_REMIND_VALUE : updateInterval)
+    option.value === updateInterval
   ));
 
   let permissionsValue;

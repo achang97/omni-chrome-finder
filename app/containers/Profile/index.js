@@ -12,7 +12,7 @@ import { connect } from 'react-redux';
 import { MdEdit } from 'react-icons/md';
 import { PROFILE_SETTING_SECTION_TYPE, PROFILE_SETTING_SECTIONS, 
          INTEGRATIONS, NOOP, PROFILE_NOTIFICATIONS_OPTIONS,
-         SLACK_PROD_URL, SLACK_DEV_URL } from '../../utils/constants';
+         SLACK_AUTH_URL } from '../../utils/constants';
 import { MdKeyboardArrowDown, MdKeyboardArrowUp, MdSettings } from 'react-icons/md';
 import { IoMdCamera } from 'react-icons/io';
 import _ from 'lodash';
@@ -94,7 +94,7 @@ export default class Profile extends Component {
 
   openSlackLogin() {
     const { user } = this.props;
-    window.open(`${SLACK_DEV_URL}${user._id}`, '_blank');
+    window.open(`${SLACK_AUTH_URL}${user._id}`, '_blank');
   }
 
   saveUser = () => {
@@ -343,12 +343,11 @@ export default class Profile extends Component {
     return (
       <div className={s('flex flex-col p-lg min-h-0 flex-grow')}>
         { this.renderAboutSection() }
-        <div onClick={() => this.openSlackLogin() }> Hi </div>
         { this.renderMetricsSection() }
         <div className={s('horizontal-separator my-reg')} />
         { this.renderIntegrationsSection() }
         { notificationsOpen && this.renderSettingsSection() }
-        <div className={s('flex justify-between')}>
+        <div className={s('flex justify-between pt-reg')}>
           <div className={s('text-sm text-gray-dark')}> {user.email} </div>
           <div className={s('flex')}>
             <MdSettings
