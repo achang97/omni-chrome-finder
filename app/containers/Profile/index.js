@@ -10,7 +10,9 @@ import { logout } from '../../actions/auth';
 import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
 import { MdEdit } from 'react-icons/md';
-import { PROFILE_SETTING_SECTION_TYPE, PROFILE_SETTING_SECTIONS, INTEGRATIONS, NOOP, PROFILE_NOTIFICATIONS_OPTIONS } from '../../utils/constants';
+import { PROFILE_SETTING_SECTION_TYPE, PROFILE_SETTING_SECTIONS, 
+         INTEGRATIONS, NOOP, PROFILE_NOTIFICATIONS_OPTIONS,
+         SLACK_PROD_URL, SLACK_DEV_URL } from '../../utils/constants';
 import { MdKeyboardArrowDown, MdKeyboardArrowUp, MdSettings } from 'react-icons/md';
 import { IoMdCamera } from 'react-icons/io';
 import _ from 'lodash';
@@ -88,6 +90,11 @@ export default class Profile extends Component {
     //CLOSE popup on finish.
     const clearToken = this.props.token.replace('Bearer ', '');
     window.open(`${ZENDESK_AUTH_URL}?auth=${clearToken}`, 'popup', 'width=600,height=600');
+  }
+
+  openSlackLogin() {
+    const { user } = this.props;
+    window.open(`${SLACK_DEV_URL}${user._id}`, '_blank');
   }
 
   saveUser = () => {
@@ -183,7 +190,7 @@ export default class Profile extends Component {
       case INTEGRATIONS.ZENDESK:
         return { title: 'Zendesk', logo: ZendeskIcon, onSignIn: () => this.openZendeskLogin(), onSignOut: () => {} };
       case INTEGRATIONS.SLACK:
-        return { title: 'Slack', logo: SlackIcon, onSignIn: () => {}, onSignOut: () => {} };
+        return { title: 'Slack', logo: SlackIcon, onSignIn: () => this.openSlackLogin(), onSignOut: () => {} };
       default:
         return {};
     }
@@ -296,56 +303,57 @@ export default class Profile extends Component {
   }
 
   renderSettingsSection = () => {
-    const { user, requestChangeNotificationPermissions } = this.props;
+    const { user, requestChangeNotificationPermissions, changeNotificationPermissionsError } = this.props;
     const { notificationPermissions } = user;
-    console.log(user);
+
     const { notificationToggle, notificationsOpen } = this.state;
-    if (notificationsOpen) {
-      return (
-        <div className={s('flex flex-col')}>
-          <div className={s('flex justify-between')}> 
-            <div> Receive notifications through: </div>
-            <MdKeyboardArrowUp 
-              className={s('cursor-pointer')}
-              onClick={() => this.setState({ notificationsOpen: false })}
-            />
-          </div>
-          {
-            Object.values(PROFILE_NOTIFICATIONS_OPTIONS).map((notificationsOption, i) => {
-              return (
-                <div className={s('flex justify-between')}>
-                  <div className={s('text-sm font-semibold')}> { notificationsOption } </div>
-                  <Toggle
-                    checked={notificationPermissions[notificationsOption]}
-                    icons={false}
-                    onChange={ () => requestChangeNotificationPermissions({ ...notificationPermissions, [notificationsOption] : !notificationPermissions[notificationsOption] }) }  />
-                </div>
-              )
-            })
-          }
+
+    return (
+      <div className={s('flex flex-col')}>
+        <div className={s('flex justify-between my-sm')}> 
+          <div> Receive notifications through: </div>
+          <MdKeyboardArrowDown 
+            className={s('cursor-pointer')}
+            onClick={() => this.setState({ notificationsOpen: false })}
+          />
         </div>
-      )
-    } else {
-      return null
-    }
+        { changeNotificationPermissionsError && 
+          <div className={s('text-red-reg mb-sm')}> {changeNotificationPermissionsError} </div>
+        }
+        {
+          Object.values(PROFILE_NOTIFICATIONS_OPTIONS).map((notificationsOption, i) => {
+            return (
+              <div className={s('flex justify-between items-center mb-xs')}>
+                <div className={s('text-sm font-semibold')}> { notificationsOption } </div>
+                <Toggle
+                  checked={notificationPermissions[notificationsOption]}
+                  icons={false}
+                  onChange={ () => requestChangeNotificationPermissions({ ...notificationPermissions, [notificationsOption] : !notificationPermissions[notificationsOption] }) }  />
+              </div>
+            )
+          })
+        }
+      </div>
+    )
   }
 
   render() {
     const { logout, user } = this.props;
-    const { sectionOpen } = this.state;
+    const { sectionOpen, notificationsOpen } = this.state;
     return (
       <div className={s('flex flex-col p-lg min-h-0 flex-grow')}>
         { this.renderAboutSection() }
+        <div onClick={() => this.openSlackLogin() }> Hi </div>
         { this.renderMetricsSection() }
         <div className={s('horizontal-separator my-reg')} />
         { this.renderIntegrationsSection() }
-        { this.renderSettingsSection() }
+        { notificationsOpen && this.renderSettingsSection() }
         <div className={s('flex justify-between')}>
           <div className={s('text-sm text-gray-dark')}> {user.email} </div>
           <div className={s('flex')}>
             <MdSettings
               className={s('mr-sm text-purple-reg cursor-pointer pr-sm profile-settings-icon')} 
-              onClick={ () => this.setState({ notificationsOpen: true }) } />
+              onClick={ () => this.setState({ notificationsOpen: !notificationsOpen }) } />
             <div className={s('text-sm text-purple-reg underline cursor-pointer')} onClick={() => logout()}> Logout </div>
           </div>
         </div>
