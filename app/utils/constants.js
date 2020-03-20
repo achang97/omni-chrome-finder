@@ -46,6 +46,10 @@ export const INTEGRATIONS = {
   ASANA: 'asana',
   ZENDESK: 'zendesk',
   HELPSCOUT: 'helpscout',
+  GMAIL: 'gmail',
+  SALESFORCE: 'salesforce',
+  JIRA: 'jira',
+  HUBSPOT: 'hubspot',
 };
 
 // Ask page constants
@@ -69,34 +73,6 @@ export const NAVIGATE_TAB_OPTIONS = [
 ];
 
 // Profile Page Constants
-export const PROFILE_SETTING_SECTION_TYPE = {
-  KNOWLEDGE_BASE: 'KNOWLEDGE_BASE',
-  COMMUNICATION: 'COMMUNICATION',
-  AUTOFIND: 'AUTOFIND',
-};
-export const PROFILE_SETTING_SECTIONS = [
-  {
-    type: PROFILE_SETTING_SECTION_TYPE.KNOWLEDGE_BASE,
-    title: 'Knowledge Base Integrations',
-    integrations: [INTEGRATIONS.GOOGLE, INTEGRATIONS.ZENDESK],
-  },
-  {
-    type: PROFILE_SETTING_SECTION_TYPE.COMMUNICATION,
-    title: 'Communication Integrations',
-    integrations: [INTEGRATIONS.SLACK],
-  },
-  {
-    type: PROFILE_SETTING_SECTION_TYPE.AUTOFIND,
-    title: 'Autofind Permissions',
-    permissions: [INTEGRATIONS.ZENDESK, INTEGRATIONS.HELPSCOUT],
-  }
-];
-
-export const PROFILE_NOTIFICATIONS_OPTIONS = {
-  EMAIL: 'email',
-  SLACK: 'slack',
-  CHROME: 'chrome'
-}
 
 // Card page constants
 export const CARD_DIMENSIONS = {

@@ -10,15 +10,14 @@ import { logout } from '../../actions/auth';
 import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
 import { MdEdit } from 'react-icons/md';
-import { PROFILE_SETTING_SECTION_TYPE, PROFILE_SETTING_SECTIONS, 
-         INTEGRATIONS, NOOP, PROFILE_NOTIFICATIONS_OPTIONS,
+import { INTEGRATIONS, NOOP, 
          SLACK_AUTH_URL } from '../../utils/constants';
 import { MdKeyboardArrowDown, MdKeyboardArrowUp, MdSettings } from 'react-icons/md';
 import { IoMdCamera } from 'react-icons/io';
 import _ from 'lodash';
 import Toggle from 'react-toggle'
 
-import { changeFirstname, changeLastname, changeBio, requestSaveUser, editUser, requestGetUser, requestChangeNotificationPermissions } from '../../actions/profile';
+import { changeFirstname, changeLastname, changeBio, requestSaveUser, editUser, requestGetUser, requestChangeUserPermissions } from '../../actions/profile';
 
 import Loader from '../../components/common/Loader';
 import { SERVER_URL } from '../../utils/request';
@@ -32,6 +31,12 @@ const s = getStyleApplicationFn(style);
 import SlackIcon from '../../assets/images/icons/Slack_Mark.svg';
 import GoogleDriveIcon from '../../assets/images/icons/GoogleDrive_Icon.svg';
 import ZendeskIcon from '../../assets/images/icons/Zendesk_Icon.svg';
+import GmailIcon from '../../assets/images/icons/Gmail_Icon.svg';
+import JiraIcon from '../../assets/images/icons/Jira_Icon.svg';
+import SalesforceIcon from '../../assets/images/icons/Salesforce_Icon.svg';
+import HubspotIcon from '../../assets/images/icons/Hubspot_Icon.svg';
+import HelpscoutIcon from '../../assets/images/icons/Helpscout_Icon.svg';
+
 
 const GOOGLE_AUTH_URL = `${SERVER_URL}/google/authenticate`;
 const ZENDESK_AUTH_URL = `${SERVER_URL}/zendesk/authenticate`;
@@ -42,6 +47,35 @@ const MOCK_USER = {
     helpscout: false,
   }
 };
+
+const PROFILE_SETTING_SECTION_TYPE = {
+  KNOWLEDGE_BASE: 'KNOWLEDGE_BASE',
+  COMMUNICATION: 'COMMUNICATION',
+  AUTOFIND: 'AUTOFIND',
+};
+const PROFILE_SETTING_SECTIONS = [
+  {
+    type: PROFILE_SETTING_SECTION_TYPE.KNOWLEDGE_BASE,
+    title: 'Knowledge Base Integrations',
+    integrations: [INTEGRATIONS.GOOGLE, INTEGRATIONS.ZENDESK],
+  },
+  {
+    type: PROFILE_SETTING_SECTION_TYPE.COMMUNICATION,
+    title: 'Communication Integrations',
+    integrations: [INTEGRATIONS.SLACK],
+  },
+  {
+    type: PROFILE_SETTING_SECTION_TYPE.AUTOFIND,
+    title: 'Autofind Permissions',
+    permissions: [INTEGRATIONS.GMAIL, INTEGRATIONS.ZENDESK, INTEGRATIONS.SALESFORCE, INTEGRATIONS.HUBSPOT, INTEGRATIONS.JIRA, INTEGRATIONS.HELPSCOUT],
+  }
+];
+
+const PROFILE_NOTIFICATIONS_OPTIONS = {
+  EMAIL: 'email',
+  SLACK: 'slack',
+  CHROME: 'chrome'
+}
 
 @connect(
   state => ({
@@ -57,7 +91,7 @@ const MOCK_USER = {
         requestSaveUser,
         editUser,
         requestGetUser,
-        requestChangeNotificationPermissions,
+        requestChangeUserPermissions,
         logout,
       },
       dispatch
@@ -195,19 +229,30 @@ export default class Profile extends Component {
         return {};
     }
   }
-
+//[INTEGRATIONS.GMAIL, INTEGRATIONS.ZENDESK, INTEGRATIONS.SALESFORCE, INTEGRATIONS.HUBSPOT, INTEGRATIONS.JIRA, INTEGRATIONS.HELPSCOUT],
   getPermissionInfo = (permission) => {
     switch (permission) {
+      case INTEGRATIONS.GMAIL:
+        return { title: 'Gmail', logo: GmailIcon, onEnable: () => { return; }, onDisable: () => { return; } };
+      case INTEGRATIONS.SALESFORCE:
+        return { title: 'Salesforce', logo: SalesforceIcon, onEnable: () => { return; }, onDisable: () => { return; } };
+      case INTEGRATIONS.HUBSPOT:
+        return { title: 'Hubspot', logo: HubspotIcon, onEnable: () => { return; }, onDisable: () => { return; } };
+      case INTEGRATIONS.JIRA:
+        return { title: 'Jira', logo: JiraIcon, onEnable: () => { return; }, onDisable: () => { return; } };
       case INTEGRATIONS.ZENDESK:
-        return { title: 'Zendesk', logo: GoogleDriveIcon, onEnable: () => { return; }, onDisable: () => { return; } };
+        return { title: 'Zendesk', logo: ZendeskIcon, onEnable: () => { return; }, onDisable: () => { return; } };
       case INTEGRATIONS.HELPSCOUT:
-        return { title: 'Helpscout', logo: SlackIcon, onEnable: () => { return; }, onDisable: () => { return; } };
+        return { title: 'Helpscout', logo: HelpscoutIcon, onEnable: () => { return; }, onDisable: () => { return; } };
       default:
         return {};
     }
   }
 
   renderAutofindPermissions = (profileSettingSection) => {
+    const { user, requestChangeUserPermissions, changeUserPermissionsError } = this.props;
+    const { autofindPermissions } = user;
+
     const isEnabled = true;
     return (
       <div>
@@ -223,13 +268,10 @@ export default class Profile extends Component {
                   </div>
                   <div className={s('text-sm ')}> {title} </div>
                 </div>
-                <CheckBox
-                  isSelected={isEnabled}
-                  toggleCheckbox={() => { return; }}
-                  className={s('flex-shrink-0 margin-xs')}
-                  unselectedClassName={s('bg-white')}
-                  selectedClassName={s('bg-purple-reg text-white')}
-                />
+                <Toggle
+                  checked={autofindPermissions[permission]}
+                  icons={false}
+                  onChange={ () => requestChangeUserPermissions( { autofindPermissions: { ...autofindPermissions, [permission] : !autofindPermissions[permission] } } ) }  />
               </div>
             );
           })
@@ -303,7 +345,7 @@ export default class Profile extends Component {
   }
 
   renderSettingsSection = () => {
-    const { user, requestChangeNotificationPermissions, changeNotificationPermissionsError } = this.props;
+    const { user, requestChangeUserPermissions, changeUserPermissionsError } = this.props;
     const { notificationPermissions } = user;
 
     const { notificationToggle, notificationsOpen } = this.state;
@@ -317,8 +359,8 @@ export default class Profile extends Component {
             onClick={() => this.setState({ notificationsOpen: false })}
           />
         </div>
-        { changeNotificationPermissionsError && 
-          <div className={s('text-red-reg mb-sm')}> {changeNotificationPermissionsError} </div>
+        { changeUserPermissionsError && 
+          <div className={s('text-red-reg mb-sm')}> {changeUserPermissionsError} </div>
         }
         {
           Object.values(PROFILE_NOTIFICATIONS_OPTIONS).map((notificationsOption, i) => {
@@ -328,7 +370,7 @@ export default class Profile extends Component {
                 <Toggle
                   checked={notificationPermissions[notificationsOption]}
                   icons={false}
-                  onChange={ () => requestChangeNotificationPermissions({ ...notificationPermissions, [notificationsOption] : !notificationPermissions[notificationsOption] }) }  />
+                  onChange={ () => requestChangeUserPermissions( { notificationPermissions: { ...notificationPermissions, [notificationsOption] : !notificationPermissions[notificationsOption] } }) }  />
               </div>
             )
           })

@@ -41,14 +41,14 @@ export function handleSaveUserError(error) {
   return { type: types.SAVE_USER_ERROR, payload: { error } };
 }
 
-export function requestChangeNotificationPermissions(permissions) {
-  return { type: types.CHANGE_NOTIFICATION_PERMISSIONS_REQUEST, payload: { permissions } };
+export function requestChangeUserPermissions( updates ) {
+  return { type: types.CHANGE_USER_PERMISSIONS_REQUEST, payload: { updates } };
 }
 
-export function handleChangeNotificationPermissionsError(error) {
-  return { type: types.CHANGE_NOTIFICATION_PERMISSIONS_ERROR, payload: { error } };
+export function handleChangeUserPermissionsError(error) {
+  return { type: types.CHANGE_USER_PERMISSIONS_ERROR, payload: { error } };
 }
 
-export function handleChangeNotificationPermissionsSuccess(user) {
-  return { type: types.CHANGE_NOTIFICATION_PERMISSIONS_SUCCESS, payload: { user } };
+export function handleChangeUserPermissionsSuccess(user) {
+  return { type: types.CHANGE_USER_PERMISSIONS_SUCCESS, payload: { user } };
 }

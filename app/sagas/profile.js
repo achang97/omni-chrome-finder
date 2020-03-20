@@ -1,16 +1,16 @@
 import { take, call, fork, put, select } from 'redux-saga/effects';
 import { doGet, doPut } from '../utils/request';
-import { GET_USER_REQUEST, SAVE_USER_REQUEST, CHANGE_NOTIFICATION_PERMISSIONS_REQUEST } from '../actions/actionTypes';
+import { GET_USER_REQUEST, SAVE_USER_REQUEST, CHANGE_USER_PERMISSIONS_REQUEST } from '../actions/actionTypes';
 import {
   handleGetUserSuccess, handleGetUserError,
   handleSaveUserSuccess, handleSaveUserError,
-  handleChangeNotificationPermissionsSuccess, handleChangeNotificationPermissionsError,
+  handleChangeUserPermissionsSuccess, handleChangeUserPermissionsError,
 } from '../actions/profile';
 
 export default function* watchProfileRequests() {
   let action;
 
-  while (action = yield take([GET_USER_REQUEST, SAVE_USER_REQUEST, CHANGE_NOTIFICATION_PERMISSIONS_REQUEST])) {
+  while (action = yield take([GET_USER_REQUEST, SAVE_USER_REQUEST, CHANGE_USER_PERMISSIONS_REQUEST])) {
     const { type, payload  } = action;
     switch (type) {
       case GET_USER_REQUEST: {
@@ -21,8 +21,8 @@ export default function* watchProfileRequests() {
         yield fork(updateUser);
         break;
       }
-      case CHANGE_NOTIFICATION_PERMISSIONS_REQUEST: {
-        yield fork(changeNotificationPermissions, payload);
+      case CHANGE_USER_PERMISSIONS_REQUEST: {
+        yield fork(changeUserPermissions, payload);
         break;
       }
       default: {
@@ -32,14 +32,14 @@ export default function* watchProfileRequests() {
   }
 }
 
-function* changeNotificationPermissions({ permissions }) {
+function* changeUserPermissions({ updates }) {
   try {
     const { user } = yield select(state => state.profile);
-    const { userJson } = yield call(doPut, '/users', { user, update: { notificationPermissions: permissions } });
-    yield put(handleChangeNotificationPermissionsSuccess(userJson));
+    const { userJson } = yield call(doPut, '/users', { user, update: updates });
+    yield put(handleChangeUserPermissionsSuccess(userJson));
   } catch (error) {
     const { response: { data } } = error;
-    yield put(handleChangeNotificationPermissionsError(error: data.error));
+    yield put(handleChangeUserPermissionsError(error: data.error));
   }
 }
 

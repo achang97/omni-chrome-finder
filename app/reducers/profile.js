@@ -6,7 +6,7 @@ export const initialState = {
   userEdits: {},
   isEditingAbout: false,
 
-  isChangingNotificationPermissions: false,
+  isChangingUserPermissions: false,
 };
 
 export default function displayReducer(state = initialState, action) {
@@ -61,17 +61,17 @@ export default function displayReducer(state = initialState, action) {
       return { ...state, isSavingUser: false, userSaveError: error };
     }
 
-    case types.CHANGE_NOTIFICATION_PERMISSIONS_REQUEST: {
-      const { permissions } = payload;
-      return { ...state, isChangingNotificationPermissions: true, changeNotificationPermissionsError: null };
+    case types.CHANGE_USER_PERMISSIONS_REQUEST: {
+      const { updates } = payload;
+      return { ...state, isChangingUserPermissions: true, changeUserPermissionsError: null };
     }
-    case types.CHANGE_NOTIFICATION_PERMISSIONS_SUCCESS: {
+    case types.CHANGE_USER_PERMISSIONS_SUCCESS: {
       const { user } = payload;
-      return { ...state, user, isChangingNotificationPermissions: false };
+      return { ...state, user, isChangingUserPermissions: false };
     }
-    case types.CHANGE_NOTIFICATION_PERMISSIONS_ERROR: {
+    case types.CHANGE_USER_PERMISSIONS_ERROR: {
       const { error } = payload;
-      return { ...state, isChangingNotificationPermissions: false, changeNotificationPermissionsError: error };
+      return { ...state, isChangingUserPermissions: false, changeUserPermissionsError: error };
     }
 
 
