@@ -85,10 +85,11 @@ class App extends Component {
           openCard({ _id: sxsrf, isEditing: edit === 'true' });
         }
       },
+      /*
       {
         regex: SLACK_URL_REGEX,
         callback: NOOP,
-      },
+      },*/
       {
         regex: TASK_URL_REGEX,
         callback: (res) => {

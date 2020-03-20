@@ -84,6 +84,12 @@ export const PROFILE_SETTING_SECTIONS = [
   }
 ];
 
+export const PROFILE_NOTIFICATIONS_OPTIONS = {
+  EMAIL: 'email',
+  SLACK: 'slack',
+  CHROME: 'chrome'
+}
+
 // Card page constants
 export const CARD_DIMENSIONS = {
   MIN_QUESTION_HEIGHT: 180,
