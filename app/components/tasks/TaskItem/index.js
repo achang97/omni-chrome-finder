@@ -10,7 +10,7 @@ import Loader from '../../common/Loader';
 import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
 import { openCard } from '../../../actions/cards';
-import { requestMarkUpToDateFromTasks, requestDismissTask } from '../../../actions/tasks';
+import { requestMarkUpToDateFromTasks, requestDismissTask, requestApproveCardFromTasks } from '../../../actions/tasks';
 
 import { TASK_TYPE, NOOP, TIMEOUT_3S } from '../../../utils/constants';
 import { IoMdAlert } from 'react-icons/io';
@@ -25,10 +25,12 @@ const s = getStyleApplicationFn(style);
 
 @connect(
   state => ({
+    ownUserId: state.profile.user._id,
   }),
   dispatch => bindActionCreators({
     requestMarkUpToDateFromTasks,
     requestDismissTask,
+    requestApproveCardFromTasks,
     openCard,
   }, dispatch)
 )
@@ -48,16 +50,18 @@ class TaskItem extends Component {
   }
 
   getHeaderInfo = () => {
-    const { type } = this.props;
+    const { type, notifier, ownUserId } = this.props;
+    const notifierName = notifier.id === ownUserId ? 'You' : notifier.name;
+
     switch (type) {
       case TASK_TYPE.NEEDS_VERIFICATION:
         return { headerTitle: 'Omni needs you to verify this card', headerTitleClassName: '', headerIcon: <IoMdAlert className={s('tasks-icon-container text-yellow-reg mr-reg')} /> };
       case TASK_TYPE.OUT_OF_DATE:
-        return { headerTitle: 'Your card was flagged as out of date', headerTitleClassName: 'text-red-reg', headerIcon: <AiFillMinusCircle className={s('tasks-icon-container text-red-reg mr-reg')} /> };
+        return { headerTitle: `${notifierName} flagged your card as out of date`, headerTitleClassName: 'text-red-reg', headerIcon: <AiFillMinusCircle className={s('tasks-icon-container text-red-reg mr-reg')} /> };
       case TASK_TYPE.UNDOCUMENTED:
         return { headerTitle: 'Document your question', headerTitleClassName: 'text-purple-reg', headerIcon: <AiFillQuestionCircle className={s('tasks-icon-container text-purple-reg mr-reg')} /> };
       case TASK_TYPE.NEEDS_APPROVAL:
-        return { headerTitle: 'Omni needs you to approve this card', headerTitleClassName: '', headerIcon: <MdCheckCircle className={s('tasks-icon-container text-purple-reg mr-reg')} /> };
+        return { headerTitle: `${notifierName} needs you to approve this card`, headerTitleClassName: '', headerIcon: <MdCheckCircle className={s('tasks-icon-container text-purple-reg mr-reg')} /> };
       default:
         return null;
     }
@@ -98,7 +102,7 @@ class TaskItem extends Component {
   getTaskActionsInfo = () => {
     const {
       type, id, card: { _id: cardId },
-      requestMarkUpToDateFromTasks, requestDismissTask, openCard
+      requestMarkUpToDateFromTasks, requestDismissTask, requestApproveCardFromTasks, openCard
     } = this.props;
 
     switch (type) {
@@ -126,9 +130,9 @@ class TaskItem extends Component {
       case TASK_TYPE.NEEDS_APPROVAL:
         return {
           primaryOption: 'Approve',
-          secondaryOption: 'Decline',
-          primaryAction: NOOP,
-          secondaryAction: NOOP
+          primaryAction: () => requestApproveCardFromTasks(id, cardId),
+          secondaryOption: 'Dismiss',
+          secondaryAction: () => requestDismissTask(id),
         };
       default:
         return {};
@@ -217,12 +221,14 @@ class TaskItem extends Component {
                   <Timeago date={createdAt} live={false} />
                 </div>
                 <div className={s('flex items-center justify-center text-sm text-gray-reg')}>
-                  <div
-                    className={s('text-xs border-b border-t-0 border-r-0 border-l-0 border-solid border-gray-xlight cursor-pointer')}
-                    onClick={() => secondaryAction()}
-                  >
-                    {secondaryOption}
-                  </div>
+                  { secondaryOption && secondaryAction &&
+                    <div
+                      className={s('text-xs border-b border-t-0 border-r-0 border-l-0 border-solid border-gray-xlight cursor-pointer')}
+                      onClick={() => secondaryAction()}
+                    >
+                      {secondaryOption}
+                    </div>
+                  }
                   <Button
                     text={primaryOption}
                     color={buttonColor}
@@ -249,6 +255,10 @@ TaskItem.propTypes = {
   type: PropTypes.oneOf([TASK_TYPE.NEEDS_VERIFICATION, TASK_TYPE.OUT_OF_DATE, TASK_TYPE.UNDOCUMENTED, TASK_TYPE.NEEDS_APPROVAL]).isRequired,
   card: PropTypes.object.isRequired,
   resolved: PropTypes.bool.isRequired,
+  notifier: PropTypes.shape({
+    id: PropTypes.string,
+    name: PropTypes.string.isRequired,
+  }).isRequired,
   isLoading: PropTypes.bool,
   error: PropTypes.string,
   onHide: PropTypes.func,

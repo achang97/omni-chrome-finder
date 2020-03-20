@@ -55,6 +55,11 @@ export default class Navigate extends Component {
     }
   }
 
+  componentWillUnmount() {
+    const { updateNavigateTab } = this.props;
+    updateNavigateTab(NAVIGATE_TAB_OPTION.ALL);
+  }
+
   requestSearchCards = (clearCards) => {
     const { requestSearchCards, searchText, filterTags, activeTab, user } = this.props;
     const queryParams = { q: searchText };
@@ -64,10 +69,12 @@ export default class Navigate extends Component {
         break;
       }
       case NAVIGATE_TAB_OPTION.MY_CARDS: {
+        queryParams.statuses = Object.values(CARD_STATUS);
         queryParams.owners = [user._id];
         break;
       }
       case NAVIGATE_TAB_OPTION.BOOKMARKED: {
+        queryParams.statuses = Object.values(CARD_STATUS);
         queryParams.ids = user.bookmarkIds;
         break;
       }

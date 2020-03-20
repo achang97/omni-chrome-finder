@@ -3,6 +3,10 @@
   width: 26px;
 }
 
+.tasks-tab-count {
+  @apply flex items-center justify-center ml-xs rounded-full bg-red-500 text-white text-xs font-normal w-lg h-lg;
+}
+
 .all-tasks-icon-container {
   height: 16px;
   width: 16px;

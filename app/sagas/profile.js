@@ -46,7 +46,8 @@ function* changeNotificationPermissions({ permissions }) {
 function* getUser() {
   try {
     const { userJson } = yield call(doGet, '/users');
-    yield put(handleGetUserSuccess(userJson));
+    const integrations = yield call(doGet, '/users/me/integrations');
+    yield put(handleGetUserSuccess({ ...userJson, integrations }));
   } catch (error) {
     const { response: { data } } = error;
     yield put(handleGetUserError(data.error));
@@ -60,6 +61,6 @@ function* updateUser() {
     yield put(handleSaveUserSuccess(userJson));
   } catch (error) {
     const { response: { data } } = error;
-    yield put(handleSaveUserError(error: data.error));
+    yield put(handleSaveUserError(data.error));
   }
 }

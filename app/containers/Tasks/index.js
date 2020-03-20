@@ -22,34 +22,6 @@ import { CARD_STATUS, TASK_TYPE, TASKS_SECTION_TYPE, TASKS_SECTIONS, TASKS_TAB_O
 import { getStyleApplicationFn } from '../../utils/style';
 const s = getStyleApplicationFn(style);
 
-const UNRESOLVED_CARDS_PLACEHOLDER = [{
-  question: 'How do I do this very complex task?',
-  type: TASK_TYPE.NEEDS_APPROVAL,
-  date: 'Feb 2',
-  tag: 'Onboarding',
-  owners: ['Jake', 'Joe'],
-  preview: 'You probably build websites and think your shit is special. You think your 13 megabyte parallax-ative home page is going to get you some fucking Awwward banner you can glue to the top corner of your site.',
-
-}, {
-  question: 'How do I do this very complex task?',
-  type: TASK_TYPE.NEEDS_APPROVAL,
-  date: 'Feb 2',
-  tag: 'Onboarding',
-  owners: ['Jake', 'Joe'],
-  preview: 'You probably build websites and think your shit is special. You think your 13 megabyte parallax-ative home page is going to get you some fucking Awwward banner you can glue to the top corner of your site.',
-
-}, {
-  question: 'How do I do this very complex task?',
-  type: TASK_TYPE.NEEDS_APPROVAL,
-  date: 'Feb 2',
-  tag: 'Onboarding',
-  owners: ['Jake', 'Joe'],
-  preview: 'You probably build websites and think your shit is special. You think your 13 megabyte parallax-ative home page is going to get you some fucking Awwward banner you can glue to the top corner of your site.',
-
-}
-
-];
-
 @connect(
   state => ({
     ...state.tasks,
@@ -67,18 +39,31 @@ const UNRESOLVED_CARDS_PLACEHOLDER = [{
 )
 
 export default class Tasks extends Component {
-  constructor(props) {
-    super(props);
-  }
-
   componentDidMount() {
     const { requestGetTasks } = this.props;
     requestGetTasks();
   }
 
+  componentDidUpdate(prevProps) {
+    const { tabIndex, requestGetTasks } = this.props;
+    if (prevProps.tabIndex !== tabIndex) {
+      requestGetTasks();
+    }
+  }
+
   componentWillUnmount() {
-    const { updateTasksOpenSection } = this.props;
+    const { updateTasksOpenSection, updateTasksTab } = this.props;
     updateTasksOpenSection(TASKS_SECTION_TYPE.ALL);
+    updateTasksTab(0);
+  }
+
+  getCurrTasks = (tabIndex) => {
+    const { tasks } = this.props;
+    const currTasks = tasks.filter(({ status }) => {
+      const needsApproval = status === TASK_TYPE.NEEDS_APPROVAL;
+      return tabIndex === 0 ? (!needsApproval) : needsApproval;
+    });
+    return currTasks;
   }
 
   updateTab = (tabIndex) => {
@@ -98,7 +83,7 @@ export default class Tasks extends Component {
   renderTasksList = (type, filteredTasks) => (
     <div className={s('h-full flex flex-col p-reg overflow-auto')}>
       {
-        filteredTasks.map(({ _id, createdAt, status, card, isLoading, error, resolved }, i) => (
+        filteredTasks.map(({ _id, createdAt, status, card, isLoading, error, resolved, notifier }, i) => (
           <TaskItem
             key={_id}
             id={_id}
@@ -109,14 +94,18 @@ export default class Tasks extends Component {
             isLoading={isLoading}
             error={error}
             resolved={resolved}
-            onHide={type === TASKS_SECTION_TYPE.ALL ? () => this.props.removeTask(_id) : null}
+            notifier={notifier}
+            onHide={type === TASKS_SECTION_TYPE.ALL || type === TASKS_SECTION_TYPE.NEEDS_APPROVAL ?
+              () => this.props.removeTask(_id) :
+              null
+            }
           />
         ))
       }
     </div>
   )
 
-  getTaskSectionProps(type) {
+  getTaskSectionProps(type, taskTypes) {
     const { tasks } = this.props;
 
     let icon;
@@ -138,12 +127,13 @@ export default class Tasks extends Component {
       }
     }
 
-    return { icon, filteredTasks: tasks[type] };
+    const filteredTasks = tasks.filter(({ status }) => taskTypes.includes(status));
+    return { icon, filteredTasks };
   }
 
-  renderTaskSection = ({ type, title }) => {
+  renderTaskSection = ({ type, title, taskTypes }) => {
     const { openSection } = this.props;
-    const { icon, filteredTasks } = this.getTaskSectionProps(type);
+    const { icon, filteredTasks } = this.getTaskSectionProps(type, taskTypes);
     const isSectionOpen = openSection === type;
     const isAllTasksSection = type === TASKS_SECTION_TYPE.ALL;
 
@@ -174,48 +164,39 @@ export default class Tasks extends Component {
     );
   }
 
-  renderUnresolvedTasks = () => {
-    const { isGettingTasks } = this.props;
+  renderNoTasksScreen = () => {
+    const { tabIndex } = this.props;
 
     return (
-      <div className={s('flex flex-col h-full flex-grow')}>
-        { isGettingTasks ?
-          <Loader /> :
-          TASKS_SECTIONS.map(this.renderTaskSection)  
-        }
+      <div className={s('flex flex-col items-center p-reg justify-center mt-2xl')}>
+        <img src={NoNotificationsImg} />
+        <div className={s('text-reg font-semibold')}>
+          No {tabIndex === 0 ? 'unresolved tasks' : 'cards to approve'}
+        </div>
+        <div className={s('text-sm mt-xl text-center')}>
+          Congratulations, all your cards are {tabIndex === 0 ? 'verified and up to date!' : 'approved!'}
+        </div>
       </div>
     );
   }
 
-  renderApprovalTasks = () => (
-    <div className={s('flex flex-col p-reg min-h-0 overflow-auto')}>
-      {/*
-          UNRESOLVED_CARDS_PLACEHOLDER.map((task, i) => {
-            return (
-              <TaskItem
-                index={i}
-                id={task._id}
-                date={<Timeago date={task.createdAt} live={false} />}
-                type={task.status}
-                card={task.card}
-              />
-            );
-          })
-        */}
-    </div>
-    )
-
-  renderNoTasksScreen = () => (
-    <div className={s('flex flex-col items-center p-reg justify-center mt-2xl')}>
-      <img src={NoNotificationsImg} />
-      <div className={s('text-reg font-semibold')}> No unresolved tasks </div>
-      <div className={s('text-sm mt-xl text-center')}> Congratulations, all your cards are verified and up to date! </div>
-    </div>
-    )
+  renderTab = (tasksTab, i) => {
+    const numTasks = this.getCurrTasks(i).length;
+    return (
+      <Tab tabContainerClassName={s('flex-1')} key={tasksTab}>
+        <div className={s('flex items-center')}>
+          <div> {tasksTab} </div>
+          { numTasks !== 0 &&
+            <div className={s('tasks-tab-count')}> {numTasks} </div>
+          }
+        </div>
+      </Tab>
+    );
+  }
 
   render() {
     const { tabIndex, tasks, isGettingTasks, getTasksError } = this.props;
-    const allTasks = tasks[TASKS_SECTION_TYPE.ALL];
+    const currTasks = this.getCurrTasks(tabIndex);
 
     return (
       <div className={s('flex flex-col min-h-0 flex-grow')}>
@@ -228,34 +209,27 @@ export default class Tasks extends Component {
           showRipple={false}
           color={colors.purple.reg}
         >
-          {
-              TASKS_TAB_OPTIONS.map((tasksTab, i) => (
-                <Tab tabContainerClassName={s('flex-1')} key={tasksTab}>
-                  <div>{tasksTab}</div>
-                </Tab>
-                ))
-            }
+          { TASKS_TAB_OPTIONS.map(this.renderTab)}
         </Tabs>
-        { tabIndex === 0 ?
-          <React.Fragment>
-            { getTasksError && <div> {getTasksError} </div>}
-            {
-              isGettingTasks ?
-                <Loader className={s('mt-2xl')} />
-              :
-                <React.Fragment>
-                  <AnimateHeight height={allTasks.length === 0 ? 'auto' : 0}>
-                    {this.renderNoTasksScreen()}
-                  </AnimateHeight>
-                  <AnimateHeight height={allTasks.length !== 0 ? 'auto' : 0} className={s('min-h-0')} contentClassName={s('h-full')}>
-                    {this.renderUnresolvedTasks()}
-                  </AnimateHeight>
-                </React.Fragment>
-            }
-          </React.Fragment>
-            :
-            this.renderApprovalTasks()
+        <React.Fragment>
+          { isGettingTasks ?
+            <Loader className={s('mt-2xl')} /> :
+            <React.Fragment>
+              {getTasksError && <div> {getTasksError} </div>}
+              { currTasks.length === 0 &&
+                <div>
+                  {this.renderNoTasksScreen()}
+                </div>
+              }
+              { tabIndex === 0 ?
+                <div className={s('flex flex-col min-h-0 flex-grow')}>
+                  { TASKS_SECTIONS.map(this.renderTaskSection) }
+                </div> :
+                this.renderTasksList(TASKS_SECTION_TYPE.NEEDS_APPROVAL, currTasks)
+              }
+            </React.Fragment>
           }
+        </React.Fragment>
       </div>
     );
   }

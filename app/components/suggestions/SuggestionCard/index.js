@@ -206,9 +206,11 @@ class SuggestionCard extends Component {
             </span>
             { this.renderDropdown() }
           </div>
-          <span className={s('mt-sm text-xs text-gray-dark font-medium line-clamp-3 break-words')}>
-            {answer}
-          </span>
+          { answer &&
+            <span className={s('mt-sm text-xs text-gray-dark font-medium line-clamp-3 break-words')}>
+              {answer}
+            </span>
+          }
         </div>
         <div className={s('mt-reg pt-reg flex-col')}>
           <div className={s('horizontal-separator mb-sm')} />
@@ -229,7 +231,7 @@ class SuggestionCard extends Component {
 SuggestionCard.propTypes = {
   id: PropTypes.string.isRequired,
   question: PropTypes.string.isRequired,
-  answer: PropTypes.string.isRequired,
+  answer: PropTypes.string,
   createdAt: PropTypes.string.isRequired,
   status: PropTypes.oneOf([CARD_STATUS.UP_TO_DATE, CARD_STATUS.OUT_OF_DATE, CARD_STATUS.NEEDS_VERIFICATION, CARD_STATUS.NEEDS_APPROVAL, CARD_STATUS.NOT_DOCUMENTED]),
   className: PropTypes.string,
