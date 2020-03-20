@@ -104,7 +104,7 @@ SuggestionScrollContainer.propTypes = {
   cards: PropTypes.arrayOf(PropTypes.shape({
     _id: PropTypes.string.isRequired,
     question: PropTypes.string.isRequired,
-    answer: PropTypes.string.isRequired,
+    answer: PropTypes.string,
     updatedAt: PropTypes.string.isRequired,
     status: PropTypes.number.isRequired
   })),

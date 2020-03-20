@@ -25,15 +25,12 @@ const tasksMiddleware = store => next => (action) => {
       break;
     }
     case types.MARK_UP_TO_DATE_SUCCESS:
+    case types.APPROVE_CARD_SUCCESS:
     case types.UPDATE_CARD_SUCCESS: {
       const { card } = payload;
       if (card.status === CARD_STATUS.UP_TO_DATE) {
         getStorage('tasks').then(tasks => {
-          const isNewlyResolved = task => (
-            (task.status === TASK_TYPE.UNDOCUMENTED || task.status === TASK_TYPE.OUT_OF_DATE) &&
-            task.card._id === card._id
-          );
-          const newTasks = tasks.map(task => (isNewlyResolved(task) ? { ...task, resolved: true } : task));
+          const newTasks = tasks.map(task => (task.card._id === card._id ? { ...task, resolved: true } : task));
           setStorage('tasks', newTasks);
         });   
       }   

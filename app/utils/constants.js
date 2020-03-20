@@ -34,6 +34,12 @@ export const FADE_IN_TRANSITIONS = {
   exited: { opacity: 0 },
 };
 
+// User constants
+export const USER_ROLE = {
+  ADMIN: 'Admin',
+  MEMBER: 'Member'
+}
+
 // General constants
 export const INTEGRATIONS = {
   GOOGLE: 'google',
@@ -114,6 +120,7 @@ export const MODAL_TYPE = {
   CONFIRM_UP_TO_DATE: 'CONFIRM_UP_TO_DATE',
   CONFIRM_OUT_OF_DATE: 'CONFIRM_OUT_OF_DATE',
   CONFIRM_UP_TO_DATE_SAVE: 'CONFIRM_UP_TO_DATE_SAVE',
+  CONFIRM_APPROVE: 'CONFIRM_APPROVE',
   CONFIRM_DELETE: 'CONFIRM_DELETE',
   CONFIRM_CLOSE_EDIT: 'CONFIRM_CLOSE_EDIT',
 };

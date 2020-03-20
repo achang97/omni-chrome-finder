@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import PropTypes from 'prop-types';
 import { MdCheck, MdRemoveCircle, MdArrowDropDown } from 'react-icons/md';
+import { FaPencilAlt, FaUserCheck } from 'react-icons/fa';
 import { IoMdAlert } from 'react-icons/io';
 import { CARD_STATUS, NOOP } from '../../../utils/constants';
 import Dropdown from '../../common/Dropdown';
@@ -21,61 +22,71 @@ const s = getStyleApplicationFn(style);
 const getDisplayInfo = (status) => {
   switch (status) {
     case CARD_STATUS.UP_TO_DATE:
-      return { label: 'Up to date', dropdownLabel: 'Flag as up to date', Icon: MdCheck, bgColor: 'green-xlight', fontColor: colors.green.reg, dropdownFontColor: 'green-reg' };
+      return { label: 'Up to date', Icon: MdCheck, bgColor: 'green-xlight', fontColor: 'green-reg' };
     case CARD_STATUS.OUT_OF_DATE:
-      return { label: 'Out of date', dropdownLabel: 'Flag as outdated', Icon: MdRemoveCircle, bgColor: 'red-500', fontColor: 'white', dropdownFontColor: 'red-500' };
+      return { label: 'Out of date', Icon: MdRemoveCircle, bgColor: 'red-500', fontColor: 'white' };
     case CARD_STATUS.NEEDS_VERIFICATION:
       return { label: 'Needs Verification', Icon: IoMdAlert, bgColor: 'yellow-reg', fontColor: 'black' };
+    case CARD_STATUS.NOT_DOCUMENTED:
+      return { label: 'Not Documented', Icon: FaPencilAlt, bgColor: 'blue-200', fontColor: 'blue-500' };
+    case CARD_STATUS.NEEDS_APPROVAL:
+      return { label: 'Needs Approval', Icon: FaUserCheck, bgColor: 'orange-200', fontColor: 'orange-500' };
     default:
       return {};
   }
 };
 
-const CardStatus = ({ isActionable, status, className, onDropdownOptionClick, outOfDateReason }) => {
-  if (![CARD_STATUS.UP_TO_DATE, CARD_STATUS.OUT_OF_DATE, CARD_STATUS.NEEDS_VERIFICATION].includes(status)) {
-    return null;
+const getDropdownInfo = (status) => {
+  switch (status) {
+    case CARD_STATUS.NEEDS_VERIFICATION:
+    case CARD_STATUS.OUT_OF_DATE:
+      return { label: 'Flag as up to date', Icon: MdCheck, fontColor: 'green-reg' };
+    case CARD_STATUS.UP_TO_DATE:
+      return { label: 'Flag as outdated', Icon: MdRemoveCircle, fontColor: 'red-500' };
+    case CARD_STATUS.NEEDS_APPROVAL:
+      return { label: 'Approve Changes', Icon: MdCheck, fontColor: 'green-reg' };
+    default:
+      return {};
   }
+}
 
+const CardStatus = ({ isActionable, status, className, onDropdownOptionClick, outOfDateReason }) => {
   const { label, Icon, bgColor, fontColor } = getDisplayInfo(status);
-
-  const dropdownStatus = status === CARD_STATUS.UP_TO_DATE ? CARD_STATUS.OUT_OF_DATE : CARD_STATUS.UP_TO_DATE;
-  const { Icon: DropdownIcon, dropdownFontColor, dropdownLabel, dropdownModalType } = getDisplayInfo(dropdownStatus);
+  const { Icon: DropdownIcon, fontColor: dropdownFontColor, label: dropdownLabel } = getDropdownInfo(status);
 
   const [dropdownOpen, setDropdownOpen] = useState(false);
 
   const onClick = () => {
-    onDropdownOptionClick(dropdownStatus);
+    onDropdownOptionClick(status);
     setDropdownOpen(false);
   };
 
   const shouldShowDropdown = dropdownOpen && isActionable;
+  const dropdownDisabled = !isActionable || status === CARD_STATUS.NOT_DOCUMENTED;
 
   return (
-    <div onClick={e => isActionable && e.stopPropagation()} className={s('flex')}>
+    <div onClick={e => !dropdownDisabled && e.stopPropagation()} className={s('flex')}>
       <Dropdown
         isOpen={shouldShowDropdown}
         onToggle={setDropdownOpen}
         className={s(`card-status bg-${bgColor} ${shouldShowDropdown ? 'rounded-b-none' : ''} ${className}`)}
         toggler={
-          <div
-            className={s('flex p-sm')}
-            style={{ color: fontColor }}
-          >
+          <div className={s(`flex p-sm text-${fontColor}`)}>
             <Icon />
             <div className={s('ml-xs')}> {label} </div>
-            { isActionable && <MdArrowDropDown /> }
+            { !dropdownDisabled && <MdArrowDropDown /> }
           </div>
         }
-        body={
+        body={!dropdownDisabled &&
           <div
-            className={s('bg-white rounded-b-lg p-sm flex items-center shadow-md button-hover')}
+            className={s('card-status-main-dropdown button-hover')}
             onClick={onClick}
           >
             <DropdownIcon className={s(`text-${dropdownFontColor}`)} />
             <div className={s('ml-xs')}> {dropdownLabel} </div>
           </div>
         }
-        disabled={!isActionable}
+        disabled={dropdownDisabled}
       />
       { (status === CARD_STATUS.OUT_OF_DATE && outOfDateReason) &&
         <Dropdown

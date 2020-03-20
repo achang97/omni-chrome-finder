@@ -5,7 +5,7 @@ import { getContentStateFromEditorState } from '../utils/editor';
 import { toggleUpvotes, hasValidEdits } from '../utils/card';
 import { convertAttachmentsToBackendFormat } from '../utils/file';
 import { CARD_STATUS, PERMISSION_OPTION, AUTO_REMIND_VALUE, NAVIGATE_TAB_OPTION } from '../utils/constants';
-import { GET_CARD_REQUEST, CREATE_CARD_REQUEST, UPDATE_CARD_REQUEST, TOGGLE_UPVOTE_REQUEST, DELETE_CARD_REQUEST, MARK_UP_TO_DATE_REQUEST, MARK_OUT_OF_DATE_REQUEST, ADD_BOOKMARK_REQUEST, REMOVE_BOOKMARK_REQUEST, ADD_CARD_ATTACHMENT_REQUEST } from '../actions/actionTypes';
+import { GET_CARD_REQUEST, CREATE_CARD_REQUEST, UPDATE_CARD_REQUEST, TOGGLE_UPVOTE_REQUEST, DELETE_CARD_REQUEST, MARK_UP_TO_DATE_REQUEST, MARK_OUT_OF_DATE_REQUEST, APPROVE_CARD_REQUEST, ADD_BOOKMARK_REQUEST, REMOVE_BOOKMARK_REQUEST, ADD_CARD_ATTACHMENT_REQUEST } from '../actions/actionTypes';
 import {
   handleGetCardSuccess, handleGetCardError,
   handleCreateCardSuccess, handleCreateCardError,
@@ -14,6 +14,7 @@ import {
   handleToggleUpvoteSuccess, handleToggleUpvoteError,
   handleMarkUpToDateSuccess, handleMarkUpToDateError,
   handleMarkOutOfDateSuccess, handleMarkOutOfDateError,
+  handleApproveCardSuccess, handleApproveCardError,
   handleAddBookmarkSuccess, handleAddBookmarkError,
   handleRemoveBookmarkSuccess, handleRemoveBookmarkError,
   handleAddCardAttachmentSuccess, handleAddCardAttachmentError,
@@ -27,7 +28,7 @@ export default function* watchCardsRequests() {
 
   while (action = yield take([
     GET_CARD_REQUEST, CREATE_CARD_REQUEST, UPDATE_CARD_REQUEST,
-    TOGGLE_UPVOTE_REQUEST, DELETE_CARD_REQUEST, MARK_UP_TO_DATE_REQUEST,
+    TOGGLE_UPVOTE_REQUEST, DELETE_CARD_REQUEST, MARK_UP_TO_DATE_REQUEST, APPROVE_CARD_REQUEST,
     MARK_OUT_OF_DATE_REQUEST, ADD_BOOKMARK_REQUEST, REMOVE_BOOKMARK_REQUEST,
     ADD_CARD_ATTACHMENT_REQUEST
   ])) {
@@ -59,6 +60,10 @@ export default function* watchCardsRequests() {
       }
       case MARK_OUT_OF_DATE_REQUEST: {
         yield fork(markOutOfDate);
+        break;
+      }
+      case APPROVE_CARD_REQUEST: {
+        yield fork(approveCard);
         break;
       }
       case ADD_BOOKMARK_REQUEST: {
@@ -234,6 +239,19 @@ function* markOutOfDate() {
     yield put(handleMarkOutOfDateError(cardId, data.error));
   }
 }
+
+function* approveCard() {
+  const cardId = yield call(getActiveCardId);
+
+  try {
+    const { updatedCard } = yield call(doPost, '/cards/approve', { cardId });
+    yield put(handleApproveCardSuccess(updatedCard));    
+  } catch (error) {
+    const { response: { data } } = error;
+    yield put(handleApproveCardError(cardId, data.error));
+  }
+}
+
 
 function* addBookmark({ cardId }) {
   const activeCard = yield call(getActiveCard);
