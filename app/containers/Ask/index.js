@@ -33,6 +33,9 @@ import { generateFileKey } from '../../utils/file';
 import { isLoggedIn } from '../../utils/auth';
 import { ASK_INTEGRATIONS, INTEGRATIONS, DEBOUNCE_60_HZ, SEARCH_TYPE, SLACK_RECIPIENT_TYPE, SLACK_AUTH_URL  } from '../../utils/constants';
 
+import SlackIcon from '../../assets/images/icons/Slack_Mark.svg';
+import GmailIcon from '../../assets/images/icons/Gmail_Icon.svg';
+
 import { getArrayWithout } from '../../utils/array';
 
 import style from './ask.css';
@@ -74,6 +77,17 @@ class Ask extends Component {
     }
   }
 
+  getIntegrationInfo = (integration) => {
+    switch (integration) {
+      case INTEGRATIONS.GOOGLE:
+        return { title: 'Gmail', logo: GmailIcon };
+      case INTEGRATIONS.SLACK:
+        return { title: 'Slack', logo: SlackIcon };
+      default:
+        return {};
+    }
+  }
+
   renderTabHeader = () => {
     const { changeAskIntegration, activeIntegration } = this.props;
 
@@ -95,7 +109,7 @@ class Ask extends Component {
           {ASK_INTEGRATIONS.map(integration => (
             <Tab key={integration} value={integration}>
               <div className={s(integration !== activeIntegration ? 'underline-border border-purple-gray-20' : 'primary-underline')}>
-                {_.upperFirst(integration)}
+                {_.upperFirst(this.getIntegrationInfo(integration).title)}
               </div>
             </Tab>
           ))}
@@ -407,25 +421,32 @@ class Ask extends Component {
     );
   }
 
+  renderLoggedOutView = () => {
+    const { user } = this.props;
+
+    return (
+      <div className={s('flex flex-col')}>
+
+        <a target="_blank" href={`${SLACK_AUTH_URL}${user._id}`}><img alt="Add to Slack" height="40" width="139" src="https://platform.slack-edge.com/img/add_to_slack.png" srcSet="https://platform.slack-edge.com/img/add_to_slack.png 1x, https://platform.slack-edge.com/img/add_to_slack@2x.png 2x" /></a>
+      </div>
+    );
+  }
+
   renderExpandedAskPage = () => {
-    const { askError, askSuccess, user } = this.props;
-    const isLoggedInSlack = isLoggedIn(user, INTEGRATIONS.SLACK);
+    const { askError, askSuccess, user, activeIntegration } = this.props;
+    const loggedIn = isLoggedIn(user, activeIntegration);
 
     return (
       <div className={s('flex flex-col flex-1 min-h-0 relative')}>
         <div className={s('flex flex-col flex-1 overflow-y-auto bg-purple-light')}>
-          <div className={s('p-lg bg-white')}>
+          <div className={s('p-lg bg-white flex-1')}>
             { this.renderTabHeader() }
-            { !isLoggedInSlack ?
-              <div>
-                <a target="_blank" href={`${SLACK_AUTH_URL}${user._id}`}><img alt="Add to Slack" height="40" width="139" src="https://platform.slack-edge.com/img/add_to_slack.png" srcSet="https://platform.slack-edge.com/img/add_to_slack.png 1x, https://platform.slack-edge.com/img/add_to_slack@2x.png 2x" /></a>
-              </div> :
-              this.renderAskInputs()
-            }
+            { !loggedIn ? this.renderLoggedOutView() : this.renderAskInputs() }
           </div>
-          { isLoggedInSlack && this.renderRecipientSelection() }
+          { loggedIn && this.renderRecipientSelection() }
         </div>
-        { isLoggedInSlack && this.renderFooterButton() }
+        { loggedIn && this.renderFooterButton() }
+
         {/* Modals */}
         { this.renderResultModal(!!askError, 'Ask Error', askError) }
         { this.renderResultModal(askSuccess, 'Ask Success', 'Successfully sent question!') }

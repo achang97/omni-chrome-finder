@@ -17,8 +17,6 @@ export const SLACK_URL_REGEX = /^https:\/\/www\.google\.com\/webhp\?sxsrf=$/;
 export const TASK_URL_BASE = 'https://www.google.com/webhp?tasksxsrf=';
 export const TASK_URL_REGEX = /^https:\/\/www\.google\.com\/webhp\?tasksxsrf=([A-Za-z0-9]{24})$/;
 
-export const SLACK_AUTH_URL = `https://slack.com/oauth/v2/authorize?client_id=902571434263.${process.env.NODE_ENV === 'development' ? '1009616749152' : '910615559953'}&scope=app_mentions:read,channels:history,channels:join,channels:read,chat:write,commands,files:read,groups:history,groups:read,im:history,im:read,im:write,links:read,mpim:history,mpim:read,mpim:write,reminders:read,reminders:write,remote_files:read,remote_files:share,remote_files:write,team:read,usergroups:read,usergroups:write,users.profile:read,users:read,users:read.email,users:write&user_scope=channels:history,channels:read,channels:write,chat:write,emoji:read,files:read,groups:history,groups:read,groups:write,im:history,im:read,im:write,links:read,links:write,mpim:history,mpim:read,mpim:write,reactions:read,reminders:read,reminders:write,remote_files:read,remote_files:share,search:read,team:read,usergroups:read,usergroups:write,users.profile:read,users:read,users:read.email,users:write&state=`;
-
 // Debounce / Animations
 export const DEBOUNCE_60_HZ = 166;
 export const DEBOUNCE_300_MS = 300;
@@ -36,14 +34,18 @@ export const FADE_IN_TRANSITIONS = {
 export const USER_ROLE = {
   ADMIN: 'Admin',
   MEMBER: 'Member'
-}
+};
+
+export const USER_PERMISSION_TYPE = {
+  AUTOFIND: 'AUTOFIND',
+  NOTIFICATION: 'NOTIFICATION'
+};
+
 
 // General constants
 export const INTEGRATIONS = {
   GOOGLE: 'google',
   SLACK: 'slack',
-  EMAIL: 'email',
-  ASANA: 'asana',
   ZENDESK: 'zendesk',
   HELPSCOUT: 'helpscout',
   GMAIL: 'gmail',
@@ -53,7 +55,7 @@ export const INTEGRATIONS = {
 };
 
 // Ask page constants
-export const ASK_INTEGRATIONS = [INTEGRATIONS.SLACK, INTEGRATIONS.EMAIL, INTEGRATIONS.ASANA];
+export const ASK_INTEGRATIONS = [INTEGRATIONS.SLACK, INTEGRATIONS.GOOGLE];
 
 export const SLACK_RECIPIENT_TYPE = {
   CHANNEL: 'channel',
@@ -71,8 +73,6 @@ export const NAVIGATE_TAB_OPTIONS = [
   NAVIGATE_TAB_OPTION.MY_CARDS,
   NAVIGATE_TAB_OPTION.BOOKMARKED
 ];
-
-// Profile Page Constants
 
 // Card page constants
 export const CARD_DIMENSIONS = {

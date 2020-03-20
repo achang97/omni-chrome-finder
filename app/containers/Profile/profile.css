@@ -26,10 +26,38 @@
   right: calc(50% - 12.5px) !important;
 }
 
-.shadow-light {
-  box-shadow: 0 10px 30px 0 rgba(33,26,29,0.05) !important;
+.profile-settings-container {
+  @apply flex flex-col rounded-t-lg;
+  box-shadow: 0px -3px 3px rgba(50, 50, 50, 0.05);
+}
+
+.profile-settings-toggle.react-toggle--checked .react-toggle-track {
+  background-color: #ab199f;
 }
 
 .profile-settings-icon {
   border-right: 1px solid;
+}
+
+.profile-integration-container {
+  @apply p-reg rounded-lg cursor-pointer;
+}
+
+.profile-integration-container-active {
+  @apply bg-purple-light;
+}
+
+.profile-integration-container-inactive {
+  @apply border border-solid border-gray-light bg-white; 
+}
+
+.profile-integration-img-container {
+  height: 32px;
+  width: 32px;
+  @apply flex rounded-full border border-solid border-gray-light mr-reg;
+}
+
+.profile-integration-img {
+  max-height: 20px;
+  @apply m-auto;
 }

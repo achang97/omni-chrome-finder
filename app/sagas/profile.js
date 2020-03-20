@@ -1,16 +1,18 @@
 import { take, call, fork, put, select } from 'redux-saga/effects';
-import { doGet, doPut } from '../utils/request';
-import { GET_USER_REQUEST, SAVE_USER_REQUEST, CHANGE_USER_PERMISSIONS_REQUEST } from '../actions/actionTypes';
+import { doGet, doPut, doPost } from '../utils/request';
+import { USER_PERMISSION_TYPE } from '../utils/constants';
+import { GET_USER_REQUEST, SAVE_USER_REQUEST, UPDATE_USER_PERMISSIONS_REQUEST, LOGOUT_USER_INTEGRATION_REQUEST } from '../actions/actionTypes';
 import {
   handleGetUserSuccess, handleGetUserError,
   handleSaveUserSuccess, handleSaveUserError,
-  handleChangeUserPermissionsSuccess, handleChangeUserPermissionsError,
+  handleUpdateUserPermissionsSuccess, handleUpdateUserPermissionsError,
+  handleLogoutUserIntegrationSuccess, handleLogoutUserIntegrationError,
 } from '../actions/profile';
 
 export default function* watchProfileRequests() {
   let action;
 
-  while (action = yield take([GET_USER_REQUEST, SAVE_USER_REQUEST, CHANGE_USER_PERMISSIONS_REQUEST])) {
+  while (action = yield take([GET_USER_REQUEST, SAVE_USER_REQUEST, UPDATE_USER_PERMISSIONS_REQUEST, LOGOUT_USER_INTEGRATION_REQUEST])) {
     const { type, payload  } = action;
     switch (type) {
       case GET_USER_REQUEST: {
@@ -21,8 +23,12 @@ export default function* watchProfileRequests() {
         yield fork(updateUser);
         break;
       }
-      case CHANGE_USER_PERMISSIONS_REQUEST: {
-        yield fork(changeUserPermissions, payload);
+      case UPDATE_USER_PERMISSIONS_REQUEST: {
+        yield fork(updatePermissions, payload);
+        break;
+      }
+      case LOGOUT_USER_INTEGRATION_REQUEST: {
+        yield fork(logoutUserIntegration, payload);
         break;
       }
       default: {
@@ -32,14 +38,18 @@ export default function* watchProfileRequests() {
   }
 }
 
-function* changeUserPermissions({ updates }) {
+
+function* updatePermissions({ type, permission }) {
+  const keyName = type === USER_PERMISSION_TYPE.AUTOFIND ? 'autofindPermissions' : 'notificationPermissions';
+  const permissionsObj = yield select(state => state.profile.user[keyName]);
+  const update = { [keyName]: { ...permissionsObj, [permission]: !permissionsObj[permission] } };
+
   try {
-    const { user } = yield select(state => state.profile);
-    const { userJson } = yield call(doPut, '/users', { user, update: updates });
-    yield put(handleChangeUserPermissionsSuccess(userJson));
+    const { userJson } = yield call(doPut, '/users', { update });
+    yield put(handleUpdateUserPermissionsSuccess(type, userJson));
   } catch (error) {
     const { response: { data } } = error;
-    yield put(handleChangeUserPermissionsError(error: data.error));
+    yield put(handleUpdateUserPermissionsError(type, data.error));
   }
 }
 
@@ -57,10 +67,21 @@ function* getUser() {
 function* updateUser() {
   try {
     const { user, userEdits } = yield select(state => state.profile);
-    const { userJson } = yield call(doPut, '/users', { user, update: userEdits });
+    const { userJson } = yield call(doPut, '/users', { update: userEdits });
     yield put(handleSaveUserSuccess(userJson));
   } catch (error) {
     const { response: { data } } = error;
     yield put(handleSaveUserError(data.error));
   }
 }
+
+function* logoutUserIntegration({ integration }) {
+  try {
+    const user = yield call(doPost, `/${integration}/signout`);
+    yield put(handleLogoutUserIntegrationSuccess(integration, user));
+  } catch (error) {
+    const { response: { data } } = error;
+    yield put(handleLogoutUserIntegrationError(integration, data.error));
+  }
+}
+
