@@ -343,7 +343,6 @@ export default class Profile extends Component {
     return (
       <div className={s('flex flex-col p-lg min-h-0 flex-grow')}>
         { this.renderAboutSection() }
-        <div onClick={() => this.openSlackLogin() }> Hi </div>
         { this.renderMetricsSection() }
         <div className={s('horizontal-separator my-reg')} />
         { this.renderIntegrationsSection() }
