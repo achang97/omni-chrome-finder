@@ -53,6 +53,10 @@ export function adjustCardDescriptionSectionHeight(newHeight) {
   return { type: types.ADJUST_CARD_DESCRIPTION_SECTION_HEIGHT, payload: { newHeight } };
 }
 
+export function updateCardSelectedThreadIndex(index) {
+  return { type: types.UPDATE_CARD_SELECTED_THREAD, payload: { index } };
+}
+
 export function toggleCardSelectedMessage(messageIndex) {
   return { type: types.TOGGLE_CARD_SELECTED_MESSAGE, payload: { messageIndex } };
 }
@@ -273,5 +277,18 @@ export function handleRemoveBookmarkSuccess(cardId) {
 
 export function handleRemoveBookmarkError(cardId, error) {
   return { type: types.REMOVE_BOOKMARK_ERROR, payload: { cardId, error } };
+}
+
+
+export function requestGetSlackThread() {
+  return { type: types.GET_SLACK_THREAD_REQUEST, payload: { } };
+}
+
+export function handleGetSlackThreadSuccess(cardId, slackReplies) {
+  return { type: types.GET_SLACK_THREAD_SUCCESS, payload: { cardId, slackReplies } };
+}
+
+export function handleGetSlackThreadError(cardId, error) {
+  return { type: types.GET_SLACK_THREAD_ERROR, payload: { cardId, error } };
 }
 

@@ -1,16 +1,16 @@
 import _ from 'lodash';
 import * as types from '../actions/actionTypes';
-import { USER_PERMISSION_TYPE, INTEGRATIONS } from '../utils/constants';
+import { PROFILE_SETTING_SECTION_TYPE, INTEGRATIONS } from '../utils/constants';
 
 export const initialState = {
   user: {},
   userEdits: {},
   isEditingAbout: false,
 
-  permissionState: _.mapValues(USER_PERMISSION_TYPE, () => ({
-    isLoading: false,
-    error: null,
-  })),
+  permissionState: {
+    [PROFILE_SETTING_SECTION_TYPE.AUTOFIND]: {},
+    [PROFILE_SETTING_SECTION_TYPE.NOTIFICATIONS]: {}
+  },
 
   integrationState: {
     [INTEGRATIONS.SLACK]: {},

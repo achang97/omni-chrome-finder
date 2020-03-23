@@ -36,3 +36,13 @@
   min-width: 10px;
   padding: 2px 4px;
 }
+
+.ask-integration-logged-out-img-container {
+  height: 125px;
+  width: 125px;
+  @apply p-3xl rounded-full shadow-md border-2 border-solid border-purple-light my-xl;
+}
+
+.ask-integration-logged-out-img-container > img {
+  @apply w-full h-full;
+}

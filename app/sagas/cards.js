@@ -5,7 +5,7 @@ import { getContentStateFromEditorState } from '../utils/editor';
 import { toggleUpvotes, hasValidEdits } from '../utils/card';
 import { convertAttachmentsToBackendFormat } from '../utils/file';
 import { CARD_STATUS, PERMISSION_OPTION, NAVIGATE_TAB_OPTION } from '../utils/constants';
-import { GET_CARD_REQUEST, CREATE_CARD_REQUEST, UPDATE_CARD_REQUEST, TOGGLE_UPVOTE_REQUEST, DELETE_CARD_REQUEST, MARK_UP_TO_DATE_REQUEST, MARK_OUT_OF_DATE_REQUEST, APPROVE_CARD_REQUEST, ADD_BOOKMARK_REQUEST, REMOVE_BOOKMARK_REQUEST, ADD_CARD_ATTACHMENT_REQUEST } from '../actions/actionTypes';
+import { GET_CARD_REQUEST, CREATE_CARD_REQUEST, UPDATE_CARD_REQUEST, TOGGLE_UPVOTE_REQUEST, DELETE_CARD_REQUEST, MARK_UP_TO_DATE_REQUEST, MARK_OUT_OF_DATE_REQUEST, APPROVE_CARD_REQUEST, ADD_BOOKMARK_REQUEST, REMOVE_BOOKMARK_REQUEST, ADD_CARD_ATTACHMENT_REQUEST, GET_SLACK_THREAD_REQUEST } from '../actions/actionTypes';
 import {
   handleGetCardSuccess, handleGetCardError,
   handleCreateCardSuccess, handleCreateCardError,
@@ -18,6 +18,7 @@ import {
   handleAddBookmarkSuccess, handleAddBookmarkError,
   handleRemoveBookmarkSuccess, handleRemoveBookmarkError,
   handleAddCardAttachmentSuccess, handleAddCardAttachmentError,
+  handleGetSlackThreadSuccess, handleGetSlackThreadError,
 } from '../actions/cards';
 import { addSearchCard, removeSearchCard } from '../actions/search';
 
@@ -30,7 +31,7 @@ export default function* watchCardsRequests() {
     GET_CARD_REQUEST, CREATE_CARD_REQUEST, UPDATE_CARD_REQUEST,
     TOGGLE_UPVOTE_REQUEST, DELETE_CARD_REQUEST, MARK_UP_TO_DATE_REQUEST, APPROVE_CARD_REQUEST,
     MARK_OUT_OF_DATE_REQUEST, ADD_BOOKMARK_REQUEST, REMOVE_BOOKMARK_REQUEST,
-    ADD_CARD_ATTACHMENT_REQUEST
+    ADD_CARD_ATTACHMENT_REQUEST, GET_SLACK_THREAD_REQUEST,
   ])) {
     const { type, payload } = action;
     switch (type) {
@@ -76,6 +77,10 @@ export default function* watchCardsRequests() {
       }
       case ADD_CARD_ATTACHMENT_REQUEST: {
         yield fork(addAttachment, payload);
+        break;
+      }
+      case GET_SLACK_THREAD_REQUEST: {
+        yield fork(getSlackThread);
         break;
       }
       default: {
@@ -281,6 +286,20 @@ function* addAttachment({ key, file }) {
   } catch (error) {
     const { response: { data } } = error;
     yield put(handleAddCardAttachmentError(cardId, key, data.error));
+  }
+}
+
+function* getSlackThread() {
+  const activeCard = yield call(getActiveCard);
+  const { slackThreadConvoPairs, slackThreadIndex } = activeCard;
+  const { threadId, channelId } = slackThreadConvoPairs[slackThreadIndex];
+
+  try {
+    const { slackReplies } = yield call(doPost, '/slack/getThreadReplies', { threadId, channelId });
+    yield put(handleGetSlackThreadSuccess(activeCard._id, slackReplies));
+  } catch (error) {
+    const { response: { data } } = error;
+    yield put(handleGetSlackThreadError(activeCard._id, data.error));
   }
 }
 

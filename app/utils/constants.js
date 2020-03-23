@@ -11,7 +11,7 @@ export const CHROME_MESSAGE = {
 export const MAIN_CONTAINER_ID = 'omni-chrome-ext-main-container';
 
 export const CARD_URL_BASE = 'https://www.google.com/webhp?sxsrf=';
-export const CARD_URL_REGEX = /^https:\/\/www\.google\.com\/webhp\?sxsrf=([A-Za-z0-9]{24})$/;
+export const CARD_URL_REGEX = /^https:\/\/www\.google\.com\/webhp\?sxsrf=([A-Za-z0-9]{24})(?:&edit=true)?$/;
 export const SLACK_URL_REGEX = /^https:\/\/www\.google\.com\/webhp\?sxsrf=$/;
 
 export const TASK_URL_BASE = 'https://www.google.com/webhp?tasksxsrf=';
@@ -35,12 +35,6 @@ export const USER_ROLE = {
   ADMIN: 'Admin',
   MEMBER: 'Member'
 };
-
-export const USER_PERMISSION_TYPE = {
-  AUTOFIND: 'AUTOFIND',
-  NOTIFICATION: 'NOTIFICATION'
-};
-
 
 // General constants
 export const INTEGRATIONS = {
@@ -86,6 +80,7 @@ export const CARD_DIMENSIONS = {
 export const MODAL_TYPE = {
   CREATE: 'CREATE',
   THREAD: 'THREAD',
+  SELECT_THREAD: 'SELECT_THREAD',
   ERROR_UPDATE: 'ERROR_UPDATE',
   ERROR_UPDATE_CLOSE: 'ERROR_UPDATE_CLOSE',
   ERROR_DELETE: 'ERROR_DELETE',
@@ -113,7 +108,7 @@ export const CARD_STATUS = {
 };
 
 export const VERIFICATION_INTERVAL_OPTIONS = [
-  { label: 'Auto-Remind', value: 6 },
+  // { label: 'Auto-Remind', value: 6 },
   { label: '2 Weeks', value: 1 },
   { label: '1 Month', value: 2 },
   { label: '3 Months', value: 3 },
@@ -173,6 +168,14 @@ export const TASKS_SECTIONS = [
     taskTypes: [TASK_TYPE.UNDOCUMENTED]
   },
 ];
+
+// Profile constants
+export const PROFILE_SETTING_SECTION_TYPE = {
+  KNOWLEDGE_BASE: 'KNOWLEDGE_BASE',
+  COMMUNICATION: 'COMMUNICATION',
+  AUTOFIND: 'AUTOFIND',
+  NOTIFICATIONS: 'NOTIFICATIONS'
+};
 
 // Search constants
 export const SEARCH_TYPE = {

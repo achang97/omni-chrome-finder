@@ -44,6 +44,7 @@ export function convertCardToFrontendFormat(card) {
     permissionGroups,
     outOfDateReason,
     upvotes: getArrayIds(upvotes),
+    slackThreadIndex: 0,
     slackReplies: slackReplies.map(reply => ({
       ...reply,
       selected: status !== CARD_STATUS.NOT_DOCUMENTED

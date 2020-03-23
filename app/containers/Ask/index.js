@@ -30,8 +30,8 @@ import { expandDock } from '../../actions/display';
 import { requestSearchCards } from '../../actions/search';
 import * as askActions from '../../actions/ask';
 import { generateFileKey } from '../../utils/file';
-import { isLoggedIn } from '../../utils/auth';
-import { ASK_INTEGRATIONS, INTEGRATIONS, DEBOUNCE_60_HZ, SEARCH_TYPE, SLACK_RECIPIENT_TYPE, SLACK_AUTH_URL  } from '../../utils/constants';
+import { isLoggedIn, getIntegrationAuthLink } from '../../utils/auth';
+import { ASK_INTEGRATIONS, INTEGRATIONS, DEBOUNCE_60_HZ, SEARCH_TYPE, SLACK_RECIPIENT_TYPE  } from '../../utils/constants';
 
 import SlackIcon from '../../assets/images/icons/Slack_Mark.svg';
 import GmailIcon from '../../assets/images/icons/Gmail_Icon.svg';
@@ -48,6 +48,7 @@ const s = getStyleApplicationFn(style);
     dockExpanded: state.display.dockExpanded,
     ...state.ask,
     user: state.profile.user,
+    token: state.auth.token,
   }),
   dispatch => bindActionCreators({
     expandDock,
@@ -89,7 +90,7 @@ class Ask extends Component {
   }
 
   renderTabHeader = () => {
-    const { changeAskIntegration, activeIntegration } = this.props;
+    const { changeAskIntegration, activeIntegration, history } = this.props;
 
     return (
       <div className={s('flex flex-row justify-between')}>
@@ -118,6 +119,7 @@ class Ask extends Component {
           content={<IoMdAdd color={colors.purple.reg} />}
           size="md"
           buttonClassName={s('bg-purple-light')}
+          onClick={() => history.push('/profile')}
         />
       </div>
     );
@@ -422,12 +424,38 @@ class Ask extends Component {
   }
 
   renderLoggedOutView = () => {
-    const { user } = this.props;
+    const { user, token, activeIntegration } = this.props;
+
+    let icon;
+    switch (activeIntegration) {
+      case INTEGRATIONS.GOOGLE: {
+        icon = GmailIcon;
+        break;
+      }
+      case INTEGRATIONS.SLACK: {
+        icon = SlackIcon;
+        break;
+      }
+      default: {
+        break;
+      }
+    }
+
+    const authLink = getIntegrationAuthLink(user._id, token, activeIntegration);
+    const integrationName = _.capitalize(activeIntegration);
 
     return (
-      <div className={s('flex flex-col')}>
-
-        <a target="_blank" href={`${SLACK_AUTH_URL}${user._id}`}><img alt="Add to Slack" height="40" width="139" src="https://platform.slack-edge.com/img/add_to_slack.png" srcSet="https://platform.slack-edge.com/img/add_to_slack.png 1x, https://platform.slack-edge.com/img/add_to_slack@2x.png 2x" /></a>
+      <div className={s('flex flex-col items-center')}>
+        <div className={s('ask-integration-logged-out-img-container')}>
+          <img src={icon} />
+        </div>
+        <div className={s('mt-reg mb-lg font-semibold')}> You aren't logged into {integrationName}</div>
+        <div className={s('rounded-lg shadow-md py-sm px-lg')}>
+          <a target="_blank" href={authLink} className={s('flex items-center')}>
+            <span className={s('mr-sm text-md')}> Connect to {integrationName} </span>
+            <img src={icon} className={s('h-lg')} />
+          </a>
+        </div>
       </div>
     );
   }

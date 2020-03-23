@@ -10,7 +10,7 @@ import { logout } from '../../actions/auth';
 import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
 import { MdEdit } from 'react-icons/md';
-import { USER_PERMISSION_TYPE, INTEGRATIONS, NOOP } from '../../utils/constants';
+import { PROFILE_SETTING_SECTION_TYPE, INTEGRATIONS, NOOP } from '../../utils/constants';
 import { MdKeyboardArrowDown, MdKeyboardArrowUp, MdSettings } from 'react-icons/md';
 import { IoMdCamera } from 'react-icons/io';
 import _ from 'lodash';
@@ -36,36 +36,40 @@ import JiraIcon from '../../assets/images/icons/Jira_Icon.svg';
 import SalesforceIcon from '../../assets/images/icons/Salesforce_Icon.svg';
 import HubspotIcon from '../../assets/images/icons/Hubspot_Icon.svg';
 import HelpscoutIcon from '../../assets/images/icons/Helpscout_Icon.svg';
+import GoogleChromeIcon from '../../assets/images/icons/GoogleChrome_Icon.svg';
 
-const PROFILE_SETTING_SECTION_TYPE = {
-  KNOWLEDGE_BASE: 'KNOWLEDGE_BASE',
-  COMMUNICATION: 'COMMUNICATION',
-  AUTOFIND: 'AUTOFIND',
-};
+const PROFILE_NOTIFICATIONS_OPTION = {
+  EMAIL: 'email',
+  SLACK: 'slack',
+  CHROME: 'chrome'
+}
 
 const PROFILE_SETTING_SECTIONS = [
   {
     type: PROFILE_SETTING_SECTION_TYPE.KNOWLEDGE_BASE,
     title: 'Knowledge Base Integrations',
-    integrations: [INTEGRATIONS.GOOGLE, INTEGRATIONS.ZENDESK],
+    options: [INTEGRATIONS.GOOGLE, INTEGRATIONS.ZENDESK],
+    toggle: false,
   },
   {
     type: PROFILE_SETTING_SECTION_TYPE.COMMUNICATION,
     title: 'Communication Integrations',
-    integrations: [INTEGRATIONS.SLACK],
+    options: [INTEGRATIONS.SLACK],
+    toggle: false,
   },
   {
     type: PROFILE_SETTING_SECTION_TYPE.AUTOFIND,
     title: 'Autofind Permissions',
-    integrations: [INTEGRATIONS.GMAIL, INTEGRATIONS.ZENDESK, INTEGRATIONS.SALESFORCE, INTEGRATIONS.HUBSPOT, INTEGRATIONS.JIRA, INTEGRATIONS.HELPSCOUT],
+    options: [INTEGRATIONS.GMAIL, INTEGRATIONS.ZENDESK, INTEGRATIONS.SALESFORCE, INTEGRATIONS.HUBSPOT, INTEGRATIONS.JIRA, INTEGRATIONS.HELPSCOUT],
+    toggle: true,
+  },
+  {
+    type: PROFILE_SETTING_SECTION_TYPE.NOTIFICATIONS,
+    title: 'Notification Permissions',
+    options: Object.values(PROFILE_NOTIFICATIONS_OPTION),
+    toggle: true,
   }
 ];
-
-const PROFILE_NOTIFICATIONS_OPTIONS = {
-  EMAIL: 'email',
-  SLACK: 'slack',
-  CHROME: 'chrome'
-}
 
 @connect(
   state => ({
@@ -93,7 +97,6 @@ export default class Profile extends Component {
     super(props);
     this.state = {
       sectionOpen: _.mapValues(PROFILE_SETTING_SECTION_TYPE, () => false),
-      notificationsOpen: false,
     };
   }
 
@@ -187,15 +190,16 @@ export default class Profile extends Component {
     </div>
     )
 
-  getIntegrationInfo = (integration) => {
-    switch (integration) {
+  getOptionInfo = (option) => {
+    switch (option) {
       case INTEGRATIONS.GOOGLE:
         return { title: 'Google Drive', logo: GoogleDriveIcon };
       case INTEGRATIONS.ZENDESK:
         return { title: 'Zendesk', logo: ZendeskIcon };
       case INTEGRATIONS.SLACK:
-        return { title: 'Slack', logo: SlackIcon };      
+        return { title: 'Slack', logo: SlackIcon }; 
       case INTEGRATIONS.GMAIL:
+      case PROFILE_NOTIFICATIONS_OPTION.EMAIL:     
         return { title: 'Gmail', logo: GmailIcon };
       case INTEGRATIONS.SALESFORCE:
         return { title: 'Salesforce', logo: SalesforceIcon };
@@ -207,23 +211,21 @@ export default class Profile extends Component {
         return { title: 'Zendesk', logo: ZendeskIcon };
       case INTEGRATIONS.HELPSCOUT:
         return { title: 'Helpscout', logo: HelpscoutIcon };
+      case PROFILE_NOTIFICATIONS_OPTION.CHROME:     
+        return { title: 'Chrome', logo: GoogleChromeIcon };
       default:
         return {};
     }
   }
 
-  renderIntegrations = ({ type, integrations }) => {
+  renderIntegrations = ({ type, toggle, options }) => {
     const { user, requestUpdateUserPermissions, changeUserPermissionsError } = this.props;
-    const { autofindPermissions } = user;
-
-    const isAutofind = type === PROFILE_SETTING_SECTION_TYPE.AUTOFIND;
+    const { autofindPermissions, notificationPermissions } = user;
 
     return (
       <div>
-        { integrations.map((integration, i) => {
-          const { title, logo } = this.getIntegrationInfo(integration);
-          const isEnabled = isAutofind ? autofindPermissions[integration] : isLoggedIn(user, integration);
-          
+        { options.map((option, i) => {
+          const { title, logo } = this.getOptionInfo(option);
           return (
             <div key={title} className={s(`flex bg-white p-reg justify-between border border-solid border-gray-xlight items-center rounded-lg ${i > 0 ? 'mt-sm' : ''}`)}>
               <div className={s('flex items-center')}>
@@ -232,13 +234,16 @@ export default class Profile extends Component {
                 </div>
                 <div className={s('text-sm')}> {title} </div>
               </div>
-              { isAutofind ?
+              { toggle ?
                 <Toggle
-                  checked={autofindPermissions[integration]}
+                  checked={type === PROFILE_SETTING_SECTION_TYPE.AUTOFIND ?
+                    autofindPermissions[option] :
+                    notificationPermissions[option]
+                  }
                   icons={false}
-                  onChange={() => requestUpdateUserPermissions(USER_PERMISSION_TYPE.AUTOFIND, integration)}
+                  onChange={() => requestUpdateUserPermissions(type, option)}
                 /> :
-                <IntegrationAuthButton integration={integration} />
+                <IntegrationAuthButton integration={option} />
               }
             </div>
           );
@@ -252,13 +257,6 @@ export default class Profile extends Component {
     this.setState({ sectionOpen: { ...sectionOpen, [type]: !sectionOpen[type] } });
   }
 
-  toggleIntegration = (userIntegrations, integration) => {
-    return {
-      ...userIntegrations,
-      [integration]: !userIntegrations[integration]
-    };
-  }
-
   renderIntegrationsSection = () => {
     const { user, permissionState } = this.props;
     const { sectionOpen } = this.state;
@@ -266,12 +264,15 @@ export default class Profile extends Component {
     return (
       <div className={s('flex flex-col overflow-auto flex-grow px-lg py-sm')}>
         { PROFILE_SETTING_SECTIONS.map((profileSettingSection, i) => {
-          const { type, title } = profileSettingSection;
+          const { type, title, toggle } = profileSettingSection;
           const isOpen = sectionOpen[type];
           const Icon = isOpen ? MdKeyboardArrowUp : MdKeyboardArrowDown;
 
-          const { error, isLoading } = permissionState[USER_PERMISSION_TYPE.AUTOFIND];
-          const isAutofind = type === PROFILE_SETTING_SECTION_TYPE.AUTOFIND;
+          let error, isLoading;
+          if (toggle) {
+            error = permissionState[type].error;
+            isLoading = permissionState[type].isLoading;
+          }
 
           return (
             <div
@@ -284,7 +285,7 @@ export default class Profile extends Component {
               >
                 <div className={s('text-purple-reg text-sm')}>{title}</div>
                 <div className={s('flex items-center')}>
-                  { isAutofind && isLoading && 
+                  { toggle && isLoading && 
                     <Loader size={10} className={s('mr-sm')} />
                   }
                   <Icon className={s('text-gray-dark cursor-pointer')} />
@@ -293,7 +294,7 @@ export default class Profile extends Component {
               <AnimateHeight height={isOpen ? 'auto' : 0} animationStateClasses={{ animatingUp: s('invisible') }}>
                 {this.renderIntegrations(profileSettingSection)}
               </AnimateHeight>
-              { isAutofind && error && 
+              { toggle && error && 
                 <div className={s('error-text my-sm')}> {error} </div>
               }
             </div>
@@ -303,54 +304,9 @@ export default class Profile extends Component {
     );
   }
 
-  renderSettingsSection = () => {
-    const { user, permissionState, requestUpdateUserPermissions, changeUserPermissionsError } = this.props;
-    const { notificationPermissions } = user;
-
-    const { notificationsOpen } = this.state;
-    const { error, isLoading } = permissionState[USER_PERMISSION_TYPE.NOTIFICATION];
-
-    return (
-      <AnimateHeight height={notificationsOpen ? 'auto' : 0}>
-        <div className={s('profile-settings-container')}>
-          <div
-            className={s('flex justify-between items-center py-reg px-lg bg-purple-light mb-sm rounded-t-lg cursor-pointer')}
-            onClick={() => this.setState({ notificationsOpen: false })}
-          > 
-            <div className={s('text-xs')}> Receive notifications through: </div>
-            <div className={s('flex items-center')}>
-              { isLoading && <Loader size={10} className={s('mr-sm')} /> }
-              <MdKeyboardArrowDown />
-            </div>
-          </div>
-          <div className={s('px-lg')}>
-            {
-              Object.values(PROFILE_NOTIFICATIONS_OPTIONS).map((notificationsOption, i) => {
-                return (
-                  <div className={s('flex justify-between items-center mb-xs')}>
-                    <div className={s('text-sm font-semibold')}> {_.capitalize(notificationsOption)} </div>
-                    <Toggle
-                      checked={notificationPermissions[notificationsOption]}
-                      icons={false}
-                      onChange={() => requestUpdateUserPermissions(USER_PERMISSION_TYPE.NOTIFICATION, notificationsOption)}
-                    />
-                  </div>
-                )
-              })
-            }
-            { error && 
-              <div className={s('error-text my-sm')}> {error} </div>
-            }
-          </div>
-          <div className={s('horizontal-separator')} />
-        </div>
-      </AnimateHeight>
-    )
-  }
-
   render() {
     const { logout, user } = this.props;
-    const { sectionOpen, notificationsOpen } = this.state;
+    const { sectionOpen } = this.state;
     return (
       <div className={s('flex flex-col py-lg min-h-0 flex-grow')}>
         <div className={s('flex flex-col px-lg')}>
@@ -359,15 +315,9 @@ export default class Profile extends Component {
           <div className={s('horizontal-separator my-reg')} />
         </div>
         { this.renderIntegrationsSection() }
-        { this.renderSettingsSection() }
         <div className={s('flex justify-between pt-reg px-lg')}>
           <div className={s('text-sm text-gray-dark')}> {user.email} </div>
-          <div className={s('flex')}>
-            <MdSettings
-              className={s('mr-sm text-purple-reg cursor-pointer pr-sm profile-settings-icon')} 
-              onClick={ () => this.setState({ notificationsOpen: !notificationsOpen }) } />
-            <div className={s('text-sm text-purple-reg underline cursor-pointer')} onClick={() => logout()}> Logout </div>
-          </div>
+          <div className={s('text-sm text-purple-reg underline cursor-pointer')} onClick={() => logout()}> Logout </div>
         </div>
       </div>
     );

@@ -1,6 +1,6 @@
 import { take, call, fork, put, select } from 'redux-saga/effects';
 import { doGet, doPut, doPost } from '../utils/request';
-import { USER_PERMISSION_TYPE } from '../utils/constants';
+import { PROFILE_SETTING_SECTION_TYPE } from '../utils/constants';
 import { GET_USER_REQUEST, SAVE_USER_REQUEST, UPDATE_USER_PERMISSIONS_REQUEST, LOGOUT_USER_INTEGRATION_REQUEST } from '../actions/actionTypes';
 import {
   handleGetUserSuccess, handleGetUserError,
@@ -40,7 +40,7 @@ export default function* watchProfileRequests() {
 
 
 function* updatePermissions({ type, permission }) {
-  const keyName = type === USER_PERMISSION_TYPE.AUTOFIND ? 'autofindPermissions' : 'notificationPermissions';
+  const keyName = type === PROFILE_SETTING_SECTION_TYPE.AUTOFIND ? 'autofindPermissions' : 'notificationPermissions';
   const permissionsObj = yield select(state => state.profile.user[keyName]);
   const update = { [keyName]: { ...permissionsObj, [permission]: !permissionsObj[permission] } };
 

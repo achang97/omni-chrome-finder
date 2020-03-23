@@ -41,7 +41,9 @@ const Modal = ({ isOpen, transitionMs, shouldCloseOnOutsideClick, showHeader, cl
             { showHeader &&
             <div className={s(`modal-header ${headerClassName}`)}>
               <div className={s('font-semibold')}> {title} </div>
-              <button onClick={onRequestClose}> <MdClose className={s('text-purple-gray-50')} /> </button>
+              { onRequestClose && 
+                <button onClick={onRequestClose}> <MdClose className={s('text-purple-gray-50')} /> </button>
+              }
             </div>
             }
             <div className={s(`modal-body ${bodyClassName}`)}>
@@ -81,7 +83,6 @@ Modal.propTypes = {
 Modal.defaultProps = {
   isOpen: false,
   shouldCloseOnOutsideClick: false,
-  onRequestClose: NOOP,
   overlayClassName: '',
   headerClassName: '',
   bodyClassName: '',
