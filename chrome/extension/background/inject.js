@@ -77,7 +77,7 @@ function initSocket() {
   getStorage('auth').then((auth) => {
     const token = auth && auth.token;
     if (token && !socket) {
-      const protocol = process.env.NODE_ENV === 'development' ? 'ws://' : 'wss://';
+      const protocol = /*process.env.NODE_ENV === 'development' ? 'ws://' :*/ 'wss://';
       const wsToken = token.replace('Bearer ', '');
       socket = new WebSocket(`${protocol}${BASE_URL}/ws/generic?auth=${wsToken}`);
 
