@@ -1,16 +1,39 @@
 import _ from 'lodash';
 import * as types from '../actions/actionTypes';
+import { PROFILE_SETTING_SECTION_TYPE, INTEGRATIONS } from '../utils/constants';
 
 export const initialState = {
   user: {},
   userEdits: {},
   isEditingAbout: false,
 
-  isChangingUserPermissions: false,
+  permissionState: {
+    [PROFILE_SETTING_SECTION_TYPE.AUTOFIND]: {},
+    [PROFILE_SETTING_SECTION_TYPE.NOTIFICATIONS]: {}
+  },
+
+  integrationState: {
+    [INTEGRATIONS.SLACK]: {},
+    [INTEGRATIONS.ZENDESK]: {},
+    [INTEGRATIONS.GOOGLE]: {}
+  }
 };
 
 export default function displayReducer(state = initialState, action) {
   const { type, payload = {} } = action;
+
+  const updateStateByType = (stateName, type, newInfo) => {
+    return {
+      ...state,
+      [stateName]: {
+        ...state[stateName],
+        [type]: {
+          ...state[stateName][type],
+          ...newInfo
+        }
+      }
+    }
+  }
 
   switch (type) {
     case types.LOGIN_SUCCESS:
@@ -61,19 +84,31 @@ export default function displayReducer(state = initialState, action) {
       return { ...state, isSavingUser: false, userSaveError: error };
     }
 
-    case types.CHANGE_USER_PERMISSIONS_REQUEST: {
-      const { updates } = payload;
-      return { ...state, isChangingUserPermissions: true, changeUserPermissionsError: null };
+    case types.UPDATE_USER_PERMISSIONS_REQUEST: {
+      const { type, permission } = payload;
+      return updateStateByType('permissionState', type, { isLoading: true, error: null });
     }
-    case types.CHANGE_USER_PERMISSIONS_SUCCESS: {
-      const { user } = payload;
-      return { ...state, user, isChangingUserPermissions: false };
+    case types.UPDATE_USER_PERMISSIONS_SUCCESS: {
+      const { type, user } = payload;
+      return { ...updateStateByType('permissionState', type, { isLoading: false }), user };
     }
-    case types.CHANGE_USER_PERMISSIONS_ERROR: {
-      const { error } = payload;
-      return { ...state, isChangingUserPermissions: false, changeUserPermissionsError: error };
+    case types.UPDATE_USER_PERMISSIONS_ERROR: {
+      const { type, error } = payload;
+      return updateStateByType('permissionState', type, { isLoading: false, error });
     }
 
+    case types.LOGOUT_USER_INTEGRATION_REQUEST: {
+      const { integration } = payload;
+      return updateStateByType('integrationState', integration, { isLoading: true, error: null });
+    }
+    case types.LOGOUT_USER_INTEGRATION_SUCCESS: {
+      const { integration, user } = payload;
+      return { ...updateStateByType('integrationState', integration, { isLoading: false }), user };
+    }
+    case types.LOGOUT_USER_INTEGRATION_ERROR: {
+      const { integration, error } = payload;
+      return updateStateByType('integrationState', integration, { isLoading: false, error });
+    }
 
     case types.ADD_BOOKMARK_REQUEST:
     case types.REMOVE_BOOKMARK_ERROR: {

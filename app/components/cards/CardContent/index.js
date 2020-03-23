@@ -67,8 +67,18 @@ class CardContent extends Component {
   }
 
   componentDidUpdate(prevProps, prevState) {
-    if (prevProps._id !== this.props._id && !this.props.hasLoaded && !this.props.isGettingCard) {
+    const {
+      _id, hasLoaded, isGettingCard, status,
+      slackReplies, slackThreadConvoPairs,
+      openCardModal
+    } = this.props;
+
+    if (prevProps._id !== _id && !hasLoaded && !isGettingCard) {
       this.loadCard();
+    } else if (!prevProps.hasLoaded && hasLoaded) {
+      if (status === CARD_STATUS.NOT_DOCUMENTED && slackThreadConvoPairs.length !== 0 && slackReplies.length === 0) {
+        openCardModal(MODAL_TYPE.SELECT_THREAD);
+      }
     }
 
     if (this.footerRef && prevState.footerHeight !== this.footerRef.clientHeight) {
@@ -334,14 +344,13 @@ class CardContent extends Component {
   }
 
   renderAnswer = () => {
-    const { isEditing, editorEnabled, selectedMessages, slackReplies } = this.props;
+    const { isEditing, editorEnabled, selectedMessages, slackReplies, edits } = this.props;
     return (
       <div className={s('px-2xl py-sm flex-grow min-h-0 flex flex-col min-h-0 relative')}>
         <div className={s('flex-grow min-h-0 flex flex-col min-h-0')}>
           { this.renderTextEditor(EDITOR_TYPE.ANSWER) }
         </div>
-        {
-          isEditing && slackReplies.length !== 0 &&
+        { isEditing && edits.slackReplies.length !== 0 &&
           <Button
             text={'Manage Message Display'}
             color={'transparent'}
@@ -353,16 +362,16 @@ class CardContent extends Component {
           />
         }
         { !isEditing && slackReplies.length !== 0 &&
-        <Button
-          text={'Thread'}
-          onClick={() => this.props.openCardModal(MODAL_TYPE.THREAD)}
-          className={s('view-thread-button p-sm absolute text-xs mb-lg mr-2xl')}
-          color={'secondary'}
-          imgSrc={SlackIcon}
-          imgClassName={s('slack-icon ml-sm')}
-          iconLeft={false}
-          underline={false}
-        />
+          <Button
+            text={'Thread'}
+            onClick={() => this.props.openCardModal(MODAL_TYPE.THREAD)}
+            className={s('view-thread-button p-sm absolute text-xs mb-lg mr-2xl')}
+            color={'secondary'}
+            imgSrc={SlackIcon}
+            imgClassName={s('slack-icon ml-sm')}
+            iconLeft={false}
+            underline={false}
+          />
         }
       </div>
     );
@@ -460,8 +469,14 @@ class CardContent extends Component {
   renderModalThreadBody = () => {
     const { isEditing, slackReplies, edits } = this.props;
     const currSlackReplies = isEditing ? edits.slackReplies : slackReplies;
+
     return (
-      <div className={s('message-manager-container bg-purple-light mx-lg rounded-lg flex-grow overflow-auto')}>
+      <div className={s('message-manager-container')}>
+        {currSlackReplies.length === 0 &&
+          <div className={s("text-center p-lg")}>
+            No Slack replies to display
+          </div>
+        }
         {currSlackReplies.map(({ id, senderName, senderImageUrl, message, selected }, i) => ((isEditing || selected) &&
           <div key={id} className={s(`flex p-reg   ${i % 2 === 0 ? '' : 'bg-purple-gray-10'} `)}>
             <img src={senderImageUrl} className={s('message-photo-container rounded-lg flex-shrink-0 flex justify-center mr-reg shadow-md')} />
@@ -485,6 +500,33 @@ class CardContent extends Component {
         ))}
       </div>
     );
+  }
+
+  renderSelectThreadBody = () => {
+    const {
+      slackThreadConvoPairs, updateCardSelectedThreadIndex,
+      slackThreadIndex,
+    } = this.props;
+    return (
+      <div className={s('message-manager-container')}>
+        {slackThreadConvoPairs.map(({ _id, threadId, channelId, channelName }, i) => {
+          const isSelected = i === slackThreadIndex;
+          return (
+            <div key={_id} className={s(`flex p-reg items-center justify-between ${i % 2 === 0 ? '' : 'bg-purple-gray-10'} `)}>
+              <div className={s(`${isSelected ? 'font-semibold' : 'text-gray-light font-medium'} text-md`)}>
+                #{channelName}
+              </div>
+              <CheckBox
+                isSelected={isSelected}
+                toggleCheckbox={() => updateCardSelectedThreadIndex(i)}
+                className={s('flex-shrink-0 margin-sm')}
+              />
+            </div>
+          );
+
+        })}
+      </div>
+    );    
   }
 
   confirmCloseModalUndocumentedPrimary = () => {
@@ -523,6 +565,7 @@ class CardContent extends Component {
       requestDeleteCard, deleteError, isDeletingCard,
       requestUpdateCard, updateError, isUpdatingCard,
       requestMarkUpToDate, requestMarkOutOfDate, requestApproveCard, isMarkingStatus, markStatusError,
+      requestGetSlackThread, isGettingSlackThread, getSlackThreadError, 
       outOfDateReasonInput, updateOutOfDateReason, cancelEditCard,
       modalOpen,
       isEditing,
@@ -543,8 +586,22 @@ class CardContent extends Component {
           onClick: () => closeCardModal(MODAL_TYPE.THREAD),
           className: s('rounded-t-none flex-1'),
         }
-      },
-      {
+      }, {
+        modalType: MODAL_TYPE.SELECT_THREAD,
+        title: 'Select thread for reference',
+        shouldCloseOnOutsideClick: false,
+        canClose: false,
+        showSecondary: false,
+        bodyClassName: s('p-0'),
+        body: this.renderSelectThreadBody(),
+        error: getSlackThreadError,
+        primaryButtonProps: {
+          text: 'Select',
+          onClick: requestGetSlackThread,
+          className: s('rounded-t-none flex-1'),
+          ...this.getModalLoaderProps(isGettingSlackThread)
+        }
+      }, {
         modalType: MODAL_TYPE.CONFIRM_CLOSE,
         title: 'Save Changes',
         description: 'You have unsaved changes on this card. Would you like to save your changes before closing?',
@@ -668,11 +725,11 @@ class CardContent extends Component {
 
     return (
       <React.Fragment>
-        { MODALS.map(({ modalType, ...rest }) => (
+        { MODALS.map(({ modalType, canClose=true, ...rest }) => (
           <CardConfirmModal
             key={modalType}
             isOpen={modalOpen[modalType]}
-            onRequestClose={() => closeCardModal(modalType)}
+            onRequestClose={canClose ? () => closeCardModal(modalType) : null}
             {...rest}
           />
         ))}

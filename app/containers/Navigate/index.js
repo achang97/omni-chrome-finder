@@ -65,17 +65,17 @@ export default class Navigate extends Component {
     const queryParams = { q: searchText };
     switch (activeTab) {
       case NAVIGATE_TAB_OPTION.ALL: {
-        queryParams.tags = getArrayIds(filterTags);
+        queryParams.tags = getArrayIds(filterTags).join(",");
         break;
       }
       case NAVIGATE_TAB_OPTION.MY_CARDS: {
-        queryParams.statuses = Object.values(CARD_STATUS);
-        queryParams.owners = [user._id];
+        queryParams.statuses = Object.values(CARD_STATUS).join(",");
+        queryParams.owners = user._id;
         break;
       }
       case NAVIGATE_TAB_OPTION.BOOKMARKED: {
-        queryParams.statuses = Object.values(CARD_STATUS);
-        queryParams.ids = user.bookmarkIds;
+        queryParams.statuses = Object.values(CARD_STATUS).join(",");
+        queryParams.ids = user.bookmarkIds.join(",");
         break;
       }
     }

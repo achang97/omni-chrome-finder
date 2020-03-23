@@ -4,26 +4,26 @@ import Button from '../../components/common/Button';
 import CheckBox from '../../components/common/CheckBox';
 import PlaceholderImg from '../../components/common/PlaceholderImg';
 import Dropdown from '../../components/common/Dropdown';
-import ProfileIntegration from '../../components/profile/ProfileIntegration';
+import IntegrationAuthButton from '../../components/profile/IntegrationAuthButton';
 
 import { logout } from '../../actions/auth';
 import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
 import { MdEdit } from 'react-icons/md';
-import { INTEGRATIONS, NOOP, 
-         SLACK_AUTH_URL } from '../../utils/constants';
+import { PROFILE_SETTING_SECTION_TYPE, INTEGRATIONS, NOOP } from '../../utils/constants';
 import { MdKeyboardArrowDown, MdKeyboardArrowUp, MdSettings } from 'react-icons/md';
 import { IoMdCamera } from 'react-icons/io';
 import _ from 'lodash';
 import Toggle from 'react-toggle'
 
-import { changeFirstname, changeLastname, changeBio, requestSaveUser, editUser, requestGetUser, requestChangeUserPermissions } from '../../actions/profile';
+import {
+  changeFirstname, changeLastname, changeBio, editUser,
+  requestSaveUser, requestGetUser, requestUpdateUserPermissions
+} from '../../actions/profile';
 
 import Loader from '../../components/common/Loader';
-import { SERVER_URL } from '../../utils/request';
 import { isLoggedIn } from '../../utils/auth';
 
-import "react-toggle/style.css";
 import { getStyleApplicationFn } from '../../utils/style';
 import style from './profile.css';
 const s = getStyleApplicationFn(style);
@@ -36,46 +36,40 @@ import JiraIcon from '../../assets/images/icons/Jira_Icon.svg';
 import SalesforceIcon from '../../assets/images/icons/Salesforce_Icon.svg';
 import HubspotIcon from '../../assets/images/icons/Hubspot_Icon.svg';
 import HelpscoutIcon from '../../assets/images/icons/Helpscout_Icon.svg';
+import GoogleChromeIcon from '../../assets/images/icons/GoogleChrome_Icon.svg';
 
-
-const GOOGLE_AUTH_URL = `${SERVER_URL}/google/authenticate`;
-const ZENDESK_AUTH_URL = `${SERVER_URL}/zendesk/authenticate`;
-
-const MOCK_USER = {
-  autofindPermissions: {
-    zendesk: true,
-    helpscout: false,
-  }
-};
-
-const PROFILE_SETTING_SECTION_TYPE = {
-  KNOWLEDGE_BASE: 'KNOWLEDGE_BASE',
-  COMMUNICATION: 'COMMUNICATION',
-  AUTOFIND: 'AUTOFIND',
-};
-const PROFILE_SETTING_SECTIONS = [
-  {
-    type: PROFILE_SETTING_SECTION_TYPE.KNOWLEDGE_BASE,
-    title: 'Knowledge Base Integrations',
-    integrations: [INTEGRATIONS.GOOGLE, INTEGRATIONS.ZENDESK],
-  },
-  {
-    type: PROFILE_SETTING_SECTION_TYPE.COMMUNICATION,
-    title: 'Communication Integrations',
-    integrations: [INTEGRATIONS.SLACK],
-  },
-  {
-    type: PROFILE_SETTING_SECTION_TYPE.AUTOFIND,
-    title: 'Autofind Permissions',
-    permissions: [INTEGRATIONS.GMAIL, INTEGRATIONS.ZENDESK, INTEGRATIONS.SALESFORCE, INTEGRATIONS.HUBSPOT, INTEGRATIONS.JIRA, INTEGRATIONS.HELPSCOUT],
-  }
-];
-
-const PROFILE_NOTIFICATIONS_OPTIONS = {
+const PROFILE_NOTIFICATIONS_OPTION = {
   EMAIL: 'email',
   SLACK: 'slack',
   CHROME: 'chrome'
 }
+
+const PROFILE_SETTING_SECTIONS = [
+  {
+    type: PROFILE_SETTING_SECTION_TYPE.KNOWLEDGE_BASE,
+    title: 'Knowledge Base Integrations',
+    options: [INTEGRATIONS.GOOGLE, INTEGRATIONS.ZENDESK],
+    toggle: false,
+  },
+  {
+    type: PROFILE_SETTING_SECTION_TYPE.COMMUNICATION,
+    title: 'Communication Integrations',
+    options: [INTEGRATIONS.SLACK],
+    toggle: false,
+  },
+  {
+    type: PROFILE_SETTING_SECTION_TYPE.AUTOFIND,
+    title: 'Autofind Permissions',
+    options: [INTEGRATIONS.GMAIL, INTEGRATIONS.ZENDESK, INTEGRATIONS.SALESFORCE, INTEGRATIONS.HUBSPOT, INTEGRATIONS.JIRA, INTEGRATIONS.HELPSCOUT],
+    toggle: true,
+  },
+  {
+    type: PROFILE_SETTING_SECTION_TYPE.NOTIFICATIONS,
+    title: 'Notification Permissions',
+    options: Object.values(PROFILE_NOTIFICATIONS_OPTION),
+    toggle: true,
+  }
+];
 
 @connect(
   state => ({
@@ -91,7 +85,7 @@ const PROFILE_NOTIFICATIONS_OPTIONS = {
         requestSaveUser,
         editUser,
         requestGetUser,
-        requestChangeUserPermissions,
+        requestUpdateUserPermissions,
         logout,
       },
       dispatch
@@ -103,32 +97,11 @@ export default class Profile extends Component {
     super(props);
     this.state = {
       sectionOpen: _.mapValues(PROFILE_SETTING_SECTION_TYPE, () => false),
-      notificationToggle: false,
-      notificationsOpen: false,
     };
   }
 
   componentDidMount() {
     this.props.requestGetUser();
-  }
-
-  openGoogleLogin() {
-    //TODO: Refactor this in more beauty way.
-    //CLOSE popup on finish.
-    const clearToken = this.props.token.replace('Bearer ', '');
-    window.open(`${GOOGLE_AUTH_URL}?auth=${clearToken}`, 'popup', 'width=600,height=600');
-  }
-
-  openZendeskLogin() {
-    //TODO: Refactor this in more beauty way.
-    //CLOSE popup on finish.
-    const clearToken = this.props.token.replace('Bearer ', '');
-    window.open(`${ZENDESK_AUTH_URL}?auth=${clearToken}`, 'popup', 'width=600,height=600');
-  }
-
-  openSlackLogin() {
-    const { user } = this.props;
-    window.open(`${SLACK_AUTH_URL}${user._id}`, '_blank');
   }
 
   saveUser = () => {
@@ -217,126 +190,61 @@ export default class Profile extends Component {
     </div>
     )
 
-  getIntegrationInfo = (integration) => {
-    switch (integration) {
+  getOptionInfo = (option) => {
+    switch (option) {
       case INTEGRATIONS.GOOGLE:
-        return { title: 'Google Drive', logo: GoogleDriveIcon, onSignIn: () => this.openGoogleLogin(), onSignOut: () => {} };
+        return { title: 'Google Drive', logo: GoogleDriveIcon };
       case INTEGRATIONS.ZENDESK:
-        return { title: 'Zendesk', logo: ZendeskIcon, onSignIn: () => this.openZendeskLogin(), onSignOut: () => {} };
+        return { title: 'Zendesk', logo: ZendeskIcon };
       case INTEGRATIONS.SLACK:
-        return { title: 'Slack', logo: SlackIcon, onSignIn: () => this.openSlackLogin(), onSignOut: () => {} };
-      default:
-        return {};
-    }
-  }
-//[INTEGRATIONS.GMAIL, INTEGRATIONS.ZENDESK, INTEGRATIONS.SALESFORCE, INTEGRATIONS.HUBSPOT, INTEGRATIONS.JIRA, INTEGRATIONS.HELPSCOUT],
-  getPermissionInfo = (permission) => {
-    switch (permission) {
+        return { title: 'Slack', logo: SlackIcon }; 
       case INTEGRATIONS.GMAIL:
-        return { title: 'Gmail', logo: GmailIcon, onEnable: () => { return; }, onDisable: () => { return; } };
+      case PROFILE_NOTIFICATIONS_OPTION.EMAIL:     
+        return { title: 'Gmail', logo: GmailIcon };
       case INTEGRATIONS.SALESFORCE:
-        return { title: 'Salesforce', logo: SalesforceIcon, onEnable: () => { return; }, onDisable: () => { return; } };
+        return { title: 'Salesforce', logo: SalesforceIcon };
       case INTEGRATIONS.HUBSPOT:
-        return { title: 'Hubspot', logo: HubspotIcon, onEnable: () => { return; }, onDisable: () => { return; } };
+        return { title: 'Hubspot', logo: HubspotIcon };
       case INTEGRATIONS.JIRA:
-        return { title: 'Jira', logo: JiraIcon, onEnable: () => { return; }, onDisable: () => { return; } };
+        return { title: 'Jira', logo: JiraIcon };
       case INTEGRATIONS.ZENDESK:
-        return { title: 'Zendesk', logo: ZendeskIcon, onEnable: () => { return; }, onDisable: () => { return; } };
+        return { title: 'Zendesk', logo: ZendeskIcon };
       case INTEGRATIONS.HELPSCOUT:
-        return { title: 'Helpscout', logo: HelpscoutIcon, onEnable: () => { return; }, onDisable: () => { return; } };
+        return { title: 'Helpscout', logo: HelpscoutIcon };
+      case PROFILE_NOTIFICATIONS_OPTION.CHROME:     
+        return { title: 'Chrome', logo: GoogleChromeIcon };
       default:
         return {};
     }
   }
 
-  renderAutofindPermissions = (profileSettingSection) => {
-    const { user, requestChangeUserPermissions, changeUserPermissionsError } = this.props;
-    const { autofindPermissions } = user;
+  renderIntegrations = ({ type, toggle, options }) => {
+    const { user, requestUpdateUserPermissions, changeUserPermissionsError } = this.props;
+    const { autofindPermissions, notificationPermissions } = user;
 
-    const isEnabled = true;
     return (
       <div>
-        {
-          profileSettingSection.permissions.map((permission, i) => {
-            const { title, logo } = this.getPermissionInfo(permission);
-            const isEnabled = MOCK_USER.autofindPermissions[permission];
-            return (
-              <div key={title} className={s(`flex bg-white p-reg justify-between border border-solid border-gray-xlight items-center rounded-lg ${i > 0 ? 'mt-sm' : ''}`)}>
-                <div className={s('flex items-center')}>
-                  <div className={s('profile-integration-img-container flex rounded-full border border-solid border-gray-light mr-reg')}>
-                    <img src={logo} className={s('m-auto profile-integration-img')} />
-                  </div>
-                  <div className={s('text-sm ')}> {title} </div>
-                </div>
-                <Toggle
-                  checked={autofindPermissions[permission]}
-                  icons={false}
-                  onChange={ () => requestChangeUserPermissions( { autofindPermissions: { ...autofindPermissions, [permission] : !autofindPermissions[permission] } } ) }  />
-              </div>
-            );
-          })
-        }
-      </div>
-    );
-  }
-
-  renderIntegrations = (profileSettingSection) => {
-    const { user } = this.props;
-    return (
-      <div>
-        {
-          profileSettingSection.integrations.map((integration, i) => {
-            const isSignedIn = isLoggedIn(user, integration);
-            const { title, logo, onSignIn, onSignOut } = this.getIntegrationInfo(integration);
-            return (
-              <ProfileIntegration
-                index={i}
-                title={title}
-                logo={logo}
-                isSignedIn={isSignedIn}
-                onSignIn={onSignIn}
-                onSignOut={onSignOut}
-              />
-            );
-          })
-        }
-      </div>
-    );
-  }
-
-  toggleIntegration = (type) => {
-    const { sectionOpen } = this.state;
-    this.setState({ sectionOpen: { ...sectionOpen, [type]: !sectionOpen[type] } });
-  }
-
-  renderIntegrationsSection = () => {
-    const { user } = this.props;
-    const { sectionOpen } = this.state;
-    return (
-      <div className={s('flex flex-col overflow-auto flex-grow')}>
-        { PROFILE_SETTING_SECTIONS.map((profileSettingSection, i) => {
-          const { type, title } = profileSettingSection;
-          const isOpen = sectionOpen[type];
-          const Icon = isOpen ? MdKeyboardArrowUp : MdKeyboardArrowDown;
-
+        { options.map((option, i) => {
+          const { title, logo } = this.getOptionInfo(option);
           return (
-            <div
-              key={title}
-              className={s(`profile-integration ${isOpen ? 'profile-integration-active' : 'profile-integration-inactive'} ${i !== 0 ? 'mt-reg' : ''}`)}
-            >
-              <div
-                className={s(`py-sm flex items-center justify-between ${isOpen ? 'mb-sm' : ''}`)}
-                onClick={() => this.toggleIntegration(type)}
-              >
-                <div className={s('text-purple-reg text-sm')}>{title}</div>
-                <Icon className={s('text-gray-dark cursor-pointer')} />
+            <div key={title} className={s(`flex bg-white p-reg justify-between border border-solid border-gray-xlight items-center rounded-lg ${i > 0 ? 'mt-sm' : ''}`)}>
+              <div className={s('flex items-center')}>
+                <div className={s('profile-integration-img-container')}>
+                  <img src={logo} className={s('profile-integration-img')} />
+                </div>
+                <div className={s('text-sm')}> {title} </div>
               </div>
-              <AnimateHeight height={isOpen ? 'auto' : 0} animationStateClasses={{ animatingUp: s('invisible') }}>
-                { (type === PROFILE_SETTING_SECTION_TYPE.AUTOFIND ?
-                  this.renderAutofindPermissions(profileSettingSection) :
-                  this.renderIntegrations(profileSettingSection)
-                )}
-              </AnimateHeight>
+              { toggle ?
+                <Toggle
+                  checked={type === PROFILE_SETTING_SECTION_TYPE.AUTOFIND ?
+                    autofindPermissions[option] :
+                    notificationPermissions[option]
+                  }
+                  icons={false}
+                  onChange={() => requestUpdateUserPermissions(type, option)}
+                /> :
+                <IntegrationAuthButton integration={option} />
+              }
             </div>
           );
         })}
@@ -344,59 +252,72 @@ export default class Profile extends Component {
     );
   }
 
-  renderSettingsSection = () => {
-    const { user, requestChangeUserPermissions, changeUserPermissionsError } = this.props;
-    const { notificationPermissions } = user;
+  toggleIntegrationSection = (type) => {
+    const { sectionOpen } = this.state;
+    this.setState({ sectionOpen: { ...sectionOpen, [type]: !sectionOpen[type] } });
+  }
 
-    const { notificationToggle, notificationsOpen } = this.state;
+  renderIntegrationsSection = () => {
+    const { user, permissionState } = this.props;
+    const { sectionOpen } = this.state;
 
     return (
-      <div className={s('flex flex-col')}>
-        <div className={s('flex justify-between my-sm')}> 
-          <div> Receive notifications through: </div>
-          <MdKeyboardArrowDown 
-            className={s('cursor-pointer')}
-            onClick={() => this.setState({ notificationsOpen: false })}
-          />
-        </div>
-        { changeUserPermissionsError && 
-          <div className={s('text-red-reg mb-sm')}> {changeUserPermissionsError} </div>
-        }
-        {
-          Object.values(PROFILE_NOTIFICATIONS_OPTIONS).map((notificationsOption, i) => {
-            return (
-              <div className={s('flex justify-between items-center mb-xs')}>
-                <div className={s('text-sm font-semibold')}> { notificationsOption } </div>
-                <Toggle
-                  checked={notificationPermissions[notificationsOption]}
-                  icons={false}
-                  onChange={ () => requestChangeUserPermissions( { notificationPermissions: { ...notificationPermissions, [notificationsOption] : !notificationPermissions[notificationsOption] } }) }  />
+      <div className={s('flex flex-col overflow-auto flex-grow px-lg py-sm')}>
+        { PROFILE_SETTING_SECTIONS.map((profileSettingSection, i) => {
+          const { type, title, toggle } = profileSettingSection;
+          const isOpen = sectionOpen[type];
+          const Icon = isOpen ? MdKeyboardArrowUp : MdKeyboardArrowDown;
+
+          let error, isLoading;
+          if (toggle) {
+            error = permissionState[type].error;
+            isLoading = permissionState[type].isLoading;
+          }
+
+          return (
+            <div
+              key={title}
+              className={s(`profile-integration-container ${isOpen ? 'profile-integration-container-active' : 'profile-integration-container-inactive'} ${i !== 0 ? 'mt-reg' : ''}`)}
+            >
+              <div
+                className={s(`py-sm flex items-center justify-between ${isOpen ? 'mb-sm' : ''}`)}
+                onClick={() => this.toggleIntegrationSection(type)}
+              >
+                <div className={s('text-purple-reg text-sm')}>{title}</div>
+                <div className={s('flex items-center')}>
+                  { toggle && isLoading && 
+                    <Loader size={10} className={s('mr-sm')} />
+                  }
+                  <Icon className={s('text-gray-dark cursor-pointer')} />
+                </div>
               </div>
-            )
-          })
-        }
+              <AnimateHeight height={isOpen ? 'auto' : 0} animationStateClasses={{ animatingUp: s('invisible') }}>
+                {this.renderIntegrations(profileSettingSection)}
+              </AnimateHeight>
+              { toggle && error && 
+                <div className={s('error-text my-sm')}> {error} </div>
+              }
+            </div>
+          );
+        })}
       </div>
-    )
+    );
   }
 
   render() {
     const { logout, user } = this.props;
-    const { sectionOpen, notificationsOpen } = this.state;
+    const { sectionOpen } = this.state;
     return (
-      <div className={s('flex flex-col p-lg min-h-0 flex-grow')}>
-        { this.renderAboutSection() }
-        { this.renderMetricsSection() }
-        <div className={s('horizontal-separator my-reg')} />
+      <div className={s('flex flex-col py-lg min-h-0 flex-grow')}>
+        <div className={s('flex flex-col px-lg')}>
+          { this.renderAboutSection() }
+          { this.renderMetricsSection() }
+          <div className={s('horizontal-separator my-reg')} />
+        </div>
         { this.renderIntegrationsSection() }
-        { notificationsOpen && this.renderSettingsSection() }
-        <div className={s('flex justify-between pt-reg')}>
+        <div className={s('flex justify-between pt-reg px-lg')}>
           <div className={s('text-sm text-gray-dark')}> {user.email} </div>
-          <div className={s('flex')}>
-            <MdSettings
-              className={s('mr-sm text-purple-reg cursor-pointer pr-sm profile-settings-icon')} 
-              onClick={ () => this.setState({ notificationsOpen: !notificationsOpen }) } />
-            <div className={s('text-sm text-purple-reg underline cursor-pointer')} onClick={() => logout()}> Logout </div>
-          </div>
+          <div className={s('text-sm text-purple-reg underline cursor-pointer')} onClick={() => logout()}> Logout </div>
         </div>
       </div>
     );

@@ -65,7 +65,7 @@ CardConfirmModal.propTypes = {
   description: PropTypes.string,
   body: PropTypes.element,
   error: PropTypes.string,
-  onRequestClose: PropTypes.func.isRequired,
+  onRequestClose: PropTypes.func,
   primaryButtonProps: PropTypes.shape({
     text: PropTypes.oneOfType([PropTypes.string, PropTypes.number]).isRequired,
     onClick: PropTypes.func.isRequired,

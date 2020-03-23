@@ -293,6 +293,10 @@ export default function cardsReducer(state = initialState, action) {
       return updateActiveCardEdits({ descriptionEditorState: editorState });
     }
 
+    case types.UPDATE_CARD_SELECTED_THREAD: {
+      const { index } = payload;
+      return updateActiveCard({ slackThreadIndex: index });
+    }
     case types.TOGGLE_CARD_SELECTED_MESSAGE: {
       const { messageIndex } = payload;
       const { activeCard } = state;
@@ -359,6 +363,11 @@ export default function cardsReducer(state = initialState, action) {
       return updateActiveCard({ outOfDateReasonInput: reason });
     }
 
+    case types.UPDATE_CARD: {
+      const { card } = payload;
+      return updateCardById(card._id, card);
+    }
+
     /* API REQUESTS */
     case types.ADD_CARD_ATTACHMENT_REQUEST: {
       const { key, file } = payload;
@@ -399,7 +408,7 @@ export default function cardsReducer(state = initialState, action) {
       const { cardId, card } = payload;
 
       const currCard = getCardById(cardId);
-      const isEditing = currCard && currCard.isEditing;
+      const isEditing = currCard && currCard.isEditing || card.status === CARD_STATUS.NOT_DOCUMENTED;
 
       let newCardInfo = convertCardToFrontendFormat(card);
       if (isEditing) {
@@ -551,6 +560,19 @@ export default function cardsReducer(state = initialState, action) {
     case types.REMOVE_BOOKMARK_ERROR: {
       const { cardId, error } = payload;
       return updateCardById(cardId, { isUpdatingBookmark: false, bookmarkError: error });
+    }
+
+    case types.GET_SLACK_THREAD_REQUEST: {
+      return updateActiveCard({ isGettingSlackThread: true, getSlackThreadError: null });
+    }
+    case types.GET_SLACK_THREAD_SUCCESS: {
+      const { cardId, slackReplies } = payload;
+      const { edits } = getCardById(cardId);
+      return updateCardById(cardId, { isGettingSlackThread: false, modalOpen: BASE_MODAL_OPEN_STATE, slackReplies, edits: { ...edits, slackReplies } });
+    }
+    case types.GET_SLACK_THREAD_ERROR: {
+      const { cardId, error } = payload;
+      return updateCardById(cardId, { isGettingSlackThread: false, getSlackThreadError: error });
     }
 
     case types.CLOSE_ALL_CARDS: {
