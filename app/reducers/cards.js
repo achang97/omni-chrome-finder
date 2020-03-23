@@ -363,6 +363,11 @@ export default function cardsReducer(state = initialState, action) {
       return updateActiveCard({ outOfDateReasonInput: reason });
     }
 
+    case types.UPDATE_CARD: {
+      const { card } = payload;
+      return updateCardById(card._id, card);
+    }
+
     /* API REQUESTS */
     case types.ADD_CARD_ATTACHMENT_REQUEST: {
       const { key, file } = payload;

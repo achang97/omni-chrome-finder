@@ -125,6 +125,10 @@ export function updateOutOfDateReason(reason) {
   return { type: types.UPDATE_OUT_OF_DATE_REASON, payload: { reason } };
 }
 
+export function updateCard(card) {
+  return { type: types.UPDATE_CARD, payload: { card } };
+}
+
 /* API REQUESTS */
 export function requestAddCardAttachment(key, file) {
   return { type: types.ADD_CARD_ATTACHMENT_REQUEST, payload: { key, file } };

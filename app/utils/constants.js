@@ -11,7 +11,7 @@ export const CHROME_MESSAGE = {
 export const MAIN_CONTAINER_ID = 'omni-chrome-ext-main-container';
 
 export const CARD_URL_BASE = 'https://www.google.com/webhp?sxsrf=';
-export const CARD_URL_REGEX = /^https:\/\/www\.google\.com\/webhp\?sxsrf=([A-Za-z0-9]{24})(?:&edit=true)?$/;
+export const CARD_URL_REGEX = /^https:\/\/www\.google\.com\/webhp\?sxsrf=([A-Za-z0-9]{24})/;
 export const SLACK_URL_REGEX = /^https:\/\/www\.google\.com\/webhp\?sxsrf=$/;
 
 export const TASK_URL_BASE = 'https://www.google.com/webhp?tasksxsrf=';
