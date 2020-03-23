@@ -35,6 +35,7 @@
 /* MESSAGE DISPLAY SECTION */
 .message-manager-container {
   border: 1px solid #7A7BAA33;
+  @apply bg-purple-light mx-lg rounded-lg flex-grow overflow-auto;
 }
 
 .message-photo-container {

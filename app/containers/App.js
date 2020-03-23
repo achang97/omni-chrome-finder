@@ -22,6 +22,9 @@ import Cards from './Cards';
 import AISuggest from './AISuggest';
 import Profile from './Profile';
 import Login from './Login';
+
+import 'react-toggle/style.css';
+
 import style from './App.css';
 
 import { getStyleApplicationFn } from '../utils/style';

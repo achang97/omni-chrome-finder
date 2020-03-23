@@ -68,6 +68,11 @@
   border-bottom: 2px solid #FFFFFF33 !important;
 }
 
+/* Box shadow */
+.shadow-light {
+  box-shadow: 0 10px 30px 0 rgba(33,26,29,0.05) !important;
+}
+
 /* Z-index */
 .modal-overlay-important {
   z-index: 200;
