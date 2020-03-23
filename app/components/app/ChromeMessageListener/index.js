@@ -20,7 +20,7 @@ import AISuggestTab from '../AISuggestTab';
     dockVisible: state.display.dockVisible,
     dockExpanded: state.display.dockExpanded,
     isLoggedIn: !!state.auth.token,
-    tasks: state.tasks.tasks[TASKS_SECTION_TYPE.ALL],
+    tasks: state.tasks.tasks,
   }),
   dispatch =>
     bindActionCreators(
@@ -213,14 +213,10 @@ class ChromeMessageListener extends Component {
           updateTasksTab(1);
         } else {
           updateTasksTab(0);
-
           const taskSectionType = TASKS_SECTIONS.find(({ taskTypes }) => (
             taskTypes.length === 1 && taskTypes[0] === task.status
           ));
-
-          if (taskSectionType) {
-            updateTasksOpenSection(taskSectionType.type);
-          }
+          updateTasksOpenSection(taskSectionType ? taskSectionType.type : TASKS_SECTION_TYPE.ALL);
         }
       }
 

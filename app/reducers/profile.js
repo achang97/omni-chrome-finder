@@ -5,6 +5,8 @@ export const initialState = {
   user: {},
   userEdits: {},
   isEditingAbout: false,
+
+  isChangingUserPermissions: false,
 };
 
 export default function displayReducer(state = initialState, action) {
@@ -58,6 +60,20 @@ export default function displayReducer(state = initialState, action) {
       const { error } = payload;
       return { ...state, isSavingUser: false, userSaveError: error };
     }
+
+    case types.CHANGE_USER_PERMISSIONS_REQUEST: {
+      const { updates } = payload;
+      return { ...state, isChangingUserPermissions: true, changeUserPermissionsError: null };
+    }
+    case types.CHANGE_USER_PERMISSIONS_SUCCESS: {
+      const { user } = payload;
+      return { ...state, user, isChangingUserPermissions: false };
+    }
+    case types.CHANGE_USER_PERMISSIONS_ERROR: {
+      const { error } = payload;
+      return { ...state, isChangingUserPermissions: false, changeUserPermissionsError: error };
+    }
+
 
     case types.ADD_BOOKMARK_REQUEST:
     case types.REMOVE_BOOKMARK_ERROR: {

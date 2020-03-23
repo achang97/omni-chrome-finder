@@ -59,7 +59,6 @@ function createNotification({ userId, message, notification }) {
   });
 
   getStorage('tasks').then(tasks => {
-    console.log(tasks)
     if (tasks) {
       let newTasks;
       if (resolved) {
@@ -117,7 +116,7 @@ chrome.tabs.onUpdated.addListener(async (tabId, changeInfo, tab) => {
       }
 
       if (!socket) {
-        // initSocket();
+        initSocket();
       }
 
       break;      

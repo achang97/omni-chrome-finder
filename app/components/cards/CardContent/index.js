@@ -26,12 +26,7 @@ import * as cardActions from '../../../actions/cards';
 
 import { hasValidEdits, toggleUpvotes, cardStateChanged } from '../../../utils/card';
 import { generateFileKey } from '../../../utils/file';
-import {
-  CARD_STATUS,
-  CARD_DIMENSIONS,
-  EDITOR_TYPE,
-  MODAL_TYPE,
-} from '../../../utils/constants';
+import { CARD_STATUS, CARD_DIMENSIONS, EDITOR_TYPE, MODAL_TYPE, USER_ROLE } from '../../../utils/constants';
 
 import style from './card-content.css';
 import { getStyleApplicationFn } from '../../../utils/style';
@@ -142,16 +137,21 @@ class CardContent extends Component {
     this.props.updateCardQuestion(event.target.value);
   }
 
-  cardStatusOnClick = (status) => {
+  cardStatusOnClick = (prevStatus) => {
     const { openCardModal } = this.props;
 
-    switch (status) {
-      case CARD_STATUS.UP_TO_DATE: {
+    switch (prevStatus) {
+      case CARD_STATUS.OUT_OF_DATE:
+      case CARD_STATUS.NEEDS_VERIFICATION: {
         openCardModal(MODAL_TYPE.CONFIRM_UP_TO_DATE);
         break;
       }
-      case CARD_STATUS.OUT_OF_DATE: {
+      case CARD_STATUS.UP_TO_DATE: {
         openCardModal(MODAL_TYPE.CONFIRM_OUT_OF_DATE);
+        break;
+      }
+      case CARD_STATUS.NEEDS_APPROVAL: {
+        openCardModal(MODAL_TYPE.CONFIRM_APPROVE);
         break;
       }
     }
@@ -171,9 +171,9 @@ class CardContent extends Component {
 
     let defaultProps;
     if (editorRole === EDITOR_TYPE.DESCRIPTION) {
-      defaultProps = { wrapperClassName: '', toolbarHidden: true, readOnly: true, editorState: descriptionEditorState, onEditorStateChange: this.onDescriptionEditorStateChange, onClick: undefined };
+      defaultProps = { className: 'my-reg', wrapperClassName: '', toolbarHidden: true, readOnly: true, editorState: descriptionEditorState, onEditorStateChange: this.onDescriptionEditorStateChange, onClick: undefined };
     } else {
-      defaultProps = { wrapperClassName: '', toolbarHidden: true, readOnly: true, editorState: answerEditorState, onEditorStateChange: this.onAnswerEditorStateChange, onClick: undefined };
+      defaultProps = { className: 'mt-sm mb-reg', wrapperClassName: '', toolbarHidden: true, readOnly: true, editorState: answerEditorState, onEditorStateChange: this.onAnswerEditorStateChange, onClick: undefined };
     }
 
     if (!isEditing) {
@@ -206,10 +206,10 @@ class CardContent extends Component {
   }
 
   renderTextEditor = (editorRole) => {
-    const { wrapperClassName, editorClassName, editorState, toolbarHidden, readOnly, onEditorStateChange, onClick } = this.getTextEditorProps(editorRole);
+    const { className, wrapperClassName, editorClassName, editorState, toolbarHidden, readOnly, onEditorStateChange, onClick } = this.getTextEditorProps(editorRole);
     return (
       <TextEditor
-        className={s('my-reg')}
+        className={s(`${className}`)}
         onClick={() => onClick && onClick()}
         onEditorStateChange={onEditorStateChange}
         editorState={editorState}
@@ -236,10 +236,13 @@ class CardContent extends Component {
       isEditing, tags, createdAt, outOfDateReason,
       sideDockOpen, openCardSideDock, closeCardSideDock,
       editorEnabled, descriptionSectionHeight, cardsWidth,
-      attachments, addCardAttachments, openCardModal, status
+      attachments, addCardAttachments, openCardModal, status,
+      user
     } = this.props;
 
     const currAttachments = this.getAttribute('attachments');
+    const isApprover = user.role === USER_ROLE.ADMIN ||
+      tags.some(({ approvers }) => approvers.some(({ _id }) => _id === user._id));
 
     return (
       <Resizable
@@ -319,7 +322,7 @@ class CardContent extends Component {
             <div className={s('vertical-separator')} />
             <CardStatus
               status={this.props.status}
-              isActionable
+              isActionable={status !== CARD_STATUS.NEEDS_APPROVAL || isApprover}
               outOfDateReason={outOfDateReason}
               onDropdownOptionClick={this.cardStatusOnClick}
             />
@@ -333,7 +336,7 @@ class CardContent extends Component {
   renderAnswer = () => {
     const { isEditing, editorEnabled, selectedMessages, slackReplies } = this.props;
     return (
-      <div className={s('p-2xl flex-grow min-h-0 flex flex-col min-h-0 relative')}>
+      <div className={s('px-2xl py-sm flex-grow min-h-0 flex flex-col min-h-0 relative')}>
         <div className={s('flex-grow min-h-0 flex flex-col min-h-0')}>
           { this.renderTextEditor(EDITOR_TYPE.ANSWER) }
         </div>
@@ -519,7 +522,7 @@ class CardContent extends Component {
       closeCardModal, closeCard, activeCardIndex,
       requestDeleteCard, deleteError, isDeletingCard,
       requestUpdateCard, updateError, isUpdatingCard,
-      requestMarkUpToDate, requestMarkOutOfDate, isMarkingStatus, markStatusError,
+      requestMarkUpToDate, requestMarkOutOfDate, requestApproveCard, isMarkingStatus, markStatusError,
       outOfDateReasonInput, updateOutOfDateReason, cancelEditCard,
       modalOpen,
       isEditing,
@@ -600,6 +603,15 @@ class CardContent extends Component {
         primaryButtonProps: {
           text: 'Yes',
           onClick: requestMarkUpToDate,
+          ...this.getModalLoaderProps(isMarkingStatus)
+        }
+      }, {
+        modalType: MODAL_TYPE.CONFIRM_APPROVE,
+        title: 'Confirm Approval',
+        description: 'Would you like to approve the changes to this card?',
+        primaryButtonProps: {
+          text: 'Yes',
+          onClick: requestApproveCard,
           ...this.getModalLoaderProps(isMarkingStatus)
         }
       }, {

@@ -1,10 +1,10 @@
-import React from 'react';
+import React, { useState } from 'react';
 import PropTypes from 'prop-types';
 
 import { withRouter } from 'react-router';
 import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
-import { MdLightbulbOutline } from 'react-icons/md';
+import { MdLightbulbOutline, MdKeyboardArrowLeft, MdKeyboardArrowRight } from 'react-icons/md';
 
 import Button from '../../../components/common/Button';
 import { SEARCH_TYPE } from '../../../utils/constants';
@@ -15,6 +15,8 @@ import { getStyleApplicationFn } from '../../../utils/style';
 const s = getStyleApplicationFn(style);
 
 const AISuggestTab = ({ toggleDock, history, numCards }) => {
+  const [isExpanded, toggleExpanded] = useState(true);
+
   const onClick = () => {
     toggleDock();
     history.push('/suggest');
@@ -25,13 +27,21 @@ const AISuggestTab = ({ toggleDock, history, numCards }) => {
   }
 
   return (
-    <Button
-      color="gold"
-      className={s('ai-suggest-tab')}
-      onClick={onClick}
-      icon={<MdLightbulbOutline className={s("mr-sm")} />}
-      text="Suggestions available"
-    />
+    <div className={s(`flex ai-suggest-tab ${isExpanded ? 'slide-in' : 'slide-out'}`)}>
+      <Button
+        color="gold"
+        icon={isExpanded ? <MdKeyboardArrowRight /> : <MdKeyboardArrowLeft />}
+        className={s('ai-suggest-expand-button')}
+        onClick={() => toggleExpanded(!isExpanded)}
+      />
+      <Button
+        color="gold"
+        className={s('opacity-100 rounded-none')}
+        onClick={onClick}
+        icon={<MdLightbulbOutline className={s('mr-sm')} />}
+        text="Suggestions available"
+      />
+    </div>
   );
 };
 

@@ -26,11 +26,13 @@ const SuggestionPreview = ({ id, question, questionDescription, answer, openCard
         </div>
       }
     </div>
-    <div className={s('bg-white py-xl px-lg text-sm')}>
-      <span className={s('line-clamp-3 break-words')}>
-        {answer}
-      </span>
-    </div>
+    { answer && 
+      <div className={s('bg-white py-xl px-lg text-sm')}>
+        <span className={s('line-clamp-3 break-words')}>
+          {answer}
+        </span>
+      </div>
+    }
     <div className={s('bg-white rounded-b-lg')} onClick={() => openCard({ _id: id })}>
       <Button
         text="View full card"
@@ -46,7 +48,7 @@ SuggestionPreview.propTypes = {
   id: PropTypes.string.isRequired,
   question: PropTypes.string.isRequired,
   questionDescription: PropTypes.string,
-  answer: PropTypes.string.isRequired,
+  answer: PropTypes.string,
 };
 
 export default connect(

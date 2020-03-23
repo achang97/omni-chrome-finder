@@ -40,3 +40,15 @@ export function handleSaveUserSuccess(user) {
 export function handleSaveUserError(error) {
   return { type: types.SAVE_USER_ERROR, payload: { error } };
 }
+
+export function requestChangeUserPermissions( updates ) {
+  return { type: types.CHANGE_USER_PERMISSIONS_REQUEST, payload: { updates } };
+}
+
+export function handleChangeUserPermissionsError(error) {
+  return { type: types.CHANGE_USER_PERMISSIONS_ERROR, payload: { error } };
+}
+
+export function handleChangeUserPermissionsSuccess(user) {
+  return { type: types.CHANGE_USER_PERMISSIONS_SUCCESS, payload: { user } };
+}

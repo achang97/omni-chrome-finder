@@ -31,7 +31,7 @@ import { requestSearchCards } from '../../actions/search';
 import * as askActions from '../../actions/ask';
 import { generateFileKey } from '../../utils/file';
 import { isLoggedIn } from '../../utils/auth';
-import { ASK_INTEGRATIONS, INTEGRATIONS, DEBOUNCE_60_HZ, SEARCH_TYPE, SLACK_RECIPIENT_TYPE } from '../../utils/constants';
+import { ASK_INTEGRATIONS, INTEGRATIONS, DEBOUNCE_60_HZ, SEARCH_TYPE, SLACK_RECIPIENT_TYPE, SLACK_AUTH_URL  } from '../../utils/constants';
 
 import { getArrayWithout } from '../../utils/array';
 
@@ -409,9 +409,6 @@ class Ask extends Component {
 
   renderExpandedAskPage = () => {
     const { askError, askSuccess, user } = this.props;
-    const prod_url = `https://slack.com/oauth/v2/authorize?client_id=902571434263.910615559953&scope=app_mentions:read,channels:history,channels:join,channels:read,chat:write,commands,files:read,groups:history,groups:read,im:history,im:read,im:write,links:read,mpim:history,mpim:read,mpim:write,reminders:read,reminders:write,remote_files:read,remote_files:share,remote_files:write,team:read,usergroups:read,usergroups:write,users.profile:read,users:read,users:read.email,users:write&user_scope=channels:history,channels:read,channels:write,chat:write,emoji:read,files:read,groups:history,groups:read,groups:write,im:history,im:read,im:write,links:read,links:write,mpim:history,mpim:read,mpim:write,reactions:read,reminders:read,reminders:write,remote_files:read,remote_files:share,search:read,team:read,usergroups:read,usergroups:write,users.profile:read,users:read,users:read.email,users:write&state=${user._id}`;
-    const dev_url = `https://slack.com/oauth/v2/authorize?client_id=902571434263.1009616749152&scope=app_mentions:read,channels:history,channels:join,channels:read,chat:write,commands,files:read,groups:history,groups:read,im:history,im:read,im:write,links:read,mpim:history,mpim:read,mpim:write,reminders:read,reminders:write,remote_files:read,remote_files:share,remote_files:write,team:read,usergroups:read,usergroups:write,users.profile:read,users:read,users:read.email,users:write&user_scope=channels:history,channels:read,channels:write,chat:write,emoji:read,files:read,groups:history,groups:read,groups:write,im:history,im:read,im:write,links:read,links:write,mpim:history,mpim:read,mpim:write,reactions:read,reminders:read,reminders:write,remote_files:read,remote_files:share,search:read,team:read,usergroups:read,usergroups:write,users.profile:read,users:read,users:read.email,users:write&state=${user._id}`;
-    
     const isLoggedInSlack = isLoggedIn(user, INTEGRATIONS.SLACK);
 
     return (
@@ -421,7 +418,7 @@ class Ask extends Component {
             { this.renderTabHeader() }
             { !isLoggedInSlack ?
               <div>
-                <a target="_blank" href={dev_url}><img alt="Add to Slack" height="40" width="139" src="https://platform.slack-edge.com/img/add_to_slack.png" srcSet="https://platform.slack-edge.com/img/add_to_slack.png 1x, https://platform.slack-edge.com/img/add_to_slack@2x.png 2x" /></a>
+                <a target="_blank" href={`${SLACK_AUTH_URL}${user._id}`}><img alt="Add to Slack" height="40" width="139" src="https://platform.slack-edge.com/img/add_to_slack.png" srcSet="https://platform.slack-edge.com/img/add_to_slack.png 1x, https://platform.slack-edge.com/img/add_to_slack@2x.png 2x" /></a>
               </div> :
               this.renderAskInputs()
             }

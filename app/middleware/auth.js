@@ -2,6 +2,7 @@ import { setStorage } from '../utils/storage';
 import * as types from '../actions/actionTypes';
 
 const authMiddleware = store => next => (action) => {
+  const nextAction = next(action);
   const { type, payload } = action;
 
   switch (type) {
@@ -24,7 +25,7 @@ const authMiddleware = store => next => (action) => {
     }
   }
 
-  return next(action);
+  return nextAction;
 };
 
 export default authMiddleware;
