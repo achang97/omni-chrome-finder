@@ -81,7 +81,7 @@ class Ask extends Component {
   getIntegrationInfo = (integration) => {
     switch (integration) {
       case INTEGRATIONS.GOOGLE:
-        return { title: 'Gmail', logo: GmailIcon };
+        return { title: 'Gmail', logo: GmailIcon, disabled: true };
       case INTEGRATIONS.SLACK:
         return { title: 'Slack', logo: SlackIcon };
       default:
@@ -423,39 +423,32 @@ class Ask extends Component {
     );
   }
 
-  renderLoggedOutView = () => {
+  renderDisabledView = () => {
     const { user, token, activeIntegration } = this.props;
 
-    let icon;
-    switch (activeIntegration) {
-      case INTEGRATIONS.GOOGLE: {
-        icon = GmailIcon;
-        break;
-      }
-      case INTEGRATIONS.SLACK: {
-        icon = SlackIcon;
-        break;
-      }
-      default: {
-        break;
-      }
-    }
-
+    const { title, logo, disabled } = this.getIntegrationInfo(activeIntegration);
     const authLink = getIntegrationAuthLink(user._id, token, activeIntegration);
     const integrationName = _.capitalize(activeIntegration);
 
     return (
       <div className={s('flex flex-col items-center')}>
         <div className={s('ask-integration-logged-out-img-container')}>
-          <img src={icon} />
+          <img src={logo} />
         </div>
-        <div className={s('mt-reg mb-lg font-semibold')}> You aren't logged into {integrationName}</div>
-        <div className={s('rounded-lg shadow-md py-sm px-lg')}>
-          <a target="_blank" href={authLink} className={s('flex items-center')}>
-            <span className={s('mr-sm text-md')}> Connect to {integrationName} </span>
-            <img src={icon} className={s('h-lg')} />
-          </a>
+        <div className={s('mt-reg mb-lg font-semibold')}>
+          { disabled ?
+            `Our ${title} integration is coming soon!` :
+            `You aren't logged into ${title}`
+          }
         </div>
+        { !disabled &&
+          <div className={s('rounded-lg shadow-md py-sm px-lg')}>
+            <a target="_blank" href={authLink} className={s('flex items-center')}>
+              <span className={s('mr-sm text-md')}> Connect to {title} </span>
+              <img src={logo} className={s('h-lg')} />
+            </a>
+          </div>
+        }
       </div>
     );
   }
@@ -463,17 +456,18 @@ class Ask extends Component {
   renderExpandedAskPage = () => {
     const { askError, askSuccess, user, activeIntegration } = this.props;
     const loggedIn = isLoggedIn(user, activeIntegration);
+    const { disabled } = this.getIntegrationInfo(activeIntegration); 
 
     return (
       <div className={s('flex flex-col flex-1 min-h-0 relative')}>
         <div className={s('flex flex-col flex-1 overflow-y-auto bg-purple-light')}>
           <div className={s('p-lg bg-white flex-1')}>
             { this.renderTabHeader() }
-            { !loggedIn ? this.renderLoggedOutView() : this.renderAskInputs() }
+            { (!loggedIn || disabled) ? this.renderDisabledView() : this.renderAskInputs() }
           </div>
-          { loggedIn && this.renderRecipientSelection() }
+          { loggedIn && !disabled && this.renderRecipientSelection() }
         </div>
-        { loggedIn && this.renderFooterButton() }
+        { loggedIn && !disabled && this.renderFooterButton() }
 
         {/* Modals */}
         { this.renderResultModal(!!askError, 'Ask Error', askError) }

@@ -41,7 +41,7 @@ const CardPermissions = ({ isDisabled, selectedPermission, onChangePermission, p
           onTabClick={onChangePermission}
           showRipple={false}
         >
-          {PERMISSION_OPTIONS.map(permissionOption => (
+          {PERMISSION_OPTIONS.map((permissionOption) => (
             <Tab key={permissionOption.value} value={permissionOption}>
               <div className={s(permissionOption.value !== selectedPermission.value ? 'underline-border border-purple-gray-20' : 'primary-underline')}>
                 {permissionOption.label}

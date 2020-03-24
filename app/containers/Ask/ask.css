@@ -22,6 +22,7 @@
 
 .ask-recipient {
   height: 15px;
+  box-sizing: content-box;
   @apply m-xs relative text-purple-reg font-semibold text-xs rounded-lg flex justify-between items-center p-reg;
 }
 

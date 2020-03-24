@@ -121,8 +121,8 @@ class SuggestionPanel extends Component {
       }
       case INTEGRATIONS.ZENDESK: {
         icon = ZendeskIcon;
-        renderFn = ({ id, url, updated_at, type, subject, description, priority, status }) => (
-          <a target="_blank" href={url} key={id}>
+        renderFn = ({ id, agentUrl, updated_at, type, subject, description, priority, status }) => (
+          <a target="_blank" href={agentUrl} key={id}>
             <div className={s('suggestion-panel-external-result flex-col')}>
               <div className={s('flex justify-between mb-sm')}>
                 <div className={s('min-w-0')}>
