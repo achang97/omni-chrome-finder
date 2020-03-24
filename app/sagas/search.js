@@ -28,6 +28,10 @@ const DOCUMENTATION_INTEGRATIONS = [
   {
     integration: INTEGRATIONS.SLACK,
     url: '/slack/query'
+  },
+  {
+    integration: INTEGRATIONS.ZENDESK,
+    url: '/zendesk/tickets/query',
   }
 ];
 
@@ -115,7 +119,9 @@ function* searchCards({ type, query, clearCards }) {
 
     let i;
     for (i = 1; i < results.length; i++) {
-      externalResults.push({ integration: allRequests[i].integration, results: results[i] });
+      if (results[i].length !== 0) {
+        externalResults.push({ integration: allRequests[i].integration, results: results[i] });
+      }
     }
 
     yield put(handleSearchCardsSuccess(type, cards, externalResults, clearCards));

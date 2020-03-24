@@ -133,6 +133,7 @@ class CardCreateModal extends Component {
 
   renderAdvanced = () => {
     const { edits: { verificationInterval = {}, permissions = {}, permissionGroups = [] }, updateCardVerificationInterval, updateCardPermissions, updateCardPermissionGroups } = this.props;
+    console.log(VERIFICATION_INTERVAL_OPTIONS[0])
     return (
       <CardSection
         className={s('mt-reg')}

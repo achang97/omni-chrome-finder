@@ -16,9 +16,13 @@ export function convertCardToFrontendFormat(card) {
     upvotes, slackReplies, ...rest
   } = card;
 
-  const verificationInterval = VERIFICATION_INTERVAL_OPTIONS.find(option => (
+  let verificationInterval = VERIFICATION_INTERVAL_OPTIONS.find(option => (
     option.value === updateInterval
   ));
+
+  if (!verificationInterval) {
+    verificationInterval = VERIFICATION_INTERVAL_OPTIONS[0];
+  }
 
   let permissionsValue;
   if (userPermissions && userPermissions.length !== 0) {
