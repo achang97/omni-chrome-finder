@@ -15,25 +15,24 @@ export const initialState = {
   integrationState: {
     [INTEGRATIONS.SLACK]: {},
     [INTEGRATIONS.ZENDESK]: {},
-    [INTEGRATIONS.GOOGLE]: {}
+    [INTEGRATIONS.GOOGLE]: {},
+    [INTEGRATIONS.GMAIL]: {}
   }
 };
 
 export default function displayReducer(state = initialState, action) {
   const { type, payload = {} } = action;
 
-  const updateStateByType = (stateName, type, newInfo) => {
-    return {
-      ...state,
-      [stateName]: {
-        ...state[stateName],
-        [type]: {
-          ...state[stateName][type],
-          ...newInfo
-        }
+  const updateStateByType = (stateName, type, newInfo) => ({
+    ...state,
+    [stateName]: {
+      ...state[stateName],
+      [type]: {
+        ...state[stateName][type],
+        ...newInfo
       }
     }
-  }
+  });
 
   switch (type) {
     case types.LOGIN_SUCCESS:
