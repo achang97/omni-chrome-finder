@@ -12,10 +12,8 @@ const REQUEST_TYPE = {
 let protocol;
 let url;
 
-if (process.env.NODE_ENV === 'development') {
-  //url = 'localhost:8000';
-  //protocol = 'http://';
-  url = 'localhost:8000'//'api.addomni.com';
+if (process.env.NODE_ENV === 'production') {
+  url = 'localhost:8000';
   protocol = 'http://';
 } else {
   url = 'api.addomni.com';

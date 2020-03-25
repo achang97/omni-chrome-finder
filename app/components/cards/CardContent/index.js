@@ -504,7 +504,7 @@ class CardContent extends Component {
 
   renderSelectThreadBody = () => {
     const {
-      slackThreadConvoPairs, updateCardSelectedThreadIndex,
+      slackThreadConvoPairs=[], updateCardSelectedThreadIndex,
       slackThreadIndex,
     } = this.props;
     return (
