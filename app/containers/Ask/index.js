@@ -541,7 +541,7 @@ class Ask extends Component {
                 className={s('p-xs')}
                 iconLeft={false}
                 icon={isSubmittingFeedback ?
-                  <Loader size="xs" className={s('ml-sm')} color="white" /> :
+                  <Loader size={10} className={s('ml-sm')} color="white" /> :
                   null
                 }
                 disabled={feedback.length === 0}
