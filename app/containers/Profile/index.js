@@ -48,25 +48,40 @@ const PROFILE_SETTING_SECTIONS = [
   {
     type: PROFILE_SETTING_SECTION_TYPE.KNOWLEDGE_BASE,
     title: 'Knowledge Base Integrations',
-    options: [INTEGRATIONS.GOOGLE, INTEGRATIONS.ZENDESK],
+    options: [
+      { type: INTEGRATIONS.GOOGLE },
+      { type: INTEGRATIONS.ZENDESK }
+    ],
     toggle: false,
   },
   {
     type: PROFILE_SETTING_SECTION_TYPE.COMMUNICATION,
     title: 'Communication Integrations',
-    options: [INTEGRATIONS.GMAIL, INTEGRATIONS.SLACK],
+    options: [
+      { type: INTEGRATIONS.GMAIL },
+      { type: INTEGRATIONS.SLACK }
+    ],
     toggle: false,
   },
   {
     type: PROFILE_SETTING_SECTION_TYPE.AUTOFIND,
     title: 'Autofind Permissions',
-    options: [INTEGRATIONS.GMAIL, INTEGRATIONS.ZENDESK, INTEGRATIONS.SALESFORCE, INTEGRATIONS.HUBSPOT, INTEGRATIONS.JIRA, INTEGRATIONS.HELPSCOUT],
+    options: [
+      { type: INTEGRATIONS.GMAIL },
+      { type: INTEGRATIONS.ZENDESK, disabled: true },
+      { type: INTEGRATIONS.SALESFORCE, disabled: true },
+      { type: INTEGRATIONS.HUBSPOT, disabled: true },
+      { type: INTEGRATIONS.JIRA, disabled: true },
+      { type: INTEGRATIONS.HELPSCOUT, disabled: true },
+    ],
     toggle: true,
   },
   {
     type: PROFILE_SETTING_SECTION_TYPE.NOTIFICATIONS,
     title: 'Notification Permissions',
-    options: Object.values(PROFILE_NOTIFICATIONS_OPTION),
+    options: Object.values(PROFILE_NOTIFICATIONS_OPTION).map(option => (
+      { type: option }
+    )),
     toggle: true,
   }
 ];
@@ -198,8 +213,9 @@ export default class Profile extends Component {
         return { title: 'Zendesk', logo: ZendeskIcon };
       case INTEGRATIONS.SLACK:
         return { title: 'Slack', logo: SlackIcon };
-      case INTEGRATIONS.GMAIL:
       case PROFILE_NOTIFICATIONS_OPTION.EMAIL:
+        return { title: 'Email', logo: GmailIcon };
+      case INTEGRATIONS.GMAIL:
         return { title: 'Gmail', logo: GmailIcon };
       case INTEGRATIONS.SALESFORCE:
         return { title: 'Salesforce', logo: SalesforceIcon };
@@ -224,26 +240,32 @@ export default class Profile extends Component {
 
     return (
       <div>
-        { options.map((option, i) => {
-          const { title, logo } = this.getOptionInfo(option);
+        { options.map(({ type: optionType, disabled }, i) => {
+          const { title, logo } = this.getOptionInfo(optionType);
           return (
             <div key={title} className={s(`flex bg-white p-reg justify-between border border-solid border-gray-xlight items-center rounded-lg ${i > 0 ? 'mt-sm' : ''}`)}>
-              <div className={s('flex items-center')}>
+              <div className={s('flex flex-1 items-center')}>
                 <div className={s('profile-integration-img-container')}>
                   <img src={logo} className={s('profile-integration-img')} />
                 </div>
-                <div className={s('text-sm')}> {title} </div>
+                <div className={s('flex-1 text-sm')}> {title} </div>
               </div>
+              { disabled &&
+                <span className={s('text-xs italic text-gray-light mx-sm')}>
+                  Coming soon!
+                </span>
+              }
               { toggle ?
                 <Toggle
-                  checked={type === PROFILE_SETTING_SECTION_TYPE.AUTOFIND ?
-                    autofindPermissions[option] :
-                    notificationPermissions[option]
-                  }
+                  checked={!disabled && (type === PROFILE_SETTING_SECTION_TYPE.AUTOFIND ?
+                    !autofindPermissions[optionType] :
+                    notificationPermissions[optionType]
+                  )}
+                  disabled={disabled}
                   icons={false}
-                  onChange={() => requestUpdateUserPermissions(type, option)}
+                  onChange={() => requestUpdateUserPermissions(type, optionType)}
                 /> :
-                <IntegrationAuthButton integration={option} />
+                <IntegrationAuthButton integration={optionType} />
               }
             </div>
           );

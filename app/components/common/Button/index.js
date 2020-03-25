@@ -37,7 +37,7 @@ const Button = (props) => {
   };
 
   return (
-    <div className={s(`button-container button-hover ${className} ${outerClassName} ${disabled ? 'pointer-events-none opacity-75' : ''}`)} onClick={protectedOnClick} {...rest}>
+    <div className={s(`button-container ${className} ${outerClassName} ${disabled ? 'cursor-not-allowed opacity-75' : 'button-hover'}`)} onClick={protectedOnClick} {...rest}>
       { iconLeft && icon }
       { iconLeft && imgSrc && <img className={s(`${imgClassName}`)} src={imgSrc} /> }
       <div className={s(`button-text ${underline && underlineColor ? `underline-border border-${underlineColor}` : ''} ${innerClassName} ${textClassName}`)}>
