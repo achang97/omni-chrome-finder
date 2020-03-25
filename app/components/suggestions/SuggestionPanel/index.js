@@ -1,5 +1,6 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
+import Timeago from 'react-timeago';
 import { MdClose, MdKeyboardArrowDown, MdKeyboardArrowUp } from 'react-icons/md';
 
 import AnimateHeight from 'react-animate-height';
@@ -23,6 +24,7 @@ import { getStyleApplicationFn } from '../../../utils/style';
 const s = getStyleApplicationFn(style);
 
 import GoogleDriveIcon from '../../../assets/images/icons/GoogleDrive_Icon.svg';
+import GmailIcon from '../../../assets/images/icons/Gmail_Icon.svg';
 import SlackIcon from '../../../assets/images/icons/Slack_Mark.svg';
 import ZendeskIcon from '../../../assets/images/icons/Zendesk_Icon.svg';
 
@@ -92,13 +94,15 @@ class SuggestionPanel extends Component {
         renderFn = ({ text, link, sender, channel }) => (
           <a target="_blank" href={link} key={link}>
             <div className={s('suggestion-panel-external-result flex-col')}>
-              <div className={s('flex justify-between mb-xs')}>
-                <div className={s('suggestion-panel-text font-semibold text-purple-reg')}> {channel === 'Personal Message' ? 'Direct Message' : `#${channel}`} </div>
+              <div className={s('flex justify-between mb-sm')}>
+                <div>
+                  <div className={s('suggestion-panel-external-result-text font-semibold text-purple-reg mb-xs')}> {channel === 'Personal Message' ? 'Direct Message' : `#${channel}`} </div>
+                  <div className={s('suggestion-panel-external-result-text suggestion-panel-external-result-sender')}> @{sender} </div>
+                </div>
                 <div className={s('suggestion-panel-external-result-icon')}>
                   <img src={SlackIcon} />
                 </div>
               </div>
-              <div className={s('suggestion-panel-text suggestion-panel-sender-name')}> @{sender} </div>
               <div className={s('text-xs line-clamp-3')}> {text} </div>
             </div>
           </a>
@@ -110,7 +114,7 @@ class SuggestionPanel extends Component {
         renderFn = ({ name, id, webViewLink, iconLink }) => (
           <a target="_blank" href={webViewLink} key={id}>
             <div className={s('suggestion-panel-external-result items-center')}>
-              <div className={s('suggestion-panel-text suggestion-panel-link-text')}> {name} </div>
+              <div className={s('suggestion-panel-external-result-text suggestion-panel-external-result-link')}> {name} </div>
               <div className={s('suggestion-panel-external-result-icon')}>
                 <img src={iconLink} />
               </div>
@@ -121,12 +125,12 @@ class SuggestionPanel extends Component {
       }
       case INTEGRATIONS.ZENDESK: {
         icon = ZendeskIcon;
-        renderFn = ({ id, agentUrl, updated_at, type, subject, description, priority, status }) => (
+        renderFn = ({ id, agentUrl, updated_at, type, raw_subject, description, priority, status }) => (
           <a target="_blank" href={agentUrl} key={id}>
             <div className={s('suggestion-panel-external-result flex-col')}>
               <div className={s('flex justify-between mb-sm')}>
                 <div className={s('min-w-0')}>
-                  <div className={s('suggestion-panel-text font-semibold text-purple-reg mb-xs')}> {subject} </div>
+                  <div className={s('suggestion-panel-external-result-text font-semibold text-purple-reg mb-xs')}> {raw_subject} </div>
                   <div className={s('text-xs text-gray-light')}>
                     <span> Priority: <span className={s('italic')}> {priority} </span> </span>
                     <span className={s('ml-sm')}> Status: <span className={s('italic')}> {status} </span> </span>
@@ -137,6 +141,32 @@ class SuggestionPanel extends Component {
                 </div>
               </div>
               <div className={s('text-xs line-clamp-3')}> {description} </div>
+              <Timeago date={updated_at} className={s('suggestion-panel-external-result-date')} />
+            </div>
+          </a>
+        );
+        break;
+      }
+      case INTEGRATIONS.GMAIL: {
+        icon = GmailIcon;
+        renderFn = ({ id, webLink, deliveredTo, date, from, subject }) => (
+          <a target="_blank" href={webLink} key={id}>
+            <div className={s('suggestion-panel-external-result flex-col')}>
+              <div className={s('flex justify-between mb-xs')}>
+                <div className={s('suggestion-panel-external-result-text font-semibold text-purple-reg mb-xs')}> {subject} </div>
+                <div className={s('suggestion-panel-external-result-icon')}>
+                  <img src={GmailIcon} />
+                </div>
+              </div>
+              <div className={s('text-xs flex mb-xs')}>
+                <div className={s('font-semibold w-4xl flex-shrink-0 text-xs')}> From: </div>
+                <div className={s('suggestion-panel-external-result-text text-xs')}> {from} </div>
+              </div>
+              <div className={s('suggestion-panel-external-result-text flex')}>
+                <div className={s('font-semibold w-4xl flex-shrink-0 text-xs')}> To: </div>
+                <div className={s('suggestion-panel-external-result-text text-xs')}> {deliveredTo} </div>
+              </div>
+              <Timeago date={date} className={s('suggestion-panel-external-result-date')} />
             </div>
           </a>
         );
@@ -145,7 +175,6 @@ class SuggestionPanel extends Component {
     }
 
     const isOpen = this.state.showIntegration[integration];
-
     return (
       <div key={integration}>
         <div
@@ -154,7 +183,7 @@ class SuggestionPanel extends Component {
         >
           <div className={s('flex items-center text-md text-gray-dark')}>
             <div className={s('w-lg h-lg p-sm mr-sm bg-white shadow-md rounded-full')}>
-              <img src={icon} className={s('h-full')} />
+              <img src={icon} className={s('w-full h-full')} />
             </div>
             <span className={s('font-semibold mr-sm')}> {_.capitalize(integration)} </span>
             <span> ({results.length}) </span>

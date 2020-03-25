@@ -22,6 +22,10 @@ const CANCEL_SOURCE = {};
 
 const DOCUMENTATION_INTEGRATIONS = [
   {
+    integration: INTEGRATIONS.GMAIL,
+    url: '/gmail/messages/query',
+  },
+  {
     integration: INTEGRATIONS.GOOGLE,
     url: '/google/drive/query'
   },
