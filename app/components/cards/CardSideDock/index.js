@@ -1,6 +1,7 @@
-import React, { Component } from 'react';
+import React, { useRef } from 'react';
 import PropTypes from 'prop-types';
 import { Transition } from 'react-transition-group';
+import AnimateHeight from 'react-animate-height';
 import moment from 'moment';
 
 import { bindActionCreators } from 'redux';
@@ -32,8 +33,9 @@ import VideoPlayer from '../../common/VideoPlayer';
 import { isUploadedFile } from '../../../utils/file';
 
 import { getBaseAnimationStyle } from '../../../utils/animate';
-import { MODAL_TYPE, PERMISSION_OPTIONS, VERIFICATION_INTERVAL_OPTIONS, FADE_IN_TRANSITIONS, CARD_STATUS } from '../../../utils/constants';
+import { MODAL_TYPE, PERMISSION_OPTION, PERMISSION_OPTIONS, VERIFICATION_INTERVAL_OPTIONS, FADE_IN_TRANSITIONS, CARD_STATUS } from '../../../utils/constants';
 import { createSelectOptions } from '../../../utils/select';
+import { isJustMe } from '../../../utils/card';
 
 import style from './card-side-dock.css';
 import { getStyleApplicationFn } from '../../../utils/style';
@@ -45,6 +47,8 @@ const DATE_FORMAT = 'MMM DD, YYYY';
 const SIDE_DOCK_TRANSITION_MS = 300;
 
 const CardSideDock = (props) => {
+  const permissionRef = useRef(null);
+
   const closeSideDock = () => {
     props.closeCardSideDock();
   };
@@ -63,18 +67,20 @@ const CardSideDock = (props) => {
     </div>
   );
 
-  const renderOwners = () => {
+  const renderOwners = (onlyShowPermissions) => {
     const { isEditing, addCardOwner, removeCardOwner } = props;
     const currOwners = getAttribute('owners');
     return (
-      <CardSection className={s('mt-reg')} title="Owner(s)">
-        <CardUsers
-          isEditable={isEditing}
-          users={currOwners}
-          onAdd={addCardOwner}
-          onRemoveClick={removeCardOwner}
-        />
-      </CardSection>
+      <AnimateHeight height={onlyShowPermissions ? 0 : 'auto'}>
+        <CardSection className={s('mt-reg')} title="Owner(s)">
+          <CardUsers
+            isEditable={isEditing}
+            users={currOwners}
+            onAdd={addCardOwner}
+            onRemoveClick={removeCardOwner}
+          />
+        </CardSection>
+      </AnimateHeight>
     );
   };
 
@@ -146,20 +152,22 @@ const CardSideDock = (props) => {
     );
   };
 
-  const renderTags = () => {
+  const renderTags = (onlyShowPermissions) => {
     const { isEditing, updateCardTags, removeCardTag } = props;
     const currTags = getAttribute('tags');
 
     return (
-      <CardSection className={s('mt-lg')} title="Tags">
-        <CardTags
-          isEditable={isEditing}
-          tags={currTags}
-          onChange={updateCardTags}
-          onRemoveClick={removeCardTag}
-          showPlaceholder
-        />
-      </CardSection>
+      <AnimateHeight height={onlyShowPermissions ? 0 : 'auto'}>
+        <CardSection className={s('mt-lg')} title="Tags">
+          <CardTags
+            isEditable={isEditing}
+            tags={currTags}
+            onChange={updateCardTags}
+            onRemoveClick={removeCardTag}
+            showPlaceholder
+          />
+        </CardSection>
+      </AnimateHeight>
     );
   };
 
@@ -203,38 +211,52 @@ const CardSideDock = (props) => {
     );
   };
 
-  const renderAdvanced = () => {
-    const { isEditing, updateCardPermissions, updateCardPermissionGroups, updateCardVerificationInterval } = props;
+  const handleHideSections = ({ newHeight }) => {
+    if (newHeight !== 0) {
+      permissionRef.current.scrollIntoView({ behavior: 'smooth', block: 'end' });
+    }
+  };
+
+  const renderAdvanced = (onlyShowPermissions) => {
+    const { isEditing, permissions, updateCardPermissions, updateCardPermissionGroups, updateCardVerificationInterval } = props;
     const currVerificationInterval = getAttribute('verificationInterval');
     const currPermissions = getAttribute('permissions');
     const currPermissionGroups = getAttribute('permissionGroups');
 
     return (
       <CardSection className={s('mt-lg')} title="Advanced">
-        <div className={s('mb-sm')}>
-          <div className={s('text-gray-reg text-xs mb-sm')}> Verification Interval </div>
-          { isEditing ?
-            <Select
-              value={currVerificationInterval}
-              onChange={updateCardVerificationInterval}
-              options={VERIFICATION_INTERVAL_OPTIONS}
-              placeholder="Select verification interval..."
-              isSearchable
-              menuShouldScrollIntoView
-            /> :
-            <div className={s('underline-border border-purple-gray-20 mb-sm text-purple-reg text-sm inline-block')}>
-              {currVerificationInterval.label}
-            </div>
-          }
-        </div>
-        <div>
-          <div className={s('text-gray-reg text-xs mb-sm')}> Permissions </div>
+        <AnimateHeight
+          height={onlyShowPermissions ? 0 : 'auto'}
+          onAnimationEnd={handleHideSections}
+        >
+          <div className={s('mb-sm')}>
+            <div className={s('text-gray-reg text-xs mb-sm')}> Verification Interval </div>
+            { isEditing ?
+              <Select
+                value={currVerificationInterval}
+                onChange={updateCardVerificationInterval}
+                options={VERIFICATION_INTERVAL_OPTIONS}
+                placeholder="Select verification interval..."
+                isSearchable
+                menuShouldScrollIntoView
+              /> :
+              <div className={s('underline-border border-purple-gray-20 mb-sm text-purple-reg text-sm inline-block')}>
+                {currVerificationInterval.label}
+              </div>
+            }
+          </div>
+        </AnimateHeight>
+        <div ref={permissionRef}>
+          <div className={s('text-gray-reg text-xs mb-sm')}>
+            Permissions
+          </div>
           <CardPermissions
             selectedPermission={currPermissions}
             onChangePermission={updateCardPermissions}
             permissionGroups={currPermissionGroups}
             onChangePermissionGroups={updateCardPermissionGroups}
             isDisabled={!isEditing}
+            showJustMe={permissions.value === PERMISSION_OPTION.JUST_ME}
           />
         </div>
       </CardSection>
@@ -289,7 +311,7 @@ const CardSideDock = (props) => {
   };
 
   const render = () => {
-    const { sideDockOpen, status } = props;
+    const { sideDockOpen, status, edits } = props;
 
     const baseStyle = getBaseAnimationStyle(SIDE_DOCK_TRANSITION_MS);
     const transitionStyles = {
@@ -300,6 +322,7 @@ const CardSideDock = (props) => {
     };
 
     const isNewCard = status === CARD_STATUS.NOT_DOCUMENTED;
+    const onlyShowPermissions = isJustMe(getAttribute('permissions'));
 
     return (
       <div className={s('card-side-dock-container')}>
@@ -313,11 +336,11 @@ const CardSideDock = (props) => {
           {state => (
             <div className={s('card-side-dock overflow-auto')} style={{ ...baseStyle, ...transitionStyles[state] }}>
               { renderHeader() }
-              { !isNewCard && renderOwners() }
+              { !isNewCard && renderOwners(onlyShowPermissions) }
               { renderAttachments() }
-              { !isNewCard && renderTags() }
+              { !isNewCard && renderTags(onlyShowPermissions) }
               { !isNewCard && renderKeywords() }
-              { !isNewCard && renderAdvanced() }
+              { !isNewCard && renderAdvanced(onlyShowPermissions) }
               { !isNewCard && renderFooter() }
             </div>
           )}

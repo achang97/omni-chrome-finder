@@ -5,6 +5,7 @@
 
 .card-tab {
   width: 150px !important;
+  @apply pr-0 rounded-t-lg rounded-b-none text-xs font-medium flex items-center justify-between bg-white border-0;
 }
 
 .card-tab-container {

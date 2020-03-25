@@ -149,7 +149,7 @@ export default class Cards extends Component {
         <Tabs
           activeValue={activeCardIndex}
           className={s('flex-1')}
-          tabClassName={s('card-tab pr-0 rounded-t-lg rounded-b-0 text-xs font-medium flex items-center justify-between bg-white')}
+          tabClassName={s('card-tab')}
           activeTabClassName={s('bg-purple-light')}
           onTabClick={this.updateTab}
           showRipple={false}

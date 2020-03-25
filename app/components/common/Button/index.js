@@ -33,7 +33,7 @@ const Button = (props) => {
   const { outerClassName = '', innerClassName = '' } = getClassNames(color, underline);
 
   const protectedOnClick = () => {
-    if (onClick) onClick();
+    if (onClick && !disabled) onClick();
   };
 
   return (

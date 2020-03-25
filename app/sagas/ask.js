@@ -3,12 +3,13 @@ import { doGet, doPost, doDelete } from '../utils/request';
 import { getContentStateFromEditorState } from '../utils/editor';
 import { SLACK_RECIPIENT_TYPE } from '../utils/constants';
 import { convertAttachmentsToBackendFormat, isUploadedFile } from '../utils/file';
-import { ASK_QUESTION_REQUEST, GET_SLACK_CONVERSATIONS_REQUEST, ADD_ASK_ATTACHMENT_REQUEST, REMOVE_ASK_ATTACHMENT_REQUEST } from '../actions/actionTypes';
+import { ASK_QUESTION_REQUEST, GET_SLACK_CONVERSATIONS_REQUEST, ADD_ASK_ATTACHMENT_REQUEST, REMOVE_ASK_ATTACHMENT_REQUEST, SUBMIT_FEEDBACK_REQUEST } from '../actions/actionTypes';
 import {
   handleAskQuestionSuccess, handleAskQuestionError,
   handleGetSlackConversationsSuccess, handleGetSlackConversationsError,
   handleAddAskAttachmentSuccess, handleAddAskAttachmentError,
   handleRemoveAskAttachmentSuccess, handleRemoveAskAttachmentError,
+  handleSubmitFeedbackSuccess, handleSubmitFeedbackError,
 } from '../actions/ask';
 
 export default function* watchAuthRequests() {
@@ -16,7 +17,7 @@ export default function* watchAuthRequests() {
 
   while (action = yield take([
     ASK_QUESTION_REQUEST, GET_SLACK_CONVERSATIONS_REQUEST,
-    ADD_ASK_ATTACHMENT_REQUEST, REMOVE_ASK_ATTACHMENT_REQUEST
+    ADD_ASK_ATTACHMENT_REQUEST, REMOVE_ASK_ATTACHMENT_REQUEST, SUBMIT_FEEDBACK_REQUEST,
   ])) {
     const { type, payload } = action;
     switch (type) {
@@ -34,6 +35,10 @@ export default function* watchAuthRequests() {
       }
       case REMOVE_ASK_ATTACHMENT_REQUEST: {
         yield fork(removeAttachment, payload);
+        break;
+      }
+      case SUBMIT_FEEDBACK_REQUEST: {
+        yield fork(submitFeedback);
         break;
       }
       default: {
@@ -103,4 +108,15 @@ function* removeAttachment({ key }) {
     const { response: { data } } = error;
     yield put(handleRemoveAskAttachmentError(key, data.error));
   }
+}
+
+function* submitFeedback() {
+  try {
+    const feedback = yield select(state => state.ask.feedback);
+    yield call(doPost, '/feedback', { feedback });
+    yield put(handleSubmitFeedbackSuccess());
+  } catch (error) {
+    const { response: { data } } = error;
+    yield put(handleSubmitFeedbackError(data.error));
+  }  
 }

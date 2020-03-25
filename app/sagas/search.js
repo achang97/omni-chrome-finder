@@ -107,7 +107,7 @@ function* searchCards({ type, query, clearCards }) {
 
     if (type === SEARCH_TYPE.POPOUT && query.q !== '') {
       DOCUMENTATION_INTEGRATIONS.forEach(({ integration, url }) => {
-        if (isLoggedIn(user, integration)) {
+        if (isLoggedIn(user, integration.type)) {
           allRequests.push({ url, integration, body: { q: query.q } });
         }
       });

@@ -79,10 +79,13 @@ export function hasValidEdits(edits) {
   return (
     (!!question && question !== '') &&
     (!!answerEditorState && answerEditorState.getCurrentContent().hasText()) &&
+    (!!permissions && (
+      permissions.value === PERMISSION_OPTION.JUST_ME ||
+      ((permissions.value !== PERMISSION_OPTION.SPECIFIC_GROUPS || permissionGroups.length !== 0) &&
         owners.length !== 0 &&
-        !!verificationInterval &&
-        (!!permissions && (permissions.value !== PERMISSION_OPTION.SPECIFIC_GROUPS
-          || permissionGroups.length !== 0))
+        !!verificationInterval
+      )
+    ))
   );
 }
 
@@ -92,6 +95,10 @@ export function generateCardId() {
 
 export function isExistingCard(id) {
   return !id.startsWith('new-card-');
+}
+
+export function isJustMe(permissions) {
+  return permissions && permissions.value === PERMISSION_OPTION.JUST_ME;
 }
 
 export function cardStateChanged(card) {
