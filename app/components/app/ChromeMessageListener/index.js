@@ -17,7 +17,7 @@ import AISuggestTab from '../AISuggestTab';
 
 const URL_REGEXES = [
   {
-    integration: INTEGRATIONS.GMAIL,
+    integration: INTEGRATIONS.GMAIL.type,
     regex: /https:\/\/mail\.google\.com\/mail\/u\/\d+\/(#\S+)\/.+/
   }
 ];
@@ -156,7 +156,7 @@ class ChromeMessageListener extends Component {
 
   getPageText = (integration) => {
     switch (integration) {
-      case INTEGRATIONS.GMAIL: {
+      case INTEGRATIONS.GMAIL.type: {
         return this.getGoogleText();
       }
     }

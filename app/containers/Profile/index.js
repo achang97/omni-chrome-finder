@@ -38,50 +38,42 @@ import HubspotIcon from '../../assets/images/icons/Hubspot_Icon.svg';
 import HelpscoutIcon from '../../assets/images/icons/Helpscout_Icon.svg';
 import GoogleChromeIcon from '../../assets/images/icons/GoogleChrome_Icon.svg';
 
-const PROFILE_NOTIFICATIONS_OPTION = {
-  EMAIL: 'email',
-  SLACK: 'slack',
-  CHROME: 'chrome'
-};
+const PROFILE_NOTIFICATIONS_OPTIONS = [
+  { type: 'email', title: 'Email', logo: GmailIcon },
+  INTEGRATIONS.SLACK,
+  { type: 'chrome', title: 'Chrome', logo: GoogleChromeIcon },
+];
 
 const PROFILE_SETTING_SECTIONS = [
   {
     type: PROFILE_SETTING_SECTION_TYPE.KNOWLEDGE_BASE,
     title: 'Knowledge Base Integrations',
-    options: [
-      { type: INTEGRATIONS.GOOGLE },
-      { type: INTEGRATIONS.ZENDESK }
-    ],
+    options: [INTEGRATIONS.GOOGLE, INTEGRATIONS.ZENDESK],
     toggle: false,
   },
   {
     type: PROFILE_SETTING_SECTION_TYPE.COMMUNICATION,
     title: 'Communication Integrations',
-    options: [
-      { type: INTEGRATIONS.GMAIL },
-      { type: INTEGRATIONS.SLACK }
-    ],
+    options: [INTEGRATIONS.GMAIL, INTEGRATIONS.SLACK],
     toggle: false,
   },
   {
     type: PROFILE_SETTING_SECTION_TYPE.AUTOFIND,
     title: 'Autofind Permissions',
     options: [
-      { type: INTEGRATIONS.GMAIL },
-      { type: INTEGRATIONS.ZENDESK, disabled: true },
-      { type: INTEGRATIONS.SALESFORCE, disabled: true },
-      { type: INTEGRATIONS.HUBSPOT, disabled: true },
-      { type: INTEGRATIONS.JIRA, disabled: true },
-      { type: INTEGRATIONS.HELPSCOUT, disabled: true },
+      INTEGRATIONS.GMAIL,
+      { ...INTEGRATIONS.ZENDESK, disabled: true },
+      { ...INTEGRATIONS.SALESFORCE, disabled: true },
+      { ...INTEGRATIONS.HUBSPOT, disabled: true },
+      { ...INTEGRATIONS.JIRA, disabled: true },
+      { ...INTEGRATIONS.HELPSCOUT, disabled: true },
     ],
     toggle: true,
   },
   {
     type: PROFILE_SETTING_SECTION_TYPE.NOTIFICATIONS,
     title: 'Notification Permissions',
-    options: Object.values(PROFILE_NOTIFICATIONS_OPTION).map(option => (
-      { type: option }
-    )),
+    options: PROFILE_NOTIFICATIONS_OPTIONS,
     toggle: true,
   }
 ];
@@ -203,36 +195,7 @@ export default class Profile extends Component {
       <div className={s('text-xl text-purple-reg font-semibold')}>99%</div>
       <div className={s('text-sm text-purple-reg mt-sm')}> Cards up to date</div>
     </div>
-    )
-
-  getOptionInfo = (option) => {
-    switch (option) {
-      case INTEGRATIONS.GOOGLE:
-        return { title: 'Google Drive', logo: GoogleDriveIcon };
-      case INTEGRATIONS.ZENDESK:
-        return { title: 'Zendesk', logo: ZendeskIcon };
-      case INTEGRATIONS.SLACK:
-        return { title: 'Slack', logo: SlackIcon };
-      case PROFILE_NOTIFICATIONS_OPTION.EMAIL:
-        return { title: 'Email', logo: GmailIcon };
-      case INTEGRATIONS.GMAIL:
-        return { title: 'Gmail', logo: GmailIcon };
-      case INTEGRATIONS.SALESFORCE:
-        return { title: 'Salesforce', logo: SalesforceIcon };
-      case INTEGRATIONS.HUBSPOT:
-        return { title: 'Hubspot', logo: HubspotIcon };
-      case INTEGRATIONS.JIRA:
-        return { title: 'Jira', logo: JiraIcon };
-      case INTEGRATIONS.ZENDESK:
-        return { title: 'Zendesk', logo: ZendeskIcon };
-      case INTEGRATIONS.HELPSCOUT:
-        return { title: 'Helpscout', logo: HelpscoutIcon };
-      case PROFILE_NOTIFICATIONS_OPTION.CHROME:
-        return { title: 'Chrome', logo: GoogleChromeIcon };
-      default:
-        return {};
-    }
-  }
+  )
 
   renderIntegrations = ({ type, toggle, options }) => {
     const { user, requestUpdateUserPermissions, changeUserPermissionsError } = this.props;
@@ -240,8 +203,7 @@ export default class Profile extends Component {
 
     return (
       <div>
-        { options.map(({ type: optionType, disabled }, i) => {
-          const { title, logo } = this.getOptionInfo(optionType);
+        { options.map(({ type: optionType, title, logo, disabled }, i) => {
           return (
             <div key={title} className={s(`flex bg-white p-reg justify-between border border-solid border-gray-xlight items-center rounded-lg ${i > 0 ? 'mt-sm' : ''}`)}>
               <div className={s('flex flex-1 items-center')}>
@@ -258,7 +220,7 @@ export default class Profile extends Component {
               { toggle ?
                 <Toggle
                   checked={!disabled && (type === PROFILE_SETTING_SECTION_TYPE.AUTOFIND ?
-                    !autofindPermissions[optionType] :
+                    autofindPermissions[optionType] :
                     notificationPermissions[optionType]
                   )}
                   disabled={disabled}
@@ -290,8 +252,7 @@ export default class Profile extends Component {
           const isOpen = sectionOpen[type];
           const Icon = isOpen ? MdKeyboardArrowUp : MdKeyboardArrowDown;
 
-          let error,
-            isLoading;
+          let error, isLoading;
           if (toggle) {
             error = permissionState[type].error;
             isLoading = permissionState[type].isLoading;

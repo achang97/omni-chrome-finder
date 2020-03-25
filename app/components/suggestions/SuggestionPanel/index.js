@@ -23,11 +23,6 @@ import { getStyleApplicationFn } from '../../../utils/style';
 
 const s = getStyleApplicationFn(style);
 
-import GoogleDriveIcon from '../../../assets/images/icons/GoogleDrive_Icon.svg';
-import GmailIcon from '../../../assets/images/icons/Gmail_Icon.svg';
-import SlackIcon from '../../../assets/images/icons/Slack_Mark.svg';
-import ZendeskIcon from '../../../assets/images/icons/Zendesk_Icon.svg';
-
 @connect(
   state => ({
     ...state.search.cards[SEARCH_TYPE.POPOUT],
@@ -84,13 +79,10 @@ class SuggestionPanel extends Component {
     })
   }
 
-  renderExternalSourceResults = ({ integration, results }) => {
-    let icon;
+  renderExternalSourceResults = ({ integration: { type, logo, title }, results }) => {
     let renderFn;
-
-    switch (integration) {
-      case INTEGRATIONS.SLACK: {
-        icon = SlackIcon;
+    switch (type) {
+      case INTEGRATIONS.SLACK.type: {
         renderFn = ({ text, link, sender, channel }) => (
           <a target="_blank" href={link} key={link}>
             <div className={s('suggestion-panel-external-result flex-col')}>
@@ -100,7 +92,7 @@ class SuggestionPanel extends Component {
                   <div className={s('suggestion-panel-external-result-text suggestion-panel-external-result-sender')}> @{sender} </div>
                 </div>
                 <div className={s('suggestion-panel-external-result-icon')}>
-                  <img src={SlackIcon} />
+                  <img src={logo} />
                 </div>
               </div>
               <div className={s('text-xs line-clamp-3')}> {text} </div>
@@ -109,22 +101,20 @@ class SuggestionPanel extends Component {
         );
         break;
       }
-      case INTEGRATIONS.GOOGLE: {
-        icon = GoogleDriveIcon;
+      case INTEGRATIONS.GOOGLE.type: {
         renderFn = ({ name, id, webViewLink, iconLink }) => (
           <a target="_blank" href={webViewLink} key={id}>
             <div className={s('suggestion-panel-external-result items-center')}>
               <div className={s('suggestion-panel-external-result-text suggestion-panel-external-result-link')}> {name} </div>
               <div className={s('suggestion-panel-external-result-icon')}>
-                <img src={iconLink} />
+                <img src={logo} />
               </div>
             </div>
           </a>
         );
         break;
       }
-      case INTEGRATIONS.ZENDESK: {
-        icon = ZendeskIcon;
+      case INTEGRATIONS.ZENDESK.type: {
         renderFn = ({ id, agentUrl, updated_at, type, raw_subject, description, priority, status }) => (
           <a target="_blank" href={agentUrl} key={id}>
             <div className={s('suggestion-panel-external-result flex-col')}>
@@ -137,7 +127,7 @@ class SuggestionPanel extends Component {
                   </div>
                 </div>
                 <div className={s('suggestion-panel-external-result-icon')}>
-                  <img src={ZendeskIcon} />
+                  <img src={logo} />
                 </div>
               </div>
               <div className={s('text-xs line-clamp-3')}> {description} </div>
@@ -147,15 +137,14 @@ class SuggestionPanel extends Component {
         );
         break;
       }
-      case INTEGRATIONS.GMAIL: {
-        icon = GmailIcon;
+      case INTEGRATIONS.GMAIL.type: {
         renderFn = ({ id, webLink, deliveredTo, date, from, subject }) => (
           <a target="_blank" href={webLink} key={id}>
             <div className={s('suggestion-panel-external-result flex-col')}>
               <div className={s('flex justify-between mb-xs')}>
                 <div className={s('suggestion-panel-external-result-text font-semibold text-purple-reg mb-xs')}> {subject} </div>
                 <div className={s('suggestion-panel-external-result-icon')}>
-                  <img src={GmailIcon} />
+                  <img src={logo} />
                 </div>
               </div>
               <div className={s('text-xs flex mb-xs')}>
@@ -174,18 +163,18 @@ class SuggestionPanel extends Component {
       }
     }
 
-    const isOpen = this.state.showIntegration[integration];
+    const isOpen = this.state.showIntegration[type];
     return (
-      <div key={integration}>
+      <div key={type}>
         <div
           className={s('flex items-center justify-between px-lg py-sm mb-xs cursor-pointer rounded-b-lg')}
-          onClick={() => this.toggleIntegration(integration)}
+          onClick={() => this.toggleIntegration(type)}
         >
           <div className={s('flex items-center text-md text-gray-dark')}>
             <div className={s('w-lg h-lg p-sm mr-sm bg-white shadow-md rounded-full')}>
-              <img src={icon} className={s('w-full h-full')} />
+              <img src={logo} className={s('w-full h-full')} />
             </div>
-            <span className={s('font-semibold mr-sm')}> {_.capitalize(integration)} </span>
+            <span className={s('font-semibold mr-sm')}> {title} </span>
             <span> ({results.length}) </span>
           </div>
           {isOpen ? <MdKeyboardArrowUp /> : <MdKeyboardArrowDown />}

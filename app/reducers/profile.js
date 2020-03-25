@@ -13,10 +13,10 @@ export const initialState = {
   },
 
   integrationState: {
-    [INTEGRATIONS.SLACK]: {},
-    [INTEGRATIONS.ZENDESK]: {},
-    [INTEGRATIONS.GOOGLE]: {},
-    [INTEGRATIONS.GMAIL]: {}
+    [INTEGRATIONS.SLACK.type]: {},
+    [INTEGRATIONS.ZENDESK.type]: {},
+    [INTEGRATIONS.GOOGLE.type]: {},
+    [INTEGRATIONS.GMAIL.type]: {}
   }
 };
 

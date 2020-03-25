@@ -1,3 +1,13 @@
+import SlackIcon from '../assets/images/icons/Slack_Mark.svg';
+import GoogleDriveIcon from '../assets/images/icons/GoogleDrive_Icon.svg';
+import ZendeskIcon from '../assets/images/icons/Zendesk_Icon.svg';
+import GmailIcon from '../assets/images/icons/Gmail_Icon.svg';
+import JiraIcon from '../assets/images/icons/Jira_Icon.svg';
+import SalesforceIcon from '../assets/images/icons/Salesforce_Icon.svg';
+import HubspotIcon from '../assets/images/icons/Hubspot_Icon.svg';
+import HelpscoutIcon from '../assets/images/icons/Helpscout_Icon.svg';
+import GoogleChromeIcon from '../assets/images/icons/GoogleChrome_Icon.svg';
+
 // General app constants
 export const CHROME_MESSAGE = {
   TOGGLE: 'TOGGLE',
@@ -38,18 +48,21 @@ export const USER_ROLE = {
 
 // General constants
 export const INTEGRATIONS = {
-  GOOGLE: 'google',
-  SLACK: 'slack',
-  ZENDESK: 'zendesk',
-  HELPSCOUT: 'helpscout',
-  GMAIL: 'gmail',
-  SALESFORCE: 'salesforce',
-  JIRA: 'jira',
-  HUBSPOT: 'hubspot',
+  GOOGLE: { type: 'google', title: 'Google Drive', logo: GoogleDriveIcon },
+  SLACK: { type: 'slack', title: 'Slack', logo: SlackIcon },
+  ZENDESK: { type: 'zendesk', title: 'Zendesk', logo: ZendeskIcon },
+  HELPSCOUT: { type: 'helpscout', title: 'Helpscout', logo: HelpscoutIcon },
+  GMAIL: { type: 'gmail', title: 'Gmail', logo: GmailIcon },
+  SALESFORCE: { type: 'salesforce', title: 'Salesforce', logo: SalesforceIcon },
+  JIRA: { type: 'jira', title: 'Jira', logo: SalesforceIcon },
+  HUBSPOT: { type: 'hubspot', title: 'Hubspot', logo: HubspotIcon },
 };
 
 // Ask page constants
-export const ASK_INTEGRATIONS = [INTEGRATIONS.SLACK, INTEGRATIONS.GOOGLE];
+export const ASK_INTEGRATIONS = [
+  INTEGRATIONS.SLACK,
+  { ...INTEGRATIONS.GMAIL, disabled: true }
+];
 
 export const SLACK_RECIPIENT_TYPE = {
   CHANNEL: 'channel',
