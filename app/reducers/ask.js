@@ -7,6 +7,8 @@ import { removeIndex, updateIndex } from '../utils/array';
 const initialState = {
   /* Minified Page */
   searchText: '',
+  showFeedback: false,
+  feedback: '',
 
   /* Expanded Page */
   activeIntegration: ASK_INTEGRATIONS[0],
@@ -40,7 +42,14 @@ export default function askReducer(state = initialState, action) {
       const { text } = payload;
       return { ...state, searchText: text };
     }
-
+    case types.TOGGLE_ASK_FEEDBACK_INPUT: {
+      return { ...state, showFeedback: !state.showFeedback, feedback: '', feedbackSuccess: null, feedbackError: null };
+    }
+    case types.UPDATE_ASK_FEEDBACK: {
+      const { feedback } = payload;
+      return { ...state, feedback };
+    }
+    
     case types.CHANGE_ASK_INTEGRATION: {
       const { integration } = payload;
       return { ...state, activeIntegration: integration };
@@ -193,6 +202,17 @@ export default function askReducer(state = initialState, action) {
     }
     case types.CLEAR_ASK_QUESTION_INFO: {
       return { ...state, askError: null, askSuccess: null };
+    }
+
+    case types.SUBMIT_FEEDBACK_REQUEST: {
+      return { ...state, isSubmittingFeedback: true, feedbackSuccess: null, feedbackError: null };
+    }
+    case types.SUBMIT_FEEDBACK_SUCCESS: {
+      return { ...state, isSubmittingFeedback: false, feedbackSuccess: true };
+    }
+    case types.SUBMIT_FEEDBACK_ERROR: {
+      const { error } = payload;
+      return { ...state, isSubmittingFeedback: false, feedbackSuccess: false, feedbackError: error };
     }
 
     default:

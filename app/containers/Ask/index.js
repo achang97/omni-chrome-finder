@@ -1,5 +1,6 @@
 import React, { Component } from 'react';
 import { bindActionCreators } from 'redux';
+import AnimateHeight from 'react-animate-height';
 import { connect } from 'react-redux';
 import { withRouter } from 'react-router-dom';
 import moment from 'moment';
@@ -31,7 +32,7 @@ import { requestSearchCards } from '../../actions/search';
 import * as askActions from '../../actions/ask';
 import { generateFileKey } from '../../utils/file';
 import { isLoggedIn, getIntegrationAuthLink } from '../../utils/auth';
-import { ASK_INTEGRATIONS, INTEGRATIONS, DEBOUNCE_60_HZ, SEARCH_TYPE, SLACK_RECIPIENT_TYPE  } from '../../utils/constants';
+import { ASK_INTEGRATIONS, INTEGRATIONS, DEBOUNCE_60_HZ, TIMEOUT_3S, SEARCH_TYPE, SLACK_RECIPIENT_TYPE  } from '../../utils/constants';
 
 import SlackIcon from '../../assets/images/icons/Slack_Mark.svg';
 import GmailIcon from '../../assets/images/icons/Gmail_Icon.svg';
@@ -75,6 +76,10 @@ class Ask extends Component {
     const currPropsSlack = isLoggedIn(this.props.user, INTEGRATIONS.SLACK.type);
     if (!prevPropsSlack && currPropsSlack) {
       this.props.requestGetSlackConversations();
+    }
+
+    if (!prevProps.feedbackSuccess && this.props.feedbackSuccess) {
+      setTimeout(this.props.toggleAskFeedbackInput, TIMEOUT_3S);
     }
   }
 
@@ -465,13 +470,23 @@ class Ask extends Component {
   };
 
   expandDock = () => {
-    const { expandDock, updateAskSearchText } = this.props;
+    const { expandDock, updateAskSearchText, showFeedback, toggleAskFeedbackInput, updateAskFeedback } = this.props;
+
+    if (showFeedback) {
+      toggleAskFeedbackInput();
+      updateAskFeedback('');
+    }
+
     updateAskSearchText('');
     expandDock();
   }
 
   renderMinifiedAskPage = () => {
-    const { expandDock, searchText, updateAskSearchText, requestSearchCards } = this.props;
+    const {
+      expandDock, searchText, updateAskSearchText, requestSearchCards,
+      toggleAskFeedbackInput, showFeedback, feedback, updateAskFeedback,
+      requestSubmitFeedback, isSubmittingFeedback, feedbackSuccess, feedbackError,
+    } = this.props;
     const showRelatedQuestions = searchText.length > 0;
 
     return (
@@ -496,6 +511,45 @@ class Ask extends Component {
             onClick={() => this.expandDock()}
           />
         </div>
+        <AnimateHeight height={showFeedback ? 0 : 'auto'}>
+          <div className={s('flex justify-end mt-reg text-gray-dark text-xs font-medium')}>
+            <div className={s('cursor-pointer')} onClick={toggleAskFeedbackInput}>
+              Have Feedback?
+            </div>
+          </div>
+        </AnimateHeight>
+        <AnimateHeight height={showFeedback ? 'auto' : 0}>
+          <div className={s('horizontal-separator my-reg')} />
+          { feedbackSuccess ? 
+            <div className={s('text-md text-center text-green-reg')}>
+              🎉 <span className={s('mx-sm')}> Thanks for your feedback! </span> 🎉
+            </div> :
+            <div>
+              <div className={s(('flex justify-between mb-xs text-gray-dark'))}>
+                <div className={s('text-xs')}> Enter your feedback: </div>
+                <MdClose className={s('cursor-pointer')} onClick={toggleAskFeedbackInput} />
+              </div>
+              <textarea
+                className={s('w-full resize')}
+                value={feedback}
+                onChange={e => updateAskFeedback(e.target.value)}
+              />
+              <div className={s('error-text my-sm')}> {feedbackError} </div>
+              <Button
+                text="Submit Feedback"
+                color="primary"
+                className={s('p-xs')}
+                iconLeft={false}
+                icon={isSubmittingFeedback ?
+                  <Loader size="xs" className={s('ml-sm')} color="white" /> :
+                  null
+                }
+                disabled={feedback.length === 0}
+                onClick={requestSubmitFeedback}
+              />
+            </div>
+          }
+        </AnimateHeight>
         <SuggestionPanel
           isVisible={showRelatedQuestions}
           query={searchText}
