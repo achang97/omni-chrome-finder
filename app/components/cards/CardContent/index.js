@@ -504,7 +504,7 @@ class CardContent extends Component {
 
   renderSelectThreadBody = () => {
     const {
-      slackThreadConvoPairs, updateCardSelectedThreadIndex,
+      slackThreadConvoPairs=[], updateCardSelectedThreadIndex,
       slackThreadIndex,
     } = this.props;
     return (
@@ -514,7 +514,7 @@ class CardContent extends Component {
           return (
             <div key={_id} className={s(`flex p-reg items-center justify-between ${i % 2 === 0 ? '' : 'bg-purple-gray-10'} `)}>
               <div className={s(`${isSelected ? 'font-semibold' : 'text-gray-light font-medium'} text-md`)}>
-                #{channelName}
+                {channelId.charAt(0) === 'U' ? '@' : '#'}{channelName}
               </div>
               <CheckBox
                 isSelected={isSelected}

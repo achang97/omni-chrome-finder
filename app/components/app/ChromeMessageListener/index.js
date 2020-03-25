@@ -11,15 +11,23 @@ import { updateCreateAnswerEditor } from '../../../actions/create';
 import { updateNavigateSearchText } from '../../../actions/navigate';
 import { requestGetTasks, updateTasksOpenSection, updateTasksTab } from '../../../actions/tasks';
 
-import { CHROME_MESSAGE, MAIN_CONTAINER_ID, SEARCH_TYPE, TASKS_SECTIONS, TASKS_SECTION_TYPE, TASK_TYPE} from '../../../utils/constants';
+import { CHROME_MESSAGE, MAIN_CONTAINER_ID, SEARCH_TYPE, TASKS_SECTIONS, TASKS_SECTION_TYPE, TASK_TYPE, INTEGRATIONS} from '../../../utils/constants';
 
 import AISuggestTab from '../AISuggestTab';
+
+const URL_REGEXES = [
+  {
+    integration: INTEGRATIONS.GMAIL,
+    regex: /https:\/\/mail\.google\.com\/mail\/u\/\d+\/(#\S+)\/.+/
+  }
+];
 
 @connect(
   state => ({
     dockVisible: state.display.dockVisible,
     dockExpanded: state.display.dockExpanded,
     isLoggedIn: !!state.auth.token,
+    autofindPermissions: state.profile.user ? state.profile.user.autofindPermissions : {},
     tasks: state.tasks.tasks,
   }),
   dispatch =>
@@ -43,16 +51,33 @@ import AISuggestTab from '../AISuggestTab';
 class ChromeMessageListener extends Component {
   constructor(props) {
     super(props);
+
+    this.state = {
+      hasLoaded: false,
+    }
   }
 
   componentDidMount() {
     chrome.runtime.onMessage.addListener(this.listener);
-    window.addEventListener('load', this.handleFirstPageLoad);
+    window.addEventListener('load', this.handlePageLoad);
+  }
+
+  componentDidUpdate(prevProps) {
+    if (this.state.hasLoaded) {
+      const prevEnabled = this.isAutofindEnabled(prevProps.autofindPermissions);
+      const currEnabled = this.isAutofindEnabled();
+
+      if (!prevEnabled && currEnabled) {
+        this.handlePageLoad(true);
+      } else if (prevEnabled && !currEnabled) {
+        this.props.clearSearchCards(SEARCH_TYPE.AI_SUGGEST);
+      }
+    }
   }
 
   componentWillUnmount() {
     chrome.runtime.onMessage.removeListener(this.listener);
-    window.removeEventListener('load', this.handleFirstPageLoad);
+    window.removeEventListener('load', this.handlePageLoad);
 
     this.disconnectMutatorObserver();
   }
@@ -113,31 +138,50 @@ class ChromeMessageListener extends Component {
     return text;
   }
 
-  getPageText = (url) => {
-    let text;
+  getIntegration = () => {
+    const urlRegex = URL_REGEXES.find(({ regex }) => regex.test(window.location.href));
+    
+    if (urlRegex) {
+      return urlRegex.integration;
+    } else {
+      return null;
+    }
+  }
 
-    if (/https:\/\/mail\.google\.com\/mail\/u\/\d+\/(#\S+)\/.+/.test(url)) {
-      // Case 1: Matches specific email page in Gmail
-      text = this.getGoogleText();
+  isAutofindEnabled = (autofindPermissions) => {
+    const permissionsObj = autofindPermissions || this.props.autofindPermissions;
+    const integration = this.getIntegration();
+    return integration && permissionsObj[integration];
+  }
+
+  getPageText = (integration) => {
+    switch (integration) {
+      case INTEGRATIONS.GMAIL: {
+        return this.getGoogleText();
+      }
     }
     
-    return text;
+    return '';
   };
 
-  handleFirstPageLoad = () => {
+  handlePageLoad = () => {
     this.handleTabUpdate(true);
+
+    if (!this.state.hasLoaded) {
+      this.setState({ hasLoaded: true });
+    }
   };
 
   handleTabUpdate = (isNewPage) => {
-    const { isLoggedIn, requestSearchCards, clearSearchCards } = this.props;
+    const { isLoggedIn, requestSearchCards, clearSearchCards, autofindPermissions } = this.props;
 
-    if (isLoggedIn) {
-      const url = window.location.href;
+    const integration = this.getIntegration();
+    if (isLoggedIn && autofindPermissions[integration]) {
       if (isNewPage) {
         this.disconnectMutatorObserver();
       }
 
-      const pageText = this.getPageText(url);
+      const pageText = this.getPageText(integration);
       if (pageText && pageText !== '') {
         requestSearchCards(SEARCH_TYPE.AI_SUGGEST, { text: pageText });
       } else if (isNewPage) {
@@ -249,6 +293,10 @@ class ChromeMessageListener extends Component {
   };
 
   render() {
+    if (!this.isAutofindEnabled()) {
+      return null;
+    }
+
     return <AISuggestTab />;
   }
 }
