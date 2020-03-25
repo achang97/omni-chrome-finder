@@ -160,7 +160,7 @@ class CardCreateModal extends Component {
       >
         <AnimateHeight
           height={onlyShowPermissions ? 0 : 'auto'}
-          onAnimationEnd={newHeight => newHeight !== 0 && this.scrollToBottom()}
+          onAnimationEnd={({ newHeight }) => newHeight !== 0 && this.scrollToBottom()}
         >
           <div>
             <div className={s('text-gray-reg text-xs mb-xs')}> Verification Interval </div>

@@ -263,7 +263,7 @@ class SuggestionPanel extends Component {
             footer={
               <AnimateHeight
                 height={showResults ? 'auto' : 0}
-                onAnimationEnd={newHeight => newHeight !== 0 && this.externalResults.current.scrollIntoView({ behavior: 'smooth' })}
+                onAnimationEnd={({ newHeight }) => newHeight !== 0 && this.externalResults.current.scrollIntoView({ behavior: 'smooth' })}
               >
                 {this.renderExternalDocumentationResults() }
               </AnimateHeight>

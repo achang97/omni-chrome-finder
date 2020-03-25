@@ -211,7 +211,7 @@ const CardSideDock = (props) => {
     );
   };
 
-  const handleHideSections = (newHeight) => {
+  const handleHideSections = ({ newHeight }) => {
     if (newHeight !== 0) {
       permissionRef.current.scrollIntoView({ behavior: 'smooth', block: 'end' });
     }
@@ -227,7 +227,7 @@ const CardSideDock = (props) => {
       <CardSection className={s('mt-lg')} title="Advanced">
         <AnimateHeight
           height={onlyShowPermissions ? 0 : 'auto'}
-          onAnimationEnd={newHeight => handleHideSections(newHeight)}
+          onAnimationEnd={handleHideSections}
         >
           <div className={s('mb-sm')}>
             <div className={s('text-gray-reg text-xs mb-sm')}> Verification Interval </div>

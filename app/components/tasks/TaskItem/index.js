@@ -194,7 +194,10 @@ class TaskItem extends Component {
     const { primaryOption, primaryAction, secondaryOption, secondaryAction} = this.getTaskActionsInfo();
 
     return (
-      <AnimateHeight height={showItem ? 'auto' : 0} onAnimationEnd={onHide}>
+      <AnimateHeight
+        height={showItem ? 'auto' : 0}
+        onAnimationEnd={({ newHeight }) => newHeight === 0 && onHide()}
+      >
         <div className={s(`flex flex-col p-lg rounded-lg ${containerClassName} ${className}`)} {...rest}>
           { resolved && 
             <div className={s('text-sm text-center')}>
