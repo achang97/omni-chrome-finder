@@ -24,6 +24,7 @@ import Profile from './Profile';
 import Login from './Login';
 
 import 'react-toggle/style.css';
+import 'react-circular-progressbar/dist/styles.css';
 
 import style from './App.css';
 

@@ -1,5 +1,7 @@
 import React, { Component, PropTypes } from 'react';
 import AnimateHeight from 'react-animate-height';
+import { CircularProgressbar, buildStyles } from 'react-circular-progressbar';
+
 import Button from '../../components/common/Button';
 import CheckBox from '../../components/common/CheckBox';
 import PlaceholderImg from '../../components/common/PlaceholderImg';
@@ -24,6 +26,7 @@ import {
 import Loader from '../../components/common/Loader';
 import { isLoggedIn } from '../../utils/auth';
 
+import { colors } from '../../styles/colors';
 import { getStyleApplicationFn } from '../../utils/style';
 import style from './profile.css';
 const s = getStyleApplicationFn(style);
@@ -77,6 +80,14 @@ const PROFILE_SETTING_SECTIONS = [
     toggle: true,
   }
 ];
+
+const PROGRESS_BAR_STYLES = {
+  // How long animation takes to go from one percentage to another, in seconds
+  pathTransitionDuration: 0.5,
+
+  // Colors
+  pathColor: colors.purple.reg,
+};
 
 @connect(
   state => ({
@@ -190,12 +201,34 @@ export default class Profile extends Component {
     );
   }
 
-  renderMetricsSection = () => (
-    <div className={s('bg-white shadow-light p-reg mt-reg rounded-lg')}>
-      <div className={s('text-xl text-purple-reg font-semibold')}>99%</div>
-      <div className={s('text-sm text-purple-reg mt-sm')}> Cards up to date</div>
-    </div>
-  )
+  renderMetricsSection = () => {
+    const { count=0, totalUpvotes, upToDateCount, outOfDateCount } = this.props.analytics;
+
+    let upToDatePercentage = 0;
+    let upToDatePercentageText = '--';
+
+    if (count !== 0) {
+      upToDatePercentage = Math.floor((upToDateCount / count) * 100);
+      upToDatePercentageText = `${upToDatePercentage}%`;
+    }
+
+    return (
+      <div className={s('flex justify-between bg-white shadow-light p-reg mt-reg rounded-lg')}>
+        <div>
+          <div className={s('text-xl text-purple-reg font-semibold')}>
+            {upToDatePercentageText}
+          </div>
+          <div className={s('text-sm text-purple-reg mt-sm')}> Cards up to date</div>
+        </div>
+        <CircularProgressbar
+          className={s('w-4xl h-4xl')}
+          value={upToDatePercentage}
+          text={upToDatePercentageText}
+          styles={buildStyles(PROGRESS_BAR_STYLES)}
+        />
+      </div>
+    );
+  }
 
   renderIntegrations = ({ type, toggle, options }) => {
     const { user, requestUpdateUserPermissions, changeUserPermissionsError } = this.props;

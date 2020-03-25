@@ -136,7 +136,7 @@ class CardCreateModal extends Component {
     );
   }
 
-  renderAdvanced = (onlyShowPermissions) => {
+  renderAdvanced = (isExisting, onlyShowPermissions) => {
     const { edits: { verificationInterval = {}, permissions = {}, permissionGroups = [] }, updateCardVerificationInterval, updateCardPermissions, updateCardPermissionGroups } = this.props;
     return (
       <CardSection
@@ -181,7 +181,7 @@ class CardCreateModal extends Component {
             onChangePermission={updateCardPermissions}
             permissionGroups={permissionGroups}
             onChangePermissionGroups={updateCardPermissionGroups}
-            showJustMe={true}
+            showJustMe={!isExisting}
           />
         </div>
       </CardSection>
@@ -212,7 +212,7 @@ class CardCreateModal extends Component {
             { this.renderTags() }
           </AnimateHeight>
           { this.renderKeywords() }
-          { this.renderAdvanced(onlyShowPermissions) }
+          { this.renderAdvanced(isExisting, onlyShowPermissions) }
           { createError &&
             <div className={s('error-text my-sm')}> {createError} </div>
           }
