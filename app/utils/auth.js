@@ -16,7 +16,8 @@ export function getIntegrationAuthLink(userId, token, integration) {
       return `${slackAuthUrl}${userId}`;
     }
     case INTEGRATIONS.ZENDESK:
-    case INTEGRATIONS.GOOGLE: {
+    case INTEGRATIONS.GOOGLE:
+    case INTEGRATIONS.GMAIL: {
       const clearToken = token.replace('Bearer ', '');
       return `${SERVER_URL}/${integration}/authenticate?auth=${clearToken}`;
     }

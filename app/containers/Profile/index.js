@@ -14,7 +14,7 @@ import { PROFILE_SETTING_SECTION_TYPE, INTEGRATIONS, NOOP } from '../../utils/co
 import { MdKeyboardArrowDown, MdKeyboardArrowUp, MdSettings } from 'react-icons/md';
 import { IoMdCamera } from 'react-icons/io';
 import _ from 'lodash';
-import Toggle from 'react-toggle'
+import Toggle from 'react-toggle';
 
 import {
   changeFirstname, changeLastname, changeBio, editUser,
@@ -42,7 +42,7 @@ const PROFILE_NOTIFICATIONS_OPTION = {
   EMAIL: 'email',
   SLACK: 'slack',
   CHROME: 'chrome'
-}
+};
 
 const PROFILE_SETTING_SECTIONS = [
   {
@@ -54,7 +54,7 @@ const PROFILE_SETTING_SECTIONS = [
   {
     type: PROFILE_SETTING_SECTION_TYPE.COMMUNICATION,
     title: 'Communication Integrations',
-    options: [INTEGRATIONS.SLACK],
+    options: [INTEGRATIONS.GMAIL, INTEGRATIONS.SLACK],
     toggle: false,
   },
   {
@@ -197,9 +197,9 @@ export default class Profile extends Component {
       case INTEGRATIONS.ZENDESK:
         return { title: 'Zendesk', logo: ZendeskIcon };
       case INTEGRATIONS.SLACK:
-        return { title: 'Slack', logo: SlackIcon }; 
+        return { title: 'Slack', logo: SlackIcon };
       case INTEGRATIONS.GMAIL:
-      case PROFILE_NOTIFICATIONS_OPTION.EMAIL:     
+      case PROFILE_NOTIFICATIONS_OPTION.EMAIL:
         return { title: 'Gmail', logo: GmailIcon };
       case INTEGRATIONS.SALESFORCE:
         return { title: 'Salesforce', logo: SalesforceIcon };
@@ -211,7 +211,7 @@ export default class Profile extends Component {
         return { title: 'Zendesk', logo: ZendeskIcon };
       case INTEGRATIONS.HELPSCOUT:
         return { title: 'Helpscout', logo: HelpscoutIcon };
-      case PROFILE_NOTIFICATIONS_OPTION.CHROME:     
+      case PROFILE_NOTIFICATIONS_OPTION.CHROME:
         return { title: 'Chrome', logo: GoogleChromeIcon };
       default:
         return {};
@@ -268,7 +268,8 @@ export default class Profile extends Component {
           const isOpen = sectionOpen[type];
           const Icon = isOpen ? MdKeyboardArrowUp : MdKeyboardArrowDown;
 
-          let error, isLoading;
+          let error,
+            isLoading;
           if (toggle) {
             error = permissionState[type].error;
             isLoading = permissionState[type].isLoading;
@@ -285,7 +286,7 @@ export default class Profile extends Component {
               >
                 <div className={s('text-purple-reg text-sm')}>{title}</div>
                 <div className={s('flex items-center')}>
-                  { toggle && isLoading && 
+                  { toggle && isLoading &&
                     <Loader size={10} className={s('mr-sm')} />
                   }
                   <Icon className={s('text-gray-dark cursor-pointer')} />
@@ -294,7 +295,7 @@ export default class Profile extends Component {
               <AnimateHeight height={isOpen ? 'auto' : 0} animationStateClasses={{ animatingUp: s('invisible') }}>
                 {this.renderIntegrations(profileSettingSection)}
               </AnimateHeight>
-              { toggle && error && 
+              { toggle && error &&
                 <div className={s('error-text my-sm')}> {error} </div>
               }
             </div>
