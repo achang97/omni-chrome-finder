@@ -120,6 +120,15 @@ export const CARD_STATUS = {
   NOT_DOCUMENTED: 5,
 };
 
+export const VERIFICATION_INTERVAL_OPTION = {
+  TWO_WEEKS: 1,
+  ONE_MONTH: 2,
+  THREE_MONTHS: 3,
+  SIX_MONTHS: 4,
+  ONE_YEAR: 5,
+  AUTOREMIND: 6,
+  NEVER: 7
+};
 export const VERIFICATION_INTERVAL_OPTIONS = [
   // { label: 'Auto-Remind', value: 6 },
   { label: '2 Weeks', value: 1 },
@@ -127,7 +136,7 @@ export const VERIFICATION_INTERVAL_OPTIONS = [
   { label: '3 Months', value: 3 },
   { label: '6 Months', value: 4 },
   { label: '1 Year', value: 5 },
-  { label: 'Never', value: 7 },
+  { label: 'Never', value: VERIFICATION_INTERVAL_OPTION.NEVER },
 ];
 
 export const PERMISSION_OPTION = {

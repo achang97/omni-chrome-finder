@@ -4,7 +4,7 @@ import { connect } from 'react-redux';
 import { MdSearch } from 'react-icons/md';
 
 import * as navigateActions from '../../actions/navigate';
-import { requestSearchCards } from '../../actions/search';
+import { requestSearchCards, clearSearchCards } from '../../actions/search';
 
 import CardTags from '../../components/cards/CardTags';
 import AnimateHeight from 'react-animate-height';
@@ -35,6 +35,7 @@ const s = getStyleApplicationFn(style);
     {
       ...navigateActions,
       requestSearchCards,
+      clearSearchCards,
     },
     dispatch
   )
@@ -61,7 +62,7 @@ export default class Navigate extends Component {
   }
 
   requestSearchCards = (clearCards) => {
-    const { requestSearchCards, searchText, filterTags, activeTab, user } = this.props;
+    const { requestSearchCards, clearSearchCards, searchText, filterTags, activeTab, user } = this.props;
     const queryParams = { q: searchText };
     switch (activeTab) {
       case NAVIGATE_TAB_OPTION.ALL: {
@@ -74,6 +75,10 @@ export default class Navigate extends Component {
         break;
       }
       case NAVIGATE_TAB_OPTION.BOOKMARKED: {
+        if (user.bookmarkIds.length === 0) {
+          clearSearchCards(SEARCH_TYPE.NAVIGATE);
+          return;
+        } 
         queryParams.statuses = Object.values(CARD_STATUS).join(",");
         queryParams.ids = user.bookmarkIds.join(",");
         break;
