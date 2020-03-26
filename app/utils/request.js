@@ -12,7 +12,7 @@ const REQUEST_TYPE = {
 let protocol;
 let url;
 
-if (process.env.NODE_ENV === 'production') {
+if (process.env.NODE_ENV === 'development') {
   url = 'localhost:8000';
   protocol = 'http://';
 } else {
