@@ -7,7 +7,8 @@ const authMiddleware = store => next => (action) => {
   const { type, payload } = action;
 
   switch (type) {
-    case types.LOGIN_SUCCESS: {
+    case types.LOGIN_SUCCESS:
+    case types.SIGNUP_SUCCESS: {
       setStorage('auth', payload);
       const user = payload.user;
       if(!window.location.href.includes("heapanalytics")) {
@@ -15,6 +16,11 @@ const authMiddleware = store => next => (action) => {
             window.heap.addUserProperties({'Name': "${user.firstname}" + " " + "${user.lastname}",'Company': "${user.company.companyName}", 'Role': "${user.role}"});`
           addScript({code: identify, shouldRemove: true})
       } 
+      break;
+    }
+    case types.VERIFY_SUCCESS: {
+      const { auth: { token, refreshToken }, profile: { user } } = store.getState();
+      setStorage('auth', { user, token, refreshToken });
       break;
     }
     case types.GET_USER_SUCCESS: {

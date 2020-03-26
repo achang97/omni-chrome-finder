@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import { bindActionCreators } from 'redux';
+import AnimateHeight from 'react-animate-height';
 import { connect } from 'react-redux';
-import { withRouter } from 'react-router-dom';
 import moment from 'moment';
 
 import { MdChevronRight, MdPictureInPicture, MdClose, MdCloudUpload, MdAttachment } from 'react-icons/md';
@@ -31,7 +31,7 @@ import { requestSearchCards } from '../../actions/search';
 import * as askActions from '../../actions/ask';
 import { generateFileKey } from '../../utils/file';
 import { isLoggedIn, getIntegrationAuthLink } from '../../utils/auth';
-import { ASK_INTEGRATIONS, INTEGRATIONS, DEBOUNCE_60_HZ, SEARCH_TYPE, SLACK_RECIPIENT_TYPE  } from '../../utils/constants';
+import { ASK_INTEGRATIONS, INTEGRATIONS, DEBOUNCE_60_HZ, TIMEOUT_3S, SEARCH_TYPE, SLACK_RECIPIENT_TYPE  } from '../../utils/constants';
 
 import SlackIcon from '../../assets/images/icons/Slack_Mark.svg';
 import GmailIcon from '../../assets/images/icons/Gmail_Icon.svg';
@@ -65,27 +65,20 @@ class Ask extends Component {
   componentDidMount() {
     const { user } = this.props;
 
-    if (isLoggedIn(user, INTEGRATIONS.SLACK)) {
+    if (isLoggedIn(user, INTEGRATIONS.SLACK.type)) {
       this.props.requestGetSlackConversations();
     }
   }
 
   componentDidUpdate(prevProps) {
-    const prevPropsSlack = isLoggedIn(prevProps.user, INTEGRATIONS.SLACK);
-    const currPropsSlack = isLoggedIn(this.props.user, INTEGRATIONS.SLACK);
+    const prevPropsSlack = isLoggedIn(prevProps.user, INTEGRATIONS.SLACK.type);
+    const currPropsSlack = isLoggedIn(this.props.user, INTEGRATIONS.SLACK.type);
     if (!prevPropsSlack && currPropsSlack) {
       this.props.requestGetSlackConversations();
     }
-  }
 
-  getIntegrationInfo = (integration) => {
-    switch (integration) {
-      case INTEGRATIONS.GOOGLE:
-        return { title: 'Gmail', logo: GmailIcon, disabled: true };
-      case INTEGRATIONS.SLACK:
-        return { title: 'Slack', logo: SlackIcon };
-      default:
-        return {};
+    if (!prevProps.feedbackSuccess && this.props.feedbackSuccess) {
+      setTimeout(this.props.toggleAskFeedbackInput, TIMEOUT_3S);
     }
   }
 
@@ -108,9 +101,9 @@ class Ask extends Component {
           showRipple={false}
         >
           {ASK_INTEGRATIONS.map(integration => (
-            <Tab key={integration} value={integration}>
+            <Tab key={integration.type} value={integration}>
               <div className={s(integration !== activeIntegration ? 'underline-border border-purple-gray-20' : 'primary-underline')}>
-                {_.upperFirst(this.getIntegrationInfo(integration).title)}
+                {integration.title}
               </div>
             </Tab>
           ))}
@@ -426,14 +419,13 @@ class Ask extends Component {
   renderDisabledView = () => {
     const { user, token, activeIntegration } = this.props;
 
-    const { title, logo, disabled } = this.getIntegrationInfo(activeIntegration);
-    const authLink = getIntegrationAuthLink(user._id, token, activeIntegration);
-    const integrationName = _.capitalize(activeIntegration);
+    const { type, title, logo, disabled } = activeIntegration;
+    const authLink = getIntegrationAuthLink(user._id, token, type);
 
     return (
       <div className={s('flex flex-col items-center')}>
-        <div className={s('ask-integration-logged-out-img-container')}>
-          <img src={logo} />
+        <div className={s('large-icon-container my-reg')}>
+          <img src={logo} className={s('w-full h-full')} />
         </div>
         <div className={s('mt-reg mb-lg font-semibold')}>
           { disabled ?
@@ -455,19 +447,19 @@ class Ask extends Component {
 
   renderExpandedAskPage = () => {
     const { askError, askSuccess, user, activeIntegration } = this.props;
-    const loggedIn = isLoggedIn(user, activeIntegration);
-    const { disabled } = this.getIntegrationInfo(activeIntegration); 
+    const loggedIn = isLoggedIn(user, activeIntegration.type);
+    const isDisabled = activeIntegration.disabled;
 
     return (
       <div className={s('flex flex-col flex-1 min-h-0 relative')}>
         <div className={s('flex flex-col flex-1 overflow-y-auto bg-purple-light')}>
           <div className={s('p-lg bg-white flex-1')}>
             { this.renderTabHeader() }
-            { (!loggedIn || disabled) ? this.renderDisabledView() : this.renderAskInputs() }
+            { (!loggedIn || isDisabled) ? this.renderDisabledView() : this.renderAskInputs() }
           </div>
-          { loggedIn && !disabled && this.renderRecipientSelection() }
+          { loggedIn && !isDisabled && this.renderRecipientSelection() }
         </div>
-        { loggedIn && !disabled && this.renderFooterButton() }
+        { loggedIn && !isDisabled && this.renderFooterButton() }
 
         {/* Modals */}
         { this.renderResultModal(!!askError, 'Ask Error', askError) }
@@ -477,13 +469,23 @@ class Ask extends Component {
   };
 
   expandDock = () => {
-    const { expandDock, updateAskSearchText } = this.props;
+    const { expandDock, updateAskSearchText, showFeedback, toggleAskFeedbackInput, updateAskFeedback } = this.props;
+
+    if (showFeedback) {
+      toggleAskFeedbackInput();
+      updateAskFeedback('');
+    }
+
     updateAskSearchText('');
     expandDock();
   }
 
   renderMinifiedAskPage = () => {
-    const { expandDock, searchText, updateAskSearchText, requestSearchCards } = this.props;
+    const {
+      expandDock, searchText, updateAskSearchText, requestSearchCards,
+      toggleAskFeedbackInput, showFeedback, feedback, updateAskFeedback,
+      requestSubmitFeedback, isSubmittingFeedback, feedbackSuccess, feedbackError,
+    } = this.props;
     const showRelatedQuestions = searchText.length > 0;
 
     return (
@@ -508,6 +510,45 @@ class Ask extends Component {
             onClick={() => this.expandDock()}
           />
         </div>
+        <AnimateHeight height={showFeedback ? 0 : 'auto'}>
+          <div className={s('flex justify-end mt-reg text-gray-dark text-xs font-medium')}>
+            <div className={s('cursor-pointer')} onClick={toggleAskFeedbackInput}>
+              Have Feedback?
+            </div>
+          </div>
+        </AnimateHeight>
+        <AnimateHeight height={showFeedback ? 'auto' : 0}>
+          <div className={s('horizontal-separator my-reg')} />
+          { feedbackSuccess ? 
+            <div className={s('text-md text-center text-green-reg')}>
+              🎉 <span className={s('mx-sm')}> Thanks for your feedback! </span> 🎉
+            </div> :
+            <div>
+              <div className={s(('flex justify-between mb-xs text-gray-dark'))}>
+                <div className={s('text-xs')}> Enter your feedback: </div>
+                <MdClose className={s('cursor-pointer')} onClick={toggleAskFeedbackInput} />
+              </div>
+              <textarea
+                className={s('w-full resize')}
+                value={feedback}
+                onChange={e => updateAskFeedback(e.target.value)}
+              />
+              <div className={s('error-text my-sm')}> {feedbackError} </div>
+              <Button
+                text="Submit Feedback"
+                color="transparent"
+                className={s('p-xs')}
+                iconLeft={false}
+                icon={isSubmittingFeedback ?
+                  <Loader size="xs" className={s('ml-sm')} color="white" /> :
+                  null
+                }
+                disabled={feedback.length === 0}
+                onClick={requestSubmitFeedback}
+              />
+            </div>
+          }
+        </AnimateHeight>
         <SuggestionPanel
           isVisible={showRelatedQuestions}
           query={searchText}
@@ -522,4 +563,4 @@ class Ask extends Component {
   }
 }
 
-export default withRouter(Ask);
+export default Ask;

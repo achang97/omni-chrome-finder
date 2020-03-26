@@ -1,5 +1,6 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
+import AnimateHeight from 'react-animate-height';
 
 import CardSection from '../CardSection';
 import CardUsers from '../CardUsers';
@@ -15,7 +16,7 @@ import Modal from '../../common/Modal';
 import { MdLock, MdAutorenew } from 'react-icons/md';
 
 import { PERMISSION_OPTION, VERIFICATION_INTERVAL_OPTIONS, CARD_STATUS, MODAL_TYPE, SEARCH_TYPE } from '../../../utils/constants';
-import { hasValidEdits, isExistingCard } from '../../../utils/card';
+import { hasValidEdits, isExistingCard, isJustMe } from '../../../utils/card';
 
 import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
@@ -61,8 +62,12 @@ class CardCreateModal extends Component {
 
   componentDidUpdate(prevProps) {
     if (!prevProps.createError && this.props.createError) {
-      this.bottomRef.current.scrollIntoView({ behavior: 'smooth', block: 'end' });
+      this.scrollToBottom();
     }
+  }
+
+  scrollToBottom = () => {
+    this.bottomRef.current.scrollIntoView({ behavior: 'smooth', block: 'end' });
   }
 
   renderOwners = () => {
@@ -131,7 +136,7 @@ class CardCreateModal extends Component {
     );
   }
 
-  renderAdvanced = () => {
+  renderAdvanced = (isExisting, onlyShowPermissions) => {
     const { edits: { verificationInterval = {}, permissions = {}, permissionGroups = [] }, updateCardVerificationInterval, updateCardPermissions, updateCardPermissionGroups } = this.props;
     return (
       <CardSection
@@ -141,25 +146,34 @@ class CardCreateModal extends Component {
         startExpanded={false}
         preview={
           <div className={s('text-xs text-purple-gray-50 flex')}>
-            <MdAutorenew />
-            <span className={s('ml-xs')}> {verificationInterval.label} </span>
-            <div className={s('vertical-separator mx-reg')} />
+            { !onlyShowPermissions &&
+              <React.Fragment>
+                <MdAutorenew />
+                <span className={s('ml-xs')}> {verificationInterval.label} </span>
+                <div className={s('vertical-separator mx-reg')} />
+              </React.Fragment>
+            }
             <MdLock />
             <span className={s('ml-xs')}> {permissions.label} </span>
           </div>
         }
       >
-        <div>
-          <div className={s('text-gray-reg text-xs mb-xs')}> Verification Interval </div>
-          <Select
-            value={verificationInterval}
-            onChange={updateCardVerificationInterval}
-            options={VERIFICATION_INTERVAL_OPTIONS}
-            placeholder="Select verification interval..."
-            isSearchable
-            menuShouldScrollIntoView
-          />
-        </div>
+        <AnimateHeight
+          height={onlyShowPermissions ? 0 : 'auto'}
+          onAnimationEnd={({ newHeight }) => newHeight !== 0 && this.scrollToBottom()}
+        >
+          <div>
+            <div className={s('text-gray-reg text-xs mb-xs')}> Verification Interval </div>
+            <Select
+              value={verificationInterval}
+              onChange={updateCardVerificationInterval}
+              options={VERIFICATION_INTERVAL_OPTIONS}
+              placeholder="Select verification interval..."
+              isSearchable
+              menuShouldScrollIntoView
+            />
+          </div>
+        </AnimateHeight>
         <div className={s('mt-sm')}>
           <div className={s('text-gray-reg text-xs mb-sm')}> Permissions </div>
           <CardPermissions
@@ -167,6 +181,7 @@ class CardCreateModal extends Component {
             onChangePermission={updateCardPermissions}
             permissionGroups={permissionGroups}
             onChangePermissionGroups={updateCardPermissionGroups}
+            showJustMe={!isExisting}
           />
         </div>
       </CardSection>
@@ -182,6 +197,7 @@ class CardCreateModal extends Component {
       () => requestUpdateCard({ isUndocumented: true }) :
       requestCreateCard;
 
+    const onlyShowPermissions = isJustMe(edits.permissions);
     return (
       <Modal
         isOpen={modalOpen[MODAL_TYPE.CREATE]}
@@ -191,10 +207,12 @@ class CardCreateModal extends Component {
         bodyClassName={s('rounded-b-lg flex flex-col')}
       >
         <div className={s('flex-grow overflow-auto p-lg')}>
-          { this.renderOwners() }
-          { this.renderTags() }
+          <AnimateHeight height={onlyShowPermissions ? 0 : 'auto'}>
+            { this.renderOwners() }
+            { this.renderTags() }
+          </AnimateHeight>
           { this.renderKeywords() }
-          { this.renderAdvanced() }
+          { this.renderAdvanced(isExisting, onlyShowPermissions) }
           { createError &&
             <div className={s('error-text my-sm')}> {createError} </div>
           }

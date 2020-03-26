@@ -14,6 +14,7 @@ import { openCard } from '../actions/cards';
 
 import Header from '../components/app/Header';
 import ChromeMessageListener from '../components/app/ChromeMessageListener';
+import VerifySuccessModal from '../components/app/VerifySuccessModal';
 
 import Ask from './Ask';
 import Create from './Create';
@@ -23,8 +24,11 @@ import Cards from './Cards';
 import AISuggest from './AISuggest';
 import Profile from './Profile';
 import Login from './Login';
+import Signup from './Signup';
+import Verify from './Verify';
 
 import 'react-toggle/style.css';
+import 'react-circular-progressbar/dist/styles.css';
 
 import style from './App.css';
 
@@ -42,7 +46,8 @@ const dockPanelStyles = {
     isLoggedIn: !!state.auth.token,
     showAISuggest: state.search.cards[SEARCH_TYPE.AI_SUGGEST].cards.length !== 0,
     tasks: state.tasks.tasks,
-    user: state.profile.user
+    user: state.profile.user,
+    isVerified: state.profile.user && state.profile.user.isVerified
   }),
   dispatch =>
     bindActionCreators(
@@ -60,17 +65,24 @@ const dockPanelStyles = {
 
 class App extends Component {
   componentDidMount() {
-    const { isLoggedIn, requestGetTasks, requestGetUser, user } = this.props;
+    const { isLoggedIn, isVerified, requestGetTasks, requestGetUser, user } = this.props;
 
     if (isLoggedIn) {
       requestGetUser();
-
       if(!window.location.href.includes("heapanalytics")) {
           let identify = `window.heap.identify("${user.email}"); 
             window.heap.addUserProperties({'Name': "${user.firstname}" + " " + "${user.lastname}",'Company': "${user.company.companyName}", 'Role': "${user.role}"});`
           addScript({code: identify, shouldRemove: true})
       }    
-      requestGetTasks();
+      if (isVerified) {
+        requestGetTasks();
+        this.openChromeExtension();
+      }
+    }
+  }
+
+  componentDidUpdate(prevProps) {
+    if (!prevProps.isVerified && this.props.isVerified) {
       this.openChromeExtension();
     }
   }
@@ -140,15 +152,24 @@ class App extends Component {
       dockExpanded,
       isLoggedIn,
       showAISuggest,
-      location: { pathname },
-      user
+      user,
+      isVerified,
+      location: { pathname }
     } = this.props;
-    const showFullDock = dockExpanded || (pathname !== '/ask' && pathname !== '/login');
+
+    const showFullDock = dockExpanded || (pathname !== '/ask' && isLoggedIn && isVerified);
+
+    let redirectLink;
+    if (isLoggedIn) {
+      redirectLink = isVerified ? '/ask' : '/verify';
+    } else {
+      redirectLink = '/login';
+    }
 
     return (
       <div className={s('app-container')}>
         <ChromeMessageListener />
-        { isLoggedIn && dockVisible && <Cards />}
+        { isLoggedIn && isVerified && dockVisible && <Cards />}
         <Dock
           position="right"
           fluid={false}
@@ -160,20 +181,24 @@ class App extends Component {
             ...dockPanelStyles
           }}
         >
-          <div className={s(`flex flex-col ${showFullDock ? 'h-screen' : ''}`)}>
-            { isLoggedIn && <Header /> }
-
+          <div className={s(`flex relative flex-col ${showFullDock ? 'h-screen' : ''}`)}>
+            <VerifySuccessModal />
+            { isLoggedIn && isVerified && <Header /> }
             <Switch>
-              { isLoggedIn && <Route path="/ask" component={Ask} /> }
-              { isLoggedIn && <Route path="/create" component={Create} /> }
-              { isLoggedIn && <Route path="/navigate" component={Navigate} /> }
-              { isLoggedIn && <Route path="/tasks" component={Tasks} /> }
-              { isLoggedIn && <Route path="/profile" component={Profile} /> }
-              { isLoggedIn && showAISuggest && <Route path="/suggest" component={AISuggest} /> }
+              { isVerified && isLoggedIn && <Route path="/ask" component={Ask} /> } }
+              { isVerified && isLoggedIn && <Route path="/create" component={Create} /> }
+              { isVerified && isLoggedIn && <Route path="/navigate" component={Navigate} /> }
+              { isVerified && isLoggedIn && <Route path="/tasks" component={Tasks} /> }
+              { isVerified && isLoggedIn && <Route path="/profile" component={Profile} /> }
+              { isVerified && isLoggedIn && showAISuggest && <Route path="/suggest" component={AISuggest} /> }
+
+              { !isVerified && isLoggedIn && <Route path="/verify" component={Verify} /> }
+
               { !isLoggedIn && <Route path="/login" component={Login} /> }
+              { !isLoggedIn && <Route path="/signup" component={Signup} /> }
 
               {/* A catch-all route: put all other routes ABOVE here */}
-              <Redirect to={isLoggedIn ? '/ask' : '/login'} />
+              <Redirect to={redirectLink} />
             </Switch>
           </div>
         </Dock>

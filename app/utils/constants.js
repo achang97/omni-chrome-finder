@@ -1,3 +1,13 @@
+import SlackIcon from '../assets/images/icons/Slack_Mark.svg';
+import GoogleDriveIcon from '../assets/images/icons/GoogleDrive_Icon.svg';
+import ZendeskIcon from '../assets/images/icons/Zendesk_Icon.svg';
+import GmailIcon from '../assets/images/icons/Gmail_Icon.svg';
+import JiraIcon from '../assets/images/icons/Jira_Icon.svg';
+import SalesforceIcon from '../assets/images/icons/Salesforce_Icon.svg';
+import HubspotIcon from '../assets/images/icons/Hubspot_Icon.svg';
+import HelpscoutIcon from '../assets/images/icons/Helpscout_Icon.svg';
+import GoogleChromeIcon from '../assets/images/icons/GoogleChrome_Icon.svg';
+
 // General app constants
 export const CHROME_MESSAGE = {
   TOGGLE: 'TOGGLE',
@@ -38,18 +48,21 @@ export const USER_ROLE = {
 
 // General constants
 export const INTEGRATIONS = {
-  GOOGLE: 'google',
-  SLACK: 'slack',
-  ZENDESK: 'zendesk',
-  HELPSCOUT: 'helpscout',
-  GMAIL: 'gmail',
-  SALESFORCE: 'salesforce',
-  JIRA: 'jira',
-  HUBSPOT: 'hubspot',
+  GOOGLE: { type: 'google', title: 'Google Drive', logo: GoogleDriveIcon },
+  SLACK: { type: 'slack', title: 'Slack', logo: SlackIcon },
+  ZENDESK: { type: 'zendesk', title: 'Zendesk', logo: ZendeskIcon },
+  HELPSCOUT: { type: 'helpscout', title: 'Helpscout', logo: HelpscoutIcon },
+  GMAIL: { type: 'gmail', title: 'Gmail', logo: GmailIcon },
+  SALESFORCE: { type: 'salesforce', title: 'Salesforce', logo: SalesforceIcon },
+  JIRA: { type: 'jira', title: 'Jira', logo: SalesforceIcon },
+  HUBSPOT: { type: 'hubspot', title: 'Hubspot', logo: HubspotIcon },
 };
 
 // Ask page constants
-export const ASK_INTEGRATIONS = [INTEGRATIONS.SLACK, INTEGRATIONS.GOOGLE];
+export const ASK_INTEGRATIONS = [
+  INTEGRATIONS.SLACK,
+  { ...INTEGRATIONS.GMAIL, disabled: true }
+];
 
 export const SLACK_RECIPIENT_TYPE = {
   CHANNEL: 'channel',
@@ -107,6 +120,15 @@ export const CARD_STATUS = {
   NOT_DOCUMENTED: 5,
 };
 
+export const VERIFICATION_INTERVAL_OPTION = {
+  TWO_WEEKS: 1,
+  ONE_MONTH: 2,
+  THREE_MONTHS: 3,
+  SIX_MONTHS: 4,
+  ONE_YEAR: 5,
+  AUTOREMIND: 6,
+  NEVER: 7
+};
 export const VERIFICATION_INTERVAL_OPTIONS = [
   // { label: 'Auto-Remind', value: 6 },
   { label: '2 Weeks', value: 1 },
@@ -114,7 +136,7 @@ export const VERIFICATION_INTERVAL_OPTIONS = [
   { label: '3 Months', value: 3 },
   { label: '6 Months', value: 4 },
   { label: '1 Year', value: 5 },
-  { label: 'Never', value: 7 },
+  { label: 'Never', value: VERIFICATION_INTERVAL_OPTION.NEVER },
 ];
 
 export const PERMISSION_OPTION = {
@@ -183,6 +205,12 @@ export const SEARCH_TYPE = {
   NAVIGATE: 'NAVIGATE',
   AI_SUGGEST: 'AI_SUGGEST',
 };
+
+// Request constants
+export const HTTP_STATUS_CODE = {
+  UNAUTHORIZED: 401,
+  NOT_FOUND: 404,
+}
 
 // Misc.
 export const NOOP = () => {};

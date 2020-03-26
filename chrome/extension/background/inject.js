@@ -93,7 +93,8 @@ function initSocket() {
         console.log('Received data from socket: ', event);
         getStorage('auth').then((auth) => {
           const isLoggedIn = auth && auth.token;
-          if (isLoggedIn) {
+          const isVerified = auth && auth.user && auth.user.isVerified;
+          if (isLoggedIn && isVerified) {
             const { type, data: payload } = JSON.parse(event.data);
             createNotification(payload);
           }
