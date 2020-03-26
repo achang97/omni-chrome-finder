@@ -12,7 +12,8 @@ const REQUEST_TYPE = {
 let protocol;
 let url;
 
-if (process.env.NODE_ENV === 'production') {
+
+if (process.env.NODE_ENV === 'development') {
   url = 'localhost:8000';
   protocol = 'http://';
 } else {
@@ -25,10 +26,6 @@ export const SERVER_URL = `${protocol}${BASE_URL}`;
 
 function isValidResponse(response) {
   return response.status >= 200 && response.status < 300;
-}
-
-function isUnauthorized(response) {
-  return response.status === 401;
 }
 
 function* getConfig(isForm) {
@@ -87,9 +84,6 @@ function* doRequest(requestType, path, data, extraParams = {}) {
     }
     return response.data;
   } catch (error) {
-    if (isUnauthorized(error)) {
-      put(logout());
-    }
     throw error;
   }
 }

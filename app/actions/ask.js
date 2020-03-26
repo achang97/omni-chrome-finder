@@ -4,6 +4,14 @@ export function updateAskSearchText(text) {
   return { type: types.UPDATE_ASK_SEARCH_TEXT, payload: { text } };
 }
 
+export function toggleAskFeedbackInput() {
+  return { type: types.TOGGLE_ASK_FEEDBACK_INPUT, payload: { } };
+}
+
+export function updateAskFeedback(feedback) {
+  return { type: types.UPDATE_ASK_FEEDBACK, payload: { feedback } };
+}
+
 export function changeAskIntegration(integration) {
   return { type: types.CHANGE_ASK_INTEGRATION, payload: { integration } };
 }
@@ -105,3 +113,15 @@ export function clearAskQuestionInfo() {
   return { type: types.CLEAR_ASK_QUESTION_INFO, payload: { } };
 }
 
+
+export function requestSubmitFeedback() {
+  return { type: types.SUBMIT_FEEDBACK_REQUEST, payload: { } };
+}
+
+export function handleSubmitFeedbackSuccess() {
+  return { type: types.SUBMIT_FEEDBACK_SUCCESS, payload: { } };
+}
+
+export function handleSubmitFeedbackError(error) {
+  return { type: types.SUBMIT_FEEDBACK_ERROR, payload: { error } };
+}

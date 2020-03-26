@@ -86,3 +86,10 @@
 .error-text {
   @apply text-red-500 text-sm text-center;
 }
+
+/* Large icons */
+.large-icon-container {
+  height: 125px;
+  width: 125px;
+  @apply bg-white p-3xl rounded-full shadow-md border-2 border-solid border-purple-light;
+}

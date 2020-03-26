@@ -1,5 +1,7 @@
 import React, { Component, PropTypes } from 'react';
 import AnimateHeight from 'react-animate-height';
+import { CircularProgressbar, buildStyles } from 'react-circular-progressbar';
+
 import Button from '../../components/common/Button';
 import CheckBox from '../../components/common/CheckBox';
 import PlaceholderImg from '../../components/common/PlaceholderImg';
@@ -24,6 +26,7 @@ import {
 import Loader from '../../components/common/Loader';
 import { isLoggedIn } from '../../utils/auth';
 
+import { colors } from '../../styles/colors';
 import { getStyleApplicationFn } from '../../utils/style';
 import style from './profile.css';
 const s = getStyleApplicationFn(style);
@@ -38,53 +41,54 @@ import HubspotIcon from '../../assets/images/icons/Hubspot_Icon.svg';
 import HelpscoutIcon from '../../assets/images/icons/Helpscout_Icon.svg';
 import GoogleChromeIcon from '../../assets/images/icons/GoogleChrome_Icon.svg';
 
-const PROFILE_NOTIFICATIONS_OPTION = {
-  EMAIL: 'email',
-  SLACK: 'slack',
-  CHROME: 'chrome'
-};
+const PROFILE_NOTIFICATIONS_OPTIONS = [
+  { type: 'email', title: 'Email', logo: GmailIcon },
+  INTEGRATIONS.SLACK,
+  { type: 'chrome', title: 'Chrome', logo: GoogleChromeIcon },
+];
 
 const PROFILE_SETTING_SECTIONS = [
   {
     type: PROFILE_SETTING_SECTION_TYPE.KNOWLEDGE_BASE,
     title: 'Knowledge Base Integrations',
-    options: [
-      { type: INTEGRATIONS.GOOGLE },
-      { type: INTEGRATIONS.ZENDESK }
-    ],
+    options: [INTEGRATIONS.GOOGLE, INTEGRATIONS.ZENDESK],
     toggle: false,
   },
   {
     type: PROFILE_SETTING_SECTION_TYPE.COMMUNICATION,
     title: 'Communication Integrations',
-    options: [
-      { type: INTEGRATIONS.GMAIL },
-      { type: INTEGRATIONS.SLACK }
-    ],
+    options: [INTEGRATIONS.GMAIL, INTEGRATIONS.SLACK],
     toggle: false,
   },
   {
     type: PROFILE_SETTING_SECTION_TYPE.AUTOFIND,
     title: 'Autofind Permissions',
     options: [
-      { type: INTEGRATIONS.GMAIL },
-      { type: INTEGRATIONS.ZENDESK, disabled: true },
-      { type: INTEGRATIONS.SALESFORCE, disabled: true },
-      { type: INTEGRATIONS.HUBSPOT, disabled: true },
-      { type: INTEGRATIONS.JIRA, disabled: true },
-      { type: INTEGRATIONS.HELPSCOUT, disabled: true },
+      INTEGRATIONS.GMAIL,
+      { ...INTEGRATIONS.ZENDESK, disabled: true },
+      { ...INTEGRATIONS.SALESFORCE, disabled: true },
+      { ...INTEGRATIONS.HUBSPOT, disabled: true },
+      { ...INTEGRATIONS.JIRA, disabled: true },
+      { ...INTEGRATIONS.HELPSCOUT, disabled: true },
     ],
     toggle: true,
   },
   {
     type: PROFILE_SETTING_SECTION_TYPE.NOTIFICATIONS,
     title: 'Notification Permissions',
-    options: Object.values(PROFILE_NOTIFICATIONS_OPTION).map(option => (
-      { type: option }
-    )),
+    options: PROFILE_NOTIFICATIONS_OPTIONS,
     toggle: true,
   }
 ];
+
+const PROGRESS_BAR_STYLES = {
+  // How long animation takes to go from one percentage to another, in seconds
+  pathTransitionDuration: 0.5,
+
+  // Colors
+  textColor: colors.purple.reg,
+  pathColor: colors.purple.reg,
+};
 
 @connect(
   state => ({
@@ -125,7 +129,6 @@ export default class Profile extends Component {
   }
 
   renderAboutSection = () => {
-    //const {  } = this.state;
     const { user, userEdits, changeFirstname, changeLastname, changeBio, requestSaveUser, isSavingUser, isEditingAbout, editUser } = this.props;
     return (
       <div className={s('flex flex-col')}>
@@ -198,40 +201,33 @@ export default class Profile extends Component {
     );
   }
 
-  renderMetricsSection = () => (
-    <div className={s('bg-white shadow-light p-reg mt-reg rounded-lg')}>
-      <div className={s('text-xl text-purple-reg font-semibold')}>99%</div>
-      <div className={s('text-sm text-purple-reg mt-sm')}> Cards up to date</div>
-    </div>
-    )
+  renderMetricsSection = () => {
+    const { count=0, totalUpvotes, upToDateCount, outOfDateCount } = this.props.analytics;
 
-  getOptionInfo = (option) => {
-    switch (option) {
-      case INTEGRATIONS.GOOGLE:
-        return { title: 'Google Drive', logo: GoogleDriveIcon };
-      case INTEGRATIONS.ZENDESK:
-        return { title: 'Zendesk', logo: ZendeskIcon };
-      case INTEGRATIONS.SLACK:
-        return { title: 'Slack', logo: SlackIcon };
-      case PROFILE_NOTIFICATIONS_OPTION.EMAIL:
-        return { title: 'Email', logo: GmailIcon };
-      case INTEGRATIONS.GMAIL:
-        return { title: 'Gmail', logo: GmailIcon };
-      case INTEGRATIONS.SALESFORCE:
-        return { title: 'Salesforce', logo: SalesforceIcon };
-      case INTEGRATIONS.HUBSPOT:
-        return { title: 'Hubspot', logo: HubspotIcon };
-      case INTEGRATIONS.JIRA:
-        return { title: 'Jira', logo: JiraIcon };
-      case INTEGRATIONS.ZENDESK:
-        return { title: 'Zendesk', logo: ZendeskIcon };
-      case INTEGRATIONS.HELPSCOUT:
-        return { title: 'Helpscout', logo: HelpscoutIcon };
-      case PROFILE_NOTIFICATIONS_OPTION.CHROME:
-        return { title: 'Chrome', logo: GoogleChromeIcon };
-      default:
-        return {};
+    let upToDatePercentage = 0;
+    let upToDatePercentageText = '--';
+
+    if (count !== 0) {
+      upToDatePercentage = Math.floor((upToDateCount / count) * 100);
+      upToDatePercentageText = `${upToDatePercentage}%`;
     }
+
+    return (
+      <div className={s('flex justify-between bg-white shadow-light p-reg mt-reg rounded-lg')}>
+        <div>
+          <div className={s('text-xl text-purple-reg font-semibold')}>
+            {upToDatePercentageText}
+          </div>
+          <div className={s('text-sm text-purple-reg mt-sm')}> Cards up to date</div>
+        </div>
+        <CircularProgressbar
+          className={s('w-4xl h-4xl')}
+          value={upToDatePercentage}
+          text={upToDatePercentageText}
+          styles={buildStyles(PROGRESS_BAR_STYLES)}
+        />
+      </div>
+    );
   }
 
   renderIntegrations = ({ type, toggle, options }) => {
@@ -240,8 +236,7 @@ export default class Profile extends Component {
 
     return (
       <div>
-        { options.map(({ type: optionType, disabled }, i) => {
-          const { title, logo } = this.getOptionInfo(optionType);
+        { options.map(({ type: optionType, title, logo, disabled }, i) => {
           return (
             <div key={title} className={s(`flex bg-white p-reg justify-between border border-solid border-gray-xlight items-center rounded-lg ${i > 0 ? 'mt-sm' : ''}`)}>
               <div className={s('flex flex-1 items-center')}>
@@ -258,7 +253,7 @@ export default class Profile extends Component {
               { toggle ?
                 <Toggle
                   checked={!disabled && (type === PROFILE_SETTING_SECTION_TYPE.AUTOFIND ?
-                    !autofindPermissions[optionType] :
+                    autofindPermissions[optionType] :
                     notificationPermissions[optionType]
                   )}
                   disabled={disabled}
@@ -290,8 +285,7 @@ export default class Profile extends Component {
           const isOpen = sectionOpen[type];
           const Icon = isOpen ? MdKeyboardArrowUp : MdKeyboardArrowDown;
 
-          let error,
-            isLoading;
+          let error, isLoading;
           if (toggle) {
             error = permissionState[type].error;
             isLoading = permissionState[type].isLoading;
@@ -309,7 +303,7 @@ export default class Profile extends Component {
                 <div className={s('text-purple-reg text-sm')}>{title}</div>
                 <div className={s('flex items-center')}>
                   { toggle && isLoading &&
-                    <Loader size={10} className={s('mr-sm')} />
+                    <Loader size="xs" className={s('mr-sm')} />
                   }
                   <Icon className={s('text-gray-dark cursor-pointer')} />
                 </div>

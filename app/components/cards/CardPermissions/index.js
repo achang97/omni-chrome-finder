@@ -17,10 +17,15 @@ import { requestSearchPermissionGroups } from '../../../actions/search';
 import { getStyleApplicationFn } from '../../../utils/style';
 const s = getStyleApplicationFn();
 
-const CardPermissions = ({ isDisabled, selectedPermission, onChangePermission, permissionGroups, onChangePermissionGroups, isSearchingPermissionGroups, permissionGroupOptions, requestSearchPermissionGroups }) => {
+const CardPermissions = ({ isDisabled, showJustMe, selectedPermission, onChangePermission, permissionGroups, onChangePermissionGroups, isSearchingPermissionGroups, permissionGroupOptions, requestSearchPermissionGroups }) => {
   const loadOptions = (inputValue) => {
     requestSearchPermissionGroups(inputValue);
   };
+
+  let permissionOptions = PERMISSION_OPTIONS;
+  if (!showJustMe) {
+    permissionOptions = permissionOptions.filter(({ value }) => value !== PERMISSION_OPTION.JUST_ME);
+  }
 
   return (
     <div>
@@ -41,7 +46,7 @@ const CardPermissions = ({ isDisabled, selectedPermission, onChangePermission, p
           onTabClick={onChangePermission}
           showRipple={false}
         >
-          {PERMISSION_OPTIONS.map((permissionOption) => (
+          {permissionOptions.map((permissionOption) => (
             <Tab key={permissionOption.value} value={permissionOption}>
               <div className={s(permissionOption.value !== selectedPermission.value ? 'underline-border border-purple-gray-20' : 'primary-underline')}>
                 {permissionOption.label}
@@ -78,6 +83,7 @@ CardPermissions.propTypes = {
   permissionGroups: PropTypes.array.isRequired,
   onChangePermissionGroups: PropTypes.func.isRequired,
   isDisabled: PropTypes.bool,
+  showJustMe: PropTypes.bool.isRequired,
 };
 
 CardPermissions.defaultProps = {

@@ -7,7 +7,6 @@
 }
 
 .tab {
-  border: none;
   background: transparent;
   @apply p-reg;
 }

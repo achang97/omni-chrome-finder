@@ -4,6 +4,13 @@ import { PROFILE_SETTING_SECTION_TYPE, INTEGRATIONS } from '../utils/constants';
 
 export const initialState = {
   user: {},
+  analytics: {
+    count: 0,
+    totalUpvotes: 0,
+    upToDateCount: 0,
+    outOfDateCount: 0
+  },
+
   userEdits: {},
   isEditingAbout: false,
 
@@ -13,10 +20,10 @@ export const initialState = {
   },
 
   integrationState: {
-    [INTEGRATIONS.SLACK]: {},
-    [INTEGRATIONS.ZENDESK]: {},
-    [INTEGRATIONS.GOOGLE]: {},
-    [INTEGRATIONS.GMAIL]: {}
+    [INTEGRATIONS.SLACK.type]: {},
+    [INTEGRATIONS.ZENDESK.type]: {},
+    [INTEGRATIONS.GOOGLE.type]: {},
+    [INTEGRATIONS.GMAIL.type]: {}
   }
 };
 
@@ -41,12 +48,16 @@ export default function displayReducer(state = initialState, action) {
       return { ...state, user };
     }
 
+    case types.VERIFY_SUCCESS: { 
+      return { ...state, user: { ...state.user, isVerified: true } };
+    }
+
     case types.GET_USER_REQUEST: {
       return { ...state, isGettingUser: true, getUserError: null };
     }
     case types.GET_USER_SUCCESS: {
-      const { user } = payload;
-      return { ...state, isGettingUser: false, user };
+      const { user, analytics } = payload;
+      return { ...state, isGettingUser: false, user, analytics };
     }
     case types.GET_USER_ERROR: {
       const { error } = payload;
