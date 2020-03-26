@@ -29,10 +29,6 @@ function isValidResponse(response) {
   return response.status >= 200 && response.status < 300;
 }
 
-function isUnauthorized(response) {
-  return response.status === 401;
-}
-
 function* getConfig(isForm) {
   const token = yield select(state => state.auth.token);
 
@@ -89,9 +85,6 @@ function* doRequest(requestType, path, data, extraParams = {}) {
     }
     return response.data;
   } catch (error) {
-    if (isUnauthorized(error)) {
-      put(logout());
-    }
     throw error;
   }
 }

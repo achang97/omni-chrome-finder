@@ -47,7 +47,7 @@ class Login extends Component {
           <div className={s('text-sm text-gray-dark mt-reg mb-2xl')}>Sign in to continue</div>
           { isLoggingIn ?
             <Loader className={s('mb-reg')} /> :
-            <div className={s('flex flex-col')}>
+            <div className={s('flex flex-col mb-reg')}>
               <div>
                 <input
                   type="text"
@@ -66,7 +66,7 @@ class Login extends Component {
                   onChange={e => updateLoginPassword(e.target.value)}
                 />
               </div>
-              <div className={s('text-xs text-gray-dark mt-reg mb-reg self-end')}>Forgot password?</div>
+              {/*<div className={s('text-xs text-gray-dark mt-reg self-end')}>Forgot password?</div>*/}
             </div>
           }
           { loginError &&

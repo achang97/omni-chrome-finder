@@ -128,7 +128,6 @@ export default class Profile extends Component {
   }
 
   renderAboutSection = () => {
-    //const {  } = this.state;
     const { user, userEdits, changeFirstname, changeLastname, changeBio, requestSaveUser, isSavingUser, isEditingAbout, editUser } = this.props;
     return (
       <div className={s('flex flex-col')}>
