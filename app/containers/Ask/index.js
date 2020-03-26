@@ -536,7 +536,7 @@ class Ask extends Component {
               <div className={s('error-text my-sm')}> {feedbackError} </div>
               <Button
                 text="Submit Feedback"
-                color="primary"
+                color="transparent"
                 className={s('p-xs')}
                 iconLeft={false}
                 icon={isSubmittingFeedback ?

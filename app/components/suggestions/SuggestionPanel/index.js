@@ -91,7 +91,7 @@ class SuggestionPanel extends Component {
                   <div className={s('suggestion-panel-external-result-text font-semibold text-purple-reg mb-xs')}> {channel === 'Personal Message' ? 'Direct Message' : `#${channel}`} </div>
                   <div className={s('suggestion-panel-external-result-text suggestion-panel-external-result-sender')}> @{sender} </div>
                 </div>
-                <div className={s('suggestion-panel-external-result-icon')}>
+                <div className={s('suggestion-panel-external-result-icon ml-xs')}>
                   <img src={logo} />
                 </div>
               </div>
@@ -106,7 +106,7 @@ class SuggestionPanel extends Component {
           <a target="_blank" href={webViewLink} key={id}>
             <div className={s('suggestion-panel-external-result items-center')}>
               <div className={s('suggestion-panel-external-result-text suggestion-panel-external-result-link')}> {name} </div>
-              <div className={s('suggestion-panel-external-result-icon')}>
+              <div className={s('suggestion-panel-external-result-icon ml-xs')}>
                 <img src={logo} />
               </div>
             </div>
@@ -126,7 +126,7 @@ class SuggestionPanel extends Component {
                     <span className={s('ml-sm')}> Status: <span className={s('italic')}> {status} </span> </span>
                   </div>
                 </div>
-                <div className={s('suggestion-panel-external-result-icon')}>
+                <div className={s('suggestion-panel-external-result-icon ml-xs')}>
                   <img src={logo} />
                 </div>
               </div>
@@ -143,7 +143,7 @@ class SuggestionPanel extends Component {
             <div className={s('suggestion-panel-external-result flex-col')}>
               <div className={s('flex justify-between mb-xs')}>
                 <div className={s('suggestion-panel-external-result-text font-semibold text-purple-reg mb-xs')}> {subject} </div>
-                <div className={s('suggestion-panel-external-result-icon')}>
+                <div className={s('suggestion-panel-external-result-icon ml-xs')}>
                   <img src={logo} />
                 </div>
               </div>
@@ -171,8 +171,8 @@ class SuggestionPanel extends Component {
           onClick={() => this.toggleIntegration(type)}
         >
           <div className={s('flex items-center text-md text-gray-dark')}>
-            <div className={s('w-lg h-lg p-sm mr-sm bg-white shadow-md rounded-full')}>
-              <img src={logo} className={s('w-full h-full')} />
+            <div className={s('suggestion-panel-external-result-icon mr-sm')}>
+              <img src={logo} />
             </div>
             <span className={s('font-semibold mr-sm')}> {title} </span>
             <span> ({results.length}) </span>
