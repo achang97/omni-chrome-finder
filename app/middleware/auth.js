@@ -1,5 +1,6 @@
 import { setStorage } from '../utils/storage';
 import * as types from '../actions/actionTypes';
+import { addScript } from '../utils/heap';
 
 const authMiddleware = store => next => (action) => {
   const nextAction = next(action);
@@ -8,6 +9,12 @@ const authMiddleware = store => next => (action) => {
   switch (type) {
     case types.LOGIN_SUCCESS: {
       setStorage('auth', payload);
+      const user = payload.user;
+      if(!window.location.href.includes("heapanalytics")) {
+          let identify = `window.heap.identify("${user.email}"); 
+            window.heap.addUserProperties({'Name': "${user.firstname}" + " " + "${user.lastname}",'Company': "${user.company.companyName}", 'Role': "${user.role}"});`
+          addScript({code: identify, shouldRemove: true})
+      } 
       break;
     }
     case types.GET_USER_SUCCESS: {

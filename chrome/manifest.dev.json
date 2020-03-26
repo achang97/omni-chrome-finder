@@ -6,6 +6,7 @@
   "browser_action": {
   },
   "web_accessible_resources": [
+    "web_accessible/*"
   ],
   "icons": {
     "16": "img/icon-16.png",

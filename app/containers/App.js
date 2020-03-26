@@ -2,6 +2,7 @@ import React, { Component } from 'react';
 import { Route, Switch, Redirect, withRouter } from 'react-router-dom';
 import Dock from 'react-dock';
 import { CARD_URL_REGEX, SLACK_URL_REGEX, TASK_URL_REGEX, TASKS_SECTIONS, TASKS_SECTION_TYPE, TASK_TYPE, SEARCH_TYPE, NOOP } from '../utils/constants';
+import { addScript } from '../utils/heap';
 import queryString from 'query-string';
 
 import { bindActionCreators } from 'redux';
@@ -40,7 +41,8 @@ const dockPanelStyles = {
     dockExpanded: state.display.dockExpanded,
     isLoggedIn: !!state.auth.token,
     showAISuggest: state.search.cards[SEARCH_TYPE.AI_SUGGEST].cards.length !== 0,
-    tasks: state.tasks.tasks
+    tasks: state.tasks.tasks,
+    user: state.profile.user
   }),
   dispatch =>
     bindActionCreators(
@@ -58,10 +60,16 @@ const dockPanelStyles = {
 
 class App extends Component {
   componentDidMount() {
-    const { isLoggedIn, requestGetTasks, requestGetUser } = this.props;
+    const { isLoggedIn, requestGetTasks, requestGetUser, user } = this.props;
 
     if (isLoggedIn) {
       requestGetUser();
+
+      if(!window.location.href.includes("heapanalytics")) {
+          let identify = `window.heap.identify("${user.email}"); 
+            window.heap.addUserProperties({'Name': "${user.firstname}" + " " + "${user.lastname}",'Company': "${user.company.companyName}", 'Role': "${user.role}"});`
+          addScript({code: identify, shouldRemove: true})
+      }    
       requestGetTasks();
       this.openChromeExtension();
     }
@@ -132,7 +140,8 @@ class App extends Component {
       dockExpanded,
       isLoggedIn,
       showAISuggest,
-      location: { pathname }
+      location: { pathname },
+      user
     } = this.props;
     const showFullDock = dockExpanded || (pathname !== '/ask' && pathname !== '/login');
 
@@ -153,6 +162,7 @@ class App extends Component {
         >
           <div className={s(`flex flex-col ${showFullDock ? 'h-screen' : ''}`)}>
             { isLoggedIn && <Header /> }
+
             <Switch>
               { isLoggedIn && <Route path="/ask" component={Ask} /> }
               { isLoggedIn && <Route path="/create" component={Create} /> }

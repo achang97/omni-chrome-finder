@@ -237,7 +237,7 @@ export default class Profile extends Component {
   renderIntegrations = ({ type, toggle, options }) => {
     const { user, requestUpdateUserPermissions, changeUserPermissionsError } = this.props;
     const { autofindPermissions, notificationPermissions } = user;
-
+    
     return (
       <div>
         { options.map(({ type: optionType, disabled }, i) => {
@@ -258,7 +258,7 @@ export default class Profile extends Component {
               { toggle ?
                 <Toggle
                   checked={!disabled && (type === PROFILE_SETTING_SECTION_TYPE.AUTOFIND ?
-                    !autofindPermissions[optionType] :
+                    autofindPermissions[optionType] :
                     notificationPermissions[optionType]
                   )}
                   disabled={disabled}
