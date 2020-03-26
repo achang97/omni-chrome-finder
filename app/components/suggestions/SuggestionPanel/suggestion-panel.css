@@ -39,7 +39,7 @@
 }
 
 .suggestion-panel-external-result-icon {
-  @apply bg-white shadow-md rounded-full  flex-shrink-0 flex items-center justify-center ml-xs;
+  @apply bg-white shadow-md rounded-full flex-shrink-0 flex items-center justify-center;
   box-sizing: border-box;
   width: 27px;
   height: 27px;

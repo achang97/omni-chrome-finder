@@ -47,12 +47,14 @@ export default class Navigate extends Component {
   }
 
   componentDidUpdate(prevProps) {
-    const { updateNavigateSearchText, updateFilterTags } = this.props;
+    const { updateNavigateSearchText, updateFilterTags, searchText } = this.props;
 
     if (prevProps.activeTab !== this.props.activeTab) {
       this.requestSearchCards(true);
     } else if (JSON.stringify(prevProps.filterTags) !== JSON.stringify(this.props.filterTags)) {
       this.requestSearchCards(true);
+    } else if (prevProps.searchText !== this.props.searchText) {
+      this.debouncedRequestSearch();
     }
   }
 
@@ -95,7 +97,6 @@ export default class Navigate extends Component {
   updateSearchText = (e) => {
     const { updateNavigateSearchText } = this.props;
     updateNavigateSearchText(e.target.value);
-    this.debouncedRequestSearch();
   }
 
   render() {
