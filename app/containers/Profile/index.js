@@ -86,6 +86,7 @@ const PROGRESS_BAR_STYLES = {
   pathTransitionDuration: 0.5,
 
   // Colors
+  textColor: colors.purple.reg,
   pathColor: colors.purple.reg,
 };
 
@@ -302,7 +303,7 @@ export default class Profile extends Component {
                 <div className={s('text-purple-reg text-sm')}>{title}</div>
                 <div className={s('flex items-center')}>
                   { toggle && isLoading &&
-                    <Loader size={10} className={s('mr-sm')} />
+                    <Loader size="xs" className={s('mr-sm')} />
                   }
                   <Icon className={s('text-gray-dark cursor-pointer')} />
                 </div>

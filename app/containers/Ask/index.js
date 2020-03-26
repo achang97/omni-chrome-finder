@@ -2,7 +2,6 @@ import React, { Component } from 'react';
 import { bindActionCreators } from 'redux';
 import AnimateHeight from 'react-animate-height';
 import { connect } from 'react-redux';
-import { withRouter } from 'react-router-dom';
 import moment from 'moment';
 
 import { MdChevronRight, MdPictureInPicture, MdClose, MdCloudUpload, MdAttachment } from 'react-icons/md';
@@ -541,7 +540,7 @@ class Ask extends Component {
                 className={s('p-xs')}
                 iconLeft={false}
                 icon={isSubmittingFeedback ?
-                  <Loader size={10} className={s('ml-sm')} color="white" /> :
+                  <Loader size="xs" className={s('ml-sm')} color="white" /> :
                   null
                 }
                 disabled={feedback.length === 0}
@@ -564,4 +563,4 @@ class Ask extends Component {
   }
 }
 
-export default withRouter(Ask);
+export default Ask;

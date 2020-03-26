@@ -104,14 +104,10 @@ function* getCard() {
   const cardId = yield call(getActiveCardId);
   try {
     const card = yield call(doGet, `/cards/${cardId}`);
-    if (card) {
-      yield put(handleGetCardSuccess(cardId, card));
-    } else {
-      yield put(handleGetCardError(cardId, { error: 'Card does not exist.', status: HTTP_STATUS_CODE.NOT_FOUND }));
-    }
+    yield put(handleGetCardSuccess(cardId, card));
   } catch (error) {
     const { response: { data, status } } = error;
-    yield put(handleGetCardError(cardId, { error: data.error, status }));
+    yield put(handleGetCardError(cardId, data.error));
   }
 }
 

@@ -48,6 +48,10 @@ export default function displayReducer(state = initialState, action) {
       return { ...state, user };
     }
 
+    case types.VERIFY_SUCCESS: { 
+      return { ...state, user: { ...state.user, isVerified: true } };
+    }
+
     case types.GET_USER_REQUEST: {
       return { ...state, isGettingUser: true, getUserError: null };
     }

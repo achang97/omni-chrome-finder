@@ -93,7 +93,7 @@ const CardAttachment = ({ fileName, type, url, onClick, onRemoveClick, className
 
   let leftIcon;
   if (isLoading) {
-    leftIcon = <Loader size={10} />;
+    leftIcon = <Loader size="xs" />;
   } else if (error) {
     leftIcon = <MdError />;
   } else if (isDownloadable) {

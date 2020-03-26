@@ -744,7 +744,7 @@ class CardContent extends Component {
     } = this.props;
 
     if (!hasLoaded && getError) {
-      const { error, status } = getError;
+      const { message, status } = getError;
       const isUnauthorized = status === HTTP_STATUS_CODE.UNAUTHORIZED;
 
       return (
@@ -756,7 +756,7 @@ class CardContent extends Component {
             }
           </div>
           <div className={s('my-lg font-semibold')}>
-            { isUnauthorized ? 'You don\'t have permissions to view this card.' : error }
+            { isUnauthorized ? 'You don\'t have permissions to view this card.' : message }
           </div>
           { !isUnauthorized && status !== HTTP_STATUS_CODE.NOT_FOUND &&
             <Button
