@@ -1,4 +1,4 @@
-import { take, call, fork, put, select } from 'redux-saga/effects';
+import { take, call, fork, put, all, select } from 'redux-saga/effects';
 import { doGet, doPut, doPost } from '../utils/request';
 import { PROFILE_SETTING_SECTION_TYPE } from '../utils/constants';
 import { GET_USER_REQUEST, SAVE_USER_REQUEST, UPDATE_USER_PERMISSIONS_REQUEST, LOGOUT_USER_INTEGRATION_REQUEST } from '../actions/actionTypes';
@@ -55,10 +55,16 @@ function* updatePermissions({ type, permission }) {
 
 function* getUser() {
   try {
-    const { userJson } = yield call(doGet, '/users');
-    const integrations = yield call(doGet, '/users/me/integrations');
-    yield put(handleGetUserSuccess({ ...userJson, integrations }));
+    const [{ userJson }, integrations, analytics] = yield all([
+      call(doGet, '/users'),
+      call(doGet, '/users/me/integrations'),
+      call(doGet, '/analytics/my/cards')
+    ]);
+
+    const { user, ...userAnalytics } = analytics;
+    yield put(handleGetUserSuccess({ ...userJson, integrations }, userAnalytics));
   } catch (error) {
+    console.log(error)
     const { response: { data } } = error;
     yield put(handleGetUserError(data.error));
   }

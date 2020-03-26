@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
-import { MdCheck, MdArrowDropDown, MdMoreHoriz, MdModeEdit, MdThumbUp, MdBookmarkBorder, MdPerson, MdAttachment, MdKeyboardArrowLeft } from 'react-icons/md';
+import { MdCheck, MdArrowDropDown, MdMoreHoriz, MdModeEdit, MdThumbUp, MdBookmarkBorder, MdError, MdPerson, MdAttachment, MdKeyboardArrowLeft, MdLock } from 'react-icons/md';
 import Timeago from 'react-timeago';
 import SlackIcon from '../../../assets/images/icons/Slack_Mark.svg';
 
@@ -26,7 +26,7 @@ import * as cardActions from '../../../actions/cards';
 
 import { hasValidEdits, toggleUpvotes, cardStateChanged } from '../../../utils/card';
 import { generateFileKey } from '../../../utils/file';
-import { CARD_STATUS, CARD_DIMENSIONS, EDITOR_TYPE, MODAL_TYPE, USER_ROLE } from '../../../utils/constants';
+import { CARD_STATUS, CARD_DIMENSIONS, EDITOR_TYPE, MODAL_TYPE, USER_ROLE, HTTP_STATUS_CODE } from '../../../utils/constants';
 
 import style from './card-content.css';
 import { getStyleApplicationFn } from '../../../utils/style';
@@ -744,14 +744,27 @@ class CardContent extends Component {
     } = this.props;
 
     if (!hasLoaded && getError) {
+      const { message, status } = getError;
+      const isUnauthorized = status === HTTP_STATUS_CODE.UNAUTHORIZED;
+
       return (
         <div className={s('flex flex-col h-full justify-center items-center bg-purple-light')}>
-          <div className={s('mb-sm')}> Something went wrong! </div>
-          <Button
-            color="primary"
-            text="Reload Card"
-            onClick={this.loadCard}
-          />
+          <div className={s('large-icon-container text-red-500')}>
+            { isUnauthorized ?
+              <MdLock className={s('w-full h-full')} /> :
+              <MdError className={s('w-full h-full')} />
+            }
+          </div>
+          <div className={s('my-lg font-semibold')}>
+            { isUnauthorized ? 'You don\'t have permissions to view this card.' : message }
+          </div>
+          { !isUnauthorized && status !== HTTP_STATUS_CODE.NOT_FOUND &&
+            <Button
+              color="primary"
+              text="Reload Card"
+              onClick={this.loadCard}
+            />
+          }
         </div>
       );
     }

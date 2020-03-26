@@ -27,6 +27,7 @@ const URL_REGEXES = [
     dockVisible: state.display.dockVisible,
     dockExpanded: state.display.dockExpanded,
     isLoggedIn: !!state.auth.token,
+    isVerified: state.profile.user && state.profile.user.isVerified,
     autofindPermissions: state.profile.user ? state.profile.user.autofindPermissions : {},
     tasks: state.tasks.tasks,
   }),
@@ -173,10 +174,10 @@ class ChromeMessageListener extends Component {
   };
 
   handleTabUpdate = (isNewPage) => {
-    const { isLoggedIn, requestSearchCards, clearSearchCards, autofindPermissions } = this.props;
+    const { isLoggedIn, isVerified, requestSearchCards, clearSearchCards, autofindPermissions } = this.props;
 
     const integration = this.getIntegration();
-    if (isLoggedIn && autofindPermissions[integration]) {
+    if (isLoggedIn && isVerified && autofindPermissions[integration]) {
       if (isNewPage) {
         this.disconnectMutatorObserver();
       }
@@ -192,7 +193,7 @@ class ChromeMessageListener extends Component {
 
   handleContextMenuAction = (action, selectedText) => {
     const {
-      isLoggedIn, dockVisible, dockExpanded, toggleDock, history,
+      isLoggedIn, isVerified, dockVisible, dockExpanded, toggleDock, history,
       updateAskSearchText, updateAskQuestionTitle,
       updateCreateAnswerEditor,
       updateNavigateSearchText,
@@ -202,7 +203,7 @@ class ChromeMessageListener extends Component {
       toggleDock();
     }
 
-    if (isLoggedIn) {
+    if (isLoggedIn && isVerified) {
       // Open dock
       let url;
       switch (action) {
@@ -234,7 +235,7 @@ class ChromeMessageListener extends Component {
 
   handleNotificationOpened = (notificationId) => {
     const {
-      isLoggedIn, dockVisible, tasks,
+      isLoggedIn, isVerified, dockVisible, tasks,
       toggleDock, requestGetTasks, updateTasksTab, updateTasksOpenSection,
       history
     } = this.props;
@@ -243,7 +244,7 @@ class ChromeMessageListener extends Component {
       toggleDock();
     }
 
-    if (isLoggedIn) {
+    if (isLoggedIn && isVerified) {
       const { location: { pathname } } = history;
 
       if (location === '/tasks') {

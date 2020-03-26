@@ -206,5 +206,11 @@ export const SEARCH_TYPE = {
   AI_SUGGEST: 'AI_SUGGEST',
 };
 
+// Request constants
+export const HTTP_STATUS_CODE = {
+  UNAUTHORIZED: 401,
+  NOT_FOUND: 404,
+}
+
 // Misc.
 export const NOOP = () => {};

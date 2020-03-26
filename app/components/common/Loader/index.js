@@ -12,6 +12,8 @@ const s = getStyleApplicationFn(style);
 const getSize = (size) => {
   if (typeof (size) === 'string') {
     switch (size) {
+      case 'xs':
+        return 10;
       case 'sm':
         return 15;
       case 'md':

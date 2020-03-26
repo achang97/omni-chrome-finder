@@ -5,8 +5,8 @@ export function requestGetUser() {
   return { type: types.GET_USER_REQUEST, payload: { } };
 }
 
-export function handleGetUserSuccess(user) {
-  return { type: types.GET_USER_SUCCESS, payload: { user } };
+export function handleGetUserSuccess(user, analytics) {
+  return { type: types.GET_USER_SUCCESS, payload: { user, analytics } };
 }
 
 export function handleGetUserError(error) {

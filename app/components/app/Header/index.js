@@ -1,7 +1,7 @@
 import React, { PropTypes, Component } from 'react';
+import { withRouter } from 'react-router-dom';
 import { Link } from 'react-router';
 import { MdNotificationsActive, MdLightbulbOutline  } from 'react-icons/md';
-import { withRouter } from 'react-router-dom';
 
 import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';

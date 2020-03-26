@@ -4,7 +4,7 @@ import { getArrayIds, getArrayField } from '../utils/array';
 import { getContentStateFromEditorState } from '../utils/editor';
 import { toggleUpvotes, hasValidEdits } from '../utils/card';
 import { convertAttachmentsToBackendFormat } from '../utils/file';
-import { CARD_STATUS, PERMISSION_OPTION, NAVIGATE_TAB_OPTION, VERIFICATION_INTERVAL_OPTION } from '../utils/constants';
+import { CARD_STATUS, PERMISSION_OPTION, NAVIGATE_TAB_OPTION, VERIFICATION_INTERVAL_OPTION, HTTP_STATUS_CODE } from '../utils/constants';
 import { GET_CARD_REQUEST, CREATE_CARD_REQUEST, UPDATE_CARD_REQUEST, TOGGLE_UPVOTE_REQUEST, DELETE_CARD_REQUEST, MARK_UP_TO_DATE_REQUEST, MARK_OUT_OF_DATE_REQUEST, APPROVE_CARD_REQUEST, ADD_BOOKMARK_REQUEST, REMOVE_BOOKMARK_REQUEST, ADD_CARD_ATTACHMENT_REQUEST, GET_SLACK_THREAD_REQUEST } from '../actions/actionTypes';
 import {
   handleGetCardSuccess, handleGetCardError,
@@ -106,7 +106,7 @@ function* getCard() {
     const card = yield call(doGet, `/cards/${cardId}`);
     yield put(handleGetCardSuccess(cardId, card));
   } catch (error) {
-    const { response: { data } } = error;
+    const { response: { data, status } } = error;
     yield put(handleGetCardError(cardId, data.error));
   }
 }

@@ -2,7 +2,6 @@ import React, { Component } from 'react';
 import { bindActionCreators } from 'redux';
 import AnimateHeight from 'react-animate-height';
 import { connect } from 'react-redux';
-import { withRouter } from 'react-router-dom';
 import moment from 'moment';
 
 import { MdChevronRight, MdPictureInPicture, MdClose, MdCloudUpload, MdAttachment } from 'react-icons/md';
@@ -425,8 +424,8 @@ class Ask extends Component {
 
     return (
       <div className={s('flex flex-col items-center')}>
-        <div className={s('ask-integration-logged-out-img-container')}>
-          <img src={logo} />
+        <div className={s('large-icon-container my-reg')}>
+          <img src={logo} className={s('w-full h-full')} />
         </div>
         <div className={s('mt-reg mb-lg font-semibold')}>
           { disabled ?
@@ -564,4 +563,4 @@ class Ask extends Component {
   }
 }
 
-export default withRouter(Ask);
+export default Ask;
