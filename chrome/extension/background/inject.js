@@ -135,8 +135,14 @@ chrome.tabs.onUpdated.addListener(async (tabId, changeInfo, tab) => {
 chrome.browserAction.onClicked.addListener(async (tab) => {
   const tabId = tab.id;
   const isInjected = (await injectExtension(tabId))[0];
-  if (!chrome.runtime.lastError && isInjected) {
-    chrome.tabs.sendMessage(tabId, { type: CHROME_MESSAGE.TOGGLE });
+  if (!chrome.runtime.lastError) {
+    if (!isInjected) {
+      loadScript('inject', tabId, () => {
+        chrome.tabs.sendMessage(tabId, { type: CHROME_MESSAGE.TOGGLE });
+      });
+    } else {
+      chrome.tabs.sendMessage(tabId, { type: CHROME_MESSAGE.TOGGLE });
+    }
   }
 });
 
