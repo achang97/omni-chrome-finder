@@ -3,6 +3,7 @@ const webpack = require('webpack');
 const autoprefixer = require('autoprefixer');
 const tailwindcss = require('tailwindcss');
 const tailwindConfig = require('../tailwind.config');
+const TerserPlugin = require('terser-webpack-plugin');
 require('dotenv').config();
 
 const customPath = path.join(__dirname, './customPublicPath');
@@ -12,6 +13,7 @@ module.exports = {
     background: [customPath, path.join(__dirname, '../chrome/extension/background')],
     inject: [customPath, path.join(__dirname, '../chrome/extension/inject')],
   },
+  mode: 'production',
   output: {
     path: path.join(__dirname, '../build/js'),
     filename: '[name].bundle.js',
@@ -20,12 +22,6 @@ module.exports = {
   plugins: [
     new webpack.optimize.OccurrenceOrderPlugin(),
     new webpack.IgnorePlugin(/[^/]+\/[\S]+.dev$/),
-    new webpack.optimize.UglifyJsPlugin({
-      comments: false,
-      compressor: {
-        warnings: false
-      }
-    }),
     new webpack.DefinePlugin({
       'process.env': {
         NODE_ENV: JSON.stringify('production')
@@ -41,7 +37,7 @@ module.exports = {
       loader: 'babel-loader',
       exclude: /node_modules/,
       query: {
-        presets: ['react-optimize']
+        plugins: [/*'optimize-react'*/]
       }
     }, {
       test: /\.css$/,
@@ -76,5 +72,9 @@ module.exports = {
         },
       ],
     }]
-  }
+  },
+  optimization: {
+    minimize: true,
+    minimizer: [new TerserPlugin()],
+  },
 };

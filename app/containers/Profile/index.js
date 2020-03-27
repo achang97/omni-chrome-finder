@@ -90,28 +90,7 @@ const PROGRESS_BAR_STYLES = {
   pathColor: colors.purple.reg,
 };
 
-@connect(
-  state => ({
-    ...state.profile,
-    token: state.auth.token,
-  }),
-  dispatch =>
-    bindActionCreators(
-      {
-        changeFirstname,
-        changeLastname,
-        changeBio,
-        requestSaveUser,
-        editUser,
-        requestGetUser,
-        requestUpdateUserPermissions,
-        logout,
-      },
-      dispatch
-    )
-)
-
-export default class Profile extends Component {
+class Profile extends Component {
   constructor(props) {
     super(props);
     this.state = {
@@ -340,3 +319,24 @@ export default class Profile extends Component {
     );
   }
 }
+
+export default connect(
+  state => ({
+    ...state.profile,
+    token: state.auth.token,
+  }),
+  dispatch =>
+    bindActionCreators(
+      {
+        changeFirstname,
+        changeLastname,
+        changeBio,
+        requestSaveUser,
+        editUser,
+        requestGetUser,
+        requestUpdateUserPermissions,
+        logout,
+      },
+      dispatch
+    )
+)(Profile);

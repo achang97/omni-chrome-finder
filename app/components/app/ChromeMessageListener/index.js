@@ -22,33 +22,6 @@ const URL_REGEXES = [
   }
 ];
 
-@connect(
-  state => ({
-    dockVisible: state.display.dockVisible,
-    dockExpanded: state.display.dockExpanded,
-    isLoggedIn: !!state.auth.token,
-    isVerified: state.profile.user && state.profile.user.isVerified,
-    autofindPermissions: state.profile.user ? state.profile.user.autofindPermissions : {},
-    tasks: state.tasks.tasks,
-  }),
-  dispatch =>
-    bindActionCreators(
-      {
-        toggleDock,
-        updateAskSearchText,
-        updateAskQuestionTitle,
-        updateCreateAnswerEditor,
-        updateNavigateSearchText,
-        requestSearchCards,
-        clearSearchCards,
-        requestGetTasks,
-        updateTasksTab,
-        updateTasksOpenSection,
-      },
-      dispatch
-    )
-)
-
 class ChromeMessageListener extends Component {
   constructor(props) {
     super(props);
@@ -302,4 +275,29 @@ class ChromeMessageListener extends Component {
   }
 }
 
-export default withRouter(ChromeMessageListener);
+export default connect(
+  state => ({
+    dockVisible: state.display.dockVisible,
+    dockExpanded: state.display.dockExpanded,
+    isLoggedIn: !!state.auth.token,
+    isVerified: state.profile.user && state.profile.user.isVerified,
+    autofindPermissions: state.profile.user ? state.profile.user.autofindPermissions : {},
+    tasks: state.tasks.tasks,
+  }),
+  dispatch =>
+    bindActionCreators(
+      {
+        toggleDock,
+        updateAskSearchText,
+        updateAskQuestionTitle,
+        updateCreateAnswerEditor,
+        updateNavigateSearchText,
+        requestSearchCards,
+        clearSearchCards,
+        requestGetTasks,
+        updateTasksTab,
+        updateTasksOpenSection,
+      },
+      dispatch
+    )
+)(withRouter(ChromeMessageListener));

@@ -9,20 +9,6 @@ import { SEARCH_TYPE } from '../../utils/constants';
 import { getStyleApplicationFn } from '../../utils/style';
 const s = getStyleApplicationFn();
 
-@connect(
-  state => {
-    const { cards, isSearchingCards, hasReachedLimit } = state.search.cards[SEARCH_TYPE.AI_SUGGEST];
-    return { cards, isSearchingCards, hasReachedLimit };
-  },
-  dispatch =>
-  bindActionCreators(
-    {
-      requestSearchCards,
-    },
-    dispatch
-  )
-)
-
 class AISuggest extends Component {
   render() {
     const { isSearchingCards, cards, requestSearchCards, hasReachedLimit } = this.props;
@@ -43,4 +29,16 @@ class AISuggest extends Component {
   }
 }
 
-export default AISuggest;
+export default connect(
+  state => {
+    const { cards, isSearchingCards, hasReachedLimit } = state.search.cards[SEARCH_TYPE.AI_SUGGEST];
+    return { cards, isSearchingCards, hasReachedLimit };
+  },
+  dispatch =>
+  bindActionCreators(
+    {
+      requestSearchCards,
+    },
+    dispatch
+  )
+)(AISuggest);

@@ -39,29 +39,6 @@ const dockPanelStyles = {
   borderRadius: '8px 0 0 8px'
 };
 
-@connect(
-  state => ({
-    dockVisible: state.display.dockVisible,
-    dockExpanded: state.display.dockExpanded,
-    isLoggedIn: !!state.auth.token,
-    showAISuggest: state.search.cards[SEARCH_TYPE.AI_SUGGEST].cards.length !== 0,
-    tasks: state.tasks.tasks,
-    user: state.profile.user,
-  }),
-  dispatch =>
-    bindActionCreators(
-      {
-        toggleDock,
-        requestGetUser,
-        requestGetTasks,
-        updateTasksTab,
-        updateTasksOpenSection,
-        openCard,
-      },
-      dispatch
-    )
-)
-
 class App extends Component {
   componentDidMount() {
     const { isLoggedIn, requestGetTasks, requestGetUser, user } = this.props;
@@ -195,4 +172,25 @@ class App extends Component {
     );
   }
 }
-export default withRouter(App);
+export default connect(
+  state => ({
+    dockVisible: state.display.dockVisible,
+    dockExpanded: state.display.dockExpanded,
+    isLoggedIn: !!state.auth.token,
+    showAISuggest: state.search.cards[SEARCH_TYPE.AI_SUGGEST].cards.length !== 0,
+    tasks: state.tasks.tasks,
+    user: state.profile.user,
+  }),
+  dispatch =>
+    bindActionCreators(
+      {
+        toggleDock,
+        requestGetUser,
+        requestGetTasks,
+        updateTasksTab,
+        updateTasksOpenSection,
+        openCard,
+      },
+      dispatch
+    )
+)(withRouter(App));

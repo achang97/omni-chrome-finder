@@ -7,19 +7,6 @@ import Button from '../../common/Button';
 import { getStyleApplicationFn } from '../../../utils/style';
 const s = getStyleApplicationFn();
 
-@connect(
-  state => ({
-    verifySuccess: state.auth.verifySuccess,
-    userFirstName: state.profile.user.firstname,
-  }),
-  dispatch =>
-    bindActionCreators(
-      {
-      },
-      dispatch
-    )
-)
-
 class VerifySuccessModal extends Component {
   constructor(props) {
     super(props);
@@ -68,4 +55,15 @@ class VerifySuccessModal extends Component {
   }
 }
 
-export default VerifySuccessModal;
+export default connect(
+  state => ({
+    verifySuccess: state.auth.verifySuccess,
+    userFirstName: state.profile.user.firstname,
+  }),
+  dispatch =>
+    bindActionCreators(
+      {
+      },
+      dispatch
+    )
+)(VerifySuccessModal);

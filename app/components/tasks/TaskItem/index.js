@@ -23,18 +23,6 @@ import { getStyleApplicationFn } from '../../../utils/style';
 
 const s = getStyleApplicationFn(style);
 
-@connect(
-  state => ({
-    ownUserId: state.profile.user._id,
-  }),
-  dispatch => bindActionCreators({
-    requestMarkUpToDateFromTasks,
-    requestDismissTask,
-    requestApproveCardFromTasks,
-    openCard,
-  }, dispatch)
-)
-
 class TaskItem extends Component {
   constructor(props) {
     super(props);
@@ -274,4 +262,14 @@ TaskItem.defaultProps = {
   isLoading: false,
 };
 
-export default TaskItem;
+export default connect(
+  state => ({
+    ownUserId: state.profile.user._id,
+  }),
+  dispatch => bindActionCreators({
+    requestMarkUpToDateFromTasks,
+    requestDismissTask,
+    requestApproveCardFromTasks,
+    openCard,
+  }, dispatch)
+)(TaskItem);

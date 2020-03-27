@@ -43,20 +43,6 @@ import { getStyleApplicationFn } from '../../utils/style';
 import { createSelectOptions } from '../../utils/select';
 const s = getStyleApplicationFn(style);
 
-@connect(
-  state => ({
-    dockExpanded: state.display.dockExpanded,
-    ...state.ask,
-    user: state.profile.user,
-    token: state.auth.token,
-  }),
-  dispatch => bindActionCreators({
-    expandDock,
-    ...askActions,
-    requestSearchCards,
-  }, dispatch)
-)
-
 class Ask extends Component {
   constructor(props) {
     super(props);
@@ -563,4 +549,16 @@ class Ask extends Component {
   }
 }
 
-export default Ask;
+export default connect(
+  state => ({
+    dockExpanded: state.display.dockExpanded,
+    ...state.ask,
+    user: state.profile.user,
+    token: state.auth.token,
+  }),
+  dispatch => bindActionCreators({
+    expandDock,
+    ...askActions,
+    requestSearchCards,
+  }, dispatch)
+)(Ask);

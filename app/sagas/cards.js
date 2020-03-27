@@ -106,8 +106,8 @@ function* getCard() {
     const card = yield call(doGet, `/cards/${cardId}`);
     yield put(handleGetCardSuccess(cardId, card));
   } catch (error) {
-    const { response: { data, status } } = error;
-    yield put(handleGetCardError(cardId, data.error));
+    const { response: { data: { error: { message } }, status } } = error;
+    yield put(handleGetCardError(cardId, { status, message }));
   }
 }
 
@@ -179,8 +179,8 @@ function* createCard() {
       yield put(handleUpdateCardError(cardId, INCOMPLETE_CARD_ERROR));
     }
   } catch (error) {
-    const { response: { data } } = error;
-    yield put(handleCreateCardError(cardId, data.error));
+    const { response: { data: { error: { message } } } } = error;
+    yield put(handleCreateCardError(cardId, message));
   }
 }
 
@@ -197,8 +197,8 @@ function* updateCard({ isUndocumented, closeCard }) {
       yield put(handleUpdateCardError(cardId, INCOMPLETE_CARD_ERROR, closeCard));
     }
   } catch (error) {
-    const { response: { data } } = error;
-    yield put(handleUpdateCardError(cardId, data.error, closeCard));
+    const { response: { data: { error: { message } } } } = error;
+    yield put(handleUpdateCardError(cardId, message, closeCard));
   }
 }
 
@@ -209,8 +209,8 @@ function* deleteCard() {
     yield call(doDelete, `/cards/${cardId}`);
     yield put(handleDeleteCardSuccess(cardId));
   } catch (error) {
-    const { response: { data } } = error;
-    yield put(handleDeleteCardError(cardId, data.error));
+    const { response: { data: { error: { message } } } } = error;
+    yield put(handleDeleteCardError(cardId, message));
   }
 }
 
@@ -223,8 +223,8 @@ function* toggleUpvote({ upvotes }) {
     const card = yield call(doPut, `/cards/${cardId}`, { upvotes });
     yield put(handleToggleUpvoteSuccess(card));
   } catch (error) {
-    const { response: { data } } = error;
-    yield put(handleToggleUpvoteError(cardId, data.error, oldUpvotes));
+    const { response: { data: { error: { message } } } } = error;
+    yield put(handleToggleUpvoteError(cardId, message, oldUpvotes));
   }
 }
 
@@ -234,8 +234,8 @@ function* markUpToDate() {
     const { updatedCard } = yield call(doPost, '/cards/uptodate', { cardId });
     yield put(handleMarkUpToDateSuccess(updatedCard));
   } catch (error) {
-    const { response: { data } } = error;
-    yield put(handleMarkUpToDateError(cardId, data.error));
+    const { response: { data: { error: { message } } } } = error;
+    yield put(handleMarkUpToDateError(cardId, message));
   }
 }
 
@@ -247,8 +247,8 @@ function* markOutOfDate() {
     const { updatedCard } = yield call(doPost, '/cards/outofdate', { cardId, reason });
     yield put(handleMarkOutOfDateSuccess(updatedCard));
   } catch (error) {
-    const { response: { data } } = error;
-    yield put(handleMarkOutOfDateError(cardId, data.error));
+    const { response: { data: { error: { message } } } } = error;
+    yield put(handleMarkOutOfDateError(cardId, message));
   }
 }
 
@@ -259,8 +259,8 @@ function* approveCard() {
     const { updatedCard } = yield call(doPost, '/cards/approve', { cardId });
     yield put(handleApproveCardSuccess(updatedCard));    
   } catch (error) {
-    const { response: { data } } = error;
-    yield put(handleApproveCardError(cardId, data.error));
+    const { response: { data: { error: { message } } } } = error;
+    yield put(handleApproveCardError(cardId, message));
   }
 }
 
@@ -271,8 +271,8 @@ function* addBookmark({ cardId }) {
     yield call(doPost, `/cards/${cardId}/bookmark`);
     yield put(handleAddBookmarkSuccess(cardId, activeCard));
   } catch (error) {
-    const { response: { data } } = error;
-    yield put(handleAddBookmarkError(cardId, data.error));
+    const { response: { data: { error: { message } } } } = error;
+    yield put(handleAddBookmarkError(cardId, message));
   }
 }
 
@@ -281,8 +281,8 @@ function* removeBookmark({ cardId }) {
     yield call(doPost, `/cards/${cardId}/bookmark/remove`);
     yield put(handleRemoveBookmarkSuccess(cardId));
   } catch (error) {
-    const { response: { data } } = error;
-    yield put(handleRemoveBookmarkError(cardId, data.error));
+    const { response: { data: { error: { message } } } } = error;
+    yield put(handleRemoveBookmarkError(cardId, message));
   }
 }
 
@@ -296,8 +296,8 @@ function* addAttachment({ key, file }) {
     const attachment = yield call(doPost, '/files/upload', formData, { isForm: true });
     yield put(handleAddCardAttachmentSuccess(cardId, key, attachment));
   } catch (error) {
-    const { response: { data } } = error;
-    yield put(handleAddCardAttachmentError(cardId, key, data.error));
+    const { response: { data: { error: { message } } } } = error;
+    yield put(handleAddCardAttachmentError(cardId, key, message));
   }
 }
 
@@ -310,8 +310,8 @@ function* getSlackThread() {
     const { slackReplies } = yield call(doPost, '/slack/getThreadReplies', { threadId, channelId });
     yield put(handleGetSlackThreadSuccess(activeCard._id, slackReplies));
   } catch (error) {
-    const { response: { data } } = error;
-    yield put(handleGetSlackThreadError(activeCard._id, data.error));
+    const { response: { data: { error: { message } } } } = error;
+    yield put(handleGetSlackThreadError(activeCard._id, message));
   }
 }
 

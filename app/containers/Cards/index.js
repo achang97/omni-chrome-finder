@@ -24,27 +24,7 @@ import { DEBOUNCE_60_HZ, CARD_DIMENSIONS, MODAL_TYPE, CARD_STATUS } from '../../
 import { getStyleApplicationFn } from '../../utils/style';
 const s = getStyleApplicationFn(style);
 
-@connect(
-  state => ({
-    cards: state.cards.cards,
-    activeCardIndex: state.cards.activeCardIndex,
-    activeCard: state.cards.activeCard,
-    cardsWidth: state.cards.cardsWidth,
-    cardsHeight: state.cards.cardsHeight,
-    showCloseModal: state.cards.showCloseModal,
-  }),
-  dispatch => bindActionCreators({
-    closeCard,
-    closeAllCards,
-    setActiveCardIndex,
-    adjustCardsDimensions,
-    openCardModal,
-    openModal,
-    closeModal
-  }, dispatch)
-)
-
-export default class Cards extends Component {
+class Cards extends Component {
   constructor(props) {
     super(props);
     this.state = {
@@ -218,3 +198,23 @@ export default class Cards extends Component {
     );
   }
 }
+
+export default connect(
+  state => ({
+    cards: state.cards.cards,
+    activeCardIndex: state.cards.activeCardIndex,
+    activeCard: state.cards.activeCard,
+    cardsWidth: state.cards.cardsWidth,
+    cardsHeight: state.cards.cardsHeight,
+    showCloseModal: state.cards.showCloseModal,
+  }),
+  dispatch => bindActionCreators({
+    closeCard,
+    closeAllCards,
+    setActiveCardIndex,
+    adjustCardsDimensions,
+    openCardModal,
+    openModal,
+    closeModal
+  }, dispatch)
+)(Cards);

@@ -24,24 +24,7 @@ import style from './navigate.css';
 import { getStyleApplicationFn } from '../../utils/style';
 const s = getStyleApplicationFn(style);
 
-@connect(
-  state => ({
-    ...state.navigate,
-    ...state.search.cards[SEARCH_TYPE.NAVIGATE],
-    user: state.profile.user,
-  }),
-  dispatch =>
-  bindActionCreators(
-    {
-      ...navigateActions,
-      requestSearchCards,
-      clearSearchCards,
-    },
-    dispatch
-  )
-)
-
-export default class Navigate extends Component {
+class Navigate extends Component {
   componentDidMount() {
     this.requestSearchCards(true);
   }
@@ -174,3 +157,20 @@ export default class Navigate extends Component {
     );
   }
 }
+
+export default connect(
+  state => ({
+    ...state.navigate,
+    ...state.search.cards[SEARCH_TYPE.NAVIGATE],
+    user: state.profile.user,
+  }),
+  dispatch =>
+  bindActionCreators(
+    {
+      ...navigateActions,
+      requestSearchCards,
+      clearSearchCards,
+    },
+    dispatch
+  )
+)(Navigate);

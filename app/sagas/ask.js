@@ -70,8 +70,8 @@ function* askQuestion() {
     });
     yield put(handleAskQuestionSuccess());
   } catch (error) {
-    const { response: { data } } = error;
-    yield put(handleAskQuestionError(data.error));
+    const { response: { data: { error: { message } } } } = error;
+    yield put(handleAskQuestionError(message));
   }
 }
 
@@ -80,8 +80,8 @@ function* getSlackConversations() {
     const { conversations } = yield call(doGet, '/slack/getAllConversations');
     yield put(handleGetSlackConversationsSuccess(conversations));
   } catch (error) {
-    const { response: { data } } = error;
-    yield put(handleGetSlackConversationsError(data.error));
+    const { response: { data: { error: { message } } } } = error;
+    yield put(handleGetSlackConversationsError(message));
   }
 }
 
@@ -93,8 +93,8 @@ function* addAttachment({ key, file }) {
     const attachment = yield call(doPost, '/files/upload', formData, { isForm: true });
     yield put(handleAddAskAttachmentSuccess(key, attachment));
   } catch (error) {
-    const { response: { data } } = error;
-    yield put(handleAddAskAttachmentError(key, data.error));
+    const { response: { data: { error: { message } } } } = error;
+    yield put(handleAddAskAttachmentError(key, message));
   }
 }
 
@@ -105,8 +105,8 @@ function* removeAttachment({ key }) {
     }
     yield put(handleRemoveAskAttachmentSuccess(key));
   } catch (error) {
-    const { response: { data } } = error;
-    yield put(handleRemoveAskAttachmentError(key, data.error));
+    const { response: { data: { error: { message } } } } = error;
+    yield put(handleRemoveAskAttachmentError(key, message));
   }
 }
 
@@ -116,7 +116,7 @@ function* submitFeedback() {
     yield call(doPost, '/feedback', { feedback });
     yield put(handleSubmitFeedbackSuccess());
   } catch (error) {
-    const { response: { data } } = error;
-    yield put(handleSubmitFeedbackError(data.error));
+    const { response: { data: { error: { message } } } } = error;
+    yield put(handleSubmitFeedbackError(message));
   }  
 }

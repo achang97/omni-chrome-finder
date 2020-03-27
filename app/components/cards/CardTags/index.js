@@ -20,16 +20,6 @@ import { getStyleApplicationFn } from '../../../utils/style';
 
 const s = getStyleApplicationFn(style);
 
-@connect(
-  state => ({
-    tagOptions: state.search.tags,
-    isSearchingTags: state.search.isSearchingTags,
-  }),
-  dispatch => bindActionCreators({
-    requestSearchTags,
-  }, dispatch)
-)
-
 class CardTags extends Component {
   constructor(props) {
     super(props);
@@ -199,4 +189,12 @@ CardTags.defaultProps = {
   hideSelectOnBlur: false,
 };
 
-export default CardTags;
+export default connect(
+  state => ({
+    tagOptions: state.search.tags,
+    isSearchingTags: state.search.isSearchingTags,
+  }),
+  dispatch => bindActionCreators({
+    requestSearchTags,
+  }, dispatch)
+)(CardTags);

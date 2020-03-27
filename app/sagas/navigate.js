@@ -27,7 +27,7 @@ function* deleteCard({ cardId }) {
     yield call(doDelete, `/cards/${cardId}`);
     yield put(handleDeleteNavigateCardSuccess(cardId));
   } catch (error) {
-    const { response: { data } } = error;
-    yield put(handleDeleteNavigateCardError(cardId, data.error));
+    const { response: { data: { error: { message } } } } = error;
+    yield put(handleDeleteNavigateCardError(cardId, message));
   }
 }

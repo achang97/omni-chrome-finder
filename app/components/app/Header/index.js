@@ -19,16 +19,6 @@ import { getStyleApplicationFn } from '../../../utils/style';
 
 const s = getStyleApplicationFn(style);
 
-@connect(
-  state => ({
-    user: state.profile.user,
-    numAISuggestCards: state.search.cards[SEARCH_TYPE.AI_SUGGEST].cards.length,
-    numTasks: state.tasks.tasks.filter(({ resolved }) => !resolved).length,
-  }),
-  dispatch => bindActionCreators({
-  }, dispatch)
-)
-
 class Header extends Component {
   constructor(props) {
     super(props);
@@ -80,4 +70,12 @@ class Header extends Component {
 }
 
 
-export default withRouter(Header);
+export default connect(
+  state => ({
+    user: state.profile.user,
+    numAISuggestCards: state.search.cards[SEARCH_TYPE.AI_SUGGEST].cards.length,
+    numTasks: state.tasks.tasks.filter(({ resolved }) => !resolved).length,
+  }),
+  dispatch => bindActionCreators({
+  }, dispatch)
+)(withRouter(Header));

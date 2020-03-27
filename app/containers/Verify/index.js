@@ -15,28 +15,6 @@ const s = getStyleApplicationFn(style);
 
 import logo from '../../assets/images/logos/logo.svg';
 
-@connect(
-  state => ({
-    verificationCode: state.auth.verificationCode,
-    isVerifying: state.auth.isVerifying,
-    verifyError: state.auth.verifyError,
-    isResendingVerification: state.auth.isResendingVerification,
-    resendVerificationSuccess: state.auth.resendVerificationSuccess,
-    resendVerificationError: state.auth.resendVerificationError,
-  }),
-  dispatch =>
-    bindActionCreators(
-      {
-        updateVerificationCode,
-        requestVerify,
-        requestResendVerificationEmail,
-        clearResendVerificationInfo,
-        logout
-      },
-      dispatch
-    )
-)
-
 class Verify extends Component {
   componentDidUpdate(prevProps) {
     if (!prevProps.resendVerificationSuccess && this.props.resendVerificationSuccess) {
@@ -105,4 +83,24 @@ class Verify extends Component {
   }
 }
 
-export default Verify;
+export default connect(
+  state => ({
+    verificationCode: state.auth.verificationCode,
+    isVerifying: state.auth.isVerifying,
+    verifyError: state.auth.verifyError,
+    isResendingVerification: state.auth.isResendingVerification,
+    resendVerificationSuccess: state.auth.resendVerificationSuccess,
+    resendVerificationError: state.auth.resendVerificationError,
+  }),
+  dispatch =>
+    bindActionCreators(
+      {
+        updateVerificationCode,
+        requestVerify,
+        requestResendVerificationEmail,
+        clearResendVerificationInfo,
+        logout
+      },
+      dispatch
+    )
+)(Verify);

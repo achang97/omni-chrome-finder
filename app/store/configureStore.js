@@ -1,7 +1,11 @@
 import { NODE_ENV } from '../utils/constants';
 
+let filePath;
 if (process.env.NODE_ENV === NODE_ENV.PROD) {
-  module.exports = require('./configureStore.prod');
+  filePath = './configureStore.prod';
 } else {
-  module.exports = require('./configureStore.dev');
+  filePath = './configureStore.dev';
 }
+
+const createStore = require('./configureStore.dev').default;
+export default createStore;

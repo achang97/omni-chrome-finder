@@ -20,16 +20,6 @@ import { createSelectOptions, simpleInputFilter } from '../../../utils/select';
 import { getStyleApplicationFn } from '../../../utils/style';
 const s = getStyleApplicationFn();
 
-@connect(
-  state => ({
-    userOptions: state.search.users,
-    isSearchingUsers: state.search.isSearchingUsers,
-  }),
-  dispatch => bindActionCreators({
-    requestSearchUsers,
-  }, dispatch)
-)
-
 class CardUsers extends Component {
   constructor(props) {
     super(props);
@@ -123,4 +113,12 @@ CardUsers.defaultProps = {
   showSelect: false,
 };
 
-export default CardUsers;
+export default connect(
+  state => ({
+    userOptions: state.search.users,
+    isSearchingUsers: state.search.isSearchingUsers,
+  }),
+  dispatch => bindActionCreators({
+    requestSearchUsers,
+  }, dispatch)
+)(CardUsers);

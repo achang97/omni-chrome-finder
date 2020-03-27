@@ -23,19 +23,6 @@ import { getStyleApplicationFn } from '../../../utils/style';
 
 const s = getStyleApplicationFn(style);
 
-@connect(
-  state => ({
-    ...state.search.cards[SEARCH_TYPE.POPOUT],
-  }),
-  dispatch =>
-  bindActionCreators(
-    {
-      requestSearchCards,
-    },
-    dispatch
-  )
-)
-
 class SuggestionPanel extends Component {
   constructor(props) {
     super(props);
@@ -289,4 +276,15 @@ SuggestionPanel.propTypes = {
   query: PropTypes.string.isRequired,
 };
 
-export default SuggestionPanel;
+export default connect(
+  state => ({
+    ...state.search.cards[SEARCH_TYPE.POPOUT],
+  }),
+  dispatch =>
+  bindActionCreators(
+    {
+      requestSearchCards,
+    },
+    dispatch
+  )
+)(SuggestionPanel);

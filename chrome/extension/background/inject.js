@@ -18,7 +18,11 @@ function injectExtension(tabId) {
 function getActiveTab() {
   return new Promise((resolve, reject) => {
     chrome.tabs.query({ active: true, lastFocusedWindow: true }, function(tabs) {
-      resolve(tabs[0]);
+      if (tabs.length !== 0) {
+        resolve(tabs[0])
+      } else {
+        reject('No active tab.');
+      }
     });
   });
 }
