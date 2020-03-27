@@ -10,6 +10,7 @@ const customPath = path.join(__dirname, './customPublicPath');
 module.exports = {
   entry: {
     background: [customPath, path.join(__dirname, '../chrome/extension/background')],
+    inject: [customPath, path.join(__dirname, '../chrome/extension/inject')],
   },
   output: {
     path: path.join(__dirname, '../build/js'),
@@ -27,8 +28,7 @@ module.exports = {
     }),
     new webpack.DefinePlugin({
       'process.env': {
-        NODE_ENV: JSON.stringify('production'),
-        ONE_SIGNAL_APP_ID: JSON.stringify(process.env.ONE_SIGNAL_APP_ID_PROD),
+        NODE_ENV: JSON.stringify('production')
       }
     })
   ],

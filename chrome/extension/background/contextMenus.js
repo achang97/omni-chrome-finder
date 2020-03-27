@@ -27,6 +27,9 @@ const ACTION_MENU_ITEMS = [
   },
 ];
 
+// Remove all context menus
+chrome.contextMenus.removeAll();
+
 // Create Main Menu
 chrome.contextMenus.create({
   id: IDS.PARENT,
