@@ -5,7 +5,7 @@ import { withRouter } from 'react-router-dom';
 import Button from '../../../components/common/Button';
 import Loader from '../../../components/common/Loader';
 
-import logo from '../../../assets/images/logos/logo.png';
+import logo from '../../../assets/images/logos/logo.svg';
 
 import { getStyleApplicationFn } from '../../../utils/style';
 const s = getStyleApplicationFn();
@@ -15,10 +15,12 @@ const AuthView = ({ title, isLoading, inputBody, error, submitButtonProps, foote
     <div className={s('flex-1 flex flex-col pt-3xl')}>
       <div className={s('px-2xl')}>
         <div className={s('flex justify-between')}>
-          <div className={s('text-xl font-semibold')}>Welcome!</div>
-          <img src={logo} className={s('h-3xl')} />
+          <div>
+            <div className={s('text-xl font-semibold')}>Welcome!</div>
+            <div className={s('text-sm text-gray-dark mt-reg mb-2xl')}> {title} </div>
+          </div>
+          <img src={logo} className={s('h-4xl')} />
         </div>
-        <div className={s('text-sm text-gray-dark mt-reg mb-2xl')}> {title} </div>
         { isLoading ?
           <Loader className={s('mb-reg')} /> :
           <div className={s('flex flex-col mb-reg')}>

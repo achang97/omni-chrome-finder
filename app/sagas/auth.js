@@ -67,7 +67,6 @@ function* verify() {
     yield call(doPost, '/users/verifyCheck', { code: verificationCode });
     yield put(handleVerifySuccess());
   } catch (error) {
-    console.log(error)
     const { response: { data } } = error;
     yield put(handleVerifyError(data.error));
   }

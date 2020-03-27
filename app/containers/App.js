@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import { Route, Switch, Redirect, withRouter } from 'react-router-dom';
 import Dock from 'react-dock';
 import { CARD_URL_REGEX, SLACK_URL_REGEX, TASK_URL_REGEX, TASKS_SECTIONS, TASKS_SECTION_TYPE, TASK_TYPE, SEARCH_TYPE, NOOP } from '../utils/constants';
-import { addScript } from '../utils/heap';
+import { identifyUser } from '../utils/heap';
 import queryString from 'query-string';
 
 import { bindActionCreators } from 'redux';
@@ -47,7 +47,6 @@ const dockPanelStyles = {
     showAISuggest: state.search.cards[SEARCH_TYPE.AI_SUGGEST].cards.length !== 0,
     tasks: state.tasks.tasks,
     user: state.profile.user,
-    isVerified: state.profile.user && state.profile.user.isVerified
   }),
   dispatch =>
     bindActionCreators(
@@ -65,25 +64,15 @@ const dockPanelStyles = {
 
 class App extends Component {
   componentDidMount() {
-    const { isLoggedIn, isVerified, requestGetTasks, requestGetUser, user } = this.props;
+    const { isLoggedIn, requestGetTasks, requestGetUser, user } = this.props;
 
     if (isLoggedIn) {
       requestGetUser();
-      if(!window.location.href.includes("heapanalytics")) {
-          let identify = `window.heap.identify("${user.email}"); 
-            window.heap.addUserProperties({'Name': "${user.firstname}" + " " + "${user.lastname}",'Company': "${user.company.companyName}", 'Role': "${user.role}"});`
-          addScript({code: identify, shouldRemove: true})
-      }    
-      if (isVerified) {
+      identifyUser(user);
+      if (user && user.isVerified) {
         requestGetTasks();
         this.openChromeExtension();
       }
-    }
-  }
-
-  componentDidUpdate(prevProps) {
-    if (!prevProps.isVerified && this.props.isVerified) {
-      this.openChromeExtension();
     }
   }
 
@@ -153,13 +142,13 @@ class App extends Component {
       isLoggedIn,
       showAISuggest,
       user,
-      isVerified,
       location: { pathname }
     } = this.props;
 
+    const isVerified = user && user.isVerified;
     const showFullDock = dockExpanded || (pathname !== '/ask' && isLoggedIn && isVerified);
 
-    let redirectLink;
+    let redirectLink = '/verify';
     if (isLoggedIn) {
       redirectLink = isVerified ? '/ask' : '/verify';
     } else {
