@@ -1,5 +1,5 @@
 import _ from 'lodash';
-import { CHROME_MESSAGE, TASK_URL_BASE } from '../../../app/utils/constants';
+import { CHROME_MESSAGE, TASK_URL_BASE, NODE_ENV } from '../../../app/utils/constants';
 import { getStorage, setStorage } from '../../../app/utils/storage';
 import { BASE_URL } from '../../../app/utils/request';
 import { addStorageListener } from '../../../app/utils/storage';
@@ -24,7 +24,7 @@ function getActiveTab() {
 }
 
 function loadScript(name, tabId, cb) {
-  if (process.env.NODE_ENV === 'production') {
+  if (process.env.NODE_ENV === NODE_ENV.PROD) {
     chrome.tabs.executeScript(tabId, { file: `/js/${name}.bundle.js`, runAt: 'document_end' }, cb);
   } else {
     // dev: async fetch bundle
@@ -76,7 +76,7 @@ function initSocket() {
   getStorage('auth').then((auth) => {
     const token = auth && auth.token;
     if (token && !socket) {
-      const protocol = /*process.env.NODE_ENV === 'development' ? 'ws://' :*/ 'wss://';
+      const protocol = process.env.NODE_ENV === NODE_ENV.DEV ? 'ws://' : 'wss://';
       const wsToken = token.replace('Bearer ', '');
       socket = new WebSocket(`${protocol}${BASE_URL}/ws/generic?auth=${wsToken}`);
 

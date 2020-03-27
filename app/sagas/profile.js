@@ -64,7 +64,6 @@ function* getUser() {
     const { user, ...userAnalytics } = analytics;
     yield put(handleGetUserSuccess({ ...userJson, integrations }, userAnalytics));
   } catch (error) {
-    console.log(error)
     const { response: { data } } = error;
     yield put(handleGetUserError(data.error));
   }
