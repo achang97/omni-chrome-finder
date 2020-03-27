@@ -1,4 +1,5 @@
 import axios from 'axios';
+import { NODE_ENV } from './constants';
 import { call, select, put } from 'redux-saga/effects';
 import { logout } from '../actions/auth';
 
@@ -12,7 +13,7 @@ const REQUEST_TYPE = {
 let protocol;
 let url;
 
-if (process.env.NODE_ENV === 'development') {
+if (process.env.NODE_ENV === NODE_ENV.DEV) {
   url = 'localhost:8000';
   protocol = 'http://';
 } else {

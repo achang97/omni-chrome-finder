@@ -212,5 +212,10 @@ export const HTTP_STATUS_CODE = {
   NOT_FOUND: 404,
 }
 
+export const NODE_ENV = {
+  DEV: 'development',
+  PROD: 'production',
+}
+
 // Misc.
 export const NOOP = () => {};

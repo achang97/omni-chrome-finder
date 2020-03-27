@@ -1,7 +1,7 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
 import { getStorage, setStorage } from '../../app/utils/storage';
-import { MAIN_CONTAINER_ID } from '../../app/utils/constants';
+import { MAIN_CONTAINER_ID, NODE_ENV } from '../../app/utils/constants';
 import { addScript, isHeap } from '../../app/utils/heap';
 import { initialState as authInitialState } from '../../app/reducers/auth';
 import { initialState as profileInitialState } from '../../app/reducers/profile';
@@ -20,7 +20,7 @@ function render(state, wrapper) {
 (function () {
   const body = document.body;
 
-  const heapId = process.env.NODE_ENV === 'development' ? "3148523243" :"26662418";
+  const heapId = process.env.NODE_ENV === NODE_ENV.DEV ? "3148523243" : "26662418";
   if(!isHeap()) {
     const script = `
       window.heap=window.heap||[],heap.load=function(e,t){window.heap.appid=e,window.heap.config=t=t||{};var r=document.createElement("script");r.type="text/javascript",r.async=!0,r.src="https://cdn.heapanalytics.com/js/heap-"+e+".js";var a=document.getElementsByTagName("script")[0];a.parentNode.insertBefore(r,a);for(var n=function(e){return function(){heap.push([e].concat(Array.prototype.slice.call(arguments,0)))}},p=["addEventProperties","addUserProperties","clearEventProperties","identify","resetIdentity","removeEventProperty","setEventProperties","track","unsetEventProperty"],o=0;o<p.length;o++)heap[p[o]]=n(p[o])};
