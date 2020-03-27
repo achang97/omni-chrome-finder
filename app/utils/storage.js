@@ -1,4 +1,8 @@
-export const getStorageName = name => `OMNI_EXTENSION_${name}`;
+import { NODE_ENV } from './constants';
+
+export const getStorageName = name => (
+  `OMNI_EXTENSION_${process.env.NODE_ENV === 'development' ? 'DEV' : 'PROD'}_${name}`
+);
 
 export function setStorage(key, value) {
   if (chrome.storage) {
