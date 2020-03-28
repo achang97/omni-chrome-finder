@@ -49,6 +49,7 @@ class Verify extends Component {
           color="primary"
           text="Verify"
           onClick={requestVerify}
+          disabled={verificationCode === ''}
           className={s('self-stretch')}
         />
         { verifyError &&
@@ -61,7 +62,6 @@ class Verify extends Component {
           className={s('self-stretch p-sm')}
           icon={isResendingVerification ? <Loader size="xs" className={s('ml-sm')} /> : null}
           iconLeft={false}
-          disabled={verificationCode === ''}
           onClick={requestResendVerificationEmail}
         />
         <AnimateHeight height={resendVerificationSuccess ? 'auto' : 0}>
