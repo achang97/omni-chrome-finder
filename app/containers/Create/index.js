@@ -21,23 +21,7 @@ import { getStyleApplicationFn } from '../../utils/style';
 import { EDITOR_TYPE } from '../../utils/constants';
 const s = getStyleApplicationFn(style);
 
-@connect(
-  state => ({
-    ...state.create,
-    user: state.profile.user,
-  }),
-  dispatch =>
-    bindActionCreators(
-      {
-        openCard,
-        requestSearchCards,
-        ...createActions,
-      },
-      dispatch
-    )
-)
-
-export default class Create extends Component {
+class Create extends Component {
   constructor(props) {
     super(props);
 
@@ -140,3 +124,19 @@ export default class Create extends Component {
     );
   }
 }
+
+export default connect(
+  state => ({
+    ...state.create,
+    user: state.profile.user,
+  }),
+  dispatch =>
+    bindActionCreators(
+      {
+        openCard,
+        requestSearchCards,
+        ...createActions,
+      },
+      dispatch
+    )
+)(Create);

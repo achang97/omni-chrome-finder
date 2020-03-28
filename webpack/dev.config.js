@@ -26,6 +26,7 @@ const baseDevConfig = () => ({
   hotMiddleware: {
     path: '/js/__webpack_hmr'
   },
+  mode: 'development',
   output: {
     path: path.join(__dirname, '../dev/js'),
     filename: '[name].bundle.js',
@@ -39,8 +40,7 @@ const baseDevConfig = () => ({
       __HOST__: `'${host}'`,
       __PORT__: port,
       'process.env': {
-        NODE_ENV: JSON.stringify('development'),
-        ONE_SIGNAL_APP_ID: JSON.stringify(process.env.ONE_SIGNAL_APP_ID_DEV),
+        NODE_ENV: JSON.stringify('development')
       }
     })
   ],
@@ -53,7 +53,7 @@ const baseDevConfig = () => ({
       loader: 'babel-loader',
       exclude: /node_modules/,
       options: {
-        presets: ['react-hmre']
+        plugins: ['react-hot-loader/babel']
       }
     }, {
       test: /\.css$/,

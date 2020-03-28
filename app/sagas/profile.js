@@ -48,8 +48,8 @@ function* updatePermissions({ type, permission }) {
     const { userJson } = yield call(doPut, '/users', { update });
     yield put(handleUpdateUserPermissionsSuccess(type, userJson));
   } catch (error) {
-    const { response: { data } } = error;
-    yield put(handleUpdateUserPermissionsError(type, data.error));
+    const { response: { data: { error: { message } } } } = error;
+    yield put(handleUpdateUserPermissionsError(type, message));
   }
 }
 
@@ -64,8 +64,8 @@ function* getUser() {
     const { user, ...userAnalytics } = analytics;
     yield put(handleGetUserSuccess({ ...userJson, integrations }, userAnalytics));
   } catch (error) {
-    const { response: { data } } = error;
-    yield put(handleGetUserError(data.error));
+    const { response: { data: { error: { message } } } } = error;
+    yield put(handleGetUserError(message));
   }
 }
 
@@ -75,8 +75,8 @@ function* updateUser() {
     const { userJson } = yield call(doPut, '/users', { update: userEdits });
     yield put(handleSaveUserSuccess(userJson));
   } catch (error) {
-    const { response: { data } } = error;
-    yield put(handleSaveUserError(data.error));
+    const { response: { data: { error: { message } } } } = error;
+    yield put(handleSaveUserError(message));
   }
 }
 
@@ -85,8 +85,8 @@ function* logoutUserIntegration({ integration }) {
     const user = yield call(doPost, `/${integration}/signout`);
     yield put(handleLogoutUserIntegrationSuccess(integration, user));
   } catch (error) {
-    const { response: { data } } = error;
-    yield put(handleLogoutUserIntegrationError(integration, data.error));
+    const { response: { data: { error: { message } } } } = error;
+    yield put(handleLogoutUserIntegrationError(integration, message));
   }
 }
 

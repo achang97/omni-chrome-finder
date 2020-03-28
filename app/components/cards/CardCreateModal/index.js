@@ -34,25 +34,6 @@ import { getStyleApplicationFn } from '../../../utils/style';
 
 const s = getStyleApplicationFn(style);
 
-@connect(
-  state => ({
-    ...state.cards.activeCard,
-  }),
-  dispatch => bindActionCreators({
-    requestCreateCard,
-    requestUpdateCard,
-    closeCardModal,
-    addCardOwner,
-    removeCardOwner,
-    updateCardTags,
-    removeCardTag,
-    updateCardKeywords,
-    updateCardVerificationInterval,
-    updateCardPermissions,
-    updateCardPermissionGroups
-  }, dispatch)
-)
-
 class CardCreateModal extends Component {
   constructor(props) {
     super(props);
@@ -234,4 +215,21 @@ class CardCreateModal extends Component {
   }
 }
 
-export default CardCreateModal;
+export default connect(
+  state => ({
+    ...state.cards.activeCard,
+  }),
+  dispatch => bindActionCreators({
+    requestCreateCard,
+    requestUpdateCard,
+    closeCardModal,
+    addCardOwner,
+    removeCardOwner,
+    updateCardTags,
+    removeCardTag,
+    updateCardKeywords,
+    updateCardVerificationInterval,
+    updateCardPermissions,
+    updateCardPermissionGroups
+  }, dispatch)
+)(CardCreateModal);

@@ -22,23 +22,7 @@ import { CARD_STATUS, TASK_TYPE, TASKS_SECTION_TYPE, TASKS_SECTIONS, TASKS_TAB_O
 import { getStyleApplicationFn } from '../../utils/style';
 const s = getStyleApplicationFn(style);
 
-@connect(
-  state => ({
-    ...state.tasks,
-  }),
-  dispatch =>
-  bindActionCreators(
-    {
-      updateTasksOpenSection,
-      requestGetTasks,
-      updateTasksTab,
-      removeTask
-    },
-    dispatch
-  )
-)
-
-export default class Tasks extends Component {
+class Tasks extends Component {
   componentDidMount() {
     const { requestGetTasks } = this.props;
     requestGetTasks();
@@ -234,3 +218,19 @@ export default class Tasks extends Component {
     );
   }
 }
+
+export default connect(
+  state => ({
+    ...state.tasks,
+  }),
+  dispatch =>
+  bindActionCreators(
+    {
+      updateTasksOpenSection,
+      requestGetTasks,
+      updateTasksTab,
+      removeTask
+    },
+    dispatch
+  )
+)(Tasks);

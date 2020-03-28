@@ -131,8 +131,8 @@ function* searchCards({ type, query, clearCards }) {
     yield put(handleSearchCardsSuccess(type, cards, externalResults, clearCards));
   } catch (error) {
     if (!isCancel(error)) {
-      const { response: { data } } = error;
-      yield put(handleSearchCardsError(type, data.error));
+      const { response: { data: { error: { message } } } } = error;
+      yield put(handleSearchCardsError(type, message));
     }
   }
 }
@@ -145,8 +145,8 @@ function* searchTags({ name }) {
     yield put(handleSearchTagsSuccess(tags));
   } catch (error) {
     if (!isCancel(error)) {
-      const { response: { data } } = error;
-      yield put(handleSearchTagsError(data.error));
+      const { response: { data: { error: { message } } } } = error;
+      yield put(handleSearchTagsError(message));
     }
   }
 }
@@ -159,8 +159,8 @@ function* searchUsers({ name }) {
     yield put(handleSearchUsersSuccess(users));
   } catch (error) {
     if (!isCancel(error)) {
-      const { response: { data } } = error;
-      yield put(handleSearchUsersError(data.error));
+      const { response: { data: { error: { message } } } } = error;
+      yield put(handleSearchUsersError(message));
     }
   }
 }
@@ -173,8 +173,8 @@ function* searchPermissionGroups({ name }) {
     yield put(handleSearchPermissionGroupsSuccess(permissiongroups));
   } catch (error) {
     if (!isCancel(error)) {
-      const { response: { data } } = error;
-      yield put(handleSearchPermissionGroupsError(data.error));
+      const { response: { data: { error: { message } } } } = error;
+      yield put(handleSearchPermissionGroupsError(message));
     }
   }
 }

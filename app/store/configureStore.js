@@ -1,7 +1,10 @@
 import { NODE_ENV } from '../utils/constants';
 
+let createStore;
 if (process.env.NODE_ENV === NODE_ENV.PROD) {
-  module.exports = require('./configureStore.prod');
+  createStore = require('./configureStore.prod').default;
 } else {
-  module.exports = require('./configureStore.dev');
+  createStore = require('./configureStore.dev').default;
 }
+
+export default createStore;

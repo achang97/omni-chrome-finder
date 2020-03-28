@@ -33,20 +33,6 @@ import { getStyleApplicationFn } from '../../../utils/style';
 
 const s = getStyleApplicationFn(style);
 
-@connect(
-  state => ({
-    user: state.profile.user,
-
-    ...state.cards.activeCard,
-    cardsHeight: state.cards.cardsHeight,
-    cardsWidth: state.cards.cardsWidth,
-    activeCardIndex: state.cards.activeCardIndex,
-  }),
-  dispatch => bindActionCreators({
-    ...cardActions,
-  }, dispatch)
-)
-
 class CardContent extends Component {
   constructor(props) {
     super(props);
@@ -792,4 +778,16 @@ class CardContent extends Component {
   }
 }
 
-export default CardContent;
+export default connect(
+  state => ({
+    user: state.profile.user,
+
+    ...state.cards.activeCard,
+    cardsHeight: state.cards.cardsHeight,
+    cardsWidth: state.cards.cardsWidth,
+    activeCardIndex: state.cards.activeCardIndex,
+  }),
+  dispatch => bindActionCreators({
+    ...cardActions,
+  }, dispatch)
+)(CardContent);

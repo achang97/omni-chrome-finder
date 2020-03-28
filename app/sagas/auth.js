@@ -43,8 +43,8 @@ function* login() {
     const { userJson, token, refreshToken } = yield call(doPost, '/users/login', { email: loginEmail, password: loginPassword });
     yield put(handleLoginSuccess(userJson, token, refreshToken));
   } catch (error) {
-    const { response: { data } } = error;
-    yield put(handleLoginError(data.error));
+    const { response: { data: { error: { message } } } } = error;
+    yield put(handleLoginError(message));
   }
 }
 
@@ -56,8 +56,8 @@ function* signup() {
     });
     yield put(handleSignupSuccess(userJson, token, refreshToken));
   } catch (error) {
-    const { response: { data } } = error;
-    yield put(handleSignupError(data.error));
+    const { response: { data: { error: { message } } } } = error;
+    yield put(handleSignupError(message));
   }
 }
 
@@ -67,8 +67,8 @@ function* verify() {
     yield call(doPost, '/users/verifyCheck', { code: verificationCode });
     yield put(handleVerifySuccess());
   } catch (error) {
-    const { response: { data } } = error;
-    yield put(handleVerifyError(data.error));
+    const { response: { data: { error: { message } } } } = error;
+    yield put(handleVerifyError(message));
   }
 }
 
@@ -77,7 +77,7 @@ function* resendVerificationEmail() {
     yield call(doPost, '/users/resendVerification');
     yield put(handleResendVerificationEmailSuccess());
   } catch (error) {
-    const { response: { data } } = error;
-    yield put(handleResendVerificationEmailError(data.error));
+    const { response: { data: { error: { message } } } } = error;
+    yield put(handleResendVerificationEmailError(message));
   }
 }

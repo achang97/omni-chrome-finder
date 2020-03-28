@@ -10,7 +10,7 @@ import Root from '../../app/containers/Root';
 
 function render(state, wrapper) {
   // Import has to be here for Redux dev tools to work
-  const createStore = require('../../app/store/configureStore');
+  const createStore = require('../../app/store/configureStore').default;
   ReactDOM.render(
     <Root store={createStore(state)} />,
     wrapper

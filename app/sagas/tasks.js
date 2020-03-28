@@ -45,8 +45,8 @@ function* getTasks() {
     const { notifs: tasks } = yield call(doGet, '/notifications', { resolved: false });
     yield put(handleGetTasksSuccess(tasks));
   } catch (error) {
-    const { response: { data } } = error;
-    yield put(handleGetTasksError(data.error));
+    const { response: { data: { error: { message } } } } = error;
+    yield put(handleGetTasksError(message));
   }
 }
 
@@ -55,8 +55,8 @@ function* markUpToDate({ taskId, cardId }) {
     const { updatedCard } = yield call(doPost, '/cards/uptodate', { cardId });
     yield put(handleMarkUpToDateFromTasksSuccess(taskId, updatedCard));
   } catch (error) {
-    const { response: { data } } = error;
-    yield put(handleMarkUpToDateFromTasksError(taskId, data.error));
+    const { response: { data: { error: { message } } } } = error;
+    yield put(handleMarkUpToDateFromTasksError(taskId, message));
   }
 }
 
@@ -65,8 +65,8 @@ function* dismissTask({ taskId }) {
     yield call(doPut, '/notifications', { update: { resolved: true }, notificationId: taskId });
     yield put(handleDismissTaskSuccess(taskId));
   } catch (error) {
-    const { response: { data } } = error;
-    yield put(handleDismissTaskError(taskId, data.error));
+    const { response: { data: { error: { message } } } } = error;
+    yield put(handleDismissTaskError(taskId, message));
   }
 }
 
@@ -75,7 +75,7 @@ function* approveCard({ taskId, cardId }) {
     const { updatedCard } = yield call(doPost, '/cards/approve', { cardId });
     yield put(handleApproveCardFromTasksSuccess(taskId, updatedCard));
   } catch (error) {
-    const { response: { data } } = error;
-    yield put(handleApproveCardFromTasksError(taskId, data.error));
+    const { response: { data: { error: { message } } } } = error;
+    yield put(handleApproveCardFromTasksError(taskId, message));
   }
 }

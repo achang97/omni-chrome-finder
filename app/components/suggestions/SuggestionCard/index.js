@@ -34,14 +34,6 @@ const BUTTON_TYPE = {
   DELETE: 'DELETE'
 };
 
-@connect(
-  state => ({
-  }),
-  dispatch => bindActionCreators({
-    openCard,
-  }, dispatch)
-)
-
 class SuggestionCard extends Component {
   constructor(props) {
     super(props);
@@ -248,4 +240,10 @@ SuggestionCard.defaultProps = {
   showMoreMenu: false,
 };
 
-export default SuggestionCard;
+export default connect(
+  state => ({
+  }),
+  dispatch => bindActionCreators({
+    openCard,
+  }, dispatch)
+)(SuggestionCard);
