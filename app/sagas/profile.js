@@ -73,7 +73,7 @@ function* updateUser() {
   try {
     const { user, userEdits } = yield select(state => state.profile);
     const { userJson } = yield call(doPut, '/users', { update: userEdits });
-    yield put(handleSaveUserSuccess(userJson));
+    yield put(handleSaveUserSuccess({ ...userJson, integrations: user.integrations }));
   } catch (error) {
     const { response: { data: { error: { message } } } } = error;
     yield put(handleSaveUserError(message));

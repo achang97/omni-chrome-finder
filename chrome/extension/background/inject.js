@@ -144,6 +144,10 @@ chrome.browserAction.onClicked.addListener(async (tab) => {
       loadScript('inject', tabId, () => {
         chrome.tabs.sendMessage(tabId, { type: CHROME_MESSAGE.TOGGLE });
       });
+
+      if (!socket) {
+        initSocket();
+      }
     } else {
       chrome.tabs.sendMessage(tabId, { type: CHROME_MESSAGE.TOGGLE });
     }
