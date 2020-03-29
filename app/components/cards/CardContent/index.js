@@ -299,7 +299,6 @@ class CardContent extends Component {
           <div className={s('flex ml-auto')}>
             <ScreenRecordButton
               onSuccess={recording => this.addCardAttachments([recording])}
-              onError={error => console.log(error)}
               abbrText={true}
               className={s('py-0 px-sm mr-xs')}
             />

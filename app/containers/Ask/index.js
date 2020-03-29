@@ -141,7 +141,6 @@ class Ask extends Component {
         <div className={s('flex px-xs pt-reg')}>
           <ScreenRecordButton
             onSuccess={recording => this.addAskAttachments([recording])}
-            onError={error => console.log(error)}
           />
           <AttachmentDropzone
             className={s('mx-xs')}

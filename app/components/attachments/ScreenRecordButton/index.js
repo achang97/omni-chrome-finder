@@ -28,23 +28,77 @@ class ScreenRecordButton extends Component {
     endScreenRecording();
   }
 
-  stopStream = () => {
-    const { mediaRecorder, localStream } = this.props;
+  stopStream = stream => {
+    if (stream) {
+      stream.getTracks().forEach(track => track.stop());
+    }
+  }
+
+  stopAllMedia = () => {
+    const { mediaRecorder, localStream, desktopStream, voiceStream } = this.props;
 
     if (mediaRecorder) {
       mediaRecorder.stop();
     }
 
-    if (localStream) {
-      localStream.getTracks().forEach(track => track.stop());
-    }
+    this.stopStream(localStream);
+    this.stopStream(desktopStream);
+    this.stopStream(voiceStream);
   }
 
-  handleStreamSuccess = (stream) => {
+  mergeAudioStreams = (desktopStream, voiceStream) => {
+    const context = new AudioContext();
+    const destination = context.createMediaStreamDestination();
+
+    if (desktopStream && desktopStream.getAudioTracks().length > 0) {
+      // If you don't want to share Audio from the desktop it should still work with just the voice.
+      const source1 = context.createMediaStreamSource(desktopStream);
+      const desktopGain = context.createGain();
+      desktopGain.gain.value = 0.7;
+      source1.connect(desktopGain).connect(destination);
+    }
+    
+    if (voiceStream && voiceStream.getAudioTracks().length > 0) {
+      const source2 = context.createMediaStreamSource(voiceStream);
+      const voiceGain = context.createGain();
+      voiceGain.gain.value = 0.7;
+      source2.connect(voiceGain).connect(destination);
+    }
+      
+    return destination.stream.getAudioTracks();
+  };
+
+  startRecording = async () => {
     const { addScreenRecordingChunk, startScreenRecording } = this.props;
 
+    const desktopStream = await navigator.mediaDevices.getDisplayMedia({
+      audio: true,
+      video: {
+        width: { ideal: 4096 },
+        height: { ideal: 2160 }
+      }
+    });
+
+    const voiceStream = await navigator.mediaDevices.getUserMedia({
+      audio: true,
+      video: false
+    });
+
+    const tracks = [
+      ...desktopStream.getVideoTracks(), 
+      ...this.mergeAudioStreams(desktopStream, voiceStream)
+    ];
+
+    const stream = new MediaStream(tracks);
+    desktopStream.oninactive = () => {
+      const { localStream, voiceStream } = this.props;
+      this.stopStream(localStream);
+      this.stopStream(voiceStream);
+      this.endRecording();
+    };
+
     const mediaRecorder = new MediaRecorder(stream, {
-      mimeType: 'video/webm'
+      mimeType: 'video/webm; codecs=vp8,opus'
     });
     mediaRecorder.ondataavailable = (event) => {
       if (event.data && event.data.size > 0) {
@@ -53,29 +107,7 @@ class ScreenRecordButton extends Component {
     };
     mediaRecorder.start(10);
 
-    stream.oninactive = () => {
-      this.endRecording();
-    };
-
-    startScreenRecording(stream, mediaRecorder);
-  }
-
-  startRecording = () => {
-    const { handleScreenRecordingError, onError } = this.props;
-
-    navigator.mediaDevices
-      .getDisplayMedia({
-        audio: false,
-        video: {
-          width: { ideal: 4096 },
-          height: { ideal: 2160 }
-        }
-      })
-      .then(this.handleStreamSuccess)
-      .catch((error) => {
-        handleScreenRecordingError(error);
-        onError(error);
-      });
+    startScreenRecording(stream, desktopStream, voiceStream, mediaRecorder);
   }
 
   render() {
@@ -87,7 +119,7 @@ class ScreenRecordButton extends Component {
       text = abbrText ? 'Record' : 'Screen Record';
       Icon = FaRegDotCircle;
     } else {
-      onClick = this.stopStream;
+      onClick = this.stopAllMedia;
       text = abbrText ? 'End' : 'End Recording';
       Icon = IoIosSquare;
     }
@@ -109,7 +141,6 @@ class ScreenRecordButton extends Component {
 
 ScreenRecordButton.propTypes = {
   onSuccess: PropTypes.func.isRequired,
-  onError: PropTypes.func.isRequired,
   className: PropTypes.string,
   showText: PropTypes.bool,
   abbrText: PropTypes.bool,

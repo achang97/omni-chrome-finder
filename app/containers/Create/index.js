@@ -111,7 +111,6 @@ class Create extends Component {
       <div className={s('flex px-xs pt-reg')}>
         <ScreenRecordButton
           onSuccess={recording => this.addCreateAttachments([recording])}
-          onError={error => console.log(error)}
         />
         <AttachmentDropzone
           className={s('mx-xs')}
