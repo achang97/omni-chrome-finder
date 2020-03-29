@@ -1,5 +1,6 @@
 import React, { Component, PropTypes } from 'react';
 import _ from 'lodash';
+import AnimateHeight from 'react-animate-height';
 import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
 import Button from '../../components/common/Button';
@@ -29,10 +30,6 @@ const s = getStyleApplicationFn(style);
 class Create extends Component {
   constructor(props) {
     super(props);
-
-    this.state = {
-      questionInputFocused: true,
-    };
   }
 
   openCard = (createModalOpen = false) => {
@@ -66,42 +63,40 @@ class Create extends Component {
     } = this.props;
 
     return (
-      <React.Fragment>
+      <div>
         <input
           placeholder="Question"
-          className={s('w-full my-xl')}
+          className={s('w-full my-reg')}
           value={question}
           onChange={e => updateCreateQuestion(e.target.value)}
           autoFocus
-          onFocus={() => this.setState({ questionInputFocused: true })}
-          onBlur={() => this.setState({ questionInputFocused: false })}
         />
-        {
-          isDescriptionEditorShown ?
-            <TextEditor
-              onEditorStateChange={updateCreateDescriptionEditor}
-              editorState={descriptionEditorState}
-              editorType="EXTENSION"
-              editorRole={EDITOR_TYPE.DESCRIPTION}
-            />
-          :
-            <Button
-              text={'Add Description'}
-              onClick={showCreateDescriptionEditor}
-              color={'secondary'}
-              className={s('description-button justify-start shadow-none')}
-              icon={<MdAdd className={s('mr-reg')} />}
-              underline={false}
-            />
-        }
-        <div className={s('horizontal-separator my-lg')} />
+        <AnimateHeight height={!isDescriptionEditorShown ? 'auto' : 0}>
+          <Button
+            text={'Add Description'}
+            onClick={showCreateDescriptionEditor}
+            color={'secondary'}
+            className={s('description-button justify-start shadow-none')}
+            icon={<MdAdd className={s('mr-reg')} />}
+            underline={false}
+          />
+        </AnimateHeight>
+        <AnimateHeight height={isDescriptionEditorShown ? 'auto' : 0}>
+          <TextEditor
+            onEditorStateChange={updateCreateDescriptionEditor}
+            editorState={descriptionEditorState}
+            editorType="EXTENSION"
+            editorRole={EDITOR_TYPE.DESCRIPTION}
+          />
+        </AnimateHeight>
+        <div className={s('horizontal-separator my-reg')} />
         <TextEditor
           onEditorStateChange={updateCreateAnswerEditor}
           editorState={answerEditorState}
           editorType="EXTENSION"
           editorRole={EDITOR_TYPE.ANSWER}
         />
-      </React.Fragment>
+      </div>
     );
   }
 
@@ -127,11 +122,9 @@ class Create extends Component {
 
   render() {
     const { question, answerEditorState } = this.props;
-    const showRelatedQuestions = question.length > 0 && this.state.questionInputFocused;
-
     return (
       <div className={s('flex flex-col flex-1 min-h-0')}>
-        <div className={s('p-lg flex flex-col flex-grow')}>
+        <div className={s('p-lg flex flex-col flex-grow overflow-auto min-h-0')}>
           <div className={s('flex justify-between items-center')}>
             <div> Create a Card </div>
             <Button
@@ -160,7 +153,6 @@ class Create extends Component {
           }
         />
         <SuggestionPanel
-          isVisible={showRelatedQuestions}
           query={question}
         />
       </div>

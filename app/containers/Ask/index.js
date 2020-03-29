@@ -379,7 +379,6 @@ class Ask extends Component {
       toggleAskFeedbackInput, showFeedback, feedback, updateAskFeedback,
       requestSubmitFeedback, isSubmittingFeedback, feedbackSuccess, feedbackError,
     } = this.props;
-    const showRelatedQuestions = searchText.length > 0;
 
     return (
       <div className={s('p-lg overflow-y-auto')}>
@@ -443,7 +442,6 @@ class Ask extends Component {
           }
         </AnimateHeight>
         <SuggestionPanel
-          isVisible={showRelatedQuestions}
           query={searchText}
         />
       </div>

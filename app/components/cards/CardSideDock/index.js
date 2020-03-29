@@ -36,6 +36,7 @@ import { getBaseAnimationStyle } from '../../../utils/animate';
 import { MODAL_TYPE, PERMISSION_OPTION, PERMISSION_OPTIONS, VERIFICATION_INTERVAL_OPTIONS, FADE_IN_TRANSITIONS, CARD_STATUS } from '../../../utils/constants';
 import { createSelectOptions } from '../../../utils/select';
 import { isJustMe } from '../../../utils/card';
+import { isVideo } from '../../../utils/file';
 
 import style from './card-side-dock.css';
 import { getStyleApplicationFn } from '../../../utils/style';
@@ -94,7 +95,7 @@ const CardSideDock = (props) => {
     const screenRecordings = [];
 
     attachments.forEach((attachment) => {
-      if (attachment.name.endsWith('.webm')) {
+      if (isVideo(attachment.mimetype)) {
         screenRecordings.push(attachment);
       } else {
         fileAttachments.push(attachment);
@@ -144,7 +145,7 @@ const CardSideDock = (props) => {
                 url={location}
                 className={s('w-full')}
               />
-              <div className={s('truncate text-xs mt-xs')}> {name} </div>
+              <div className={s('truncate text-xs mt-xs font-semibold text-center')}> {name} </div>
             </div>
           ))}
         </div>

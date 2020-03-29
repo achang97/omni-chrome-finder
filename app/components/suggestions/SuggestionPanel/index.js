@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import Timeago from 'react-timeago';
-import { MdClose, MdKeyboardArrowDown, MdKeyboardArrowUp } from 'react-icons/md';
+import { MdClose, MdKeyboardArrowDown, MdKeyboardArrowUp, MdKeyboardArrowLeft } from 'react-icons/md';
 
 import AnimateHeight from 'react-animate-height';
 import _ from 'lodash';
@@ -11,7 +11,7 @@ import Loader from '../../common/Loader';
 import Button from '../../common/Button';
 import Triangle from '../../common/Triangle';
 
-import { requestSearchCards } from '../../../actions/search';
+import { requestSearchCards, clearSearchCards } from '../../../actions/search';
 import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
 
@@ -28,7 +28,8 @@ class SuggestionPanel extends Component {
     super(props);
 
     this.state = {
-      showResults: false,
+      isVisible: true,
+      showExternalResults: false,
       showIntegration: {}
     };
 
@@ -38,11 +39,15 @@ class SuggestionPanel extends Component {
   componentDidMount() {
     if (this.props.query !== '') {
       this.requestSearchCards(true);
+    } else {
+      this.props.clearSearchCards(SEARCH_TYPE.POPOUT);
     }
   }
 
   componentDidUpdate(prevProps) {
-    if (prevProps.query !== this.props.query) {
+    if (this.props.query === '') {
+      this.props.clearSearchCards(SEARCH_TYPE.POPOUT);
+    } else if (prevProps.query !== this.props.query) {
       this.debouncedRequestSearch();
     }
   }
@@ -196,7 +201,7 @@ class SuggestionPanel extends Component {
         { cards.length !== 0 && <div className={s('horizontal-separator my-sm')} /> }
         <div className={s('flex justify-between items-center p-lg')}>
           <div className={s('text-purple-reg font-semibold')}> Found in your documentation ({numExternalResults}) </div>
-          <MdClose className={s('button-hover')} color={colors.purple['gray-50']} onClick={() => this.setState({ showResults: false })} />
+          <MdClose className={s('button-hover')} color={colors.purple['gray-50']} onClick={() => this.setState({ showExternalResults: false })} />
         </div>
         { externalResults.map(this.renderExternalSourceResults)}
       </div>
@@ -215,7 +220,7 @@ class SuggestionPanel extends Component {
         <Button
           text={`Show results from your current documentation ${numExternalResults !== 0 ? `(${numExternalResults})` : ''}`}
           underline
-          onClick={() => this.setState({ showResults: true })}
+          onClick={() => this.setState({ showExternalResults: true })}
           color="transparent"
           className={s('self-stretch rounded-none shadow-none py-lg')}
         />
@@ -223,56 +228,73 @@ class SuggestionPanel extends Component {
     );
   }
 
+  toggleVisibility = () => {
+    this.setState({ isVisible: !this.state.isVisible });
+  }
+
   render() {
-    const { isVisible, cards, isSearchingCards, hasReachedLimit } = this.props;
-    const { showResults } = this.state;
+    const { cards, isSearchingCards, hasReachedLimit, query } = this.props;
+    const { showExternalResults, isVisible } = this.state;
 
     const numExternalResults = this.countExternalResults();
-
-    if (!isVisible) {
-      return null;
-    }
+    const showMainPanel = isVisible && query.length !== 0;
 
     return (
-      <div className={s('suggestion-panel pt-reg w-full flex flex-col rounded-lg bg-purple-light shadow-xl border-gray-200 border border-solid')}>
-        <div>
-          <div className={s('px-reg text-purple-gray-50 text-sm mb-sm')}>
-            {cards.length} card{cards.length !== 1 && 's'}
+      <div className={s(`suggestion-panel ${!showMainPanel ? 'border-0' :''}`)}>
+        <AnimateHeight height={showMainPanel ? 'auto' : 0}>
+          <div className={s('pt-reg')}>
+            <div className={s('flex justify-between mb-sm px-reg')}>
+              <div className={s('text-purple-gray-50 text-sm')}>
+                {cards.length} card{cards.length !== 1 && 's'}
+              </div>
+              <MdClose className={s('button-hover text-gray-light')} onClick={this.toggleVisibility} />
+            </div>
+            <SuggestionScrollContainer
+              scrollContainerClassName={`suggestion-panel-card-container ${showExternalResults ? 'suggestion-panel-card-container-lg' : ''}`}
+              cards={cards}
+              isSearchingCards={isSearchingCards}
+              showPlaceholder={!showExternalResults || numExternalResults === 0}
+              triangleColor={colors.purple.light}
+              onBottom={() => this.requestSearchCards(false)}
+              hasReachedLimit={hasReachedLimit}
+              footer={
+                <AnimateHeight
+                  height={showExternalResults ? 'auto' : 0}
+                  onAnimationEnd={({ newHeight }) => newHeight !== 0 && this.externalResults.current.scrollIntoView({ behavior: 'smooth' })}
+                >
+                  {this.renderExternalDocumentationResults() }
+                </AnimateHeight>
+              }
+            />
+            { !showExternalResults && this.renderFooter() }
           </div>
-          <SuggestionScrollContainer
-            scrollContainerClassName={`suggestion-panel-card-container ${showResults ? 'suggestion-panel-card-container-lg' : ''}`}
-            cards={cards}
-            isSearchingCards={isSearchingCards}
-            showPlaceholder={!showResults || numExternalResults === 0}
-            triangleColor={colors.purple.light}
-            onBottom={() => this.requestSearchCards(false)}
-            hasReachedLimit={hasReachedLimit}
-            footer={
-              <AnimateHeight
-                height={showResults ? 'auto' : 0}
-                onAnimationEnd={({ newHeight }) => newHeight !== 0 && this.externalResults.current.scrollIntoView({ behavior: 'smooth' })}
-              >
-                {this.renderExternalDocumentationResults() }
-              </AnimateHeight>
-            }
-          />
-          { !showResults && this.renderFooter() }
-          <Triangle
-            size={10}
-            color="white"
-            direction="left"
-            className={s('absolute suggestion-panel-arrow')}
-            outlineSize={1}
-            outlineColor={colors.gray.light}
-          />
-        </div>
+        </AnimateHeight>
+        { showMainPanel &&
+          <div className={s('suggestion-panel-arrow-container justify-end')}>
+            <Triangle
+              size={10}
+              color="white"
+              direction="left"
+              className={s('suggestion-panel-arrow')}
+              outlineSize={1}
+              outlineColor={colors.gray.light}
+            />
+          </div>
+        }
+        { !this.state.isVisible && query.length !== 0 &&
+          <div
+            className={s('suggestion-panel-arrow-container suggestion-panel-toggle')}
+            onClick={this.toggleVisibility}
+          >
+            <MdKeyboardArrowLeft />
+          </div>
+        }
       </div>
     );
   }
 }
 
 SuggestionPanel.propTypes = {
-  isVisible: PropTypes.bool.isRequired,
   query: PropTypes.string.isRequired,
 };
 
@@ -284,6 +306,7 @@ export default connect(
   bindActionCreators(
     {
       requestSearchCards,
+      clearSearchCards,
     },
     dispatch
   )

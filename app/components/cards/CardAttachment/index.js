@@ -12,6 +12,7 @@ import {
 import { MdClose, MdError, MdFileDownload } from 'react-icons/md';
 
 import { NOOP } from '../../../utils/constants';
+import { isVideo } from '../../../utils/file';
 
 import style from './card-attachment.css';
 import { getStyleApplicationFn } from '../../../utils/style';
@@ -32,7 +33,7 @@ function getAttachmentProps(type) {
     return { ...COLORS.IMAGE, Icon: FaFileImage };
   } else if (type && type.startsWith('audio')) {
     return { ...COLORS.AUDIO_VIDEO, Icon: FaFileAudio };
-  } else if (type && type.startsWith('video')) {
+  } else if (type && isVideo(type)) {
     return { ...COLORS.AUDIO_VIDEO, Icon: FaFileVideo };
   }
   switch (type) {
