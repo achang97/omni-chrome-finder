@@ -3,6 +3,8 @@ import * as types from '../actions/actionTypes';
 const initialState = {
   isSharingDesktop: false,
   localStream: null,
+  desktopStream: null,
+  voiceStream: null, 
   mediaRecorder: null,
   recordedChunks: [],
 };
@@ -12,11 +14,13 @@ export default function screenRecordingReducer(state = initialState, action) {
 
   switch (type) {
     case types.START_SCREEN_RECORDING: {
-      const { stream, mediaRecorder } = payload;
+      const { stream, desktopStream, voiceStream, mediaRecorder } = payload;
       return {
         ...state,
         isSharingDesktop: true,
         localStream: stream,
+        desktopStream,
+        voiceStream, 
         mediaRecorder,
       };
     }
@@ -29,16 +33,8 @@ export default function screenRecordingReducer(state = initialState, action) {
         ...state,
         isSharingDesktop: false,
         localStream: null,
-        mediaRecorder: null,
-        recordedChunks: [],
-      };
-    }
-    case types.SCREEN_RECORDING_ERROR: {
-      const { error } = payload;
-      return {
-        ...state,
-        isSharingDesktop: false,
-        localStream: null,
+        desktopStream: null, 
+        voiceStream: null, 
         mediaRecorder: null,
         recordedChunks: [],
       };
