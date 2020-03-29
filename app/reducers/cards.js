@@ -1,6 +1,6 @@
 import _ from 'lodash';
 import * as types from '../actions/actionTypes';
-import { removeIndex, updateIndex } from '../utils/array';
+import { removeIndex, updateIndex, updateArrayOfObjects } from '../utils/array';
 import { convertCardToFrontendFormat, generateCardId } from '../utils/card';
 import { CARD_STATUS, EDITOR_TYPE, CARD_DIMENSIONS, MODAL_TYPE, VERIFICATION_INTERVAL_OPTIONS, PERMISSION_OPTIONS } from '../utils/constants';
 
@@ -75,13 +75,14 @@ export default function cardsReducer(state = initialState, action) {
       return {
         ...state,
         activeCard: newActiveCard,
-        cards: state.cards.map(card => (card._id === id ? newActiveCard : card)),
+        cards: updateArrayOfObjects(state.cards, '_id', id, newActiveCard, false)
       };
+    } else {
+      return {
+        ...state,
+        cards: updateArrayOfObjects(state.cards, '_id', id, newInfo)
+      };      
     }
-    return {
-      ...state,
-      cards: state.cards.map(card => (card._id === id ? { ...card, ...newInfo } : card))
-    };
   };
 
   const createCardEdits = (card) => {
@@ -123,9 +124,7 @@ export default function cardsReducer(state = initialState, action) {
     const newCardInfo = {
       edits: {
         ...currCard.edits,
-        attachments: currCard.edits.attachments.map(currAttachment => (
-          currAttachment.key === key ? { ...currAttachment, ...newInfo } : currAttachment)
-        )
+        attachments: updateArrayOfObjects(currCard.edits.attachments, 'key', key, newInfo)
       }
     };
 

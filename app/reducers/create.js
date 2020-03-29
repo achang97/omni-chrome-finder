@@ -1,4 +1,5 @@
 import { EditorState } from 'draft-js';
+import { updateArrayOfObjects } from '../utils/array';
 import * as types from '../actions/actionTypes';
 
 const initialState = {
@@ -14,9 +15,7 @@ export default function createReducer(state = initialState, action) {
 
   const updateAttachmentByKey = (key, newInfo) => ({
     ...state,
-    attachments: state.attachments.map(currAttachment => (
-      currAttachment.key === key ? { ...currAttachment, ...newInfo } : currAttachment
-    ))
+    attachments: updateArrayOfObjects(state.attachments, 'key', key, newInfo)
   });
 
   switch (type) {

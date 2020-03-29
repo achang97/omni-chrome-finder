@@ -16,6 +16,23 @@ export function updateIndex(array, index, newElement, merge = false) {
   return arrayCopy;
 }
 
+/* 
+ * Returns a shallow copy of array with element with matching field updated.
+ */
+export function updateArrayOfObjects(array, fieldName, fieldValue, newInfo, merge=true) {
+  return array.map(elem => {
+    if (elem[fieldName] === fieldValue) {
+      if (merge) {
+        return { ...elem, ...newInfo }
+      } else {
+        return newInfo;
+      }
+    } else {
+      return elem;
+    }
+  });
+}
+
 /*
  * Returns an array of extracted ids.
  */

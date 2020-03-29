@@ -2,7 +2,7 @@ import { EditorState } from 'draft-js';
 
 import * as types from '../actions/actionTypes';
 import { ASK_INTEGRATIONS } from '../utils/constants';
-import { removeIndex, updateIndex } from '../utils/array';
+import { removeIndex, updateIndex, updateArrayOfObjects } from '../utils/array';
 
 const initialState = {
   /* Minified Page */
@@ -25,9 +25,7 @@ export default function askReducer(state = initialState, action) {
 
   const updateAttachmentByKey = (key, newInfo) => ({
     ...state,
-    attachments: state.attachments.map(currAttachment => (
-      currAttachment.key === key ? { ...currAttachment, ...newInfo } : currAttachment
-    ))
+    attachments: updateArrayOfObjects(state.attachments, 'key', key, newInfo)
   });
 
   switch (type) {
