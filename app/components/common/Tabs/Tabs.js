@@ -46,8 +46,10 @@ class Tabs extends Component {
   }
 
   moveTabsScroll = (delta) => {
-    const scrollValue = this.tabsRef.current.scrollLeft + delta;
-    animate('scrollLeft', this.tabsRef.current, scrollValue);
+    if (this.tabsRef.current) {
+      const scrollValue = this.tabsRef.current.scrollLeft + delta;
+      animate('scrollLeft', this.tabsRef.current, scrollValue);
+    }
   };
 
   handleScrollClick = (isStart) => {
@@ -55,15 +57,17 @@ class Tabs extends Component {
   };
 
   handleResize = _.debounce(() => {
-    const { scrollLeft, scrollWidth, clientWidth } = this.tabsRef.current;
-    const { displayScroll } = this.state;
+    if (this.tabsRef.current) {
+      const { scrollLeft, scrollWidth, clientWidth } = this.tabsRef.current;
+      const { displayScroll } = this.state;
 
-    // use 1 for the potential rounding error with browser zooms.
-    const showStartScroll = scrollLeft > 1;
-    const showEndScroll = scrollLeft < scrollWidth - clientWidth - 1;
+      // use 1 for the potential rounding error with browser zooms.
+      const showStartScroll = scrollLeft > 1;
+      const showEndScroll = scrollLeft < scrollWidth - clientWidth - 1;
 
-    if (showStartScroll !== displayScroll.start || showEndScroll !== displayScroll.end) {
-      this.setState({ displayScroll: { start: showStartScroll, end: showEndScroll } });
+      if (showStartScroll !== displayScroll.start || showEndScroll !== displayScroll.end) {
+        this.setState({ displayScroll: { start: showStartScroll, end: showEndScroll } });
+      }      
     }
   }, DEBOUNCE_60_HZ)
 

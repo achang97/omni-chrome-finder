@@ -36,23 +36,6 @@ export function updateAskRecipient(index, newInfo) {
   return { type: types.UPDATE_ASK_RECIPIENT, payload: { index, newInfo } };
 }
 
-export function addAskScreenRecordingChunk(recordingChunk) {
-  return { type: types.ADD_ASK_SCREEN_RECORDING_CHUNK, payload: { recordingChunk } };
-}
-
-export function startAskScreenRecording(stream, mediaRecorder) {
-  return { type: types.START_ASK_SCREEN_RECORDING, payload: { stream, mediaRecorder } };
-}
-
-export function endAskScreenRecording() {
-  return { type: types.END_ASK_SCREEN_RECORDING, payload: { } };
-}
-
-export function handleAskScreenRecordingError(error) {
-  return { type: types.ASK_SCREEN_RECORDING_ERROR, payload: { error } };
-}
-
-
 export function requestAddAskAttachment(key, file) {
   return { type: types.ADD_ASK_ATTACHMENT_REQUEST, payload: { key, file } };
 }

@@ -1,5 +1,6 @@
 import _ from 'lodash';
 import * as types from '../actions/actionTypes';
+import { updateArrayOfObjects } from '../utils/array';
 import { TASKS_SECTION_TYPE } from '../utils/constants';
 
 export const initialState = {
@@ -18,9 +19,7 @@ export default function tasksReducer(state = initialState, action) {
   const updateTask = (taskId, newInfo) => {
     return {
       ...state,
-      tasks: state.tasks.map((currTask) => (
-        currTask._id === taskId ? { ...currTask, ...newInfo } : currTask
-      ))
+      tasks: updateArrayOfObjects(state.tasks, '_id', taskId, newInfo)
     };
   }
 

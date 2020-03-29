@@ -14,6 +14,6 @@
     "persistent": false,
     "page": "background.html"
   },
-  "permissions": ["activeTab", "storage", "<all_urls>", "contextMenus", "notifications"],
+  "permissions": ["activeTab", "storage", "contextMenus", "notifications"],
   "content_security_policy": "default-src 'self'; script-src 'self' http://localhost:3000 https://localhost:3000 'unsafe-eval'; connect-src http://localhost:3000 https://localhost:3000 ws://localhost:8000 wss://api-dev.addomni.com; style-src * 'unsafe-inline' 'self' blob:; img-src 'self' data:;"
 }

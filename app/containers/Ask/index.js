@@ -25,6 +25,10 @@ import Badge from '../../components/common/Badge';
 import RecipientDropdownBody from '../../components/ask/RecipientDropdownBody';
 import CardAttachment from '../../components/cards/CardAttachment';
 
+import ScreenRecordButton from '../../components/attachments/ScreenRecordButton';
+import AttachmentDropdown from '../../components/attachments/AttachmentDropdown';
+import AttachmentDropzone from '../../components/attachments/AttachmentDropzone';
+
 import { colors } from '../../styles/colors';
 import { expandDock } from '../../actions/display';
 import { requestSearchCards } from '../../actions/search';
@@ -104,56 +108,6 @@ class Ask extends Component {
     );
   }
 
-  startScreenRecording = () => {
-    const { addAskScreenRecordingChunk, startAskScreenRecording, handleAskScreenRecordingError } = this.props;
-    navigator.mediaDevices
-      .getDisplayMedia({
-        audio: false,
-        video: {
-          width: { ideal: 4096 },
-          height: { ideal: 2160 }
-        }
-      })
-      .then((stream) => {
-        const mediaRecorder = new MediaRecorder(stream, {
-          mimeType: 'video/webm'
-        });
-        mediaRecorder.addEventListener('dataavailable', (event) => {
-          if (event.data && event.data.size > 0) {
-            addAskScreenRecordingChunk(event.data);
-          }
-        });
-        mediaRecorder.start(10);
-
-        stream.onended = () => {
-          this.endScreenRecording();
-        };
-
-        stream.addEventListener('inactive', (e) => {
-          this.endScreenRecording();
-        });
-
-        startAskScreenRecording(stream, mediaRecorder);
-      })
-      .catch((error) => {
-        handleAskScreenRecordingError(error);
-      });
-  };
-
-  endScreenRecording = () => {
-    const { mediaRecorder, localStream, recordedChunks, screenRecordings, endAskScreenRecording, requestAddAskAttachment } = this.props;
-
-    if (mediaRecorder && localStream) {
-      mediaRecorder.stop();
-      localStream.getTracks().forEach(track => track.stop());
-      endAskScreenRecording();
-
-      const now = moment().format('DD.MM.YYYY HH:mm:ss');
-      const recording = new File(recordedChunks, `Screen Recording ${now}.webm`, { type: 'video/webm' });
-      requestAddAskAttachment(generateFileKey(), recording);
-    }
-  };
-
   addAskAttachments = (files) => {
     const { requestAddAskAttachment } = this.props;
     files.forEach((file) => {
@@ -165,7 +119,6 @@ class Ask extends Component {
     const {
       questionTitle, updateAskQuestionTitle,
       questionDescription, updateAskQuestionDescription,
-      desktopSharing,
       requestRemoveAskAttachment, attachments, updateAskAttachmentName,
     } = this.props;
 
@@ -186,63 +139,18 @@ class Ask extends Component {
           />
         </div>
         <div className={s('flex px-xs pt-reg')}>
-          <Button
-            onClick={!desktopSharing ? this.startScreenRecording : this.endScreenRecording}
-            className={s('ask-attachment-button ask-screen-record-shadow mr-xs bg-red-100 text-red-500')}
-            text={!desktopSharing ? 'Screen Record' : 'End Recording'}
-            underline
-            underlineColor="red-200"
-            icon={<FaRegDotCircle className={s('ml-sm text-red-500')} />}
-            iconLeft={false}
-            disabled={!navigator.mediaDevices}
+          <ScreenRecordButton
+            onSuccess={recording => this.addAskAttachments([recording])}
+            onError={error => console.log(error)}
           />
-          <Dropzone
-            className={s('mx-xs flex-1 border border-dashed')}
-            style={{ borderColor: colors.gray.light }}
-            onDrop={acceptedFiles => this.addAskAttachments(acceptedFiles)}
-          >
-            <Button
-              className={s('ask-attachment-button bg-white text-purple-reg shadow-none')}
-              text="Drag & Drop"
-              icon={<MdCloudUpload color={colors.purple.reg} className={s('ml-sm')} />}
-              iconLeft={false}
-            />
-          </Dropzone>
-          <Dropdown
-            className={s('ml-xs')}
-            toggler={
-              <div className={s('relative')}>
-                <Button
-                  className={s('bg-white py-reg px-sm')}
-                  icon={<MdAttachment color={colors.purple.reg} className={s('ask-attachment-icon')} />}
-                />
-                <Badge count={attachments.length} />
-              </div>
-            }
-            body={
-              <div className={s('ask-attachment-dropdown')}>
-                { attachments.length === 0 &&
-                  <div className={s('text-center')}>
-                    No current attachments
-                  </div>
-                }
-                { attachments.map(({ name, key, mimetype, location, isLoading, error }, i) => (
-                  <CardAttachment
-                    key={key}
-                    type={mimetype}
-                    fileName={name}
-                    url={location}
-                    isLoading={isLoading}
-                    error={error}
-                    textClassName={s('truncate')}
-                    removeIconClassName={s('ml-auto')}
-                    isEditable
-                    onFileNameChange={fileName => updateAskAttachmentName(key, fileName)}
-                    onRemoveClick={() => requestRemoveAskAttachment(key)}
-                  />
-                ))}
-              </div>
-            }
+          <AttachmentDropzone
+            className={s('mx-xs')}
+            onDrop={this.addAskAttachments}
+          />
+          <AttachmentDropdown
+            attachments={attachments}
+            onFileNameChange={({ key, fileName }) => updateAskAttachmentName(key, fileName)}
+            onRemoveClick={(key) => requestRemoveAskAttachment(key)}
           />
         </div>
       </div>

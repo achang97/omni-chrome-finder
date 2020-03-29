@@ -2,6 +2,7 @@ import { all } from 'redux-saga/effects';
 import watchAuthRequests from './auth';
 import watchSearchRequests from './search';
 import watchAskRequests from './ask';
+import watchCreateRequests from './create';
 import watchCardsRequests from './cards';
 import watchProfileRequests from './profile';
 import watchTasksRequests from './tasks';
@@ -12,6 +13,7 @@ export default function* rootSaga() {
     watchAuthRequests(),
     watchSearchRequests(),
     watchAskRequests(),
+    watchCreateRequests(),
     watchCardsRequests(),
     watchProfileRequests(),
     watchTasksRequests(),

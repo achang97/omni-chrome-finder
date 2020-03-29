@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
-import { MdCheck, MdArrowDropDown, MdMoreHoriz, MdModeEdit, MdThumbUp, MdBookmarkBorder, MdError, MdPerson, MdAttachment, MdKeyboardArrowLeft, MdLock } from 'react-icons/md';
+import { MdCheck, MdArrowDropDown, MdCloudUpload, MdMoreHoriz, MdModeEdit, MdThumbUp, MdBookmarkBorder, MdError, MdPerson, MdAttachment, MdKeyboardArrowLeft, MdLock } from 'react-icons/md';
 import Timeago from 'react-timeago';
 import SlackIcon from '../../../assets/images/icons/Slack_Mark.svg';
 
@@ -11,6 +11,9 @@ import Button from '../../common/Button';
 import Modal from '../../common/Modal';
 import CheckBox from '../../common/CheckBox';
 import Loader from '../../common/Loader';
+
+import ScreenRecordButton from '../../attachments/ScreenRecordButton';
+import AttachmentDropzone from '../../attachments/AttachmentDropzone';
 
 import CardStatus from '../CardStatus';
 import CardTags from '../CardTags';
@@ -286,16 +289,26 @@ class CardContent extends Component {
         { isEditing &&
         <div className={s('flex justify-between')}>
           { currAttachments.length !== 0 &&
-          <div className={s('flex items-center')}>
-            <div className={s('flex text-purple-reg text-sm cursor-pointer underline-border border-purple-gray-20 items-center')} onClick={openCardSideDock}>
-              <MdAttachment className={s('mr-sm')} />
-              <div> {currAttachments.length} Attachment{currAttachments.length !== 0 && 's'}</div>
+            <div className={s('flex items-center')}>
+              <div className={s('flex text-purple-reg text-sm cursor-pointer underline-border border-purple-gray-20 items-center')} onClick={openCardSideDock}>
+                <MdAttachment className={s('mr-sm')} />
+                <div> {currAttachments.length} Attachment{currAttachments.length !== 0 && 's'}</div>
+              </div>
             </div>
+          }
+          <div className={s('flex ml-auto')}>
+            <ScreenRecordButton
+              onSuccess={recording => this.addCardAttachments([recording])}
+              onError={error => console.log(error)}
+              abbrText={true}
+              className={s('py-0 px-sm mr-xs')}
+            />
+            <AttachmentDropzone
+              buttonClassName={s('py-0 px-sm')}
+              showText={true}
+              onDrop={this.addCardAttachments}
+            />
           </div>
-            }
-          <Dropzone className={s('ml-auto')} onDrop={this.addCardAttachments}>
-            <p className={s('m-0 text-sm text-purple-reg p-sm py-0')}>Drag Files Here or Click to Add</p>
-          </Dropzone>
         </div>
         }
         { !isEditing &&

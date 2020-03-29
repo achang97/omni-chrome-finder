@@ -12,7 +12,7 @@ import {
   handleSubmitFeedbackSuccess, handleSubmitFeedbackError,
 } from '../actions/ask';
 
-export default function* watchAuthRequests() {
+export default function* watchAskRequests() {
   let action;
 
   while (action = yield take([
