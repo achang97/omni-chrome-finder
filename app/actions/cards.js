@@ -143,12 +143,12 @@ export function handleAddCardAttachmentError(cardId, key, error) {
 }
 
 
-export function removeCardAttachment(index) {
-  return { type: types.REMOVE_CARD_ATTACHMENT, payload: { index } };
+export function removeCardAttachment(key) {
+  return { type: types.REMOVE_CARD_ATTACHMENT, payload: { key } };
 }
 
-export function updateCardAttachmentName(index, name) {
-  return { type: types.UPDATE_CARD_ATTACHMENT_NAME, payload: { index, name } };
+export function updateCardAttachmentName(key, name) {
+  return { type: types.UPDATE_CARD_ATTACHMENT_NAME, payload: { key, name } };
 }
 
 

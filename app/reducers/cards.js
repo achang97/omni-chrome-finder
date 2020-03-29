@@ -388,16 +388,16 @@ export default function cardsReducer(state = initialState, action) {
     }
 
     case types.REMOVE_CARD_ATTACHMENT: {
-      const { index } = payload;
-      const { activeCard: { edits } } = state;
-      return updateActiveCardEdits({ attachments: removeIndex(edits.attachments, index) });
-    }
-    case types.UPDATE_CARD_ATTACHMENT_NAME: {
-      const { index, name } = payload;
+      const { key } = payload;
       const { activeCard: { edits } } = state;
       return updateActiveCardEdits({
-        attachments: updateIndex(edits.attachments, index, { name }, true)
+        attachments: edits.attachments.filter((attachment) => attachment.key !== key)
       });
+    }
+    case types.UPDATE_CARD_ATTACHMENT_NAME: {
+      const { key, name } = payload;
+      const { activeCard: { edits, _id } } = state;
+      return updateAttachmentsByKey(_id, key, { name });
     }
 
     case types.GET_CARD_REQUEST: {

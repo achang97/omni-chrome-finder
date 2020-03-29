@@ -12,7 +12,12 @@
 }
 
 .card-side-dock-video-wrapper {
-  @apply w-1/2 p-xs;
+  @apply w-1/2 p-xs relative;
   box-sizing: border-box;
   height: min-content;
+}
+
+.card-side-dock-remove-video {
+  @apply absolute bg-white shadow-md rounded-full cursor-pointer top-0 right-0 z-10;
+  transform: translate(30%, -30%);
 }

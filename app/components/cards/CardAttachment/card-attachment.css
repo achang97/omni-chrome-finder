@@ -11,8 +11,3 @@
   height: 14px;
   font-size: 13px;
 }
-
-.card-attachment-filename-input {
-  @apply h-full w-full rounded text-xs flex-1 !important;
-  height: 20px;
-}
