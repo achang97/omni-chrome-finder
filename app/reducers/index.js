@@ -8,6 +8,7 @@ import create from './create';
 import navigate from './navigate';
 import tasks from './tasks';
 import search from './search';
+import screenRecording from './screenRecording';
 
 import { LOGOUT } from '../actions/actionTypes';
 
@@ -21,6 +22,7 @@ const appReducer = combineReducers({
   navigate,
   tasks,
   search,
+  screenRecording,
 });
 
 const rootReducer = (state, action) => {

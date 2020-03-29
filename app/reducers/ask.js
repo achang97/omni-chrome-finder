@@ -16,13 +16,6 @@ const initialState = {
   questionDescription: EditorState.createEmpty(),
   recipients: [],
 
-  // Screen Recording
-  desktopSharing: false,
-  localStream: null,
-  mediaRecorder: null,
-  recordedChunks: [],
-  screenRecordingError: null,
-
   attachments: [],
   slackConversations: [],
 };
@@ -93,42 +86,6 @@ export default function askReducer(state = initialState, action) {
       const { index, newInfo } = payload;
       const { recipients } = state;
       return { ...state, recipients: updateIndex(recipients, index, newInfo, true) };
-    }
-
-    case types.START_ASK_SCREEN_RECORDING: {
-      const { stream, mediaRecorder } = payload;
-      return {
-        ...state,
-        desktopSharing: true,
-        localStream: stream,
-        mediaRecorder,
-        screenRecordingError: null
-      };
-    }
-    case types.ADD_ASK_SCREEN_RECORDING_CHUNK: {
-      const { recordingChunk } = payload;
-      return { ...state, recordedChunks: [...state.recordedChunks, recordingChunk] };
-    }
-    case types.END_ASK_SCREEN_RECORDING: {
-      return {
-        ...state,
-        desktopSharing: false,
-        localStream: null,
-        mediaRecorder: null,
-        recordedChunks: [],
-        screenRecordingError: null
-      };
-    }
-    case types.ASK_SCREEN_RECORDING_ERROR: {
-      const { error } = payload;
-      return {
-        ...state,
-        desktopSharing: false,
-        localStream: null,
-        mediaRecorder: null,
-        recordedChunks: [],
-        screenRecordingError: error
-      };
     }
 
     case types.ADD_ASK_ATTACHMENT_REQUEST: {

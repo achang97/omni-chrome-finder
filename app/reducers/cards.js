@@ -24,6 +24,15 @@ const BASE_CARD_STATE = {
   edits: {},
   hasLoaded: true,
   outOfDateReasonInput: '',
+  status: CARD_STATUS.NOT_DOCUMENTED,
+  tags: [],
+  keywords: [],
+  verificationInterval: VERIFICATION_INTERVAL_OPTIONS[0],
+  permissions: PERMISSION_OPTIONS[0],
+  permissionGroups: [],
+  upvotes: [],
+  slackReplies: [],
+  attachments: [],
 };
 
 export default function cardsReducer(state = initialState, action) {
@@ -193,17 +202,8 @@ export default function cardsReducer(state = initialState, action) {
         cardInfo = createCardEdits({
           ...cardInfo,
           _id: generateCardId(),
-          status: CARD_STATUS.NOT_DOCUMENTED,
           modalOpen: { ...cardInfo.modalOpen, [MODAL_TYPE.CREATE]: createModalOpen },
           editorEnabled: { ...cardInfo.editorEnabled, [EDITOR_TYPE.ANSWER]: true },
-          tags: [],
-          keywords: [],
-          verificationInterval: VERIFICATION_INTERVAL_OPTIONS[0],
-          permissions: PERMISSION_OPTIONS[0],
-          permissionGroups: [],
-          upvotes: [],
-          slackReplies: [],
-          attachments: [],
         });
       } else {
         // Will have to update this section in the future

@@ -258,7 +258,7 @@ class SuggestionPanel extends Component {
           />
           { !showResults && this.renderFooter() }
           <Triangle
-            size="xs"
+            size={10}
             color="white"
             direction="left"
             className={s('absolute suggestion-panel-arrow')}
