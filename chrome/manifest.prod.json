@@ -17,6 +17,6 @@
     "persistent": false,
     "page": "background.html"
   },
-  "permissions": ["activeTab", "storage", "contextMenus", "notifications"],
+  "permissions": ["activeTab", "storage", "contextMenus", "notifications", "https://www.google.com"],
   "content_security_policy": "default-src 'self'; script-src 'self'; ; connect-src wss://api.addomni.com; style-src * 'unsafe-inline'; img-src 'self' data:;"
 }
