@@ -11,7 +11,7 @@ import Tab from '../../common/Tabs/Tab';
 import Badge from '../../common/Badge';
 import PlaceholderImg from '../../common/PlaceholderImg';
 
-import { SEARCH_TYPE } from '../../../utils/constants';
+import { ROUTES, SEARCH_TYPE } from '../../../utils/constants';
 
 import { colors } from '../../../styles/colors';
 import style from './header.css';
@@ -43,24 +43,24 @@ class Header extends Component {
           color={colors.purple.reg}
           showRipple={false}
         >
-          <Tab label="Ask" key="ask" value="/ask" tabContainerClassName={s("mx-reg")} />
-          <Tab label="Create" key="create" value="/create" tabContainerClassName={s("mx-reg")} />
-          <Tab label="Cards" key="cards" value="/navigate" tabContainerClassName={s("mx-reg")} />
+          <Tab label="Ask" key="ask" value={ROUTES.ASK} tabContainerClassName={s("mx-reg")} />
+          <Tab label="Create" key="create" value={ROUTES.CREATE} tabContainerClassName={s("mx-reg")} />
+          <Tab label="Cards" key="cards" value={ROUTES.NAVIGATE} tabContainerClassName={s("mx-reg")} />
           { showAISuggest &&
-            <Tab key="suggest" value="/suggest" tabContainerClassName={s('header-small-tab ml-auto')}>
+            <Tab key="suggest" value={ROUTES.SUGGEST} tabContainerClassName={s('header-small-tab ml-auto')}>
               <div className={s("header-badge-container gold-gradient")}>
                 <MdLightbulbOutline className={s("text-gold-reg")} />
                 <Badge count={numAISuggestCards} size="sm" className={s("bg-gold-reg")}  />
               </div>
             </Tab>
           }
-          <Tab key="tasks" value="/tasks" tabContainerClassName={s(`header-small-tab ${!showAISuggest ?'ml-auto' : ''}`)}>
+          <Tab key="tasks" value={ROUTES.TASKS} tabContainerClassName={s(`header-small-tab ${!showAISuggest ?'ml-auto' : ''}`)}>
             <div className={s("header-badge-container bg-gray-xlight")}>
               <MdNotificationsActive />
               <Badge count={numTasks} size="sm" className={s("bg-red-500")}  />
             </div>
           </Tab>
-          <Tab key="profile" value="/profile" tabContainerClassName={s("mx-reg")}>
+          <Tab key="profile" value={ROUTES.PROFILE} tabContainerClassName={s("mx-reg")}>
             <PlaceholderImg name={`${user.firstname} ${user.lastname}`} src={user.img} className={s('header-profile-picture')} />
           </Tab>
         </Tabs>
