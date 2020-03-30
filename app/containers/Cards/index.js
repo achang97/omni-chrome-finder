@@ -140,17 +140,19 @@ class Cards extends Component {
   };
 
   renderTab = (card, i) => {
-    const { activeCardIndex, activeCard } = this.props;
+    const { activeCardIndex, activeCard, cards } = this.props;
 
     const isActiveCard = i === activeCardIndex;
     if (isActiveCard) {
       card = activeCard;
     }
 
+    const dragDisabled = cards.length <= 1;
+
     const { isEditing, question, edits, _id } = card;
     return (
       <Tab key={_id} tabClassName={s('p-0 border-0')}>
-        <Draggable key={_id} draggableId={_id} index={i}>
+        <Draggable key={_id} draggableId={_id} index={i} isDragDisabled={dragDisabled}>
           {(provided, snapshot) => (
             <div
               ref={provided.innerRef}
@@ -160,7 +162,7 @@ class Cards extends Component {
                 snapshot.isDragging,
                 provided.draggableProps.style
               )}
-              className={s(`card-tab ${isActiveCard ? 'bg-purple-light' : ''}`)}
+              className={s(`card-tab ${!dragDisabled ? 'card-disable-window-drag' : ''} ${isActiveCard ? 'bg-purple-light' : ''}`)}
             >
               <div className={s('truncate')}> { (!isEditing ? question : edits.question) || 'Untitled' } </div>
               <div className={s('flex ml-xs')}>
@@ -230,7 +232,7 @@ class Cards extends Component {
         <ReactDraggable
           bounds="html"
           handle="#card-tab-container"
-          cancel={`.${s('card-tab')}`}
+          cancel={`.${s('card-disable-window-drag')}`}
           onStop={(e, { x, y }) => updateCardWindowPosition({ x, y })}
           defaultPosition={windowPosition}
         >
