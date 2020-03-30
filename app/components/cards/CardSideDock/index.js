@@ -29,6 +29,7 @@ import Select from '../../common/Select';
 import Button from '../../common/Button';
 import Loader from '../../common/Loader';
 import VideoPlayer from '../../common/VideoPlayer';
+import ToggleableInput from '../../common/ToggleableInput';
 
 import { isUploadedFile } from '../../../utils/file';
 
@@ -36,6 +37,7 @@ import { getBaseAnimationStyle } from '../../../utils/animate';
 import { MODAL_TYPE, PERMISSION_OPTION, PERMISSION_OPTIONS, VERIFICATION_INTERVAL_OPTIONS, FADE_IN_TRANSITIONS, CARD_STATUS } from '../../../utils/constants';
 import { createSelectOptions } from '../../../utils/select';
 import { isJustMe } from '../../../utils/card';
+import { isVideo } from '../../../utils/file';
 
 import style from './card-side-dock.css';
 import { getStyleApplicationFn } from '../../../utils/style';
@@ -85,16 +87,11 @@ const CardSideDock = (props) => {
   };
 
   const splitAttachments = (attachments) => {
-    const { isEditing } = props;
-
-    if (isEditing) {
-      return { fileAttachments: attachments, screenRecordings: [] };
-    }
     const fileAttachments = [];
     const screenRecordings = [];
 
     attachments.forEach((attachment) => {
-      if (attachment.name.endsWith('.webm')) {
+      if (attachment.mimetype && isVideo(attachment.mimetype)) {
         screenRecordings.push(attachment);
       } else {
         fileAttachments.push(attachment);
@@ -129,8 +126,8 @@ const CardSideDock = (props) => {
               className={s('min-w-0')}
               textClassName={s('truncate')}
               isEditable={isEditing}
-              onFileNameChange={fileName => updateCardAttachmentName(i, fileName)}
-              onRemoveClick={() => removeCardAttachment(i)}
+              onFileNameChange={fileName => updateCardAttachmentName(key, fileName)}
+              onRemoveClick={() => removeCardAttachment(key)}
             />
           ))}
         </div>
@@ -140,11 +137,27 @@ const CardSideDock = (props) => {
         <div className={s('flex flex-wrap')}>
           { screenRecordings.map(({ name, key, location, isLoading, error }) => (
             <div className={s('card-side-dock-video-wrapper')} key={key}>
+              { isEditing &&
+                <div
+                  className={s('card-side-dock-remove-video')}
+                  onClick={() => removeCardAttachment(key)}
+                >
+                  <MdClose />
+                </div>
+              }
               <VideoPlayer
                 url={location}
-                className={s('w-full')}
+                className={s('w-full mb-xs')}
               />
-              <div className={s('truncate text-xs mt-xs')}> {name} </div>
+              <ToggleableInput
+                isEditable={isEditing}
+                value={name}
+                inputProps={{
+                  placeholder: 'File Name',
+                  onChange: e => updateCardAttachmentName(key, e.target.value),
+                }}
+                className={s('truncate text-xs font-semibold text-center')}
+              />
             </div>
           ))}
         </div>

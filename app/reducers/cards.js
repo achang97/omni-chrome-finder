@@ -11,6 +11,10 @@ const initialState = {
   activeCardIndex: -1,
   activeCard: {},
   showCloseModal: false,
+  windowPosition: {
+    x: window.innerWidth / 2 - CARD_DIMENSIONS.DEFAULT_CARDS_WIDTH / 2,
+    y: window.innerHeight / 2 - CARD_DIMENSIONS.DEFAULT_CARDS_HEIGHT / 2
+  },
 };
 
 const BASE_MODAL_OPEN_STATE = _.mapValues(MODAL_TYPE, () => false);
@@ -178,9 +182,23 @@ export default function cardsReducer(state = initialState, action) {
   };
 
   switch (type) {
+    case types.UPDATE_CARD_WINDOW_POSITION: {
+      const { position } = payload;
+      return { ...state, windowPosition: position };
+    }
     case types.ADJUST_CARDS_DIMENSIONS: {
       const { newWidth, newHeight } = payload;
       return { ...state, cardsWidth: newWidth, cardsHeight: newHeight };
+    }
+    case types.UPDATE_CARD_TAB_ORDER: {
+      const { source, destination } = payload;
+      const { cards } = state;
+
+      const newCards = Array.from(cards);
+      const [removed] = newCards.splice(source.index, 1);
+      newCards.splice(destination.index, 0, removed);
+
+      return { ...state, cards: newCards, activeCardIndex: destination.index };
     }
 
     case types.OPEN_CARD: {
@@ -388,16 +406,16 @@ export default function cardsReducer(state = initialState, action) {
     }
 
     case types.REMOVE_CARD_ATTACHMENT: {
-      const { index } = payload;
-      const { activeCard: { edits } } = state;
-      return updateActiveCardEdits({ attachments: removeIndex(edits.attachments, index) });
-    }
-    case types.UPDATE_CARD_ATTACHMENT_NAME: {
-      const { index, name } = payload;
+      const { key } = payload;
       const { activeCard: { edits } } = state;
       return updateActiveCardEdits({
-        attachments: updateIndex(edits.attachments, index, { name }, true)
+        attachments: edits.attachments.filter((attachment) => attachment.key !== key)
       });
+    }
+    case types.UPDATE_CARD_ATTACHMENT_NAME: {
+      const { key, name } = payload;
+      const { activeCard: { edits, _id } } = state;
+      return updateAttachmentsByKey(_id, key, { name });
     }
 
     case types.GET_CARD_REQUEST: {

@@ -79,10 +79,7 @@ class Tasks extends Component {
             error={error}
             resolved={resolved}
             notifier={notifier}
-            onHide={type === TASKS_SECTION_TYPE.ALL || type === TASKS_SECTION_TYPE.NEEDS_APPROVAL ?
-              () => this.props.removeTask(_id) :
-              null
-            }
+            onHide={() => this.props.removeTask(_id)}
           />
         ))
       }

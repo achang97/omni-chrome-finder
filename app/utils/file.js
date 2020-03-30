@@ -11,3 +11,7 @@ export function convertAttachmentsToBackendFormat(attachments) {
     .filter(({ key }) => isUploadedFile(key))
     .map(({ key, location, name, mimetype }) => ({ key, location, name, mimetype }));
 }
+
+export function isVideo(type) {
+  return type.startsWith('video');
+}

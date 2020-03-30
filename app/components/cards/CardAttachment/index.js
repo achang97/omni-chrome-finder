@@ -4,6 +4,7 @@ import ReactTooltip from 'react-tooltip';
 
 import CardTag from '../CardTags/CardTag';
 import Loader from '../../common/Loader';
+import ToggleableInput from '../../common/ToggleableInput';
 import {
   FaFileImage, FaFileAudio, FaFileVideo,
   FaFilePdf, FaFileWord, FaFileExcel, FaFilePowerpoint,
@@ -12,10 +13,10 @@ import {
 import { MdClose, MdError, MdFileDownload } from 'react-icons/md';
 
 import { NOOP } from '../../../utils/constants';
+import { isVideo } from '../../../utils/file';
 
 import style from './card-attachment.css';
 import { getStyleApplicationFn } from '../../../utils/style';
-
 const s = getStyleApplicationFn(style);
 
 const COLORS = {
@@ -32,7 +33,7 @@ function getAttachmentProps(type) {
     return { ...COLORS.IMAGE, Icon: FaFileImage };
   } else if (type && type.startsWith('audio')) {
     return { ...COLORS.AUDIO_VIDEO, Icon: FaFileAudio };
-  } else if (type && type.startsWith('video')) {
+  } else if (type && isVideo(type)) {
     return { ...COLORS.AUDIO_VIDEO, Icon: FaFileVideo };
   }
   switch (type) {
@@ -78,7 +79,6 @@ function getAttachmentProps(type) {
 
 const CardAttachment = ({ fileName, type, url, onClick, onRemoveClick, className, textClassName, removeIconClassName, typeIconClassName, isEditable, onFileNameChange, isLoading, error, ...rest }) => {
   const [isHoveringIcon, setHoverIcon] = useState(false);
-  const [isEditingFileName, toggleEditFileName] = useState(false);
 
   const onRemove = (e) => {
     e.stopPropagation();
@@ -89,7 +89,6 @@ const CardAttachment = ({ fileName, type, url, onClick, onRemoveClick, className
   const fileNameClassName = s(`underline-border ${error ? 'border-red-200' : `border-${underlineColor}`} ${textClassName}`);
 
   const isDownloadable = isHoveringIcon && url;
-  const isInputTogglable = isEditable && !isLoading;
 
   let leftIcon;
   if (isLoading) {
@@ -114,19 +113,16 @@ const CardAttachment = ({ fileName, type, url, onClick, onRemoveClick, className
           leftIcon
         }
       </div>
-      { isEditingFileName && isEditable ?
-        <input
-          placeholder="File Name"
-          value={fileName}
-          autoFocus
-          onChange={e => onFileNameChange(e.target.value)}
-          onBlur={() => toggleEditFileName(false)}
-          className={s('card-attachment-filename-input')}
-        /> :
-        <div className={s(`${isInputTogglable ? 'button-hover' : ''} ${fileNameClassName}`)} onClick={() => isInputTogglable && toggleEditFileName(true)}>
-          {fileName}
-        </div>
-      }
+      <ToggleableInput
+        isEditable={isEditable}
+        disabled={isLoading}
+        value={fileName}
+        inputProps={{
+          placeholder: 'File Name',
+          onChange: e => onFileNameChange(e.target.value),
+        }}
+        className={fileNameClassName}
+      />
       { isEditable && onRemoveClick && !isLoading &&
         <MdClose onClick={onRemove} className={s(`card-attachment-remove-icon button-hover ${removeIconClassName}`)} />
       }

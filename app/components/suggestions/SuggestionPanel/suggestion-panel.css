@@ -1,8 +1,9 @@
 .suggestion-panel {
   position: absolute;
   right: 100%;
-  margin-right: 5%;
   top: 0%;
+  margin-right: 5%;
+  @apply w-full flex flex-col rounded-lg bg-purple-light shadow-xl border-gray-200 border border-solid;
 }
 
 .suggestion-panel-card-container {
@@ -54,7 +55,13 @@
   @apply text-xs text-gray-light text-right mt-sm; 
 }
 
-.suggestion-panel-arrow {
-  top: 95px;
-  right: -5%;
+.suggestion-panel-arrow-container {
+  top: 87px;
+  right: calc(-5% + 1px);
+  width: calc(5% - 1px);
+  @apply absolute flex py-reg;
+}
+
+.suggestion-panel-toggle {
+  @apply bg-white text-purple-reg shadow-md cursor-pointer rounded-l-lg;
 }
