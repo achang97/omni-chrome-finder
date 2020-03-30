@@ -2,6 +2,8 @@ import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import Ripples from 'react-ripples';
 
+import { NOOP } from '../../../utils/constants';
+
 import style from './tabs.css';
 import { getStyleApplicationFn } from '../../../utils/style';
 
@@ -10,7 +12,7 @@ const s = getStyleApplicationFn(style);
 const Tab = (props) => {
   const {
     isActive, label, value,
-    onTabClick,
+    onTabClick, clickOnMouseDown,
     rippleClassName, tabContainerClassName, tabClassName, activeTabClassName, inactiveTabClassName, style,
     color, indicatorColor, showIndicator,
     showRipple,
@@ -29,6 +31,7 @@ const Tab = (props) => {
     <div
       {...rest}
       onClick={() => onTabClick(value)}
+      onMouseDown={clickOnMouseDown ? () => onTabClick(value) : NOOP}
       style={{ color }}
       className={s(`
         tab button-hover ${tabClassName}
@@ -56,6 +59,7 @@ Tab.propTypes = {
   value: PropTypes.oneOfType([PropTypes.string, PropTypes.number, PropTypes.object]),
   isActive: PropTypes.bool,
   onTabClick: PropTypes.func,
+  clickOnMouseDown: PropTypes.bool,
   rippleClassName: PropTypes.string,
   tabContainerClassName: PropTypes.string,
   tabClassName: PropTypes.string,

@@ -83,7 +83,7 @@ class Tabs extends Component {
       activeValue,
       rippleClassName, tabContainerClassName, tabClassName, activeTabClassName, inactiveTabClassName,
       color, indicatorColor, showIndicator,
-      showRipple,
+      showRipple, clickOnMouseDown,
     } = this.props;
 
     const actualValue = value || i;
@@ -93,6 +93,7 @@ class Tabs extends Component {
       isActive,
       value: actualValue,
       onTabClick: () => this.onTabClick(actualValue),
+      clickOnMouseDown,
       rippleClassName,
       tabContainerClassName,
       tabClassName,
@@ -189,6 +190,7 @@ Tabs.propTypes = {
   })),
   activeValue: PropTypes.oneOfType([PropTypes.string, PropTypes.number, PropTypes.object]).isRequired,
   onTabClick: PropTypes.func.isRequired,
+  clickOnMouseDown: PropTypes.bool,
   style: PropTypes.object,
   className: PropTypes.string,
   allTabsContainerClassName: PropTypes.string,
@@ -205,6 +207,7 @@ Tabs.propTypes = {
 };
 
 Tabs.defaultProps = {
+  clickOnMouseDown: false,
   style: {},
   className: '',
   allTabsContainerClassName: '',

@@ -11,6 +11,10 @@ const initialState = {
   activeCardIndex: -1,
   activeCard: {},
   showCloseModal: false,
+  windowPosition: {
+    x: window.innerWidth / 2 - CARD_DIMENSIONS.DEFAULT_CARDS_WIDTH / 2,
+    y: window.innerHeight / 2 - CARD_DIMENSIONS.DEFAULT_CARDS_HEIGHT / 2
+  },
 };
 
 const BASE_MODAL_OPEN_STATE = _.mapValues(MODAL_TYPE, () => false);
@@ -178,9 +182,23 @@ export default function cardsReducer(state = initialState, action) {
   };
 
   switch (type) {
+    case types.UPDATE_CARD_WINDOW_POSITION: {
+      const { position } = payload;
+      return { ...state, windowPosition: position };
+    }
     case types.ADJUST_CARDS_DIMENSIONS: {
       const { newWidth, newHeight } = payload;
       return { ...state, cardsWidth: newWidth, cardsHeight: newHeight };
+    }
+    case types.UPDATE_CARD_TAB_ORDER: {
+      const { source, destination } = payload;
+      const { cards } = state;
+
+      const newCards = Array.from(cards);
+      const [removed] = newCards.splice(source.index, 1);
+      newCards.splice(destination.index, 0, removed);
+
+      return { ...state, cards: newCards, activeCardIndex: destination.index };
     }
 
     case types.OPEN_CARD: {
