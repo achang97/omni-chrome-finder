@@ -37,7 +37,7 @@ class ChromeMessageListener extends Component {
   }
 
   componentDidUpdate(prevProps) {
-    if (this.state.hasLoaded) {
+    if (this.state.hasLoaded && this.props.isLoggedIn) {
       const prevEnabled = this.isAutofindEnabled(prevProps.autofindPermissions);
       const currEnabled = this.isAutofindEnabled();
 
@@ -125,7 +125,7 @@ class ChromeMessageListener extends Component {
   isAutofindEnabled = (autofindPermissions) => {
     const permissionsObj = autofindPermissions || this.props.autofindPermissions;
     const integration = this.getIntegration();
-    return integration && permissionsObj[integration];
+    return integration && permissionsObj && permissionsObj[integration];
   }
 
   getPageText = (integration) => {
