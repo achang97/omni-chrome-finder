@@ -1,7 +1,7 @@
 import { NODE_ENV } from './constants';
 
 export const getStorageName = name => (
-  `OMNI_EXTENSION_${process.env.NODE_ENV === 'development' ? 'DEV' : 'PROD'}_${name}`
+  `OMNI_EXTENSION_${process.env.NODE_ENV === NODE_ENV.DEV ? 'DEV' : 'PROD'}_${name}`
 );
 
 export function setStorage(key, value) {

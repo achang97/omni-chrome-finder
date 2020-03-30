@@ -11,7 +11,7 @@ import { updateCreateAnswerEditor } from '../../../actions/create';
 import { updateNavigateSearchText } from '../../../actions/navigate';
 import { requestGetTasks, updateTasksOpenSection, updateTasksTab } from '../../../actions/tasks';
 
-import { CHROME_MESSAGE, MAIN_CONTAINER_ID, SEARCH_TYPE, TASKS_SECTIONS, TASKS_SECTION_TYPE, TASK_TYPE, INTEGRATIONS} from '../../../utils/constants';
+import { CHROME_MESSAGE, ROUTES, MAIN_CONTAINER_ID, SEARCH_TYPE, TASKS_SECTIONS, TASKS_SECTION_TYPE, TASK_TYPE, INTEGRATIONS} from '../../../utils/constants';
 
 import AISuggestTab from '../AISuggestTab';
 
@@ -77,34 +77,36 @@ class ChromeMessageListener extends Component {
   getGoogleText = () => {
     let text = '';
 
-    const mainTable = document.querySelector('div[role="main"] table[role="presentation"]');
+    if (document) {
+      const mainTable = document.querySelector('div[role="main"] table[role="presentation"]');
 
-    const titleDiv = mainTable.querySelector('[tabindex="-1"]');
-    if (titleDiv) {
-      text += `${titleDiv.innerText}\n\n`;
-    }
-
-    const emailList = mainTable.querySelector('[role="list"]');
-    if (emailList) {
-      if (!this.observer) {
-        this.createMutator(emailList, { subtree: true, childList: true });
+      const titleDiv = mainTable.querySelector('[tabindex="-1"]');
+      if (titleDiv) {
+        text += `${titleDiv.innerText}\n\n`;
       }
 
-      for (let i = 0; i < emailList.children.length; i++) {
-        const email = emailList.children[i];
+      const emailList = mainTable.querySelector('[role="list"]');
+      if (emailList) {
+        if (!this.observer) {
+          this.createMutator(emailList, { subtree: true, childList: true });
+        }
 
-        if (email.getAttribute('role') === 'listitem') {
-          let innerText;
-          if (i === emailList.children.length - 1) {
-            const emailCopy = email.cloneNode(true);
-            const removeTables = emailCopy.querySelectorAll('[role="presentation"]');
-            removeTables.forEach(table => table.remove());
-            innerText = emailCopy.innerText;
-          } else {
-            innerText = email.innerText;
+        for (let i = 0; i < emailList.children.length; i++) {
+          const email = emailList.children[i];
+
+          if (email.getAttribute('role') === 'listitem') {
+            let innerText;
+            if (i === emailList.children.length - 1) {
+              const emailCopy = email.cloneNode(true);
+              const removeTables = emailCopy.querySelectorAll('[role="presentation"]');
+              removeTables.forEach(table => table.remove());
+              innerText = emailCopy.innerText;
+            } else {
+              innerText = email.innerText;
+            }
+          
+            text += `${innerText.trim()}\n\n`;
           }
-        
-          text += `${innerText.trim()}\n\n`;
         }
       }
     }
@@ -181,8 +183,7 @@ class ChromeMessageListener extends Component {
       let url;
       switch (action) {
         case CHROME_MESSAGE.ASK: {
-          url = '/ask';
-
+          url = ROUTES.ASK;
           if (dockExpanded) {
             updateAskQuestionTitle(selectedText);
           } else {
@@ -191,12 +192,12 @@ class ChromeMessageListener extends Component {
           break;
         }
         case CHROME_MESSAGE.CREATE: {
-          url = '/create';
+          url = ROUTES.CREATE;
           updateCreateAnswerEditor(EditorState.createWithContent(ContentState.createFromText(selectedText)));
           break;
         }
         case CHROME_MESSAGE.SEARCH: {
-          url = '/navigate';
+          url = ROUTES.NAVIGATE;
           updateNavigateSearchText(selectedText);
           break;
         }
@@ -220,7 +221,7 @@ class ChromeMessageListener extends Component {
     if (isLoggedIn && isVerified) {
       const { location: { pathname } } = history;
 
-      if (location === '/tasks') {
+      if (location === ROUTES.TASKS) {
         requestGetTasks();
       }
 
@@ -238,7 +239,7 @@ class ChromeMessageListener extends Component {
         }
       }
 
-      history.push('/tasks');
+      history.push(ROUTES.TASKS);
     }
   }
 

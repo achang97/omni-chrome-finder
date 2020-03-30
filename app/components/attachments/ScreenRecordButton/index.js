@@ -2,6 +2,7 @@ import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import moment from 'moment';
 import { FaRegDotCircle } from 'react-icons/fa';
+import ReactTooltip from 'react-tooltip';
 import { IoIosSquare } from 'react-icons/io';
 import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
@@ -125,16 +126,25 @@ class ScreenRecordButton extends Component {
     }
 
     return (
-      <Button
-        onClick={() => onClick()}
-        className={s(`attachment-button screen-record-button ${className}`)}
-        text={showText ? text : ''}
-        underline
-        underlineColor="red-200"
-        icon={<Icon className={s(`${showText ? 'ml-sm' : ''} text-red-500`)} />}
-        iconLeft={false}
-        disabled={!navigator.mediaDevices}
-      />
+      <React.Fragment>
+        <Button
+          onClick={() => onClick()}
+          className={s(`attachment-button screen-record-button ${className}`)}
+          text={showText ? text : ''}
+          underline
+          underlineColor="red-200"
+          icon={<Icon className={s(`${showText ? 'ml-sm' : ''} text-red-500`)} />}
+          iconLeft={false}
+          disabled={!navigator.mediaDevices}
+          data-tip
+          data-for="screen-record-button" 
+        />
+        { !navigator.mediaDevices &&
+          <ReactTooltip id="screen-record-button" type="error" effect="float">
+            <span className={s('font-normal text-xs')}> Screen recordings are not allowed on insecure websites. </span>
+          </ReactTooltip>
+        }
+      </React.Fragment>
     );
   }
 }
