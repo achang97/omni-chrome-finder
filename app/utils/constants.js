@@ -18,6 +18,19 @@ export const CHROME_MESSAGE = {
   NOTIFICATION_OPENED: 'NOTIFICATION_OPENED',
 };
 
+// Routes
+export const ROUTES = {
+  ASK: '/ask',
+  CREATE: '/create',
+  NAVIGATE: '/navigate',
+  TASKS: '/tasks',
+  PROFILE: '/profile',
+  VERIFY: '/verify',
+  SUGGEST: '/suggest',
+  LOGIN: '/login',
+  SIGNUP: '/signup'
+};
+
 export const MAIN_CONTAINER_ID = 'omni-chrome-ext-main-container';
 
 export const CARD_URL_BASE = 'https://www.google.com/webhp?sxsrf=';

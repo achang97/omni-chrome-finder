@@ -11,7 +11,7 @@ import { updateCreateAnswerEditor } from '../../../actions/create';
 import { updateNavigateSearchText } from '../../../actions/navigate';
 import { requestGetTasks, updateTasksOpenSection, updateTasksTab } from '../../../actions/tasks';
 
-import { CHROME_MESSAGE, MAIN_CONTAINER_ID, SEARCH_TYPE, TASKS_SECTIONS, TASKS_SECTION_TYPE, TASK_TYPE, INTEGRATIONS} from '../../../utils/constants';
+import { CHROME_MESSAGE, ROUTES, MAIN_CONTAINER_ID, SEARCH_TYPE, TASKS_SECTIONS, TASKS_SECTION_TYPE, TASK_TYPE, INTEGRATIONS} from '../../../utils/constants';
 
 import AISuggestTab from '../AISuggestTab';
 
@@ -181,8 +181,7 @@ class ChromeMessageListener extends Component {
       let url;
       switch (action) {
         case CHROME_MESSAGE.ASK: {
-          url = '/ask';
-
+          url = ROUTES.ASK;
           if (dockExpanded) {
             updateAskQuestionTitle(selectedText);
           } else {
@@ -191,12 +190,12 @@ class ChromeMessageListener extends Component {
           break;
         }
         case CHROME_MESSAGE.CREATE: {
-          url = '/create';
+          url = ROUTES.CREATE;
           updateCreateAnswerEditor(EditorState.createWithContent(ContentState.createFromText(selectedText)));
           break;
         }
         case CHROME_MESSAGE.SEARCH: {
-          url = '/navigate';
+          url = ROUTES.NAVIGATE;
           updateNavigateSearchText(selectedText);
           break;
         }
@@ -220,7 +219,7 @@ class ChromeMessageListener extends Component {
     if (isLoggedIn && isVerified) {
       const { location: { pathname } } = history;
 
-      if (location === '/tasks') {
+      if (location === ROUTES.TASKS) {
         requestGetTasks();
       }
 
@@ -238,7 +237,7 @@ class ChromeMessageListener extends Component {
         }
       }
 
-      history.push('/tasks');
+      history.push(ROUTES.TASKS);
     }
   }
 
