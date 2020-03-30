@@ -77,34 +77,36 @@ class ChromeMessageListener extends Component {
   getGoogleText = () => {
     let text = '';
 
-    const mainTable = document.querySelector('div[role="main"] table[role="presentation"]');
+    if (document) {
+      const mainTable = document.querySelector('div[role="main"] table[role="presentation"]');
 
-    const titleDiv = mainTable.querySelector('[tabindex="-1"]');
-    if (titleDiv) {
-      text += `${titleDiv.innerText}\n\n`;
-    }
-
-    const emailList = mainTable.querySelector('[role="list"]');
-    if (emailList) {
-      if (!this.observer) {
-        this.createMutator(emailList, { subtree: true, childList: true });
+      const titleDiv = mainTable.querySelector('[tabindex="-1"]');
+      if (titleDiv) {
+        text += `${titleDiv.innerText}\n\n`;
       }
 
-      for (let i = 0; i < emailList.children.length; i++) {
-        const email = emailList.children[i];
+      const emailList = mainTable.querySelector('[role="list"]');
+      if (emailList) {
+        if (!this.observer) {
+          this.createMutator(emailList, { subtree: true, childList: true });
+        }
 
-        if (email.getAttribute('role') === 'listitem') {
-          let innerText;
-          if (i === emailList.children.length - 1) {
-            const emailCopy = email.cloneNode(true);
-            const removeTables = emailCopy.querySelectorAll('[role="presentation"]');
-            removeTables.forEach(table => table.remove());
-            innerText = emailCopy.innerText;
-          } else {
-            innerText = email.innerText;
+        for (let i = 0; i < emailList.children.length; i++) {
+          const email = emailList.children[i];
+
+          if (email.getAttribute('role') === 'listitem') {
+            let innerText;
+            if (i === emailList.children.length - 1) {
+              const emailCopy = email.cloneNode(true);
+              const removeTables = emailCopy.querySelectorAll('[role="presentation"]');
+              removeTables.forEach(table => table.remove());
+              innerText = emailCopy.innerText;
+            } else {
+              innerText = email.innerText;
+            }
+          
+            text += `${innerText.trim()}\n\n`;
           }
-        
-          text += `${innerText.trim()}\n\n`;
         }
       }
     }
