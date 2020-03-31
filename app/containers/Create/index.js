@@ -20,7 +20,7 @@ import * as createActions from '../../actions/create';
 import { showDescriptionEditor } from '../../actions/create';
 
 import { DEBOUNCE_60_HZ, SEARCH_TYPE } from '../../utils/constants';
-import { generateFileKey, convertAttachmentsToBackendFormat } from '../../utils/file';
+import { generateFileKey, isAnyLoading } from '../../utils/file';
 
 import style from './create.css';
 import { getStyleApplicationFn } from '../../utils/style';
@@ -40,7 +40,7 @@ class Create extends Component {
       question,
       descriptionEditorState,
       answerEditorState,
-      attachments: convertAttachmentsToBackendFormat(attachments),
+      attachments,
       owners: [{ _id, name: `${firstname} ${lastname}`, img }] // Add own user by default
     };
     openCard(newCardInfo, createModalOpen, true);
@@ -121,7 +121,7 @@ class Create extends Component {
   }
 
   render() {
-    const { question, answerEditorState } = this.props;
+    const { question, answerEditorState, attachments } = this.props;
     return (
       <div className={s('flex flex-col flex-1 min-h-0')}>
         <div className={s('p-lg flex flex-col flex-grow overflow-auto min-h-0')}>
@@ -130,6 +130,7 @@ class Create extends Component {
             <Button
               text={'Expand Card'}
               onClick={this.openCard}
+              disabled={isAnyLoading(attachments)}
               color={'primary'}
               className={s('p-sm text-xs')}
               icon={<FiMaximize2 className={s('ml-reg')} />}
@@ -145,7 +146,11 @@ class Create extends Component {
           color="primary"
           text="Create Card"
           iconLeft={false}
-          disabled={question === '' || !answerEditorState.getCurrentContent().hasText()}
+          disabled={
+            question === '' ||
+            !answerEditorState.getCurrentContent().hasText() ||
+            isAnyLoading(attachments)
+          }
           icon={
             <span className={s('rounded-full h-3xl w-3xl flex justify-center items-center bg-white text-purple-reg')}>
               <MdAdd />

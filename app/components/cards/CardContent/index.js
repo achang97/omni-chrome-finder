@@ -28,7 +28,7 @@ import { connect } from 'react-redux';
 import * as cardActions from '../../../actions/cards';
 
 import { hasValidEdits, toggleUpvotes, cardStateChanged } from '../../../utils/card';
-import { generateFileKey } from '../../../utils/file';
+import { generateFileKey, isAnyLoading } from '../../../utils/file';
 import { CARD_STATUS, CARD_DIMENSIONS, EDITOR_TYPE, MODAL_TYPE, USER_ROLE, HTTP_STATUS_CODE } from '../../../utils/constants';
 
 import style from './card-content.css';
@@ -291,7 +291,10 @@ class CardContent extends Component {
           { currAttachments.length !== 0 &&
             <div className={s('flex items-center')}>
               <div className={s('flex text-purple-reg text-sm cursor-pointer underline-border border-purple-gray-20 items-center')} onClick={openCardSideDock}>
-                <MdAttachment className={s('mr-sm')} />
+                { isAnyLoading(currAttachments) ? 
+                  <Loader size="sm" className={s('mr-sm')} /> :
+                  <MdAttachment className={s('mr-sm')} />
+                }
                 <div> {currAttachments.length} Attachment{currAttachments.length !== 0 && 's'}</div>
               </div>
             </div>
@@ -402,7 +405,11 @@ class CardContent extends Component {
               color="primary"
               onClick={() => openCardModal(MODAL_TYPE.CREATE)}
               className={s('rounded-t-none p-lg')}
-              disabled={edits.question === '' || !edits.answerEditorState.getCurrentContent().hasText()}
+              disabled={
+                edits.question === '' ||
+                !edits.answerEditorState.getCurrentContent().hasText() ||
+                isAnyLoading(edits.attachments)
+              }
               underline
             /> :
             <Button

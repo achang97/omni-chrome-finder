@@ -15,3 +15,11 @@ export function convertAttachmentsToBackendFormat(attachments) {
 export function isVideo(type) {
   return type.startsWith('video');
 }
+
+export function isImage(type) {
+  return type.startsWith('image');
+}
+
+export function isAnyLoading(files) {
+  return files.some(({ isLoading }) => isLoading);
+}

@@ -1,6 +1,7 @@
-import React, { useRef } from 'react';
+import React, { useRef, useState } from 'react';
 import PropTypes from 'prop-types';
 import { Transition } from 'react-transition-group';
+import Lightbox from 'react-image-lightbox';
 import AnimateHeight from 'react-animate-height';
 import moment from 'moment';
 
@@ -31,13 +32,11 @@ import Loader from '../../common/Loader';
 import VideoPlayer from '../../common/VideoPlayer';
 import ToggleableInput from '../../common/ToggleableInput';
 
-import { isUploadedFile } from '../../../utils/file';
-
 import { getBaseAnimationStyle } from '../../../utils/animate';
 import { MODAL_TYPE, PERMISSION_OPTION, PERMISSION_OPTIONS, VERIFICATION_INTERVAL_OPTIONS, FADE_IN_TRANSITIONS, CARD_STATUS } from '../../../utils/constants';
 import { createSelectOptions } from '../../../utils/select';
 import { isJustMe } from '../../../utils/card';
-import { isVideo } from '../../../utils/file';
+import { isVideo, isImage, isUploadedFile } from '../../../utils/file';
 
 import style from './card-side-dock.css';
 import { getStyleApplicationFn } from '../../../utils/style';
@@ -50,6 +49,8 @@ const SIDE_DOCK_TRANSITION_MS = 300;
 
 const CardSideDock = (props) => {
   const permissionRef = useRef(null);
+  const [isLightboxOpen, setLightboxOpenState] = useState(false);
+  const [lightboxIndex, setLightboxIndex] = useState(0);
 
   const closeSideDock = () => {
     props.closeCardSideDock();
@@ -87,25 +88,102 @@ const CardSideDock = (props) => {
   };
 
   const splitAttachments = (attachments) => {
-    const fileAttachments = [];
+    const files = [];
     const screenRecordings = [];
+    const images = [];
 
     attachments.forEach((attachment) => {
-      if (attachment.mimetype && isVideo(attachment.mimetype)) {
+      const isUploaded = isUploadedFile(attachment.key);
+      if (isUploaded && isVideo(attachment.mimetype)) {
         screenRecordings.push(attachment);
+      } else if (isUploaded && isImage(attachment.mimetype)) {
+        images.push(attachment);
       } else {
-        fileAttachments.push(attachment);
+        files.push(attachment);
       }
     });
 
-    return { fileAttachments, screenRecordings };
+    return { files, screenRecordings, images };
+  };
+
+  const renderRemoveMediaButton = (key) => {
+    const { isEditing, removeCardAttachment } = props;
+    
+    if (!isEditing) return null;
+    
+    return (
+      <div
+        className={s('card-side-dock-media-remove')}
+        onClick={() => removeCardAttachment(key)}
+      >
+        <MdClose />
+      </div>
+    );
+  }
+
+  const renderMediaToggleableInput = ({ name, key, location }) => {
+    const { isEditing, updateCardAttachmentName } = props;
+
+    return ( isEditing ?
+      <ToggleableInput
+        isEditable={isEditing}
+        value={name}
+        inputProps={{
+          placeholder: 'File Name',
+          onChange: e => updateCardAttachmentName(key, e.target.value),
+        }}
+        className={s('truncate text-xs font-semibold text-center')}
+      /> :
+      <a
+        href={location}
+        target="_blank"
+        className={s('block truncate text-xs font-semibold text-center')}
+      >
+        {name}
+      </a>   
+    );
+  };
+
+  const renderImageAttachment = ({ name, key, location, isLoading, error }, i) => {
+    const { isEditing, updateCardAttachmentName } = props;
+
+    const onClick = () => {
+      setLightboxIndex(i);
+      setLightboxOpenState(true);
+    }
+
+    return (
+      <div className={s('card-side-dock-media-wrapper')} key={key}>
+        { renderRemoveMediaButton(key) }
+        <img
+          src={location}
+          className={s('w-full mb-xs cursor-pointer')}
+          onClick={onClick}
+        />
+        { renderMediaToggleableInput({ name, key, location }) }
+      </div>
+    );
+  };
+
+  const renderVideoPlayer = ({ name, key, location, isLoading, error }) => {
+    const { isEditing, updateCardAttachmentName } = props;
+    return (
+      <div className={s('card-side-dock-media-wrapper')} key={key}>
+        { renderRemoveMediaButton(key) }
+        <VideoPlayer
+          url={location}
+          className={s('w-full mb-xs')}
+        />
+        { renderMediaToggleableInput({ name, key, location }) }
+      </div>
+    );
   };
 
   const renderAttachments = () => {
     const { removeCardAttachment, updateCardAttachmentName, isEditing } = props;
     const currAttachments = getAttribute('attachments');
 
-    const { fileAttachments, screenRecordings } = splitAttachments(currAttachments);
+    const { files, screenRecordings, images } = splitAttachments(currAttachments);
 
     return (
       <CardSection className={s('mt-lg')} title="Attachments">
@@ -115,7 +193,7 @@ const CardSideDock = (props) => {
           </div>
         }
         <div className={s('flex flex-wrap')}>
-          { fileAttachments.map(({ name, mimetype, key, location, isLoading, error }, i) => (
+          { files.map(({ name, mimetype, key, location, isLoading, error }, i) => (
             <CardAttachment
               key={key}
               type={mimetype}
@@ -131,35 +209,32 @@ const CardSideDock = (props) => {
             />
           ))}
         </div>
-        { fileAttachments.length !== 0 && screenRecordings.length !== 0 &&
-          <div className={s('my-sm text-sm text-gray-light')}> Screen Recordings </div>
+
+        { images.length !== 0 &&
+          <React.Fragment>
+            <div className={s('card-side-dock-subtitle')}> Images </div>
+            { isLightboxOpen &&
+              <Lightbox
+                reactModalStyle={{ overlay: { zIndex: 100000000000 } }}
+                mainSrc={images[lightboxIndex].location}
+                nextSrc={images[(lightboxIndex + 1) % images.length].location}
+                prevSrc={images[(lightboxIndex + images.length - 1) % images.length].location}
+                onCloseRequest={() => setLightboxOpenState(false)}
+                onMovePrevRequest={() => setLightboxIndex((lightboxIndex + images.length - 1) % images.length)}
+                onMoveNextRequest={() => setLightboxIndex((lightboxIndex + 1) % images.length)}
+              />
+            }
+          </React.Fragment>
         }
         <div className={s('flex flex-wrap')}>
-          { screenRecordings.map(({ name, key, location, isLoading, error }) => (
-            <div className={s('card-side-dock-video-wrapper')} key={key}>
-              { isEditing &&
-                <div
-                  className={s('card-side-dock-remove-video')}
-                  onClick={() => removeCardAttachment(key)}
-                >
-                  <MdClose />
-                </div>
-              }
-              <VideoPlayer
-                url={location}
-                className={s('w-full mb-xs')}
-              />
-              <ToggleableInput
-                isEditable={isEditing}
-                value={name}
-                inputProps={{
-                  placeholder: 'File Name',
-                  onChange: e => updateCardAttachmentName(key, e.target.value),
-                }}
-                className={s('truncate text-xs font-semibold text-center')}
-              />
-            </div>
-          ))}
+          { images.map(renderImageAttachment)}
+        </div>
+
+        { screenRecordings.length !== 0 &&
+          <div className={s('card-side-dock-subtitle')}> Screen Recordings </div>
+        }
+        <div className={s('flex flex-wrap')}>
+          { screenRecordings.map(renderVideoPlayer)}
         </div>
       </CardSection>
     );
@@ -204,22 +279,21 @@ const CardSideDock = (props) => {
               'Keyword already exists' : 'Begin typing to add a keyword'
             }
           /> :
-              <div>
-                { currKeywords.length === 0 &&
-                <div className={s('text-sm text-gray-light')}>
+          <div>
+            { currKeywords.length === 0 &&
+              <div className={s('text-sm text-gray-light')}>
                 No current keywords
               </div>
             }
-                <div className={s('flex flex-wrap')}>
-                  { currKeywords.map(({ label, value }, i) => (
-                    <div key={value} className={s('text-sm mr-sm mb-sm truncate text-purple-reg underline-border border-purple-gray-10')}>
-                      {value}{i !== currKeywords.length - 1 && ','}
-                    </div>
-              ))}
+            <div className={s('flex flex-wrap')}>
+              { currKeywords.map(({ label, value }, i) => (
+                <div key={value} className={s('text-sm mr-sm mb-sm truncate text-purple-reg underline-border border-purple-gray-10')}>
+                  {value}{i !== currKeywords.length - 1 && ','}
                 </div>
-              </div>
+              ))}
+            </div>
+          </div>
         }
-
       </CardSection>
     );
   };

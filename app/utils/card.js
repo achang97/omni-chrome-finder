@@ -4,6 +4,7 @@ import _ from 'lodash';
 import { getEditorStateFromContentState, getContentStateFromEditorState } from './editor';
 import { createSelectOptions } from './select';
 import { getArrayIds } from './array';
+import { isAnyLoading } from './file';
 import {
   VERIFICATION_INTERVAL_OPTIONS, PERMISSION_OPTION,
   PERMISSION_OPTIONS, CARD_STATUS
@@ -73,7 +74,7 @@ export function toggleUpvotes(upvoteIds, userId) {
 export function hasValidEdits(edits) {
   const {
     question, answerEditorState, owners = [], verificationInterval,
-    permissions, permissionGroups = []
+    permissions, permissionGroups = [], attachments = []
   } = edits;
 
   return (
@@ -85,7 +86,8 @@ export function hasValidEdits(edits) {
         owners.length !== 0 &&
         !!verificationInterval
       )
-    ))
+    )) &&
+    !isAnyLoading(attachments)
   );
 }
 
