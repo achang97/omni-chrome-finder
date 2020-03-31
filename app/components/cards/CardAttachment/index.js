@@ -89,17 +89,14 @@ const CardAttachment = ({ fileName, type, url, onClick, onRemoveClick, className
   const fileNameClassName = s(`underline-border ${error ? 'border-red-200' : `border-${underlineColor}`} ${textClassName}`);
 
   const isDownloadable = isHoveringIcon && url;
-  const isPreviewable = type && (isVideo(type) || isImage(type));
 
   let leftIcon;
   if (isLoading) {
     leftIcon = <Loader size="xs" />;
   } else if (error) {
     leftIcon = <MdError />;
-  } else if (isDownloadable && !isPreviewable) {
-    leftIcon = <MdFileDownload />;
-  } else if (isDownloadable && isPreviewable) {
-    leftIcon = <MdOpenInNew />
+  } else if (isDownloadable) {
+    leftIcon = <MdOpenInNew />;
   } else {
     leftIcon = <Icon />;
   }
@@ -112,7 +109,7 @@ const CardAttachment = ({ fileName, type, url, onClick, onRemoveClick, className
         onMouseLeave={() => setHoverIcon(false)}
       >
         { isDownloadable ?
-          <a download={!isPreviewable} href={url}> {leftIcon} </a> :
+          <a href={url} target="_blank"> {leftIcon} </a> :
           leftIcon
         }
       </div>

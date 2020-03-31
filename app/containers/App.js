@@ -32,6 +32,7 @@ import Verify from './Verify';
 
 import 'react-toggle/style.css';
 import 'react-circular-progressbar/dist/styles.css';
+import 'react-image-lightbox/style.css';
 
 import style from './App.css';
 
