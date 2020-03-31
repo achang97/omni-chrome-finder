@@ -8,6 +8,8 @@ import Loader from '../../common/Loader';
 import Dropdown from '../../common/Dropdown';
 import CardAttachment from '../../cards/CardAttachment';
 
+import { isAnyLoading } from '../../../utils/file';
+
 import style from './attachment-dropdown.css';
 import { getStyleApplicationFn } from '../../../utils/style';
 const s = getStyleApplicationFn(style);
@@ -19,7 +21,7 @@ const AttachmentDropdown = ({ attachments, onFileNameChange, onRemoveClick, clas
       <div className={s('relative')}>
         <Button
           className={s('bg-white py-reg px-sm text-purple-reg')}
-          icon={attachments.some(({ isLoading }) => isLoading) ?
+          icon={isAnyLoading(attachments) ?
             <Loader size="xs" className={'attachment-dropdown-icon'} /> :
             <MdAttachFile className={s('attachment-dropdown-icon')} />
           }
@@ -45,7 +47,7 @@ const AttachmentDropdown = ({ attachments, onFileNameChange, onRemoveClick, clas
             textClassName={s('truncate')}
             removeIconClassName={s('ml-auto')}
             isEditable
-            onFileNameChange={() => onFileNameChange({ key, fileName })}
+            onFileNameChange={(fileName) => onFileNameChange({ key, fileName })}
             onRemoveClick={() => onRemoveClick(key)}
           />
         ))}

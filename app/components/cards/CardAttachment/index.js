@@ -10,10 +10,10 @@ import {
   FaFilePdf, FaFileWord, FaFileExcel, FaFilePowerpoint,
   FaFileAlt, FaFileCode, FaFileArchive,
 } from 'react-icons/fa';
-import { MdClose, MdError, MdFileDownload } from 'react-icons/md';
+import { MdClose, MdError, MdFileDownload, MdOpenInNew } from 'react-icons/md';
 
 import { NOOP } from '../../../utils/constants';
-import { isVideo } from '../../../utils/file';
+import { isVideo, isImage } from '../../../utils/file';
 
 import style from './card-attachment.css';
 import { getStyleApplicationFn } from '../../../utils/style';
@@ -29,7 +29,7 @@ const COLORS = {
 };
 
 function getAttachmentProps(type) {
-  if (type && type.startsWith('image')) {
+  if (type && isImage(type)) {
     return { ...COLORS.IMAGE, Icon: FaFileImage };
   } else if (type && type.startsWith('audio')) {
     return { ...COLORS.AUDIO_VIDEO, Icon: FaFileAudio };
@@ -89,14 +89,17 @@ const CardAttachment = ({ fileName, type, url, onClick, onRemoveClick, className
   const fileNameClassName = s(`underline-border ${error ? 'border-red-200' : `border-${underlineColor}`} ${textClassName}`);
 
   const isDownloadable = isHoveringIcon && url;
+  const isPreviewable = type && (isVideo(type) || isImage(type));
 
   let leftIcon;
   if (isLoading) {
     leftIcon = <Loader size="xs" />;
   } else if (error) {
     leftIcon = <MdError />;
-  } else if (isDownloadable) {
+  } else if (isDownloadable && !isPreviewable) {
     leftIcon = <MdFileDownload />;
+  } else if (isDownloadable && isPreviewable) {
+    leftIcon = <MdOpenInNew />
   } else {
     leftIcon = <Icon />;
   }
@@ -109,7 +112,7 @@ const CardAttachment = ({ fileName, type, url, onClick, onRemoveClick, className
         onMouseLeave={() => setHoverIcon(false)}
       >
         { isDownloadable ?
-          <a href={url} download> {leftIcon} </a> :
+          <a download={!isPreviewable} href={url}> {leftIcon} </a> :
           leftIcon
         }
       </div>
@@ -120,6 +123,7 @@ const CardAttachment = ({ fileName, type, url, onClick, onRemoveClick, className
         inputProps={{
           placeholder: 'File Name',
           onChange: e => onFileNameChange(e.target.value),
+          className: s('flex-1')
         }}
         className={fileNameClassName}
       />

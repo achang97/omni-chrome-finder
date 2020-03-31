@@ -33,7 +33,7 @@ import { colors } from '../../styles/colors';
 import { expandDock } from '../../actions/display';
 import { requestSearchCards } from '../../actions/search';
 import * as askActions from '../../actions/ask';
-import { generateFileKey } from '../../utils/file';
+import { generateFileKey, isAnyLoading } from '../../utils/file';
 import { isLoggedIn, getIntegrationAuthLink } from '../../utils/auth';
 import { ROUTES, ASK_INTEGRATIONS, INTEGRATIONS, DEBOUNCE_60_HZ, TIMEOUT_3S, SEARCH_TYPE, SLACK_RECIPIENT_TYPE  } from '../../utils/constants';
 
@@ -268,13 +268,19 @@ class Ask extends Component {
   }
 
   renderFooterButton = () => {
-    const { questionTitle, questionDescription, recipients, requestAskQuestion, isAskingQuestion } = this.props;
+    const { questionTitle, questionDescription, recipients, requestAskQuestion, attachments, isAskingQuestion } = this.props;
     return (
       <Button
         className={s('self-stretch justify-between rounded-t-none rounded-br-none rounded-bl-reg text-reg')}
         color="primary"
         text="Ask Question"
-        disabled={questionTitle === '' || !questionDescription.getCurrentContent().hasText() || recipients.length === 0 || isAskingQuestion}
+        disabled={
+          questionTitle === '' ||
+          !questionDescription.getCurrentContent().hasText() ||
+          recipients.length === 0 ||
+          isAnyLoading(attachments) ||
+          isAskingQuestion
+        }
         iconLeft={false}
         icon={isAskingQuestion ?
           <Loader className={s('h-3xl w-3xl')} color="white" /> :
