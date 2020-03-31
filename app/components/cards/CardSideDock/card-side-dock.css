@@ -18,6 +18,6 @@
 }
 
 .card-side-dock-remove-video {
-  @apply absolute bg-white shadow-md rounded-full cursor-pointer top-0 right-0 z-10;
-  transform: translate(30%, -30%);
+  @apply h-lg w-lg flex justify-center items-center absolute bg-white shadow-md rounded-full cursor-pointer top-0 right-0 z-10;
+  transform: translate(20%, -20%);
 }

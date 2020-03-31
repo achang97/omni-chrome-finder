@@ -91,7 +91,7 @@ const CardSideDock = (props) => {
     const screenRecordings = [];
 
     attachments.forEach((attachment) => {
-      if (attachment.mimetype && isVideo(attachment.mimetype)) {
+      if (!attachment.isLoading && attachment.mimetype && isVideo(attachment.mimetype)) {
         screenRecordings.push(attachment);
       } else {
         fileAttachments.push(attachment);
@@ -149,15 +149,24 @@ const CardSideDock = (props) => {
                 url={location}
                 className={s('w-full mb-xs')}
               />
-              <ToggleableInput
-                isEditable={isEditing}
-                value={name}
-                inputProps={{
-                  placeholder: 'File Name',
-                  onChange: e => updateCardAttachmentName(key, e.target.value),
-                }}
-                className={s('truncate text-xs font-semibold text-center')}
-              />
+              { isEditing ? 
+                <ToggleableInput
+                  isEditable={isEditing}
+                  value={name}
+                  inputProps={{
+                    placeholder: 'File Name',
+                    onChange: e => updateCardAttachmentName(key, e.target.value),
+                  }}
+                  className={s('truncate text-xs font-semibold text-center')}
+                /> :
+                <a
+                  href={location}
+                  target="_blank"
+                  className={s('block truncate text-xs font-semibold text-center')}
+                >
+                  {name}
+                </a>             
+              }
             </div>
           ))}
         </div>
