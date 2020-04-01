@@ -172,7 +172,9 @@ class TaskItem extends Component {
     const {
       card: { _id: cardId, question }, id, createdAt, type,
       resolved, card, isLoading, error, className, onHide,
-      openCard, requestDismissTask, requestMarkUpToDateFromTasks, ...rest
+      ownUserId,
+      openCard, requestDismissTask, requestMarkUpToDateFromTasks, requestApproveCardFromTasks,
+      ...rest
     } = this.props;
     const { showItem } = this.state;
 

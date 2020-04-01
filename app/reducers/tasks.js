@@ -19,7 +19,7 @@ export default function tasksReducer(state = initialState, action) {
   const updateTask = (taskId, newInfo) => {
     return {
       ...state,
-      tasks: updateArrayOfObjects(state.tasks, '_id', taskId, newInfo)
+      tasks: updateArrayOfObjects(state.tasks, { _id: taskId }, newInfo)
     };
   }
 

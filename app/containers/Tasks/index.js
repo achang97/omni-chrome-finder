@@ -72,7 +72,7 @@ class Tasks extends Component {
             key={_id}
             id={_id}
             className={i > 0 ? 'mt-reg' : ''}
-            date={createdAt}
+            createdAt={createdAt}
             type={status}
             card={card}
             isLoading={isLoading}

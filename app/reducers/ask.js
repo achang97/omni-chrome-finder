@@ -25,7 +25,7 @@ export default function askReducer(state = initialState, action) {
 
   const updateAttachmentByKey = (key, newInfo) => ({
     ...state,
-    attachments: updateArrayOfObjects(state.attachments, 'key', key, newInfo)
+    attachments: updateArrayOfObjects(state.attachments, { key }, newInfo)
   });
 
   switch (type) {

@@ -19,13 +19,14 @@ export function updateIndex(array, index, newElement, merge = false) {
 /* 
  * Returns a shallow copy of array with element with matching field updated.
  */
-export function updateArrayOfObjects(array, fieldName, fieldValue, newInfo, merge=true) {
+export function updateArrayOfObjects(array, matchObj, newInfoObj, merge=true) {
   return array.map(elem => {
-    if (elem[fieldName] === fieldValue) {
+    const isMatch = Object.entries(matchObj).every(([key, value]) => elem[key] === value);
+    if (isMatch) {
       if (merge) {
-        return { ...elem, ...newInfo }
+        return { ...elem, ...newInfoObj }
       } else {
-        return newInfo;
+        return newInfoObj;
       }
     } else {
       return elem;
