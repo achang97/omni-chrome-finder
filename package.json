@@ -121,6 +121,7 @@
     "save": "^2.4.0",
     "styled-components": "^5.0.0",
     "tailwindcss": "^1.1.4",
+    "terser": "^4.6.8",
     "video-react": "^0.14.1"
   }
 }
