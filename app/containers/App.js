@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
-import { Route, Switch, Redirect, withRouter } from 'react-router-dom';
+import { Switch, Redirect, withRouter } from 'react-router-dom';
 import Dock from 'react-dock';
-import { CARD_URL_REGEX, SLACK_URL_REGEX, TASK_URL_REGEX, TASKS_SECTIONS, TASKS_SECTION_TYPE, TASK_TYPE, SEARCH_TYPE, NOOP } from '../utils/constants';
+import { ROUTES, CARD_URL_REGEX, SLACK_URL_REGEX, TASK_URL_REGEX, TASKS_SECTIONS, TASKS_SECTION_TYPE, TASK_TYPE, SEARCH_TYPE, NOOP } from '../utils/constants';
 import { identifyUser } from '../utils/heap';
 import queryString from 'query-string';
 
@@ -16,6 +16,9 @@ import Header from '../components/app/Header';
 import ChromeMessageListener from '../components/app/ChromeMessageListener';
 import VerifySuccessModal from '../components/app/VerifySuccessModal';
 
+import PublicRoute from '../components/routes/PublicRoute';
+import PrivateRoute from '../components/routes/PrivateRoute';
+
 import Ask from './Ask';
 import Create from './Create';
 import Navigate from './Navigate';
@@ -29,6 +32,7 @@ import Verify from './Verify';
 
 import 'react-toggle/style.css';
 import 'react-circular-progressbar/dist/styles.css';
+import 'react-image-lightbox/style.css';
 
 import style from './App.css';
 
@@ -95,7 +99,7 @@ class App extends Component {
               updateTasksOpenSection(taskSectionType ? taskSectionType.type : TASKS_SECTION_TYPE.ALL);
             }
           }
-          history.push('/tasks');
+          history.push(ROUTES.TASKS);
         }
       }
     ]
@@ -123,14 +127,7 @@ class App extends Component {
     } = this.props;
 
     const isVerified = user && user.isVerified;
-    const showFullDock = dockExpanded || (pathname !== '/ask' && isLoggedIn && isVerified);
-
-    let redirectLink = '/verify';
-    if (isLoggedIn) {
-      redirectLink = isVerified ? '/ask' : '/verify';
-    } else {
-      redirectLink = '/login';
-    }
+    const showFullDock = dockExpanded || (pathname !== ROUTES.ASK && isLoggedIn && isVerified);
 
     return (
       <div className={s('app-container')}>
@@ -151,20 +148,19 @@ class App extends Component {
             <VerifySuccessModal />
             { isLoggedIn && isVerified && <Header /> }
             <Switch>
-              { isVerified && isLoggedIn && <Route path="/ask" component={Ask} /> } }
-              { isVerified && isLoggedIn && <Route path="/create" component={Create} /> }
-              { isVerified && isLoggedIn && <Route path="/navigate" component={Navigate} /> }
-              { isVerified && isLoggedIn && <Route path="/tasks" component={Tasks} /> }
-              { isVerified && isLoggedIn && <Route path="/profile" component={Profile} /> }
-              { isVerified && isLoggedIn && showAISuggest && <Route path="/suggest" component={AISuggest} /> }
+              <PrivateRoute path={ROUTES.ASK} component={Ask} />
+              <PrivateRoute path={ROUTES.CREATE} component={Create} />
+              <PrivateRoute path={ROUTES.NAVIGATE} component={Navigate} />
+              <PrivateRoute path={ROUTES.TASKS} component={Tasks} />
+              <PrivateRoute path={ROUTES.PROFILE} component={Profile} />
+              { !isVerified && <PrivateRoute path={ROUTES.VERIFY} component={Verify} /> }
+              { showAISuggest && <PrivateRoute path={ROUTES.SUGGEST} component={AISuggest} /> }
 
-              { !isVerified && isLoggedIn && <Route path="/verify" component={Verify} /> }
-
-              { !isLoggedIn && <Route path="/login" component={Login} /> }
-              { !isLoggedIn && <Route path="/signup" component={Signup} /> }
+              <PublicRoute path={ROUTES.LOGIN} component={Login} />
+              <PublicRoute path={ROUTES.SIGNUP} component={Signup} />
 
               {/* A catch-all route: put all other routes ABOVE here */}
-              <Redirect to={redirectLink} />
+              <Redirect to={isLoggedIn ? ROUTES.ASK : ROUTES.LOGIN } />
             </Switch>
           </div>
         </Dock>

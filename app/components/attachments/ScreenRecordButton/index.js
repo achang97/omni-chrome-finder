@@ -2,6 +2,7 @@ import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import moment from 'moment';
 import { FaRegDotCircle } from 'react-icons/fa';
+import ReactTooltip from 'react-tooltip';
 import { IoIosSquare } from 'react-icons/io';
 import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
@@ -64,29 +65,39 @@ class ScreenRecordButton extends Component {
       voiceGain.gain.value = 0.7;
       source2.connect(voiceGain).connect(destination);
     }
-      
+
     return destination.stream.getAudioTracks();
   };
 
   startRecording = async () => {
     const { addScreenRecordingChunk, startScreenRecording } = this.props;
 
-    const desktopStream = await navigator.mediaDevices.getDisplayMedia({
-      audio: true,
-      video: {
-        width: { ideal: 4096 },
-        height: { ideal: 2160 }
-      }
-    });
+    let desktopStream, voiceStream;
 
-    const voiceStream = await navigator.mediaDevices.getUserMedia({
-      audio: true,
-      video: false
-    });
+    try {
+      voiceStream = await navigator.mediaDevices.getUserMedia({
+        audio: true,
+        video: false
+      });
+    } catch (e) {
+      console.log(e);
+    }
+
+    try {
+      desktopStream = await navigator.mediaDevices.getDisplayMedia({
+        audio: true,
+        video: {
+          width: { ideal: 4096 },
+          height: { ideal: 2160 }
+        }
+      });      
+    } catch (e) {
+      return;
+    }
 
     const tracks = [
       ...desktopStream.getVideoTracks(), 
-      ...this.mergeAudioStreams(desktopStream, voiceStream)
+      ...(voiceStream ? this.mergeAudioStreams(desktopStream, voiceStream) : [])
     ];
 
     const stream = new MediaStream(tracks);
@@ -98,7 +109,7 @@ class ScreenRecordButton extends Component {
     };
 
     const mediaRecorder = new MediaRecorder(stream, {
-      mimeType: 'video/webm; codecs=vp8,opus'
+      mimeType: `video/webm${voiceStream ? '; codecs=vp8,opus' : ''}`
     });
     mediaRecorder.ondataavailable = (event) => {
       if (event.data && event.data.size > 0) {
@@ -125,16 +136,25 @@ class ScreenRecordButton extends Component {
     }
 
     return (
-      <Button
-        onClick={() => onClick()}
-        className={s(`attachment-button screen-record-button ${className}`)}
-        text={showText ? text : ''}
-        underline
-        underlineColor="red-200"
-        icon={<Icon className={s(`${showText ? 'ml-sm' : ''} text-red-500`)} />}
-        iconLeft={false}
-        disabled={!navigator.mediaDevices}
-      />
+      <React.Fragment>
+        <Button
+          onClick={() => onClick()}
+          className={s(`attachment-button screen-record-button ${className}`)}
+          text={showText ? text : ''}
+          underline
+          underlineColor="red-200"
+          icon={<Icon className={s(`${showText ? 'ml-sm' : ''} text-red-500`)} />}
+          iconLeft={false}
+          disabled={!navigator.mediaDevices}
+          data-tip
+          data-for="screen-record-button" 
+        />
+        { !navigator.mediaDevices &&
+          <ReactTooltip id="screen-record-button" type="error" effect="float">
+            <span className={s('font-normal text-xs')}> Screen recordings are not allowed on insecure websites. </span>
+          </ReactTooltip>
+        }
+      </React.Fragment>
     );
   }
 }
