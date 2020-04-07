@@ -1,5 +1,6 @@
+import queryString from 'query-string';
 import { take, call, fork, put, select } from 'redux-saga/effects';
-import { doGet, doPost, doDelete } from '../utils/request';
+import { doGet, doPost, doDelete, SERVER_URL } from '../utils/request';
 import { getContentStateFromEditorState } from '../utils/editor';
 import { SLACK_RECIPIENT_TYPE } from '../utils/constants';
 import { convertAttachmentsToBackendFormat, isUploadedFile } from '../utils/file';
@@ -91,7 +92,10 @@ function* addAttachment({ key, file }) {
     formData.append('file', file);
 
     const attachment = yield call(doPost, '/files/upload', formData, { isForm: true });
-    yield put(handleAddAskAttachmentSuccess(key, attachment));
+    const { token } = yield call(doGet, `/files/${attachment.key}/accesstoken`);
+    const location = `${SERVER_URL}/files/bytoken/${attachment.key}?${queryString.stringify({ token })}`;
+
+    yield put(handleAddAskAttachmentSuccess(key, { ...attachment, location }));
   } catch (error) {
     const { response: { data: { error: { message } } } } = error;
     yield put(handleAddAskAttachmentError(key, message));
