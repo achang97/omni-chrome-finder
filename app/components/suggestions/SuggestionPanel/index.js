@@ -1,6 +1,5 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
-import Timeago from 'react-timeago';
 import { MdClose, MdKeyboardArrowDown, MdKeyboardArrowUp, MdKeyboardArrowLeft } from 'react-icons/md';
 
 import AnimateHeight from 'react-animate-height';
@@ -10,6 +9,7 @@ import SuggestionScrollContainer from '../SuggestionScrollContainer';
 import Loader from '../../common/Loader';
 import Button from '../../common/Button';
 import Triangle from '../../common/Triangle';
+import Timeago from '../../common/Timeago';
 
 import { requestSearchCards, clearSearchCards } from '../../../actions/search';
 import { bindActionCreators } from 'redux';

@@ -1,5 +1,5 @@
-import { SERVER_URL } from './request';
 import queryString from 'query-string';
+import { SERVER_URL } from './request';
 
 export function generateFileKey() {
   return `new-file-${Math.floor(Math.random() * 10001)}`;

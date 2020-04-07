@@ -1,7 +1,6 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import { MdCheck, MdMoreVert } from 'react-icons/md';
-import TimeAgo from 'react-timeago';
 import AnimateHeight from 'react-animate-height';
 
 import { getContentStateHTMLFromString } from '../../../utils/editor';
@@ -14,6 +13,7 @@ import Dropdown from '../../common/Dropdown';
 import Triangle from '../../common/Triangle';
 import Modal from '../../common/Modal';
 import Loader from '../../common/Loader';
+import Timeago from '../../common/Timeago';
 
 import { NOOP, CARD_STATUS, CARD_URL_BASE, TIMEOUT_3S } from '../../../utils/constants';
 
@@ -187,7 +187,7 @@ class SuggestionCard extends Component {
   }
 
   render() {
-    const { id, question, answer, createdAt, status, className, openCard } = this.props;
+    const { id, question, answer, updatedAt, status, className, openCard } = this.props;
 
     return (
       <div className={s(`${className} rounded-xl p-lg bg-white cursor-pointer`)} onClick={() => openCard({ _id: id })}>
@@ -208,7 +208,7 @@ class SuggestionCard extends Component {
           <div className={s('horizontal-separator mb-sm')} />
           <div className={s('flex items-center justify-between')}>
             <span className={s('block text-center text-xs text-gray-light')}>
-              <TimeAgo date={createdAt} live={false} />
+              <Timeago date={updatedAt} live={false} />
             </span>
             <CardStatus status={status} />
           </div>
@@ -224,7 +224,7 @@ SuggestionCard.propTypes = {
   id: PropTypes.string.isRequired,
   question: PropTypes.string.isRequired,
   answer: PropTypes.string,
-  createdAt: PropTypes.string.isRequired,
+  updatedAt: PropTypes.string.isRequired,
   status: PropTypes.oneOf([CARD_STATUS.UP_TO_DATE, CARD_STATUS.OUT_OF_DATE, CARD_STATUS.NEEDS_VERIFICATION, CARD_STATUS.NEEDS_APPROVAL, CARD_STATUS.NOT_DOCUMENTED]),
   className: PropTypes.string,
   showMoreMenu: PropTypes.bool,

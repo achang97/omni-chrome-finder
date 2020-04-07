@@ -22,6 +22,6 @@ export function identifyUser(user) {
       window.heap.identify("${user.email}"); 
       window.heap.addUserProperties({'Name': "${user.firstname}" + " " + "${user.lastname}",'Company': "${user.company.companyName}", 'Role': "${user.role}"});
     `;
-    addScript({code: identify, shouldRemove: true});
+    addScript({code: identify });
   }
 }
