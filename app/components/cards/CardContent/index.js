@@ -1,16 +1,18 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
+import _ from 'lodash';
 import { MdCheck, MdArrowDropDown, MdCloudUpload, MdMoreHoriz, MdModeEdit, MdThumbUp, MdBookmarkBorder, MdError, MdPerson, MdAttachment, MdKeyboardArrowLeft, MdLock } from 'react-icons/md';
-import Timeago from 'react-timeago';
 import SlackIcon from '../../../assets/images/icons/Slack_Mark.svg';
 
 import { FaSlack } from 'react-icons/fa';
 import { EditorState } from 'draft-js';
 import TextEditor from '../../editors/TextEditor';
 import Button from '../../common/Button';
+import Timeago from '../../common/Timeago';
 import Modal from '../../common/Modal';
 import CheckBox from '../../common/CheckBox';
 import Loader from '../../common/Loader';
+import Separator from '../../common/Separator';
 
 import ScreenRecordButton from '../../attachments/ScreenRecordButton';
 import AttachmentDropzone from '../../attachments/AttachmentDropzone';
@@ -232,7 +234,7 @@ class CardContent extends Component {
 
   renderHeader = () => {
     const {
-      isEditing, tags, createdAt, outOfDateReason, lastVerifiedBy,
+      isEditing, tags, createdAt, outOfDateReason, lastVerified, lastEdited,
       sideDockOpen, openCardSideDock, closeCardSideDock,
       editorEnabled, descriptionSectionHeight, cardsWidth,
       attachments, addCardAttachments, openCardModal, status,
@@ -269,10 +271,15 @@ class CardContent extends Component {
           {/* Case 3: Card is documented and not in edit */}
           { !isEditing &&
             <div className={s('flex')}>
-              <Timeago date={createdAt} live={false} />
-              { lastVerifiedBy &&
+              <Timeago date={lastEdited.time} live={false} />
+              { lastVerified &&
                 <div className={s('text-gray-light ml-sm font-medium italic')}>
-                  (Last verified by {lastVerifiedBy.firstname} {lastVerifiedBy.lastname})
+                  (Last verified by&nbsp;
+                  {lastVerified.user._id === user._id ?
+                    'you' : `${lastVerified.user.firstname} ${lastVerified.user.lastname}`
+                  }
+                  &nbsp;
+                  <Timeago date={lastVerified.time} live={false} textTransform={_.lowerCase} />)
                 </div>
               }
             </div>
@@ -339,7 +346,7 @@ class CardContent extends Component {
               className={s('py-sm px-reg rounded-full')}
               onClick={openCardSideDock}
             />
-            <div className={s('vertical-separator')} />
+            <Separator />
             <CardStatus
               status={this.props.status}
               isActionable={status !== CARD_STATUS.NEEDS_APPROVAL || isApprover}

@@ -4,6 +4,7 @@ import { withRouter } from 'react-router-dom';
 
 import Button from '../../../components/common/Button';
 import Loader from '../../../components/common/Loader';
+import ErrorMessage from '../../../components/common/ErrorMessage';
 
 import logo from '../../../assets/images/logos/logo.svg';
 
@@ -27,9 +28,7 @@ const AuthView = ({ title, isLoading, inputBody, error, submitButtonProps, foote
             {inputBody}
           </div>
         }
-        { error &&
-          <div className={s('error-text my-reg')}> {error} </div>
-        }
+        <ErrorMessage className={s('my-reg')} error={error} />
       </div>
       <div className={s('bg-purple-light p-2xl rounded-lg')}>
         <Button

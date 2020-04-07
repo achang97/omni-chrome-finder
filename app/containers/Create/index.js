@@ -3,10 +3,13 @@ import _ from 'lodash';
 import AnimateHeight from 'react-animate-height';
 import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
-import Button from '../../components/common/Button';
 import { FiMaximize2 } from 'react-icons/fi';
 import { MdAdd } from 'react-icons/md';
 import { EditorState } from 'draft-js';
+
+import Button from '../../components/common/Button';
+import Separator from '../../components/common/Separator';
+
 import TextEditor from '../../components/editors/TextEditor';
 import SuggestionPanel from '../../components/suggestions/SuggestionPanel';
 
@@ -89,7 +92,7 @@ class Create extends Component {
             editorRole={EDITOR_TYPE.DESCRIPTION}
           />
         </AnimateHeight>
-        <div className={s('horizontal-separator my-reg')} />
+        <Separator horizontal className={s('my-reg')} />
         <TextEditor
           onEditorStateChange={updateCreateAnswerEditor}
           editorState={answerEditorState}

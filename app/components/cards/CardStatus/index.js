@@ -5,8 +5,8 @@ import { FaPencilAlt, FaUserCheck } from 'react-icons/fa';
 import { IoMdAlert } from 'react-icons/io';
 import { CARD_STATUS, NOOP } from '../../../utils/constants';
 import Dropdown from '../../common/Dropdown';
+import Timeago from '../../common/Timeago';
 import CardUser from '../CardUsers/CardUser';
-import Timeago from 'react-timeago';
 
 import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';

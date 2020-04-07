@@ -1,4 +1,5 @@
-import { CHROME_MESSAGE } from '../../../app/utils/constants';
+import { CHROME_MESSAGE, CARD_URL_BASE } from '../../../app/utils/constants';
+import { isNewTab } from '../../../app/utils/chrome';
 
 const IDS = {
   PARENT: 'PARENT_MENU_ID',
@@ -8,7 +9,7 @@ const IDS = {
 };
 
 const BASE_CONTEXT_MENU_PROPS = {
-  contexts: ['all'],
+  contexts: ["all"],
   documentUrlPatterns: [
     'https://*/*', 'http://*/*',
   ]
@@ -48,22 +49,27 @@ ACTION_MENU_ITEMS.forEach(({ title, id }) => {
 
 
 chrome.contextMenus.onClicked.addListener(({ menuItemId, selectionText = '' }, tab) => {
-  const tabId = tab.id;
+  if (isNewTab(tab.url)) {
+    // TODO: add correct routing to actual tab
+    window.open(CARD_URL_BASE);
+  } else {
+    const tabId = tab.id;
 
-  switch (menuItemId) {
-    case IDS.SEARCH:
-      chrome.tabs.sendMessage(tabId, { type: CHROME_MESSAGE.SEARCH, payload: { selectionText } });
-      break;
-    case IDS.ASK:
-      chrome.tabs.sendMessage(tabId, { type: CHROME_MESSAGE.ASK, payload: { selectionText } });
-      break;
-    case IDS.CREATE: {
-      chrome.tabs.sendMessage(tabId, { type: CHROME_MESSAGE.CREATE, payload: { selectionText } });
-      break;
-    }
-    default: {
-      break;
-    }
+    switch (menuItemId) {
+      case IDS.SEARCH:
+        chrome.tabs.sendMessage(tabId, { type: CHROME_MESSAGE.SEARCH, payload: { selectionText } });
+        break;
+      case IDS.ASK:
+        chrome.tabs.sendMessage(tabId, { type: CHROME_MESSAGE.ASK, payload: { selectionText } });
+        break;
+      case IDS.CREATE: {
+        chrome.tabs.sendMessage(tabId, { type: CHROME_MESSAGE.CREATE, payload: { selectionText } });
+        break;
+      }
+      default: {
+        break;
+      }
+    }    
   }
 });
 

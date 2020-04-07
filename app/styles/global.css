@@ -10,6 +10,12 @@
   background: transparent; /* Optional: just make scrollbar invisible */
 }
 
+/* Buttons */
+.button-hover:hover {
+  cursor: pointer !important;
+  opacity: 0.8;
+}
+
 /* Handling text overflow */
 .line-clamp-2, .line-clamp-3, .line-clamp-4 {
   display: -webkit-box;
@@ -30,27 +36,7 @@
   -webkit-line-clamp: 4;
 }
 
-/* Buttons */
-.button-hover:hover {
-  cursor: pointer !important;
-  opacity: 0.8;
-}
-
-/* Borders and separators */
-.horizontal-separator, .vertical-separator {
-  @apply bg-gray-xlight;
-}
-
-.horizontal-separator {
-  height: 1px;
-  @apply my-xs min-w-full;
-}
-
-.vertical-separator {
-  width: 1px;
-  @apply mx-xs min-h-full;
-}
-
+/* Borders  */
 .underline-border {
   @apply border-t-0 border-l-0 border-r-0 border-b-2 border-solid;
 }
@@ -80,11 +66,6 @@
 
 .modal-important {
   z-index: 201;
-}
-
-/* Error messages */
-.error-text {
-  @apply text-red-500 text-sm text-center;
 }
 
 /* Large icons */

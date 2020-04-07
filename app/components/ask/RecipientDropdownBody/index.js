@@ -1,7 +1,8 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
-
 import { MdClose } from 'react-icons/md';
+
+import Separator from '../../common/Separator';
 
 import style from './recipient-dropdown-body.css';
 import { getStyleApplicationFn } from '../../../utils/style';
@@ -84,7 +85,7 @@ class RecipientDropdownBody extends Component {
             onKeyPress={e => this.handleKeyPress(e, addMentionOptions)}
             onKeyDown={e => this.handleKeyDown(e, addMentionOptions)}
           />
-          <div className={s('horizontal-separator')} />
+          <Separator horizontal />
         </div>
         <div className={s('recipient-dropdown-select-options')}>
           { addMentionOptions.length === 0 ?

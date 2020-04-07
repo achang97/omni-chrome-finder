@@ -1,12 +1,12 @@
 import React, { Fragment, Component } from 'react';
 import PropTypes from 'prop-types';
-import Timeago from 'react-timeago';
 import AnimateHeight from 'react-animate-height';
 
 import Button from '../../common/Button';
 import PlaceholderImg from '../../common/PlaceholderImg';
 import SlackIcon from '../../../assets/images/icons/Slack_Mark.svg';
 import Loader from '../../common/Loader';
+import Timeago from '../../common/Timeago';
 import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
 import { openCard } from '../../../actions/cards';

@@ -4,6 +4,8 @@ import PropTypes from 'prop-types';
 import { MdExpandLess, MdExpandMore } from 'react-icons/md';
 import AnimateHeight from 'react-animate-height';
 
+import Separator from '../../common/Separator';
+
 import { getStyleApplicationFn } from '../../../utils/style';
 const s = getStyleApplicationFn();
 
@@ -43,7 +45,7 @@ class CardSection extends Component {
           { children }
         </AnimateHeight>
         { showSeparator &&
-        <div className={s('horizontal-separator mt-lg')} />
+          <Separator horizontal className={s('mt-lg')} />
         }
       </div>
     );
