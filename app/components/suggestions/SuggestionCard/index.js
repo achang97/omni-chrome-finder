@@ -15,7 +15,6 @@ import Modal from '../../common/Modal';
 import Loader from '../../common/Loader';
 import Timeago from '../../common/Timeago';
 import Separator from '../../common/Separator';
-import LineClamp from '../../common/LineClamp';
 
 import { NOOP, CARD_STATUS, CARD_URL_BASE, TIMEOUT_3S } from '../../../utils/constants';
 
