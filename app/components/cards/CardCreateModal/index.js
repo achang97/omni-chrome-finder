@@ -12,6 +12,7 @@ import Select from '../../common/Select';
 import Loader from '../../common/Loader';
 import Button from '../../common/Button';
 import Modal from '../../common/Modal';
+import ErrorMessage from '../../common/ErrorMessage';
 
 import { MdLock, MdAutorenew } from 'react-icons/md';
 
@@ -194,9 +195,7 @@ class CardCreateModal extends Component {
           </AnimateHeight>
           { this.renderKeywords() }
           { this.renderAdvanced(isExisting, onlyShowPermissions) }
-          { createError &&
-            <div className={s('error-text my-sm')}> {createError} </div>
-          }
+          <ErrorMessage className={s('my-sm')} error={createError} />
           <div ref={this.bottomRef} />
         </div>
         <Button

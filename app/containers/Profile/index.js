@@ -6,6 +6,7 @@ import Button from '../../components/common/Button';
 import CheckBox from '../../components/common/CheckBox';
 import PlaceholderImg from '../../components/common/PlaceholderImg';
 import Dropdown from '../../components/common/Dropdown';
+import ErrorMessage from '../../components/common/ErrorMessage';
 import IntegrationAuthButton from '../../components/profile/IntegrationAuthButton';
 
 import { logout } from '../../actions/auth';
@@ -290,9 +291,7 @@ class Profile extends Component {
               <AnimateHeight height={isOpen ? 'auto' : 0} animationStateClasses={{ animatingUp: s('invisible') }}>
                 {this.renderIntegrations(profileSettingSection)}
               </AnimateHeight>
-              { toggle && error &&
-                <div className={s('error-text my-sm')}> {error} </div>
-              }
+              { toggle && <ErrorMessage className={s('my-sm')} error={error} /> }
             </div>
           );
         })}

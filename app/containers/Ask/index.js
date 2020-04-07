@@ -13,6 +13,7 @@ import Button from '../../components/common/Button';
 import Loader from '../../components/common/Loader';
 import Modal from '../../components/common/Modal';
 import CircleButton from '../../components/common/CircleButton';
+import ErrorMessage from '../../components/common/ErrorMessage';
 import _ from 'lodash';
 
 import Tabs from '../../components/common/Tabs/Tabs';
@@ -431,7 +432,7 @@ class Ask extends Component {
                 value={feedback}
                 onChange={e => updateAskFeedback(e.target.value)}
               />
-              <div className={s('error-text my-sm')}> {feedbackError} </div>
+              <ErrorMessage className={s('my-sm')} error={feedbackError} />
               <Button
                 text="Submit Feedback"
                 color="transparent"

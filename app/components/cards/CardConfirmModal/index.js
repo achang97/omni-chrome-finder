@@ -5,6 +5,7 @@ import { MODAL_TYPE } from '../../../utils/constants';
 
 import Modal from '../../common/Modal';
 import Button from '../../common/Button';
+import ErrorMessage from '../../common/ErrorMessage';
 
 import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
@@ -33,7 +34,7 @@ const CardConfirmModal = ({ isOpen, title, description, body, error, onRequestCl
       <div className={s(`card-confirm-modal-body ${bodyClassName}`)}>
         { description && <div> {description} </div> }
         { body }
-        { error && <div className={s('error-text mt-xs')}> {error} </div> }
+        <ErrorMessage className={s('mt-xs')} error={error} />
         { (showPrimary || showSecondary) &&
           <div className={s('flex mt-lg')} >
             { showSecondary &&
