@@ -1,8 +1,9 @@
 import _ from 'lodash';
-import { CHROME_MESSAGE, TASK_URL_BASE, NODE_ENV } from '../../../app/utils/constants';
+import { CHROME_MESSAGE, TASK_URL_BASE, NODE_ENV, CARD_URL_BASE } from '../../../app/utils/constants';
 import { getStorage, setStorage } from '../../../app/utils/storage';
 import { BASE_URL } from '../../../app/utils/request';
 import { addStorageListener } from '../../../app/utils/storage';
+import { isNewTab } from '../../../app/utils/chrome';
 
 let socket;
 
@@ -113,44 +114,50 @@ function initSocket() {
 }
 
 chrome.tabs.onUpdated.addListener(async (tabId, changeInfo, tab) => {
-  switch (changeInfo.status) {
-    case 'loading': {
-      const isInjected = (await injectExtension(tabId))[0];
-      if (!chrome.runtime.lastError && !isInjected) {
-        loadScript('inject', tabId);
-      }
+  if (!isNewTab(tab.url)) {
+    switch (changeInfo.status) {
+      case 'loading': {
+        const isInjected = (await injectExtension(tabId))[0];
+        if (!chrome.runtime.lastError && !isInjected) {
+          loadScript('inject', tabId);
+        }
 
-      if (!socket) {
-        initSocket();
-      }
+        if (!socket) {
+          initSocket();
+        }
 
-      break;      
-    }
-    case 'complete': {
-      const isInjected = (await injectExtension(tabId))[0];
-      if (isInjected) {
-        chrome.tabs.sendMessage(tabId, { type: CHROME_MESSAGE.TAB_UPDATE });
+        break;      
       }
-      break;
+      case 'complete': {
+        const isInjected = (await injectExtension(tabId))[0];
+        if (isInjected) {
+          chrome.tabs.sendMessage(tabId, { type: CHROME_MESSAGE.TAB_UPDATE });
+        }
+        break;
+      }
     }
   }
 });
 
 chrome.browserAction.onClicked.addListener(async (tab) => {
-  const tabId = tab.id;
-  const isInjected = (await injectExtension(tabId))[0];
-  if (!chrome.runtime.lastError) {
-    if (!isInjected) {
-      loadScript('inject', tabId, () => {
-        chrome.tabs.sendMessage(tabId, { type: CHROME_MESSAGE.TOGGLE });
-      });
+  if (isNewTab(tab.url)) {
+    window.open(CARD_URL_BASE);
+  } else {
+    const tabId = tab.id;
+    const isInjected = (await injectExtension(tabId))[0];
+    if (!chrome.runtime.lastError) {
+      if (!isInjected) {
+        loadScript('inject', tabId, () => {
+          chrome.tabs.sendMessage(tabId, { type: CHROME_MESSAGE.TOGGLE });
+        });
 
-      if (!socket) {
-        initSocket();
+        if (!socket) {
+          initSocket();
+        }
+      } else {
+        chrome.tabs.sendMessage(tabId, { type: CHROME_MESSAGE.TOGGLE });
       }
-    } else {
-      chrome.tabs.sendMessage(tabId, { type: CHROME_MESSAGE.TOGGLE });
-    }
+    }    
   }
 });
 
