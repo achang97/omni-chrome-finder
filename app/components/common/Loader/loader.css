@@ -1,3 +1,3 @@
-.loader * {
-  box-sizing: initial;
+.loader > div {
+  box-sizing: content-box;
 }

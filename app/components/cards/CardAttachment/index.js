@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import PropTypes from 'prop-types';
+import { connect } from 'react-redux';
 import ReactTooltip from 'react-tooltip';
 
 import CardTag from '../CardTags/CardTag';
@@ -13,7 +14,7 @@ import {
 import { MdClose, MdError, MdFileDownload, MdOpenInNew } from 'react-icons/md';
 
 import { NOOP } from '../../../utils/constants';
-import { isVideo, isImage } from '../../../utils/file';
+import { isVideo, isImage, isAudio, isPDF, isDoc, getFileUrl } from '../../../utils/file';
 
 import style from './card-attachment.css';
 import { getStyleApplicationFn } from '../../../utils/style';
@@ -29,13 +30,18 @@ const COLORS = {
 };
 
 function getAttachmentProps(type) {
-  if (type && isImage(type)) {
+  if (!type) {
+    return { ...COLORS.DEFAULT, Icon: FaFileAlt };
+  }
+
+  if (isImage(type)) {
     return { ...COLORS.IMAGE, Icon: FaFileImage };
-  } else if (type && type.startsWith('audio')) {
+  } else if (isAudio(type)) {
     return { ...COLORS.AUDIO_VIDEO, Icon: FaFileAudio };
-  } else if (type && isVideo(type)) {
+  } else if (isVideo(type)) {
     return { ...COLORS.AUDIO_VIDEO, Icon: FaFileVideo };
   }
+
   switch (type) {
     case 'application/msword':
     case 'application/vnd.ms-word':
@@ -77,7 +83,10 @@ function getAttachmentProps(type) {
   }
 }
 
-const CardAttachment = ({ fileName, type, url, onClick, onRemoveClick, className, textClassName, removeIconClassName, typeIconClassName, isEditable, onFileNameChange, isLoading, error, ...rest }) => {
+const CardAttachment = ({
+  fileName, fileKey, type, onClick, onRemoveClick, className, textClassName, removeIconClassName, typeIconClassName, isEditable, onFileNameChange, isLoading, error,
+  token, ...rest
+}) => {
   const [isHoveringIcon, setHoverIcon] = useState(false);
 
   const onRemove = (e) => {
@@ -88,7 +97,8 @@ const CardAttachment = ({ fileName, type, url, onClick, onRemoveClick, className
   const { color, underlineColor, Icon } = getAttachmentProps(type);
   const fileNameClassName = s(`underline-border ${error ? 'border-red-200' : `border-${underlineColor}`} ${textClassName}`);
 
-  const isDownloadable = isHoveringIcon && url;
+  const url = getFileUrl(fileKey, type, token);
+  const isDownloadable = isHoveringIcon && !isLoading && url;
 
   let leftIcon;
   if (isLoading) {
@@ -137,9 +147,9 @@ const CardAttachment = ({ fileName, type, url, onClick, onRemoveClick, className
 };
 
 CardAttachment.propTypes = {
+  fileKey: PropTypes.string.isRequired,
   fileName: PropTypes.string.isRequired,
   type: PropTypes.string.isRequired,
-  url: PropTypes.string,
   error: PropTypes.string,
   onClick: PropTypes.func,
   onRemoveClick: PropTypes.func,
@@ -150,6 +160,7 @@ CardAttachment.propTypes = {
   isLoading: PropTypes.bool,
   isEditable: PropTypes.bool,
   onFileNameChange: PropTypes.func,
+  token: PropTypes.string.isRequired,
 };
 
 CardAttachment.defaultProps = {
@@ -162,4 +173,8 @@ CardAttachment.defaultProps = {
   onFileNameChange: NOOP,
 };
 
-export default CardAttachment;
+export default connect(
+  state => ({
+    token: state.auth.token
+  })
+)(CardAttachment);
