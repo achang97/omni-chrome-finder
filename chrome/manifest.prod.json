@@ -1,5 +1,5 @@
 {
-  "version": "1.0.3",
+  "version": "1.0.4",
   "name": "Omni",
   "manifest_version": 2,
   "description": "A lightweight Q&A tool that helps you document and find information faster.",
@@ -17,6 +17,6 @@
     "persistent": false,
     "page": "background.html"
   },
-  "permissions": ["activeTab", "storage", "contextMenus", "notifications", "https://www.google.com"],
+  "permissions": ["activeTab", "storage", "contextMenus", "notifications", "https://www.google.com/"],
   "content_security_policy": "default-src 'self'; script-src 'self'; ; connect-src wss://api.addomni.com; style-src * 'unsafe-inline'; img-src 'self' data:;"
 }
