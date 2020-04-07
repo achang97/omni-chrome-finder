@@ -7,6 +7,7 @@ import CheckBox from '../../components/common/CheckBox';
 import PlaceholderImg from '../../components/common/PlaceholderImg';
 import Dropdown from '../../components/common/Dropdown';
 import ErrorMessage from '../../components/common/ErrorMessage';
+import Separator from '../../components/common/Separator';
 import IntegrationAuthButton from '../../components/profile/IntegrationAuthButton';
 
 import { logout } from '../../actions/auth';
@@ -307,7 +308,7 @@ class Profile extends Component {
         <div className={s('flex flex-col px-lg')}>
           { this.renderAboutSection() }
           { this.renderMetricsSection() }
-          <div className={s('horizontal-separator my-reg')} />
+          <Separator horizontal className={'my-reg'} />
         </div>
         { this.renderIntegrationsSection() }
         <div className={s('flex justify-between pt-reg px-lg')}>

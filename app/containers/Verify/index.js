@@ -6,6 +6,7 @@ import { connect } from 'react-redux';
 import Button from '../../components/common/Button';
 import Loader from '../../components/common/Loader';
 import ErrorMessage from '../../components/common/ErrorMessage';
+import Separator from '../../components/common/Separator';
 
 import { updateVerificationCode, requestVerify, requestResendVerificationEmail, clearResendVerificationInfo, logout } from '../../actions/auth';
 import { TIMEOUT_3S } from '../../utils/constants';
@@ -54,7 +55,7 @@ class Verify extends Component {
           className={s('self-stretch')}
         />
         <ErrorMessage className={s('my-sm')} error={verifyError} />
-        <div className={s('horizontal-separator my-reg')} />
+        <Separator horizontal className={s('my-reg')} />
         <Button
           color="transparent"
           text="Re-send verification code"

@@ -10,6 +10,7 @@ import CardTags from '../../components/cards/CardTags';
 import AnimateHeight from 'react-animate-height';
 import Tabs from '../../components/common/Tabs/Tabs';
 import Tab from '../../components/common/Tabs/Tab';
+import Separator from '../../components/common/Separator';
 import { colors } from '../../styles/colors';
 
 import Loader from '../../components/common/Loader';
@@ -93,7 +94,7 @@ class Navigate extends Component {
 
     return (
       <div className={s('flex flex-col flex-grow min-h-0')}>
-        <div className={s('horizontal-separator m-0')} />
+        <Separator horizontal className={s('m-0')} />
         <div className={s('bg-purple-xlight p-lg flex flex-col')}>
           <div className={s('flex')}>
             <input

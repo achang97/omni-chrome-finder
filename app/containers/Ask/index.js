@@ -14,6 +14,7 @@ import Loader from '../../components/common/Loader';
 import Modal from '../../components/common/Modal';
 import CircleButton from '../../components/common/CircleButton';
 import ErrorMessage from '../../components/common/ErrorMessage';
+import Separator from '../../components/common/Separator';
 import _ from 'lodash';
 
 import Tabs from '../../components/common/Tabs/Tabs';
@@ -206,7 +207,7 @@ class Ask extends Component {
             </div>
           }
         />
-        <div className={s('vertical-separator bg-purple-gray-50')} />
+        <Separator className={s('bg-purple-gray-50')} />
         <Dropdown
           isOpen={isDropdownSelectOpen}
           onToggle={isDropdownSelectOpen => updateAskRecipient(index, { isDropdownSelectOpen })}
@@ -417,7 +418,7 @@ class Ask extends Component {
           </div>
         </AnimateHeight>
         <AnimateHeight height={showFeedback ? 'auto' : 0}>
-          <div className={s('horizontal-separator my-reg')} />
+          <Separator horizontal className={s('my-reg')} />
           { feedbackSuccess ? 
             <div className={s('text-md text-center text-green-reg')}>
               🎉 <span className={s('mx-sm')}> Thanks for your feedback! </span> 🎉

@@ -12,6 +12,7 @@ import Select from '../../common/Select';
 import Loader from '../../common/Loader';
 import Button from '../../common/Button';
 import Modal from '../../common/Modal';
+import Separator from '../../common/Separator';
 import ErrorMessage from '../../common/ErrorMessage';
 
 import { MdLock, MdAutorenew } from 'react-icons/md';
@@ -132,7 +133,7 @@ class CardCreateModal extends Component {
               <React.Fragment>
                 <MdAutorenew />
                 <span className={s('ml-xs')}> {verificationInterval.label} </span>
-                <div className={s('vertical-separator mx-reg')} />
+                <Separator className={s('mx-reg')} />
               </React.Fragment>
             }
             <MdLock />

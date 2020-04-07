@@ -14,6 +14,8 @@ import Triangle from '../../common/Triangle';
 import Modal from '../../common/Modal';
 import Loader from '../../common/Loader';
 import Timeago from '../../common/Timeago';
+import Separator from '../../common/Separator';
+import LineClamp from '../../common/LineClamp';
 
 import { NOOP, CARD_STATUS, CARD_URL_BASE, TIMEOUT_3S } from '../../../utils/constants';
 
@@ -145,7 +147,7 @@ class SuggestionCard extends Component {
                     onClick={() => this.protectedOnClick(onClick, buttonType)}
                   />
                   { i !== actions.length - 1 &&
-                    <div className={s('horizontal-separator my-0')} />
+                    <Separator horizontal className={s('my-0')} />
                   }
                 </div>
               ))}
@@ -205,7 +207,7 @@ class SuggestionCard extends Component {
           }
         </div>
         <div className={s('mt-reg pt-reg flex-col')}>
-          <div className={s('horizontal-separator mb-sm')} />
+          <Separator horizontal className={s('mb-sm')} />
           <div className={s('flex items-center justify-between')}>
             <span className={s('block text-center text-xs text-gray-light')}>
               <Timeago date={updatedAt} live={false} />

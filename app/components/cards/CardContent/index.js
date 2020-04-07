@@ -12,6 +12,7 @@ import Timeago from '../../common/Timeago';
 import Modal from '../../common/Modal';
 import CheckBox from '../../common/CheckBox';
 import Loader from '../../common/Loader';
+import Separator from '../../common/Separator';
 
 import ScreenRecordButton from '../../attachments/ScreenRecordButton';
 import AttachmentDropzone from '../../attachments/AttachmentDropzone';
@@ -345,7 +346,7 @@ class CardContent extends Component {
               className={s('py-sm px-reg rounded-full')}
               onClick={openCardSideDock}
             />
-            <div className={s('vertical-separator')} />
+            <Separator />
             <CardStatus
               status={this.props.status}
               isActionable={status !== CARD_STATUS.NEEDS_APPROVAL || isApprover}

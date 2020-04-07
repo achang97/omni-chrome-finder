@@ -10,6 +10,7 @@ import Loader from '../../common/Loader';
 import Button from '../../common/Button';
 import Triangle from '../../common/Triangle';
 import Timeago from '../../common/Timeago';
+import Separator from '../../common/Separator';
 
 import { requestSearchCards, clearSearchCards } from '../../../actions/search';
 import { bindActionCreators } from 'redux';
@@ -198,7 +199,9 @@ class SuggestionPanel extends Component {
 
     return (
       <div className={s('flex-col bg-purple-light justify-center items-center')} ref={this.externalResults}>
-        { cards.length !== 0 && <div className={s('horizontal-separator my-sm')} /> }
+        { cards.length !== 0 &&
+          <Separator horizontal className={s('my-sm')} />
+        }
         <div className={s('flex justify-between items-center p-lg')}>
           <div className={s('text-purple-reg font-semibold')}> Found in your documentation ({numExternalResults}) </div>
           <MdClose className={s('button-hover')} color={colors.purple['gray-50']} onClick={() => this.setState({ showExternalResults: false })} />
