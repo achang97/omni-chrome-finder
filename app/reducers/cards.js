@@ -79,12 +79,12 @@ export default function cardsReducer(state = initialState, action) {
       return {
         ...state,
         activeCard: newActiveCard,
-        cards: updateArrayOfObjects(state.cards, '_id', id, newActiveCard, false)
+        cards: updateArrayOfObjects(state.cards, { _id: id }, newActiveCard, false)
       };
     } else {
       return {
         ...state,
-        cards: updateArrayOfObjects(state.cards, '_id', id, newInfo)
+        cards: updateArrayOfObjects(state.cards, { _id: id }, newInfo)
       };      
     }
   };
@@ -128,7 +128,7 @@ export default function cardsReducer(state = initialState, action) {
     const newCardInfo = {
       edits: {
         ...currCard.edits,
-        attachments: updateArrayOfObjects(currCard.edits.attachments, 'key', key, newInfo)
+        attachments: updateArrayOfObjects(currCard.edits.attachments, { key }, newInfo)
       }
     };
 

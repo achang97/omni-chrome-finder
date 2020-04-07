@@ -232,7 +232,7 @@ class CardContent extends Component {
 
   renderHeader = () => {
     const {
-      isEditing, tags, createdAt, outOfDateReason,
+      isEditing, tags, createdAt, outOfDateReason, lastVerifiedBy,
       sideDockOpen, openCardSideDock, closeCardSideDock,
       editorEnabled, descriptionSectionHeight, cardsWidth,
       attachments, addCardAttachments, openCardModal, status,
@@ -267,7 +267,16 @@ class CardContent extends Component {
           { (isEditing && status === CARD_STATUS.NOT_DOCUMENTED) && <div> New Card </div> }
 
           {/* Case 3: Card is documented and not in edit */}
-          { !isEditing && <div> <Timeago date={createdAt} live={false} /> </div> }
+          { !isEditing &&
+            <div className={s('flex')}>
+              <Timeago date={createdAt} live={false} />
+              { lastVerifiedBy &&
+                <div className={s('text-gray-light ml-sm font-medium italic')}>
+                  (Last verified by {lastVerifiedBy.firstname} {lastVerifiedBy.lastname})
+                </div>
+              }
+            </div>
+          }
           <div className={s('flex items-center')}>
             <button onClick={openCardSideDock}>
               <MdMoreHoriz />

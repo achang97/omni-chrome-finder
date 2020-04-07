@@ -36,7 +36,7 @@ import { getBaseAnimationStyle } from '../../../utils/animate';
 import { MODAL_TYPE, PERMISSION_OPTION, PERMISSION_OPTIONS, VERIFICATION_INTERVAL_OPTIONS, FADE_IN_TRANSITIONS, CARD_STATUS } from '../../../utils/constants';
 import { createSelectOptions } from '../../../utils/select';
 import { isJustMe } from '../../../utils/card';
-import { isVideo, isImage, isUploadedFile } from '../../../utils/file';
+import { isVideo, isImage, isUploadedFile, getFileUrl } from '../../../utils/file';
 
 import style from './card-side-dock.css';
 import { getStyleApplicationFn } from '../../../utils/style';
@@ -144,19 +144,20 @@ const CardSideDock = (props) => {
     );
   };
 
-  const renderImageAttachment = ({ name, key, location, isLoading, error }, i) => {
-    const { isEditing, updateCardAttachmentName } = props;
+  const renderImageAttachment = ({ name, key, mimetype, isLoading, error }, i) => {
+    const { isEditing, updateCardAttachmentName, token } = props;
 
     const onClick = () => {
       setLightboxIndex(i);
       setLightboxOpenState(true);
     }
 
+    const url = getFileUrl(key, mimetype, token);
     return (
       <div className={s('card-side-dock-media-wrapper')} key={key}>
         { renderRemoveMediaButton(key) }
         <img
-          src={location}
+          src={url}
           className={s('w-full mb-xs cursor-pointer')}
           onClick={onClick}
         />
@@ -165,13 +166,15 @@ const CardSideDock = (props) => {
     );
   };
 
-  const renderVideoPlayer = ({ name, key, location, isLoading, error }) => {
-    const { isEditing, updateCardAttachmentName } = props;
+  const renderVideoPlayer = ({ name, key, mimetype, isLoading, error }) => {
+    const { isEditing, updateCardAttachmentName, token } = props;
+
+    const url = getFileUrl(key, mimetype, token);
     return (
       <div className={s('card-side-dock-media-wrapper')} key={key}>
         { renderRemoveMediaButton(key) }
         <VideoPlayer
-          url={location}
+          url={url}
           className={s('w-full mb-xs')}
         />
         { renderMediaToggleableInput({ name, key, location }) }
@@ -193,12 +196,12 @@ const CardSideDock = (props) => {
           </div>
         }
         <div className={s('flex flex-wrap')}>
-          { files.map(({ name, mimetype, key, location, isLoading, error }, i) => (
+          { files.map(({ name, mimetype, key, isLoading, error }, i) => (
             <CardAttachment
               key={key}
+              fileKey={key}
               type={mimetype}
               fileName={name}
-              url={location}
               isLoading={isLoading}
               error={error}
               className={s('min-w-0')}
@@ -442,6 +445,7 @@ const CardSideDock = (props) => {
 export default connect(
   state => ({
     ...state.cards.activeCard,
+    token: state.auth.token,
   }),
   dispatch => bindActionCreators({
     closeCardSideDock,

@@ -36,12 +36,12 @@ const AttachmentDropdown = ({ attachments, onFileNameChange, onRemoveClick, clas
             No current attachments
           </div>
         }
-        { attachments.map(({ name, key, mimetype, location, isLoading, error }, i) => (
+        { attachments.map(({ name, key, mimetype, isLoading, error }, i) => (
           <CardAttachment
             key={key}
+            fileKey={key}
             type={mimetype}
             fileName={name}
-            url={location}
             isLoading={isLoading}
             error={error}
             textClassName={s('truncate')}
