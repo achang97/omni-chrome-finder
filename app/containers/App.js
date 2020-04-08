@@ -52,9 +52,10 @@ class App extends Component {
       identifyUser(user);
       if (user && user.isVerified) {
         requestGetTasks();
-        this.openChromeExtension();
       }
     }
+
+    this.openChromeExtension();
   }
 
   clearUrl = (url) => {
@@ -66,7 +67,7 @@ class App extends Component {
   openChromeExtension = () => {
     const url = window.location.href;
     const {
-      dockVisible, tasks,
+      dockVisible, tasks, isLoggedIn,
       toggleDock, openCard, updateTasksTab, updateTasksOpenSection, history
     } = this.props;
 
@@ -110,7 +111,11 @@ class App extends Component {
         if (!dockVisible) {
           toggleDock();
         }
-        callback(res);
+
+        if (isLoggedIn) {
+          callback(res);
+        }
+
         this.clearUrl(url);        
       }
     });

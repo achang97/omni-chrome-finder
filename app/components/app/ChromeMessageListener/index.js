@@ -175,11 +175,11 @@ class ChromeMessageListener extends Component {
     } = this.props;
 
     if (!dockVisible) {
+      // Open dock
       toggleDock();
     }
 
     if (isLoggedIn && isVerified) {
-      // Open dock
       let url;
       switch (action) {
         case CHROME_MESSAGE.ASK: {
