@@ -73,6 +73,7 @@ export default class TextEditor extends Component {
           toolbarHidden={hideToolbar}
           readOnly={readOnly}
           placeholder={editorRole === EDITOR_TYPE.DESCRIPTION ? 'Add a description here' : 'Add an answer here'}
+          handlePastedText={() => false}
         />
         {
           !readOnly &&
