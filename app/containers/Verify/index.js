@@ -33,7 +33,7 @@ class Verify extends Component {
 
     return (
       <div className={s('flex-1 flex flex-col items-center py-2xl px-3xl')}>
-        <img src={logo} className={s('h-4xl mb-lg')} />
+        <img src={logo} className={s('h-3xl mb-lg')} />
         <div className={s('text-xl font-semibold')}>Verify your account</div>
         <div className={s('text-sm text-gray-dark mt-reg mb-2xl')}> Enter the verification code sent to your email. </div>
         <div className={s('my-sm w-full')}>
