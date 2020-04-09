@@ -1,5 +1,5 @@
 import { take, call, fork, put } from 'redux-saga/effects';
-import { doDelete } from '../utils/request';
+import { doDelete, getErrorMessage } from '../utils/request';
 import { DELETE_NAVIGATE_CARD_REQUEST } from '../actions/actionTypes';
 import {
   handleDeleteNavigateCardSuccess, handleDeleteNavigateCardError,
@@ -27,7 +27,6 @@ function* deleteCard({ cardId }) {
     yield call(doDelete, `/cards/${cardId}`);
     yield put(handleDeleteNavigateCardSuccess(cardId));
   } catch (error) {
-    const { response: { data: { error: { message } } } } = error;
-    yield put(handleDeleteNavigateCardError(cardId, message));
+    yield put(handleDeleteNavigateCardError(cardId, getErrorMessage(error)));
   }
 }

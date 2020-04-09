@@ -1,5 +1,5 @@
 import { take, call, fork, put, select } from 'redux-saga/effects';
-import { doPost } from '../utils/request';
+import { doPost, getErrorMessage } from '../utils/request';
 import { LOGIN_REQUEST, SIGNUP_REQUEST, VERIFY_REQUEST, RESEND_VERIFICATION_EMAIL_REQUEST } from '../actions/actionTypes';
 import {
   handleLoginSuccess, handleLoginError,
@@ -43,8 +43,7 @@ function* login() {
     const { userJson, token, refreshToken } = yield call(doPost, '/users/login', { email: loginEmail, password: loginPassword });
     yield put(handleLoginSuccess(userJson, token, refreshToken));
   } catch (error) {
-    const { response: { data: { error: { message } } } } = error;
-    yield put(handleLoginError(message));
+    yield put(handleLoginError(getErrorMessage(error)));
   }
 }
 
@@ -56,8 +55,7 @@ function* signup() {
     });
     yield put(handleSignupSuccess(userJson, token, refreshToken));
   } catch (error) {
-    const { response: { data: { error: { message } } } } = error;
-    yield put(handleSignupError(message));
+    yield put(handleSignupError(getErrorMessage(error)));
   }
 }
 
@@ -67,8 +65,7 @@ function* verify() {
     yield call(doPost, '/users/verifyCheck', { code: verificationCode });
     yield put(handleVerifySuccess());
   } catch (error) {
-    const { response: { data: { error: { message } } } } = error;
-    yield put(handleVerifyError(message));
+    yield put(handleVerifyError(getErrorMessage(error)));
   }
 }
 
@@ -77,7 +74,6 @@ function* resendVerificationEmail() {
     yield call(doPost, '/users/resendVerification');
     yield put(handleResendVerificationEmailSuccess());
   } catch (error) {
-    const { response: { data: { error: { message } } } } = error;
-    yield put(handleResendVerificationEmailError(message));
+    yield put(handleResendVerificationEmailError(getErrorMessage(error)));
   }
 }

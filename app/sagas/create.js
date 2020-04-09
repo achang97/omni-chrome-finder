@@ -1,5 +1,5 @@
 import { take, call, fork, put } from 'redux-saga/effects';
-import { doPost, doDelete } from '../utils/request';
+import { doPost, doDelete, getErrorMessage } from '../utils/request';
 import { convertAttachmentsToBackendFormat, isUploadedFile } from '../utils/file';
 import { ADD_CREATE_ATTACHMENT_REQUEST, REMOVE_CREATE_ATTACHMENT_REQUEST } from '../actions/actionTypes';
 import {
@@ -39,8 +39,7 @@ function* addAttachment({ key, file }) {
     yield put(handleAddCreateAttachmentSuccess(key, attachment));
   } catch (error) {
     console.log(error)
-    const { response: { data: { error: { message } } } } = error;
-    yield put(handleAddCreateAttachmentError(key, message));
+    yield put(handleAddCreateAttachmentError(key, getErrorMessage(error)));
   }
 }
 
@@ -51,7 +50,6 @@ function* removeAttachment({ key }) {
     }
     yield put(handleRemoveCreateAttachmentSuccess(key));
   } catch (error) {
-    const { response: { data: { error: { message } } } } = error;
-    yield put(handleRemoveCreateAttachmentError(key, message));
+    yield put(handleRemoveCreateAttachmentError(key, getErrorMessage(error)));
   }
 }

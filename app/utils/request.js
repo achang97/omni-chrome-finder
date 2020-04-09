@@ -119,3 +119,13 @@ export function* doDelete(path, data, extraParams) {
     throw error;
   }
 }
+
+export function getErrorMessage(error) {
+  let message = _.get(error, 'response.data.error.message');
+
+  if (!message) {
+    message = _.get(error, "message", "Something went wrong!");
+  }
+
+  return message;
+}

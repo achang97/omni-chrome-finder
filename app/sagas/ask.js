@@ -1,6 +1,6 @@
 import queryString from 'query-string';
 import { take, call, fork, put, select } from 'redux-saga/effects';
-import { doGet, doPost, doDelete, SERVER_URL } from '../utils/request';
+import { doGet, doPost, doDelete, SERVER_URL, getErrorMessage } from '../utils/request';
 import { getContentStateFromEditorState } from '../utils/editor';
 import { SLACK_RECIPIENT_TYPE } from '../utils/constants';
 import { convertAttachmentsToBackendFormat, isUploadedFile } from '../utils/file';
@@ -71,8 +71,7 @@ function* askQuestion() {
     });
     yield put(handleAskQuestionSuccess());
   } catch (error) {
-    const { response: { data: { error: { message } } } } = error;
-    yield put(handleAskQuestionError(message));
+    yield put(handleAskQuestionError(getErrorMessage(error)));
   }
 }
 
@@ -81,8 +80,7 @@ function* getSlackConversations() {
     const { conversations } = yield call(doGet, '/slack/getAllConversations');
     yield put(handleGetSlackConversationsSuccess(conversations));
   } catch (error) {
-    const { response: { data: { error: { message } } } } = error;
-    yield put(handleGetSlackConversationsError(message));
+    yield put(handleGetSlackConversationsError(getErrorMessage(error)));
   }
 }
 
@@ -97,8 +95,7 @@ function* addAttachment({ key, file }) {
 
     yield put(handleAddAskAttachmentSuccess(key, { ...attachment, location }));
   } catch (error) {
-    const { response: { data: { error: { message } } } } = error;
-    yield put(handleAddAskAttachmentError(key, message));
+    yield put(handleAddAskAttachmentError(key, getErrorMessage(error)));
   }
 }
 
@@ -109,8 +106,7 @@ function* removeAttachment({ key }) {
     }
     yield put(handleRemoveAskAttachmentSuccess(key));
   } catch (error) {
-    const { response: { data: { error: { message } } } } = error;
-    yield put(handleRemoveAskAttachmentError(key, message));
+    yield put(handleRemoveAskAttachmentError(key, getErrorMessage(error)));
   }
 }
 
@@ -120,7 +116,6 @@ function* submitFeedback() {
     yield call(doPost, '/feedback', { feedback });
     yield put(handleSubmitFeedbackSuccess());
   } catch (error) {
-    const { response: { data: { error: { message } } } } = error;
-    yield put(handleSubmitFeedbackError(message));
+    yield put(handleSubmitFeedbackError(getErrorMessage(error)));
   }  
 }
