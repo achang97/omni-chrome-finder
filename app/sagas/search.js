@@ -1,6 +1,6 @@
 import { CancelToken, isCancel } from 'axios';
 import { take, call, fork, all, put, select } from 'redux-saga/effects';
-import { doGet, doPost } from '../utils/request';
+import { doGet, doPost, getErrorMessage } from '../utils/request';
 import { isLoggedIn } from '../utils/auth';
 import { SEARCH_TYPE, INTEGRATIONS } from '../utils/constants';
 import { SEARCH_CARDS_REQUEST, SEARCH_TAGS_REQUEST, SEARCH_USERS_REQUEST, SEARCH_PERMISSION_GROUPS_REQUEST, } from '../actions/actionTypes';
@@ -131,8 +131,7 @@ function* searchCards({ type, query, clearCards }) {
     yield put(handleSearchCardsSuccess(type, cards, externalResults, clearCards));
   } catch (error) {
     if (!isCancel(error)) {
-      const { response: { data: { error: { message } } } } = error;
-      yield put(handleSearchCardsError(type, message));
+      yield put(handleSearchCardsError(type, getErrorMessage(error)));
     }
   }
 }
@@ -145,8 +144,7 @@ function* searchTags({ name }) {
     yield put(handleSearchTagsSuccess(tags));
   } catch (error) {
     if (!isCancel(error)) {
-      const { response: { data: { error: { message } } } } = error;
-      yield put(handleSearchTagsError(message));
+      yield put(handleSearchTagsError(getErrorMessage(error)));
     }
   }
 }
@@ -159,8 +157,7 @@ function* searchUsers({ name }) {
     yield put(handleSearchUsersSuccess(users));
   } catch (error) {
     if (!isCancel(error)) {
-      const { response: { data: { error: { message } } } } = error;
-      yield put(handleSearchUsersError(message));
+      yield put(handleSearchUsersError(getErrorMessage(error)));
     }
   }
 }
@@ -169,12 +166,11 @@ function* searchPermissionGroups({ name }) {
   const cancelToken = cancelRequest(CANCEL_TYPE.PERMISSION_GROUPS);
 
   try {
-    const { permissiongroups } = yield call(doPost, '/permissiongroups/queryNames', { name }, { cancelToken });
-    yield put(handleSearchPermissionGroupsSuccess(permissiongroups));
+    const permissionGroups = yield call(doGet, '/permissionGroups/query', { name }, { cancelToken });
+    yield put(handleSearchPermissionGroupsSuccess(permissionGroups));
   } catch (error) {
     if (!isCancel(error)) {
-      const { response: { data: { error: { message } } } } = error;
-      yield put(handleSearchPermissionGroupsError(message));
+      yield put(handleSearchPermissionGroupsError(getErrorMessage(error)));
     }
   }
 }

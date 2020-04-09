@@ -68,7 +68,7 @@ const CardPermissions = ({ isDisabled, showJustMe, selectedPermission, onChangeP
           isDisabled={isDisabled}
           isClearable={false}
           menuShouldScrollIntoView
-          getOptionLabel={option => option.permissiongroupName}
+          getOptionLabel={option => option.name}
           getOptionValue={option => option._id}
           noOptionsMessage={() => isSearchingPermissionGroups ? 'Searching permission groups...' : 'No options'}
         />

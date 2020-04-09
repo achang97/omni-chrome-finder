@@ -1,5 +1,5 @@
 import { take, call, fork, put } from 'redux-saga/effects';
-import { doGet, doPost, doPut } from '../utils/request';
+import { doGet, doPost, doPut, getErrorMessage } from '../utils/request';
 import { GET_TASKS_REQUEST, MARK_UP_TO_DATE_FROM_TASKS_REQUEST, DISMISS_TASK_REQUEST, APPROVE_CARD_FROM_TASKS_REQUEST } from '../actions/actionTypes';
 import {
   handleGetTasksSuccess, handleGetTasksError,
@@ -45,8 +45,7 @@ function* getTasks() {
     const { notifs: tasks } = yield call(doGet, '/notifications', { resolved: false });
     yield put(handleGetTasksSuccess(tasks));
   } catch (error) {
-    const { response: { data: { error: { message } } } } = error;
-    yield put(handleGetTasksError(message));
+    yield put(handleGetTasksError(getErrorMessage(error)));
   }
 }
 
@@ -55,8 +54,7 @@ function* markUpToDate({ taskId, cardId }) {
     const { updatedCard } = yield call(doPost, '/cards/uptodate', { cardId });
     yield put(handleMarkUpToDateFromTasksSuccess(taskId, updatedCard));
   } catch (error) {
-    const { response: { data: { error: { message } } } } = error;
-    yield put(handleMarkUpToDateFromTasksError(taskId, message));
+    yield put(handleMarkUpToDateFromTasksError(taskId, getErrorMessage(error)));
   }
 }
 
@@ -65,8 +63,7 @@ function* dismissTask({ taskId }) {
     yield call(doPut, '/notifications', { update: { resolved: true }, notificationId: taskId });
     yield put(handleDismissTaskSuccess(taskId));
   } catch (error) {
-    const { response: { data: { error: { message } } } } = error;
-    yield put(handleDismissTaskError(taskId, message));
+    yield put(handleDismissTaskError(taskId, getErrorMessage(error)));
   }
 }
 
@@ -75,7 +72,6 @@ function* approveCard({ taskId, cardId }) {
     const { updatedCard } = yield call(doPost, '/cards/approve', { cardId });
     yield put(handleApproveCardFromTasksSuccess(taskId, updatedCard));
   } catch (error) {
-    const { response: { data: { error: { message } } } } = error;
-    yield put(handleApproveCardFromTasksError(taskId, message));
+    yield put(handleApproveCardFromTasksError(taskId, getErrorMessage(error)));
   }
 }

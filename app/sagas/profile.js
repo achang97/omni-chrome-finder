@@ -1,5 +1,5 @@
 import { take, call, fork, put, all, select } from 'redux-saga/effects';
-import { doGet, doPut, doPost } from '../utils/request';
+import { doGet, doPut, doPost, getErrorMessage } from '../utils/request';
 import { PROFILE_SETTING_SECTION_TYPE } from '../utils/constants';
 import { GET_USER_REQUEST, SAVE_USER_REQUEST, UPDATE_USER_PERMISSIONS_REQUEST, LOGOUT_USER_INTEGRATION_REQUEST } from '../actions/actionTypes';
 import {
@@ -48,8 +48,7 @@ function* updatePermissions({ type, permission }) {
     const { userJson } = yield call(doPut, '/users', { update });
     yield put(handleUpdateUserPermissionsSuccess(type, userJson));
   } catch (error) {
-    const { response: { data: { error: { message } } } } = error;
-    yield put(handleUpdateUserPermissionsError(type, message));
+    yield put(handleUpdateUserPermissionsError(type, getErrorMessage(error)));
   }
 }
 
@@ -64,8 +63,7 @@ function* getUser() {
     const { user, ...userAnalytics } = analytics;
     yield put(handleGetUserSuccess({ ...userJson, integrations }, userAnalytics));
   } catch (error) {
-    const { response: { data: { error: { message } } } } = error;
-    yield put(handleGetUserError(message));
+    yield put(handleGetUserError(getErrorMessage(error)));
   }
 }
 
@@ -75,8 +73,7 @@ function* updateUser() {
     const { userJson } = yield call(doPut, '/users', { update: userEdits });
     yield put(handleSaveUserSuccess({ ...userJson, integrations: user.integrations }));
   } catch (error) {
-    const { response: { data: { error: { message } } } } = error;
-    yield put(handleSaveUserError(message));
+    yield put(handleSaveUserError(getErrorMessage(error)));
   }
 }
 
@@ -85,8 +82,7 @@ function* logoutUserIntegration({ integration }) {
     const user = yield call(doPost, `/${integration}/signout`);
     yield put(handleLogoutUserIntegrationSuccess(integration, user));
   } catch (error) {
-    const { response: { data: { error: { message } } } } = error;
-    yield put(handleLogoutUserIntegrationError(integration, message));
+    yield put(handleLogoutUserIntegrationError(integration, getErrorMessage(error)));
   }
 }
 
