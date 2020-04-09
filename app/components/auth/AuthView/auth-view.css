@@ -1,0 +1,3 @@
+.auth-view-input-body input { 
+  @apply text-xs mb-sm !important;
+}

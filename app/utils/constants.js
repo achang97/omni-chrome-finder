@@ -18,8 +18,6 @@ export const CHROME_MESSAGE = {
   NOTIFICATION_OPENED: 'NOTIFICATION_OPENED',
 };
 
-export const NEW_TAB_URL = 'chrome://newtab/';
-
 // Routes
 export const ROUTES = {
   ASK: '/ask',

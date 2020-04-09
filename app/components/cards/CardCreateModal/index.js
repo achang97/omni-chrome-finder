@@ -63,6 +63,7 @@ class CardCreateModal extends Component {
           onAdd={addCardOwner}
           onRemoveClick={removeCardOwner}
           showSelect
+          showTooltips
         />
       </CardSection>
     );

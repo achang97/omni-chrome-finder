@@ -33,7 +33,7 @@ class CardUsers extends Component {
   }
 
   render() {
-    const { className, isEditable, userOptions, isSearchingUsers, users, onUserClick, onRemoveClick, onAdd } = this.props;
+    const { className, isEditable, userOptions, isSearchingUsers, users, onUserClick, onRemoveClick, onAdd, showTooltips } = this.props;
     const showSelect = this.state.showSelect || this.props.showSelect;
     return (
       <div className={s(`card-users-container ${className}`)}>
@@ -69,6 +69,7 @@ class CardUsers extends Component {
             className={s('mr-reg')}
             onClick={onUserClick}
             onRemoveClick={isEditable ? () => onRemoveClick(i) : null}
+            showTooltip={showTooltips}
           />
         ))}
         { !isEditable && users.length === 0 &&
@@ -106,11 +107,13 @@ CardUsers.propTypes = {
   onUserClick: PropTypes.func,
   onAdd: PropTypes.func,
   showSelect: PropTypes.bool,
+  showTooltips: PropTypes.bool,
 };
 
 CardUsers.defaultProps = {
   className: '',
   showSelect: false,
+  showTooltips: false
 };
 
 export default connect(

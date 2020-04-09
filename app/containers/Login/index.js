@@ -18,14 +18,14 @@ const Login = ({ requestLogin, updateLoginEmail, loginError, updateLoginPassword
           type="text"
           value={loginEmail}
           placeholder="Email"
-          className={s('w-full mb-sm text-xs')}
+          className={s('w-full')}
           onChange={e => updateLoginEmail(e.target.value)}
         />
         <input
           type="password"
           value={loginPassword}
           placeholder="Password"
-          className={s('w-full text-xs')}
+          className={s('w-full')}
           onChange={e => updateLoginPassword(e.target.value)}
         />
         {/*<div className={s('text-xs text-gray-dark mt-reg self-end')}>Forgot password?</div>*/}

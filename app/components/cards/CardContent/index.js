@@ -271,8 +271,8 @@ class CardContent extends Component {
           {/* Case 3: Card is documented and not in edit */}
           { !isEditing &&
             <div className={s('flex')}>
-              <Timeago date={lastEdited.time} live={false} />
-              { lastVerified &&
+              <Timeago date={lastEdited ? lastEdited.time : createdAt} live={false} />
+              { lastVerified && lastVerified.user &&
                 <div className={s('text-gray-light ml-sm font-medium italic')}>
                   (Last verified by&nbsp;
                   {lastVerified.user._id === user._id ?

@@ -81,6 +81,7 @@ const CardSideDock = (props) => {
             users={currOwners}
             onAdd={addCardOwner}
             onRemoveClick={removeCardOwner}
+            showTooltips
           />
         </CardSection>
       </AnimateHeight>

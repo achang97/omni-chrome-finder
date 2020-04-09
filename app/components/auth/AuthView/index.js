@@ -8,8 +8,9 @@ import ErrorMessage from '../../../components/common/ErrorMessage';
 
 import logo from '../../../assets/images/logos/logo.svg';
 
+import style from './auth-view.css';
 import { getStyleApplicationFn } from '../../../utils/style';
-const s = getStyleApplicationFn();
+const s = getStyleApplicationFn(style);
 
 const AuthView = ({ title, isLoading, inputBody, error, submitButtonProps, footerText, footerLink, history }) => {
   return (
@@ -24,7 +25,7 @@ const AuthView = ({ title, isLoading, inputBody, error, submitButtonProps, foote
         </div>
         { isLoading ?
           <Loader className={s('mb-reg')} /> :
-          <div className={s('flex flex-col mb-reg')}>
+          <div className={s('auth-view-input-body mb-reg')}>
             {inputBody}
           </div>
         }
