@@ -1,5 +1,5 @@
 import { CHROME_MESSAGE, CARD_URL_BASE } from '../../../app/utils/constants';
-import { isNewTab } from '../../../app/utils/chrome';
+import { isChromeUrl } from '../../../app/utils/chrome';
 
 const IDS = {
   PARENT: 'PARENT_MENU_ID',
@@ -49,7 +49,7 @@ ACTION_MENU_ITEMS.forEach(({ title, id }) => {
 
 
 chrome.contextMenus.onClicked.addListener(({ menuItemId, selectionText = '' }, tab) => {
-  if (isNewTab(tab.url)) {
+  if (isChromeUrl(tab.url)) {
     // TODO: add correct routing to actual tab
     window.open(CARD_URL_BASE);
   } else {

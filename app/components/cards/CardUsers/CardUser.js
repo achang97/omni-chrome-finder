@@ -13,7 +13,7 @@ import { getStyleApplicationFn } from '../../../utils/style';
 
 const s = getStyleApplicationFn(style);
 
-const CardUser = ({ className, name, img, size, onClick, onRemoveClick, showName, ...rest }) => {
+const CardUser = ({ className, name, img, size, onClick, onRemoveClick, showName, showTooltip, ...rest }) => {
   const protectedOnClick = () => {
     if (onClick) onClick({ img, name });
   };
@@ -36,7 +36,7 @@ const CardUser = ({ className, name, img, size, onClick, onRemoveClick, showName
         data-tip
         data-for="card-user"
       />
-      { isHovering &&
+      { isHovering && showTooltip &&
         <ReactTooltip id="card-user" effect="float">
           <span className={s('font-normal text-xs')}> {name} </span>
         </ReactTooltip>
@@ -61,12 +61,14 @@ CardUser.propTypes = {
   onClick: PropTypes.func,
   onRemoveClick: PropTypes.func,
   showName: PropTypes.bool,
+  showTooltip: PropTypes.bool,
 };
 
 CardUser.defaultProps = {
   className: '',
   size: 'md',
   showName: true,
+  showTooltip: false,
 };
 
 export default CardUser;

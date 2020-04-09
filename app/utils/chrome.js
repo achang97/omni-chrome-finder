@@ -1,5 +1,5 @@
-import { NEW_TAB_URL } from './constants';
+const CHROME_URL_REGEX = /^chrome:\/\/.*/;
 
-export function isNewTab(url) {
-  return !url || url === NEW_TAB_URL;
+export function isChromeUrl(url) {
+  return !url || url.match(CHROME_URL_REGEX);
 }

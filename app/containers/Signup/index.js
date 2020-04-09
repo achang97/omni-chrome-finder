@@ -17,19 +17,19 @@ const Signup = ({
     isLoading={isSigningUp}
     inputBody={
       <React.Fragment>
-        <div className={s('flex mb-sm ')}>
+        <div className={s('flex')}>
           <input
             type="text"
             value={signupFirstName}
             placeholder="First name"
-            className={s('flex-1 text-xs mr-xs')}
+            className={s('flex-1 mr-xs')}
             onChange={e => updateSignupFirstName(e.target.value)}
           />
           <input
             type="text"
             value={signupLastName}
             placeholder="Last name"
-            className={s('flex-1 text-xs ml-xs')}
+            className={s('flex-1 ml-xs')}
             onChange={e => updateSignupLastName(e.target.value)}
           />
         </div>
@@ -37,14 +37,14 @@ const Signup = ({
           type="text"
           value={signupEmail}
           placeholder="Email"
-          className={s('w-full text-xs mb-sm ')}
+          className={s('w-full mb-sm')}
           onChange={e => updateSignupEmail(e.target.value)}
         />
         <input
           type="password"
           value={signupPassword}
           placeholder="Password"
-          className={s('w-full text-xs mb-sm')}
+          className={s('w-full mb-sm')}
           onChange={e => updateSignupPassword(e.target.value)}
         />
       </React.Fragment>

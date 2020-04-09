@@ -3,7 +3,7 @@ import { CHROME_MESSAGE, TASK_URL_BASE, NODE_ENV, CARD_URL_BASE } from '../../..
 import { getStorage, setStorage } from '../../../app/utils/storage';
 import { BASE_URL } from '../../../app/utils/request';
 import { addStorageListener } from '../../../app/utils/storage';
-import { isNewTab } from '../../../app/utils/chrome';
+import { isChromeUrl } from '../../../app/utils/chrome';
 
 let socket;
 
@@ -114,7 +114,7 @@ function initSocket() {
 }
 
 chrome.tabs.onUpdated.addListener(async (tabId, changeInfo, tab) => {
-  if (!isNewTab(tab.url)) {
+  if (!isChromeUrl(tab.url)) {
     switch (changeInfo.status) {
       case 'loading': {
         const isInjected = (await injectExtension(tabId))[0];
@@ -140,7 +140,7 @@ chrome.tabs.onUpdated.addListener(async (tabId, changeInfo, tab) => {
 });
 
 chrome.browserAction.onClicked.addListener(async (tab) => {
-  if (isNewTab(tab.url)) {
+  if (isChromeUrl(tab.url)) {
     window.open(CARD_URL_BASE);
   } else {
     const tabId = tab.id;
