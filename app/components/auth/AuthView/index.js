@@ -6,7 +6,7 @@ import Button from '../../../components/common/Button';
 import Loader from '../../../components/common/Loader';
 import ErrorMessage from '../../../components/common/ErrorMessage';
 
-import logo from '../../../assets/images/logos/logo.svg';
+import logo from '../../../assets/images/logos/logodark.png';
 
 import style from './auth-view.css';
 import { getStyleApplicationFn } from '../../../utils/style';
@@ -16,12 +16,12 @@ const AuthView = ({ title, isLoading, inputBody, error, submitButtonProps, foote
   return (
     <div className={s('flex-1 flex flex-col pt-3xl')}>
       <div className={s('px-2xl')}>
+        <img src={logo} className={s('h-3xl mb-xl')} />
         <div className={s('flex justify-between')}>
           <div>
-            <div className={s('text-xl font-semibold')}>Welcome!</div>
-            <div className={s('text-sm text-gray-dark mt-reg mb-2xl')}> {title} </div>
+            <div className={s('text-sm font-semibold text-gray-dark mb-2xl')}> Welcome! {title} </div>
           </div>
-          <img src={logo} className={s('h-4xl')} />
+          
         </div>
         { isLoading ?
           <Loader className={s('mb-reg')} /> :

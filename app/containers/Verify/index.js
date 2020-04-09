@@ -15,7 +15,7 @@ import style from './verify.css';
 import { getStyleApplicationFn } from '../../utils/style';
 const s = getStyleApplicationFn(style);
 
-import logo from '../../assets/images/logos/logo.svg';
+import logo from '../../assets/images/logos/logodark.png';
 
 class Verify extends Component {
   componentDidUpdate(prevProps) {
