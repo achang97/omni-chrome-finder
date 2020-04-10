@@ -13,7 +13,7 @@ import Loader from '../../common/Loader';
 import Button from '../../common/Button';
 import Modal from '../../common/Modal';
 import Separator from '../../common/Separator';
-import ErrorMessage from '../../common/ErrorMessage';
+import Message from '../../common/Message';
 
 import { MdLock, MdAutorenew } from 'react-icons/md';
 
@@ -197,7 +197,7 @@ class CardCreateModal extends Component {
           </AnimateHeight>
           { this.renderKeywords() }
           { this.renderAdvanced(isExisting, onlyShowPermissions) }
-          <ErrorMessage className={s('my-sm')} error={createError} />
+          <Message className={s('my-sm')} message={createError} type="error" />
           <div ref={this.bottomRef} />
         </div>
         <Button

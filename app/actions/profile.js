@@ -1,6 +1,5 @@
 import * as types from './actionTypes';
 
-
 export function requestGetUser() {
   return { type: types.GET_USER_REQUEST, payload: { } };
 }

@@ -31,14 +31,14 @@ export const ROUTES = {
   SIGNUP: '/signup'
 };
 
+export const NODE_ENV = {
+  DEV: 'development',
+  PROD: 'production',
+}
+
 export const MAIN_CONTAINER_ID = 'omni-chrome-ext-main-container';
 
-export const CARD_URL_BASE = 'https://www.google.com/webhp?sxsrf=';
-export const CARD_URL_REGEX = /^https:\/\/www\.google\.com\/webhp\?sxsrf=([A-Za-z0-9]{24})/;
-export const SLACK_URL_REGEX = /^https:\/\/www\.google\.com\/webhp\?sxsrf=$/;
-
-export const TASK_URL_BASE = 'https://www.google.com/webhp?tasksxsrf=';
-export const TASK_URL_REGEX = /^https:\/\/www\.google\.com\/webhp\?tasksxsrf=([A-Za-z0-9]{24})$/;
+export const CARD_URL_BASE = `${process.env.NODE_ENV === NODE_ENV.DEV ? 'http://localhost:5000' : 'https://app.addomni.com/'}/extension`;
 
 // Debounce / Animations
 export const DEBOUNCE_60_HZ = 166;
@@ -223,11 +223,6 @@ export const SEARCH_TYPE = {
 export const HTTP_STATUS_CODE = {
   UNAUTHORIZED: 401,
   NOT_FOUND: 404,
-}
-
-export const NODE_ENV = {
-  DEV: 'development',
-  PROD: 'production',
 }
 
 // Misc.

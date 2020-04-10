@@ -95,7 +95,7 @@ class SuggestionCard extends Component {
 
     // Create invisible element with text
     const el = document.createElement('textarea');
-    el.value = `${CARD_URL_BASE}${id}`;
+    el.value = `${CARD_URL_BASE}?cardId=${id}`;
     el.setAttribute('readonly', '');
     el.style.position = 'absolute';
     el.style.left = '-9999px';
