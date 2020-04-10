@@ -16,7 +16,7 @@ import Loader from '../../common/Loader';
 import Timeago from '../../common/Timeago';
 import Separator from '../../common/Separator';
 
-import { NOOP, CARD_STATUS, CARD_URL_BASE, TIMEOUT_3S } from '../../../utils/constants';
+import { NOOP, CARD_STATUS, WEB_APP_EXTENSION_URL, TIMEOUT_3S } from '../../../utils/constants';
 
 import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
@@ -95,7 +95,7 @@ class SuggestionCard extends Component {
 
     // Create invisible element with text
     const el = document.createElement('textarea');
-    el.value = `${CARD_URL_BASE}?cardId=${id}`;
+    el.value = `${WEB_APP_EXTENSION_URL}?cardId=${id}`;
     el.setAttribute('readonly', '');
     el.style.position = 'absolute';
     el.style.left = '-9999px';

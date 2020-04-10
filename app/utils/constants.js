@@ -38,7 +38,7 @@ export const NODE_ENV = {
 
 export const MAIN_CONTAINER_ID = 'omni-chrome-ext-main-container';
 
-export const CARD_URL_BASE = `${process.env.NODE_ENV === NODE_ENV.DEV ? 'http://localhost:5000' : 'https://app.addomni.com/'}/extension`;
+export const WEB_APP_EXTENSION_URL = 'https://app.addomni.com//extension';
 
 // Debounce / Animations
 export const DEBOUNCE_60_HZ = 166;
@@ -103,6 +103,12 @@ export const CARD_DIMENSIONS = {
   DEFAULT_CARDS_HEIGHT: 500
 };
 
+export const CARD_HINTS = {
+  OWNERS: 'Owners are in charge of the knowledge in this card and will be tasked to keep it updated over time.',
+  SUBSCRIBERS: 'Subscribers will be notified when this card is created or changed.',
+  VERIFICATION_INTERVAL: 'Interval at which we remind owners to verify the information on this card is up-to-date.',
+};
+
 export const MODAL_TYPE = {
   CREATE: 'CREATE',
   THREAD: 'THREAD',
@@ -140,15 +146,19 @@ export const VERIFICATION_INTERVAL_OPTION = {
   SIX_MONTHS: 4,
   ONE_YEAR: 5,
   AUTOREMIND: 6,
-  NEVER: 7
+  NEVER: 7,
+  ONE_DAY: 8,
+  ONE_WEEK: 9,
 };
 export const VERIFICATION_INTERVAL_OPTIONS = [
   // { label: 'Auto-Remind', value: 6 },
-  { label: '2 Weeks', value: 1 },
-  { label: '1 Month', value: 2 },
-  { label: '3 Months', value: 3 },
-  { label: '6 Months', value: 4 },
-  { label: '1 Year', value: 5 },
+  { label: '1 Day', value: VERIFICATION_INTERVAL_OPTION.ONE_DAY },
+  { label: '1 Week', value: VERIFICATION_INTERVAL_OPTION.ONE_WEEK },
+  { label: '2 Weeks', value: VERIFICATION_INTERVAL_OPTION.TWO_WEEKS },
+  { label: '1 Month', value: VERIFICATION_INTERVAL_OPTION.ONE_MONTH },
+  { label: '3 Months', value: VERIFICATION_INTERVAL_OPTION.THREE_MONTHS },
+  { label: '6 Months', value: VERIFICATION_INTERVAL_OPTION.SIX_MONTHS },
+  { label: '1 Year', value: VERIFICATION_INTERVAL_OPTION.ONE_YEAR },
   { label: 'Never', value: VERIFICATION_INTERVAL_OPTION.NEVER },
 ];
 

@@ -1,5 +1,5 @@
 import _ from 'lodash';
-import { CHROME_MESSAGE, CARD_URL_BASE, NODE_ENV } from '../../../app/utils/constants';
+import { CHROME_MESSAGE, WEB_APP_EXTENSION_URL, NODE_ENV } from '../../../app/utils/constants';
 import { getStorage, setStorage } from '../../../app/utils/storage';
 import { BASE_URL } from '../../../app/utils/request';
 import { addStorageListener } from '../../../app/utils/storage';
@@ -141,7 +141,7 @@ chrome.tabs.onUpdated.addListener(async (tabId, changeInfo, tab) => {
 
 chrome.browserAction.onClicked.addListener(async (tab) => {
   if (isChromeUrl(tab.url)) {
-    window.open(CARD_URL_BASE);
+    window.open(WEB_APP_EXTENSION_URL);
   } else {
     const tabId = tab.id;
     const isInjected = (await injectExtension(tabId))[0];
@@ -171,7 +171,7 @@ chrome.notifications.onClicked.addListener(async (notificationId) => {
         payload: { notificationId }
       });        
     } else {
-      const newWindow = window.open(`${CARD_URL_BASE}?taskId=${notificationId}` + notificationId, '_blank');
+      const newWindow = window.open(`${WEB_APP_EXTENSION_URL}?taskId=${notificationId}` + notificationId, '_blank');
       newWindow.focus();
     }
   })

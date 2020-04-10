@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import { Switch, Redirect, withRouter } from 'react-router-dom';
 import Dock from 'react-dock';
-import { ROUTES, CARD_URL_BASE, TASKS_SECTIONS, TASKS_SECTION_TYPE, TASK_TYPE, SEARCH_TYPE, NOOP } from '../utils/constants';
+import { ROUTES, WEB_APP_EXTENSION_URL, TASKS_SECTIONS, TASKS_SECTION_TYPE, TASK_TYPE, SEARCH_TYPE, NOOP } from '../utils/constants';
 import { identifyUser } from '../utils/heap';
 import queryString from 'query-string';
 
@@ -64,7 +64,7 @@ class App extends Component {
       toggleDock, openCard, updateTasksTab, updateTasksOpenSection, history
     } = this.props;
 
-    if (window.location.href.startsWith(CARD_URL_BASE)) {
+    if (window.location.href.startsWith(WEB_APP_EXTENSION_URL)) {
       if (!dockVisible) {
         toggleDock();
       }

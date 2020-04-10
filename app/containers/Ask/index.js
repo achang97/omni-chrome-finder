@@ -37,7 +37,7 @@ import { requestSearchCards } from '../../actions/search';
 import * as askActions from '../../actions/ask';
 import { generateFileKey, isAnyLoading } from '../../utils/file';
 import { isLoggedIn, getIntegrationAuthLink } from '../../utils/auth';
-import { ROUTES, ASK_INTEGRATIONS, INTEGRATIONS, DEBOUNCE_60_HZ, TIMEOUT_3S, SEARCH_TYPE, SLACK_RECIPIENT_TYPE  } from '../../utils/constants';
+import { ROUTES, ASK_INTEGRATIONS, INTEGRATIONS, DEBOUNCE_60_HZ, SEARCH_TYPE, SLACK_RECIPIENT_TYPE  } from '../../utils/constants';
 
 import SlackIcon from '../../assets/images/icons/Slack_Mark.svg';
 import GmailIcon from '../../assets/images/icons/Gmail_Icon.svg';

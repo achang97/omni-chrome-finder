@@ -9,7 +9,6 @@ import Message from '../../components/common/Message';
 import Separator from '../../components/common/Separator';
 
 import { updateVerificationCode, requestVerify, requestResendVerificationEmail, clearResendVerificationInfo, logout } from '../../actions/auth';
-import { TIMEOUT_3S } from '../../utils/constants';
 
 import style from './verify.css';
 import { getStyleApplicationFn } from '../../utils/style';
@@ -18,12 +17,6 @@ const s = getStyleApplicationFn(style);
 import logo from '../../assets/images/logos/logodark.png';
 
 class Verify extends Component {
-  componentDidUpdate(prevProps) {
-    if (!prevProps.resendVerificationSuccess && this.props.resendVerificationSuccess) {
-      setTimeout(this.props.clearResendVerificationInfo, TIMEOUT_3S);
-    }
-  }
-
   render() {
     const {
       verificationCode, isVerifying, verifyError,
@@ -64,6 +57,7 @@ class Verify extends Component {
           iconLeft={false}
           onClick={requestResendVerificationEmail}
         />
+        <Message message="Sent verification code!" type="success"
         <AnimateHeight height={resendVerificationSuccess ? 'auto' : 0}>
           <div className={s('mt-reg text-sm text-center text-green-reg')}>
             Sent verification code!

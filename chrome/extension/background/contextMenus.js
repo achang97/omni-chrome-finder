@@ -1,4 +1,4 @@
-import { CHROME_MESSAGE, CARD_URL_BASE } from '../../../app/utils/constants';
+import { CHROME_MESSAGE, WEB_APP_EXTENSION_URL } from '../../../app/utils/constants';
 import { isChromeUrl } from '../../../app/utils/chrome';
 
 const IDS = {
@@ -51,7 +51,7 @@ ACTION_MENU_ITEMS.forEach(({ title, id }) => {
 chrome.contextMenus.onClicked.addListener(({ menuItemId, selectionText = '' }, tab) => {
   if (isChromeUrl(tab.url)) {
     // TODO: add correct routing to actual tab
-    window.open(CARD_URL_BASE);
+    window.open(WEB_APP_EXTENSION_URL);
   } else {
     const tabId = tab.id;
 
