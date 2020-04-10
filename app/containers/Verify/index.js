@@ -1,4 +1,4 @@
-import React, { Component } from 'react';
+import React, { useEffect } from 'react';
 import AnimateHeight from 'react-animate-height';
 import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
@@ -9,15 +9,16 @@ import Message from '../../components/common/Message';
 import Separator from '../../components/common/Separator';
 
 import { updateVerificationCode, requestVerify, requestResendVerificationEmail, clearResendVerificationInfo, logout } from '../../actions/auth';
+import { requestGetUser } from '../../actions/profile';
 
 import style from './verify.css';
 import { getStyleApplicationFn } from '../../utils/style';
 const s = getStyleApplicationFn(style);
 
 const Verify = ({
-  verificationCode, isVerifying, verifyError,
+  verificationCode, isVerifying, verifyError, isGettingUser,
   isResendingVerification, resendVerificationSuccess, resendVerificationError,
-  updateVerificationCode, requestVerify, requestResendVerificationEmail, logout
+  updateVerificationCode, requestVerify, requestResendVerificationEmail, requestGetUser, logout
 }) => {
   const renderFooter = () => (
     <>
@@ -44,12 +45,23 @@ const Verify = ({
       className={s('text-center')}
       isLoading={isVerifying}
       inputBody={
-        <input
-          value={verificationCode}
-          placeholder="Verification code"
-          onChange={e => updateVerificationCode(e.target.value)}
-          className={s('mt-reg w-full')}
-        />
+        <>
+          <input
+            value={verificationCode}
+            placeholder="Verification code"
+            onChange={e => updateVerificationCode(e.target.value)}
+            className={s('mt-reg w-full')}
+          />
+          <div className={s('flex justify-end')}>
+            <div className={s('text-gray-dark text-xs cursor-pointer mr-sm')} onClick={requestGetUser}>
+              Already verified? Click to refresh
+            </div>
+            { isGettingUser &&
+              <Loader size="xs" />            
+            }
+          </div>
+
+        </>
       }
       error={verifyError}
       submitButtonProps={{
@@ -70,6 +82,7 @@ export default connect(
     isResendingVerification: state.auth.isResendingVerification,
     resendVerificationSuccess: state.auth.resendVerificationSuccess,
     resendVerificationError: state.auth.resendVerificationError,
+    isGettingUser: state.profile.isGettingUser,
   }),
   dispatch =>
     bindActionCreators(
@@ -78,6 +91,7 @@ export default connect(
         requestVerify,
         requestResendVerificationEmail,
         clearResendVerificationInfo,
+        requestGetUser,
         logout
       },
       dispatch
