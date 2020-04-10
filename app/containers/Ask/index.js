@@ -13,8 +13,8 @@ import Button from '../../components/common/Button';
 import Loader from '../../components/common/Loader';
 import Modal from '../../components/common/Modal';
 import CircleButton from '../../components/common/CircleButton';
-import ErrorMessage from '../../components/common/ErrorMessage';
 import Separator from '../../components/common/Separator';
+import Message from '../../components/common/Message';
 import _ from 'lodash';
 
 import Tabs from '../../components/common/Tabs/Tabs';
@@ -67,10 +67,6 @@ class Ask extends Component {
     const currPropsSlack = isLoggedIn(this.props.user, INTEGRATIONS.SLACK.type);
     if (!prevPropsSlack && currPropsSlack) {
       this.props.requestGetSlackConversations();
-    }
-
-    if (!prevProps.feedbackSuccess && this.props.feedbackSuccess) {
-      setTimeout(this.props.toggleAskFeedbackInput, TIMEOUT_3S);
     }
   }
 
@@ -420,9 +416,14 @@ class Ask extends Component {
         <AnimateHeight height={showFeedback ? 'auto' : 0}>
           <Separator horizontal className={s('my-reg')} />
           { feedbackSuccess ? 
-            <div className={s('text-md text-center text-green-reg')}>
-              🎉 <span className={s('mx-sm')}> Thanks for your feedback! </span> 🎉
-            </div> :
+            <Message
+              message={<span> 🎉 <span className={s('mx-sm')}> Thanks for your feedback! </span> 🎉 </span>}
+              className={s('text-md text-center text-green-reg')}
+              animate
+              temporary
+              onHide={toggleAskFeedbackInput}
+              type="success"
+            /> :
             <div>
               <div className={s(('flex justify-between mb-xs text-gray-dark'))}>
                 <div className={s('text-xs')}> Enter your feedback: </div>
@@ -433,7 +434,7 @@ class Ask extends Component {
                 value={feedback}
                 onChange={e => updateAskFeedback(e.target.value)}
               />
-              <ErrorMessage className={s('my-sm')} error={feedbackError} />
+              <Message className={s('my-sm')} message={feedbackError} type="error" />
               <Button
                 text="Submit Feedback"
                 color="transparent"

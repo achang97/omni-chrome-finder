@@ -59,8 +59,8 @@ export function requestVerify() {
   return { type: types.VERIFY_REQUEST, payload: { } };
 }
 
-export function handleVerifySuccess(user) {
-  return { type: types.VERIFY_SUCCESS, payload: { user } };
+export function handleVerifySuccess() {
+  return { type: types.VERIFY_SUCCESS, payload: { } };
 }
 
 export function handleVerifyError(error) {
@@ -71,8 +71,8 @@ export function requestResendVerificationEmail() {
   return { type: types.RESEND_VERIFICATION_EMAIL_REQUEST, payload: { } };
 }
 
-export function handleResendVerificationEmailSuccess(user, token, refreshToken) {
-  return { type: types.RESEND_VERIFICATION_EMAIL_SUCCESS, payload: { user, token, refreshToken } };
+export function handleResendVerificationEmailSuccess() {
+  return { type: types.RESEND_VERIFICATION_EMAIL_SUCCESS, payload: { } };
 }
 
 export function handleResendVerificationEmailError(error) {

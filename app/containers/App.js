@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import { Switch, Redirect, withRouter } from 'react-router-dom';
 import Dock from 'react-dock';
-import { ROUTES, CARD_URL_REGEX, SLACK_URL_REGEX, TASK_URL_REGEX, TASKS_SECTIONS, TASKS_SECTION_TYPE, TASK_TYPE, SEARCH_TYPE, NOOP } from '../utils/constants';
+import { ROUTES, CARD_URL_BASE, TASKS_SECTIONS, TASKS_SECTION_TYPE, TASK_TYPE, SEARCH_TYPE, NOOP } from '../utils/constants';
 import { identifyUser } from '../utils/heap';
 import queryString from 'query-string';
 
@@ -58,35 +58,21 @@ class App extends Component {
     this.openChromeExtension();
   }
 
-  clearUrl = (url) => {
-    // Strip off everything after .com. NOTE: For now, assume we will be on .com website
-    // (likely will be addomni.com)
-    window.history.replaceState({}, window.location.title, url.substring(0, url.indexOf('.com') + 4));
-  }
-
   openChromeExtension = () => {
-    const url = window.location.href;
     const {
       dockVisible, tasks, isLoggedIn,
       toggleDock, openCard, updateTasksTab, updateTasksOpenSection, history
     } = this.props;
 
-    const urlResponses = [
-      {
-        regex: CARD_URL_REGEX,
-        callback: () => {
-          const { edit, sxsrf } = queryString.parse(window.location.search);
-          openCard({ _id: sxsrf, isEditing: edit === 'true' });
-        }
-      },      
-      {
-        regex: SLACK_URL_REGEX,
-        callback: NOOP,
-      },
-      {
-        regex: TASK_URL_REGEX,
-        callback: (res) => {
-          const taskId = res[1];
+    if (window.location.href.startsWith(CARD_URL_BASE)) {
+      if (!dockVisible) {
+        toggleDock();
+      }
+
+      if (isLoggedIn) {
+        const { taskId, cardId, edit } = queryString.parse(window.location.search);
+
+        if (taskId) {
           const task = tasks.find(({ _id }) => _id === taskId);
           if (task) {
             if (task.status === TASK_TYPE.NEEDS_APPROVAL) {
@@ -99,26 +85,15 @@ class App extends Component {
               ));
               updateTasksOpenSection(taskSectionType ? taskSectionType.type : TASKS_SECTION_TYPE.ALL);
             }
+            history.push(ROUTES.TASKS);
           }
-          history.push(ROUTES.TASKS);
         }
+
+        if (cardId) {
+          openCard({ _id: cardId, isEditing: edit === 'true' });
+        }        
       }
-    ]
-
-    urlResponses.forEach(({ regex, callback }) => {
-      const res = url.match(regex);
-      if (res) {
-        if (!dockVisible) {
-          toggleDock();
-        }
-
-        if (isLoggedIn) {
-          callback(res);
-        }
-
-        this.clearUrl(url);        
-      }
-    });
+    }
   }
 
   render() {

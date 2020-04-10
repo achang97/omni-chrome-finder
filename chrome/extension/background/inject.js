@@ -1,5 +1,5 @@
 import _ from 'lodash';
-import { CHROME_MESSAGE, TASK_URL_BASE, NODE_ENV, CARD_URL_BASE } from '../../../app/utils/constants';
+import { CHROME_MESSAGE, CARD_URL_BASE, NODE_ENV } from '../../../app/utils/constants';
 import { getStorage, setStorage } from '../../../app/utils/storage';
 import { BASE_URL } from '../../../app/utils/request';
 import { addStorageListener } from '../../../app/utils/storage';
@@ -171,7 +171,7 @@ chrome.notifications.onClicked.addListener(async (notificationId) => {
         payload: { notificationId }
       });        
     } else {
-      const newWindow = window.open(TASK_URL_BASE + notificationId, '_blank');
+      const newWindow = window.open(`${CARD_URL_BASE}?taskId=${notificationId}` + notificationId, '_blank');
       newWindow.focus();
     }
   })

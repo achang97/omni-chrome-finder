@@ -5,7 +5,7 @@ import { connect } from 'react-redux';
 
 import Button from '../../components/common/Button';
 import Loader from '../../components/common/Loader';
-import ErrorMessage from '../../components/common/ErrorMessage';
+import Message from '../../components/common/Message';
 import Separator from '../../components/common/Separator';
 
 import { updateVerificationCode, requestVerify, requestResendVerificationEmail, clearResendVerificationInfo, logout } from '../../actions/auth';
@@ -54,7 +54,7 @@ class Verify extends Component {
           disabled={verificationCode === ''}
           className={s('self-stretch')}
         />
-        <ErrorMessage className={s('my-sm')} error={verifyError} />
+        <Message className={s('my-sm')} message={verifyError} type="error" />
         <Separator horizontal className={s('my-reg')} />
         <Button
           color="transparent"
@@ -69,7 +69,7 @@ class Verify extends Component {
             Sent verification code!
           </div>
         </AnimateHeight>
-        <ErrorMessage className={s('mt-sm')} error={resendVerificationError} />
+        <Message className={s('mt-sm')} message={resendVerificationError} type="error" />
         <div
           className={s('text-xs text-gray-dark cursor-pointer mt-lg self-end')}
           onClick={logout}
