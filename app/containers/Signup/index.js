@@ -1,9 +1,11 @@
 import React, { Component } from 'react';
+import { Link } from 'react-router-dom';
 
 import AuthView from '../../components/auth/AuthView';
 import { updateSignupFirstName, updateSignupLastName, updateSignupEmail, updateSignupPassword, updateSignupConfirmPassword, requestSignup } from '../../actions/auth';
 import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
+import { ROUTES } from '../../utils/constants';
 
 import { getStyleApplicationFn } from '../../utils/style';
 const s = getStyleApplicationFn();
@@ -13,7 +15,8 @@ const Signup = ({
   updateSignupFirstName, updateSignupLastName, updateSignupEmail, updateSignupPassword, requestSignup
 }) => (
   <AuthView
-    title="Sign up to continue"
+    title="Welcome"
+    subtitle="Sign up to continue"
     isLoading={isSigningUp}
     inputBody={
       <React.Fragment>
@@ -56,8 +59,14 @@ const Signup = ({
       disabled: signupFirstName === '' || signupLastName === '' || signupEmail === '' || 
         signupPassword === '' || isSigningUp
     }}
-    footerLink="/login"
-    footerText="Already have an account? Sign in"
+    footer={
+      <Link
+        to={ROUTES.LOGIN}
+        className={s('text-xs text-gray-dark text-center block')}
+      >
+        Already have an account? Sign in
+      </Link>
+    }
   />
 );
 

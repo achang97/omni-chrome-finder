@@ -29,7 +29,7 @@ const getClassNames = (color, underline) => {
 };
 
 const Button = (props) => {
-  const { text, textClassName, icon, iconLeft, className, underline, underlineColor, color, onClick, imgSrc, imgClassName, disabled, ...rest } = props;
+  const { text, containerClassName, textClassName, icon, iconLeft, className, underline, underlineColor, color, onClick, imgSrc, imgClassName, disabled, ...rest } = props;
   const { outerClassName = '', innerClassName = '' } = getClassNames(color, underline);
 
   const protectedOnClick = () => {
@@ -37,20 +37,23 @@ const Button = (props) => {
   };
 
   return (
-    <div className={s(`button-container ${className} ${outerClassName} ${disabled ? 'cursor-not-allowed opacity-75' : 'button-hover'}`)} onClick={protectedOnClick} {...rest}>
-      { iconLeft && icon }
-      { iconLeft && imgSrc && <img className={s(`${imgClassName}`)} src={imgSrc} /> }
-      <div className={s(`button-text ${underline && underlineColor ? `underline-border border-${underlineColor}` : ''} ${innerClassName} ${textClassName}`)}>
-        {text}
-      </div>
-      { !iconLeft && icon }
-      { !iconLeft && imgSrc && <img className={s(`${imgClassName}`)} src={imgSrc} /> }
-    </div>
+    <button onClick={protectedOnClick} {...rest} className={containerClassName}>
+      <div className={s(`button-container ${className} ${outerClassName} ${disabled ? 'cursor-not-allowed opacity-75' : 'button-hover'}`)}>
+        { iconLeft && icon }
+        { iconLeft && imgSrc && <img className={s(`${imgClassName}`)} src={imgSrc} /> }
+        <div className={s(`button-text ${underline && underlineColor ? `underline-border border-${underlineColor}` : ''} ${innerClassName} ${textClassName}`)}>
+          {text}
+        </div>
+        { !iconLeft && icon }
+        { !iconLeft && imgSrc && <img className={s(`${imgClassName}`)} src={imgSrc} /> }
+      </div>      
+    </button>
   );
 };
 
 Button.propTypes = {
   text: PropTypes.oneOfType([PropTypes.string, PropTypes.number]),
+  containerClassName: PropTypes.string,
   className: PropTypes.string,
   textClassName: PropTypes.string,
   imgClassName: PropTypes.string,
@@ -66,6 +69,7 @@ Button.propTypes = {
 
 Button.defaultProps = {
   text: '',
+  containerClassName: '',
   className: '',
   textClassName: '',
   imgClassName: '',

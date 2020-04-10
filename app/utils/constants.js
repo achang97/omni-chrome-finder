@@ -28,7 +28,8 @@ export const ROUTES = {
   VERIFY: '/verify',
   SUGGEST: '/suggest',
   LOGIN: '/login',
-  SIGNUP: '/signup'
+  SIGNUP: '/signup',
+  FORGOT_PASSWORD: '/forgot'
 };
 
 export const NODE_ENV = {

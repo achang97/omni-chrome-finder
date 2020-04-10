@@ -29,6 +29,7 @@ import Profile from './Profile';
 import Login from './Login';
 import Signup from './Signup';
 import Verify from './Verify';
+import ForgotPassword from './ForgotPassword';
 
 import 'react-toggle/style.css';
 import 'react-circular-progressbar/dist/styles.css';
@@ -138,6 +139,7 @@ class App extends Component {
 
               <PublicRoute path={ROUTES.LOGIN} component={Login} />
               <PublicRoute path={ROUTES.SIGNUP} component={Signup} />
+              <PublicRoute path={ROUTES.FORGOT_PASSWORD} component={ForgotPassword} />
 
               {/* A catch-all route: put all other routes ABOVE here */}
               <Redirect to={isLoggedIn ? ROUTES.ASK : ROUTES.LOGIN } />

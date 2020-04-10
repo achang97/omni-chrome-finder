@@ -3,7 +3,7 @@ import AnimateHeight from 'react-animate-height';
 import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
 
-import Button from '../../components/common/Button';
+import AuthView from '../../components/auth/AuthView';
 import Loader from '../../components/common/Loader';
 import Message from '../../components/common/Message';
 import Separator from '../../components/common/Separator';
@@ -14,65 +14,52 @@ import style from './verify.css';
 import { getStyleApplicationFn } from '../../utils/style';
 const s = getStyleApplicationFn(style);
 
-import logo from '../../assets/images/logos/logodark.png';
-
-class Verify extends Component {
-  render() {
-    const {
-      verificationCode, isVerifying, verifyError,
-      isResendingVerification, resendVerificationSuccess, resendVerificationError,
-      updateVerificationCode, requestVerify, requestResendVerificationEmail, logout
-    } = this.props;
-
-    return (
-      <div className={s('flex-1 flex flex-col items-center py-2xl px-3xl')}>
-        <img src={logo} className={s('h-3xl mb-lg')} />
-        <div className={s('text-xl font-semibold')}>Verify your account</div>
-        <div className={s('text-sm text-gray-dark mt-reg mb-2xl')}> Enter the verification code sent to your email. </div>
-        <div className={s('my-sm w-full')}>
-          { isVerifying ?
-            <Loader className={s('mb')} /> :
-            <input
-              value={verificationCode}
-              placeholder="Verification code"
-              onChange={e => updateVerificationCode(e.target.value)}
-              className={s('w-full text-xs')}
-            />
-          }
-        </div>
-        <Button
-          color="primary"
-          text="Verify"
-          onClick={requestVerify}
-          disabled={verificationCode === ''}
-          className={s('self-stretch')}
-        />
-        <Message className={s('my-sm')} message={verifyError} type="error" />
-        <Separator horizontal className={s('my-reg')} />
-        <Button
-          color="transparent"
-          text="Re-send verification code"
-          className={s('self-stretch p-sm')}
-          icon={isResendingVerification ? <Loader size="xs" className={s('ml-sm')} /> : null}
-          iconLeft={false}
-          onClick={requestResendVerificationEmail}
-        />
-        <Message message="Sent verification code!" type="success"
-        <AnimateHeight height={resendVerificationSuccess ? 'auto' : 0}>
-          <div className={s('mt-reg text-sm text-center text-green-reg')}>
-            Sent verification code!
-          </div>
-        </AnimateHeight>
-        <Message className={s('mt-sm')} message={resendVerificationError} type="error" />
-        <div
-          className={s('text-xs text-gray-dark cursor-pointer mt-lg self-end')}
-          onClick={logout}
-        >
+const Verify = ({
+  verificationCode, isVerifying, verifyError,
+  isResendingVerification, resendVerificationSuccess, resendVerificationError,
+  updateVerificationCode, requestVerify, requestResendVerificationEmail, logout
+}) => {
+  const renderFooter = () => (
+    <>
+      <Separator horizontal className={s('m-0')}/>
+      <div className={s('flex justify-between mt-lg text-xs text-gray-dark')}>
+        <div>
+          <div onClick={requestResendVerificationEmail} className={s('flex cursor-pointer')}>
+            <span className={s('mr-xs')}> Re-send verification code </span>
+            {isResendingVerification && <Loader size="xs" className={s('ml-sm')} />}
+          </div>     
+          <Message message="Sent verification code!" type="success" className={s('mt-sm text-xs text-left')} show={!!resendVerificationSuccess} animate temporary />
+          <Message className={s('mt-sm text-xs text-left')} message={resendVerificationError} type="error" />
+        </div> 
+        <div className={s('cursor-pointer')} onClick={logout}>
           Logout
-        </div>
+        </div>  
       </div>
-    );    
-  }
+    </>
+  );
+
+  return (
+    <AuthView
+      title="Verify your account"
+      className={s('text-center')}
+      isLoading={isVerifying}
+      inputBody={
+        <input
+          value={verificationCode}
+          placeholder="Verification code"
+          onChange={e => updateVerificationCode(e.target.value)}
+          className={s('mt-reg w-full')}
+        />
+      }
+      error={verifyError}
+      submitButtonProps={{
+        text: 'Verify',
+        onClick: requestVerify,
+        disabled: verificationCode === ''
+      }}
+      footer={renderFooter()}
+    />
+  );
 }
 
 export default connect(

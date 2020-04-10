@@ -12,6 +12,8 @@ export const initialState = {
   signupEmail: '',
   signupPassword: '',
 
+  recoveryEmail: '',
+
   verificationCode: '',
 };
 
@@ -82,6 +84,22 @@ export default function authReducer(state = initialState, action) {
       const { code } = payload;
       return { ...state, verificationCode: code };
     }
+
+    case types.UPDATE_RECOVERY_EMAIL: {
+      const { email } = payload;
+      return { ...state, recoveryEmail: email };
+    }
+    case types.SEND_RECOVERY_EMAIL_REQUEST: {
+      return { ...state, isSendingRecoveryEmail: true, recoverySuccess: null, recoveryError: null };
+    }
+    case types.SEND_RECOVERY_EMAIL_SUCCESS: {
+      return { ...state, isSendingRecoveryEmail: false, recoverySuccess: true, recoveryEmail: '' };
+    }
+    case types.SEND_RECOVERY_EMAIL_ERROR: {
+      const { error } = payload;
+      return { ...state, isSendingRecoveryEmail: false, recoverySuccess: false, recoveryError: error };
+    }
+
 
     case types.VERIFY_REQUEST: {
       return { ...state, isVerifying: true, verifySuccess: null, verifyError: null };

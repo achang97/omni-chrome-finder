@@ -1,16 +1,19 @@
 import React, { Component } from 'react';
+import { Link } from 'react-router-dom';
 
 import AuthView from '../../components/auth/AuthView';
 import { updateLoginEmail, updateLoginPassword, requestLogin } from '../../actions/auth';
 import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
+import { ROUTES } from '../../utils/constants';
 
 import { getStyleApplicationFn } from '../../utils/style';
 const s = getStyleApplicationFn();
 
 const Login = ({ requestLogin, updateLoginEmail, loginError, updateLoginPassword, loginEmail, loginPassword, isLoggingIn }) => (
   <AuthView
-    title="Sign in to continue"
+    title="Welcome!"
+    subtitle="Sign in to continue"
     isLoading={isLoggingIn}
     inputBody={
       <React.Fragment>
@@ -28,7 +31,12 @@ const Login = ({ requestLogin, updateLoginEmail, loginError, updateLoginPassword
           className={s('w-full')}
           onChange={e => updateLoginPassword(e.target.value)}
         />
-        {/*<div className={s('text-xs text-gray-dark mt-reg self-end')}>Forgot password?</div>*/}
+        <Link
+          to={ROUTES.FORGOT_PASSWORD}
+          className={s('text-xs text-gray-light text-right block')}
+        >
+          Forgot password?
+        </Link>
       </React.Fragment>
     }
     error={loginError}
@@ -37,8 +45,14 @@ const Login = ({ requestLogin, updateLoginEmail, loginError, updateLoginPassword
       onClick: requestLogin,
       disabled: loginEmail === '' || loginPassword === '' || isLoggingIn
     }}
-    footerLink="/signup"
-    footerText="Don't have an account? Sign up"
+    footer={
+      <Link
+        to={ROUTES.SIGNUP}
+        className={s('text-xs text-gray-dark text-center block')}
+      >
+        Don't have an account? Sign up
+      </Link>
+    }
   />
 );
 
