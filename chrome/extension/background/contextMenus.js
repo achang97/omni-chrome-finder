@@ -1,5 +1,5 @@
-import { CHROME_MESSAGE, WEB_APP_EXTENSION_URL } from '../../../app/utils/constants';
-import { isChromeUrl } from '../../../app/utils/chrome';
+import { CHROME_MESSAGE, WEB_APP_EXTENSION_URL } from 'utils/constants';
+import { isChromeUrl } from 'utils/chrome';
 
 const IDS = {
   PARENT: 'PARENT_MENU_ID',

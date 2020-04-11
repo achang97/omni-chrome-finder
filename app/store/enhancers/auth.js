@@ -1,5 +1,5 @@
-import { addStorageListener } from '../../utils/storage';
-import { syncAuthInfo, logout } from '../../actions/auth';
+import { addStorageListener } from 'utils/storage';
+import { syncAuthInfo, logout } from 'actions/auth';
 
 export default function () {
   return next => (reducer, initialState) => {

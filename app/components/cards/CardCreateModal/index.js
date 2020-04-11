@@ -14,6 +14,7 @@ import Button from '../../common/Button';
 import Modal from '../../common/Modal';
 import Separator from '../../common/Separator';
 import Message from '../../common/Message';
+import HelpTooltip from '../../common/HelpTooltip';
 
 import { MdLock, MdAutorenew } from 'react-icons/md';
 
@@ -168,7 +169,17 @@ class CardCreateModal extends Component {
           onAnimationEnd={({ newHeight }) => newHeight !== 0 && this.scrollToBottom()}
         >
           <div>
-            <div className={s('text-gray-reg text-xs mb-xs')}> Verification Interval </div>
+            <div className={s('flex items-center text-gray-reg text-xs mb-xs')}>
+              <span> Verification Interval </span>
+              <HelpTooltip
+                className={s('ml-sm')} 
+                id={'tooltip-side-dock-interval'}
+                text={CARD_HINTS.VERIFICATION_INTERVAL}
+                tooltipProps={{
+                  place: 'right'  
+                }}
+              />
+            </div>
             <Select
               value={verificationInterval}
               onChange={updateCardVerificationInterval}

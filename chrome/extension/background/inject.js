@@ -1,9 +1,8 @@
 import _ from 'lodash';
-import { CHROME_MESSAGE, WEB_APP_EXTENSION_URL, NODE_ENV } from '../../../app/utils/constants';
-import { getStorage, setStorage } from '../../../app/utils/storage';
-import { BASE_URL } from '../../../app/utils/request';
-import { addStorageListener } from '../../../app/utils/storage';
-import { isChromeUrl } from '../../../app/utils/chrome';
+import { CHROME_MESSAGE, WEB_APP_EXTENSION_URL, NODE_ENV } from 'utils/constants';
+import { getStorage, setStorage, addStorageListener } from 'utils/storage';
+import { BASE_URL } from 'utils/request';
+import { isChromeUrl } from 'utils/chrome';
 
 let socket;
 
@@ -162,6 +161,8 @@ chrome.browserAction.onClicked.addListener(async (tab) => {
 });
 
 chrome.notifications.onClicked.addListener(async (notificationId) => {
+  chrome.notifications.clear(notificationId);
+
   getActiveTab().then(activeTab => {
     if (activeTab) {
       const { windowId, id } = activeTab;
@@ -171,7 +172,7 @@ chrome.notifications.onClicked.addListener(async (notificationId) => {
         payload: { notificationId }
       });        
     } else {
-      const newWindow = window.open(`${WEB_APP_EXTENSION_URL}?taskId=${notificationId}` + notificationId, '_blank');
+      const newWindow = window.open(`${WEB_APP_EXTENSION_URL}?taskId=${notificationId}`, '_blank');
       newWindow.focus();
     }
   })
@@ -180,8 +181,8 @@ chrome.notifications.onClicked.addListener(async (notificationId) => {
 addStorageListener('auth', ({ newValue }) => {
   if (!newValue.token && socket) {
     console.log('Logged out, closing socket.');
-    socket = null;
     socket.close();
+    socket = null;
   } else if (newValue.token && !socket) {
     initSocket();
   }

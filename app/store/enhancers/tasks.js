@@ -1,6 +1,6 @@
-import { addStorageListener } from '../../utils/storage';
-import * as types from '../../actions/actionTypes';
-import { syncTasks } from '../../actions/tasks';
+import { addStorageListener } from 'utils/storage';
+import * as types from 'actions/actionTypes';
+import { syncTasks } from 'actions/tasks';
 
 export default function () {
   return next => (reducer, initialState) => {

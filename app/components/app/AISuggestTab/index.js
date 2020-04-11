@@ -6,7 +6,7 @@ import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
 import { MdLightbulbOutline, MdKeyboardArrowLeft, MdKeyboardArrowRight } from 'react-icons/md';
 
-import Button from '../../../components/common/Button';
+import Button from 'components/common/Button';
 import { SEARCH_TYPE, ROUTES } from '../../../utils/constants';
 import { toggleDock } from '../../../actions/display';
 import style from './ai-suggest-tab.css';

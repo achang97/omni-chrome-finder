@@ -347,7 +347,7 @@ const CardSideDock = (props) => {
           onAnimationEnd={handleHideSections}
         >
           <div className={s('mb-sm')}>
-            <div className={s('text-gray-reg text-xs mb-sm flex')}>
+            <div className={s('flex items-center text-gray-reg text-xs mb-sm')}>
               <span> Verification Interval </span>
               <HelpTooltip
                 className={s('ml-sm')} 
