@@ -25,3 +25,5 @@ export function getIntegrationAuthLink(userId, token, integration) {
       return '';
   }
 }
+
+export default { isLoggedIn, getIntegrationAuthLink };

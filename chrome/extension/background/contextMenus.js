@@ -1,4 +1,4 @@
-import { CHROME_MESSAGE, WEB_APP_EXTENSION_URL } from 'utils/constants';
+import { CHROME, WEB_APP_EXTENSION_URL } from 'appConstants';
 import { isChromeUrl } from 'utils/chrome';
 
 const IDS = {
@@ -57,13 +57,13 @@ chrome.contextMenus.onClicked.addListener(({ menuItemId, selectionText = '' }, t
 
     switch (menuItemId) {
       case IDS.SEARCH:
-        chrome.tabs.sendMessage(tabId, { type: CHROME_MESSAGE.SEARCH, payload: { selectionText } });
+        chrome.tabs.sendMessage(tabId, { type: CHROME.MESSAGE.SEARCH, payload: { selectionText } });
         break;
       case IDS.ASK:
-        chrome.tabs.sendMessage(tabId, { type: CHROME_MESSAGE.ASK, payload: { selectionText } });
+        chrome.tabs.sendMessage(tabId, { type: CHROME.MESSAGE.ASK, payload: { selectionText } });
         break;
       case IDS.CREATE: {
-        chrome.tabs.sendMessage(tabId, { type: CHROME_MESSAGE.CREATE, payload: { selectionText } });
+        chrome.tabs.sendMessage(tabId, { type: CHROME.MESSAGE.CREATE, payload: { selectionText } });
         break;
       }
       default: {

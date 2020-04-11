@@ -16,3 +16,5 @@ export const TRANSITIONS = {
     exited: { opacity: 0 },
   }
 }
+
+export default { DEBOUNCE, TIMEOUT, TRANSITIONS };

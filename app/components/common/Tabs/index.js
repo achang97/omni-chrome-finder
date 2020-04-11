@@ -6,7 +6,7 @@ import { MdChevronLeft, MdChevronRight } from 'react-icons/md';
 import { animate } from '../../../utils/animate';
 import { DEBOUNCE_60_HZ } from '../../../utils/constants';
 
-import Tab from './Tab';
+import Tab from '../Tab';
 
 import style from './tabs.css';
 import { getStyleApplicationFn } from '../../../utils/style';

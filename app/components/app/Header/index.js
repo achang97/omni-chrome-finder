@@ -1,81 +1,29 @@
-import React, { PropTypes, Component } from 'react';
-import { withRouter } from 'react-router-dom';
-import { Link } from 'react-router';
-import { MdNotificationsActive, MdLightbulbOutline  } from 'react-icons/md';
-
-import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
+import { withRouter } from 'react-router-dom';
+import { SEARCH } from 'appConstants';
+import Header from './Header';
 
-import Tabs from '../../common/Tabs/Tabs';
-import Tab from '../../common/Tabs/Tab';
-import Badge from '../../common/Badge';
-import PlaceholderImg from '../../common/PlaceholderImg';
+const mapStateToProps = (state) => {
+  const {
+    profile: { user },
+    search: {
+      cards: {
+        [SEARCH.TYPE.AI_SUGGEST]: {
+          cards
+        }
+      }
+    },
+    tasks: { tasks }
+  } = state;
 
-import { ROUTES, SEARCH_TYPE } from '../../../utils/constants';
-
-import { colors } from '../../../styles/colors';
-import style from './header.css';
-import { getStyleApplicationFn } from '../../../utils/style';
-
-const s = getStyleApplicationFn(style);
-
-class Header extends Component {
-  constructor(props) {
-    super(props);
-  }
-
-  handleTabClick = (activeLink) => {
-    this.props.history.push(activeLink);
-  }
-
-  render() {
-    const { location: { pathname }, user, numSuggestCards, numAISuggestCards, numTasks } = this.props;
-
-    const showAISuggest = numAISuggestCards !== 0;
-
-    return (
-      <div className={s('px-sm bg-purple-xlight')}>
-        <Tabs
-          onTabClick={this.handleTabClick}
-          activeValue={pathname}
-          tabClassName={s('text-md py-xl px-0 font-semibold flex items-center')}
-          tabContainerClassName={s('flex align-center')}
-          color={colors.purple.reg}
-          showRipple={false}
-        >
-          <Tab label="Ask" key="ask" value={ROUTES.ASK} tabContainerClassName={s("mx-reg")} />
-          <Tab label="Create" key="create" value={ROUTES.CREATE} tabContainerClassName={s("mx-reg")} />
-          <Tab label="Cards" key="cards" value={ROUTES.NAVIGATE} tabContainerClassName={s("mx-reg")} />
-          { showAISuggest &&
-            <Tab key="suggest" value={ROUTES.SUGGEST} tabContainerClassName={s('header-small-tab ml-auto')}>
-              <div className={s("header-badge-container gold-gradient")}>
-                <MdLightbulbOutline className={s("text-gold-reg")} />
-                <Badge count={numAISuggestCards} size="sm" className={s("bg-gold-reg")}  />
-              </div>
-            </Tab>
-          }
-          <Tab key="tasks" value={ROUTES.TASKS} tabContainerClassName={s(`header-small-tab ${!showAISuggest ?'ml-auto' : ''}`)}>
-            <div className={s("header-badge-container bg-gray-xlight")}>
-              <MdNotificationsActive />
-              <Badge count={numTasks} size="sm" className={s("bg-red-500")}  />
-            </div>
-          </Tab>
-          <Tab key="profile" value={ROUTES.PROFILE} tabContainerClassName={s("mx-reg")}>
-            <PlaceholderImg name={`${user.firstname} ${user.lastname}`} src={user.img} className={s('header-profile-picture')} />
-          </Tab>
-        </Tabs>
-      </div>
-    );
-  }
+  return {
+    user,
+    numAISuggestCards: cards.length,
+    numTasks: tasks.filter(({ resolved }) => !resolved).length
+  };
 }
 
+const mapDispatchToProps = {};
 
-export default connect(
-  state => ({
-    user: state.profile.user,
-    numAISuggestCards: state.search.cards[SEARCH_TYPE.AI_SUGGEST].cards.length,
-    numTasks: state.tasks.tasks.filter(({ resolved }) => !resolved).length,
-  }),
-  dispatch => bindActionCreators({
-  }, dispatch)
-)(withRouter(Header));
+export default connect(mapStateToProps, mapDispatchToProps)(withRouter(Header));
+

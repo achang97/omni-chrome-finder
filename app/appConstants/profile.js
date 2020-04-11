@@ -9,3 +9,5 @@ export const USER_ROLE = {
   ADMIN: 'Admin',
   MEMBER: 'Member'
 };
+
+export default { SETTING_SECTION_TYPE, USER_ROLE };

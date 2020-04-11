@@ -8,7 +8,7 @@ import ReactTooltip from 'react-tooltip';
 
 import { NOOP } from '../../../utils/constants';
 
-import style from './card-users.css';
+import style from './card-user.css';
 import { getStyleApplicationFn } from '../../../utils/style';
 
 const s = getStyleApplicationFn(style);

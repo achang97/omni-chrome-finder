@@ -17,8 +17,8 @@ import Separator from '../../components/common/Separator';
 import Message from '../../components/common/Message';
 import _ from 'lodash';
 
-import Tabs from '../../components/common/Tabs/Tabs';
-import Tab from '../../components/common/Tabs/Tab';
+import Tabs from '../../components/common/Tabs';
+import Tab from '../../components/common/Tab';
 import Select from '../../components/common/Select';
 import SuggestionPanel from '../../components/suggestions/SuggestionPanel';
 import Dropzone from '../../components/common/Dropzone';

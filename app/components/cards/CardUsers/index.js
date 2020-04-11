@@ -4,7 +4,7 @@ import PropTypes from 'prop-types';
 import { IoMdAdd } from 'react-icons/io';
 import _ from 'lodash';
 
-import CardUser from './CardUser';
+import CardUser from '../CardUser';
 import CircleButton from '../../common/CircleButton';
 import PlaceholderImg from '../../common/PlaceholderImg';
 import Select from '../../common/Select';

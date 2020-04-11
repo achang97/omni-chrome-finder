@@ -3,7 +3,6 @@ import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import ReactTooltip from 'react-tooltip';
 
-import CardTag from '../CardTags/CardTag';
 import Loader from '../../common/Loader';
 import ToggleableInput from '../../common/ToggleableInput';
 import {

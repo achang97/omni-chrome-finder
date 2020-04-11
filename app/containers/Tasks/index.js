@@ -1,7 +1,7 @@
 import React, { Fragment, Component, PropTypes } from 'react';
 import AnimateHeight from 'react-animate-height';
-import Tabs from '../../components/common/Tabs/Tabs';
-import Tab from '../../components/common/Tabs/Tab';
+import Tabs from '../../components/common/Tabs';
+import Tab from '../../components/common/Tab';
 import TaskItem from '../../components/tasks/TaskItem';
 import NoNotificationsImg from '../../assets/images/general/noNotifications.svg';
 

@@ -129,3 +129,5 @@ export function getErrorMessage(error) {
 
   return message;
 }
+
+export default { doPost, doGet, doPut, doDelete, getErrorMessage };

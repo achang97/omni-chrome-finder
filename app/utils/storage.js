@@ -48,3 +48,5 @@ export function addStorageListener(storageKey, callback) {
     });
   });
 }
+
+export default { getStorageName, setStorage, getStorage, addStorageListener }

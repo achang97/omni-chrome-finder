@@ -9,3 +9,5 @@ export const SLACK_RECIPIENT_TYPE = {
   CHANNEL: 'channel',
   USER: 'user',
 };
+
+export default { INTEGRATIONS, SLACK_RECIPIENT_TYPE };

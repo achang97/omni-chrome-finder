@@ -8,6 +8,28 @@ import HubspotIcon from 'assets/images/icons/Hubspot_Icon.svg';
 import HelpscoutIcon from 'assets/images/icons/Helpscout_Icon.svg';
 import GoogleChromeIcon from 'assets/images/icons/GoogleChrome_Icon.svg';
 
+export const ROUTES = {
+  ASK: '/ask',
+  CREATE: '/create',
+  NAVIGATE: '/navigate',
+  TASKS: '/tasks',
+  PROFILE: '/profile',
+  VERIFY: '/verify',
+  SUGGEST: '/suggest',
+  LOGIN: '/login',
+  SIGNUP: '/signup',
+  FORGOT_PASSWORD: '/forgot'
+};
+
+export const NODE_ENV = {
+  DEV: 'development',
+  PROD: 'production',
+}
+
+export const MAIN_CONTAINER_ID = 'omni-chrome-ext-main-container';
+
+export const WEB_APP_EXTENSION_URL = 'https://app.addomni.com//extension';
+
 export const INTEGRATIONS = {
   GOOGLE: { type: 'google', title: 'Google Drive', logo: GoogleDriveIcon },
   SLACK: { type: 'slack', title: 'Slack', logo: SlackIcon },
@@ -20,3 +42,5 @@ export const INTEGRATIONS = {
 };
 
 export const NOOP = () => {};
+
+export default { ROUTES, NODE_ENV, MAIN_CONTAINER_ID, WEB_APP_EXTENSION_URL, INTEGRATIONS };

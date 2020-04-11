@@ -1,8 +1,7 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
-import { getStorage, setStorage } from 'utils/storage';
-import { MAIN_CONTAINER_ID } from 'utils/constants';
-import { addScript, isHeap } from 'utils/heap';
+import { heap, storage } from 'utils';
+import { MAIN_CONTAINER_ID } from 'appConstants';
 import { initialState as authInitialState } from 'reducers/auth';
 import { initialState as profileInitialState } from 'reducers/profile';
 import { initialState as tasksInitialState } from 'reducers/tasks';
@@ -19,12 +18,12 @@ function render(state, wrapper) {
 
 (function () {
   const body = document.body;
-  if(!isHeap()) {
+  if(!heap.isHeap()) {
     const script = `
       window.heap=window.heap||[],heap.load=function(e,t){window.heap.appid=e,window.heap.config=t=t||{};var r=document.createElement("script");r.type="text/javascript",r.async=!0,r.src="https://cdn.heapanalytics.com/js/heap-"+e+".js";var a=document.getElementsByTagName("script")[0];a.parentNode.insertBefore(r,a);for(var n=function(e){return function(){heap.push([e].concat(Array.prototype.slice.call(arguments,0)))}},p=["addEventProperties","addUserProperties","clearEventProperties","identify","resetIdentity","removeEventProperty","setEventProperties","track","unsetEventProperty"],o=0;o<p.length;o++)heap[p[o]]=n(p[o])};
       heap.load('${process.env.HEAP_APP_ID}');
     `;
-    addScript({ code: script });
+    heap.addScript({ code: script });
   }
 
   const wrapper = document.createElement('div');
@@ -34,7 +33,7 @@ function render(state, wrapper) {
 
   const initialState = {};
 
-  Promise.all([getStorage('auth'), getStorage('tasks')])
+  Promise.all([storage.getStorage('auth'), storage.getStorage('tasks')])
     .then(([auth, tasks]) => {
       if (auth) {
         const { user, token, refreshToken } = auth;

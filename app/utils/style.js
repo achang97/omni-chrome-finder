@@ -8,4 +8,4 @@ export function getStyleApplicationFn(...args) {
   };
 }
 
-export { getStyleApplicationFn as default };
+export default { getStyleApplicationFn };

@@ -11,3 +11,5 @@ export const STORAGE = {
   AUTH: 'auth',
   TASKS: 'tasks',
 }
+
+export default { MESSAGE, STORAGE };

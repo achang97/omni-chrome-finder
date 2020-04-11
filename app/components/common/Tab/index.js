@@ -4,7 +4,7 @@ import Ripples from 'react-ripples';
 
 import { NOOP } from '../../../utils/constants';
 
-import style from './tabs.css';
+import style from './tab.css';
 import { getStyleApplicationFn } from '../../../utils/style';
 
 const s = getStyleApplicationFn(style);

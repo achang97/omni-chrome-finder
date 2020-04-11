@@ -12,8 +12,8 @@ import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
 import { updateCardWindowPosition, updateCardTabOrder, closeCard, closeAllCards, setActiveCardIndex, adjustCardsDimensions, openCardModal, openModal, closeModal } from '../../actions/cards';
 
-import Tabs from '../../components/common/Tabs/Tabs';
-import Tab from '../../components/common/Tabs/Tab';
+import Tabs from '../../components/common/Tabs';
+import Tab from '../../components/common/Tab';
 import Modal from '../../components/common/Modal';
 import Button from '../../components/common/Button';
 

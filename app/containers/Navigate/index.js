@@ -8,8 +8,8 @@ import { requestSearchCards, clearSearchCards } from '../../actions/search';
 
 import CardTags from '../../components/cards/CardTags';
 import AnimateHeight from 'react-animate-height';
-import Tabs from '../../components/common/Tabs/Tabs';
-import Tab from '../../components/common/Tabs/Tab';
+import Tabs from '../../components/common/Tabs';
+import Tab from '../../components/common/Tab';
 import Separator from '../../components/common/Separator';
 import { colors } from '../../styles/colors';
 

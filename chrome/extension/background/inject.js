@@ -1,8 +1,7 @@
 import _ from 'lodash';
-import { CHROME_MESSAGE, WEB_APP_EXTENSION_URL, NODE_ENV } from 'utils/constants';
+import { WEB_APP_EXTENSION_URL, NODE_ENV, CHROME, REQUEST } from 'appConstants';
+import { storage, chrome as chromeUtils } from 'utils';
 import { getStorage, setStorage, addStorageListener } from 'utils/storage';
-import { BASE_URL } from 'utils/request';
-import { isChromeUrl } from 'utils/chrome';
 
 let socket;
 
@@ -82,7 +81,7 @@ function initSocket() {
     if (token && !socket) {
       const protocol = process.env.NODE_ENV === NODE_ENV.DEV ? 'ws://' : 'wss://';
       const wsToken = token.replace('Bearer ', '');
-      socket = new WebSocket(`${protocol}${BASE_URL}/ws/generic?auth=${wsToken}`);
+      socket = new WebSocket(`${protocol}${REQUEST.URL.BASE}/ws/generic?auth=${wsToken}`);
 
       socket.onopen = () => {
         console.log('Connected socket!');
@@ -113,7 +112,7 @@ function initSocket() {
 }
 
 chrome.tabs.onUpdated.addListener(async (tabId, changeInfo, tab) => {
-  if (!isChromeUrl(tab.url)) {
+  if (!chromeUtils.isChromeUrl(tab.url)) {
     switch (changeInfo.status) {
       case 'loading': {
         const isInjected = (await injectExtension(tabId))[0];
@@ -130,7 +129,7 @@ chrome.tabs.onUpdated.addListener(async (tabId, changeInfo, tab) => {
       case 'complete': {
         const isInjected = (await injectExtension(tabId))[0];
         if (isInjected) {
-          chrome.tabs.sendMessage(tabId, { type: CHROME_MESSAGE.TAB_UPDATE });
+          chrome.tabs.sendMessage(tabId, { type: CHROME.MESSAGE.TAB_UPDATE });
         }
         break;
       }
@@ -139,7 +138,7 @@ chrome.tabs.onUpdated.addListener(async (tabId, changeInfo, tab) => {
 });
 
 chrome.browserAction.onClicked.addListener(async (tab) => {
-  if (isChromeUrl(tab.url)) {
+  if (chromeUtils.isChromeUrl(tab.url)) {
     window.open(WEB_APP_EXTENSION_URL);
   } else {
     const tabId = tab.id;
@@ -147,14 +146,14 @@ chrome.browserAction.onClicked.addListener(async (tab) => {
     if (!chrome.runtime.lastError) {
       if (!isInjected) {
         loadScript('inject', tabId, () => {
-          chrome.tabs.sendMessage(tabId, { type: CHROME_MESSAGE.TOGGLE });
+          chrome.tabs.sendMessage(tabId, { type: CHROME.MESSAGE.TOGGLE });
         });
 
         if (!socket) {
           initSocket();
         }
       } else {
-        chrome.tabs.sendMessage(tabId, { type: CHROME_MESSAGE.TOGGLE });
+        chrome.tabs.sendMessage(tabId, { type: CHROME.MESSAGE.TOGGLE });
       }
     }    
   }
@@ -168,7 +167,7 @@ chrome.notifications.onClicked.addListener(async (notificationId) => {
       const { windowId, id } = activeTab;
       chrome.windows.update(windowId, { focused: true });
       chrome.tabs.sendMessage(id, {
-        type: CHROME_MESSAGE.NOTIFICATION_OPENED,
+        type: CHROME.MESSAGE.NOTIFICATION_OPENED,
         payload: { notificationId }
       });        
     } else {
@@ -178,7 +177,7 @@ chrome.notifications.onClicked.addListener(async (notificationId) => {
   })
 });
 
-addStorageListener('auth', ({ newValue }) => {
+addStorageListener(CHROME.STORAGE.AUTH, ({ newValue }) => {
   if (!newValue.token && socket) {
     console.log('Logged out, closing socket.');
     socket.close();

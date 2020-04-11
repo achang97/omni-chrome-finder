@@ -25,3 +25,5 @@ export function identifyUser(user) {
     addScript({code: identify });
   }
 }
+
+export default { addScript, isHeap, identifyUser };

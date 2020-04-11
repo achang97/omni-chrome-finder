@@ -3,3 +3,5 @@ export const TYPE = {
   NAVIGATE: 'NAVIGATE',
   AI_SUGGEST: 'AI_SUGGEST',
 };
+
+export default { TYPE };

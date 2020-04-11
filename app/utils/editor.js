@@ -20,3 +20,5 @@ export const getContentStateHTMLFromString = contentStateString => (
 export const getEditorStateFromContentState = contentStateString => (
   EditorState.createWithContent(getContentStateFromString(contentStateString))
 );
+
+export default { getContentStateFromEditorState, getContentStateFromString, getContentStateHTMLFromString, getEditorStateFromContentState };

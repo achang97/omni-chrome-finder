@@ -2,8 +2,8 @@ import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 
 import Select from '../../common/Select';
-import Tabs from '../../common/Tabs/Tabs';
-import Tab from '../../common/Tabs/Tab';
+import Tabs from '../../common/Tabs';
+import Tab from '../../common/Tab';
 import AnimateHeight from 'react-animate-height';
 import _ from 'lodash';
 

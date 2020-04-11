@@ -1,14 +1,13 @@
 import { applyMiddleware, createStore, compose } from 'redux';
 import thunk from 'redux-thunk';
 import createSagaMiddleware from 'redux-saga';
-import rootReducer from '../reducers';
-import authMiddleware from '../middleware/auth';
-import cardsMiddleware from '../middleware/cards';
-import searchMiddleware from '../middleware/search';
-import tasksMiddleware from '../middleware/tasks';
-import rootSaga from '../sagas';
-import authEnhancer from './enhancers/auth';
-import tasksEnhancer from './enhancers/tasks';
+import rootReducer from 'reducers';
+import authMiddleware from 'middleware/auth';
+import cardsMiddleware from 'middleware/cards';
+import searchMiddleware from 'middleware/search';
+import tasksMiddleware from 'middleware/tasks';
+import rootSaga from 'sagas';
+import { authEnhancer, tasksEnhancer } from './enhancers';
 
 // If Redux DevTools Extension is installed use it, otherwise use Redux compose
 /* eslint-disable no-underscore-dangle */

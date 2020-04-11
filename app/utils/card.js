@@ -123,3 +123,5 @@ export function cardStateChanged(card) {
 
   return false;
 }
+
+export default { convertCardToFrontendFormat, toggleUpvotes, hasValidEdits, generateCardId, isExistingCard, isJustMe, cardStateChanged };

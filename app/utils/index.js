@@ -1,27 +1,12 @@
-import * as animate from './animate';
-import * as array from './array';
-import * as auth from './auth';
-import * as card from './card';
-import * as chrome from './chrome';
-import * as editor from './editor';
-import * as file from './file';
-import * as heap from './heap';
-import * as request from './request';
-import * as select from './select';
-import * as storage from './storage';
-import * as style from './style';
-
-const utils = {
-  animate,
-  array,
-  auth,
-  card,
-  chrome,
-  editor,
-  file,
-  heap,
-  request,
-  select,
-  storage,
-  style
-}
+export {default as animate} from './animate';
+export {default as array} from './array';
+export {default as auth} from './auth';
+export {default as card} from './card';
+export {default as chrome} from './chrome';
+export {default as editor} from './editor';
+export {default as file} from './file';
+export {default as heap} from './heap';
+export {default as request} from './request';
+export {default as select} from './select';
+export {default as storage} from './storage';
+export {default as style} from './style';

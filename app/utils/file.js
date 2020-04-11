@@ -38,3 +38,5 @@ export function getFileUrl(key, contentType, token) {
   const queryParams = queryString.stringify({ auth: authToken, contentType });
   return `${SERVER_URL}/files/${key}?${queryParams}`;
 }
+
+export default { generateFileKey, isUploadedFile, convertAttachmentsToBackendFormat, isVideo, isAudio, isImage, isAnyLoading, getFileUrl };

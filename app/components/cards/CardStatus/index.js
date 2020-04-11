@@ -6,7 +6,7 @@ import { IoMdAlert } from 'react-icons/io';
 import { CARD_STATUS, NOOP } from '../../../utils/constants';
 import Dropdown from '../../common/Dropdown';
 import Timeago from '../../common/Timeago';
-import CardUser from '../CardUsers/CardUser';
+import CardUser from '../CardUser';
 
 import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
