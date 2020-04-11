@@ -39,12 +39,14 @@ class Create extends Component {
     const { openCard, attachments, clearCreatePanel, question, descriptionEditorState, answerEditorState, user: { _id, firstname, lastname, img } } = this.props;
 
     // Open card with random ID and clear out Create panel
+    const ownUser = { _id, name: `${firstname} ${lastname}`, img };
     const newCardInfo = {
       question,
       descriptionEditorState,
       answerEditorState,
       attachments,
-      owners: [{ _id, name: `${firstname} ${lastname}`, img }] // Add own user by default
+      owners: [ownUser], // Add own user by default
+      subscribers: [ownUser] // Add own user by default
     };
     openCard(newCardInfo, createModalOpen, true);
     clearCreatePanel();

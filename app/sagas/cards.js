@@ -117,7 +117,7 @@ function* getUserId() {
 
 function* convertCardToBackendFormat(isNewCard) {
   const {
-    question, answerEditorState, descriptionEditorState, owners, tags,
+    question, answerEditorState, descriptionEditorState, owners, subscribers, tags,
     keywords, verificationInterval, permissions, permissionGroups, status,
     slackReplies, attachments
   } = yield select(state => state.cards.activeCard.edits);
@@ -137,12 +137,14 @@ function* convertCardToBackendFormat(isNewCard) {
   };
 
   let cardOwners = getArrayIds(owners);
+  let cardSubscribers = _.union(cardOwners, getArrayIds(subscribers));
   let cardTags = tags;
   let cardSlackReplies = slackReplies.filter(({ selected }) => selected);
   let cardUpdateInterval = verificationInterval.value;
 
   if (permissions.value === PERMISSION_OPTION.JUST_ME) {
     cardOwners = [_id];
+    cardSubscribers = [_id];
     cardTags = [];
     cardSlackReplies = [];
     cardUpdateInterval = VERIFICATION_INTERVAL_OPTION.NEVER;
@@ -158,6 +160,7 @@ function* convertCardToBackendFormat(isNewCard) {
     attachments: convertAttachmentsToBackendFormat(attachments),
     ...permissionsInfo,
     owners: cardOwners,
+    subscribers: cardSubscribers,
     tags: cardTags,
     slackReplies: cardSlackReplies,
     updateInterval: cardUpdateInterval,

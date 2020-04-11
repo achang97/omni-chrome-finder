@@ -91,7 +91,7 @@ export default function cardsReducer(state = initialState, action) {
 
   const createCardEdits = (card) => {
     const {
-      owners, attachments, tags, keywords, permissions, permissionGroups,
+      owners, subscribers, attachments, tags, keywords, permissions, permissionGroups,
       verificationInterval, question, answerEditorState, descriptionEditorState,
       slackReplies
     } = card;
@@ -100,6 +100,7 @@ export default function cardsReducer(state = initialState, action) {
       isEditing: true,
       edits: {
         owners,
+        subscribers,
         attachments,
         tags,
         keywords,
@@ -332,12 +333,26 @@ export default function cardsReducer(state = initialState, action) {
     case types.ADD_CARD_OWNER: {
       const { owner } = payload;
       const { activeCard: { edits } } = state;
-      return updateActiveCardEdits({ owners: _.union(edits.owners, [owner]) });
+      return updateActiveCardEdits({
+        owners: _.unionBy(edits.owners, [owner], '_id'),
+        subscribers: _.unionBy(edits.subscribers, [owner], '_id')
+      });
     }
     case types.REMOVE_CARD_OWNER: {
       const { index } = payload;
       const { activeCard: { edits } } = state;
       return updateActiveCardEdits({ owners: removeIndex(edits.owners, index) });
+    }
+
+    case types.ADD_CARD_SUBSCRIBER: {
+      const { subscriber } = payload;
+      const { activeCard: { edits } } = state;
+      return updateActiveCardEdits({ subscribers: _.unionBy(edits.subscribers, [subscriber], '_id') });
+    }
+    case types.REMOVE_CARD_SUBSCRIBER: {
+      const { index } = payload;
+      const { activeCard: { edits } } = state;
+      return updateActiveCardEdits({ subscribers: removeIndex(edits.subscribers, index) });
     }
 
     case types.UPDATE_CARD_TAGS: {

@@ -82,6 +82,14 @@ export function removeCardOwner(index) {
   return { type: types.REMOVE_CARD_OWNER, payload: { index } };
 }
 
+export function addCardSubscriber(subscriber) {
+  return { type: types.ADD_CARD_SUBSCRIBER, payload: { subscriber } };
+}
+
+export function removeCardSubscriber(index) {
+  return { type: types.REMOVE_CARD_SUBSCRIBER, payload: { index } };
+}
+
 export function updateCardTags(tags) {
   return { type: types.UPDATE_CARD_TAGS, payload: { tags } };
 }

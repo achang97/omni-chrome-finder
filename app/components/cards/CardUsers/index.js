@@ -33,7 +33,7 @@ class CardUsers extends Component {
   }
 
   render() {
-    const { className, isEditable, userOptions, isSearchingUsers, users, onUserClick, onRemoveClick, onAdd, showTooltips } = this.props;
+    const { className, size, showNames, isEditable, userOptions, isSearchingUsers, users, onUserClick, onRemoveClick, onAdd, showTooltips } = this.props;
     const showSelect = this.state.showSelect || this.props.showSelect;
     return (
       <div className={s(`card-users-container ${className}`)}>
@@ -60,15 +60,19 @@ class CardUsers extends Component {
           noOptionsMessage={() => isSearchingUsers ? 'Searching users...' : 'No options'}
         />
         }
-        { users.map(({ _id, name, firstname, lastname, img }, i) => (
+        { users.map(({ _id, name, firstname, lastname, img, isEditable: userIsEditable }, i) => (
           <CardUser
             key={_id}
-            size="md"
+            size={size}
             name={name || `${firstname} ${lastname}`}
+            showName={showNames}
             img={img}
-            className={s('mr-reg')}
+            className={s('mr-sm mb-sm')}
             onClick={onUserClick}
-            onRemoveClick={isEditable ? () => onRemoveClick(i) : null}
+            onRemoveClick={isEditable && (userIsEditable == undefined || userIsEditable === true) ?
+              () => onRemoveClick(i) :
+              null
+            }
             showTooltip={showTooltips}
           />
         ))}
@@ -80,10 +84,10 @@ class CardUsers extends Component {
         { isEditable && onAdd && !showSelect &&
         <CircleButton
           content={<IoMdAdd size={30} />}
-          containerClassName={s('text-purple-reg pt-sm ml-xs')}
+          containerClassName={s('text-purple-reg')}
           buttonClassName={s('bg-purple-gray-10')}
           labelClassName={s('text-xs')}
-          size="md"
+          size={size}
           label="Add"
           onClick={() => this.setState({ showSelect: true })}
         />
@@ -102,18 +106,26 @@ CardUsers.propTypes = {
     firstname: PropTypes.string,
     lastname: PropTypes.string,
     img: PropTypes.string,
+    isEditable: PropTypes.bool,
   })).isRequired,
   onRemoveClick: PropTypes.func,
   onUserClick: PropTypes.func,
   onAdd: PropTypes.func,
   showSelect: PropTypes.bool,
   showTooltips: PropTypes.bool,
+  size: PropTypes.oneOfType([
+    PropTypes.number,
+    PropTypes.oneOf(['xs', 'sm', 'md', 'lg'])
+  ]),
+  showNames: PropTypes.bool,
 };
 
 CardUsers.defaultProps = {
   className: '',
+  size: 'md',
   showSelect: false,
-  showTooltips: false
+  showTooltips: false,
+  showNames: true,
 };
 
 export default connect(

@@ -12,6 +12,7 @@ import {
   openCardModal,
   removeCardAttachment, updateCardAttachmentName,
   addCardOwner, removeCardOwner,
+  addCardSubscriber, removeCardSubscriber,
   updateCardTags, removeCardTag,
   updateCardKeywords,
   updateCardVerificationInterval, updateCardPermissions, updateCardPermissionGroups,
@@ -31,9 +32,10 @@ import Button from '../../common/Button';
 import Loader from '../../common/Loader';
 import VideoPlayer from '../../common/VideoPlayer';
 import ToggleableInput from '../../common/ToggleableInput';
+import HelpTooltip from '../../common/HelpTooltip';
 
 import { getBaseAnimationStyle } from '../../../utils/animate';
-import { MODAL_TYPE, PERMISSION_OPTION, PERMISSION_OPTIONS, VERIFICATION_INTERVAL_OPTIONS, FADE_IN_TRANSITIONS, CARD_STATUS } from '../../../utils/constants';
+import { MODAL_TYPE, CARD_HINTS, PERMISSION_OPTION, PERMISSION_OPTIONS, VERIFICATION_INTERVAL_OPTIONS, FADE_IN_TRANSITIONS, CARD_STATUS } from '../../../utils/constants';
 import { createSelectOptions } from '../../../utils/select';
 import { isJustMe } from '../../../utils/card';
 import { isVideo, isImage, isUploadedFile, getFileUrl } from '../../../utils/file';
@@ -75,12 +77,36 @@ const CardSideDock = (props) => {
     const currOwners = getAttribute('owners');
     return (
       <AnimateHeight height={onlyShowPermissions ? 0 : 'auto'}>
-        <CardSection className={s('mt-reg')} title="Owner(s)">
+        <CardSection className={s('mt-reg')} title="Owner(s)" hint={CARD_HINTS.OWNERS}>
           <CardUsers
             isEditable={isEditing}
             users={currOwners}
             onAdd={addCardOwner}
             onRemoveClick={removeCardOwner}
+            showTooltips
+          />
+        </CardSection>
+      </AnimateHeight>
+    );
+  };
+
+  const renderSubscribers = (onlyShowPermissions) => {
+    const { isEditing, addCardSubscriber, removeCardSubscriber } = props;
+    const currSubscribers = getAttribute('subscribers');
+    const currOwners = getAttribute('owners');
+    return (
+      <AnimateHeight height={onlyShowPermissions ? 0 : 'auto'}>
+        <CardSection className={s('mt-reg')} title="Subscribers(s)" hint={CARD_HINTS.SUBSCRIBERS}>
+          <CardUsers
+            isEditable={isEditing}
+            users={currSubscribers.map(subscriber => ({
+              ...subscriber,
+              isEditable: !currOwners.some(({ _id: ownerId }) => ownerId === subscriber._id)
+            }))}
+            size="xs"
+            showNames={false}
+            onAdd={addCardSubscriber}
+            onRemoveClick={removeCardSubscriber}
             showTooltips
           />
         </CardSection>
@@ -321,7 +347,17 @@ const CardSideDock = (props) => {
           onAnimationEnd={handleHideSections}
         >
           <div className={s('mb-sm')}>
-            <div className={s('text-gray-reg text-xs mb-sm')}> Verification Interval </div>
+            <div className={s('text-gray-reg text-xs mb-sm flex')}>
+              <span> Verification Interval </span>
+              <HelpTooltip
+                className={s('ml-sm')} 
+                id={'tooltip-side-dock-interval'}
+                text={CARD_HINTS.VERIFICATION_INTERVAL}
+                tooltipProps={{
+                  place: 'right'  
+                }}
+              />
+            </div>
             { isEditing ?
               <Select
                 value={currVerificationInterval}
@@ -428,6 +464,7 @@ const CardSideDock = (props) => {
             <div className={s('card-side-dock overflow-auto')} style={{ ...baseStyle, ...transitionStyles[state] }}>
               { renderHeader() }
               { !isNewCard && renderOwners(onlyShowPermissions) }
+              { !isNewCard && renderSubscribers(onlyShowPermissions) }
               { renderAttachments() }
               { !isNewCard && renderTags(onlyShowPermissions) }
               { !isNewCard && renderKeywords() }
@@ -453,6 +490,8 @@ export default connect(
     openCardModal,
     addCardOwner,
     removeCardOwner,
+    addCardSubscriber,
+    removeCardSubscriber,
     removeCardAttachment,
     updateCardAttachmentName,
     updateCardTags,

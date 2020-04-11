@@ -46,13 +46,13 @@ const AuthView = ({
         <Message className={s('my-reg')} message={error} type="error" />
       </div>
       <div className={s('bg-purple-light p-2xl rounded-lg')}>
-        <Button
-          type="submit"
-          color="primary"
-          containerClassName={s(`w-full ${footer ? 'mb-reg' : ''}`)}
-          disabled={disabled}
-          {...restButtonProps}
-        />
+        <button type="submit" className={s(`w-full ${footer ? 'mb-reg' : ''}`)} >
+          <Button
+            color="primary"
+            disabled={disabled}
+            {...restButtonProps}
+          />          
+        </button>
         {footer}
       </div>
     </form>

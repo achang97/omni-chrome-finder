@@ -17,7 +17,7 @@ import Message from '../../common/Message';
 
 import { MdLock, MdAutorenew } from 'react-icons/md';
 
-import { PERMISSION_OPTION, VERIFICATION_INTERVAL_OPTIONS, CARD_STATUS, MODAL_TYPE, SEARCH_TYPE } from '../../../utils/constants';
+import { CARD_HINTS, PERMISSION_OPTION, VERIFICATION_INTERVAL_OPTIONS, CARD_STATUS, MODAL_TYPE, SEARCH_TYPE } from '../../../utils/constants';
 import { hasValidEdits, isExistingCard, isJustMe } from '../../../utils/card';
 
 import { bindActionCreators } from 'redux';
@@ -26,6 +26,7 @@ import {
   requestCreateCard, requestUpdateCard,
   closeCardModal,
   addCardOwner, removeCardOwner,
+  addCardSubscriber, removeCardSubscriber,
   updateCardTags, removeCardTag,
   updateCardKeywords,
   updateCardVerificationInterval, updateCardPermissions, updateCardPermissionGroups,
@@ -56,7 +57,7 @@ class CardCreateModal extends Component {
   renderOwners = () => {
     const { edits: { owners = [] }, addCardOwner, removeCardOwner } = this.props;
     return (
-      <CardSection title="Owner(s)">
+      <CardSection title="Owner(s)" hint={CARD_HINTS.OWNERS}>
         <CardUsers
           isEditable
           users={owners}
@@ -68,6 +69,26 @@ class CardCreateModal extends Component {
       </CardSection>
     );
   }
+
+  renderSubscribers = (onlyShowPermissions) => {
+    const { edits: { subscribers=[], owners=[] }, isEditing, addCardSubscriber, removeCardSubscriber } = this.props;
+    return (
+      <CardSection className={s('mt-reg')} title="Subscribers(s)" hint={CARD_HINTS.SUBSCRIBERS}>
+        <CardUsers
+          isEditable={isEditing}
+          users={subscribers.map(subscriber => ({
+            ...subscriber,
+            isEditable: !owners.some(({ _id: ownerId }) => ownerId === subscriber._id)
+          }))}
+          size="xs"
+          showNames={false}
+          onAdd={addCardSubscriber}
+          onRemoveClick={removeCardSubscriber}
+          showTooltips
+        />
+      </CardSection>
+    );
+  };
 
   renderTags = () => {
     const { edits: { tags = [] }, updateCardTags, removeCardTag } = this.props;
@@ -193,6 +214,7 @@ class CardCreateModal extends Component {
         <div className={s('flex-grow overflow-auto p-lg')}>
           <AnimateHeight height={onlyShowPermissions ? 0 : 'auto'}>
             { this.renderOwners() }
+            { this.renderSubscribers() }
             { this.renderTags() }
           </AnimateHeight>
           { this.renderKeywords() }
@@ -226,6 +248,8 @@ export default connect(
     closeCardModal,
     addCardOwner,
     removeCardOwner,
+    addCardSubscriber,
+    removeCardSubscriber,
     updateCardTags,
     removeCardTag,
     updateCardKeywords,

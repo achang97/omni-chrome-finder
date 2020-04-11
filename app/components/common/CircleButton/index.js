@@ -9,6 +9,9 @@ const s = getStyleApplicationFn(style);
 const CircleButton = ({ size, onClick, content, label, containerClassName, buttonClassName, labelClassName, ...rest }) => {
   let buttonStyle;
   switch (size) {
+    case 'xs':
+      buttonStyle = { height: '25px', width: '25px' };
+      break;
     case 'sm':
       buttonStyle = { height: '32px', width: '32px' };
       break;
@@ -40,7 +43,7 @@ const CircleButton = ({ size, onClick, content, label, containerClassName, butto
 CircleButton.propTypes = {
   size: PropTypes.oneOfType([
     PropTypes.number,
-    PropTypes.oneOf(['sm', 'md', 'lg'])
+    PropTypes.oneOf(['xs', 'sm', 'md', 'lg'])
   ]),
   content: PropTypes.oneOfType([PropTypes.element, PropTypes.string]).isRequired,
   onClick: PropTypes.func,
