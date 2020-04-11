@@ -1,0 +1,11 @@
+export const TAB_OPTION = {
+  ALL: 'All',
+  MY_CARDS: 'My Cards',
+  BOOKMARKED: 'Bookmarked',
+};
+export const TAB_OPTIONS = [
+  NAVIGATE_TAB_OPTION.ALL,
+  NAVIGATE_TAB_OPTION.MY_CARDS,
+  NAVIGATE_TAB_OPTION.BOOKMARKED
+];
+
