@@ -1,7 +1,7 @@
 export * from './general';
 export {default as ANIMATE} from './animate';
 export {default as ASK} from './ask';
-export {default as CARDS} from './cards';
+export {default as CARD} from './card';
 export {default as CHROME} from './chrome';
 export {default as NAVIGATE} from './navigate';
 export {default as PROFILE} from './profile';

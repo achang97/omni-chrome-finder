@@ -1,4 +1,4 @@
-import { STATUS } from './cards';
+import { STATUS } from './card';
 
 export const TYPE = {
   NEEDS_VERIFICATION: STATUS.NEEDS_VERIFICATION,

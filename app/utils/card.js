@@ -8,7 +8,7 @@ import { isAnyLoading } from './file';
 import {
   VERIFICATION_INTERVAL_OPTIONS, PERMISSION_OPTION,
   PERMISSION_OPTIONS, STATUS
-} from 'appConstants/cards';
+} from 'appConstants/card';
 
 export function convertCardToFrontendFormat(card) {
   const {

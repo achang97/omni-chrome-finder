@@ -12,7 +12,7 @@ import TextEditor from 'components/editors/TextEditor';
 import SuggestionPanel from 'components/suggestions/SuggestionPanel';
 import { ScreenRecordButton, AttachmentDropdown, AttachmentDropzone } from 'components/attachments';
 
-import { EDITOR_TYPE } from 'appConstants/cards';
+import { EDITOR_TYPE } from 'appConstants/card';
 import { generateFileKey, isAnyLoading } from 'utils/file';
 
 import style from './create.css';
