@@ -2,14 +2,12 @@ import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import { withRouter } from 'react-router-dom';
 
-import Button from '../../../components/common/Button';
-import Loader from '../../../components/common/Loader';
-import Message from '../../../components/common/Message';
+import { Button, Loader, Message } from 'components/common';
 
 import logo from '../../../assets/images/logos/logo-dark.svg';
 
 import style from './auth-view.css';
-import { getStyleApplicationFn } from '../../../utils/style';
+import { getStyleApplicationFn } from 'utils/style';
 const s = getStyleApplicationFn(style);
 
 const AuthView = ({
