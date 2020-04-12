@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import onClickOutside from 'react-onclickoutside';
 
@@ -23,55 +23,68 @@ const getPositionStyle = (isDown, isLeft) => {
   return style;
 };
 
-const Dropdown = ({
-  isDown, isLeft, toggler, body, isOpen, onToggle, disabled, isTogglerRelative, className, togglerClassName,
-}) => {
-  const [isOpenState, setOpenState] = useState(false);
+/* Needs to be a class instead of const due to react-onclickoutside usage. */
+class Dropdown extends Component {
+  constructor(props) {
+    super(props);
 
-  Dropdown.handleClickOutside = (e) => {
+    this.state = {
+      isOpen: false,
+    };
+  }
+
+  handleClickOutside = (e) => {
+    const { onToggle } = this.props;
+
     e.stopPropagation();
 
     if (onToggle) {
       onToggle(false);
     } else {
-      setOpenState(false);
+      this.setState({ isOpen: false });
     }
   };
 
-  const onToggleClick = (e) => {
-    if (!disabled) {
-      if (onToggle) {
-        onToggle(!isOpen);
-      } else {
-        setOpenState(!isOpenState);
-      }
+  onToggleClick = (e) => {
+    const { disabled, onToggle, isOpen } = this.props;
+
+    if (disabled) {
+      NOOP();
+    } else if (onToggle) {
+      onToggle(!isOpen);
+    } else {
+      this.setState({ isOpen: !this.state.isOpen });
     }
   }
 
-  const handleMouseBehavior = (e) => {
-    if (!disabled) {
+  handleMouseBehavior = (e) => {
+    if (!this.props.disabled) {
       e.stopPropagation();
     }
   }
 
-  const style = getPositionStyle(isDown, isLeft);
-  return (
-    <div
-      className={s(`${isTogglerRelative ? 'relative' : ''} ${className}`)}
-      onClick={handleMouseBehavior}
-      onMouseOver={handleMouseBehavior}
-    >
+  render() {
+    const { isDown, isLeft, toggler, body, disabled, isTogglerRelative, className, togglerClassName } = this.props;
+    const isOpen = this.props.isOpen !== undefined ? this.props.isOpen : this.state.isOpen;
+
+    const style = getPositionStyle(isDown, isLeft);
+
+    return (
       <div
-        onClick={onToggleClick}
-        className={s(`${togglerClassName} ${!disabled ? 'button-hover' : ''}`)}
+        className={s(`${isTogglerRelative ? 'relative' : ''} ${className}`)}
+        onClick={this.handleMouseBehavior}
+        onMouseOver={this.handleMouseBehavior}
       >
-        {toggler}
+        <div
+          onClick={this.onToggleClick}
+          className={s(`${togglerClassName} ${!disabled ? 'button-hover' : ''}`)}
+        >
+          {toggler}
+        </div>
+        { isOpen && React.cloneElement(body, { style }) }
       </div>
-      { (isOpen != undefined ? isOpen : isOpenState) &&
-        React.cloneElement(body, { style })
-      }
-    </div>
-  );
+    );
+  }
 }
 
 Dropdown.propTypes = {
@@ -96,9 +109,4 @@ Dropdown.defaultProps = {
   togglerClassName: '',
 };
 
-
-const clickOutsideConfig = {
-  handleClickOutside: () => Dropdown.handleClickOutside
-};
-
-export default onClickOutside(Dropdown, clickOutsideConfig);
+export default onClickOutside(Dropdown);

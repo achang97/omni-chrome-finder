@@ -4,7 +4,7 @@ import { withRouter } from 'react-router-dom';
 
 import { Button, Loader, Message } from 'components/common';
 
-import logo from '../../../assets/images/logos/logo-dark.svg';
+import logo from 'assets/images/logos/logo-dark.svg';
 
 import style from './auth-view.css';
 import { getStyleApplicationFn } from 'utils/style';
