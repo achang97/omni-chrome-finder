@@ -3,19 +3,20 @@ import PropTypes from 'prop-types';
 
 import SuggestionCard from '../SuggestionCard';
 import SuggestionPreview from '../SuggestionPreview';
-import Loader from '../../common/Loader';
-import Triangle from '../../common/Triangle';
-import ScrollContainer from '../../common/ScrollContainer';
+import { Loader, Triangle, ScrollContainer } from 'components/common';
 
-import { colors } from '../../../styles/colors';
+import { colors } from 'styles/colors';
 import style from './suggestion-scroll-container.css';
-import { getStyleApplicationFn } from '../../../utils/style';
+import { getStyleApplicationFn } from 'utils/style';
 
 const s = getStyleApplicationFn(style);
 
 const SEARCH_INFINITE_SCROLL_OFFSET = 150;
 
-const SuggestionScrollContainer = ({ cards, getCardProps, isSearchingCards, hasReachedLimit, onBottom, showPlaceholder, footer, scrollContainerClassName, triangleColor, ...rest }) => {
+const SuggestionScrollContainer = ({
+  cards, getCardProps, isSearchingCards, hasReachedLimit, onBottom,
+  showPlaceholder, footer, scrollContainerClassName, triangleColor, ...rest
+}) => {
   const renderPlaceholder = () => {
     if (isSearchingCards) {
       return <Loader size="md" className={s('my-reg')} />;

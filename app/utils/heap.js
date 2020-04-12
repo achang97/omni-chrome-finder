@@ -1,16 +1,4 @@
-export function addScript({ code, url, shouldRemove=true }) {
-  const scriptElm = document.createElement('script');
-  if (url) {
-    scriptElm.src = url;
-  } else if (code) {
-    const inlineCode = document.createTextNode(code);
-    scriptElm.appendChild(inlineCode); 
-  }
-  document.body.appendChild(scriptElm); 
-  if (shouldRemove) {
-    scriptElm.remove();
-  }
-}
+import { addScript } from './window';
 
 export function isHeap() {
   return /^https:\/\/heapanalytics\.com/.test(window.location.href);
@@ -26,4 +14,4 @@ export function identifyUser(user) {
   }
 }
 
-export default { addScript, isHeap, identifyUser };
+export default { isHeap, identifyUser };

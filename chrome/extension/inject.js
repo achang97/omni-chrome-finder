@@ -1,6 +1,6 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
-import { heap, storage } from 'utils';
+import { heap, window as windowUtils, storage } from 'utils';
 import { MAIN_CONTAINER_ID } from 'appConstants';
 import { initialState as authInitialState } from 'reducers/auth';
 import { initialState as profileInitialState } from 'reducers/profile';
@@ -23,7 +23,7 @@ function render(state, wrapper) {
       window.heap=window.heap||[],heap.load=function(e,t){window.heap.appid=e,window.heap.config=t=t||{};var r=document.createElement("script");r.type="text/javascript",r.async=!0,r.src="https://cdn.heapanalytics.com/js/heap-"+e+".js";var a=document.getElementsByTagName("script")[0];a.parentNode.insertBefore(r,a);for(var n=function(e){return function(){heap.push([e].concat(Array.prototype.slice.call(arguments,0)))}},p=["addEventProperties","addUserProperties","clearEventProperties","identify","resetIdentity","removeEventProperty","setEventProperties","track","unsetEventProperty"],o=0;o<p.length;o++)heap[p[o]]=n(p[o])};
       heap.load('${process.env.HEAP_APP_ID}');
     `;
-    heap.addScript({ code: script });
+    windowUtils.addScript({ code: script });
   }
 
   const wrapper = document.createElement('div');
