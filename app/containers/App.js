@@ -14,7 +14,7 @@ import { openCard } from '../actions/cards';
 
 import Header from '../components/app/Header';
 import ChromeMessageListener from '../components/app/ChromeMessageListener';
-import VerifySuccessModal from '../components/app/VerifySuccessModal';
+import MessageModal from '../components/app/MessageModal';
 
 import PublicRoute from '../components/routes/PublicRoute';
 import PrivateRoute from '../components/routes/PrivateRoute';
@@ -126,7 +126,7 @@ class App extends Component {
           }}
         >
           <div className={s(`flex relative flex-col ${showFullDock ? 'h-screen' : ''}`)}>
-            <VerifySuccessModal />
+            <MessageModal />
             { isLoggedIn && isVerified && <Header /> }
             <Switch>
               <PrivateRoute path={ROUTES.ASK} component={Ask} />

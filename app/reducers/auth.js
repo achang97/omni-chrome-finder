@@ -102,15 +102,15 @@ export default function authReducer(state = initialState, action) {
 
 
     case types.VERIFY_REQUEST: {
-      return { ...state, isVerifying: true, verifySuccess: null, verifyError: null };
+      return { ...state, isVerifying: true, verifyError: null };
     }
     case types.VERIFY_SUCCESS: {
       const { token, refreshToken } = payload;
-      return { ...state, isVerifying: false, verifySuccess: true, verificationCode: '' };
+      return { ...state, isVerifying: false, verificationCode: '' };
     }
     case types.VERIFY_ERROR: {
       const { error } = payload;
-      return { ...state, isVerifying: false, verifySuccess: false, verifyError: error };
+      return { ...state, isVerifying: false, verifyError: error };
     }
 
     case types.RESEND_VERIFICATION_EMAIL_REQUEST: {

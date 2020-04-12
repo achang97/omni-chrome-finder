@@ -254,10 +254,10 @@ export default function cardsReducer(state = initialState, action) {
       return updateActiveCard({ sideDockOpen: false });
     }
 
-    case types.OPEN_MODAL: {
+    case types.OPEN_CARD_CONTAINER_MODAL: {
       return { ...state, showCloseModal: true };
     }
-    case types.CLOSE_MODAL: {
+    case types.CLOSE_CARD_CONTAINER_MODAL: {
       return { ...state, showCloseModal: false };
     }
 

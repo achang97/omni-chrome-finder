@@ -10,7 +10,7 @@ import CardConfirmModal from '../../components/cards/CardConfirmModal';
 
 import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
-import { updateCardWindowPosition, updateCardTabOrder, closeCard, closeAllCards, setActiveCardIndex, adjustCardsDimensions, openCardModal, openModal, closeModal } from '../../actions/cards';
+import { updateCardWindowPosition, updateCardTabOrder, closeCard, closeAllCards, setActiveCardIndex, adjustCardsDimensions, openCardModal, openCardContainerModal, closeCardContainerModal } from '../../actions/cards';
 
 import Tabs from '../../components/common/Tabs';
 import Tab from '../../components/common/Tab';
@@ -65,7 +65,7 @@ class Cards extends Component {
   }
 
   closeAllCards = () => {
-    const { cards, closeAllCards, openModal } = this.props;
+    const { cards, closeAllCards, openCardContainerModal } = this.props;
     let cardChanges = false;
     cards.forEach((card, i) => {
       if (this.cardStateChanged(i)) {
@@ -73,15 +73,15 @@ class Cards extends Component {
       }
     });
     if (cardChanges) {
-      openModal();
+      openCardContainerModal();
     } else {
       closeAllCards();
     }
   }
 
   closeCloseCardsModal = () => {
-    const { closeModal } = this.props;
-    closeModal();
+    const { closeCardContainerModal } = this.props;
+    closeCardContainerModal();
   }
 
   renderCloseModal = () => {
@@ -274,7 +274,7 @@ export default connect(
     adjustCardsDimensions,
     updateCardTabOrder,
     openCardModal,
-    openModal,
-    closeModal
+    openCardContainerModal,
+    closeCardContainerModal
   }, dispatch)
 )(Cards);

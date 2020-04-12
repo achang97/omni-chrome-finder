@@ -1,4 +1,5 @@
-import { take, call, fork, put, select } from 'redux-saga/effects';
+import React from 'react';
+import { take, call, all, fork, put, select } from 'redux-saga/effects';
 import { doPost, getErrorMessage } from '../utils/request';
 import { LOGIN_REQUEST, SIGNUP_REQUEST, SEND_RECOVERY_EMAIL_REQUEST, VERIFY_REQUEST, RESEND_VERIFICATION_EMAIL_REQUEST } from '../actions/actionTypes';
 import {
@@ -8,6 +9,7 @@ import {
   handleResendVerificationEmailSuccess, handleResendVerificationEmailError,
   handleSendRecoveryEmailSuccess, handleSendRecoveryEmailError,
 } from '../actions/auth';
+import { openModal } from 'actions/display';
 
 export default function* watchAuthRequests() {
   let action;
@@ -66,9 +68,18 @@ function* signup() {
 
 function* verify() {
   try {
-    const { verificationCode } = yield select(state => state.auth);
+    const verificationCode = yield select(state => state.auth.verificationCode);
+    const firstname = yield select(state => state.profile.user.firstname);
+
     yield call(doPost, '/users/verifyCheck', { code: verificationCode });
-    yield put(handleVerifySuccess());
+    yield all([
+      put(handleVerifySuccess()),
+      put(openModal({
+        title: <span> We've successfully verified your account, <b>{firstname}</b>. </span>,
+        subtitle: '🎉 Welcome to Omni! 🎉',
+        buttonText: 'Let\'s go!'
+      }))
+    ]);
   } catch (error) {
     yield put(handleVerifyError(getErrorMessage(error)));
   }

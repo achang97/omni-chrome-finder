@@ -30,12 +30,12 @@ export function closeAllCards() {
   return { type: types.CLOSE_ALL_CARDS, payload: {} };
 }
 
-export function openModal() {
-  return { type: types.OPEN_MODAL, payload: {} };
+export function openCardContainerModal() {
+  return { type: types.OPEN_CARD_CONTAINER_MODAL, payload: {} };
 }
 
-export function closeModal() {
-  return { type: types.CLOSE_MODAL, payload: {} };
+export function closeCardContainerModal() {
+  return { type: types.CLOSE_CARD_CONTAINER_MODAL, payload: {} };
 }
 
 export function updateCardQuestion(question) {

@@ -9,3 +9,10 @@ export function expandDock() {
   return { type: types.EXPAND_DOCK, payload: {} };
 }
 
+export function openModal(modalProps) {
+  return { type: types.OPEN_MODAL, payload: { modalProps } };
+}
+
+export function closeModal() {
+  return { type: types.CLOSE_MODAL, payload: {} };
+}
