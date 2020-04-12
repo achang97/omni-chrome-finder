@@ -1,88 +1,69 @@
-import React, { Component } from 'react';
+import React, { useRef, useEffect, useState } from 'react';
 import PropTypes from 'prop-types';
 
 import style from './scroll-container.css';
-import { getStyleApplicationFn } from '../../../utils/style';
+import { getStyleApplicationFn } from 'utils/style';
 
 const s = getStyleApplicationFn(style);
 
-class HoverableScrollElement extends Component {
-  constructor(props) {
-    super(props);
+const HoverableScrollElement = ({
+  scrollElementClassName, element, index, renderScrollElement, renderOverflowElement,
+  showCondition, position, matchDimensions, horizontalMarginAdjust, verticalMarginAdjust, positionAdjust,
+  ...rest
+}) => {
+  const elemRef = useRef(null);
+  const overflowElemRef = useRef(null);
 
-    this.elemRef = React.createRef();
-    this.overflowElemRef = React.createRef();
+  // This is used purely for a forced re-render
+  const [_, setPosition] = useState({ scroll: {}, overflow: {} });
 
-    this.state = {
-      positions: {
-        scroll: {},
-        overflow: {},
-      },
-    };
-  }
-
-  componentDidMount() {
-    const { showCondition } = this.props;
-    if (showCondition !== 'hover' && showCondition) {
-      this.showOverflowElement();
-    }
-  }
-
-  componentDidUpdate(prevProps) {
-    const { showCondition } = this.props;
+  useEffect(() => {
     if (showCondition !== 'hover') {
-      if (!prevProps.showCondition && showCondition) {
-        this.showOverflowElement();
-      } else if (prevProps.showCondition && !showCondition) {
-        this.hideOverflowElement();
+      if (showCondition) {
+        showOverflowElement();
+      } else {
+        hideOverflowElement();
       }
     }
-  }
+  }, [showCondition]);
 
-  onMouseOver = (e) => {
-    const { showCondition } = this.props;
+  const onMouseOver = (e) => {
     if (showCondition === 'hover') {
-      this.showOverflowElement(e);
+      showOverflowElement(e);
     }
   }
 
-  onMouseOut = (e) => {
-    const { showCondition } = this.props;
+  const onMouseOut = (e) => {
     if (showCondition === 'hover') {
-      this.hideOverflowElement();
+      hideOverflowElement();
     }
   }
 
-  getMarginNumber = px => parseInt(px.substring(0, px.length - 2))
+  const getMarginNumber = px => parseInt(px.substring(0, px.length - 2))
 
-  getMarginAdjustment = () => {
-    const { position, horizontalMarginAdjust, verticalMarginAdjust } = this.props;
-
-    const { marginTop, marginLeft, marginBottom, marginRight } = window.getComputedStyle(this.elemRef.current.children[0]);
+  const getMarginAdjustment = () => {
+    const { marginTop, marginLeft, marginBottom, marginRight } = window.getComputedStyle(elemRef.current.children[0]);
     return {
-      marginTop: verticalMarginAdjust ? this.getMarginNumber(marginTop) : 0,
-      marginLeft: horizontalMarginAdjust ? this.getMarginNumber(marginLeft) : 0,
-      marginBottom: verticalMarginAdjust ? this.getMarginNumber(marginBottom) : 0,
-      marginRight: horizontalMarginAdjust ? this.getMarginNumber(marginRight) : 0
+      marginTop: verticalMarginAdjust ? getMarginNumber(marginTop) : 0,
+      marginLeft: horizontalMarginAdjust ? getMarginNumber(marginLeft) : 0,
+      marginBottom: verticalMarginAdjust ? getMarginNumber(marginBottom) : 0,
+      marginRight: horizontalMarginAdjust ? getMarginNumber(marginRight) : 0
     };
   }
 
-  getPositionAdjustment = () => {
-    const { positionAdjust } = this.props;
+  const getPositionAdjustment = () => {
     return { top: 0, left: 0, right: 0, bottom: 0, ...positionAdjust };
   }
 
-  showOverflowElement = () => {
-    const { position, matchDimensions } = this.props;
-
-    const overflowElem = this.overflowElemRef.current;
-    const shownElem = this.elemRef.current;
+  const showOverflowElement = () => {
+    const overflowElem = overflowElemRef.current;
+    const shownElem = elemRef.current;
 
     const shownElemPosition = shownElem.getBoundingClientRect();
     const { top, bottom, left, right, height, width } = shownElemPosition;
 
-    const { top: parentTop, bottom: parentBottom, left: parentLeft, right: parentRight } = this.elemRef.current.offsetParent.getBoundingClientRect();
-    const { top: adjustTop, bottom: adjustBottom, left: adjustLeft, right: adjustRight } = this.getPositionAdjustment();
+    const { top: parentTop, bottom: parentBottom, left: parentLeft, right: parentRight } = elemRef.current.offsetParent.getBoundingClientRect();
+    const { top: adjustTop, bottom: adjustBottom, left: adjustLeft, right: adjustRight } = getPositionAdjustment();
 
     // Show element to get proper measurements
     overflowElem.style.display = 'block';
@@ -90,7 +71,7 @@ class HoverableScrollElement extends Component {
     const { top: overflowTop, bottom: overflowBottom, left: overflowLeft, right: overflowRight, height: overflowHeight, width: overflowWidth } = overflowElemPosition;
 
     // Get margin of child
-    const { marginTop, marginLeft, marginBottom, marginRight } = this.getMarginAdjustment();
+    const { marginTop, marginLeft, marginBottom, marginRight } = getMarginAdjustment();
     const maxTop = window.innerHeight - overflowHeight - parentTop;
 
     switch (position) {
@@ -124,39 +105,35 @@ class HoverableScrollElement extends Component {
       }
     }
 
-    this.setState({ position: { scroll: shownElemPosition, overflow: overflowElemPosition } });
+    setPosition({ position: { scroll: shownElemPosition, overflow: overflowElemPosition } });
   }
 
-  hideOverflowElement = () => {
-    const overflowElem = this.overflowElemRef.current;
+  const hideOverflowElement = () => {
+    const overflowElem = overflowElemRef.current;
     overflowElem.style.display = 'none';
   }
 
-  render() {
-    const { element, index, renderScrollElement, renderOverflowElement, scrollElementClassName, overflowElement, horizontalMarginAdjust, verticalMarginAdjust, showCondition, matchDimensions, position, ...rest } = this.props;
-
-    return (
+  return (
+    <div
+      onMouseOver={onMouseOver}
+      onMouseOut={onMouseOut}
+      className={s(`scroll-container-elem ${scrollElementClassName}`)}
+      ref={elemRef}
+      {...rest}
+    >
+      { renderScrollElement(element, index) }
       <div
-        onMouseOver={this.onMouseOver}
-        onMouseOut={this.onMouseOut}
-        className={s(`scroll-container-elem ${scrollElementClassName}`)}
-        ref={this.elemRef}
-        {...rest}
+        className={s('scroll-container-overflow-elem')}
+        style={{ display: 'none' }}
+        ref={overflowElemRef}
       >
-        { renderScrollElement(element, index) }
-        <div
-          className={s('scroll-container-overflow-elem')}
-          style={{ display: 'none' }}
-          ref={this.overflowElemRef}
-        >
-          { renderOverflowElement(element, index, {
-            scroll: this.elemRef.current ? this.elemRef.current.getBoundingClientRect() : {},
-            overflow: this.overflowElemRef.current ? this.overflowElemRef.current.getBoundingClientRect() : {}
-          })}
-        </div>
+        { renderOverflowElement(element, index, {
+          scroll: elemRef.current ? elemRef.current.getBoundingClientRect() : {},
+          overflow: overflowElemRef.current ? overflowElemRef.current.getBoundingClientRect() : {}
+        })}
       </div>
-    );
-  }
+    </div>
+  );
 }
 
 HoverableScrollElement.propTypes = {

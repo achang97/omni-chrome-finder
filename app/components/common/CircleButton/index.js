@@ -1,44 +1,38 @@
-import React, { Component } from 'react';
+import React from 'react';
 import PropTypes from 'prop-types';
 
 import style from './circle-button.css';
-import { getStyleApplicationFn } from '../../../utils/style';
+import { getStyleApplicationFn } from 'utils/style';
 
 const s = getStyleApplicationFn(style);
 
-const CircleButton = ({ size, onClick, content, label, containerClassName, buttonClassName, labelClassName, ...rest }) => {
-  let buttonStyle;
+const getButtonStyle = (size) => {
   switch (size) {
     case 'xs':
-      buttonStyle = { height: '25px', width: '25px' };
-      break;
+      return { height: '25px', width: '25px' };
     case 'sm':
-      buttonStyle = { height: '32px', width: '32px' };
-      break;
+      return { height: '32px', width: '32px' };
     case 'md':
-      buttonStyle = { height: '40px', width: '40px' };
-      break;
+      return { height: '40px', width: '40px' };
     case 'lg':
-      buttonStyle = { height: '48px', width: '48px' };
-      break;
+      return { height: '48px', width: '48px' };
     default:
-      buttonStyle = { height: size, width: size };
-      break;
+      return { height: size, width: size };
   }
+}
 
-  return (
-    <div className={s(`circle-button-container ${containerClassName}`)} {...rest}>
-      <div
-        className={s(`circle-button button-hover ${buttonClassName}`)}
-        onClick={onClick}
-        style={buttonStyle}
-      >
-        { content }
-      </div>
-      { label && <div className={s(`circle-button-label ${labelClassName}`)}> {label} </div> }
+const CircleButton = ({ size, onClick, content, label, containerClassName, buttonClassName, labelClassName, ...rest }) => (
+  <div className={s(`circle-button-container ${containerClassName}`)} {...rest}>
+    <div
+      className={s(`circle-button button-hover ${buttonClassName}`)}
+      onClick={onClick}
+      style={getButtonStyle(size)}
+    >
+      { content }
     </div>
-  );
-};
+    { label && <div className={s(`circle-button-label ${labelClassName}`)}> {label} </div> }
+  </div>
+);
 
 CircleButton.propTypes = {
   size: PropTypes.oneOfType([

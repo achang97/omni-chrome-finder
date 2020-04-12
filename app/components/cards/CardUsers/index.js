@@ -17,8 +17,9 @@ import { getArrayWithout } from '../../../utils/array';
 import { DEBOUNCE_60_HZ } from '../../../utils/constants';
 import { createSelectOptions, simpleInputFilter } from '../../../utils/select';
 
+import style from './card-users.css';
 import { getStyleApplicationFn } from '../../../utils/style';
-const s = getStyleApplicationFn();
+const s = getStyleApplicationFn(style);
 
 class CardUsers extends Component {
   constructor(props) {

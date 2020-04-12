@@ -2,7 +2,7 @@ import React from 'react';
 import PropTypes from 'prop-types';
 
 import style from './placeholder-img.css';
-import { getStyleApplicationFn } from '../../../utils/style';
+import { getStyleApplicationFn } from 'utils/style';
 
 const s = getStyleApplicationFn(style);
 
@@ -24,7 +24,11 @@ const getPlaceholder = (name, className) => {
   );
 };
 
-export const PlaceholderImg = ({ name, src, className }) => (src ? <img src={src} className={className} /> : getPlaceholder(name, className));
+export const PlaceholderImg = ({ name, src, className }) => (
+  src ?
+    <img src={src} className={className} /> :
+    getPlaceholder(name, className)
+);
 
 PlaceholderImg.propTypes = {
   name: PropTypes.string.isRequired,

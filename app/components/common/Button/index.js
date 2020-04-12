@@ -1,7 +1,7 @@
-import React, { Component } from 'react';
+import React from 'react';
 import PropTypes from 'prop-types';
 import style from './button.css';
-import { getStyleApplicationFn } from '../../../utils/style';
+import { getStyleApplicationFn } from 'utils/style';
 
 const s = getStyleApplicationFn(style);
 
@@ -28,8 +28,11 @@ const getClassNames = (color, underline) => {
   }
 };
 
-const Button = (props) => {
-  const { text, textClassName, icon, iconLeft, className, underline, underlineColor, color, onClick, imgSrc, imgClassName, disabled, ...rest } = props;
+const Button = ({
+  text, textClassName, icon, iconLeft, className, underline, underlineColor,
+  color, onClick, imgSrc, imgClassName, disabled,
+  ...rest
+}) => {
   const { outerClassName = '', innerClassName = '' } = getClassNames(color, underline);
 
   const protectedOnClick = () => {

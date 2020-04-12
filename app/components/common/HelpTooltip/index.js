@@ -4,7 +4,7 @@ import ReactTooltip from 'react-tooltip';
 import { AiFillQuestionCircle } from 'react-icons/ai';
 
 import style from './help-tooltip.css';
-import { getStyleApplicationFn } from '../../../utils/style';
+import { getStyleApplicationFn } from 'utils/style';
 const s = getStyleApplicationFn(style);
 
 const HelpTooltip = ({ text, id, className, tooltipProps }) => {

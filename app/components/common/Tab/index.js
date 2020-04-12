@@ -1,25 +1,21 @@
-import React, { Component } from 'react';
+import React from 'react';
 import PropTypes from 'prop-types';
 import Ripples from 'react-ripples';
 
-import { NOOP } from '../../../utils/constants';
-
 import style from './tab.css';
-import { getStyleApplicationFn } from '../../../utils/style';
+import { getStyleApplicationFn } from 'utils/style';
 
 const s = getStyleApplicationFn(style);
 
-const Tab = (props) => {
-  const {
-    isActive, label, value,
-    onTabClick, clickOnMouseDown,
-    rippleClassName, tabContainerClassName, tabClassName, activeTabClassName, inactiveTabClassName, style,
-    color, indicatorColor, showIndicator,
-    showRipple,
-    children,
-    ...rest
-  } = props;
-
+const Tab = ({
+  isActive, label, value,
+  onTabClick, clickOnMouseDown,
+  rippleClassName, tabContainerClassName, tabClassName, activeTabClassName, inactiveTabClassName, style,
+  color, indicatorColor, showIndicator,
+  showRipple,
+  children,
+  ...rest
+}) => {
   let activeTabStyle = {};
   if (isActive && showIndicator) {
     activeTabStyle = {
@@ -31,7 +27,7 @@ const Tab = (props) => {
     <div
       {...rest}
       onClick={() => onTabClick(value)}
-      onMouseDown={clickOnMouseDown ? () => onTabClick(value) : NOOP}
+      onMouseDown={() => clickOnMouseDown && onTabClick(value)}
       style={{ color }}
       className={s(`
         tab button-hover ${tabClassName}

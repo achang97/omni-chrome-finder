@@ -6,6 +6,7 @@ export {default as chrome} from './chrome';
 export {default as editor} from './editor';
 export {default as file} from './file';
 export {default as heap} from './heap';
+export {default as react} from './react';
 export {default as request} from './request';
 export {default as select} from './select';
 export {default as storage} from './storage';

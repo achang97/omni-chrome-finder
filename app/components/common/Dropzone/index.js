@@ -2,7 +2,7 @@ import React, { useMemo, useCallback } from 'react';
 import PropTypes from 'prop-types';
 import { useDropzone } from 'react-dropzone';
 import Dropzone from 'react-dropzone';
-import { colors } from '../../../styles/colors';
+import { colors } from 'styles/colors';
 
 const baseStyle = {
   borderWidth: '2px',
@@ -28,8 +28,8 @@ const rejectStyle = {
   borderColor: '#f56565'
 };
 
-function StyledDropzone(props) {
-  const onDrop = useCallback(acceptedFiles => props.onDrop(acceptedFiles), []);
+const StyledDropzone = ({ onDrop, accept, style, className, children }) => {
+  const onDropCallback = useCallback(acceptedFiles => onDrop(acceptedFiles), []);
 
   const {
     getRootProps,
@@ -37,11 +37,11 @@ function StyledDropzone(props) {
     isDragActive,
     isDragAccept,
     isDragReject
-  } = useDropzone({ accept: props.accept, onDrop });
+  } = useDropzone({ accept: accept, onDrop: onDropCallback });
 
-  const style = useMemo(() => ({
+  const customStyle = useMemo(() => ({
     ...baseStyle,
-    ...props.style,
+    ...style,
     ...(isDragActive ? activeStyle : {}),
     ...(isDragAccept ? acceptStyle : {}),
     ...(isDragReject ? rejectStyle : {})
@@ -51,9 +51,9 @@ function StyledDropzone(props) {
   ]);
 
   return (
-    <div {...getRootProps({ style })} className={props.className}>
+    <div {...getRootProps({ style: customStyle })} className={className}>
       <input {...getInputProps()} />
-      {props.children}
+      {children}
     </div>
   );
 }

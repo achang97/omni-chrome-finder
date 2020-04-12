@@ -3,7 +3,7 @@ import AnimateHeight from 'react-animate-height';
 import PropTypes from 'prop-types';
 
 import style from './message.css';
-import { getStyleApplicationFn } from '../../../utils/style';
+import { getStyleApplicationFn } from 'utils/style';
 
 const s = getStyleApplicationFn(style);
 

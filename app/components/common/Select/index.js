@@ -4,11 +4,11 @@ import CreatableSelect from 'react-select/creatable';
 import AsyncSelect from 'react-select/async';
 import PropTypes from 'prop-types';
 
-import { colors } from '../../../styles/colors';
+import { colors } from 'styles/colors';
 import customStyles from './customStyles';
 
 import style from './select.css';
-import { getStyleApplicationFn } from '../../../utils/style';
+import { getStyleApplicationFn } from 'utils/style';
 
 const s = getStyleApplicationFn(style);
 
