@@ -187,7 +187,7 @@ Tabs.propTypes = {
   showIndicator: PropTypes.bool,
   showRipple: PropTypes.bool,
   scrollButtonColor: PropTypes.string,
-  children: PropTypes.arrayOf(PropTypes.element)
+  children: PropTypes.arrayOf(PropTypes.any)
 };
 
 Tabs.defaultProps = {

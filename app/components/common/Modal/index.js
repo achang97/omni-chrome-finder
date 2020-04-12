@@ -75,7 +75,7 @@ Modal.propTypes = {
   headerClassName: PropTypes.string,
   bodyClassName: PropTypes.string,
   overlayClassName: PropTypes.string,
-  title: PropTypes.string,
+  title: PropTypes.any,
   showHeader: PropTypes.bool,
   transitionMs: PropTypes.number,
   important: PropTypes.bool,

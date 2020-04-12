@@ -14,7 +14,7 @@ const Separator = ({ horizontal, className, ...rest }) => (
 );
 
 Separator.propTypes = {
-  horizontal: PropTypes.string,
+  horizontal: PropTypes.bool,
   className: PropTypes.string,
 }
 

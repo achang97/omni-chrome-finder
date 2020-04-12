@@ -93,7 +93,7 @@ export default function cardsReducer(state = initialState, action) {
     const {
       owners, subscribers, attachments, tags, keywords, permissions, permissionGroups,
       verificationInterval, question, answerEditorState, descriptionEditorState,
-      slackReplies
+      slackReplies, edits
     } = card;
     return {
       ...card,
@@ -110,7 +110,8 @@ export default function cardsReducer(state = initialState, action) {
         question,
         answerEditorState,
         descriptionEditorState,
-        slackReplies
+        slackReplies,
+        ...edits
       }
     };
   };

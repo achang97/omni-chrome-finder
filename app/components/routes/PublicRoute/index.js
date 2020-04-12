@@ -1,21 +1,14 @@
-import React from 'react';
-import { Route, Redirect } from 'react-router-dom';
 import { connect } from 'react-redux';
-import { ROUTES } from '../../../utils/constants';
+import PublicRoute from './PublicRoute';
 
-const PublicRoute = (props) => {
-  const { isLoggedIn, ...givenProps } = props;
+const mapStateToProps = (state) => {
+  const { 
+    auth: {
+      token
+    }
+  } = state;
 
-  if (!isLoggedIn) {
-    return <Route {...givenProps} />
-  } else {
-    return <Redirect to={{ pathname: ROUTES.ASK, state: { from: props.location } }} />;
-  }
+  return { isLoggedIn: !!token };
 }
 
-export default connect(
-  state => ({
-    isLoggedIn: !!state.auth.token,
-  }),
-  undefined
-)(PublicRoute);
+export default connect(mapStateToProps)(PublicRoute);
