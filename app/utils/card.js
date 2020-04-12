@@ -7,8 +7,8 @@ import { getArrayIds } from './array';
 import { isAnyLoading } from './file';
 import {
   VERIFICATION_INTERVAL_OPTIONS, PERMISSION_OPTION,
-  PERMISSION_OPTIONS, CARD_STATUS
-} from './constants';
+  PERMISSION_OPTIONS, STATUS
+} from 'appConstants/cards';
 
 export function convertCardToFrontendFormat(card) {
   const {
@@ -52,7 +52,7 @@ export function convertCardToFrontendFormat(card) {
     slackThreadIndex: 0,
     slackReplies: slackReplies.map(reply => ({
       ...reply,
-      selected: status !== CARD_STATUS.NOT_DOCUMENTED
+      selected: status !== STATUS.NOT_DOCUMENTED
     })),
     ...rest,
   };

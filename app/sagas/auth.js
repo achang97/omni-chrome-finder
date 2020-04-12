@@ -77,7 +77,8 @@ function* verify() {
       put(openModal({
         title: <span> We've successfully verified your account, <b>{firstname}</b>. </span>,
         subtitle: '🎉 Welcome to Omni! 🎉',
-        buttonText: 'Let\'s go!'
+        buttonText: 'Let\'s go!',
+        showHeader: false,
       }))
     ]);
   } catch (error) {

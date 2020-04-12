@@ -6,20 +6,21 @@ import { getStyleApplicationFn } from 'utils/style';
 const s = getStyleApplicationFn();
 
 const MessageModal = ({
-  modalOpen, modalProps: { title, subtitle, buttonText },
+  modalOpen, modalProps: { title, subtitle, buttonText, showHeader=true },
   openModal, closeModal,
 }) => (
   <Modal
     isOpen={modalOpen}
     onRequestClose={closeModal}
-    showHeader={false}
+    showHeader={showHeader}
+    title={title}
     shouldCloseOnOutsideClick
     overlayClassName={s('rounded-bl-lg rounded-tl-lg')}
     bodyClassName={s('rounded-bl-lg rounded-tl-lg flex flex-col')}
   >
     <div className={s('p-xl')}>
-      <div> {title} </div>
-      <div className={s('mt-lg text-center')}> {subtitle} </div>
+      { !showHeader && <div className={s('mb-lg')}> {title} </div> }
+      <div className={s('text-center')}> {subtitle} </div>
     </div>
     <Button
       text={buttonText || 'Ok'}

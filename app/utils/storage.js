@@ -1,4 +1,4 @@
-import { NODE_ENV } from './constants';
+import { NODE_ENV } from 'appConstants';
 
 export const getStorageName = name => (
   `OMNI_EXTENSION_${process.env.NODE_ENV === NODE_ENV.DEV ? 'DEV' : 'PROD'}_${name}`

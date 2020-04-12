@@ -1,5 +1,4 @@
-import { INTEGRATIONS, SLACK_AUTH_URL, NODE_ENV } from './constants';
-import { SERVER_URL } from './request';
+import { INTEGRATIONS, NODE_ENV, REQUEST } from 'appConstants';
 
 export function isLoggedIn(user, integration) {
   // use new userIntegrations here.
@@ -19,7 +18,7 @@ export function getIntegrationAuthLink(userId, token, integration) {
     case INTEGRATIONS.GOOGLE.type:
     case INTEGRATIONS.GMAIL.type: {
       const clearToken = token.replace('Bearer ', '');
-      return `${SERVER_URL}/${integration}/authenticate?auth=${clearToken}`;
+      return `${REQUEST.URL.SERVER}/${integration}/authenticate?auth=${clearToken}`;
     }
     default:
       return '';

@@ -9,8 +9,6 @@ import { requestGetTasks, updateTasksOpenSection, updateTasksTab } from 'actions
 import { SEARCH } from 'appConstants';
 import ChromeMessageListener from './ChromeMessageListener';
 
-console.log(SEARCH.TYPE.AI_SUGGEST)
-
 const mapStateToProps = (state) => {
   const { 
     display: {

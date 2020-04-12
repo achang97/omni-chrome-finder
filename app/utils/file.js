@@ -1,5 +1,5 @@
 import queryString from 'query-string';
-import { SERVER_URL } from './request';
+import { URL } from 'appConstants/request';
 
 export function generateFileKey() {
   return `new-file-${Math.floor(Math.random() * 10001)}`;
@@ -36,7 +36,7 @@ export function getFileUrl(key, contentType, token) {
 
   const authToken = token.match(/Bearer (.+)/)[1];
   const queryParams = queryString.stringify({ auth: authToken, contentType });
-  return `${SERVER_URL}/files/${key}?${queryParams}`;
+  return `${URL.SERVER}/files/${key}?${queryParams}`;
 }
 
 export default { generateFileKey, isUploadedFile, convertAttachmentsToBackendFormat, isVideo, isAudio, isImage, isAnyLoading, getFileUrl };

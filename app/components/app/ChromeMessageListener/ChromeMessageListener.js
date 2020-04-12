@@ -152,7 +152,6 @@ const ChromeMessageListener = ({
 
       const pageText = getPageText(integration);
       if (pageText && pageText !== '') {
-        console.log(pageText)
         if (!isSearchingCards) {
           requestSearchCards(SEARCH.TYPE.AI_SUGGEST, { text: pageText });
         }

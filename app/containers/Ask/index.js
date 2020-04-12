@@ -11,7 +11,6 @@ import { FaRegDotCircle, FaPaperPlane, FaMinus } from 'react-icons/fa';
 import TextEditor from '../../components/editors/TextEditor';
 import Button from '../../components/common/Button';
 import Loader from '../../components/common/Loader';
-import Modal from '../../components/common/Modal';
 import CircleButton from '../../components/common/CircleButton';
 import Separator from '../../components/common/Separator';
 import Message from '../../components/common/Message';
@@ -290,29 +289,7 @@ class Ask extends Component {
       />
     );
   }
-
-  renderResultModal = (isOpen, title, content) => {
-    const { clearAskQuestionInfo } = this.props;
-    return (
-      <Modal
-        isOpen={isOpen}
-        onRequestClose={clearAskQuestionInfo}
-        bodyClassName={s('overflow-none flex flex-col rounded-b-lg p-reg')}
-        className={s('bg-purple-light')}
-        overlayClassName={s('rounded-b-lg')}
-        title={title}
-      >
-        <div className={s('mb-sm')}> { content } </div>
-        <Button
-          text="Ok"
-          color="primary"
-          className={s('p-sm')}
-          onClick={clearAskQuestionInfo}
-        />
-      </Modal>
-    );
-  }
-
+  
   renderDisabledView = () => {
     const { user, token, activeIntegration } = this.props;
 
@@ -357,10 +334,6 @@ class Ask extends Component {
           { loggedIn && !isDisabled && this.renderRecipientSelection() }
         </div>
         { loggedIn && !isDisabled && this.renderFooterButton() }
-
-        {/* Modals */}
-        { this.renderResultModal(!!askError, 'Ask Error', askError) }
-        { this.renderResultModal(askSuccess, 'Ask Success', 'Successfully sent question!') }
       </div>
     );
   };
