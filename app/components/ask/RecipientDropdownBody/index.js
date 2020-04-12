@@ -1,64 +1,66 @@
-import React, { Component } from 'react';
+import React, { useState, useRef } from 'react';
 import PropTypes from 'prop-types';
 import { MdClose } from 'react-icons/md';
 
-import Separator from '../../common/Separator';
+import Separator from 'components/common/Separator';
 
 import style from './recipient-dropdown-body.css';
-import { getStyleApplicationFn } from '../../../utils/style';
+import { getStyleApplicationFn } from 'utils/style';
 
 const s = getStyleApplicationFn(style);
 
-class RecipientDropdownBody extends Component {
-  constructor(props) {
-    super(props);
+const RecipientDropdownBody = ({
+  mentionOptions, mentions, onAddMention
+}) => {
+  const [mentionInputText, setInputText] = useState('');
+  const [selectedIndex, setSelectedIndex] = useState(0);
 
-    this.state = {
-      mentionInputText: '',
-      selectedIndex: 0,
-    };
+  const inputRef = useRef(null);
+  const mentionRefs = mentionOptions.map(option => useRef(null));
 
-    this.inputRef = React.createRef();
+  const handleChange = (e) => {
+    setInputText(e.target.value);
+    setSelectedIndex(0);
   }
 
-  handleChange = (e) => {
-    this.setState({ mentionInputText: e.target.value, selectedIndex: 0 });
-  }
-
-  handleKeyPress = (e, mentionOptions) => {
-    const { selectedIndex } = this.state;
-
+  const handleKeyPress = (e, mentionOptions) => {
     if (e.key === 'Enter') {
       if (selectedIndex < mentionOptions.length) {
-        this.onAddMention(mentionOptions[selectedIndex]);
+        onAddMention(mentionOptions[selectedIndex]);
+      }
+
+      if (selectedIndex === mentionOptions.length - 1) {
+        setSelectedIndex(0);
       }
     }
   }
 
-  onAddMention = (mention) => {
-    this.props.onAddMention(mention);
-    this.setState({ selectedIndex: 0, mentionInputText: '' });
-    this.inputRef.current.focus();
+  const addMention = (mention) => {
+    onAddMention(mention);
+    setInputText('');
+    setSelectedIndex(0);
+    inputRef.current.focus();
   }
 
-  handleKeyDown = (e, mentionOptions) => {
-    let { selectedIndex } = this.state;
-
+  const handleKeyDown = (e, mentionOptions) => {
+    let newSelectedIndex = selectedIndex;
     if (selectedIndex >= mentionOptions.length) {
-      selectedIndex = 0;
+      newSelectedIndex = 0;
     }
 
     if (e.keyCode === 38) { // UP
-      this.setState({ selectedIndex: (selectedIndex + mentionOptions.length - 1) % mentionOptions.length });
+      newSelectedIndex = (newSelectedIndex + mentionOptions.length - 1) % mentionOptions.length;
     } else if (e.keyCode === 40) { // DOWN
-      this.setState({ selectedIndex: (selectedIndex + mentionOptions.length + 1) % mentionOptions.length });
+      newSelectedIndex = (newSelectedIndex + mentionOptions.length + 1) % mentionOptions.length;
+    }
+
+    setSelectedIndex(newSelectedIndex);
+    if (mentionRefs[newSelectedIndex].current) {
+      mentionRefs[newSelectedIndex].current.scrollIntoView();
     }
   }
 
-  getMentionOptions = () => {
-    const { mentions, mentionOptions } = this.props;
-    const { mentionInputText } = this.state;
-
+  const getMentionOptions = () => {
     return mentionOptions
       .filter(mention => (
         !mentions.some(currMention => currMention.id === mention.id) &&
@@ -66,45 +68,40 @@ class RecipientDropdownBody extends Component {
       ));
   }
 
-  render() {
-    const { mentions, isDropdownOpen } = this.props;
-    const { mentionInputText, selectedIndex } = this.state;
-
-    const addMentionOptions = this.getMentionOptions();
-
-    return (
-      <div className={s('flex flex-col min-h-0')}>
-        <div className={s('px-xs')}>
-          <input
-            ref={this.inputRef}
-            autoFocus
-            className={s('recipient-dropdown-input w-full')}
-            placeholder="@mention"
-            onChange={e => this.handleChange(e)}
-            value={mentionInputText}
-            onKeyPress={e => this.handleKeyPress(e, addMentionOptions)}
-            onKeyDown={e => this.handleKeyDown(e, addMentionOptions)}
-          />
-          <Separator horizontal />
-        </div>
-        <div className={s('recipient-dropdown-select-options')}>
-          { addMentionOptions.length === 0 ?
-            <div className={s('px-sm text-center font-normal')}> No mention options </div> :
-            addMentionOptions.map((mention, i) => (
-              <div
-                key={mention.id}
-                className={s(`px-sm py-xs button-hover ${selectedIndex === i ? 'bg-purple-gray-10' : ''}`)}
-                onClick={() => this.onAddMention(mention)}
-                onMouseEnter={() => this.setState({ selectedIndex: i })}
-              >
-                <div className={s('w-full truncate font-semibold')}> @{mention.name} </div>
-              </div>
-            ))
-          }
-        </div>
+  const addMentionOptions = getMentionOptions();
+  return (
+    <div className={s('flex flex-col min-h-0')}>
+      <div className={s('px-xs')}>
+        <input
+          ref={inputRef}
+          autoFocus
+          className={s('recipient-dropdown-input w-full')}
+          placeholder="@mention"
+          onChange={e => handleChange(e)}
+          value={mentionInputText}
+          onKeyPress={e => handleKeyPress(e, addMentionOptions)}
+          onKeyDown={e => handleKeyDown(e, addMentionOptions)}
+        />
+        <Separator horizontal />
       </div>
-    );
-  }
+      <div className={s('recipient-dropdown-select-options')}>
+        { addMentionOptions.length === 0 ?
+          <div className={s('px-sm text-center font-normal')}> No mention options </div> :
+          addMentionOptions.map((mention, i) => (
+            <div
+              key={mention.id}
+              className={s(`px-sm py-xs button-hover ${selectedIndex === i ? 'bg-purple-gray-10' : ''}`)}
+              onClick={() => addMention(mention)}
+              onMouseEnter={() => setSelectedIndex(i)}
+              ref={mentionRefs[i]}
+            >
+              <div className={s('w-full truncate font-semibold')}> @{mention.name} </div>
+            </div>
+          ))
+        }
+      </div>
+    </div>
+  );
 }
 
 RecipientDropdownBody.propTypes = {
