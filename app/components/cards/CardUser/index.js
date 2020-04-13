@@ -1,15 +1,13 @@
 import React, { useState } from 'react';
 import PropTypes from 'prop-types';
-
 import { MdClose } from 'react-icons/md';
-import CircleButton from '../../common/CircleButton';
-import PlaceholderImg from '../../common/PlaceholderImg';
 import ReactTooltip from 'react-tooltip';
 
-import { NOOP } from '../../../utils/constants';
+import { CircleButton, PlaceholderImg } from 'components/common';
+import { NOOP } from 'appConstants';
 
 import style from './card-user.css';
-import { getStyleApplicationFn } from '../../../utils/style';
+import { getStyleApplicationFn } from 'utils/style';
 
 const s = getStyleApplicationFn(style);
 

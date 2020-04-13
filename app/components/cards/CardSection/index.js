@@ -1,14 +1,12 @@
 import React, { useState } from 'react';
 import PropTypes from 'prop-types';
-
 import { MdExpandLess, MdExpandMore } from 'react-icons/md';
 import AnimateHeight from 'react-animate-height';
 
-import Separator from '../../common/Separator';
-import HelpTooltip from '../../common/HelpTooltip';
+import { Separator, HelpTooltip } from 'components/common';
 
 import style from './card-section.css';
-import { getStyleApplicationFn } from '../../../utils/style';
+import { getStyleApplicationFn } from 'utils/style';
 const s = getStyleApplicationFn(style);
 
 const CardSection = ({
