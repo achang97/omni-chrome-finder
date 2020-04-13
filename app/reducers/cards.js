@@ -36,6 +36,7 @@ const BASE_CARD_STATE = {
   permissions: PERMISSION_OPTIONS[0],
   permissionGroups: [],
   upvotes: [],
+  slackThreadConvoPairs: [],
   slackReplies: [],
   attachments: [],
   owners: [],
