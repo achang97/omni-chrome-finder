@@ -2,6 +2,8 @@ import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import onClickOutside from 'react-onclickoutside';
 
+import { NOOP } from 'appConstants';
+
 import { getStyleApplicationFn } from 'utils/style';
 const s = getStyleApplicationFn();
 

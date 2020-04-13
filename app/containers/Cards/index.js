@@ -2,7 +2,7 @@ import { connect } from 'react-redux';
 import {
   updateCardWindowPosition, updateCardTabOrder, closeCard, closeAllCards,
   setActiveCardIndex, adjustCardsDimensions, openCardModal, openCardContainerModal,
-  closeCardContainerModal } from '../../actions/cards';
+  closeCardContainerModal } from 'actions/cards';
 import Cards from './Cards';
 
 const mapStateToProps = state => {

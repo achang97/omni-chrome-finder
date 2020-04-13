@@ -111,7 +111,7 @@ function* getCard() {
     const card = yield call(doGet, `/cards/${cardId}`);
     yield put(handleGetCardSuccess(cardId, card));
   } catch (error) {
-    yield put(handleGetCardError(cardId, { status, message: getErrorMessage(error) }));
+    yield put(handleGetCardError(cardId, { status: _.get(error, 'response.status'), message: getErrorMessage(error) }));
   }
 }
 
@@ -122,10 +122,13 @@ function* getUserId() {
 
 function* convertCardToBackendFormat(isNewCard) {
   const {
-    question, answerEditorState, descriptionEditorState, owners, subscribers, tags,
-    keywords, verificationInterval, permissions, permissionGroups, status,
-    slackReplies, attachments
-  } = yield select(state => state.cards.activeCard.edits);
+    status,
+    edits: {
+      question, answerEditorState, descriptionEditorState, owners, subscribers, tags,
+      keywords, verificationInterval, permissions, permissionGroups,
+      slackReplies, attachments      
+    }
+  } = yield select(state => state.cards.activeCard);
   const _id = yield call(getUserId);
 
   const {
@@ -190,13 +193,13 @@ function* createCard() {
   }
 }
 
-function* updateCard({ isUndocumented, closeCard }) {
+function* updateCard({ closeCard }) {
   const activeCard = yield call(getActiveCard);
   const cardId = activeCard._id;
 
   try {
     if (hasValidEdits(activeCard.edits)) {
-      const newCardInfo = yield call(convertCardToBackendFormat, isUndocumented);
+      const newCardInfo = yield call(convertCardToBackendFormat, activeCard.status === STATUS.NOT_DOCUMENTED);
       const card = yield call(doPut, `/cards/${cardId}`, newCardInfo);
       yield put(handleUpdateCardSuccess(card, closeCard));
     } else {

@@ -7,7 +7,7 @@ import SuggestionPreview from '../SuggestionPreview';
 import { CardStatus, CardConfirmModal } from 'components/cards';
 import { Button, Dropdown, Triangle, Modal, Message, Loader, Timeago, Separator } from 'components/common';
 
-import { CARD, NOOP, WEB_APP_EXTENSION_URL } from 'appConstants';
+import { CARD, WEB_APP_EXTENSION_URL } from 'appConstants';
 import { getContentStateHTMLFromString } from 'utils/editor';
 import { copyText } from 'utils/window';
 

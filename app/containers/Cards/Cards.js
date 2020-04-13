@@ -67,7 +67,7 @@ const Cards = ({
         description="One of more of the cards open have unsaved changes. All unsaved changes will be lost upon closing the cards. Are you sure you want to close your cards?"
         primaryButtonProps={{
           text: 'Close Cards',
-          onClick: handleCloseAllCards
+          onClick: closeAllCards
         }}
         secondaryButtonProps={{
           text: 'No',
