@@ -29,15 +29,17 @@ const Create = ({
     const { _id, firstname, lastname, img }= user;
 
     // Open card with random ID and clear out Create panel
-    const ownUser = { _id, name: `${firstname} ${lastname}`, img };
+    const ownUser = [{ _id, name: `${firstname} ${lastname}`, img }];
     const newCardInfo = {
+      owners: ownUser,
+      subscribers: ownUser,  
       edits: {
         question,
         descriptionEditorState,
         answerEditorState,
         attachments,
-        owners: [ownUser], // Add own user by default
-        subscribers: [ownUser] // Add own user by default        
+        owners: ownUser,
+        subscribers: ownUser   
       }
     };
     openCard(newCardInfo, createModalOpen, true);

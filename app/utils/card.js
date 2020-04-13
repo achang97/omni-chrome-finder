@@ -104,20 +104,33 @@ export function isJustMe(permissions) {
 }
 
 export function cardStateChanged(card) {
-  const editAttributes = Object.keys(card.edits);
+  const editAttributes = Object.entries(card.edits);
 
   if (editAttributes.length === 0) return false;
 
   let i;
   for (i = 0; i < editAttributes.length; i++) {
-    const editAttribute = editAttributes[i];
+    const [editAttribute, editValue] = editAttributes[i];
 
-    if (editAttribute === 'answerEditorState' || editAttribute === 'descriptionEditorState') {
-      const cardValue = getContentStateFromEditorState(card[editAttribute]).contentState;
-      const cardEditValue = getContentStateFromEditorState(card.edits[editAttribute]).contentState;
-      if (cardValue !== cardEditValue) return true;
-    } else if (JSON.stringify(card[editAttribute]) !== JSON.stringify(card.edits[editAttribute])) {
-      return true;
+    switch (editAttribute) {
+      case 'answerEditorState':
+      case 'descriptionEditorState': {
+        const cardValue = getContentStateFromEditorState(card[editAttribute]).contentState;
+        const cardEditValue = getContentStateFromEditorState(editValue).contentState;
+
+        const isNewCard = !isExistingCard(card._id);
+        const hasChanged = isNewCard ? editValue.getCurrentContent().hasText() : cardValue !== cardEditValue;
+        if (hasChanged) {
+          return true;
+        }
+        break;
+      }
+      default: {
+        if (JSON.stringify(card[editAttribute]) !== JSON.stringify(editValue)) {
+          return true;
+        };
+        break;
+      }
     }
   }
 
