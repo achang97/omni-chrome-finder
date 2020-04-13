@@ -28,7 +28,7 @@ export const NODE_ENV = {
 
 export const MAIN_CONTAINER_ID = 'omni-chrome-ext-main-container';
 
-export const WEB_APP_EXTENSION_URL = 'file:///Users/andrewchang/Downloads/index.html'; // 'https://app.addomni.com//extension';
+export const WEB_APP_EXTENSION_URL = 'https://app.addomni.com/extension';
 
 export const INTEGRATIONS = {
   GOOGLE: { type: 'google', title: 'Google Drive', logo: GoogleDriveIcon },
