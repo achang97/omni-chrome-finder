@@ -1,9 +1,9 @@
-import * as types from '../actions/actionTypes';
-import { removeIndex } from '../utils/array';
-import { NAVIGATE_TAB_OPTION } from '../utils/constants';
+import * as types from 'actions/actionTypes';
+import { removeIndex } from 'utils/array';
+import { TAB_OPTION } from 'appConstants/navigate';
 
 const initialState = {
-  activeTab: NAVIGATE_TAB_OPTION.ALL,
+  activeTab: TAB_OPTION.ALL,
   searchText: '',
   filterTags: [],
 };

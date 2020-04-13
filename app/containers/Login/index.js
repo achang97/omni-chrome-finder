@@ -1,5 +1,5 @@
 import { connect } from 'react-redux';
-import { updateLoginEmail, updateLoginPassword, requestLogin } from '../../actions/auth';
+import { updateLoginEmail, updateLoginPassword, requestLogin } from 'actions/auth';
 import Login from './Login';
 
 const mapStateToProps = (state) => {

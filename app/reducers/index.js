@@ -10,7 +10,7 @@ import tasks from './tasks';
 import search from './search';
 import screenRecording from './screenRecording';
 
-import { LOGOUT } from '../actions/actionTypes';
+import { LOGOUT } from 'actions/actionTypes';
 
 const appReducer = combineReducers({
   auth,

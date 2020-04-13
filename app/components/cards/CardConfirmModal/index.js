@@ -1,8 +1,6 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 
-import { MODAL_TYPE } from '../../../utils/constants';
-
 import Modal from '../../common/Modal';
 import Button from '../../common/Button';
 import Message from '../../common/Message';

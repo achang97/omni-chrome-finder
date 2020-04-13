@@ -1,6 +1,6 @@
 import _ from 'lodash';
-import * as types from '../actions/actionTypes';
-import { PROFILE_SETTING_SECTION_TYPE, INTEGRATIONS } from '../utils/constants';
+import * as types from 'actions/actionTypes';
+import { PROFILE, INTEGRATIONS } from 'appConstants';
 
 export const initialState = {
   user: {},
@@ -15,8 +15,8 @@ export const initialState = {
   isEditingAbout: false,
 
   permissionState: {
-    [PROFILE_SETTING_SECTION_TYPE.AUTOFIND]: {},
-    [PROFILE_SETTING_SECTION_TYPE.NOTIFICATIONS]: {}
+    [PROFILE.SETTING_SECTION_TYPE.AUTOFIND]: {},
+    [PROFILE.SETTING_SECTION_TYPE.NOTIFICATIONS]: {}
   },
 
   integrationState: {

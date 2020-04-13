@@ -77,14 +77,15 @@ const CardStatus = ({ isActionable, status, className, onDropdownOptionClick, ou
             { !dropdownDisabled && <MdArrowDropDown /> }
           </div>
         }
-        body={!dropdownDisabled &&
+        body={!dropdownDisabled ?
           <div
             className={s('card-status-main-dropdown button-hover')}
             onClick={onClick}
           >
             <DropdownIcon className={s(`text-${dropdownFontColor}`)} />
             <div className={s('ml-xs')}> {dropdownLabel} </div>
-          </div>
+          </div> : 
+          null
         }
         disabled={dropdownDisabled}
       />

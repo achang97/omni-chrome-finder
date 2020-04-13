@@ -1,17 +1,17 @@
 import queryString from 'query-string';
 import { take, call, all, fork, put, select } from 'redux-saga/effects';
-import { doGet, doPost, doDelete, SERVER_URL, getErrorMessage } from '../utils/request';
-import { getContentStateFromEditorState } from '../utils/editor';
+import { doGet, doPost, doDelete, getErrorMessage } from 'utils/request';
+import { getContentStateFromEditorState } from 'utils/editor';
 import { ASK, REQUEST } from 'appConstants';
-import { convertAttachmentsToBackendFormat, isUploadedFile } from '../utils/file';
-import { ASK_QUESTION_REQUEST, GET_SLACK_CONVERSATIONS_REQUEST, ADD_ASK_ATTACHMENT_REQUEST, REMOVE_ASK_ATTACHMENT_REQUEST, SUBMIT_FEEDBACK_REQUEST } from '../actions/actionTypes';
+import { convertAttachmentsToBackendFormat, isUploadedFile } from 'utils/file';
+import { ASK_QUESTION_REQUEST, GET_SLACK_CONVERSATIONS_REQUEST, ADD_ASK_ATTACHMENT_REQUEST, REMOVE_ASK_ATTACHMENT_REQUEST, SUBMIT_FEEDBACK_REQUEST } from 'actions/actionTypes';
 import {
   handleAskQuestionSuccess, handleAskQuestionError,
   handleGetSlackConversationsSuccess, handleGetSlackConversationsError,
   handleAddAskAttachmentSuccess, handleAddAskAttachmentError,
   handleRemoveAskAttachmentSuccess, handleRemoveAskAttachmentError,
   handleSubmitFeedbackSuccess, handleSubmitFeedbackError,
-} from '../actions/ask';
+} from 'actions/ask';
 import { openModal } from 'actions/display';
 
 export default function* watchAskRequests() {

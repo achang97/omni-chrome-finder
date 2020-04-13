@@ -20,7 +20,7 @@ import { colors } from 'styles/colors';
 import { generateFileKey, isAnyLoading } from 'utils/file';
 import { isLoggedIn, getIntegrationAuthLink } from 'utils/auth';
 import { getArrayWithout } from 'utils/array';
-import { ROUTES, ASK_INTEGRATIONS, INTEGRATIONS, DEBOUNCE_60_HZ, SEARCH_TYPE, SLACK_RECIPIENT_TYPE  } from '../../utils/constants';
+import { ROUTES, INTEGRATIONS, ASK } from 'appConstants';
 
 import style from './ask.css';
 import { getStyleApplicationFn } from 'utils/style';
@@ -64,7 +64,7 @@ const Ask = ({
           onTabClick={changeAskIntegration}
           showRipple={false}
         >
-          {ASK_INTEGRATIONS.map(integration => (
+          {ASK.INTEGRATIONS.map(integration => (
             <Tab key={integration.type} value={integration}>
               <div className={s(integration !== activeIntegration ? 'underline-border border-purple-gray-20' : 'primary-underline')}>
                 {integration.title}
@@ -205,7 +205,7 @@ const Ask = ({
           onChange={addAskRecipient}
           placeholder="Enter name"
           options={getArrayWithout(slackConversations, recipients, 'id')}
-          getOptionLabel={option => `${option.type === SLACK_RECIPIENT_TYPE.CHANNEL ? '#' : '@'}${option.name}`}
+          getOptionLabel={option => `${option.type === ASK.SLACK_RECIPIENT_TYPE.CHANNEL ? '#' : '@'}${option.name}`}
           getOptionValue={option => option.id}
           isSearchable
           menuShouldScrollIntoView
@@ -216,7 +216,7 @@ const Ask = ({
           </div>
         }
         <div className={s('my-xs flex flex-wrap content-start')}>
-          { recipients.map(({ type, ...rest }, i) => (type === SLACK_RECIPIENT_TYPE.CHANNEL ?
+          { recipients.map(({ type, ...rest }, i) => (type === ASK.SLACK_RECIPIENT_TYPE.CHANNEL ?
             renderChannelRecipient(rest, i) :
             renderIndividualRecipient(rest, i)
           ))}

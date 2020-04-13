@@ -1,4 +1,4 @@
-import React, { Component, PropTypes } from 'react';
+import React, { useState, useEffect } from 'react';
 import AnimateHeight from 'react-animate-height';
 import { CircularProgressbar, buildStyles } from 'react-circular-progressbar';
 import { MdKeyboardArrowDown, MdKeyboardArrowUp, MdSettings, MdEdit } from 'react-icons/md';
@@ -18,8 +18,8 @@ import { getStyleApplicationFn } from 'utils/style';
 import style from './profile.css';
 const s = getStyleApplicationFn(style);
 
-import GmailIcon from '../../assets/images/icons/Gmail_Icon.svg';
-import GoogleChromeIcon from '../../assets/images/icons/GoogleChrome_Icon.svg';
+import GmailIcon from 'assets/images/icons/Gmail_Icon.svg';
+import GoogleChromeIcon from 'assets/images/icons/GoogleChrome_Icon.svg';
 
 const PROFILE_NOTIFICATIONS_OPTIONS = [
   { type: 'email', title: 'Email', logo: GmailIcon },
@@ -70,25 +70,19 @@ const PROGRESS_BAR_STYLES = {
   pathColor: colors.purple.reg,
 };
 
-class Profile extends Component {
-  constructor(props) {
-    super(props);
-    this.state = {
-      sectionOpen: _.mapValues(PROFILE.SETTING_SECTION_TYPE, () => false),
-    };
-  }
+const Profile = ({
+  user, userEdits, analytics,
+  permissionState, changeUserPermissionsError,
+  changeFirstname, changeLastname, changeBio, isSavingUser, isEditingAbout, editUser,
+  requestGetUser, requestSaveUser, requestUpdateUserPermissions, logout
+}) => {
+  const [sectionOpen, setSectionOpen] = useState(_.mapValues(PROFILE.SETTING_SECTION_TYPE, () => false));
 
-  componentDidMount() {
-    this.props.requestGetUser();
-  }
+  useEffect(() => {
+    requestGetUser();
+  }, []);
 
-  saveUser = () => {
-    const { requestSaveUser } = this.props;
-    requestSaveUser();
-  }
-
-  renderAboutSection = () => {
-    const { user, userEdits, changeFirstname, changeLastname, changeBio, requestSaveUser, isSavingUser, isEditingAbout, editUser } = this.props;
+  const renderAboutSection = () => {
     return (
       <div className={s('flex flex-col')}>
         { isSavingUser ?
@@ -153,16 +147,15 @@ class Profile extends Component {
             <Button
               text={'Save Changes'}
               className={s('bg-purple-light text-purple-reg mt-reg')}
-              onClick={() => this.saveUser()}
+              onClick={requestSaveUser}
             />
           }
       </div>
     );
   }
 
-  renderMetricsSection = () => {
-    const { count=0, totalUpvotes, upToDateCount, outOfDateCount } = this.props.analytics;
-
+  const renderMetricsSection = () => {
+    const { count=0, totalUpvotes, upToDateCount, outOfDateCount } = analytics;
     let upToDatePercentage = 0;
     let upToDatePercentageText = '--';
 
@@ -189,8 +182,7 @@ class Profile extends Component {
     );
   }
 
-  renderIntegrations = ({ type, toggle, options }) => {
-    const { user, requestUpdateUserPermissions, changeUserPermissionsError } = this.props;
+  const renderIntegrations = ({ type, toggle, options }) => {
     const { autofindPermissions, notificationPermissions } = user;
     
     return (
@@ -228,15 +220,11 @@ class Profile extends Component {
     );
   }
 
-  toggleIntegrationSection = (type) => {
-    const { sectionOpen } = this.state;
-    this.setState({ sectionOpen: { ...sectionOpen, [type]: !sectionOpen[type] } });
+  const toggleIntegrationSection = (type) => {
+    setSectionOpen({ ...sectionOpen, [type]: !sectionOpen[type] });
   }
 
-  renderIntegrationsSection = () => {
-    const { user, permissionState } = this.props;
-    const { sectionOpen } = this.state;
-
+  const renderIntegrationsSection = () => {
     return (
       <div className={s('flex flex-col overflow-auto flex-grow px-lg py-sm')}>
         { PROFILE_SETTING_SECTIONS.map((profileSettingSection, i) => {
@@ -257,7 +245,7 @@ class Profile extends Component {
             >
               <div
                 className={s(`py-sm flex items-center justify-between ${isOpen ? 'mb-sm' : ''}`)}
-                onClick={() => this.toggleIntegrationSection(type)}
+                onClick={() => toggleIntegrationSection(type)}
               >
                 <div className={s('text-purple-reg text-sm')}>{title}</div>
                 <div className={s('flex items-center')}>
@@ -268,7 +256,7 @@ class Profile extends Component {
                 </div>
               </div>
               <AnimateHeight height={isOpen ? 'auto' : 0} animationStateClasses={{ animatingUp: s('invisible') }}>
-                {this.renderIntegrations(profileSettingSection)}
+                {renderIntegrations(profileSettingSection)}
               </AnimateHeight>
               <Message className={s('my-sm')} message={error} type="error" show={toggle} />
             </div>
@@ -278,24 +266,20 @@ class Profile extends Component {
     );
   }
 
-  render() {
-    const { logout, user } = this.props;
-    const { sectionOpen } = this.state;
-    return (
-      <div className={s('flex flex-col py-lg min-h-0 flex-grow')}>
-        <div className={s('flex flex-col px-lg')}>
-          { this.renderAboutSection() }
-          { this.renderMetricsSection() }
-          <Separator horizontal className={'my-reg'} />
-        </div>
-        { this.renderIntegrationsSection() }
-        <div className={s('flex justify-between pt-reg px-lg')}>
-          <div className={s('text-sm text-gray-dark')}> {user.email} </div>
-          <div className={s('text-sm text-purple-reg underline cursor-pointer')} onClick={() => logout()}> Logout </div>
-        </div>
+  return (
+    <div className={s('flex flex-col py-lg min-h-0 flex-grow')}>
+      <div className={s('flex flex-col px-lg')}>
+        { renderAboutSection() }
+        { renderMetricsSection() }
+        <Separator horizontal className={'my-reg'} />
       </div>
-    );
-  }
+      { renderIntegrationsSection() }
+      <div className={s('flex justify-between pt-reg px-lg')}>
+        <div className={s('text-sm text-gray-dark')}> {user.email} </div>
+        <div className={s('text-sm text-purple-reg underline cursor-pointer')} onClick={() => logout()}> Logout </div>
+      </div>
+    </div>
+  );
 }
 
 export default Profile;

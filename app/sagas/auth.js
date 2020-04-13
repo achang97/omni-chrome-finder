@@ -1,14 +1,14 @@
 import React from 'react';
 import { take, call, all, fork, put, select } from 'redux-saga/effects';
-import { doPost, getErrorMessage } from '../utils/request';
-import { LOGIN_REQUEST, SIGNUP_REQUEST, SEND_RECOVERY_EMAIL_REQUEST, VERIFY_REQUEST, RESEND_VERIFICATION_EMAIL_REQUEST } from '../actions/actionTypes';
+import { doPost, getErrorMessage } from 'utils/request';
+import { LOGIN_REQUEST, SIGNUP_REQUEST, SEND_RECOVERY_EMAIL_REQUEST, VERIFY_REQUEST, RESEND_VERIFICATION_EMAIL_REQUEST } from 'actions/actionTypes';
 import {
   handleLoginSuccess, handleLoginError,
   handleSignupSuccess, handleSignupError,
   handleVerifySuccess, handleVerifyError,
   handleResendVerificationEmailSuccess, handleResendVerificationEmailError,
   handleSendRecoveryEmailSuccess, handleSendRecoveryEmailError,
-} from '../actions/auth';
+} from 'actions/auth';
 import { openModal } from 'actions/display';
 
 export default function* watchAuthRequests() {

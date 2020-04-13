@@ -61,7 +61,7 @@ function createNotification({ userId, message, notification }) {
     contextMessage: `Sent by ${resolved ? resolver.name : notifier.name}`,
   });
 
-  getStorage('tasks').then(tasks => {
+  getStorage(CHROME.STORAGE.TASKS).then(tasks => {
     if (tasks) {
       let newTasks;
       if (resolved) {
@@ -70,13 +70,13 @@ function createNotification({ userId, message, notification }) {
         newTasks = _.unionBy(tasks, [notification], '_id');
       }
 
-      setStorage('tasks', newTasks);
+      setStorage(CHROME.STORAGE.TASKS, newTasks);
     }
   });
 }
 
 function initSocket() {
-  getStorage('auth').then((auth) => {
+  getStorage(CHROME.STORAGE.AUTH).then((auth) => {
     const token = auth && auth.token;
     if (token && !socket) {
       const protocol = process.env.NODE_ENV === NODE_ENV.DEV ? 'ws://' : 'wss://';
@@ -94,7 +94,7 @@ function initSocket() {
 
       socket.onmessage = (event) => {
         console.log('Received data from socket: ', event);
-        getStorage('auth').then((auth) => {
+        getStorage(CHROME.STORAGE.AUTH).then((auth) => {
           const isLoggedIn = auth && auth.token;
           const isVerified = auth && auth.user && auth.user.isVerified;
           if (isLoggedIn && isVerified) {

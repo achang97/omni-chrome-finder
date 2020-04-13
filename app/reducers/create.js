@@ -1,6 +1,6 @@
 import { EditorState } from 'draft-js';
-import { updateArrayOfObjects } from '../utils/array';
-import * as types from '../actions/actionTypes';
+import { updateArrayOfObjects } from 'utils/array';
+import * as types from 'actions/actionTypes';
 
 const initialState = {
   isDescriptionEditorShown: false,

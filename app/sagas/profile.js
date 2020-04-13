@@ -1,13 +1,16 @@
 import { take, call, fork, put, all, select } from 'redux-saga/effects';
-import { doGet, doPut, doPost, getErrorMessage } from '../utils/request';
-import { PROFILE_SETTING_SECTION_TYPE } from '../utils/constants';
-import { GET_USER_REQUEST, SAVE_USER_REQUEST, UPDATE_USER_PERMISSIONS_REQUEST, LOGOUT_USER_INTEGRATION_REQUEST } from '../actions/actionTypes';
+import { doGet, doPut, doPost, getErrorMessage } from 'utils/request';
+import { SETTING_SECTION_TYPE } from 'appConstants/profile';
+import {
+  GET_USER_REQUEST, SAVE_USER_REQUEST, UPDATE_USER_PERMISSIONS_REQUEST,
+  LOGOUT_USER_INTEGRATION_REQUEST
+} from 'actions/actionTypes';
 import {
   handleGetUserSuccess, handleGetUserError,
   handleSaveUserSuccess, handleSaveUserError,
   handleUpdateUserPermissionsSuccess, handleUpdateUserPermissionsError,
   handleLogoutUserIntegrationSuccess, handleLogoutUserIntegrationError,
-} from '../actions/profile';
+} from 'actions/profile';
 
 export default function* watchProfileRequests() {
   let action;
@@ -40,7 +43,7 @@ export default function* watchProfileRequests() {
 
 
 function* updatePermissions({ type, permission }) {
-  const keyName = type === PROFILE_SETTING_SECTION_TYPE.AUTOFIND ? 'autofindPermissions' : 'notificationPermissions';
+  const keyName = type === SETTING_SECTION_TYPE.AUTOFIND ? 'autofindPermissions' : 'notificationPermissions';
   const permissionsObj = yield select(state => state.profile.user[keyName]);
   const update = { [keyName]: { ...permissionsObj, [permission]: !permissionsObj[permission] } };
 

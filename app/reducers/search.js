@@ -1,6 +1,6 @@
 import _ from 'lodash';
-import * as types from '../actions/actionTypes';
-import { SEARCH_TYPE } from '../utils/constants';
+import * as types from 'actions/actionTypes';
+import { SEARCH } from 'appConstants';
 
 const BASE_CARDS_STATE = {
   cards: [],
@@ -10,7 +10,7 @@ const BASE_CARDS_STATE = {
 };
 
 const initialState = {
-  cards: _.mapValues(SEARCH_TYPE, () => BASE_CARDS_STATE),
+  cards: _.mapValues(SEARCH.TYPE, () => BASE_CARDS_STATE),
   tags: [],
   users: [],
   permissionGroups: [],
@@ -77,7 +77,7 @@ export default function navigateReducer(state = initialState, action) {
 
     case types.ADD_SEARCH_CARD: {
       const { card } = payload;
-      return updateCardStateByType(SEARCH_TYPE.NAVIGATE, cardState => ({
+      return updateCardStateByType(SEARCH.TYPE.NAVIGATE, cardState => ({
         cards: _.unionBy(cardState.cards, [card], '_id')
       }));
     }

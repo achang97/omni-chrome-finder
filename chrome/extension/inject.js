@@ -1,7 +1,7 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
 import { heap, window as windowUtils, storage } from 'utils';
-import { MAIN_CONTAINER_ID } from 'appConstants';
+import { MAIN_CONTAINER_ID, CHROME } from 'appConstants';
 import { initialState as authInitialState } from 'reducers/auth';
 import { initialState as profileInitialState } from 'reducers/profile';
 import { initialState as tasksInitialState } from 'reducers/tasks';
@@ -33,7 +33,7 @@ function render(state, wrapper) {
 
   const initialState = {};
 
-  Promise.all([storage.getStorage('auth'), storage.getStorage('tasks')])
+  Promise.all([storage.getStorage(CHROME.STORAGE.AUTH), storage.getStorage(CHROME.STORAGE.TASKS)])
     .then(([auth, tasks]) => {
       if (auth) {
         const { user, token, refreshToken } = auth;

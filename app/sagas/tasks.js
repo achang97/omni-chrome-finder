@@ -1,12 +1,15 @@
 import { take, call, fork, put } from 'redux-saga/effects';
-import { doGet, doPost, doPut, getErrorMessage } from '../utils/request';
-import { GET_TASKS_REQUEST, MARK_UP_TO_DATE_FROM_TASKS_REQUEST, DISMISS_TASK_REQUEST, APPROVE_CARD_FROM_TASKS_REQUEST } from '../actions/actionTypes';
+import { doGet, doPost, doPut, getErrorMessage } from 'utils/request';
+import {
+  GET_TASKS_REQUEST, MARK_UP_TO_DATE_FROM_TASKS_REQUEST,
+  DISMISS_TASK_REQUEST, APPROVE_CARD_FROM_TASKS_REQUEST
+} from 'actions/actionTypes';
 import {
   handleGetTasksSuccess, handleGetTasksError,
   handleMarkUpToDateFromTasksSuccess, handleMarkUpToDateFromTasksError,
   handleDismissTaskSuccess, handleDismissTaskError,
   handleApproveCardFromTasksSuccess, handleApproveCardFromTasksError,
-} from '../actions/tasks';
+} from 'actions/tasks';
 
 export default function* watchTasksRequests() {
   let action;

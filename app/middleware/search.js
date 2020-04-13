@@ -1,7 +1,7 @@
-import { setStorage } from '../utils/storage';
-import { NAVIGATE_TAB_OPTION } from '../utils/constants';
-import * as types from '../actions/actionTypes';
-import { addSearchCard, updateSearchCard, removeSearchCard } from '../actions/search';
+import { setStorage } from 'utils/storage';
+import { TAB_OPTION } from 'appConstants/navigate';
+import * as types from 'actions/actionTypes';
+import { addSearchCard, updateSearchCard, removeSearchCard } from 'actions/search';
 
 const cardsMiddleware = store => next => (action) => {
   const nextAction = next(action);
@@ -26,8 +26,8 @@ const cardsMiddleware = store => next => (action) => {
     case types.CREATE_CARD_SUCCESS: 
     case types.ADD_BOOKMARK_SUCCESS: {
       const { card } = payload;
-      if ((type === types.CREATE_CARD_SUCCESS && activeNavigateTab === NAVIGATE_TAB_OPTION.MY_CARDS) ||
-        (type === types.ADD_BOOKMARK_SUCCESS && activeNavigateTab === NAVIGATE_TAB_OPTION.BOOKMARKED)) {
+      if ((type === types.CREATE_CARD_SUCCESS && activeNavigateTab === TAB_OPTION.MY_CARDS) ||
+        (type === types.ADD_BOOKMARK_SUCCESS && activeNavigateTab === TAB_OPTION.BOOKMARKED)) {
         store.dispatch(addSearchCard(card));
       }
       break;
@@ -38,7 +38,7 @@ const cardsMiddleware = store => next => (action) => {
     case types.DELETE_NAVIGATE_CARD_SUCCESS:
     case types.REMOVE_BOOKMARK_SUCCESS: {
       const { cardId } = payload;
-      if (type !== types.REMOVE_BOOKMARK_SUCCESS || activeNavigateTab === NAVIGATE_TAB_OPTION.BOOKMARKED) {
+      if (type !== types.REMOVE_BOOKMARK_SUCCESS || activeNavigateTab === TAB_OPTION.BOOKMARKED) {
         store.dispatch(removeSearchCard(cardId));
       }
       break;
