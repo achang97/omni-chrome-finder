@@ -25,6 +25,7 @@ import 'react-toggle/style.css';
 import 'react-circular-progressbar/dist/styles.css';
 import 'react-image-lightbox/style.css';
 import 'video-react/dist/video-react.css';
+import 'react-draft-wysiwyg/dist/react-draft-wysiwyg.css';
 
 import style from './App.css';
 

@@ -1,4 +1,5 @@
 import _ from 'lodash';
+import { EditorState } from 'draft-js';
 import * as types from '../actions/actionTypes';
 import { removeIndex, updateIndex, updateArrayOfObjects } from '../utils/array';
 import { convertCardToFrontendFormat, generateCardId } from '../utils/card';
@@ -37,6 +38,11 @@ const BASE_CARD_STATE = {
   upvotes: [],
   slackReplies: [],
   attachments: [],
+  owners: [],
+  subscribers: [],
+  question: '',
+  answerEditorState: EditorState.createEmpty(),
+  descriptionEditorState:  EditorState.createEmpty(),
 };
 
 export default function cardsReducer(state = initialState, action) {
