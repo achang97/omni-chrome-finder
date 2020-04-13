@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import { Provider } from 'react-redux';
 import { MemoryRouter } from 'react-router';
-import App from 'containers/App';
+import App from './App';
 
 class Root extends Component {
   render() {
