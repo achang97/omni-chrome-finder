@@ -1,17 +1,18 @@
 import queryString from 'query-string';
-import { take, call, fork, put, select } from 'redux-saga/effects';
-import { doGet, doPost, doDelete, SERVER_URL, getErrorMessage } from '../utils/request';
-import { getContentStateFromEditorState } from '../utils/editor';
-import { SLACK_RECIPIENT_TYPE } from '../utils/constants';
-import { convertAttachmentsToBackendFormat, isUploadedFile } from '../utils/file';
-import { ASK_QUESTION_REQUEST, GET_SLACK_CONVERSATIONS_REQUEST, ADD_ASK_ATTACHMENT_REQUEST, REMOVE_ASK_ATTACHMENT_REQUEST, SUBMIT_FEEDBACK_REQUEST } from '../actions/actionTypes';
+import { take, call, all, fork, put, select } from 'redux-saga/effects';
+import { doGet, doPost, doDelete, getErrorMessage } from 'utils/request';
+import { getContentStateFromEditorState } from 'utils/editor';
+import { ASK, REQUEST } from 'appConstants';
+import { convertAttachmentsToBackendFormat, isUploadedFile } from 'utils/file';
+import { ASK_QUESTION_REQUEST, GET_SLACK_CONVERSATIONS_REQUEST, ADD_ASK_ATTACHMENT_REQUEST, REMOVE_ASK_ATTACHMENT_REQUEST, SUBMIT_FEEDBACK_REQUEST } from 'actions/actionTypes';
 import {
   handleAskQuestionSuccess, handleAskQuestionError,
   handleGetSlackConversationsSuccess, handleGetSlackConversationsError,
   handleAddAskAttachmentSuccess, handleAddAskAttachmentError,
   handleRemoveAskAttachmentSuccess, handleRemoveAskAttachmentError,
   handleSubmitFeedbackSuccess, handleSubmitFeedbackError,
-} from '../actions/ask';
+} from 'actions/ask';
+import { openModal } from 'actions/display';
 
 export default function* watchAskRequests() {
   let action;
@@ -62,16 +63,23 @@ function* askQuestion() {
       channels: recipients.map(({ id, name, type, mentions }) => ({
         id,
         name,
-        mentions: type === SLACK_RECIPIENT_TYPE.CHANNEL ? mentions.map(mention => mention.id) : null
+        mentions: type === ASK.SLACK_RECIPIENT_TYPE.CHANNEL ? mentions.map(mention => mention.id) : null
       })),
       question: questionTitle,
       description: descriptionText,
       contentStateDescription,
       attachments: convertAttachmentsToBackendFormat(attachments),
     });
-    yield put(handleAskQuestionSuccess());
+    yield all([
+      put(handleAskQuestionSuccess()),
+      put(openModal({ title: 'Success!', subtitle: 'Successfully sent message!' }))
+    ]);
   } catch (error) {
-    yield put(handleAskQuestionError(getErrorMessage(error)));
+    const message = getErrorMessage(error);
+    yield all([
+      put(handleAskQuestionError(message)),
+      put(openModal({ title: 'Something went wrong', subtitle: message }))
+    ]);
   }
 }
 
@@ -91,7 +99,7 @@ function* addAttachment({ key, file }) {
 
     const attachment = yield call(doPost, '/files/upload', formData, { isForm: true });
     const { token } = yield call(doGet, `/files/${attachment.key}/accesstoken`);
-    const location = `${SERVER_URL}/files/bytoken/${attachment.key}?${queryString.stringify({ token })}`;
+    const location = `${REQUEST.URL.SERVER}/files/bytoken/${attachment.key}?${queryString.stringify({ token })}`;
 
     yield put(handleAddAskAttachmentSuccess(key, { ...attachment, location }));
   } catch (error) {

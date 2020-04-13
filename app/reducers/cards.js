@@ -1,19 +1,20 @@
 import _ from 'lodash';
-import * as types from '../actions/actionTypes';
-import { removeIndex, updateIndex, updateArrayOfObjects } from '../utils/array';
-import { convertCardToFrontendFormat, generateCardId } from '../utils/card';
-import { CARD_STATUS, EDITOR_TYPE, CARD_DIMENSIONS, MODAL_TYPE, VERIFICATION_INTERVAL_OPTIONS, PERMISSION_OPTIONS } from '../utils/constants';
+import { EditorState } from 'draft-js';
+import * as types from 'actions/actionTypes';
+import { removeIndex, updateIndex, updateArrayOfObjects } from 'utils/array';
+import { convertCardToFrontendFormat, generateCardId } from 'utils/card';
+import { STATUS, EDITOR_TYPE, DIMENSIONS, MODAL_TYPE, VERIFICATION_INTERVAL_OPTIONS, PERMISSION_OPTIONS } from 'appConstants/card';
 
 const initialState = {
   cards: [],
-  cardsWidth: CARD_DIMENSIONS.DEFAULT_CARDS_WIDTH,
-  cardsHeight: CARD_DIMENSIONS.DEFAULT_CARDS_HEIGHT,
+  cardsWidth: DIMENSIONS.DEFAULT_CARDS_WIDTH,
+  cardsHeight: DIMENSIONS.DEFAULT_CARDS_HEIGHT,
   activeCardIndex: -1,
   activeCard: {},
   showCloseModal: false,
   windowPosition: {
-    x: window.innerWidth / 2 - CARD_DIMENSIONS.DEFAULT_CARDS_WIDTH / 2,
-    y: window.innerHeight / 2 - CARD_DIMENSIONS.DEFAULT_CARDS_HEIGHT / 2
+    x: window.innerWidth / 2 - DIMENSIONS.DEFAULT_CARDS_WIDTH / 2,
+    y: window.innerHeight / 2 - DIMENSIONS.DEFAULT_CARDS_HEIGHT / 2
   },
 };
 
@@ -24,11 +25,11 @@ const BASE_CARD_STATE = {
   sideDockOpen: false,
   modalOpen: BASE_MODAL_OPEN_STATE,
   editorEnabled: { [EDITOR_TYPE.DESCRIPTION]: false, [EDITOR_TYPE.ANSWER]: false },
-  descriptionSectionHeight: CARD_DIMENSIONS.MIN_QUESTION_HEIGHT,
+  descriptionSectionHeight: DIMENSIONS.MIN_QUESTION_HEIGHT,
   edits: {},
   hasLoaded: true,
   outOfDateReasonInput: '',
-  status: CARD_STATUS.NOT_DOCUMENTED,
+  status: STATUS.NOT_DOCUMENTED,
   tags: [],
   keywords: [],
   verificationInterval: VERIFICATION_INTERVAL_OPTIONS[0],
@@ -37,6 +38,11 @@ const BASE_CARD_STATE = {
   upvotes: [],
   slackReplies: [],
   attachments: [],
+  owners: [],
+  subscribers: [],
+  question: '',
+  answerEditorState: EditorState.createEmpty(),
+  descriptionEditorState:  EditorState.createEmpty(),
 };
 
 export default function cardsReducer(state = initialState, action) {
@@ -91,15 +97,16 @@ export default function cardsReducer(state = initialState, action) {
 
   const createCardEdits = (card) => {
     const {
-      owners, attachments, tags, keywords, permissions, permissionGroups,
+      owners, subscribers, attachments, tags, keywords, permissions, permissionGroups,
       verificationInterval, question, answerEditorState, descriptionEditorState,
-      slackReplies
+      slackReplies, edits
     } = card;
     return {
       ...card,
       isEditing: true,
       edits: {
         owners,
+        subscribers,
         attachments,
         tags,
         keywords,
@@ -109,7 +116,8 @@ export default function cardsReducer(state = initialState, action) {
         question,
         answerEditorState,
         descriptionEditorState,
-        slackReplies
+        slackReplies,
+        ...edits
       }
     };
   };
@@ -253,10 +261,10 @@ export default function cardsReducer(state = initialState, action) {
       return updateActiveCard({ sideDockOpen: false });
     }
 
-    case types.OPEN_MODAL: {
+    case types.OPEN_CARD_CONTAINER_MODAL: {
       return { ...state, showCloseModal: true };
     }
-    case types.CLOSE_MODAL: {
+    case types.CLOSE_CARD_CONTAINER_MODAL: {
       return { ...state, showCloseModal: false };
     }
 
@@ -332,12 +340,26 @@ export default function cardsReducer(state = initialState, action) {
     case types.ADD_CARD_OWNER: {
       const { owner } = payload;
       const { activeCard: { edits } } = state;
-      return updateActiveCardEdits({ owners: _.union(edits.owners, [owner]) });
+      return updateActiveCardEdits({
+        owners: _.unionBy(edits.owners, [owner], '_id'),
+        subscribers: _.unionBy(edits.subscribers, [owner], '_id')
+      });
     }
     case types.REMOVE_CARD_OWNER: {
       const { index } = payload;
       const { activeCard: { edits } } = state;
       return updateActiveCardEdits({ owners: removeIndex(edits.owners, index) });
+    }
+
+    case types.ADD_CARD_SUBSCRIBER: {
+      const { subscriber } = payload;
+      const { activeCard: { edits } } = state;
+      return updateActiveCardEdits({ subscribers: _.unionBy(edits.subscribers, [subscriber], '_id') });
+    }
+    case types.REMOVE_CARD_SUBSCRIBER: {
+      const { index } = payload;
+      const { activeCard: { edits } } = state;
+      return updateActiveCardEdits({ subscribers: removeIndex(edits.subscribers, index) });
     }
 
     case types.UPDATE_CARD_TAGS: {
@@ -425,7 +447,7 @@ export default function cardsReducer(state = initialState, action) {
       const { cardId, card } = payload;
 
       const currCard = getCardById(cardId);
-      const isEditing = currCard && currCard.isEditing || card.status === CARD_STATUS.NOT_DOCUMENTED;
+      const isEditing = currCard && currCard.isEditing || card.status === STATUS.NOT_DOCUMENTED;
 
       let newCardInfo = convertCardToFrontendFormat(card);
       if (isEditing) {
@@ -464,8 +486,8 @@ export default function cardsReducer(state = initialState, action) {
       const { closeCard, card } = payload;
 
       const cardStatus = card.status;
-      const isOutdated = cardStatus === CARD_STATUS.OUT_OF_DATE ||
-        cardStatus === CARD_STATUS.NEEDS_VERIFICATION;
+      const isOutdated = cardStatus === STATUS.OUT_OF_DATE ||
+        cardStatus === STATUS.NEEDS_VERIFICATION;
 
       // Remove card
       if (closeCard && !isOutdated) {

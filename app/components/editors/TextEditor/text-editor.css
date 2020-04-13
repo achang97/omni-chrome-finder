@@ -27,7 +27,7 @@
 }
 
 .text-editor-extension {
-  height: 120px;
+  height: 120px !important;
 }
 
 .text-editor, .text-editor-extension {

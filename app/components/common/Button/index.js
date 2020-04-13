@@ -1,7 +1,7 @@
-import React, { Component } from 'react';
+import React from 'react';
 import PropTypes from 'prop-types';
 import style from './button.css';
-import { getStyleApplicationFn } from '../../../utils/style';
+import { getStyleApplicationFn } from 'utils/style';
 
 const s = getStyleApplicationFn(style);
 
@@ -28,8 +28,11 @@ const getClassNames = (color, underline) => {
   }
 };
 
-const Button = (props) => {
-  const { text, textClassName, icon, iconLeft, className, underline, underlineColor, color, onClick, imgSrc, imgClassName, disabled, ...rest } = props;
+const Button = ({
+  text, textClassName, icon, iconLeft, className, underline, underlineColor,
+  color, onClick, imgSrc, imgClassName, disabled,
+  ...rest
+}) => {
   const { outerClassName = '', innerClassName = '' } = getClassNames(color, underline);
 
   const protectedOnClick = () => {
@@ -37,7 +40,7 @@ const Button = (props) => {
   };
 
   return (
-    <div className={s(`button-container ${className} ${outerClassName} ${disabled ? 'cursor-not-allowed opacity-75' : 'button-hover'}`)} onClick={protectedOnClick} {...rest}>
+    <div className={s(`button-container ${className} ${outerClassName} ${disabled ? 'cursor-not-allowed opacity-75' : 'button-hover'}`)} onClick={protectedOnClick} {...rest} >
       { iconLeft && icon }
       { iconLeft && imgSrc && <img className={s(`${imgClassName}`)} src={imgSrc} /> }
       <div className={s(`button-text ${underline && underlineColor ? `underline-border border-${underlineColor}` : ''} ${innerClassName} ${textClassName}`)}>
@@ -45,7 +48,7 @@ const Button = (props) => {
       </div>
       { !iconLeft && icon }
       { !iconLeft && imgSrc && <img className={s(`${imgClassName}`)} src={imgSrc} /> }
-    </div>
+    </div>      
   );
 };
 

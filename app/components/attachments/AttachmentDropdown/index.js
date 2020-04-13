@@ -2,16 +2,13 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import { MdAttachFile } from 'react-icons/md';
 
-import Button from '../../common/Button';
-import Badge from '../../common/Badge';
-import Loader from '../../common/Loader';
-import Dropdown from '../../common/Dropdown';
-import CardAttachment from '../../cards/CardAttachment';
+import { Button, Badge, Loader, Dropdown } from 'components/common';
+import CardAttachment from 'components/cards/CardAttachment';
 
-import { isAnyLoading } from '../../../utils/file';
+import { isAnyLoading } from 'utils/file';
 
 import style from './attachment-dropdown.css';
-import { getStyleApplicationFn } from '../../../utils/style';
+import { getStyleApplicationFn } from 'utils/style';
 const s = getStyleApplicationFn(style);
 
 const AttachmentDropdown = ({ attachments, onFileNameChange, onRemoveClick, className }) => (

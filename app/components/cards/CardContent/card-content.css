@@ -26,21 +26,8 @@
   outline: none;
 }
 
-
-
 .card-dropzone-text {
   margin: 0 !important;
-}
-
-/* MESSAGE DISPLAY SECTION */
-.message-manager-container {
-  border: 1px solid #7A7BAA33;
-  @apply bg-purple-light mx-lg rounded-lg flex-grow overflow-auto;
-}
-
-.message-photo-container {
-  height: 48px;
-  width: 48px;
 }
 
 .card-text-editor-wrapper-inactive {

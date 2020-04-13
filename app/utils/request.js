@@ -1,7 +1,6 @@
 import axios from 'axios';
-import { NODE_ENV } from './constants';
 import { call, select, put } from 'redux-saga/effects';
-import { logout } from '../actions/auth';
+import { NODE_ENV, REQUEST } from 'appConstants';
 
 const REQUEST_TYPE = {
   POST: 'POST',
@@ -9,20 +8,6 @@ const REQUEST_TYPE = {
   GET: 'GET',
   DELETE: 'DELETE',
 };
-
-let protocol;
-let url;
-
-if (process.env.NODE_ENV === NODE_ENV.DEV) {
-  url = 'localhost:8000';
-  protocol = 'http://';
-} else {
-  url = 'api.addomni.com';
-  protocol = 'https://';
-}
-
-export const BASE_URL = `${url}/v1`;
-export const SERVER_URL = `${protocol}${BASE_URL}`;
 
 function isValidResponse(response) {
   return response.status >= 200 && response.status < 300;
@@ -47,7 +32,7 @@ function* getConfig(isForm) {
 }
 
 function* doRequest(requestType, path, data, extraParams = {}) {
-  const url = `${SERVER_URL}${path}`;
+  const url = `${REQUEST.URL.SERVER}${path}`;
 
   // Read extra params
   const { isForm = false, cancelToken } = extraParams;
@@ -129,3 +114,5 @@ export function getErrorMessage(error) {
 
   return message;
 }
+
+export default { doPost, doGet, doPut, doDelete, getErrorMessage };

@@ -2,9 +2,9 @@ import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import onClickOutside from 'react-onclickoutside';
 
-import { NOOP } from '../../../utils/constants';
+import { NOOP } from 'appConstants';
 
-import { getStyleApplicationFn } from '../../../utils/style';
+import { getStyleApplicationFn } from 'utils/style';
 const s = getStyleApplicationFn();
 
 const getPositionStyle = (isDown, isLeft) => {
@@ -25,6 +25,7 @@ const getPositionStyle = (isDown, isLeft) => {
   return style;
 };
 
+/* Needs to be a class instead of const due to react-onclickoutside usage. */
 class Dropdown extends Component {
   constructor(props) {
     super(props);

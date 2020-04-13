@@ -1,16 +1,15 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
-import { getStorage, setStorage } from '../../app/utils/storage';
-import { MAIN_CONTAINER_ID, NODE_ENV } from '../../app/utils/constants';
-import { addScript, isHeap } from '../../app/utils/heap';
-import { initialState as authInitialState } from '../../app/reducers/auth';
-import { initialState as profileInitialState } from '../../app/reducers/profile';
-import { initialState as tasksInitialState } from '../../app/reducers/tasks';
-import Root from '../../app/containers/Root';
+import { heap, window as windowUtils, storage } from 'utils';
+import { MAIN_CONTAINER_ID, CHROME } from 'appConstants';
+import { initialState as authInitialState } from 'reducers/auth';
+import { initialState as profileInitialState } from 'reducers/profile';
+import { initialState as tasksInitialState } from 'reducers/tasks';
+import Root from 'containers/Root';
 
 function render(state, wrapper) {
   // Import has to be here for Redux dev tools to work
-  const createStore = require('../../app/store/configureStore').default;
+  const createStore = require('store/configureStore').default;
   ReactDOM.render(
     <Root store={createStore(state)} />,
     wrapper
@@ -19,14 +18,12 @@ function render(state, wrapper) {
 
 (function () {
   const body = document.body;
-
-  const heapId = process.env.NODE_ENV === NODE_ENV.DEV ? "3148523243" : "26662418";
-  if(!isHeap()) {
+  if(!heap.isHeap()) {
     const script = `
       window.heap=window.heap||[],heap.load=function(e,t){window.heap.appid=e,window.heap.config=t=t||{};var r=document.createElement("script");r.type="text/javascript",r.async=!0,r.src="https://cdn.heapanalytics.com/js/heap-"+e+".js";var a=document.getElementsByTagName("script")[0];a.parentNode.insertBefore(r,a);for(var n=function(e){return function(){heap.push([e].concat(Array.prototype.slice.call(arguments,0)))}},p=["addEventProperties","addUserProperties","clearEventProperties","identify","resetIdentity","removeEventProperty","setEventProperties","track","unsetEventProperty"],o=0;o<p.length;o++)heap[p[o]]=n(p[o])};
-      heap.load('${heapId}');
+      heap.load('${process.env.HEAP_APP_ID}');
     `;
-    addScript({ code: script });
+    windowUtils.addScript({ code: script });
   }
 
   const wrapper = document.createElement('div');
@@ -36,7 +33,7 @@ function render(state, wrapper) {
 
   const initialState = {};
 
-  Promise.all([getStorage('auth'), getStorage('tasks')])
+  Promise.all([storage.getStorage(CHROME.STORAGE.AUTH), storage.getStorage(CHROME.STORAGE.TASKS)])
     .then(([auth, tasks]) => {
       if (auth) {
         const { user, token, refreshToken } = auth;

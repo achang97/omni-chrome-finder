@@ -1,17 +1,14 @@
-import React, { Component } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import PropTypes from 'prop-types';
 import {
   Player, ControlBar, BigPlayButton,
   PlayToggle, ReplayControl, ForwardControl, VolumeMenuButton, CurrentTimeDisplay, TimeDivider, DurationDisplay, ProgressControl, RemainingTimeDisplay, PlaybackRateMenuButton, FullscreenToggle
 } from 'video-react';
 
-import 'video-react/dist/video-react.css';
-
 import style from './video-player.css';
-import { getStyleApplicationFn } from '../../../utils/style';
+import { getStyleApplicationFn } from 'utils/style';
 
 const s = getStyleApplicationFn(style);
-
 
 const CONTROL_BAR_COMPONENT_MAP = {
   PlayToggle: <PlayToggle key="play-toggle" order={1} />,
@@ -33,52 +30,38 @@ const CONTROL_BAR_COMPONENT_MAP = {
 
 const CONTROL_BAR_COMPONENT_LIST = ['PlayToggle', 'ReplayControl', 'ForwardControl', 'VolumeMenuButton', 'CurrentTimeDisplay', 'TimeDivider', 'DurationDisplay', 'ProgressControl', 'RemainingTimeDisplay', 'PlaybackRateMenuButton', 'FullscreenToggle'];
 
-class VideoPlayer extends Component {
-  constructor(props, context) {
-    super(props, context);
+const VideoPlayer = ({ url, fullscreenControlBarItems, minimizedControlBarItems, ...rest }) => {
+  const [player, setPlayer] = useState({});
+  const playerRef = useRef(null);
 
-    this.state = {
-      player: {},
-    };
-  }
+  useEffect(() => {
+    playerRef.current.subscribeToStateChange(handleStateChange);
+  }, []);
 
-  componentDidMount() {
-    // subscribe state change
-    this.player.subscribeToStateChange(this.handleStateChange);
-  }
-
-  handleStateChange = (state) => {
+  const handleStateChange = (state) => {
     // copy player state to this component's state
-    this.setState({
-      player: state
-    });
+    setPlayer(state);
   }
 
-  render() {
-    const { url, fullscreenControlBarItems, minimizedControlBarItems, ...restProps } = this.props;
-    const { player } = this.state;
-
-    const controlBarItems = (player.isFullscreen && fullscreenControlBarItems) ? fullscreenControlBarItems : minimizedControlBarItems;
-
-    return (
-      <div className={s('rounded overflow-hidden')}>
-        <Player
-          ref={player => this.player = player}
-          {...restProps}
-        >
-          <source src={url} />
-          <BigPlayButton position="center" className={s(`video-player-big-play-button ${player.hasStarted ? 'video-player-big-play-button-hide' : ''}`)} />
-          <ControlBar disableDefaultControls autoHide={false} className={s('video-player-control-bar')}>
-            { controlBarItems.map(item => CONTROL_BAR_COMPONENT_MAP[item])}
-          </ControlBar>
-        </Player>
-      </div>
-    );
-  }
+  const controlBarItems = (player.isFullscreen && fullscreenControlBarItems) ? fullscreenControlBarItems : minimizedControlBarItems;
+  return (
+    <div className={s('rounded overflow-hidden')}>
+      <Player
+        ref={playerRef}
+        {...rest}
+      >
+        <source src={url} />
+        <BigPlayButton position="center" className={s(`video-player-big-play-button ${player.hasStarted ? 'video-player-big-play-button-hide' : ''}`)} />
+        <ControlBar disableDefaultControls autoHide={false} className={s('video-player-control-bar')}>
+          { controlBarItems.map(item => CONTROL_BAR_COMPONENT_MAP[item])}
+        </ControlBar>
+      </Player>
+    </div>
+  );
 }
 
 VideoPlayer.propTypes = {
-  url: PropTypes.string,
+  url: PropTypes.string.isRequired,
   fullscreenControlBarItems: PropTypes.arrayOf(PropTypes.oneOf(CONTROL_BAR_COMPONENT_LIST)),
   minimizedControlBarItems: PropTypes.arrayOf(PropTypes.oneOf(CONTROL_BAR_COMPONENT_LIST)),
 };

@@ -1,11 +1,11 @@
 import { take, call, fork, put } from 'redux-saga/effects';
-import { doPost, doDelete, getErrorMessage } from '../utils/request';
-import { convertAttachmentsToBackendFormat, isUploadedFile } from '../utils/file';
-import { ADD_CREATE_ATTACHMENT_REQUEST, REMOVE_CREATE_ATTACHMENT_REQUEST } from '../actions/actionTypes';
+import { doPost, doDelete, getErrorMessage } from 'utils/request';
+import { convertAttachmentsToBackendFormat, isUploadedFile } from 'utils/file';
+import { ADD_CREATE_ATTACHMENT_REQUEST, REMOVE_CREATE_ATTACHMENT_REQUEST } from 'actions/actionTypes';
 import {
   handleAddCreateAttachmentSuccess, handleAddCreateAttachmentError,
   handleRemoveCreateAttachmentSuccess, handleRemoveCreateAttachmentError,
-} from '../actions/create';
+} from 'actions/create';
 
 export default function* watchCreateRequests() {
   let action;

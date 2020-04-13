@@ -3,7 +3,7 @@ import AnimateHeight from 'react-animate-height';
 import PropTypes from 'prop-types';
 
 import style from './message.css';
-import { getStyleApplicationFn } from '../../../utils/style';
+import { getStyleApplicationFn } from 'utils/style';
 
 const s = getStyleApplicationFn(style);
 
@@ -26,15 +26,17 @@ const Message = ({ message, type, className, animate, show, temporary, showDurat
   }
 
   useEffect(() => {
-    if (show && !showState) {
-      setShowState(true);
-    }
+    if (show) {
+      if (!showState) {
+        setShowState(true);
+      }
 
-    if (temporary) {
-      setTimeout(() => {
-        setShowState(false);
-        if (!animate) protectedOnHide();
-      }, showDuration);
+      if (temporary) {
+        setTimeout(() => {
+          setShowState(false);
+          if (!animate) protectedOnHide();
+        }, showDuration);
+      }
     }
   }, [show]);
 
@@ -50,7 +52,7 @@ const Message = ({ message, type, className, animate, show, temporary, showDurat
     return (
       <AnimateHeight
         height={shouldShow ? 'auto' : 0}
-        onAnimationEnd={(newHeight) => newHeight === 0 && protectedOnHide()}
+        onAnimationEnd={({ newHeight }) => newHeight === 0 && protectedOnHide()}
       >
         {body}
       </AnimateHeight>

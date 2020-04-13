@@ -1,4 +1,4 @@
-import { NODE_ENV } from '../utils/constants';
+import { NODE_ENV } from 'appConstants';
 
 let createStore;
 if (process.env.NODE_ENV === NODE_ENV.PROD) {

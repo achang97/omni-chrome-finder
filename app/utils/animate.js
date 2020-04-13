@@ -51,3 +51,5 @@ export function animate(property, element, to, options = {}, cb = () => {}) {
 export const getBaseAnimationStyle = transitionMs => ({
   transition: `opacity ${transitionMs}ms ease-in-out, transform ${transitionMs}ms`
 });
+
+export default { animate, getBaseAnimationStyle };

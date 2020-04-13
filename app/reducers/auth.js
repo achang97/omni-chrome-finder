@@ -1,4 +1,4 @@
-import * as types from '../actions/actionTypes';
+import * as types from 'actions/actionTypes';
 
 export const initialState = {
   token: null,
@@ -11,6 +11,8 @@ export const initialState = {
   signupLastName: '',
   signupEmail: '',
   signupPassword: '',
+
+  recoveryEmail: '',
 
   verificationCode: '',
 };
@@ -83,16 +85,32 @@ export default function authReducer(state = initialState, action) {
       return { ...state, verificationCode: code };
     }
 
+    case types.UPDATE_RECOVERY_EMAIL: {
+      const { email } = payload;
+      return { ...state, recoveryEmail: email };
+    }
+    case types.SEND_RECOVERY_EMAIL_REQUEST: {
+      return { ...state, isSendingRecoveryEmail: true, recoverySuccess: null, recoveryError: null };
+    }
+    case types.SEND_RECOVERY_EMAIL_SUCCESS: {
+      return { ...state, isSendingRecoveryEmail: false, recoverySuccess: true, recoveryEmail: '' };
+    }
+    case types.SEND_RECOVERY_EMAIL_ERROR: {
+      const { error } = payload;
+      return { ...state, isSendingRecoveryEmail: false, recoverySuccess: false, recoveryError: error };
+    }
+
+
     case types.VERIFY_REQUEST: {
-      return { ...state, isVerifying: true, verifySuccess: null, verifyError: null };
+      return { ...state, isVerifying: true, verifyError: null };
     }
     case types.VERIFY_SUCCESS: {
       const { token, refreshToken } = payload;
-      return { ...state, isVerifying: false, verifySuccess: true, verificationCode: '' };
+      return { ...state, isVerifying: false, verificationCode: '' };
     }
     case types.VERIFY_ERROR: {
       const { error } = payload;
-      return { ...state, isVerifying: false, verifySuccess: false, verifyError: error };
+      return { ...state, isVerifying: false, verifyError: error };
     }
 
     case types.RESEND_VERIFICATION_EMAIL_REQUEST: {

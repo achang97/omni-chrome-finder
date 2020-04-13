@@ -1,23 +1,21 @@
 import React, { Component } from 'react';
 import { EditorState } from 'draft-js';
 import { Editor } from 'react-draft-wysiwyg';
-import 'react-draft-wysiwyg/dist/react-draft-wysiwyg.css';
 import PropTypes from 'prop-types';
 import { CARD_TOOLBAR_PROPS, EXTENSION_TOOLBAR_PROPS } from './TextEditorProps.js';
 import { MdTextFormat, MdKeyboardArrowLeft } from 'react-icons/md';
 import { IoMdArrowDropleft, IoMdArrowDropright } from 'react-icons/io';
-import { CircleButton } from '../../common/CircleButton';
 
 import style from './text-editor.css';
-import { getStyleApplicationFn } from '../../../utils/style';
-import { EDITOR_TYPE } from '../../../utils/constants';
+import { getStyleApplicationFn } from 'utils/style';
+import { EDITOR_TYPE } from 'appConstants/card';
 const s = getStyleApplicationFn(style);
 
 export default class TextEditor extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      hideToolbar: true,
+      hideToolbar: props.toolbarHidden,
     };
     this.setDomEditorRef = editorRef => this.domEditor = editorRef;
   }
@@ -26,18 +24,15 @@ export default class TextEditor extends Component {
     const { autoFocus, toolbarHidden } = this.props;
     const { hideToolbar } = this.state;
 
-    if (autoFocus && this.domEditor !== null) {
+    if (autoFocus && !!this.domEditor) {
       this.domEditor.focus();
-    }
-    if (hideToolbar !== toolbarHidden) {
-      this.setState({ hideToolbar: toolbarHidden });
     }
   }
 
   componentDidUpdate(prevProps, prevState) {
     const { toolbarHidden } = this.props;
 
-    if ((prevState.hideToolbar !== toolbarHidden) && (prevState.hideToolbar !== true)) {
+    if ((prevState.hideToolbar !== toolbarHidden) && !prevState.hideToolbar) {
       this.setState({ hideToolbar: toolbarHidden });
     }
   }

@@ -1,8 +1,8 @@
 import { EditorState } from 'draft-js';
 
-import * as types from '../actions/actionTypes';
-import { ASK_INTEGRATIONS } from '../utils/constants';
-import { removeIndex, updateIndex, updateArrayOfObjects } from '../utils/array';
+import * as types from 'actions/actionTypes';
+import { ASK } from 'appConstants';
+import { removeIndex, updateIndex, updateArrayOfObjects } from 'utils/array';
 
 const initialState = {
   /* Minified Page */
@@ -11,7 +11,7 @@ const initialState = {
   feedback: '',
 
   /* Expanded Page */
-  activeIntegration: ASK_INTEGRATIONS[0],
+  activeIntegration: ASK.INTEGRATIONS[0],
   questionTitle: '',
   questionDescription: EditorState.createEmpty(),
   recipients: [],

@@ -1,23 +1,19 @@
-import React, { Component } from 'react';
+import React from 'react';
 import PropTypes from 'prop-types';
 import { MdCheck } from 'react-icons/md';
 import style from './checkbox.css';
-import { getStyleApplicationFn } from '../../../utils/style';
+import { getStyleApplicationFn } from 'utils/style';
 
 const s = getStyleApplicationFn(style);
 
-const CheckBox = (props) => {
-  const { className, isSelected, toggleCheckbox, selectedClassName, unselectedClassName } = props;
-
-  return (
-    <div
-      className={s(`checkbox-container ${isSelected ? `checkbox-container-selected ${selectedClassName}` : `bg-white ${unselectedClassName}`} ${className}`)}
-      onClick={toggleCheckbox}
-    >
-      { isSelected && <MdCheck /> }
-    </div>
-  );
-};
+const CheckBox = ({ className, isSelected, toggleCheckbox, selectedClassName, unselectedClassName }) => (
+  <div
+    className={s(`checkbox-container ${isSelected ? `checkbox-container-selected ${selectedClassName}` : `bg-white ${unselectedClassName}`} ${className}`)}
+    onClick={toggleCheckbox}
+  >
+    { isSelected && <MdCheck /> }
+  </div>
+);
 
 CheckBox.propTypes = {
   isSelected: PropTypes.bool.isRequired,

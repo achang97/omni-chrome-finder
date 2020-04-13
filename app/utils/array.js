@@ -56,3 +56,5 @@ export function getArrayWithout(array, withoutArray, field) {
     field ? elem[field] === withoutElem[field] : elem === withoutElem
   )));
 }
+
+export default { removeIndex, updateIndex, updateArrayOfObjects, getArrayIds, getArrayField, getArrayWithout };

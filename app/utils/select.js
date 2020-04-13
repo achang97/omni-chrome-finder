@@ -11,3 +11,5 @@ export const createSelectValue = (value, transform) => {
   }
   return { label: value, value };
 };
+
+export default { createSelectValue, createSelectOptions };

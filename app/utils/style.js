@@ -1,5 +1,5 @@
 import _ from 'lodash';
-import globalStyle from '../styles/global.css';
+import globalStyle from 'styles/global.css';
 
 export function getStyleApplicationFn(...args) {
   const hashedClassNameMap = _.extend(globalStyle, ...args);
@@ -8,4 +8,4 @@ export function getStyleApplicationFn(...args) {
   };
 }
 
-export { getStyleApplicationFn as default };
+export default { getStyleApplicationFn };

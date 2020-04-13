@@ -24,11 +24,13 @@ module.exports = {
     new webpack.IgnorePlugin(/[^/]+\/[\S]+.dev$/),
     new webpack.DefinePlugin({
       'process.env': {
-        NODE_ENV: JSON.stringify('production')
+        NODE_ENV: JSON.stringify('production'),
+        HEAP_APP_ID: JSON.stringify(process.env.PROD_HEAP_APP_ID)
       }
     })
   ],
   resolve: {
+    modules: ['app', 'node_modules'],
     extensions: ['*', '.js']
   },
   module: {

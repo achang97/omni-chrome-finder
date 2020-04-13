@@ -2,12 +2,11 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import { MdCloudUpload } from 'react-icons/md';
 
-import Button from '../../common/Button';
-import Dropzone from '../../common/Dropzone';
+import { Button, Dropzone } from 'components/common';
 
 import attachmentsStyle from '../styles/attachments.css';
 import attachmentDropzoneStyle from './attachment-dropzone.css';
-import { getStyleApplicationFn } from '../../../utils/style';
+import { getStyleApplicationFn } from 'utils/style';
 const s = getStyleApplicationFn(attachmentsStyle, attachmentDropzoneStyle);
 
 const AttachmentDropzone = ({ onDrop, className, buttonClassName, showText }) => (

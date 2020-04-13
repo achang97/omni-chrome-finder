@@ -1,4 +1,4 @@
-import { colors } from '../../../styles/colors';
+import { colors } from 'styles/colors';
 
 const customStyles = {
   container: (provided, state) => ({
@@ -8,7 +8,7 @@ const customStyles = {
     letterSpacing: '0.3px',
     lineHeight: '22px',
     boxSizing: 'border-box',
-    fontWeight: '400'
+    fontWeight: '400',
   }),
   control: (provided, state) => ({
     ...provided,
@@ -73,6 +73,7 @@ const customStyles = {
   menu: (provided, state) => ({
     ...provided,
     overflow: 'hidden',
+    zIndex: 100000,
   })
 };
 

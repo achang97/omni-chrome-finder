@@ -50,6 +50,22 @@ export function handleSignupError(error) {
   return { type: types.SIGNUP_ERROR, payload: { error } };
 }
 
+export function updateRecoveryEmail(email) {
+  return { type: types.UPDATE_RECOVERY_EMAIL, payload: { email } };
+}
+
+export function requestSendRecoveryEmail() {
+  return { type: types.SEND_RECOVERY_EMAIL_REQUEST, payload: { } };
+}
+
+export function handleSendRecoveryEmailSuccess() {
+  return { type: types.SEND_RECOVERY_EMAIL_SUCCESS, payload: { } };
+}
+
+export function handleSendRecoveryEmailError(error) {
+  return { type: types.SEND_RECOVERY_EMAIL_ERROR, payload: { error } };
+}
+
 
 export function updateVerificationCode(code) {
   return { type: types.UPDATE_VERIFICATION_CODE, payload: { code } };

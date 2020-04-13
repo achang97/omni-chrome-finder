@@ -1,17 +1,20 @@
-import { take, call, fork, put, select } from 'redux-saga/effects';
-import { doPost, getErrorMessage } from '../utils/request';
-import { LOGIN_REQUEST, SIGNUP_REQUEST, VERIFY_REQUEST, RESEND_VERIFICATION_EMAIL_REQUEST } from '../actions/actionTypes';
+import React from 'react';
+import { take, call, all, fork, put, select } from 'redux-saga/effects';
+import { doPost, getErrorMessage } from 'utils/request';
+import { LOGIN_REQUEST, SIGNUP_REQUEST, SEND_RECOVERY_EMAIL_REQUEST, VERIFY_REQUEST, RESEND_VERIFICATION_EMAIL_REQUEST } from 'actions/actionTypes';
 import {
   handleLoginSuccess, handleLoginError,
   handleSignupSuccess, handleSignupError,
   handleVerifySuccess, handleVerifyError,
   handleResendVerificationEmailSuccess, handleResendVerificationEmailError,
-} from '../actions/auth';
+  handleSendRecoveryEmailSuccess, handleSendRecoveryEmailError,
+} from 'actions/auth';
+import { openModal } from 'actions/display';
 
 export default function* watchAuthRequests() {
   let action;
 
-  while (action = yield take([LOGIN_REQUEST, SIGNUP_REQUEST, VERIFY_REQUEST, RESEND_VERIFICATION_EMAIL_REQUEST])) {
+  while (action = yield take([LOGIN_REQUEST, SIGNUP_REQUEST, SEND_RECOVERY_EMAIL_REQUEST, VERIFY_REQUEST, RESEND_VERIFICATION_EMAIL_REQUEST])) {
     const { type, /* payload */ } = action;
     switch (type) {
       case LOGIN_REQUEST: {
@@ -20,6 +23,10 @@ export default function* watchAuthRequests() {
       }
       case SIGNUP_REQUEST: {
         yield fork(signup);
+        break;
+      }
+      case SEND_RECOVERY_EMAIL_REQUEST: {
+        yield fork(sendRecoveryEmail)
         break;
       }
       case VERIFY_REQUEST: {
@@ -61,11 +68,31 @@ function* signup() {
 
 function* verify() {
   try {
-    const { verificationCode } = yield select(state => state.auth);
+    const verificationCode = yield select(state => state.auth.verificationCode);
+    const firstname = yield select(state => state.profile.user.firstname);
+
     yield call(doPost, '/users/verifyCheck', { code: verificationCode });
-    yield put(handleVerifySuccess());
+    yield all([
+      put(handleVerifySuccess()),
+      put(openModal({
+        title: <span> We've successfully verified your account, <b>{firstname}</b>. </span>,
+        subtitle: '🎉 Welcome to Omni! 🎉',
+        buttonText: 'Let\'s go!',
+        showHeader: false,
+      }))
+    ]);
   } catch (error) {
     yield put(handleVerifyError(getErrorMessage(error)));
+  }
+}
+
+function* sendRecoveryEmail() {
+  try {
+    const email = yield select(state => state.auth.recoveryEmail);
+    yield call(doPost, '/users/forgotPassword', { email });
+    yield put(handleSendRecoveryEmailSuccess());
+  } catch(error) {
+    yield put(handleSendRecoveryEmailError(getErrorMessage(error)));
   }
 }
 

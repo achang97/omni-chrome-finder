@@ -1,9 +1,7 @@
 import _ from 'lodash';
-import { CHROME_MESSAGE, CARD_URL_BASE, NODE_ENV } from '../../../app/utils/constants';
-import { getStorage, setStorage } from '../../../app/utils/storage';
-import { BASE_URL } from '../../../app/utils/request';
-import { addStorageListener } from '../../../app/utils/storage';
-import { isChromeUrl } from '../../../app/utils/chrome';
+import { WEB_APP_EXTENSION_URL, NODE_ENV, CHROME, REQUEST } from 'appConstants';
+import { storage, chrome as chromeUtils } from 'utils';
+import { getStorage, setStorage, addStorageListener } from 'utils/storage';
 
 let socket;
 
@@ -63,7 +61,7 @@ function createNotification({ userId, message, notification }) {
     contextMessage: `Sent by ${resolved ? resolver.name : notifier.name}`,
   });
 
-  getStorage('tasks').then(tasks => {
+  getStorage(CHROME.STORAGE.TASKS).then(tasks => {
     if (tasks) {
       let newTasks;
       if (resolved) {
@@ -72,18 +70,18 @@ function createNotification({ userId, message, notification }) {
         newTasks = _.unionBy(tasks, [notification], '_id');
       }
 
-      setStorage('tasks', newTasks);
+      setStorage(CHROME.STORAGE.TASKS, newTasks);
     }
   });
 }
 
 function initSocket() {
-  getStorage('auth').then((auth) => {
+  getStorage(CHROME.STORAGE.AUTH).then((auth) => {
     const token = auth && auth.token;
     if (token && !socket) {
       const protocol = process.env.NODE_ENV === NODE_ENV.DEV ? 'ws://' : 'wss://';
       const wsToken = token.replace('Bearer ', '');
-      socket = new WebSocket(`${protocol}${BASE_URL}/ws/generic?auth=${wsToken}`);
+      socket = new WebSocket(`${protocol}${REQUEST.URL.BASE}/ws/generic?auth=${wsToken}`);
 
       socket.onopen = () => {
         console.log('Connected socket!');
@@ -96,7 +94,7 @@ function initSocket() {
 
       socket.onmessage = (event) => {
         console.log('Received data from socket: ', event);
-        getStorage('auth').then((auth) => {
+        getStorage(CHROME.STORAGE.AUTH).then((auth) => {
           const isLoggedIn = auth && auth.token;
           const isVerified = auth && auth.user && auth.user.isVerified;
           if (isLoggedIn && isVerified) {
@@ -114,7 +112,7 @@ function initSocket() {
 }
 
 chrome.tabs.onUpdated.addListener(async (tabId, changeInfo, tab) => {
-  if (!isChromeUrl(tab.url)) {
+  if (!chromeUtils.isChromeUrl(tab.url)) {
     switch (changeInfo.status) {
       case 'loading': {
         const isInjected = (await injectExtension(tabId))[0];
@@ -131,7 +129,7 @@ chrome.tabs.onUpdated.addListener(async (tabId, changeInfo, tab) => {
       case 'complete': {
         const isInjected = (await injectExtension(tabId))[0];
         if (isInjected) {
-          chrome.tabs.sendMessage(tabId, { type: CHROME_MESSAGE.TAB_UPDATE });
+          chrome.tabs.sendMessage(tabId, { type: CHROME.MESSAGE.TAB_UPDATE });
         }
         break;
       }
@@ -140,48 +138,50 @@ chrome.tabs.onUpdated.addListener(async (tabId, changeInfo, tab) => {
 });
 
 chrome.browserAction.onClicked.addListener(async (tab) => {
-  if (isChromeUrl(tab.url)) {
-    window.open(CARD_URL_BASE);
+  if (chromeUtils.isChromeUrl(tab.url)) {
+    window.open(WEB_APP_EXTENSION_URL);
   } else {
     const tabId = tab.id;
     const isInjected = (await injectExtension(tabId))[0];
     if (!chrome.runtime.lastError) {
       if (!isInjected) {
         loadScript('inject', tabId, () => {
-          chrome.tabs.sendMessage(tabId, { type: CHROME_MESSAGE.TOGGLE });
+          chrome.tabs.sendMessage(tabId, { type: CHROME.MESSAGE.TOGGLE });
         });
 
         if (!socket) {
           initSocket();
         }
       } else {
-        chrome.tabs.sendMessage(tabId, { type: CHROME_MESSAGE.TOGGLE });
+        chrome.tabs.sendMessage(tabId, { type: CHROME.MESSAGE.TOGGLE });
       }
     }    
   }
 });
 
 chrome.notifications.onClicked.addListener(async (notificationId) => {
+  chrome.notifications.clear(notificationId);
+
   getActiveTab().then(activeTab => {
     if (activeTab) {
       const { windowId, id } = activeTab;
       chrome.windows.update(windowId, { focused: true });
       chrome.tabs.sendMessage(id, {
-        type: CHROME_MESSAGE.NOTIFICATION_OPENED,
+        type: CHROME.MESSAGE.NOTIFICATION_OPENED,
         payload: { notificationId }
       });        
     } else {
-      const newWindow = window.open(`${CARD_URL_BASE}?taskId=${notificationId}` + notificationId, '_blank');
+      const newWindow = window.open(`${WEB_APP_EXTENSION_URL}?taskId=${notificationId}`, '_blank');
       newWindow.focus();
     }
   })
 });
 
-addStorageListener('auth', ({ newValue }) => {
+addStorageListener(CHROME.STORAGE.AUTH, ({ newValue }) => {
   if (!newValue.token && socket) {
     console.log('Logged out, closing socket.');
-    socket = null;
     socket.close();
+    socket = null;
   } else if (newValue.token && !socket) {
     initSocket();
   }

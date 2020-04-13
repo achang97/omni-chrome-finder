@@ -1,15 +1,22 @@
-import React, { Component } from 'react';
+import React from 'react';
 import PropTypes from 'prop-types';
 import { Transition } from 'react-transition-group';
 
 import { MdClose } from 'react-icons/md';
-import { FADE_IN_TRANSITIONS, NOOP } from '../../../utils/constants';
-import { getBaseAnimationStyle } from '../../../utils/animate';
+import { TRANSITIONS } from 'appConstants/animate';
+import { getBaseAnimationStyle } from 'utils/animate';
 
 import style from './modal.css';
-import { getStyleApplicationFn } from '../../../utils/style';
+import { getStyleApplicationFn } from 'utils/style';
 
 const s = getStyleApplicationFn(style);
+
+const MODAL_TRANSITION_STYLES = {
+  entering: { opacity: 0, transform: 'translate(0, -50%) scale(0.5)' },
+  entered: { opacity: 1, transform: 'translate(0, -50%)', visibility: 'visible' },
+  exiting: { opacity: 1, transform: 'translate(0, -50%) scale(0.5)' },
+  exited: { opacity: 0, visibility: 'hidden' },
+};
 
 const Modal = ({ isOpen, transitionMs, shouldCloseOnOutsideClick, showHeader, className, onRequestClose, headerClassName, overlayClassName, bodyClassName, title, children, important, ...rest }) => {
   const onOutsideClick = () => {
@@ -17,12 +24,6 @@ const Modal = ({ isOpen, transitionMs, shouldCloseOnOutsideClick, showHeader, cl
   };
 
   const baseStyle = getBaseAnimationStyle(transitionMs);
-  const modalTransitionStyles = {
-    entering: { opacity: 0, transform: 'translate(0, -50%) scale(0.5)' },
-    entered: { opacity: 1, transform: 'translate(0, -50%)', visibility: 'visible' },
-    exiting: { opacity: 1, transform: 'translate(0, -50%) scale(0.5)' },
-    exited: { opacity: 0, visibility: 'hidden' },
-  };
 
   return (
     <div
@@ -37,7 +38,7 @@ const Modal = ({ isOpen, transitionMs, shouldCloseOnOutsideClick, showHeader, cl
         unmountOnExit
       >
         {state => (
-          <div style={{ ...baseStyle, ...modalTransitionStyles[state] }} className={s(`modal ${className} ${important ? 'modal-important' : ''}`)}>
+          <div style={{ ...baseStyle, ...MODAL_TRANSITION_STYLES[state] }} className={s(`modal ${className} ${important ? 'modal-important' : ''}`)}>
             { showHeader &&
             <div className={s(`modal-header ${headerClassName}`)}>
               <div className={s('font-semibold')}> {title} </div>
@@ -59,7 +60,7 @@ const Modal = ({ isOpen, transitionMs, shouldCloseOnOutsideClick, showHeader, cl
         unmountOnExit
       >
         {state => (
-          <div style={{ ...baseStyle, ...FADE_IN_TRANSITIONS[state] }} className={s(`modal-overlay ${overlayClassName} ${important ? 'modal-overlay-important' : ''}`)} onClick={onOutsideClick} />
+          <div style={{ ...baseStyle, ...TRANSITIONS.FADE_IN[state] }} className={s(`modal-overlay ${overlayClassName} ${important ? 'modal-overlay-important' : ''}`)} onClick={onOutsideClick} />
         )}
       </Transition>
     </div>
@@ -74,7 +75,7 @@ Modal.propTypes = {
   headerClassName: PropTypes.string,
   bodyClassName: PropTypes.string,
   overlayClassName: PropTypes.string,
-  title: PropTypes.string,
+  title: PropTypes.any,
   showHeader: PropTypes.bool,
   transitionMs: PropTypes.number,
   important: PropTypes.bool,

@@ -30,12 +30,12 @@ export function closeAllCards() {
   return { type: types.CLOSE_ALL_CARDS, payload: {} };
 }
 
-export function openModal() {
-  return { type: types.OPEN_MODAL, payload: {} };
+export function openCardContainerModal() {
+  return { type: types.OPEN_CARD_CONTAINER_MODAL, payload: {} };
 }
 
-export function closeModal() {
-  return { type: types.CLOSE_MODAL, payload: {} };
+export function closeCardContainerModal() {
+  return { type: types.CLOSE_CARD_CONTAINER_MODAL, payload: {} };
 }
 
 export function updateCardQuestion(question) {
@@ -80,6 +80,14 @@ export function addCardOwner(owner) {
 
 export function removeCardOwner(index) {
   return { type: types.REMOVE_CARD_OWNER, payload: { index } };
+}
+
+export function addCardSubscriber(subscriber) {
+  return { type: types.ADD_CARD_SUBSCRIBER, payload: { subscriber } };
+}
+
+export function removeCardSubscriber(index) {
+  return { type: types.REMOVE_CARD_SUBSCRIBER, payload: { index } };
 }
 
 export function updateCardTags(tags) {
@@ -187,9 +195,8 @@ export function handleCreateCardError(cardId, error) {
 }
 
 
-export function requestUpdateCard(payload) {
-  payload = { isUndocumented: false, closeCard: false, ...payload };
-  return { type: types.UPDATE_CARD_REQUEST, payload };
+export function requestUpdateCard(closeCard=false) {
+  return { type: types.UPDATE_CARD_REQUEST, payload: { closeCard } };
 }
 
 export function handleUpdateCardSuccess(card, closeCard) {

@@ -40,11 +40,13 @@ const baseDevConfig = () => ({
       __HOST__: `'${host}'`,
       __PORT__: port,
       'process.env': {
-        NODE_ENV: JSON.stringify('development')
+        NODE_ENV: JSON.stringify('development'),
+        HEAP_APP_ID: JSON.stringify(process.env.DEV_HEAP_APP_ID)
       }
     })
   ],
   resolve: {
+    modules: ['app', 'node_modules'],
     extensions: ['*', '.js']
   },
   module: {

@@ -1,11 +1,11 @@
-import { addStorageListener } from '../../utils/storage';
-import * as types from '../../actions/actionTypes';
-import { syncTasks } from '../../actions/tasks';
+import { CHROME } from 'appConstants';
+import { addStorageListener } from 'utils/storage';
+import { syncTasks } from 'actions/tasks';
 
 export default function () {
   return next => (reducer, initialState) => {
     const store = next(reducer, initialState);
-    addStorageListener('tasks', ({ newValue }) => {
+    addStorageListener(CHROME.STORAGE.TASKS, ({ newValue }) => {
       if (newValue) {        
         store.dispatch(syncTasks(newValue));
       }

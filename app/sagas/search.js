@@ -1,15 +1,18 @@
 import { CancelToken, isCancel } from 'axios';
 import { take, call, fork, all, put, select } from 'redux-saga/effects';
-import { doGet, doPost, getErrorMessage } from '../utils/request';
-import { isLoggedIn } from '../utils/auth';
-import { SEARCH_TYPE, INTEGRATIONS } from '../utils/constants';
-import { SEARCH_CARDS_REQUEST, SEARCH_TAGS_REQUEST, SEARCH_USERS_REQUEST, SEARCH_PERMISSION_GROUPS_REQUEST, } from '../actions/actionTypes';
+import { doGet, doPost, getErrorMessage } from 'utils/request';
+import { isLoggedIn } from 'utils/auth';
+import { SEARCH, INTEGRATIONS } from 'appConstants';
+import {
+  SEARCH_CARDS_REQUEST, SEARCH_TAGS_REQUEST, SEARCH_USERS_REQUEST,
+  SEARCH_PERMISSION_GROUPS_REQUEST
+} from 'actions/actionTypes';
 import {
   handleSearchCardsSuccess, handleSearchCardsError,
   handleSearchTagsSuccess, handleSearchTagsError,
   handleSearchUsersSuccess, handleSearchUsersError,
   handleSearchPermissionGroupsSuccess, handleSearchPermissionGroupsError,
-} from '../actions/search';
+} from 'actions/search';
 
 const CANCEL_TYPE = {
   CARDS: 'CARDS',
@@ -98,14 +101,14 @@ function* searchCards({ type, query, clearCards }) {
 
     if (!query.ids || query.ids.length !== 0) {
       const body = { ...query, page };
-      if (type === SEARCH_TYPE.AI_SUGGEST) {
+      if (type === SEARCH.TYPE.AI_SUGGEST) {
         allRequests.push({ requestFn: doPost, url: '/suggest', body });
       } else {
         allRequests.push({ url: '/cards/query', body });
       }
     }
 
-    if (type === SEARCH_TYPE.POPOUT && query.q !== '') {
+    if (type === SEARCH.TYPE.POPOUT && query.q !== '') {
       DOCUMENTATION_INTEGRATIONS.forEach(({ integration, url }) => {
         if (isLoggedIn(user, integration.type)) {
           allRequests.push({ url, integration, body: { q: query.q } });

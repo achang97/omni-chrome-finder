@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import PropTypes from 'prop-types';
 
 import style from './toggleable-input.css';
-import { getStyleApplicationFn } from '../../../utils/style';
+import { getStyleApplicationFn } from 'utils/style';
 const s = getStyleApplicationFn(style);
 
 const ToggleableInput = ({ value, isEditable, disabled, inputProps, className }) => {

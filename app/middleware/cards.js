@@ -1,7 +1,6 @@
-import { setStorage, getStorage } from '../utils/storage';
-import * as types from '../actions/actionTypes';
-import { handleDeleteCardSuccess, updateCard } from '../actions/cards';
-import { CARD_STATUS, TASK_TYPE } from '../utils/constants';
+import { setStorage, getStorage } from 'utils/storage';
+import * as types from 'actions/actionTypes';
+import { handleDeleteCardSuccess, updateCard } from 'actions/cards';
 
 const cardsMiddleware = store => next => (action) => {
   const nextAction = next(action);

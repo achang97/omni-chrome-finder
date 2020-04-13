@@ -1,22 +1,18 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 
-import { MODAL_TYPE } from '../../../utils/constants';
-
-import Modal from '../../common/Modal';
-import Button from '../../common/Button';
-import Message from '../../common/Message';
-
-import { bindActionCreators } from 'redux';
-import { connect } from 'react-redux';
-import { closeCardModal } from '../../../actions/cards';
+import { Modal, Button, Message } from 'components/common';
 
 import style from './card-confirm-modal.css';
-import { getStyleApplicationFn } from '../../../utils/style';
+import { getStyleApplicationFn } from 'utils/style';
 
 const s = getStyleApplicationFn(style);
 
-const CardConfirmModal = ({ isOpen, title, description, body, error, onRequestClose, primaryButtonProps, secondaryButtonProps, showPrimary, showSecondary, bodyClassName, ...rest }) => {
+const CardConfirmModal = ({
+  isOpen, title, description, body, error,
+  onRequestClose, primaryButtonProps, secondaryButtonProps, showPrimary,
+  showSecondary, bodyClassName, ...rest
+}) => {
   if (!secondaryButtonProps) {
     secondaryButtonProps = { text: 'No', onClick: onRequestClose };
   }

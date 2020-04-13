@@ -1,11 +1,11 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 
-import { colors } from '../../../styles/colors';
+import { colors } from 'styles/colors';
 import { MoonLoader } from 'react-spinners';
 
 import style from './loader.css';
-import { getStyleApplicationFn } from '../../../utils/style';
+import { getStyleApplicationFn } from 'utils/style';
 
 const s = getStyleApplicationFn(style);
 
