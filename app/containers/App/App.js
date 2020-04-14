@@ -62,7 +62,7 @@ const App = ({
       if (isLoggedIn) {
         const { taskId, cardId, edit } = queryString.parse(window.location.search);
         if (taskId) {
-          chromeUtils.handleNotificationClick(taskId, tasks, updateTasksTab, updateTasksOpenSection, history);
+          chromeUtils.openTask(taskId, tasks, updateTasksTab, updateTasksOpenSection, history);
         }
 
         if (cardId) {

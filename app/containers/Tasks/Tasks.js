@@ -86,7 +86,7 @@ const Tasks = ({
         icon = <AiFillMinusCircle className={s('tasks-icon-container text-red-reg ')} />;
         break;
       }
-      case SECTION_TYPE.UNDOCUMENTED: {
+      case SECTION_TYPE.NOT_DOCUMENTED: {
         icon = <AiFillQuestionCircle className={s('tasks-icon-container text-purple-reg')} />;
       }
     }

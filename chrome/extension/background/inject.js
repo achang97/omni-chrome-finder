@@ -1,4 +1,5 @@
 import _ from 'lodash';
+import queryString from 'query-string';
 import { WEB_APP_EXTENSION_URL, NODE_ENV, CHROME, REQUEST } from 'appConstants';
 import { setStorage, getStorage, addStorageListener } from 'utils/storage';
 import { isChromeUrl } from 'utils/chrome';
@@ -20,7 +21,7 @@ function getActiveTab() {
       if (tabs.length !== 0) {
         resolve(tabs[0])
       } else {
-        reject('No active tab.');
+        resolve(null);
       }
     });
   });
@@ -50,9 +51,14 @@ function loadScript(name, tabId, cb) {
 }
 
 function createNotification({ userId, message, notification }) {
-  const { notifier, resolver, card, question, status, resolved, _id: notificationId } = notification;
-       
+  console.log(notification)
+  const { notifier, resolver, card, question, status, resolved, _id } = notification;
+
   // Create chrome notification
+  const notificationId = (_id && !resolved) ?
+    `${CHROME.NOTIFICATION_TYPE.TASK}-${_id}` :
+    `${CHROME.NOTIFICATION_TYPE.CARD}-${card._id}`;
+
   chrome.notifications.create(notificationId, {
     type: 'basic',
     iconUrl: chrome.runtime.getURL('/img/icon-128.png'),
@@ -61,18 +67,20 @@ function createNotification({ userId, message, notification }) {
     contextMessage: `Sent by ${resolved ? resolver.name : notifier.name}`,
   });
 
-  getStorage(CHROME.STORAGE.TASKS).then(tasks => {
-    if (tasks) {
-      let newTasks;
-      if (resolved) {
-        newTasks = tasks.filter(({ _id }) => _id !== notificationId);
-      } else {
-        newTasks = _.unionBy(tasks, [notification], '_id');
-      }
+  if (_id) {
+    getStorage(CHROME.STORAGE.TASKS).then(tasks => {
+      if (tasks) {
+        let newTasks;
+        if (resolved) {
+          newTasks = tasks.filter(task => task._id !== _id);
+        } else {
+          newTasks = _.unionBy(tasks, [notification], '_id');
+        }
 
-      setStorage(CHROME.STORAGE.TASKS, newTasks);
-    }
-  });
+        setStorage(CHROME.STORAGE.TASKS, newTasks);
+      }
+    });    
+  }
 }
 
 function initSocket() {
@@ -162,19 +170,33 @@ chrome.browserAction.onClicked.addListener(async (tab) => {
 chrome.notifications.onClicked.addListener(async (notificationId) => {
   chrome.notifications.clear(notificationId);
 
+  const [match, type, id] = notificationId.match(/(\S+)-(\S+)/);
   getActiveTab().then(activeTab => {
     if (activeTab) {
-      const { windowId, id } = activeTab;
+      const { windowId, id: activeTabId } = activeTab;
       chrome.windows.update(windowId, { focused: true });
-      chrome.tabs.sendMessage(id, {
+      chrome.tabs.sendMessage(activeTabId, {
         type: CHROME.MESSAGE.NOTIFICATION_OPENED,
-        payload: { notificationId }
+        payload: { type, id }
       });        
     } else {
-      const newWindow = window.open(`${WEB_APP_EXTENSION_URL}?taskId=${notificationId}`, '_blank');
+      let queryParams = {};
+      switch (type) {
+        case CHROME.NOTIFICATION_TYPE.TASK: {
+          queryParams = { taskId: id };
+          break;
+        }
+        case CHROME.NOTIFICATION_TYPE.CARD: {
+          queryParams = { cardId: id };
+          break;
+        }
+      }
+
+      const link = `${WEB_APP_EXTENSION_URL}?${queryString.stringify(queryParams)}`;
+      const newWindow = window.open(link, '_blank');
       newWindow.focus();
     }
-  })
+  });
 });
 
 addStorageListener(CHROME.STORAGE.AUTH, ({ newValue }) => {
