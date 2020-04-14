@@ -1,7 +1,7 @@
 import _ from 'lodash';
 import { WEB_APP_EXTENSION_URL, NODE_ENV, CHROME, REQUEST } from 'appConstants';
-import { storage, chrome as chromeUtils } from 'utils';
-import { getStorage, setStorage, addStorageListener } from 'utils/storage';
+import { setStorage, getStorage, addStorageListener } from 'utils/storage';
+import { isChromeUrl } from 'utils/chrome';
 
 let socket;
 
@@ -112,7 +112,7 @@ function initSocket() {
 }
 
 chrome.tabs.onUpdated.addListener(async (tabId, changeInfo, tab) => {
-  if (!chromeUtils.isChromeUrl(tab.url)) {
+  if (!isChromeUrl(tab.url)) {
     switch (changeInfo.status) {
       case 'loading': {
         const isInjected = (await injectExtension(tabId))[0];
@@ -138,7 +138,7 @@ chrome.tabs.onUpdated.addListener(async (tabId, changeInfo, tab) => {
 });
 
 chrome.browserAction.onClicked.addListener(async (tab) => {
-  if (chromeUtils.isChromeUrl(tab.url)) {
+  if (isChromeUrl(tab.url)) {
     window.open(WEB_APP_EXTENSION_URL);
   } else {
     const tabId = tab.id;

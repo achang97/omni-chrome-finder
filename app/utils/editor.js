@@ -1,4 +1,4 @@
-import { convertToRaw, convertFromRaw, EditorState } from 'draft-js';
+import { EditorState, convertToRaw, convertFromRaw } from 'draft-js';
 import { stateToHTML } from 'draft-js-export-html';
 
 export const getContentStateFromEditorState = (editorState) => {
