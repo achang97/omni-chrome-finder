@@ -3,8 +3,8 @@ import { Switch, Redirect, withRouter } from 'react-router-dom';
 import Dock from 'react-dock';
 import queryString from 'query-string';
 
-import { ROUTES, WEB_APP_EXTENSION_URL } from 'appConstants';
-import { heap, chrome as chromeUtils } from 'utils';
+import { ROUTES, URL } from 'appConstants';
+import { heap, chrome as chromeUtils, auth } from 'utils';
 
 import { Header, ChromeMessageListener, MessageModal} from 'components/app';
 import { PublicRoute, PrivateRoute } from 'components/routes';
@@ -19,6 +19,7 @@ import Profile from '../Profile';
 import Login from '../Login';
 import Signup from '../Signup';
 import Verify from '../Verify';
+import CompleteOnboarding from '../CompleteOnboarding';
 import ForgotPassword from '../ForgotPassword';
 
 import 'react-toggle/style.css';
@@ -54,7 +55,7 @@ const App = ({
   }, []);
 
   const openChromeExtension = () => {
-    if (window.location.href.startsWith(WEB_APP_EXTENSION_URL)) {
+    if (window.location.href.startsWith(URL.EXTENSION)) {
       if (!dockVisible) {
         toggleDock();
       }
@@ -73,7 +74,8 @@ const App = ({
   }
 
   const isVerified = user && user.isVerified;
-  const showFullDock = dockExpanded || (pathname !== ROUTES.ASK && isLoggedIn && isVerified);
+  const completedOnboarding = user && auth.hasCompletedOnboarding(user.onboarding);
+  const showFullDock = isLoggedIn && isVerified && completedOnboarding && (dockExpanded || (pathname !== ROUTES.ASK));
   
   return (
     <div className={s('app-container')}>
@@ -92,13 +94,14 @@ const App = ({
       >
         <div className={s(`flex relative flex-col ${showFullDock ? 'h-screen' : ''}`)}>
           <MessageModal />
-          { isLoggedIn && isVerified && <Header /> }
+          { isLoggedIn && isVerified && completedOnboarding && <Header /> }
           <Switch>
             <PrivateRoute path={ROUTES.ASK} component={Ask} />
             <PrivateRoute path={ROUTES.CREATE} component={Create} />
             <PrivateRoute path={ROUTES.NAVIGATE} component={Navigate} />
             <PrivateRoute path={ROUTES.TASKS} component={Tasks} />
             <PrivateRoute path={ROUTES.PROFILE} component={Profile} />
+            { !completedOnboarding && <PrivateRoute path={ROUTES.COMPLETE_ONBOARDING} component={CompleteOnboarding} /> }
             { !isVerified && <PrivateRoute path={ROUTES.VERIFY} component={Verify} /> }
             { showAISuggest && <PrivateRoute path={ROUTES.SUGGEST} component={AISuggest} /> }
 

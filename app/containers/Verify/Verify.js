@@ -51,7 +51,6 @@ const Verify = ({
               <Loader size="xs" />            
             }
           </div>
-
         </>
       }
       error={verifyError}

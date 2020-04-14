@@ -1,5 +1,10 @@
 import { INTEGRATIONS, NODE_ENV, REQUEST } from 'appConstants';
 
+export function hasCompletedOnboarding(onboarding) {
+  return onboarding && onboarding.extension && 
+    Object.values(onboarding.extension).every(val => val === -1);
+}
+
 export function isLoggedIn(user, integration) {
   // use new userIntegrations here.
   return user &&
@@ -25,4 +30,4 @@ export function getIntegrationAuthLink(userId, token, integration) {
   }
 }
 
-export default { isLoggedIn, getIntegrationAuthLink };
+export default { hasCompletedOnboarding, isLoggedIn, getIntegrationAuthLink };

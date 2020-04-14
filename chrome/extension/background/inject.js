@@ -1,6 +1,6 @@
 import _ from 'lodash';
 import queryString from 'query-string';
-import { WEB_APP_EXTENSION_URL, NODE_ENV, CHROME, REQUEST } from 'appConstants';
+import { URL, NODE_ENV, CHROME, REQUEST } from 'appConstants';
 import { setStorage, getStorage, addStorageListener } from 'utils/storage';
 import { isChromeUrl } from 'utils/chrome';
 
@@ -51,7 +51,6 @@ function loadScript(name, tabId, cb) {
 }
 
 function createNotification({ userId, message, notification }) {
-  console.log(notification)
   const { notifier, resolver, card, question, status, resolved, _id } = notification;
 
   // Create chrome notification
