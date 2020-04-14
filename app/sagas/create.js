@@ -38,7 +38,6 @@ function* addAttachment({ key, file }) {
     const attachment = yield call(doPost, '/files/upload', formData, { isForm: true });
     yield put(handleAddCreateAttachmentSuccess(key, attachment));
   } catch (error) {
-    console.log(error)
     yield put(handleAddCreateAttachmentError(key, getErrorMessage(error)));
   }
 }

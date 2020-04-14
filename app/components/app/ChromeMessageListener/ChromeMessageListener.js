@@ -3,7 +3,7 @@ import { withRouter } from 'react-router-dom';
 import { EditorState, ContentState } from 'draft-js';
 
 import { CHROME, SEARCH, ROUTES, MAIN_CONTAINER_ID, INTEGRATIONS } from 'appConstants';
-import { handleNotificationClick } from 'utils/chrome';
+import { openTask } from 'utils/chrome';
 import AISuggestTab from '../AISuggestTab';
 
 const URL_REGEXES = [
@@ -203,10 +203,12 @@ class ChromeMessageListener extends Component {
     }
   }
 
-  handleNotificationOpened = (notificationId) => {
+  handleNotificationOpened = ({ type, id }) => {
     const {
       isLoggedIn, isVerified, dockVisible, tasks,
-      toggleDock, requestGetTasks, updateTasksTab, updateTasksOpenSection,
+      toggleDock,
+      openCard,
+      requestGetTasks, updateTasksTab, updateTasksOpenSection,
       history
     } = this.props;
 
@@ -217,11 +219,19 @@ class ChromeMessageListener extends Component {
     if (isLoggedIn && isVerified) {
       const { location: { pathname } } = history;
 
-      if (location === ROUTES.TASKS) {
-        requestGetTasks();
+      switch (type) {
+        case CHROME.NOTIFICATION_TYPE.TASK: {
+          if (location === ROUTES.TASKS) {
+            requestGetTasks();
+          }
+          openTask(id, tasks, updateTasksTab, updateTasksOpenSection, history);
+          break;
+        }
+        case CHROME.NOTIFICATION_TYPE.CARD: {
+          openCard({ _id: id });
+          break;
+        }
       }
-
-      handleNotificationClick(notificationId, tasks, updateTasksTab, updateTasksOpenSection, history);
     }
   }
 
@@ -243,7 +253,7 @@ class ChromeMessageListener extends Component {
         break;
       }
       case CHROME.MESSAGE.NOTIFICATION_OPENED: {
-        this.handleNotificationOpened(payload.notificationId);
+        this.handleNotificationOpened(payload);
         break;
       }
     }

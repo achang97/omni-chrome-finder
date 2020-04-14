@@ -6,7 +6,7 @@ export function isChromeUrl(url) {
   return !url || url.match(CHROME_URL_REGEX);
 }
 
-export function handleNotificationClick(taskId, tasks, updateTasksTab, updateTasksOpenSection, history) {
+export function openTask(taskId, tasks, updateTasksTab, updateTasksOpenSection, history) {
   if (taskId) {
     const task = tasks.find(({ _id }) => _id === taskId);
     if (task) {
@@ -25,4 +25,4 @@ export function handleNotificationClick(taskId, tasks, updateTasksTab, updateTas
   }
 }
 
-export default { isChromeUrl, handleNotificationClick };
+export default { isChromeUrl, openTask };

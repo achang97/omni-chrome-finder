@@ -28,7 +28,7 @@ const TaskItem = ({
         return { headerTitle: 'Omni needs you to verify this card', headerTitleClassName: '', headerIcon: <IoMdAlert className={s('tasks-icon-container text-yellow-reg mr-reg')} /> };
       case TASKS.TYPE.OUT_OF_DATE:
         return { headerTitle: `${notifierName} flagged your card as out of date`, headerTitleClassName: 'text-red-reg', headerIcon: <AiFillMinusCircle className={s('tasks-icon-container text-red-reg mr-reg')} /> };
-      case TASKS.TYPE.UNDOCUMENTED:
+      case TASKS.TYPE.NOT_DOCUMENTED:
         return { headerTitle: 'Document your question', headerTitleClassName: 'text-purple-reg', headerIcon: <AiFillQuestionCircle className={s('tasks-icon-container text-purple-reg mr-reg')} /> };
       case TASKS.TYPE.NEEDS_APPROVAL:
         return { headerTitle: `${notifierName} needs you to approve this card`, headerTitleClassName: '', headerIcon: <MdCheckCircle className={s('tasks-icon-container text-purple-reg mr-reg')} /> };
@@ -43,7 +43,7 @@ const TaskItem = ({
         return { buttonColor: 'secondary', buttonClassName: 'text-green-reg', buttonUnderline: false, buttonIcon: <MdCheck className={s('ml-sm')} /> };
       case TASKS.TYPE.OUT_OF_DATE:
         return { buttonColor: 'secondary', buttonClassName: '', buttonUnderline: false, buttonIcon: <MdEdit className={s('ml-sm')} /> };
-      case TASKS.TYPE.UNDOCUMENTED:
+      case TASKS.TYPE.NOT_DOCUMENTED:
         return { buttonColor: 'secondary', buttonClassName: '', buttonUnderline: false, buttonIcon: <MdAdd className={s('ml-sm')} /> };
       case TASKS.TYPE.NEEDS_APPROVAL:
         return { buttonColor: 'transparent', buttonClassName: '', buttonUnderline: false, buttonIcon: <MdCheck className={s('ml-sm')} /> };
@@ -58,7 +58,7 @@ const TaskItem = ({
         return 'tasks-verification-gradient';
       case TASKS.TYPE.OUT_OF_DATE:
         return 'tasks-out-of-date-gradient';
-      case TASKS.TYPE.UNDOCUMENTED:
+      case TASKS.TYPE.NOT_DOCUMENTED:
         return 'tasks-undocumented-gradient';
       case TASKS.TYPE.NEEDS_APPROVAL:
         return 'tasks-undocumented-gradient';
@@ -84,7 +84,7 @@ const TaskItem = ({
           primaryAction: () => openCard({ _id: cardId, isEditing: true }),
           secondaryAction: () => requestMarkUpToDateFromTasks(id, cardId),
         };
-      case TASKS.TYPE.UNDOCUMENTED:
+      case TASKS.TYPE.NOT_DOCUMENTED:
         return {
           primaryOption: 'Create Card',
           secondaryOption: 'Dismiss',
@@ -119,7 +119,7 @@ const TaskItem = ({
             </div>
           </div>
         );
-      case TASKS.TYPE.UNDOCUMENTED:
+      case TASKS.TYPE.NOT_DOCUMENTED:
         return (<div className={s('text-xs text-gray-dark mt-reg flex items-center')}>
           <div className={s('flex-grow')}>Question asked through Slack</div>
           <img src={SlackIcon} className={s('task-item-slack-icon rounded-full flex-shrink-0')} />
@@ -221,7 +221,7 @@ const TaskItem = ({
 TaskItem.propTypes = {
   id: PropTypes.string.isRequired,
   createdAt: PropTypes.string.isRequired,
-  type: PropTypes.oneOf([TASKS.TYPE.NEEDS_VERIFICATION, TASKS.TYPE.OUT_OF_DATE, TASKS.TYPE.UNDOCUMENTED, TASKS.TYPE.NEEDS_APPROVAL]).isRequired,
+  type: PropTypes.oneOf([TASKS.TYPE.NEEDS_VERIFICATION, TASKS.TYPE.OUT_OF_DATE, TASKS.TYPE.NOT_DOCUMENTED, TASKS.TYPE.NEEDS_APPROVAL]).isRequired,
   card: PropTypes.object.isRequired,
   resolved: PropTypes.bool.isRequired,
   notifier: PropTypes.shape({

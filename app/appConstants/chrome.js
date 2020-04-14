@@ -7,9 +7,14 @@ export const MESSAGE = {
   NOTIFICATION_OPENED: 'NOTIFICATION_OPENED',
 };
 
+export const NOTIFICATION_TYPE = {
+  CARD: 'CARD',
+  TASK: 'TASK'
+}
+
 export const STORAGE = {
   AUTH: 'auth',
   TASKS: 'tasks',
 }
 
-export default { MESSAGE, STORAGE };
+export default { MESSAGE, STORAGE, NOTIFICATION_TYPE };
