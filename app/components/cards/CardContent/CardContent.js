@@ -1,19 +1,21 @@
-import React, { useRef, useEffect } from 'react';
+import React, { useRef, useEffect, useState } from 'react';
 import PropTypes from 'prop-types';
 import _ from 'lodash';
-import { MdCheck, MdArrowDropDown, MdCloudUpload, MdMoreHoriz, MdModeEdit, MdThumbUp, MdBookmarkBorder, MdError, MdPerson, MdAttachment, MdKeyboardArrowLeft, MdLock } from 'react-icons/md';
+import { MdCheck, MdArrowDropDown, MdCloudUpload, MdMoreHoriz, MdModeEdit, MdThumbUp, MdBookmarkBorder, MdError, MdPerson, MdAttachment, MdKeyboardArrowLeft, MdLock, MdContentCopy } from 'react-icons/md';
+import { IoIosShareAlt } from 'react-icons/io';
 import { FaSlack } from 'react-icons/fa';
 import { EditorState } from 'draft-js';
 import { Resizable } from 're-resizable';
 
 import TextEditor from 'components/editors/TextEditor';
-import { Button, Dropzone, Timeago, Modal, CheckBox, Loader, Separator } from 'components/common';
+import { Button, Dropzone, Timeago, Modal, CheckBox, Loader, Separator, Message } from 'components/common';
 import { ScreenRecordButton, AttachmentDropzone } from 'components/attachments';
 import { CardStatus, CardTags, CardSideDock, CardCreateModal, CardConfirmModals, CardConfirmModal } from 'components/cards';
 
 import SlackIcon from 'assets/images/icons/Slack_Mark.svg';
 
-import { hasValidEdits, toggleUpvotes, cardStateChanged } from 'utils/card';
+import { hasValidEdits, toggleUpvotes, cardStateChanged, copyCardUrl } from 'utils/card';
+import { copyText } from 'utils/window';
 import { generateFileKey, isAnyLoading } from 'utils/file';
 import { CARD, REQUEST, PROFILE } from 'appConstants';
 
@@ -24,6 +26,7 @@ const s = getStyleApplicationFn(style);
 
 const CardContent = (props) => {
   const footerRef = useRef(null);
+  const [toastMessage, setToastMessage] = useState(null);
 
   useEffect(() => {
     const { hasLoaded, status, slackThreadConvoPairs, slackReplies, openCardModal } = props;
@@ -165,6 +168,11 @@ const CardContent = (props) => {
     });
   }
 
+  const shareCard = () => {
+    setToastMessage('Copied link to clipboard!');
+    copyCardUrl(props._id);
+  }
+
   const renderHeader = () => {
     const {
       isEditing, tags, createdAt, outOfDateReason, lastVerified, lastEdited,
@@ -219,6 +227,9 @@ const CardContent = (props) => {
             </div>
           }
           <div className={s('flex items-center')}>
+            <button onClick={shareCard} className={s('mr-sm text-lg')}>
+              <IoIosShareAlt />
+            </button>
             <button onClick={openCardSideDock}>
               <MdMoreHoriz />
             </button>
@@ -294,10 +305,23 @@ const CardContent = (props) => {
     );
   }
 
+  const copyAnswer = () => {
+    setToastMessage('Copied answer to clipboard!');
+    copyText(props.answer);
+  }
+
   const renderAnswer = () => {
     const { isEditing, editorEnabled, selectedMessages, slackReplies, edits } = props;
     return (
       <div className={s('px-2xl py-sm flex-grow min-h-0 flex flex-col min-h-0 relative')}>
+        { !isEditing &&
+          <button
+            className={s('bg-white shadow-md rounded-full w-2xl h-2xl flex items-center justify-center absolute top-0 right-0 m-reg z-10')}
+            onClick={copyAnswer}
+          >
+            <MdContentCopy className={s('text-gray-dark')} />          
+          </button>
+        }
         <div className={s('flex-grow min-h-0 flex flex-col min-h-0')}>
           { renderTextEditor(CARD.EDITOR_TYPE.ANSWER) }
         </div>
@@ -340,7 +364,16 @@ const CardContent = (props) => {
     const bookmarkOnClick = hasBookmarked ? requestRemoveBookmark : requestAddBookmark;
 
     return (
-      <div className={s('flex-shrink-0 min-h-0')} ref={footerRef}>
+      <div className={s('flex-shrink-0 min-h-0 relative')} ref={footerRef}>
+        { !isEditing && toastMessage &&
+          <Message
+            className={s('card-content-toast')}
+            message={toastMessage}
+            animate
+            temporary
+            onHide={() => setToastMessage(null)}
+          />
+        }
         { isEditing ?
           (status === CARD.STATUS.NOT_DOCUMENTED ?
             <Button

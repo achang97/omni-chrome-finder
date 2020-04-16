@@ -9,7 +9,7 @@ import { Button, Dropdown, Triangle, Modal, Message, Loader, Timeago, Separator 
 
 import { CARD, URL } from 'appConstants';
 import { getContentStateHTMLFromString } from 'utils/editor';
-import { copyText } from 'utils/window';
+import { copyCardUrl } from 'utils/card';
 
 import { colors } from 'styles/colors';
 
@@ -83,8 +83,7 @@ const SuggestionCard = ({
 
   const shareCard = () => {
     // Create invisible element with text
-    copyText(`${URL.EXTENSION}?cardId=${id}`);
-
+    copyCardUrl(id);
     toggleActiveButton(BUTTON_TYPE.SHARE);
   }
 
