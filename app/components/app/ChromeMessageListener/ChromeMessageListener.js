@@ -1,9 +1,9 @@
 import React, { Component } from 'react';
 import { withRouter } from 'react-router-dom';
+import queryString from 'query-string';
 import { EditorState, ContentState } from 'draft-js';
 
-import { CHROME, SEARCH, ROUTES, MAIN_CONTAINER_ID, INTEGRATIONS } from 'appConstants';
-import { openTask } from 'utils/chrome';
+import { CHROME, SEARCH, ROUTES, MAIN_CONTAINER_ID, INTEGRATIONS, URL } from 'appConstants';
 import AISuggestTab from '../AISuggestTab';
 
 const URL_REGEXES = [
@@ -25,6 +25,8 @@ class ChromeMessageListener extends Component {
   componentDidMount() {
     chrome.runtime.onMessage.addListener(this.listener);
     window.addEventListener('load', this.handlePageLoad);
+
+    this.openChromeExtension();
   }
 
   componentDidUpdate(prevProps) {
@@ -47,6 +49,46 @@ class ChromeMessageListener extends Component {
     this.disconnectMutatorObserver();
   }
 
+  openChromeExtension = () => {
+    const { dockVisible, toggleDock, openCard, isLoggedIn } = this.props;
+    if (window.location.href.startsWith(URL.EXTENSION)) {
+      if (!dockVisible) {
+        toggleDock();
+      }
+
+      if (isLoggedIn) {
+        const { taskId, cardId, edit } = queryString.parse(window.location.search);
+        if (taskId) {
+          this.openTask(taskId);
+        }
+
+        if (cardId) {
+          openCard({ _id: cardId, isEditing: edit === 'true' });
+        }        
+      }
+    }
+  }
+
+  openTask = (taskId) => {
+    const { tasks, updateTasksTab, updateTasksOpenSection, history } = this.props;
+    if (taskId) {
+      const task = tasks.find(({ _id }) => _id === taskId);
+      if (task) {
+        if (task.status === TASKS.TYPE.NEEDS_APPROVAL) {
+          // Go to Needs Approval Tab
+          updateTasksTab(1);
+        } else {
+          updateTasksTab(0);
+          const taskSectionType = TASKS.SECTIONS.find(({ taskTypes }) => (
+            taskTypes.length === 1 && taskTypes[0] === task.status
+          ));
+          updateTasksOpenSection(taskSectionType ? taskSectionType.type : TASKS.SECTION_TYPE.ALL);
+        }
+        history.push(ROUTES.TASKS);
+      }
+    }
+  }
+
   disconnectMutatorObserver = () => {
     if (this.observer) {
       // Later, you can stop observing
@@ -57,7 +99,7 @@ class ChromeMessageListener extends Component {
 
   createMutator(targetNode, config) {
     const callback = (mutations) => {
-      this.handleTabUpdate(false);
+      this.handlePageUpdate(false);
     };
 
     // Create an observer instance linked to the callback function
@@ -137,15 +179,15 @@ class ChromeMessageListener extends Component {
   };
 
   handlePageLoad = () => {
-    this.handleTabUpdate(true);
+    this.handlePageUpdate(true);
 
     if (!this.state.hasLoaded) {
       this.setState({ hasLoaded: true });
     }
   };
 
-  handleTabUpdate = (isNewPage) => {
-    const { isLoggedIn, isVerified, requestSearchCards, clearSearchCards, autofindPermissions } = this.props;
+  handlePageUpdate = (isNewPage) => {
+    const { isLoggedIn, dockVisible, isVerified, requestSearchCards, clearSearchCards, autofindPermissions } = this.props;
 
     const integration = this.getIntegration();
     if (isLoggedIn && isVerified && autofindPermissions[integration]) {
@@ -224,7 +266,7 @@ class ChromeMessageListener extends Component {
           if (location === ROUTES.TASKS) {
             requestGetTasks();
           }
-          openTask(id, tasks, updateTasksTab, updateTasksOpenSection, history);
+          this.openTask(id);
           break;
         }
         case CHROME.NOTIFICATION_TYPE.CARD: {
@@ -243,7 +285,8 @@ class ChromeMessageListener extends Component {
         break;
       }
       case CHROME.MESSAGE.TAB_UPDATE: {
-        this.handleTabUpdate(true);
+        this.openChromeExtension();
+        this.handlePageUpdate(true);
         break;
       }
       case CHROME.MESSAGE.SEARCH:

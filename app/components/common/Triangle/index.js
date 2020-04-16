@@ -37,8 +37,25 @@ const getStyle = (direction, color, size, isInner) => {
   }
 };
 
+const getPositionStyle = (direction, size, outlineSize) => {
+  switch (direction) {
+    case 'up': {
+      return { top: `${outlineSize}px`, left: `-${size}px` };
+    }
+    case 'down': {
+      return { top: `-${size + outlineSize}px`, left: `-${size}px` };
+    }
+    case 'left': {
+      return { top: `-${size}px`, left: `${outlineSize}px` };
+    }
+    case 'right': {
+      return { top: `-${size}px`, left: `-${size + outlineSize}px` };
+    }
+  }
+}
+
 const Triangle = ({ direction, color, size, outlineSize, outlineColor, className, style }) => {
-  const innerStyle = { ...getStyle(direction, color, size, true), top: `-${size}px`, left: `${outlineSize}px` };
+  const innerStyle = { ...getStyle(direction, color, size, true), ...getPositionStyle(direction, size, outlineSize) };
   const outerStyle = getStyle(direction, outlineColor, size + outlineSize, false);
 
   return (

@@ -10,4 +10,6 @@ export const USER_ROLE = {
   MEMBER: 'Member'
 };
 
-export default { SETTING_SECTION_TYPE, USER_ROLE };
+export const ONBOARDING_COMPLETE = -1;
+
+export default { SETTING_SECTION_TYPE, USER_ROLE, ONBOARDING_COMPLETE };

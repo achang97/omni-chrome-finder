@@ -1,6 +1,6 @@
 import _ from 'lodash';
 import queryString from 'query-string';
-import { WEB_APP_EXTENSION_URL, NODE_ENV, CHROME, REQUEST } from 'appConstants';
+import { URL, NODE_ENV, CHROME, REQUEST } from 'appConstants';
 import { setStorage, getStorage, addStorageListener } from 'utils/storage';
 import { isChromeUrl } from 'utils/chrome';
 
@@ -51,7 +51,6 @@ function loadScript(name, tabId, cb) {
 }
 
 function createNotification({ userId, message, notification }) {
-  console.log(notification)
   const { notifier, resolver, card, question, status, resolved, _id } = notification;
 
   // Create chrome notification
@@ -147,7 +146,7 @@ chrome.tabs.onUpdated.addListener(async (tabId, changeInfo, tab) => {
 
 chrome.browserAction.onClicked.addListener(async (tab) => {
   if (isChromeUrl(tab.url)) {
-    window.open(WEB_APP_EXTENSION_URL);
+    window.open(URL.EXTENSION);
   } else {
     const tabId = tab.id;
     const isInjected = (await injectExtension(tabId))[0];
@@ -192,7 +191,7 @@ chrome.notifications.onClicked.addListener(async (notificationId) => {
         }
       }
 
-      const link = `${WEB_APP_EXTENSION_URL}?${queryString.stringify(queryParams)}`;
+      const link = `${URL.EXTENSION}?${queryString.stringify(queryParams)}`;
       const newWindow = window.open(link, '_blank');
       newWindow.focus();
     }

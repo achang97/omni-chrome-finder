@@ -18,7 +18,8 @@ export const ROUTES = {
   SUGGEST: '/suggest',
   LOGIN: '/login',
   SIGNUP: '/signup',
-  FORGOT_PASSWORD: '/forgot'
+  FORGOT_PASSWORD: '/forgot',
+  COMPLETE_ONBOARDING: '/completeOnboarding'
 };
 
 export const NODE_ENV = {
@@ -28,7 +29,11 @@ export const NODE_ENV = {
 
 export const MAIN_CONTAINER_ID = 'omni-chrome-ext-main-container';
 
-export const WEB_APP_EXTENSION_URL = 'https://app.addomni.com/extension';
+const PROD_WEB_APP_URL = 'https://app.addomni.com';
+export const URL = {
+  WEB_APP: process.env.NODE_ENV === NODE_ENV.DEV ? 'http://localhost:5000' : PROD_WEB_APP_URL,
+  EXTENSION: 'https://app.addomni.com/extension', 
+}
 
 export const INTEGRATIONS = {
   GOOGLE: { type: 'google', title: 'Google Drive', logo: GoogleDriveIcon },
@@ -43,4 +48,4 @@ export const INTEGRATIONS = {
 
 export const NOOP = () => {};
 
-export default { ROUTES, NODE_ENV, MAIN_CONTAINER_ID, WEB_APP_EXTENSION_URL, INTEGRATIONS, NOOP };
+export default { ROUTES, NODE_ENV, MAIN_CONTAINER_ID, URL, INTEGRATIONS, NOOP };

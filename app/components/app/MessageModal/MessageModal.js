@@ -1,4 +1,5 @@
 import React from 'react';
+import PropTypes from 'prop-types';
 import Modal from 'components/common/Modal';
 import Button from 'components/common/Button';
 
@@ -19,8 +20,8 @@ const MessageModal = ({
     bodyClassName={s('rounded-bl-lg rounded-tl-lg flex flex-col')}
   >
     <div className={s('p-xl')}>
-      { !showHeader && <div className={s('mb-lg')}> {title} </div> }
-      <div className={s('text-center')}> {subtitle} </div>
+      { !showHeader && <div> {title} </div> }
+      { subtitle && <div className={s('text-center text-sm mt-lg')}> {subtitle} </div> }
     </div>
     <Button
       text={buttonText || 'Ok'}
@@ -32,5 +33,14 @@ const MessageModal = ({
     />
   </Modal>
 );
+
+MessageModal.propTypes = {
+  modalProps: PropTypes.shape({
+    title: PropTypes.any.isRequired,
+    subtitle: PropTypes.any,
+    buttonText: PropTypes.any,
+    showHeader: PropTypes.bool,
+  }).isRequired
+}
 
 export default MessageModal;
