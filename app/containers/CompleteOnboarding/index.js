@@ -1,9 +1,15 @@
 import { connect } from 'react-redux';
 import { logout } from 'actions/auth';
 import { requestGetUser } from 'actions/profile';
+import { ONBOARDING_COMPLETE } from 'appConstants/profile';
 import CompleteOnboarding from './CompleteOnboarding';
 
-const ONBOARDING_COMPLETE = -1;
+const ONBOARDING_SECTION = {
+  CREATE_CARDS: 'createCards',
+  SEARCH: 'search',
+  SCREEN_RECORD: 'screenRecord',
+  INTEGRATIONS: 'integrations',
+};
 
 const mapStateToProps = state => {
   const {
@@ -19,22 +25,15 @@ const mapStateToProps = state => {
     }
   } = state;
 
-  let onboardingSection, onboardingSubsection;
-  if (extension.createCards !== ONBOARDING_COMPLETE) {
-    onboardingSection = 1;
-    onboardingSubsection = extension.createCards;
-  } else if (extension.search !== ONBOARDING_COMPLETE) {
-    onboardingSection = 2;
-    onboardingSubsection = extension.search;
-  } else if (extension.screenRecord !== ONBOARDING_COMPLETE) {
-    onboardingSection = 3;
-    onboardingSubsection = extension.screenRecord;
-  } else if (extension.integrations !== ONBOARDING_COMPLETE) {
-    onboardingSection = 4;
-    onboardingSubsection = extension.integrations;
-  }
+  const sections = [
+    ONBOARDING_SECTION.CREATE_CARDS,
+    ONBOARDING_SECTION.SEARCH,
+    ONBOARDING_SECTION.SCREEN_RECORD,
+    ONBOARDING_SECTION.INTEGRATIONS,
+  ];
 
-  return { isGettingUser, onboardingSection, onboardingSubsection };
+  const section = sections.find(section => extension[section] !== ONBOARDING_COMPLETE);
+  return { isGettingUser, onboardingSection: section, onboardingSubsection: extension[section] };
 }
 
 const mapDispatchToProps = {

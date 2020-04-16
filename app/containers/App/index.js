@@ -3,7 +3,7 @@ import { withRouter } from 'react-router-dom';
 
 import { toggleDock } from 'actions/display';
 import { requestGetUser } from 'actions/profile';
-import { requestGetTasks, updateTasksOpenSection, updateTasksTab } from 'actions/tasks';
+import { requestGetTasks } from 'actions/tasks';
 import { openCard } from 'actions/cards';
 
 import { SEARCH } from 'appConstants';
@@ -18,9 +18,6 @@ const mapStateToProps = (state) => {
     },
     auth: {
       token
-    },
-    tasks: {
-      tasks
     },
     profile: {
       user
@@ -39,7 +36,6 @@ const mapStateToProps = (state) => {
     dockExpanded,
     isLoggedIn: !!token,
     user,
-    tasks,
     showAISuggest: cards.length !== 0,
   };
 }
@@ -48,8 +44,6 @@ const mapDispatchToProps = {
   toggleDock,
   requestGetUser,
   requestGetTasks,
-  updateTasksTab,
-  updateTasksOpenSection,
   openCard,
 }
 

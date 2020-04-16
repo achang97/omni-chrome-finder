@@ -146,7 +146,7 @@ chrome.tabs.onUpdated.addListener(async (tabId, changeInfo, tab) => {
 
 chrome.browserAction.onClicked.addListener(async (tab) => {
   if (isChromeUrl(tab.url)) {
-    window.open(WEB_APP_EXTENSION_URL);
+    window.open(URL.EXTENSION);
   } else {
     const tabId = tab.id;
     const isInjected = (await injectExtension(tabId))[0];
@@ -191,7 +191,7 @@ chrome.notifications.onClicked.addListener(async (notificationId) => {
         }
       }
 
-      const link = `${WEB_APP_EXTENSION_URL}?${queryString.stringify(queryParams)}`;
+      const link = `${URL.EXTENSION}?${queryString.stringify(queryParams)}`;
       const newWindow = window.open(link, '_blank');
       newWindow.focus();
     }

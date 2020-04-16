@@ -39,8 +39,8 @@ const dockPanelStyles = {
 };
 
 const App = ({ 
-  dockVisible, dockExpanded, isLoggedIn, user, tasks, showAISuggest, location: { pathname }, history,
-  toggleDock, requestGetUser, requestGetTasks, updateTasksTab, updateTasksOpenSection, openCard,
+  dockVisible, dockExpanded, isLoggedIn, user, showAISuggest, location: { pathname }, history,
+  toggleDock, requestGetUser, requestGetTasks, openCard,
 }) => {
   useEffect(() => {
     if (isLoggedIn) {
@@ -50,28 +50,7 @@ const App = ({
         requestGetTasks();
       }
     }
-
-    openChromeExtension();
   }, []);
-
-  const openChromeExtension = () => {
-    if (window.location.href.startsWith(URL.EXTENSION)) {
-      if (!dockVisible) {
-        toggleDock();
-      }
-
-      if (isLoggedIn) {
-        const { taskId, cardId, edit } = queryString.parse(window.location.search);
-        if (taskId) {
-          chromeUtils.openTask(taskId, tasks, updateTasksTab, updateTasksOpenSection, history);
-        }
-
-        if (cardId) {
-          openCard({ _id: cardId, isEditing: edit === 'true' });
-        }        
-      }
-    }
-  }
 
   const isVerified = user && user.isVerified;
   const completedOnboarding = user && auth.hasCompletedOnboarding(user.onboarding);
