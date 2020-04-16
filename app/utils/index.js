@@ -2,7 +2,6 @@ export {default as animate} from './animate';
 export {default as array} from './array';
 export {default as auth} from './auth';
 export {default as card} from './card';
-export {default as chrome} from './chrome';
 export {default as editor} from './editor';
 export {default as file} from './file';
 export {default as heap} from './heap';

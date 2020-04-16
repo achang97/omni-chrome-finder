@@ -2,7 +2,6 @@ import _ from 'lodash';
 import queryString from 'query-string';
 import { URL, NODE_ENV, CHROME, REQUEST } from 'appConstants';
 import { setStorage, getStorage, addStorageListener } from 'utils/storage';
-import { isChromeUrl } from 'utils/chrome';
 
 let socket;
 
@@ -119,7 +118,7 @@ function initSocket() {
 }
 
 chrome.tabs.onUpdated.addListener(async (tabId, changeInfo, tab) => {
-  if (!isChromeUrl(tab.url)) {
+  try {
     switch (changeInfo.status) {
       case 'loading': {
         const isInjected = (await injectExtension(tabId))[0];
@@ -140,14 +139,14 @@ chrome.tabs.onUpdated.addListener(async (tabId, changeInfo, tab) => {
         }
         break;
       }
-    }
+    }    
+  } catch (error) {
+    // Do nothing    
   }
 });
 
 chrome.browserAction.onClicked.addListener(async (tab) => {
-  if (isChromeUrl(tab.url)) {
-    window.open(URL.EXTENSION);
-  } else {
+  try {
     const tabId = tab.id;
     const isInjected = (await injectExtension(tabId))[0];
     if (!chrome.runtime.lastError) {
@@ -162,7 +161,9 @@ chrome.browserAction.onClicked.addListener(async (tab) => {
       } else {
         chrome.tabs.sendMessage(tabId, { type: CHROME.MESSAGE.TOGGLE });
       }
-    }    
+    }
+  } catch (error) {
+    window.open(URL.EXTENSION);
   }
 });
 
