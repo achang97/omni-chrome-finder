@@ -126,7 +126,7 @@ const CardSideDock = (props) => {
     );
   }
 
-  const renderMediaToggleableInput = ({ name, key, location }) => {
+  const renderMediaToggleableInput = ({ name, key, url }) => {
     const { isEditing, updateCardAttachmentName } = props;
 
     return ( isEditing ?
@@ -140,7 +140,7 @@ const CardSideDock = (props) => {
         className={s('truncate text-xs font-semibold text-center')}
       /> :
       <a
-        href={location}
+        href={url}
         target="_blank"
         className={s('block truncate text-xs font-semibold text-center')}
       >
@@ -171,7 +171,7 @@ const CardSideDock = (props) => {
           className={s('w-full mb-xs cursor-pointer')}
           onClick={onClick}
         />
-        { renderMediaToggleableInput({ name, key, location }) }
+        { renderMediaToggleableInput({ name, key, url }) }
       </div>
     );
   };
@@ -187,7 +187,7 @@ const CardSideDock = (props) => {
           url={url}
           className={s('w-full mb-xs')}
         />
-        { renderMediaToggleableInput({ name, key, location }) }
+        { renderMediaToggleableInput({ name, key, url }) }
       </div>
     );
   };

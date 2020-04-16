@@ -50,7 +50,7 @@ const VideoPlayer = ({ url, fullscreenControlBarItems, minimizedControlBarItems,
         ref={playerRef}
         {...rest}
       >
-        <source src="https://youtu.be/xarC5jAiO7w" />
+        <source src={url} />
         <BigPlayButton position="center" className={s(`video-player-big-play-button ${player.hasStarted ? 'video-player-big-play-button-hide' : ''}`)} />
         <ControlBar disableDefaultControls autoHide={false} className={s('video-player-control-bar')}>
           { controlBarItems.map(item => CONTROL_BAR_COMPONENT_MAP[item])}

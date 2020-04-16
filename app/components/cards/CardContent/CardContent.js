@@ -178,7 +178,7 @@ const CardContent = (props) => {
       isEditing, tags, createdAt, outOfDateReason, lastVerified, lastEdited,
       sideDockOpen, openCardSideDock, closeCardSideDock,
       editorEnabled, descriptionSectionHeight, cardsWidth,
-      attachments, addCardAttachments, openCardModal, status,
+      attachments, openCardModal, status,
       updateCardQuestion,
       user
     } = props;
