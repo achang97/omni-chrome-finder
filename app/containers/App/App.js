@@ -4,7 +4,7 @@ import Dock from 'react-dock';
 import queryString from 'query-string';
 
 import { ROUTES, URL } from 'appConstants';
-import { heap, chrome as chromeUtils, auth } from 'utils';
+import { heap, auth } from 'utils';
 
 import { Header, ChromeMessageListener, MessageModal} from 'components/app';
 import { PublicRoute, PrivateRoute } from 'components/routes';

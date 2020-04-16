@@ -55,6 +55,7 @@ export const VERIFICATION_INTERVAL_OPTION = {
   ONE_DAY: 8,
   ONE_WEEK: 9,
 };
+
 export const VERIFICATION_INTERVAL_OPTIONS = [
   // { label: 'Auto-Remind', value: 6 },
   { label: '1 Day', value: VERIFICATION_INTERVAL_OPTION.ONE_DAY },
@@ -66,6 +67,7 @@ export const VERIFICATION_INTERVAL_OPTIONS = [
   { label: '1 Year', value: VERIFICATION_INTERVAL_OPTION.ONE_YEAR },
   { label: 'Never', value: VERIFICATION_INTERVAL_OPTION.NEVER },
 ];
+export const DEFAULT_VERIFICATION_INTERVAL = VERIFICATION_INTERVAL_OPTIONS[2];
 
 export const PERMISSION_OPTION = {
   ANYONE: 'ANYONE',

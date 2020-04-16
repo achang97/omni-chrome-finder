@@ -3,7 +3,7 @@ import { EditorState } from 'draft-js';
 import * as types from 'actions/actionTypes';
 import { removeIndex, updateIndex, updateArrayOfObjects } from 'utils/array';
 import { convertCardToFrontendFormat, generateCardId } from 'utils/card';
-import { STATUS, EDITOR_TYPE, DIMENSIONS, MODAL_TYPE, VERIFICATION_INTERVAL_OPTIONS, PERMISSION_OPTIONS } from 'appConstants/card';
+import { STATUS, EDITOR_TYPE, DIMENSIONS, MODAL_TYPE, DEFAULT_VERIFICATION_INTERVAL, VERIFICATION_INTERVAL_OPTIONS, PERMISSION_OPTIONS } from 'appConstants/card';
 
 const initialState = {
   cards: [],
@@ -32,7 +32,7 @@ const BASE_CARD_STATE = {
   status: STATUS.NOT_DOCUMENTED,
   tags: [],
   keywords: [],
-  verificationInterval: VERIFICATION_INTERVAL_OPTIONS[0],
+  verificationInterval: DEFAULT_VERIFICATION_INTERVAL,
   permissions: PERMISSION_OPTIONS[0],
   permissionGroups: [],
   upvotes: [],
