@@ -287,7 +287,7 @@ const CardContent = (props) => {
               text={attachments.length}
               iconLeft={false}
               icon={<MdAttachment className={s('ml-xs')} />}
-              color={'secondary'}
+              color={attachments.length > 0 ? 'gold' : 'secondary'}
               className={s('py-sm px-reg rounded-full')}
               onClick={openCardSideDock}
             />
