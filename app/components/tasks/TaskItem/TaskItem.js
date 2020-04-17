@@ -107,14 +107,14 @@ const TaskItem = ({
     const { answer, outOfDateReason, owners } = card;
     switch (type) {
       case TASKS.TYPE.NEEDS_VERIFICATION:
-        return (<div className={s('text-xs text-gray-dark mt-reg vertical-ellipsis-2')}>{answer}</div>);
+        return (<div className={s('text-xs text-gray-dark mt-reg vertical-ellipsis-2 break-words line-clamp-4')}>{answer}</div>);
       case TASKS.TYPE.OUT_OF_DATE:
         return (
           <div className={s('flex mt-reg')}>
             <div className={s('mr-sm mt-reg flex-shrink-0')}>
               <PlaceholderImg name={`${outOfDateReason.sender.firstname} ${outOfDateReason.sender.lastname}`} src={outOfDateReason.sender.profilePic} className={s('task-item-profile-picture rounded-full text-xs')} />
             </div>
-            <div className={s('bg-gray-xlight p-reg rounded-lg w-full vertical-ellipsis-2 text-xs')}>
+            <div className={s('bg-gray-xlight p-reg rounded-lg w-full vertical-ellipsis-2 text-xs break-words line-clamp-4')}>
               {outOfDateReason.reason === '' ? 'No reason specified.' : outOfDateReason.reason}
             </div>
           </div>
@@ -158,7 +158,7 @@ const TaskItem = ({
         </div>
 
         <div className={s('p-lg bg-white shadow-md my-lg rounded-lg shadow-md cursor-pointer')} onClick={() => openCard({ _id: cardId })}>
-          <div className={s('font-semibold vertical-ellipsis-2 text-md')}>{question}</div>
+          <div className={s('font-semibold vertical-ellipsis-2 text-md line-clamp-2')}>{question}</div>
           { renderTaskPreview() }
         </div>
 
