@@ -41,7 +41,7 @@ const Verify = ({
             value={verificationCode}
             placeholder="Verification code"
             onChange={e => updateVerificationCode(e.target.value)}
-            className={s('mt-reg w-full')}
+            className={s('mt-reg')}
           />
           <div className={s('flex justify-end')}>
             <div className={s('text-gray-dark text-xs cursor-pointer mr-sm')} onClick={requestGetUser}>

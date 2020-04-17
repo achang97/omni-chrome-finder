@@ -27,7 +27,6 @@ const ForgotPassword = ({
           value={recoveryEmail}
           placeholder="Enter your recovery email"
           onChange={e => updateRecoveryEmail(e.target.value)}
-          className={s('w-full')}
         />
       }
       error={recoveryError}

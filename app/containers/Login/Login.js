@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import { Link } from 'react-router-dom';
 
 import AuthView from 'components/auth/AuthView';
-import { ROUTES } from 'appConstants';
+import { ROUTES, URL } from 'appConstants';
 
 import { getStyleApplicationFn } from 'utils/style';
 const s = getStyleApplicationFn();
@@ -21,14 +21,12 @@ const Login = ({
           type="text"
           value={loginEmail}
           placeholder="Email"
-          className={s('w-full')}
           onChange={e => updateLoginEmail(e.target.value)}
         />
         <input
           type="password"
           value={loginPassword}
           placeholder="Password"
-          className={s('w-full')}
           onChange={e => updateLoginPassword(e.target.value)}
         />
         <Link
@@ -46,12 +44,13 @@ const Login = ({
       disabled: loginEmail === '' || loginPassword === '' || isLoggingIn
     }}
     footer={
-      <Link
-        to={ROUTES.SIGNUP}
+      <a
+        href={`${URL.WEB_APP}/signup`}
+        target="_blank"
         className={s('text-xs text-gray-dark text-center block')}
       >
         Don't have an account? Sign up
-      </Link>
+      </a>
     }
   />
 );

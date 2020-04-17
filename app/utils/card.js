@@ -5,10 +5,8 @@ import { getEditorStateFromContentState, getContentStateFromEditorState } from '
 import { createSelectOptions } from './select';
 import { getArrayIds } from './array';
 import { isAnyLoading } from './file';
-import {
-  VERIFICATION_INTERVAL_OPTIONS, PERMISSION_OPTION,
-  PERMISSION_OPTIONS, STATUS
-} from 'appConstants/card';
+import { copyText } from './window';
+import { URL, CARD } from 'appConstants';
 
 export function convertCardToFrontendFormat(card) {
   const {
@@ -17,24 +15,24 @@ export function convertCardToFrontendFormat(card) {
     upvotes, slackReplies, ...rest
   } = card;
 
-  let verificationInterval = VERIFICATION_INTERVAL_OPTIONS.find(option => (
+  let verificationInterval = CARD.VERIFICATION_INTERVAL_OPTIONS.find(option => (
     option.value === updateInterval
   ));
 
   if (!verificationInterval) {
-    verificationInterval = VERIFICATION_INTERVAL_OPTIONS[0];
+    verificationInterval = CARD.VERIFICATION_INTERVAL_OPTIONS[0];
   }
 
   let permissionsValue;
   if (userPermissions && userPermissions.length !== 0) {
-    permissionsValue = PERMISSION_OPTION.JUST_ME;
+    permissionsValue = CARD.PERMISSION_OPTION.JUST_ME;
   } else if (permissionGroups && permissionGroups.length !== 0) {
-    permissionsValue = PERMISSION_OPTION.SPECIFIC_GROUPS;
+    permissionsValue = CARD.PERMISSION_OPTION.SPECIFIC_GROUPS;
   } else {
-    permissionsValue = PERMISSION_OPTION.ANYONE;
+    permissionsValue = CARD.PERMISSION_OPTION.ANYONE;
   }
 
-  const permissions = PERMISSION_OPTIONS.find(option => option.value === permissionsValue);
+  const permissions = CARD.PERMISSION_OPTIONS.find(option => option.value === permissionsValue);
 
   return {
     descriptionEditorState: contentStateDescription ?
@@ -52,7 +50,7 @@ export function convertCardToFrontendFormat(card) {
     slackThreadIndex: 0,
     slackReplies: slackReplies.map(reply => ({
       ...reply,
-      selected: status !== STATUS.NOT_DOCUMENTED
+      selected: status !== CARD.STATUS.NOT_DOCUMENTED
     })),
     ...rest,
   };
@@ -81,8 +79,8 @@ export function hasValidEdits(edits) {
     (!!question && question !== '') &&
     (!!answerEditorState && answerEditorState.getCurrentContent().hasText()) &&
     (!!permissions && (
-      permissions.value === PERMISSION_OPTION.JUST_ME ||
-      ((permissions.value !== PERMISSION_OPTION.SPECIFIC_GROUPS || permissionGroups.length !== 0) &&
+      permissions.value === CARD.PERMISSION_OPTION.JUST_ME ||
+      ((permissions.value !== CARD.PERMISSION_OPTION.SPECIFIC_GROUPS || permissionGroups.length !== 0) &&
         owners.length !== 0 &&
         !!verificationInterval
       )
@@ -100,7 +98,7 @@ export function isExistingCard(id) {
 }
 
 export function isJustMe(permissions) {
-  return permissions && permissions.value === PERMISSION_OPTION.JUST_ME;
+  return permissions && permissions.value === CARD.PERMISSION_OPTION.JUST_ME;
 }
 
 export function cardStateChanged(card) {
@@ -137,4 +135,8 @@ export function cardStateChanged(card) {
   return false;
 }
 
-export default { convertCardToFrontendFormat, toggleUpvotes, hasValidEdits, generateCardId, isExistingCard, isJustMe, cardStateChanged };
+export function copyCardUrl(cardId) {
+  copyText(`${URL.EXTENSION}?cardId=${cardId}`);
+}
+
+export default { convertCardToFrontendFormat, toggleUpvotes, hasValidEdits, generateCardId, isExistingCard, isJustMe, cardStateChanged, copyCardUrl };

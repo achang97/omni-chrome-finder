@@ -37,14 +37,12 @@ const Signup = ({
           type="text"
           value={signupEmail}
           placeholder="Email"
-          className={s('w-full mb-sm')}
           onChange={e => updateSignupEmail(e.target.value)}
         />
         <input
           type="password"
           value={signupPassword}
           placeholder="Password"
-          className={s('w-full mb-sm')}
           onChange={e => updateSignupPassword(e.target.value)}
         />
       </React.Fragment>
