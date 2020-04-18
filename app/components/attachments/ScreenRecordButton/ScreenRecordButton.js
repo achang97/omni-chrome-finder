@@ -1,6 +1,5 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
-import moment from 'moment';
 import ReactTooltip from 'react-tooltip';
 import { FaRegDotCircle } from 'react-icons/fa';
 import { IoIosSquare } from 'react-icons/io';
@@ -17,15 +16,6 @@ const s = getStyleApplicationFn(attachmentsStyle, screenRecordButtonStyle);
  * callbacks related to MediaRecorder.
  */
 class ScreenRecordButton extends Component {
-  endRecording = () => {
-    const { activeId, endScreenRecording, onSuccess, recordedChunks } = this.props;
-
-    const now = moment().format('DD.MM.YYYY HH:mm:ss');
-    const recording = new File(recordedChunks, `Screen Recording ${now}.webm`, { type: 'video/webm' });
-    onSuccess({ activeId, recording });  
-    endScreenRecording();
-  }
-
   stopStream = stream => {
     if (stream) {
       stream.getTracks().forEach(track => track.stop());
@@ -67,7 +57,7 @@ class ScreenRecordButton extends Component {
   };
 
   startRecording = async () => {
-    const { addScreenRecordingChunk, startScreenRecording, id } = this.props;
+    const { addScreenRecordingChunk, startScreenRecording, id, onSuccess } = this.props;
 
     let desktopStream, voiceStream;
 
@@ -99,10 +89,10 @@ class ScreenRecordButton extends Component {
 
     const stream = new MediaStream(tracks);
     desktopStream.oninactive = () => {
-      const { localStream, voiceStream } = this.props;
+      const { localStream, voiceStream, endScreenRecording } = this.props;
       this.stopStream(localStream);
       this.stopStream(voiceStream);
-      this.endRecording();
+      endScreenRecording();
     };
 
     const mediaRecorder = new MediaRecorder(stream, {
@@ -115,7 +105,7 @@ class ScreenRecordButton extends Component {
     };
     mediaRecorder.start(10);
 
-    startScreenRecording(id, stream, desktopStream, voiceStream, mediaRecorder);
+    startScreenRecording({ id, stream, desktopStream, voiceStream, mediaRecorder, onSuccess });
   }
 
   render() {
