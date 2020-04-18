@@ -287,8 +287,10 @@ function* removeBookmark({ cardId }) {
   }
 }
 
-function* addAttachment({ key, file }) {
-  const cardId = yield call(getActiveCardId);
+function* addAttachment({ cardId, key, file }) {
+  if (!cardId) {
+    cardId = yield call(getActiveCardId);
+  }
 
   try {
     const formData = new FormData();

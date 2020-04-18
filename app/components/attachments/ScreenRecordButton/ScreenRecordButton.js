@@ -18,11 +18,11 @@ const s = getStyleApplicationFn(attachmentsStyle, screenRecordButtonStyle);
  */
 class ScreenRecordButton extends Component {
   endRecording = () => {
-    const { endScreenRecording, onSuccess, recordedChunks } = this.props;
+    const { activeId, endScreenRecording, onSuccess, recordedChunks } = this.props;
 
     const now = moment().format('DD.MM.YYYY HH:mm:ss');
     const recording = new File(recordedChunks, `Screen Recording ${now}.webm`, { type: 'video/webm' });
-    onSuccess(recording);  
+    onSuccess({ activeId, recording });  
     endScreenRecording();
   }
 
@@ -67,7 +67,7 @@ class ScreenRecordButton extends Component {
   };
 
   startRecording = async () => {
-    const { addScreenRecordingChunk, startScreenRecording } = this.props;
+    const { addScreenRecordingChunk, startScreenRecording, id } = this.props;
 
     let desktopStream, voiceStream;
 
@@ -115,14 +115,15 @@ class ScreenRecordButton extends Component {
     };
     mediaRecorder.start(10);
 
-    startScreenRecording(stream, desktopStream, voiceStream, mediaRecorder);
+    startScreenRecording(id, stream, desktopStream, voiceStream, mediaRecorder);
   }
 
   render() {
-    const { isSharingDesktop, abbrText, showText, className } = this.props;
+    const { isSharingDesktop, abbrText, showText, className, id, activeId } = this.props;
+    const isActiveButton = id === activeId;
 
     let onClick, text, Icon;
-    if (!isSharingDesktop) {
+    if (!isSharingDesktop || !isActiveButton) {
       onClick = this.startRecording;
       text = abbrText ? 'Record' : 'Screen Record';
       Icon = FaRegDotCircle;
@@ -142,7 +143,7 @@ class ScreenRecordButton extends Component {
           underlineColor="red-200"
           icon={<Icon className={s(`${showText ? 'ml-sm' : ''} text-red-500`)} />}
           iconLeft={false}
-          disabled={!navigator.mediaDevices}
+          disabled={!navigator.mediaDevices || (activeId !== null && !isActiveButton)}
           data-tip
           data-for="screen-record-button" 
         />
@@ -157,6 +158,7 @@ class ScreenRecordButton extends Component {
 }
 
 ScreenRecordButton.propTypes = {
+  id: PropTypes.string.isRequired,
   onSuccess: PropTypes.func.isRequired,
   className: PropTypes.string,
   showText: PropTypes.bool,

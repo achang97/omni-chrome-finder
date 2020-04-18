@@ -161,10 +161,10 @@ const CardContent = (props) => {
     );
   }
 
-  const addCardAttachments = (files) => {
-    const { requestAddCardAttachment } = props;
+  const addCardAttachments = (files, cardId) => {
+    const { requestAddCardAttachment, _id: currCardId } = props;
     files.forEach((file) => {
-      requestAddCardAttachment(generateFileKey(), file);
+      requestAddCardAttachment(cardId || currCardId, generateFileKey(), file);
     });
   }
 
@@ -180,7 +180,7 @@ const CardContent = (props) => {
       editorEnabled, descriptionSectionHeight, cardsWidth,
       attachments, openCardModal, status,
       updateCardQuestion,
-      user
+      user, _id: cardId, activeScreenRecordingId
     } = props;
 
     const currAttachments = getAttribute('attachments');
@@ -262,7 +262,8 @@ const CardContent = (props) => {
           }
           <div className={s('flex ml-auto')}>
             <ScreenRecordButton
-              onSuccess={recording => addCardAttachments([recording])}
+              id={cardId}
+              onSuccess={({ recording, activeId }) => addCardAttachments([recording], activeId)}
               abbrText={true}
               className={s('py-0 px-sm mr-xs')}
             />

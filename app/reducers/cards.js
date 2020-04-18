@@ -410,13 +410,21 @@ export default function cardsReducer(state = initialState, action) {
 
     /* API REQUESTS */
     case types.ADD_CARD_ATTACHMENT_REQUEST: {
-      const { key, file } = payload;
-      const { activeCard: { edits } } = state;
-      return updateActiveCardEdits({
-        attachments: [
-          ...edits.attachments,
-          { key, name: file.name, mimetype: file.type, isLoading: true, error: null }
-        ]
+      const { cardId, key, file } = payload;
+      
+      const currCard = getCardById(cardId);
+      if (!currCard) {
+        return state;
+      }
+
+      return updateCardById(cardId, {
+        edits: {
+          ...currCard.edits,
+          attachments: [
+            ...currCard.edits.attachments,
+            { key, name: file.name, mimetype: file.type, isLoading: true, error: null }
+          ]
+        }
       });
     }
     case types.ADD_CARD_ATTACHMENT_SUCCESS: {
