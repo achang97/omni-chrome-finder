@@ -316,7 +316,7 @@ const CardContent = (props) => {
       <div className={s('px-2xl py-sm flex-grow min-h-0 flex flex-col min-h-0 relative')}>
         { !isEditing &&
           <button
-            className={s('bg-white shadow-md rounded-full w-2xl h-2xl flex items-center justify-center absolute top-0 right-0 m-reg z-10')}
+            className={s('bg-white shadow-md rounded-full w-2xl h-2xl flex items-center justify-center absolute top-0 right-0 m-sm z-10')}
             onClick={copyAnswer}
           >
             <MdContentCopy className={s('text-gray-dark')} />          

@@ -8,6 +8,7 @@ import { updateCreateAnswerEditor } from 'actions/create';
 import { updateNavigateSearchText } from 'actions/navigate';
 import { requestGetTasks, updateTasksOpenSection, updateTasksTab } from 'actions/tasks';
 import { SEARCH } from 'appConstants';
+import { hasCompletedOnboarding } from 'utils/auth';
 import ChromeMessageListener from './ChromeMessageListener';
 
 const mapStateToProps = (state) => {
@@ -20,7 +21,7 @@ const mapStateToProps = (state) => {
       token
     },
     profile: {
-      user
+      user={}
     },
     tasks: {
       tasks
@@ -34,13 +35,16 @@ const mapStateToProps = (state) => {
     }
   } = state;
 
+  const { isVerified, autofindPermissions={}, onboarding } = user;
+
   return {
     dockVisible,
     dockExpanded,
     isSearchingCards,
     isLoggedIn: !!token,
-    isVerified: user && user.isVerified,
-    autofindPermissions: user ? user.autofindPermissions : {},
+    isVerified,
+    autofindPermissions,
+    hasCompletedOnboarding: hasCompletedOnboarding(onboarding),
     tasks
   };
 }
