@@ -24,7 +24,7 @@ const CardUsers = ({
     requestSearchUsers(inputValue);
   }
 
-  const shouldShowSelect = showSelect || showSelectState;
+  const shouldShowSelect = (showSelect || showSelectState) && isEditable;
   return (
     <div className={s(`card-users-container ${className}`)}>
       { shouldShowSelect &&

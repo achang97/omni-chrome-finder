@@ -55,7 +55,9 @@ const customStyles = {
   }),
   multiValue: (provided, state) => ({
     ...provided,
-    background: colors.purple.light
+    background: colors.purple.light,
+    borderRadius: '16px',
+    fontWeight: 600,
   }),
   multiValueLabel: (provided, state) => ({
     ...provided,
