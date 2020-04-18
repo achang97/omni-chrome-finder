@@ -9,19 +9,22 @@ import { getStyleApplicationFn } from 'utils/style';
 
 const s = getStyleApplicationFn(style);
 
-const CardTag = React.forwardRef(({ text, onClick, onRemoveClick, className, ...rest }, ref) => {
-  const onRemove = (e, text) => {
+const CardTag = React.forwardRef(({ name, locked, onClick, onRemoveClick, className, ...rest }, ref) => {
+  const onRemove = (e, name) => {
     e.stopPropagation();
-    onRemoveClick(text);
+    onRemoveClick(name);
   };
 
   const protectedOnClick = () => {
-    if (onClick) onClick(text);
+    if (onClick) onClick(name);
   };
 
   return (
     <div onClick={protectedOnClick} ref={ref} className={s(`card-tag ${onClick ? 'button-hover' : ''} ${className}`)} {...rest}>
-      {text}
+      <div className={s('flex items-center')}>
+        <div> {name} </div>
+        { locked && <MdLock className={s('ml-xs')} /> }
+      </div>
       { onRemoveClick &&
         <MdClose onClick={e => onRemove(e)} className={s('ml-xs button-hover')} />
       }
@@ -30,7 +33,8 @@ const CardTag = React.forwardRef(({ text, onClick, onRemoveClick, className, ...
 });
 
 CardTag.propTypes = {
-  text: PropTypes.oneOfType([PropTypes.string, PropTypes.element]).isRequired,
+  name: PropTypes.oneOfType([PropTypes.string, PropTypes.element]).isRequired,
+  locked: PropTypes.bool,
   onClick: PropTypes.func,
   onRemoveClick: PropTypes.func,
   className: PropTypes.string,
@@ -39,6 +43,7 @@ CardTag.propTypes = {
 CardTag.defaultProps = {
   className: '',
   onClick: NOOP,
+  locked: false,
 };
 
 export default CardTag;

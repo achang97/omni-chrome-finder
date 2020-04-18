@@ -74,25 +74,25 @@ class CardTags extends Component {
     </div>
   );
 
-  renderTag = ({ name, _id, locked }, i) => {
+  renderTag = ({ name, _id, locked, className }, i) => {
     const { maxWidth, tags, onTagClick, onRemoveClick, isEditable } = this.props;
     const { firstHiddenIndex } = this.state;
     return (
       <React.Fragment key={_id}>
         {i === firstHiddenIndex &&
         <CardTag
-          text={`+${tags.length - firstHiddenIndex}`}
-          className={s('flex items-center mb-xs')}
+          name={`+${tags.length - firstHiddenIndex}`}
+          className={s(`flex items-center mb-xs ${className}`)}
           onClick={onTagClick}
         />
         }
         <CardTag
-          key={name}
-          text={this.renderOptionLabel({ name, locked })}
+          name={name}
+          locked={locked}
           ref={maxWidth && ((instance) => { this.tagRefs[i] = instance; })}
-          className={s(`flex items-center mr-xs mb-xs ${maxWidth ? `whitespace-no-wrap ${i >= firstHiddenIndex ? 'invisible' : ''}` : ''}`)}
+          className={s(`flex items-center mr-xs mb-xs ${maxWidth ? `whitespace-no-wrap ${i >= firstHiddenIndex ? 'invisible' : ''}` : ''} ${className}`)}
           onClick={onTagClick}
-          onRemoveClick={isEditable ? () => onRemoveClick(i) : NOOP}
+          onRemoveClick={isEditable ? () => onRemoveClick(i) : null}
         />
       </React.Fragment>
     );
@@ -140,7 +140,7 @@ class CardTags extends Component {
             }
               { isEditable &&
               <CardTag
-                text={
+                name={
                   <div className={s('flex items-center')}>
                     <div> Add Tag </div>
                     <IoMdAdd className={s('ml-xs')} />
@@ -164,6 +164,7 @@ CardTags.propTypes = {
     name: PropTypes.string.isRequired,
     _id: PropTypes.string.isRequired,
     locked: PropTypes.bool.isRequired,
+    className: PropTypes.string,
   })).isRequired,
   maxWidth: PropTypes.number,
   onChange: PropTypes.func,
