@@ -1,6 +1,6 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import { MdClose } from 'react-icons/md';
+import { MdClose, MdLock } from 'react-icons/md';
 
 import { NOOP } from 'appConstants';
 
