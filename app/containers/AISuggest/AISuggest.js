@@ -2,6 +2,7 @@ import React from 'react';
 import { connect } from 'react-redux';
 
 import SuggestionScrollContainer from 'components/suggestions/SuggestionScrollContainer';
+import { SEARCH } from 'appConstants';
 
 import { getStyleApplicationFn } from 'utils/style';
 const s = getStyleApplicationFn();
@@ -16,7 +17,7 @@ const AISuggest = ({
     verticalMarginAdjust
     isSearchingCards={isSearchingCards}
     hasReachedLimit={hasReachedLimit}
-    onBottom={() => requestSearchCards(SEARCH_TYPE.AI_SUGGEST)}
+    onBottom={() => requestSearchCards(SEARCH.TYPE.AI_SUGGEST)}
     getCardProps={(card, i) => ({
       className: i === 0 ? 'my-reg' : ''
     })}
