@@ -95,7 +95,7 @@ const CardAttachment = ({
   const { color, underlineColor, Icon } = getAttachmentProps(type);
   const fileNameClassName = s(`underline-border ${error ? 'border-red-200' : `border-${underlineColor}`} ${textClassName}`);
 
-  const url = getFileUrl(fileKey, type, token);
+  const url = getFileUrl(fileKey, token, type);
   const isDownloadable = isHoveringIcon && !isLoading && url;
 
   let leftIcon;

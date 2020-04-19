@@ -71,7 +71,7 @@ const CardAttachments = ({
   };
 
   const getAttachmentUrl = ({ key, mimetype }) => {
-    return getFileUrl(key, mimetype, token);
+    return getFileUrl(key, token, mimetype);
   }
 
   const renderImageAttachment = ({ name, key, mimetype, isLoading, error }, i) => {

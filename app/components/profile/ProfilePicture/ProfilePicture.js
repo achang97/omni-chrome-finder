@@ -12,7 +12,7 @@ const s = getStyleApplicationFn(style);
 
 const ProfilePicture = ({
   isEditable,
-  user, token, isUpdatingPicture,
+  user, isUpdatingPicture,
   requestUpdateProfilePicture, requestDeleteProfilePicture,
 }) => {
   const [uploadedImg, setUploadedImg] = useState();
@@ -102,7 +102,6 @@ const ProfilePicture = ({
   }
 
   const render = () => {
-    const { key, mimetype } = user.profilePicture || {};
     return (
       <>
         <div>
@@ -110,7 +109,7 @@ const ProfilePicture = ({
             <div className={s('relative flex justify-center')}>
               <PlaceholderImg
                 name={`${user.firstname} ${user.lastname}`}
-                src={getFileUrl(key, mimetype, token)}
+                src={user.profilePicture}
                 className={s(`profile-picture ${isEditable ? 'opacity-50 cursor-pointer' : ''}`)}
               />
               { isEditable && (isUpdatingPicture ?
@@ -119,7 +118,7 @@ const ProfilePicture = ({
               )}          
             </div>
           )}
-          { isEditable && key &&
+          { isEditable && user.profilePicture &&
             <div className={s('mt-xs text-gray-light text-xs cursor-pointer')} onClick={requestDeleteProfilePicture}>
               Remove Picture
             </div>

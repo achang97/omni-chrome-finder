@@ -100,8 +100,8 @@ function* updateProfilePicture({ file }) {
     const formData = new FormData();
     formData.append('file', file);
 
-    const { key, mimetype } = yield call(doPost, '/files/upload', formData, { isForm: true });
-    const { userJson } = yield call(doPut, '/users', { update: { profilePicture: { key, mimetype } } });
+    const { key } = yield call(doPost, '/files/upload', formData, { isForm: true });
+    const { userJson } = yield call(doPut, '/users', { update: { profilePicture: key } });
     yield put(handleUpdateProfilePictureSuccess({ ...userJson, integrations }));
   } catch (error) {
     yield put(handleUpdateProfilePictureError(getErrorMessage(error)));
@@ -112,8 +112,8 @@ function* deleteProfilePicture() {
   try {
     const { integrations, profilePicture } = yield select(state => state.profile.user);
     const [{ userJson }] = yield all([
-      call(doPut, '/users', { update: { profilePicture: {} } }),
-      call(doDelete, `/files/${profilePicture.key}`)
+      call(doPut, '/users', { update: { profilePicture: null } }),
+      call(doDelete, `/files/${profilePicture}`)
     ]);
     yield put(handleDeleteProfilePictureSuccess({ ...userJson, integrations }));
   } catch (error) {

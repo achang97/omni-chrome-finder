@@ -41,22 +41,26 @@ const CardUsers = ({
           placeholder={'Add users...'}
           getOptionLabel={option => option.name}
           getOptionValue={option => option._id}
-          formatOptionLabel={({ _id, name, img }) => (
+          formatOptionLabel={({ _id, name, profilePicture }) => (
             <div className={s('flex items-center')}>
-              <PlaceholderImg src={img} name={name} className={s('h-3xl w-3xl rounded-full mr-sm')} />
+              <PlaceholderImg
+                src={profilePicture}
+                name={name}
+                className={s('h-3xl w-3xl rounded-full mr-sm')}
+              />
               <div> {name} </div>
             </div>
-                   )}
+          )}
           noOptionsMessage={() => isSearchingUsers ? 'Searching users...' : 'No options'}
         />
       }
-      { users.map(({ _id, name, firstname, lastname, img, isEditable: userIsEditable }, i) => (
+      { users.map(({ _id, name, firstname, lastname, profilePicture, isEditable: userIsEditable }, i) => (
         <CardUser
           key={_id}
           size={size}
           name={name || `${firstname} ${lastname}`}
           showName={showNames}
-          img={img}
+          img={profilePicture}
           className={s('mr-sm mb-sm')}
           onClick={onUserClick}
           onRemoveClick={isEditable && (userIsEditable == undefined || userIsEditable === true) ?

@@ -49,7 +49,7 @@ const Header = ({
         <Tab key="profile" value={ROUTES.PROFILE} tabContainerClassName={s("mx-reg")}>
           <PlaceholderImg
             name={`${user.firstname} ${user.lastname}`}
-            src={user.img}
+            src={user.profilePicture}
             className={s('header-profile-picture')}
           />
         </Tab>
