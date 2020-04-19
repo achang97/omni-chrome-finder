@@ -19,6 +19,7 @@ class ChromeMessageListener extends Component {
 
     this.state = {
       hasLoaded: false,
+      prevText: '',
     }
   }
 
@@ -117,6 +118,10 @@ class ChromeMessageListener extends Component {
     this.observer.observe(targetNode, config);
   }
 
+  trimAlphanumeric = (text) => {
+    return text.replace(/^[^a-z\d]+|[^a-z\d]+$/gi, '');
+  }
+
   getGoogleText = () => {
     let text = '';
 
@@ -137,23 +142,27 @@ class ChromeMessageListener extends Component {
         for (let i = 0; i < emailList.children.length; i++) {
           const email = emailList.children[i];
           if (email.getAttribute('role') === 'listitem') {
-            let innerText;
-            if (i === emailList.children.length - 1) {
-              const emailCopy = email.cloneNode(true);
-              const removeTables = emailCopy.querySelectorAll('table');
-              removeTables.forEach(table => table.remove());
+            const emailCopy = email.cloneNode(true);
 
-              const removeSignature = emailCopy.querySelector('[data-smartmail="gmail_signature"]');
-              if (removeSignature) {
-                removeSignature.remove();
-              }
+            const removeFwds = emailCopy.querySelectorAll('.gmail_quote');
+            removeFwds.forEach(fwd => fwd.remove());
 
-              innerText = emailCopy.innerText;
-            } else {
-              innerText = email.innerText;
+            const removeShowContentToggle = [
+              ...emailCopy.querySelectorAll('[aria-label="Show trimmed content"]'),
+              ...emailCopy.querySelectorAll('[aria-label="Hide expanded content"]'),
+            ];
+            removeShowContentToggle.forEach(toggle => toggle.parentElement.nextSibling.remove());
+
+            const removeTables = emailCopy.querySelectorAll('table');
+            removeTables.forEach(table => table.remove());
+
+            const removeSignature = emailCopy.querySelector('[data-smartmail="gmail_signature"]');
+            if (removeSignature) {
+              removeSignature.remove();
             }
-          
-            text += `${innerText.trim()}\n\n`;
+
+            const textContent = this.trimAlphanumeric(emailCopy.textContent);
+            text += `${textContent}\n\n`;
           }
         }
       }
@@ -206,11 +215,16 @@ class ChromeMessageListener extends Component {
       }
 
       const pageText = this.getPageText(integration);
-      if (pageText && pageText !== '') {
-        requestSearchCards(SEARCH.TYPE.AI_SUGGEST, { text: pageText });
-      } else if (isNewPage) {
-        clearSearchCards(SEARCH.TYPE.AI_SUGGEST);
+      if (pageText !== this.state.prevText) {
+        this.setState({ prevText: pageText });
+        if (pageText && pageText !== '') {
+          requestSearchCards(SEARCH.TYPE.AI_SUGGEST, { text: pageText });
+        } else if (isNewPage) {
+          clearSearchCards(SEARCH.TYPE.AI_SUGGEST);
+        }        
       }
+    } else {
+      clearSearchCards(SEARCH.TYPE.AI_SUGGEST);
     }
   };
 

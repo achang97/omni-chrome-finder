@@ -121,13 +121,13 @@ chrome.tabs.onUpdated.addListener(async (tabId, changeInfo, tab) => {
   try {
     switch (changeInfo.status) {
       case 'loading': {
+        if (!socket) {
+          initSocket();
+        }
+        
         const isInjected = (await injectExtension(tabId))[0];
         if (!chrome.runtime.lastError && !isInjected) {
           loadScript('inject', tabId);
-        }
-
-        if (!socket) {
-          initSocket();
         }
 
         break;      
