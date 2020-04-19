@@ -1,5 +1,5 @@
 import { connect } from 'react-redux';
-import PlaceholderImg from './PlaceholderImg';
+import CardAttachments from './CardAttachments';
 
 const mapStateToProps = state => {
   const {
@@ -11,4 +11,4 @@ const mapStateToProps = state => {
   return { token };
 }
 
-export default connect(mapStateToProps)(PlaceholderImg);
+export default connect(mapStateToProps)(CardAttachments);

@@ -94,6 +94,21 @@ export default function displayReducer(state = initialState, action) {
       return { ...state, isSavingUser: false, userSaveError: error };
     }
 
+    case types.UPDATE_PROFILE_PICTURE_REQUEST:
+    case types.DELETE_PROFILE_PICTURE_REQUEST: {
+      return { ...state, isUpdatingPicture: true, pictureError: null };
+    }
+    case types.UPDATE_PROFILE_PICTURE_SUCCESS:
+    case types.DELETE_PROFILE_PICTURE_SUCCESS: {
+      const { user } = payload;
+      return { ...state, isUpdatingPicture: false, user };
+    }
+    case types.UPDATE_PROFILE_PICTURE_ERROR:
+    case types.DELETE_PROFILE_PICTURE_ERROR: {
+      const { error } = payload;
+      return { ...state, isUpdatingPicture: false, pictureError: error };
+    }
+
     case types.UPDATE_USER_PERMISSIONS_REQUEST: {
       const { type, permission } = payload;
       return updateStateByType('permissionState', type, { isLoading: true, error: null });

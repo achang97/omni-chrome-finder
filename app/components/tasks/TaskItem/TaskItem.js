@@ -110,10 +110,12 @@ const TaskItem = ({
         return (<div className={s('text-xs text-gray-dark mt-reg vertical-ellipsis-2 break-words line-clamp-4')}>{answer}</div>);
       case TASKS.TYPE.OUT_OF_DATE:
         return (
-          <div className={s('flex mt-reg')}>
-            <div className={s('mr-sm mt-reg flex-shrink-0')}>
-              <PlaceholderImg name={`${outOfDateReason.sender.firstname} ${outOfDateReason.sender.lastname}`} src={outOfDateReason.sender.profilePic} className={s('task-item-profile-picture rounded-full text-xs')} />
-            </div>
+          <div className={s('flex mt-reg items-center')}>
+            <PlaceholderImg
+              name={`${outOfDateReason.sender.firstname} ${outOfDateReason.sender.lastname}`}
+              src={outOfDateReason.sender.profilePicture}
+              className={s('task-item-profile-picture rounded-full text-xs mr-sm')}
+            />
             <div className={s('bg-gray-xlight p-reg rounded-lg w-full vertical-ellipsis-2 text-xs break-words line-clamp-4')}>
               {outOfDateReason.reason === '' ? 'No reason specified.' : outOfDateReason.reason}
             </div>
@@ -130,7 +132,11 @@ const TaskItem = ({
             <div className={s('flex flex-shrink-0 mr-reg')}>
               {/* Show the first owner of the card */}
               <div className={s('flex-shrink-0')}>
-                <PlaceholderImg name={`${owners[0].firstname} ${owners[0].lastname}`} src={owners[0].profilePic} className={s('task-item-profile-picture rounded-full text-xs')} />
+                <PlaceholderImg
+                  name={`${owners[0].firstname} ${owners[0].lastname}`}
+                  src={owners[0].profilePicture}
+                  className={s('task-item-profile-picture rounded-full text-xs')}
+                />
               </div>
             </div>
             <div className={s('card-tag overflow-hidden')}>

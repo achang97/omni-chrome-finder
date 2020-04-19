@@ -1,6 +1,5 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
-import moment from 'moment';
 import ReactTooltip from 'react-tooltip';
 import { FaRegDotCircle } from 'react-icons/fa';
 import { IoIosSquare } from 'react-icons/io';
@@ -17,15 +16,6 @@ const s = getStyleApplicationFn(attachmentsStyle, screenRecordButtonStyle);
  * callbacks related to MediaRecorder.
  */
 class ScreenRecordButton extends Component {
-  endRecording = () => {
-    const { endScreenRecording, onSuccess, recordedChunks } = this.props;
-
-    const now = moment().format('DD.MM.YYYY HH:mm:ss');
-    const recording = new File(recordedChunks, `Screen Recording ${now}.webm`, { type: 'video/webm' });
-    onSuccess(recording);  
-    endScreenRecording();
-  }
-
   stopStream = stream => {
     if (stream) {
       stream.getTracks().forEach(track => track.stop());
@@ -67,7 +57,7 @@ class ScreenRecordButton extends Component {
   };
 
   startRecording = async () => {
-    const { addScreenRecordingChunk, startScreenRecording } = this.props;
+    const { addScreenRecordingChunk, startScreenRecording, id, onSuccess } = this.props;
 
     let desktopStream, voiceStream;
 
@@ -99,10 +89,10 @@ class ScreenRecordButton extends Component {
 
     const stream = new MediaStream(tracks);
     desktopStream.oninactive = () => {
-      const { localStream, voiceStream } = this.props;
+      const { localStream, voiceStream, endScreenRecording } = this.props;
       this.stopStream(localStream);
       this.stopStream(voiceStream);
-      this.endRecording();
+      endScreenRecording();
     };
 
     const mediaRecorder = new MediaRecorder(stream, {
@@ -115,14 +105,15 @@ class ScreenRecordButton extends Component {
     };
     mediaRecorder.start(10);
 
-    startScreenRecording(stream, desktopStream, voiceStream, mediaRecorder);
+    startScreenRecording({ id, stream, desktopStream, voiceStream, mediaRecorder, onSuccess });
   }
 
   render() {
-    const { isSharingDesktop, abbrText, showText, className } = this.props;
+    const { isSharingDesktop, abbrText, showText, className, id, activeId } = this.props;
+    const isActiveButton = id === activeId;
 
     let onClick, text, Icon;
-    if (!isSharingDesktop) {
+    if (!isSharingDesktop || !isActiveButton) {
       onClick = this.startRecording;
       text = abbrText ? 'Record' : 'Screen Record';
       Icon = FaRegDotCircle;
@@ -142,7 +133,7 @@ class ScreenRecordButton extends Component {
           underlineColor="red-200"
           icon={<Icon className={s(`${showText ? 'ml-sm' : ''} text-red-500`)} />}
           iconLeft={false}
-          disabled={!navigator.mediaDevices}
+          disabled={!navigator.mediaDevices || (activeId !== null && !isActiveButton)}
           data-tip
           data-for="screen-record-button" 
         />
@@ -157,6 +148,7 @@ class ScreenRecordButton extends Component {
 }
 
 ScreenRecordButton.propTypes = {
+  id: PropTypes.string.isRequired,
   onSuccess: PropTypes.func.isRequired,
   className: PropTypes.string,
   showText: PropTypes.bool,

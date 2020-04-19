@@ -161,10 +161,10 @@ const CardContent = (props) => {
     );
   }
 
-  const addCardAttachments = (files) => {
-    const { requestAddCardAttachment } = props;
+  const addCardAttachments = (files, cardId) => {
+    const { requestAddCardAttachment, _id: currCardId } = props;
     files.forEach((file) => {
-      requestAddCardAttachment(generateFileKey(), file);
+      requestAddCardAttachment(cardId || currCardId, generateFileKey(), file);
     });
   }
 
@@ -180,7 +180,7 @@ const CardContent = (props) => {
       editorEnabled, descriptionSectionHeight, cardsWidth,
       attachments, openCardModal, status,
       updateCardQuestion,
-      user
+      user, _id: cardId, activeScreenRecordingId
     } = props;
 
     const currAttachments = getAttribute('attachments');
@@ -262,7 +262,8 @@ const CardContent = (props) => {
           }
           <div className={s('flex ml-auto')}>
             <ScreenRecordButton
-              onSuccess={recording => addCardAttachments([recording])}
+              id={cardId}
+              onSuccess={({ recording, activeId }) => addCardAttachments([recording], activeId)}
               abbrText={true}
               className={s('py-0 px-sm mr-xs')}
             />
@@ -316,7 +317,7 @@ const CardContent = (props) => {
       <div className={s('px-2xl py-sm flex-grow min-h-0 flex flex-col min-h-0 relative')}>
         { !isEditing &&
           <button
-            className={s('bg-white shadow-md rounded-full w-2xl h-2xl flex items-center justify-center absolute top-0 right-0 m-reg z-10')}
+            className={s('bg-white shadow-md rounded-full w-2xl h-2xl flex items-center justify-center absolute top-0 right-0 m-sm z-10')}
             onClick={copyAnswer}
           >
             <MdContentCopy className={s('text-gray-dark')} />          
@@ -357,11 +358,13 @@ const CardContent = (props) => {
       isUpdatingCard, isEditing, _id, status, openCardModal, question, edits, requestUpdateCard, modalOpen,
       upvotes, user, isTogglingUpvote, requestToggleUpvote,
       requestAddBookmark, requestRemoveBookmark, isUpdatingBookmark,
+      activeScreenRecordingId,
     } = props;
 
     const hasUpvoted = upvotes.some(_id => _id === user._id);
     const hasBookmarked = user.bookmarkIds.some(bookmarkId => bookmarkId === _id);
     const bookmarkOnClick = hasBookmarked ? requestRemoveBookmark : requestAddBookmark;
+    const isRecording = activeScreenRecordingId === _id;
 
     return (
       <div className={s('flex-shrink-0 min-h-0 relative')} ref={footerRef}>
@@ -384,7 +387,8 @@ const CardContent = (props) => {
               disabled={
                 edits.question === '' ||
                 !edits.answerEditorState.getCurrentContent().hasText() ||
-                isAnyLoading(edits.attachments)
+                isAnyLoading(edits.attachments) ||
+                isRecording
               }
               underline
             /> :
@@ -395,7 +399,7 @@ const CardContent = (props) => {
               iconLeft={false}
               icon={isUpdatingCard && !modalOpen[CARD.MODAL_TYPE.CONFIRM_CLOSE] ? <Loader className={s('ml-sm')} size="sm" color="white" /> : null}
               className={s('rounded-t-none p-lg')}
-              disabled={!hasValidEdits(edits) || isUpdatingCard}
+              disabled={!hasValidEdits(edits) || isUpdatingCard || isRecording}
               underline
             />
           ) :

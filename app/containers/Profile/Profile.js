@@ -2,12 +2,11 @@ import React, { useState, useEffect } from 'react';
 import AnimateHeight from 'react-animate-height';
 import { CircularProgressbar, buildStyles } from 'react-circular-progressbar';
 import { MdKeyboardArrowDown, MdKeyboardArrowUp, MdSettings, MdEdit } from 'react-icons/md';
-import { IoMdCamera } from 'react-icons/io';
 import _ from 'lodash';
 import Toggle from 'react-toggle';
 
 import { Button, CheckBox, PlaceholderImg, Dropdown, Message, Separator, Loader } from 'components/common';
-import IntegrationAuthButton from 'components/profile/IntegrationAuthButton';
+import { IntegrationAuthButton, ProfilePicture } from 'components/profile';
 
 import { PROFILE, INTEGRATIONS, NOOP } from 'appConstants';
 
@@ -89,54 +88,44 @@ const Profile = ({
           <Loader />
           :
           <div className={s('flex')}>
-            <div className={s('mr-reg relative')}>
-              <PlaceholderImg name={`${user.firstname} ${user.lastname}`} src={user.img} className={s(`profile-profile-picture rounded-full ${isEditingAbout ? 'opacity-50' : ''}`)} />
-              {
-                isEditingAbout ?
-                  <div className={s('absolute profile-edit-photo-icon bg-purple-light rounded-full profile-edit-container flex cursor-pointer')}>
-                    <IoMdCamera className={s('text-purple-reg m-auto')} />
-                  </div> :
-                  <div
-                    className={s('absolute bottom-0 right-0 bg-purple-light rounded-full profile-edit-container flex cursor-pointer')}
-                    onClick={() => editUser()}
-                  >
-                    <MdEdit className={s('text-purple-reg m-auto')} />
+            <ProfilePicture isEditable={isEditingAbout} />
+            <div className={s('flex flex-1 flex-col min-w-0 ml-reg')}>
+              { !isEditingAbout &&
+                <div className={s('flex mt-xs text-sm text-purple-reg')}>
+                  <div className={s('flex-1')}> {user.companyName} • {user.role}</div>
+                  <div className={s('cursor-pointer flex')} onClick={editUser}>
+                    <MdEdit />
+                    <span className={s('ml-xs text-gray-reg')}> Edit </span>
                   </div>
+                </div>
               }
-            </div>
-            <div className={s('flex flex-col min-w-0')}>
-              { !isEditingAbout && <div className={s('text-sm text-purple-reg mt-xs')}> {user.companyName} • {user.role}</div> }
-
-              {
-                isEditingAbout ?
-                  <div>
-                    <div className={s('flex')}>
-                      <input
-                        placeholder="First Name"
-                        className={s('profile-about-input flex-grow mr-sm min-w-0 flex-1 cursor-text')}
-                        value={userEdits.firstname}
-                        onChange={e => changeFirstname(e.target.value)}
-                      />
-                      <input
-                        placeholder="Last Name"
-                        className={s('profile-about-input flex-grow ml-sm min-w-0 flex-1 cursor-text')}
-                        value={userEdits.lastname}
-                        onChange={e => changeLastname(e.target.value)}
-                      />
-                    </div>
+              { isEditingAbout ?
+                <div>
+                  <div className={s('flex')}>
                     <input
-                      placeholder="Bio (eg. Support Manager @ Pied Piper)"
-                      className={s('profile-about-input w-full min-w-0 flex-1 mt-reg cursor-text')}
-                      value={userEdits.bio}
-                      onChange={e => changeBio(e.target.value)}
+                      placeholder="First Name"
+                      className={s('profile-about-input flex-grow mr-sm min-w-0 flex-1 cursor-text')}
+                      value={userEdits.firstname}
+                      onChange={e => changeFirstname(e.target.value)}
+                    />
+                    <input
+                      placeholder="Last Name"
+                      className={s('profile-about-input flex-grow ml-sm min-w-0 flex-1 cursor-text')}
+                      value={userEdits.lastname}
+                      onChange={e => changeLastname(e.target.value)}
                     />
                   </div>
-
-                :
-                  <div>
-                    <div className={s('text-reg font-semibold mt-xs')}> {user.firstname} {user.lastname}</div>
-                    <div className={s('text-sm text-gray-dark mt-sm')}> {user.bio}</div>
-                  </div>
+                  <input
+                    placeholder="Bio (eg. Support Manager @ Pied Piper)"
+                    className={s('profile-about-input w-full min-w-0 flex-1 mt-reg cursor-text')}
+                    value={userEdits.bio}
+                    onChange={e => changeBio(e.target.value)}
+                  />
+                </div> :
+                <div>
+                  <div className={s('text-reg font-semibold mt-xs')}> {user.firstname} {user.lastname}</div>
+                  <div className={s('text-sm text-gray-dark mt-sm')}> {user.bio}</div>
+                </div>
               }
             </div>
           </div>

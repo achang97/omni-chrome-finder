@@ -40,6 +40,31 @@ export function handleSaveUserError(error) {
   return { type: types.SAVE_USER_ERROR, payload: { error } };
 }
 
+export function requestUpdateProfilePicture(file) {
+  return { type: types.UPDATE_PROFILE_PICTURE_REQUEST, payload: { file } };
+}
+
+export function handleUpdateProfilePictureSuccess(user) {
+  return { type: types.UPDATE_PROFILE_PICTURE_SUCCESS, payload: { user } };
+}
+
+export function handleUpdateProfilePictureError(error) {
+  return { type: types.UPDATE_PROFILE_PICTURE_ERROR, payload: { error } };
+}
+
+export function requestDeleteProfilePicture() {
+  return { type: types.DELETE_PROFILE_PICTURE_REQUEST, payload: { } };
+}
+
+export function handleDeleteProfilePictureSuccess(user) {
+  return { type: types.DELETE_PROFILE_PICTURE_SUCCESS, payload: { user } };
+}
+
+export function handleDeleteProfilePictureError(error) {
+  return { type: types.DELETE_PROFILE_PICTURE_ERROR, payload: { error } };
+}
+
+
 export function requestUpdateUserPermissions(type, permission) {
   return { type: types.UPDATE_USER_PERMISSIONS_REQUEST, payload: { type, permission } };
 }

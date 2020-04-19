@@ -1,0 +1,14 @@
+.card-attachments-media-wrapper {
+  @apply w-1/2 p-xs relative;
+  box-sizing: border-box;
+  height: min-content;
+}
+
+.card-attachments-media-remove {
+  @apply h-lg w-lg flex justify-center items-center absolute bg-white shadow-md rounded-full cursor-pointer top-0 right-0 z-10;
+  transform: translate(20%, -20%);
+}
+
+.card-attachments-subtitle {
+  @apply my-sm text-sm text-gray-light;
+}

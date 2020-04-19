@@ -10,18 +10,3 @@
   width: 300px;
   @apply absolute top-0 bottom-0 right-0 bg-purple-light p-2xl pointer-events-auto rounded-l-lg shadow-lg;
 }
-
-.card-side-dock-subtitle {
-  @apply my-sm text-sm text-gray-light;
-}
-
-.card-side-dock-media-wrapper {
-  @apply w-1/2 p-xs relative;
-  box-sizing: border-box;
-  height: min-content;
-}
-
-.card-side-dock-media-remove {
-  @apply h-lg w-lg flex justify-center items-center absolute bg-white shadow-md rounded-full cursor-pointer top-0 right-0 z-10;
-  transform: translate(20%, -20%);
-}

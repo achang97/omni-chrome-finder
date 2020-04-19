@@ -1,13 +1,15 @@
 import { take, call, fork, put, all, select } from 'redux-saga/effects';
-import { doGet, doPut, doPost, getErrorMessage } from 'utils/request';
+import { doGet, doPut, doPost, doDelete, getErrorMessage } from 'utils/request';
 import { SETTING_SECTION_TYPE } from 'appConstants/profile';
 import {
   GET_USER_REQUEST, SAVE_USER_REQUEST, UPDATE_USER_PERMISSIONS_REQUEST,
-  LOGOUT_USER_INTEGRATION_REQUEST
+  LOGOUT_USER_INTEGRATION_REQUEST, UPDATE_PROFILE_PICTURE_REQUEST, DELETE_PROFILE_PICTURE_REQUEST
 } from 'actions/actionTypes';
 import {
   handleGetUserSuccess, handleGetUserError,
   handleSaveUserSuccess, handleSaveUserError,
+  handleUpdateProfilePictureSuccess, handleUpdateProfilePictureError,
+  handleDeleteProfilePictureSuccess, handleDeleteProfilePictureError,
   handleUpdateUserPermissionsSuccess, handleUpdateUserPermissionsError,
   handleLogoutUserIntegrationSuccess, handleLogoutUserIntegrationError,
 } from 'actions/profile';
@@ -15,7 +17,10 @@ import {
 export default function* watchProfileRequests() {
   let action;
 
-  while (action = yield take([GET_USER_REQUEST, SAVE_USER_REQUEST, UPDATE_USER_PERMISSIONS_REQUEST, LOGOUT_USER_INTEGRATION_REQUEST])) {
+  while (action = yield take([
+    GET_USER_REQUEST, SAVE_USER_REQUEST, UPDATE_USER_PERMISSIONS_REQUEST,
+    LOGOUT_USER_INTEGRATION_REQUEST, UPDATE_PROFILE_PICTURE_REQUEST, DELETE_PROFILE_PICTURE_REQUEST
+  ])) {
     const { type, payload  } = action;
     switch (type) {
       case GET_USER_REQUEST: {
@@ -32,6 +37,14 @@ export default function* watchProfileRequests() {
       }
       case LOGOUT_USER_INTEGRATION_REQUEST: {
         yield fork(logoutUserIntegration, payload);
+        break;
+      }
+      case UPDATE_PROFILE_PICTURE_REQUEST: {
+        yield fork(updateProfilePicture, payload);
+        break;
+      }
+      case DELETE_PROFILE_PICTURE_REQUEST: {
+        yield fork(deleteProfilePicture);
         break;
       }
       default: {
@@ -77,6 +90,34 @@ function* updateUser() {
     yield put(handleSaveUserSuccess({ ...userJson, integrations: user.integrations }));
   } catch (error) {
     yield put(handleSaveUserError(getErrorMessage(error)));
+  }
+}
+
+function* updateProfilePicture({ file }) {
+  try {
+    const integrations = yield select(state => state.profile.user.integrations);
+
+    const formData = new FormData();
+    formData.append('file', file);
+
+    const { key } = yield call(doPost, '/files/upload', formData, { isForm: true });
+    const { userJson } = yield call(doPut, '/users', { update: { profilePicture: key } });
+    yield put(handleUpdateProfilePictureSuccess({ ...userJson, integrations }));
+  } catch (error) {
+    yield put(handleUpdateProfilePictureError(getErrorMessage(error)));
+  }
+}
+
+function* deleteProfilePicture() {
+  try {
+    const { integrations, profilePicture } = yield select(state => state.profile.user);
+    const [{ userJson }] = yield all([
+      call(doPut, '/users', { update: { profilePicture: null } }),
+      call(doDelete, `/files/${profilePicture}`)
+    ]);
+    yield put(handleDeleteProfilePictureSuccess({ ...userJson, integrations }));
+  } catch (error) {
+    yield put(handleDeleteProfilePictureError(getErrorMessage(error)));
   }
 }
 

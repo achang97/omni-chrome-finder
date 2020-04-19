@@ -92,7 +92,8 @@ const Create = ({
   const renderAttachmentSection = () => (
     <div className={s('flex px-xs pt-reg')}>
       <ScreenRecordButton
-        onSuccess={recording => addCreateAttachments([recording])}
+        onSuccess={({ recording }) => addCreateAttachments([recording])}
+        id="create"
       />
       <AttachmentDropzone
         className={s('mx-xs')}

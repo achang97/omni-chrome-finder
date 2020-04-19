@@ -72,7 +72,7 @@ const Navigate = ({
 
   const debouncedRequestSearch = _.debounce(() => {
     searchCards(true);
-  }, ANIMATE.DEBOUNCE.HZ_60)
+  }, ANIMATE.DEBOUNCE.MS_300)
 
   const updateSearchText = (e) => {
     updateNavigateSearchText(e.target.value);

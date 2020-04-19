@@ -107,7 +107,8 @@ const Ask = ({
         </div>
         <div className={s('flex px-xs pt-reg')}>
           <ScreenRecordButton
-            onSuccess={recording => addAskAttachments([recording])}
+            id="ask"
+            onSuccess={({ recording }) => addAskAttachments([recording])}
           />
           <AttachmentDropzone
             className={s('mx-xs')}

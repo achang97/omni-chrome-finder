@@ -25,32 +25,14 @@ const CardConfirmModal = ({
       overlayClassName={s('rounded-b-lg')}
       title={title}
       important
+      secondaryButtonProps={showSecondary ? secondaryButtonProps : null}
+      primaryButtonProps={showPrimary ? primaryButtonProps : null}
       {...rest}
     >
       <div className={s(`card-confirm-modal-body ${bodyClassName}`)}>
         { description && <div> {description} </div> }
         { body }
         <Message className={s('mt-xs')} message={error} type="error" />
-        { (showPrimary || showSecondary) &&
-          <div className={s('flex mt-lg')} >
-            { showSecondary &&
-              <Button
-                color={'transparent'}
-                className={s('flex-1 mr-reg')}
-                underline
-                {...secondaryButtonProps}
-              />
-            }
-            { showPrimary &&
-              <Button
-                color={'primary'}
-                className={s(`flex-1 ${showSecondary ? 'ml-reg' : ''}`)}
-                underline
-                {...primaryButtonProps}
-              />
-            }
-          </div>
-        }
       </div>
     </Modal>
   );

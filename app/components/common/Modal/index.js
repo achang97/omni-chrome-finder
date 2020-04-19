@@ -5,6 +5,7 @@ import { Transition } from 'react-transition-group';
 import { MdClose } from 'react-icons/md';
 import { TRANSITIONS } from 'appConstants/animate';
 import { getBaseAnimationStyle } from 'utils/animate';
+import { Button, Loader } from 'components/common';
 
 import style from './modal.css';
 import { getStyleApplicationFn } from 'utils/style';
@@ -18,7 +19,25 @@ const MODAL_TRANSITION_STYLES = {
   exited: { opacity: 0, visibility: 'hidden' },
 };
 
-const Modal = ({ isOpen, transitionMs, shouldCloseOnOutsideClick, showHeader, className, onRequestClose, headerClassName, overlayClassName, bodyClassName, title, children, important, ...rest }) => {
+const getButtonProps = ({ disabled, isLoading=false, icon, ...rest }) => {
+  const isLoadingProps = {
+    iconLeft: false,
+    icon: isLoading ? <Loader className={s('ml-sm')} size="sm" color="white" /> : icon,
+  };
+
+  return {
+    ...rest,
+    disabled: disabled || isLoading,
+    ...(isLoading ? isLoadingProps : {})
+  };
+}
+
+const Modal = ({
+  isOpen, transitionMs, shouldCloseOnOutsideClick, showHeader, className, onRequestClose,
+  primaryButtonProps, secondaryButtonProps, showPrimaryButton,
+  headerClassName, overlayClassName, bodyClassName, title,
+  children, important, ...rest
+}) => {
   const onOutsideClick = () => {
     if (shouldCloseOnOutsideClick && onRequestClose) onRequestClose();
   };
@@ -40,16 +59,39 @@ const Modal = ({ isOpen, transitionMs, shouldCloseOnOutsideClick, showHeader, cl
         {state => (
           <div style={{ ...baseStyle, ...MODAL_TRANSITION_STYLES[state] }} className={s(`modal ${className} ${important ? 'modal-important' : ''}`)}>
             { showHeader &&
-            <div className={s(`modal-header ${headerClassName}`)}>
-              <div className={s('font-semibold')}> {title} </div>
-              { onRequestClose && 
-                <button onClick={onRequestClose}> <MdClose className={s('text-purple-gray-50')} /> </button>
-              }
-            </div>
+              <div className={s(`modal-header ${headerClassName}`)}>
+                <div className={s('font-semibold')}> {title} </div>
+                { onRequestClose && 
+                  <button onClick={onRequestClose}> <MdClose className={s('text-purple-gray-50')} /> </button>
+                }
+              </div>
             }
             <div className={s(`modal-body ${bodyClassName}`)}>
               {children}
             </div>
+            { (showPrimaryButton || secondaryButtonProps) &&
+              <div className={s(secondaryButtonProps ? 'flex py-sm px-reg' : '')} >
+                { secondaryButtonProps &&
+                  <Button
+                    color={'transparent'}
+                    className={s('flex-1 mr-reg')}
+                    underline
+                    {...getButtonProps(secondaryButtonProps)}
+                  />
+                }
+                { showPrimaryButton &&
+                  <Button
+                    color="primary"
+                    underline
+                    underlineColor="purple-gray-50"
+                    className={s(`flex-1 ${secondaryButtonProps ? 'ml-reg' : 'rounded-t-none'}`)}
+                    onClick={onRequestClose}
+                    text="Close"
+                    {...getButtonProps(primaryButtonProps)}
+                  />
+                }
+              </div>
+            }
           </div>
         )}
       </Transition>
@@ -79,6 +121,9 @@ Modal.propTypes = {
   showHeader: PropTypes.bool,
   transitionMs: PropTypes.number,
   important: PropTypes.bool,
+  primaryButtonProps: PropTypes.object,
+  secondaryButtonProps: PropTypes.object,
+  showPrimaryButton: PropTypes.bool,
 };
 
 Modal.defaultProps = {
@@ -92,6 +137,7 @@ Modal.defaultProps = {
   transitionMs: 100,
   important: false,
   showHeader: true,
+  showPrimaryButton: true,
 };
 
 export default Modal;

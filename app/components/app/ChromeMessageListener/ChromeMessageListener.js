@@ -30,7 +30,7 @@ class ChromeMessageListener extends Component {
   }
 
   componentDidUpdate(prevProps) {
-    if (this.state.hasLoaded && this.props.isLoggedIn) {
+    if (this.state.hasLoaded && this.isValidUser()) {
       const prevEnabled = this.isAutofindEnabled(prevProps.autofindPermissions);
       const currEnabled = this.isAutofindEnabled();
 
@@ -49,14 +49,24 @@ class ChromeMessageListener extends Component {
     this.disconnectMutatorObserver();
   }
 
-  openChromeExtension = () => {
-    const { dockVisible, toggleDock, openCard, isLoggedIn } = this.props;
-    if (window.location.href.startsWith(URL.EXTENSION)) {
-      if (!dockVisible) {
-        toggleDock();
-      }
+  isValidUser = () => {
+    const { isLoggedIn, isVerified, hasCompletedOnboarding } = this.props;
+    return isLoggedIn && isVerified && hasCompletedOnboarding;
+  }
 
-      if (isLoggedIn) {
+  openDock = () => {
+    const { toggleDock, dockVisible } = this.props;
+    if (!dockVisible) {
+      toggleDock();
+    }
+  }
+
+  openChromeExtension = () => {
+    const { openCard } = this.props;
+    if (window.location.href.startsWith(URL.EXTENSION)) {
+      this.openDock();
+
+      if (this.isValidUser()) {
         const { taskId, cardId, edit } = queryString.parse(window.location.search);
         if (taskId) {
           this.openTask(taskId);
@@ -187,10 +197,10 @@ class ChromeMessageListener extends Component {
   };
 
   handlePageUpdate = (isNewPage) => {
-    const { isLoggedIn, dockVisible, isVerified, requestSearchCards, clearSearchCards, autofindPermissions } = this.props;
+    const { requestSearchCards, clearSearchCards, autofindPermissions } = this.props;
 
     const integration = this.getIntegration();
-    if (isLoggedIn && isVerified && autofindPermissions[integration]) {
+    if (this.isValidUser() && autofindPermissions[integration]) {
       if (isNewPage) {
         this.disconnectMutatorObserver();
       }
@@ -206,18 +216,15 @@ class ChromeMessageListener extends Component {
 
   handleContextMenuAction = (action, selectedText) => {
     const {
-      isLoggedIn, isVerified, dockVisible, dockExpanded, toggleDock, history,
+      dockExpanded, history,
       updateAskSearchText, updateAskQuestionTitle,
       updateCreateAnswerEditor,
       updateNavigateSearchText,
     } = this.props;
 
-    if (!dockVisible) {
-      // Open dock
-      toggleDock();
-    }
+    this.openDock();
 
-    if (isLoggedIn && isVerified) {
+    if (this.isValidUser()) {
       let url;
       switch (action) {
         case CHROME.MESSAGE.ASK: {
@@ -247,18 +254,13 @@ class ChromeMessageListener extends Component {
 
   handleNotificationOpened = ({ type, id }) => {
     const {
-      isLoggedIn, isVerified, dockVisible, tasks,
-      toggleDock,
       openCard,
-      requestGetTasks, updateTasksTab, updateTasksOpenSection,
-      history
+      requestGetTasks,
     } = this.props;
 
-    if (!dockVisible) {
-      toggleDock();
-    }
+    this.openDock();
 
-    if (isLoggedIn && isVerified) {
+    if (this.isValidUser()) {
       const { location: { pathname } } = history;
 
       switch (type) {

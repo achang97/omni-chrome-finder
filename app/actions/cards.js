@@ -147,8 +147,8 @@ export function updateCard(card) {
 }
 
 /* API REQUESTS */
-export function requestAddCardAttachment(key, file) {
-  return { type: types.ADD_CARD_ATTACHMENT_REQUEST, payload: { key, file } };
+export function requestAddCardAttachment(cardId, key, file) {
+  return { type: types.ADD_CARD_ATTACHMENT_REQUEST, payload: { cardId, key, file } };
 }
 
 export function handleAddCardAttachmentSuccess(cardId, key, attachment) {

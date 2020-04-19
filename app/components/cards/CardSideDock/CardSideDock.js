@@ -1,22 +1,17 @@
 import React, { useRef, useState } from 'react';
 import PropTypes from 'prop-types';
 import { Transition } from 'react-transition-group';
-import Lightbox from 'react-image-lightbox';
 import AnimateHeight from 'react-animate-height';
 import moment from 'moment';
 import { MdClose } from 'react-icons/md';
 import { FaRegTrashAlt } from 'react-icons/fa';
 
-import { CardSection, CardUsers, CardTags, CardAttachment, CardPermissions } from 'components/cards';
-import { Select, Button, Loader, VideoPlayer, ToggleableInput, HelpTooltip } from 'components/common';
+import { CardSection, CardUsers, CardTags, CardAttachments, CardPermissions, CardKeywords, CardVerificationInterval } from 'components/cards';
+import { Button, Loader, HelpTooltip } from 'components/common';
 
 import { getBaseAnimationStyle } from 'utils/animate';
 import { isJustMe } from 'utils/card';
-import { isVideo, isImage, isUploadedFile, getFileUrl } from 'utils/file';
-import {
-  MODAL_TYPE, HINTS, PERMISSION_OPTION, PERMISSION_OPTIONS,
-  VERIFICATION_INTERVAL_OPTIONS, STATUS
-} from 'appConstants/card';
+import { MODAL_TYPE, HINTS, PERMISSION_OPTION, STATUS } from 'appConstants/card';
 import { TRANSITIONS } from 'appConstants/animate';
 
 import style from './card-side-dock.css';
@@ -29,8 +24,6 @@ const SIDE_DOCK_TRANSITION_MS = 300;
 
 const CardSideDock = (props) => {
   const permissionRef = useRef(null);
-  const [isLightboxOpen, setLightboxOpenState] = useState(false);
-  const [lightboxIndex, setLightboxIndex] = useState(0);
 
   const closeSideDock = () => {
     props.closeCardSideDock();
@@ -92,163 +85,18 @@ const CardSideDock = (props) => {
     );
   };
 
-  const splitAttachments = (attachments) => {
-    const files = [];
-    const screenRecordings = [];
-    const images = [];
-
-    attachments.forEach((attachment) => {
-      const isUploaded = isUploadedFile(attachment.key);
-      if (isUploaded && isVideo(attachment.mimetype)) {
-        screenRecordings.push(attachment);
-      } else if (isUploaded && isImage(attachment.mimetype)) {
-        images.push(attachment);
-      } else {
-        files.push(attachment);
-      }
-    });
-
-    return { files, screenRecordings, images };
-  };
-
-  const renderRemoveMediaButton = (key) => {
-    const { isEditing, removeCardAttachment } = props;
-    
-    if (!isEditing) return null;
-    
-    return (
-      <div
-        className={s('card-side-dock-media-remove')}
-        onClick={() => removeCardAttachment(key)}
-      >
-        <MdClose />
-      </div>
-    );
-  }
-
-  const renderMediaToggleableInput = ({ name, key, url }) => {
-    const { isEditing, updateCardAttachmentName } = props;
-
-    return ( isEditing ?
-      <ToggleableInput
-        isEditable={isEditing}
-        value={name}
-        inputProps={{
-          placeholder: 'File Name',
-          onChange: e => updateCardAttachmentName(key, e.target.value),
-        }}
-        className={s('truncate text-xs font-semibold text-center')}
-      /> :
-      <a
-        href={url}
-        target="_blank"
-        className={s('block truncate text-xs font-semibold text-center')}
-      >
-        {name}
-      </a>   
-    );
-  };
-
-  const getAttachmentUrl = ({ key, mimetype }) => {
-    const { token } = props;
-    return getFileUrl(key, mimetype, token);
-  }
-
-  const renderImageAttachment = ({ name, key, mimetype, isLoading, error }, i) => {
-    const { isEditing, updateCardAttachmentName } = props;
-
-    const onClick = () => {
-      setLightboxIndex(i);
-      setLightboxOpenState(true);
-    }
-
-    const url = getAttachmentUrl({ key, mimetype });
-    return (
-      <div className={s('card-side-dock-media-wrapper')} key={key}>
-        { renderRemoveMediaButton(key) }
-        <img
-          src={url}
-          className={s('w-full mb-xs cursor-pointer')}
-          onClick={onClick}
-        />
-        { renderMediaToggleableInput({ name, key, url }) }
-      </div>
-    );
-  };
-
-  const renderVideoPlayer = ({ name, key, mimetype, isLoading, error }) => {
-    const { isEditing, updateCardAttachmentName } = props;
-
-    const url = getAttachmentUrl({ key, mimetype });
-    return (
-      <div className={s('card-side-dock-media-wrapper')} key={key}>
-        { renderRemoveMediaButton(key) }
-        <VideoPlayer
-          url={url}
-          className={s('w-full mb-xs')}
-        />
-        { renderMediaToggleableInput({ name, key, url }) }
-      </div>
-    );
-  };
-
   const renderAttachments = () => {
     const { removeCardAttachment, updateCardAttachmentName, isEditing } = props;
     const currAttachments = getAttribute('attachments');
 
-    const { files, screenRecordings, images } = splitAttachments(currAttachments);
-
     return (
       <CardSection className={s('mt-lg')} title="Attachments">
-        { currAttachments.length === 0 &&
-          <div className={s('text-sm text-gray-light')}>
-            No current attachments
-          </div>
-        }
-        <div className={s('flex flex-wrap')}>
-          { files.map(({ name, mimetype, key, isLoading, error }, i) => (
-            <CardAttachment
-              key={key}
-              fileKey={key}
-              type={mimetype}
-              fileName={name}
-              isLoading={isLoading}
-              error={error}
-              className={s('min-w-0')}
-              textClassName={s('truncate')}
-              isEditable={isEditing}
-              onFileNameChange={fileName => updateCardAttachmentName(key, fileName)}
-              onRemoveClick={() => removeCardAttachment(key)}
-            />
-          ))}
-        </div>
-
-        { images.length !== 0 &&
-          <React.Fragment>
-            <div className={s('card-side-dock-subtitle')}> Images </div>
-            { isLightboxOpen &&
-              <Lightbox
-                reactModalStyle={{ overlay: { zIndex: 100000000000 } }}
-                mainSrc={getAttachmentUrl(images[lightboxIndex])}
-                nextSrc={getAttachmentUrl(images[(lightboxIndex + 1) % images.length])}
-                prevSrc={getAttachmentUrl(images[(lightboxIndex + images.length - 1) % images.length])}
-                onCloseRequest={() => setLightboxOpenState(false)}
-                onMovePrevRequest={() => setLightboxIndex((lightboxIndex + images.length - 1) % images.length)}
-                onMoveNextRequest={() => setLightboxIndex((lightboxIndex + 1) % images.length)}
-              />
-            }
-          </React.Fragment>
-        }
-        <div className={s('flex flex-wrap')}>
-          { images.map(renderImageAttachment)}
-        </div>
-
-        { screenRecordings.length !== 0 &&
-          <div className={s('card-side-dock-subtitle')}> Screen Recordings </div>
-        }
-        <div className={s('flex flex-wrap')}>
-          { screenRecordings.map(renderVideoPlayer)}
-        </div>
+        <CardAttachments
+          attachments={currAttachments}
+          isEditable={isEditing}
+          onRemoveClick={removeCardAttachment}
+          onNameChange={({ name, key }) => updateCardAttachmentName(key, name)}
+        />
       </CardSection>
     );
   };
@@ -277,36 +125,11 @@ const CardSideDock = (props) => {
     const currKeywords = getAttribute('keywords');
     return (
       <CardSection className={s('mt-lg')} title="Keywords">
-        { isEditing ?
-          <Select
-            value={currKeywords}
-            onChange={updateCardKeywords}
-            isSearchable
-            isMulti
-            menuShouldScrollIntoView
-            isClearable={false}
-            placeholder={'Add keywords...'}
-            type="creatable"
-            components={{ DropdownIndicator: null }}
-            noOptionsMessage={({ inputValue }) => currKeywords.some(keyword => keyword.value === inputValue) ?
-              'Keyword already exists' : 'Begin typing to add a keyword'
-            }
-          /> :
-          <div>
-            { currKeywords.length === 0 &&
-              <div className={s('text-sm text-gray-light')}>
-                No current keywords
-              </div>
-            }
-            <div className={s('flex flex-wrap')}>
-              { currKeywords.map(({ label, value }, i) => (
-                <div key={value} className={s('text-sm mr-sm mb-sm truncate text-purple-reg underline-border border-purple-gray-10')}>
-                  {value}{i !== currKeywords.length - 1 && ','}
-                </div>
-              ))}
-            </div>
-          </div>
-        }
+        <CardKeywords
+          isEditable={isEditing}
+          keywords={currKeywords}
+          onChange={updateCardKeywords}
+        />
       </CardSection>
     );
   };
@@ -341,19 +164,11 @@ const CardSideDock = (props) => {
                 }}
               />
             </div>
-            { isEditing ?
-              <Select
-                value={currVerificationInterval}
-                onChange={updateCardVerificationInterval}
-                options={VERIFICATION_INTERVAL_OPTIONS}
-                placeholder="Select verification interval..."
-                isSearchable
-                menuShouldScrollIntoView
-              /> :
-              <div className={s('underline-border border-purple-gray-20 mb-sm text-purple-reg text-sm inline-block')}>
-                {currVerificationInterval.label}
-              </div>
-            }
+            <CardVerificationInterval
+              verificationInterval={currVerificationInterval}
+              onChange={updateCardVerificationInterval}
+              isEditable={isEditing}
+            />
           </div>
         </AnimateHeight>
         <div ref={permissionRef}>

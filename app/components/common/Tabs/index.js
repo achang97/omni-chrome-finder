@@ -65,7 +65,7 @@ const Tabs = ({
         setDisplayScroll({ start: showStartScroll, end: showEndScroll });
       }      
     }
-  }, DEBOUNCE.HZ_60)
+  }, DEBOUNCE.MS_300)
 
   const protectedOnTabClick = (value) => {
     if (onTabClick) {

@@ -18,19 +18,14 @@ const MessageModal = ({
     shouldCloseOnOutsideClick
     overlayClassName={s('rounded-bl-lg rounded-tl-lg')}
     bodyClassName={s('rounded-bl-lg rounded-tl-lg flex flex-col')}
+    primaryButtonProps={{
+      text: buttonText
+    }}
   >
     <div className={s('p-xl')}>
       { !showHeader && <div> {title} </div> }
       { subtitle && <div className={s('text-center text-sm mt-lg')}> {subtitle} </div> }
     </div>
-    <Button
-      text={buttonText || 'Ok'}
-      onClick={closeModal}
-      className={s('flex-shrink-0 rounded-t-none')}
-      underline
-      underlineColor="purple-gray-50"
-      color="primary"
-    />
   </Modal>
 );
 

@@ -12,10 +12,13 @@ const mapStateToProps = state =>{
       cardsHeight,
       cardsWidth,
       activeCardIndex
+    },
+    screenRecording: {
+      activeId: activeScreenRecordingId,
     }
   } = state;
 
-  return { user, ...activeCard, cardsHeight, cardsWidth, activeCardIndex };
+  return { user, ...activeCard, cardsHeight, cardsWidth, activeCardIndex, activeScreenRecordingId };
 }
 
 const mapDispatchToProps = {
