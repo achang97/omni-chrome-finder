@@ -1,0 +1,12 @@
+.profile-picture {
+  height: 72px;
+  width: 72px;
+  @apply rounded-full;
+}
+
+.profile-picture-icon {
+  @apply absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+}

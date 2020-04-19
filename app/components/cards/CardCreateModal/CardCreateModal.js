@@ -172,10 +172,9 @@ const CardCreateModal = (props) => {
   const onlyShowPermissions = isJustMe(edits.permissions);
   const primaryButtonProps = {
     text: 'Complete Card',
-    onClick: onClick,  
-    iconLeft: false,
-    icon: isLoading ? <Loader className={s('ml-sm')} size="sm" color="white" /> : null,
-    disabled: !hasValidEdits(edits) || isLoading
+    onClick: onClick, 
+    isLoading,
+    disabled: !hasValidEdits(edits)
   };
   
   return (

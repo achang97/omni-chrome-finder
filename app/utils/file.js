@@ -32,7 +32,7 @@ export function isAnyLoading(files) {
 }
 
 export function getFileUrl(key, contentType, token) {
-  if (!isUploadedFile(key) || !contentType) return null;
+  if (!key || !contentType || !token || !isUploadedFile(key)) return null;
 
   const authToken = token.match(/Bearer (.+)/)[1];
   const queryParams = queryString.stringify({ auth: authToken, contentType });

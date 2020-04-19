@@ -28,7 +28,7 @@ const rejectStyle = {
   borderColor: '#f56565'
 };
 
-const StyledDropzone = ({ onDrop, accept, style, className, children }) => {
+const StyledDropzone = ({ onDrop, accept, style, className, children, useBaseStyle }) => {
   const onDropCallback = useCallback(acceptedFiles => onDrop(acceptedFiles), []);
 
   const {
@@ -40,7 +40,7 @@ const StyledDropzone = ({ onDrop, accept, style, className, children }) => {
   } = useDropzone({ accept: accept, onDrop: onDropCallback });
 
   const customStyle = useMemo(() => ({
-    ...baseStyle,
+    ...(useBaseStyle ? baseStyle : {}),
     ...style,
     ...(isDragActive ? activeStyle : {}),
     ...(isDragAccept ? acceptStyle : {}),
@@ -63,12 +63,14 @@ StyledDropzone.propTypes = {
   onDrop: PropTypes.func.isRequired,
   className: PropTypes.string,
   style: PropTypes.object,
+  useBaseStyle: PropTypes.bool,
 };
 
 StyledDropzone.defaultProps = {
   accept: '',
   className: '',
   style: {},
+  useBaseStyle: true,
 };
 
 export default StyledDropzone;

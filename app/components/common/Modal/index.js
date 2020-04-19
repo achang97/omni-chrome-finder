@@ -5,7 +5,7 @@ import { Transition } from 'react-transition-group';
 import { MdClose } from 'react-icons/md';
 import { TRANSITIONS } from 'appConstants/animate';
 import { getBaseAnimationStyle } from 'utils/animate';
-import { Button } from 'components/common';
+import { Button, Loader } from 'components/common';
 
 import style from './modal.css';
 import { getStyleApplicationFn } from 'utils/style';
@@ -18,6 +18,19 @@ const MODAL_TRANSITION_STYLES = {
   exiting: { opacity: 1, transform: 'translate(0, -50%) scale(0.5)' },
   exited: { opacity: 0, visibility: 'hidden' },
 };
+
+const getButtonProps = ({ disabled, isLoading=false, icon, ...rest }) => {
+  const isLoadingProps = {
+    iconLeft: false,
+    icon: isLoading ? <Loader className={s('ml-sm')} size="sm" color="white" /> : icon,
+  };
+
+  return {
+    ...rest,
+    disabled: disabled || isLoading,
+    ...(isLoading ? isLoadingProps : {})
+  };
+}
 
 const Modal = ({
   isOpen, transitionMs, shouldCloseOnOutsideClick, showHeader, className, onRequestClose,
@@ -63,7 +76,7 @@ const Modal = ({
                     color={'transparent'}
                     className={s('flex-1 mr-reg')}
                     underline
-                    {...secondaryButtonProps}
+                    {...getButtonProps(secondaryButtonProps)}
                   />
                 }
                 { showPrimaryButton &&
@@ -74,7 +87,7 @@ const Modal = ({
                     className={s(`flex-1 ${secondaryButtonProps ? 'ml-reg' : 'rounded-t-none'}`)}
                     onClick={onRequestClose}
                     text="Close"
-                    {...primaryButtonProps}
+                    {...getButtonProps(primaryButtonProps)}
                   />
                 }
               </div>

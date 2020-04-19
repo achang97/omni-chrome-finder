@@ -96,12 +96,6 @@ const CardConfirmModals = ({
     cancelEditCard();
   }
 
-  const getModalLoaderProps = (loaderCondition, defaultIcon) => ({
-    iconLeft: false,
-    icon: loaderCondition ? <Loader className={s('ml-sm')} size="sm" color="white" /> : defaultIcon,
-    disabled: loaderCondition,
-  })
-
   const MODALS = [
     {
       modalType: MODAL_TYPE.THREAD,
@@ -130,7 +124,7 @@ const CardConfirmModals = ({
         text: 'Select',
         onClick: requestGetSlackThread,
         className: s('rounded-t-none flex-1'),
-        ...getModalLoaderProps(isGettingSlackThread)
+        isLoading: isGettingSlackThread
       }
     }, {
       modalType: MODAL_TYPE.CONFIRM_CLOSE,
@@ -139,7 +133,7 @@ const CardConfirmModals = ({
       primaryButtonProps: {
         text: 'Save',
         onClick: () => requestUpdateCard(true),
-        ...getModalLoaderProps(isUpdatingCard)
+        isLoading: isUpdatingCard
       },
       secondaryButtonProps: {
         text: 'No',
@@ -172,7 +166,7 @@ const CardConfirmModals = ({
       primaryButtonProps: {
         text: 'Confirm and send to owner',
         onClick: requestMarkOutOfDate,
-        ...getModalLoaderProps(isMarkingStatus)
+        isLoading: isMarkingStatus
       }
     }, {
       modalType: MODAL_TYPE.CONFIRM_UP_TO_DATE,
@@ -182,7 +176,7 @@ const CardConfirmModals = ({
       primaryButtonProps: {
         text: 'Yes',
         onClick: requestMarkUpToDate,
-        ...getModalLoaderProps(isMarkingStatus)
+        isLoading: isMarkingStatus
       }
     }, {
       modalType: MODAL_TYPE.CONFIRM_UP_TO_DATE_SAVE,
@@ -191,7 +185,7 @@ const CardConfirmModals = ({
       primaryButtonProps: {
         text: 'Yes',
         onClick: requestMarkUpToDate,
-        ...getModalLoaderProps(isMarkingStatus)
+        isLoading: isMarkingStatus
       }
     }, {
       modalType: MODAL_TYPE.CONFIRM_APPROVE,
@@ -200,7 +194,7 @@ const CardConfirmModals = ({
       primaryButtonProps: {
         text: 'Yes',
         onClick: requestApproveCard,
-        ...getModalLoaderProps(isMarkingStatus)
+        isLoading: isMarkingStatus
       }
     }, {
       modalType: MODAL_TYPE.ERROR_UPDATE,
@@ -235,7 +229,7 @@ const CardConfirmModals = ({
       primaryButtonProps: {
         text: 'Delete',
         onClick: () => requestDeleteCard(activeCardIndex),
-        ...getModalLoaderProps(isDeletingCard)
+        isLoading: isDeletingCard
       }
     }, {
       modalType: MODAL_TYPE.CONFIRM_CLOSE_EDIT,
@@ -244,7 +238,7 @@ const CardConfirmModals = ({
       primaryButtonProps: {
         text: 'Save',
         onClick: () => requestUpdateCard(false),
-        ...getModalLoaderProps(isUpdatingCard)
+        isLoading: isUpdatingCard
       },
       secondaryButtonProps: {
         text: 'No',
