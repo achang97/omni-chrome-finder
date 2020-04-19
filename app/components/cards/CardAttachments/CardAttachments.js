@@ -185,7 +185,11 @@ const CardAttachments = ({
 CardAttachments.propTypes = {
   isEditable: PropTypes.bool,
   attachments: PropTypes.arrayOf(PropTypes.shape({
-
+    name: PropTypes.string.isRequired,
+    key: PropTypes.string.isRequired,
+    mimetype: PropTypes.string.isRequired,
+    isLoading: PropTypes.bool,
+    error: PropTypes.string   
   })).isRequired,
   onRemoveClick: PropTypes.func,
   onNameChange: PropTypes.func,

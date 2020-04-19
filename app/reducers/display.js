@@ -5,7 +5,9 @@ const initialState = {
   dockExpanded: false,
 
   modalOpen: false,
-  modalProps: {},
+  modalProps: {
+    title: ''
+  },
 };
 
 export default function displayReducer(state = initialState, action) {

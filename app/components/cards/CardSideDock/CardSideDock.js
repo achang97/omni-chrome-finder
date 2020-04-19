@@ -6,15 +6,12 @@ import moment from 'moment';
 import { MdClose } from 'react-icons/md';
 import { FaRegTrashAlt } from 'react-icons/fa';
 
-import { CardSection, CardUsers, CardTags, CardAttachments, CardPermissions } from 'components/cards';
-import { Select, Button, Loader, HelpTooltip } from 'components/common';
+import { CardSection, CardUsers, CardTags, CardAttachments, CardPermissions, CardKeywords, CardVerificationInterval } from 'components/cards';
+import { Button, Loader, HelpTooltip } from 'components/common';
 
 import { getBaseAnimationStyle } from 'utils/animate';
 import { isJustMe } from 'utils/card';
-import {
-  MODAL_TYPE, HINTS, PERMISSION_OPTION, PERMISSION_OPTIONS,
-  VERIFICATION_INTERVAL_OPTIONS, STATUS
-} from 'appConstants/card';
+import { MODAL_TYPE, HINTS, PERMISSION_OPTION, STATUS } from 'appConstants/card';
 import { TRANSITIONS } from 'appConstants/animate';
 
 import style from './card-side-dock.css';
@@ -128,36 +125,11 @@ const CardSideDock = (props) => {
     const currKeywords = getAttribute('keywords');
     return (
       <CardSection className={s('mt-lg')} title="Keywords">
-        { isEditing ?
-          <Select
-            value={currKeywords}
-            onChange={updateCardKeywords}
-            isSearchable
-            isMulti
-            menuShouldScrollIntoView
-            isClearable={false}
-            placeholder={'Add keywords...'}
-            type="creatable"
-            components={{ DropdownIndicator: null }}
-            noOptionsMessage={({ inputValue }) => currKeywords.some(keyword => keyword.value === inputValue) ?
-              'Keyword already exists' : 'Begin typing to add a keyword'
-            }
-          /> :
-          <div>
-            { currKeywords.length === 0 &&
-              <div className={s('text-sm text-gray-light')}>
-                No current keywords
-              </div>
-            }
-            <div className={s('flex flex-wrap')}>
-              { currKeywords.map(({ label, value }, i) => (
-                <div key={value} className={s('text-sm mr-sm mb-sm truncate text-purple-reg underline-border border-purple-gray-10')}>
-                  {value}{i !== currKeywords.length - 1 && ','}
-                </div>
-              ))}
-            </div>
-          </div>
-        }
+        <CardKeywords
+          isEditable={isEditing}
+          keywords={currKeywords}
+          onChange={updateCardKeywords}
+        />
       </CardSection>
     );
   };
@@ -192,19 +164,11 @@ const CardSideDock = (props) => {
                 }}
               />
             </div>
-            { isEditing ?
-              <Select
-                value={currVerificationInterval}
-                onChange={updateCardVerificationInterval}
-                options={VERIFICATION_INTERVAL_OPTIONS}
-                placeholder="Select verification interval..."
-                isSearchable
-                menuShouldScrollIntoView
-              /> :
-              <div className={s('underline-border border-purple-gray-20 mb-sm text-purple-reg text-sm inline-block')}>
-                {currVerificationInterval.label}
-              </div>
-            }
+            <CardVerificationInterval
+              verificationInterval={currVerificationInterval}
+              onChange={updateCardVerificationInterval}
+              isEditable={isEditing}
+            />
           </div>
         </AnimateHeight>
         <div ref={permissionRef}>

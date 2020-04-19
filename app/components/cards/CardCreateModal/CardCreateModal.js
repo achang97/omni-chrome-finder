@@ -3,10 +3,10 @@ import PropTypes from 'prop-types';
 import AnimateHeight from 'react-animate-height';
 import { MdLock, MdAutorenew } from 'react-icons/md';
 
-import { CardSection, CardUsers, CardTags, CardAttachment, CardPermissions } from 'components/cards';
-import { Select, Loader, Button, Modal, Separator, Message, HelpTooltip } from 'components/common';
+import { CardSection, CardUsers, CardTags, CardAttachment, CardPermissions, CardKeywords, CardVerificationInterval } from 'components/cards';
+import { Loader, Button, Modal, Separator, Message, HelpTooltip } from 'components/common';
 
-import { HINTS, PERMISSION_OPTION, VERIFICATION_INTERVAL_OPTIONS, MODAL_TYPE } from 'appConstants/card';
+import { HINTS, PERMISSION_OPTION, MODAL_TYPE } from 'appConstants/card';
 import { hasValidEdits, isExistingCard, isJustMe } from 'utils/card';
 
 import style from './card-create-modal.css';
@@ -96,19 +96,10 @@ const CardCreateModal = (props) => {
           </div>
         }
       >
-        <Select
-          value={keywords}
+        <CardKeywords
+          isEditable
+          keywords={keywords}
           onChange={updateCardKeywords}
-          isSearchable
-          isMulti
-          menuShouldScrollIntoView
-          isClearable={false}
-          placeholder={'Add keywords...'}
-          type="creatable"
-          components={{ DropdownIndicator: null }}
-          noOptionsMessage={({ inputValue }) => keywords.some(keyword => keyword.value === inputValue) ?
-            'Keyword already exists' : 'Begin typing to add a keyword'
-          }
         />
       </CardSection>
     );
@@ -152,13 +143,10 @@ const CardCreateModal = (props) => {
                 }}
               />
             </div>
-            <Select
-              value={verificationInterval}
+            <CardVerificationInterval
+              verificationInterval={verificationInterval}
               onChange={updateCardVerificationInterval}
-              options={VERIFICATION_INTERVAL_OPTIONS}
-              placeholder="Select verification interval..."
-              isSearchable
-              menuShouldScrollIntoView
+              isEditable
             />
           </div>
         </AnimateHeight>
