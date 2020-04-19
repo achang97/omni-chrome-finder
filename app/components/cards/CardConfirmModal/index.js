@@ -25,8 +25,8 @@ const CardConfirmModal = ({
       overlayClassName={s('rounded-b-lg')}
       title={title}
       important
-      secondaryButtonProps={showSecondary && secondaryButtonProps}
-      primaryButtonProps={showPrimary && primaryButtonProps}
+      secondaryButtonProps={showSecondary ? secondaryButtonProps : null}
+      primaryButtonProps={showPrimary ? primaryButtonProps : null}
       {...rest}
     >
       <div className={s(`card-confirm-modal-body ${bodyClassName}`)}>

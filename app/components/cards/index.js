@@ -1,4 +1,5 @@
 export {default as CardAttachment} from './CardAttachment';
+export {default as CardAttachments} from './CardAttachments';
 export {default as CardConfirmModal} from './CardConfirmModal';
 export {default as CardConfirmModals} from './CardConfirmModals';
 export {default as CardContent} from './CardContent';

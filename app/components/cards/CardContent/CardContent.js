@@ -358,11 +358,13 @@ const CardContent = (props) => {
       isUpdatingCard, isEditing, _id, status, openCardModal, question, edits, requestUpdateCard, modalOpen,
       upvotes, user, isTogglingUpvote, requestToggleUpvote,
       requestAddBookmark, requestRemoveBookmark, isUpdatingBookmark,
+      activeScreenRecordingId,
     } = props;
 
     const hasUpvoted = upvotes.some(_id => _id === user._id);
     const hasBookmarked = user.bookmarkIds.some(bookmarkId => bookmarkId === _id);
     const bookmarkOnClick = hasBookmarked ? requestRemoveBookmark : requestAddBookmark;
+    const isRecording = activeScreenRecordingId === _id;
 
     return (
       <div className={s('flex-shrink-0 min-h-0 relative')} ref={footerRef}>
@@ -385,7 +387,8 @@ const CardContent = (props) => {
               disabled={
                 edits.question === '' ||
                 !edits.answerEditorState.getCurrentContent().hasText() ||
-                isAnyLoading(edits.attachments)
+                isAnyLoading(edits.attachments) ||
+                isRecording
               }
               underline
             /> :
@@ -396,7 +399,7 @@ const CardContent = (props) => {
               iconLeft={false}
               icon={isUpdatingCard && !modalOpen[CARD.MODAL_TYPE.CONFIRM_CLOSE] ? <Loader className={s('ml-sm')} size="sm" color="white" /> : null}
               className={s('rounded-t-none p-lg')}
-              disabled={!hasValidEdits(edits) || isUpdatingCard}
+              disabled={!hasValidEdits(edits) || isUpdatingCard || isRecording}
               underline
             />
           ) :
