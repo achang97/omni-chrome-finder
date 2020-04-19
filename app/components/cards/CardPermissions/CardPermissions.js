@@ -56,7 +56,7 @@ const CardPermissions = ({
         <Select
           value={permissionGroups}
           onChange={onChangePermissionGroups}
-          onInputChange={_.debounce(loadOptions, ANIMATE.DEBOUNCE.HZ_60)}
+          onInputChange={_.debounce(loadOptions, ANIMATE.DEBOUNCE.MS_300)}
           onFocus={() => loadOptions('')}
           placeholder="Add permission groups..."
           options={permissionGroupOptions}

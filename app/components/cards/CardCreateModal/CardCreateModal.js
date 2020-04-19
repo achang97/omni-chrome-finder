@@ -182,6 +182,14 @@ const CardCreateModal = (props) => {
   const onClick = isExisting ? requestUpdateCard : requestCreateCard;
 
   const onlyShowPermissions = isJustMe(edits.permissions);
+  const primaryButtonProps = {
+    text: 'Complete Card',
+    onClick: onClick,  
+    iconLeft: false,
+    icon: isLoading ? <Loader className={s('ml-sm')} size="sm" color="white" /> : null,
+    disabled: !hasValidEdits(edits) || isLoading
+  };
+  
   return (
     <Modal
       isOpen={modalOpen[MODAL_TYPE.CREATE]}
@@ -189,6 +197,7 @@ const CardCreateModal = (props) => {
       title={edits.question}
       overlayClassName={s('rounded-b-lg')}
       bodyClassName={s('rounded-b-lg flex flex-col')}
+      primaryButtonProps={primaryButtonProps}
     >
       <div className={s('flex-grow overflow-auto p-lg')}>
         <AnimateHeight height={onlyShowPermissions ? 0 : 'auto'}>
@@ -201,17 +210,6 @@ const CardCreateModal = (props) => {
         <Message className={s('my-sm')} message={createError} type="error" />
         <div ref={bottomRef} />
       </div>
-      <Button
-        text="Complete Card"
-        onClick={onClick}
-        className={s('flex-shrink-0 rounded-t-none')}
-        underline
-        underlineColor="purple-gray-50"
-        color={'primary'}
-        iconLeft={false}
-        icon={isLoading ? <Loader className={s('ml-sm')} size="sm" color="white" /> : null}
-        disabled={!hasValidEdits(edits) || isLoading}
-      />
     </Modal>
   );
 }

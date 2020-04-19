@@ -7,7 +7,7 @@ import _ from 'lodash';
 import Toggle from 'react-toggle';
 
 import { Button, CheckBox, PlaceholderImg, Dropdown, Message, Separator, Loader } from 'components/common';
-import IntegrationAuthButton from 'components/profile/IntegrationAuthButton';
+import { IntegrationAuthButton, ProfilePicture } from 'components/profile';
 
 import { PROFILE, INTEGRATIONS, NOOP } from 'appConstants';
 
@@ -89,22 +89,8 @@ const Profile = ({
           <Loader />
           :
           <div className={s('flex')}>
-            <div className={s('mr-reg relative')}>
-              <PlaceholderImg name={`${user.firstname} ${user.lastname}`} src={user.img} className={s(`profile-profile-picture rounded-full ${isEditingAbout ? 'opacity-50' : ''}`)} />
-              {
-                isEditingAbout ?
-                  <div className={s('absolute profile-edit-photo-icon bg-purple-light rounded-full profile-edit-container flex cursor-pointer')}>
-                    <IoMdCamera className={s('text-purple-reg m-auto')} />
-                  </div> :
-                  <div
-                    className={s('absolute bottom-0 right-0 bg-purple-light rounded-full profile-edit-container flex cursor-pointer')}
-                    onClick={() => editUser()}
-                  >
-                    <MdEdit className={s('text-purple-reg m-auto')} />
-                  </div>
-              }
-            </div>
-            <div className={s('flex flex-col min-w-0')}>
+            <ProfilePicture />
+            <div className={s('flex flex-col min-w-0 ml-reg')}>
               { !isEditingAbout && <div className={s('text-sm text-purple-reg mt-xs')}> {user.companyName} • {user.role}</div> }
 
               {

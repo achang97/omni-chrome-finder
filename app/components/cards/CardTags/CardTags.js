@@ -118,7 +118,7 @@ class CardTags extends Component {
             value={tags}
             options={tagOptions}
             onChange={onChange}
-            onInputChange={_.debounce(this.loadOptions, ANIMATE.DEBOUNCE.HZ_60)}
+            onInputChange={_.debounce(this.loadOptions, ANIMATE.DEBOUNCE.MS_300)}
             onFocus={() => this.loadOptions('')}
             isSearchable
             isMulti

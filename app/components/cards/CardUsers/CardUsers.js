@@ -33,7 +33,7 @@ const CardUsers = ({
           value={null}
           options={getArrayWithout(userOptions, users, '_id')}
           onChange={option => onAdd(option)}
-          onInputChange={_.debounce(loadOptions, DEBOUNCE.HZ_60)}
+          onInputChange={_.debounce(loadOptions, DEBOUNCE.MS_300)}
           onFocus={() => loadOptions('')}
           isSearchable
           menuShouldScrollIntoView
