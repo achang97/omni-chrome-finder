@@ -47,7 +47,6 @@ const App = ({
   useEffect(() => {
     if (isLoggedIn) {
       requestGetUser();
-      //heap.identifyUser(user);
       if (user && user.isVerified) {
         requestGetTasks();
       }
@@ -62,12 +61,6 @@ const App = ({
         }}();`
 
       windowUtils.addScript({ code: segmentScript });
-      /*
-      const script2 = `
-        analytics.identify('${user._id}', { 'Name': "${user.firstname + " " + user.lastname}", 'Company': "${user.company.companyName}", 'Email': "${user.email}", 'Role': "${user.role}"});
-        analytics.track('Open Extension');
-      `;
-      windowUtils.addScript({ code: script2 });*/
       segment.identify(user);
       segment.track({name: 'Open Extension'})
     }
