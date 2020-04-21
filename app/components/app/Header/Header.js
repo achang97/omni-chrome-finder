@@ -4,6 +4,8 @@ import { MdNotificationsActive, MdLightbulbOutline } from 'react-icons/md';
 import { Tabs, Tab, Badge, PlaceholderImg } from 'components/common';
 import { ROUTES } from 'appConstants';
 
+import { segment } from 'utils';
+
 import { colors } from 'styles/colors';
 import style from './header.css';
 import { getStyleApplicationFn } from 'utils/style';
@@ -15,6 +17,7 @@ const Header = ({
   history, location: { pathname }
 }) => {
   const handleTabClick = (activeLink) => {
+    segment.track({name: `Open ${activeLink[1].toUpperCase() + activeLink.substr(2)} Tab`})
     history.push(activeLink);
   }
 

@@ -25,7 +25,8 @@ module.exports = {
     new webpack.DefinePlugin({
       'process.env': {
         NODE_ENV: JSON.stringify('production'),
-        HEAP_APP_ID: JSON.stringify(process.env.PROD_HEAP_APP_ID)
+        HEAP_APP_ID: JSON.stringify(process.env.PROD_HEAP_APP_ID),
+        SEGMENT_KEY: JSON.stringify(process.env.PROD_SEGMENT_KEY),
       }
     })
   ],

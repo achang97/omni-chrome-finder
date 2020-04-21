@@ -41,7 +41,8 @@ const baseDevConfig = () => ({
       __PORT__: port,
       'process.env': {
         NODE_ENV: JSON.stringify('development'),
-        HEAP_APP_ID: JSON.stringify(process.env.DEV_HEAP_APP_ID)
+        HEAP_APP_ID: JSON.stringify(process.env.DEV_HEAP_APP_ID),
+        SEGMENT_KEY: JSON.stringify(process.env.DEV_SEGMENT_KEY),
       }
     })
   ],
