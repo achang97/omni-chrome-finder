@@ -14,7 +14,7 @@ import { CardStatus, CardTags, CardSideDock, CardCreateModal, CardConfirmModals,
 
 import SlackIcon from 'assets/images/icons/Slack_Mark.svg';
 
-import { hasValidEdits, toggleUpvotes, cardStateChanged, copyCardUrl } from 'utils/card';
+import { hasValidEdits, toggleUpvotes, cardStateChanged, copyCardUrl, isApprover } from 'utils/card';
 import { copyText } from 'utils/window';
 import { generateFileKey, isAnyLoading } from 'utils/file';
 import { CARD, REQUEST, PROFILE } from 'appConstants';
@@ -184,9 +184,6 @@ const CardContent = (props) => {
     } = props;
 
     const currAttachments = getAttribute('attachments');
-    const isApprover = user.role === PROFILE.USER_ROLE.ADMIN ||
-      tags.some(({ approvers }) => approvers.some(({ _id }) => _id === user._id));
-
     return (
       <Resizable
         className={s('bg-purple-light py-sm px-2xl min-h-0 flex-shrink-0 flex flex-col')}
@@ -295,7 +292,7 @@ const CardContent = (props) => {
             <Separator />
             <CardStatus
               status={props.status}
-              isActionable={status !== CARD.STATUS.NEEDS_APPROVAL || isApprover}
+              isActionable={status !== CARD.STATUS.NEEDS_APPROVAL || isApprover(user, tags)}
               outOfDateReason={outOfDateReason}
               onDropdownOptionClick={cardStatusOnClick}
             />
@@ -317,7 +314,7 @@ const CardContent = (props) => {
       <div className={s('px-2xl py-sm flex-grow min-h-0 flex flex-col min-h-0 relative')}>
         { !isEditing &&
           <button
-            className={s('bg-white shadow-md rounded-full w-2xl h-2xl flex items-center justify-center absolute top-0 right-0 m-sm z-10')}
+            className={s('bg-white shadow-md rounded-full w-2xl h-2xl flex items-center justify-center absolute top-0 right-0 m-sm z-1')}
             onClick={copyAnswer}
           >
             <MdContentCopy className={s('text-gray-dark')} />          

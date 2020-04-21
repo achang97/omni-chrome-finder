@@ -3,7 +3,7 @@
 }
 
 .card-status-main-dropdown {
-  @apply bg-white rounded-b-lg p-sm flex items-center shadow-md w-full;
+  @apply bg-white rounded-b-lg p-sm flex items-center shadow-md w-full cursor-pointer;
   box-sizing: border-box;
 }
 

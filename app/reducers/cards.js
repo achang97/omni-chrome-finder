@@ -492,11 +492,10 @@ export default function cardsReducer(state = initialState, action) {
       return updateActiveCard({ isUpdatingCard: true, updateError: null });
     }
     case types.UPDATE_CARD_SUCCESS: {
-      const { closeCard, card } = payload;
+      const { closeCard, card, isApprover } = payload;
 
       const cardStatus = card.status;
-      const isOutdated = cardStatus === STATUS.OUT_OF_DATE ||
-        cardStatus === STATUS.NEEDS_VERIFICATION;
+      const isOutdated = cardStatus !== STATUS.UP_TO_DATE;
 
       // Remove card
       if (closeCard && !isOutdated) {
@@ -515,7 +514,7 @@ export default function cardsReducer(state = initialState, action) {
       }
 
       // Open corresponding modals
-      if (isOutdated) {
+      if (isOutdated && isApprover) {
         newInfo.modalOpen = { ...currCard.modalOpen, [MODAL_TYPE.CONFIRM_UP_TO_DATE_SAVE]: true };
       } else if (closeCard) {
         newInfo.modalOpen = { ...currCard.modalOpen, [MODAL_TYPE.CONFIRM_CLOSE]: false };
