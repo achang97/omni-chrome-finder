@@ -26,10 +26,10 @@ const Create = ({
   requestAddCreateAttachment, requestRemoveCreateAttachment, openCard
 }) => {
   const openCardWithProps = (createModalOpen = false) => {
-    const { _id, firstname, lastname, img }= user;
+    const { _id, firstname, lastname, profilePicture } = user;
 
     // Open card with random ID and clear out Create panel
-    const ownUser = [{ _id, name: `${firstname} ${lastname}`, img }];
+    const ownUser = [{ _id, name: `${firstname} ${lastname}`, profilePicture }];
     const newCardInfo = {
       owners: ownUser,
       subscribers: ownUser,  
