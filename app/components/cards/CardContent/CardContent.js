@@ -224,9 +224,16 @@ const CardContent = (props) => {
             </div>
           }
           <div className={s('flex items-center')}>
-            <button onClick={shareCard} className={s('mr-sm text-lg')}>
-              <IoIosShareAlt />
-            </button>
+            { !isEditing &&
+              <>
+                <button onClick={copyAnswer} className={s('mr-xs text-sm')}>
+                  <MdContentCopy />          
+                </button>
+                <button onClick={shareCard} className={s('mr-xs text-lg')}>
+                  <IoIosShareAlt />
+                </button>
+              </>
+            }
             <button onClick={openCardSideDock}>
               <MdMoreHoriz />
             </button>
@@ -312,14 +319,6 @@ const CardContent = (props) => {
     const { isEditing, editorEnabled, selectedMessages, slackReplies, edits } = props;
     return (
       <div className={s('px-2xl py-sm flex-grow min-h-0 flex flex-col min-h-0 relative')}>
-        { !isEditing &&
-          <button
-            className={s('bg-white shadow-md rounded-full w-2xl h-2xl flex items-center justify-center absolute top-0 right-0 m-sm z-1')}
-            onClick={copyAnswer}
-          >
-            <MdContentCopy className={s('text-gray-dark')} />          
-          </button>
-        }
         <div className={s('flex-grow min-h-0 flex flex-col min-h-0')}>
           { renderTextEditor(CARD.EDITOR_TYPE.ANSWER) }
         </div>

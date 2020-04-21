@@ -20,7 +20,7 @@ import { getStyleApplicationFn } from 'utils/style';
 const s = getStyleApplicationFn(style);
 
 const DATE_FORMAT = 'MMM DD, YYYY';
-const SIDE_DOCK_TRANSITION_MS = 300;
+const SIDE_DOCK_TRANSITION_MS = 200;
 
 const CardSideDock = (props) => {
   const permissionRef = useRef(null);
@@ -239,8 +239,8 @@ const CardSideDock = (props) => {
 
     const baseStyle = getBaseAnimationStyle(SIDE_DOCK_TRANSITION_MS);
     const transitionStyles = {
-      entering: {  },
-      entered: {  },
+      entering: { transform: 'translateX(100%)' },
+      entered: { },
       exiting: { transform: 'translateX(100%)' },
       exited: { transform: 'translateX(100%)' },
     };
