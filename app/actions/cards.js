@@ -199,8 +199,8 @@ export function requestUpdateCard(closeCard=false) {
   return { type: types.UPDATE_CARD_REQUEST, payload: { closeCard } };
 }
 
-export function handleUpdateCardSuccess(card, closeCard) {
-  return { type: types.UPDATE_CARD_SUCCESS, payload: { closeCard, card } };
+export function handleUpdateCardSuccess(card, closeCard, isApprover) {
+  return { type: types.UPDATE_CARD_SUCCESS, payload: { closeCard, card, isApprover } };
 }
 
 export function handleUpdateCardError(cardId, error, closeCard) {

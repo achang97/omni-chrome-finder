@@ -75,7 +75,7 @@ const CardStatus = ({ isActionable, status, className, onDropdownOptionClick, ou
         }
         body={!dropdownDisabled ?
           <div
-            className={s('card-status-main-dropdown button-hover')}
+            className={s('card-status-main-dropdown')}
             onClick={onClick}
           >
             <DropdownIcon className={s(`text-${dropdownFontColor}`)} />

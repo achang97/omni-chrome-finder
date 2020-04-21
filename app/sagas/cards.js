@@ -2,7 +2,7 @@ import { take, call, fork, put, select } from 'redux-saga/effects';
 import { doGet, doPost, doPut, doDelete, getErrorMessage } from 'utils/request';
 import { getArrayIds, getArrayField } from 'utils/array';
 import { getContentStateFromEditorState } from 'utils/editor';
-import { toggleUpvotes, hasValidEdits } from 'utils/card';
+import { toggleUpvotes, hasValidEdits, isApprover } from 'utils/card';
 import { convertAttachmentsToBackendFormat } from 'utils/file';
 import { STATUS, PERMISSION_OPTION, VERIFICATION_INTERVAL_OPTION } from 'appConstants/card';
 import {
@@ -201,7 +201,9 @@ function* updateCard({ closeCard }) {
     if (hasValidEdits(activeCard.edits)) {
       const newCardInfo = yield call(convertCardToBackendFormat, activeCard.status === STATUS.NOT_DOCUMENTED);
       const card = yield call(doPut, `/cards/${cardId}`, newCardInfo);
-      yield put(handleUpdateCardSuccess(card, closeCard));
+
+      const user = yield select(state => state.profile.user);
+      yield put(handleUpdateCardSuccess(card, closeCard, isApprover(user, card.tags)));
     } else {
       yield put(handleUpdateCardError(cardId, INCOMPLETE_CARD_ERROR, closeCard));
     }

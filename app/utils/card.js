@@ -6,7 +6,7 @@ import { createSelectOptions } from './select';
 import { getArrayIds } from './array';
 import { isAnyLoading } from './file';
 import { copyText } from './window';
-import { URL, CARD } from 'appConstants';
+import { URL, CARD, PROFILE } from 'appConstants';
 
 export function convertCardToFrontendFormat(card) {
   const {
@@ -93,12 +93,20 @@ export function generateCardId() {
   return `new-card-${Math.floor(Math.random() * 10001)}`;
 }
 
-export function isExistingCard(id) {
-  return !id.startsWith('new-card-');
+export function isExistingCard(cardId) {
+  return !cardId.startsWith('new-card-');
 }
 
 export function isJustMe(permissions) {
   return permissions && permissions.value === CARD.PERMISSION_OPTION.JUST_ME;
+}
+
+export function isApprover(user, tags) {
+  return user.role === PROFILE.USER_ROLE.ADMIN ||
+    tags.every(tag => (
+      !tag.locked ||
+      tag.approvers.some(approver => approver._id === user._id))
+    );
 }
 
 export function cardStateChanged(card) {

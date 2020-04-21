@@ -13,7 +13,7 @@
 
 /* Override React Dock */
 .app-container > div:last-child > div > div:first-child {
-  display: none !important;
+  @apply hidden !important;
 }
 
 .app-container > div > div > div:nth-child(2) {
@@ -27,7 +27,7 @@
 
 .app-container button:focus {
   all: unset;
-  outline: none;
+  @apply outline-none;
 }
 
 .app-container button:hover {
@@ -35,20 +35,19 @@
 }
 
 .app-container button:hover {
-  cursor: pointer;
+  @apply cursor-pointer;
   opacity: 0.8;
 }
 
 .app-container button:disabled {
-  opacity: 0.5;
-  cursor: not-allowed;
+  @apply cursor-not-allowed opacity-50;
 }
 
 /* Anchor tag override */
 .app-container a {
   color: inherit !important;
   font-family: "HelveticaNeue-Light", "Helvetica Neue Light", "Helvetica Neue", Helvetica, Arial, sans-serif !important;
-  text-decoration: none !important;
+  @apply no-underline !important;
 }
 
 /* Input overrides */
