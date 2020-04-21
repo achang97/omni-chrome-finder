@@ -27,9 +27,11 @@ const CardPermissions = ({
   return (
     <div>
       { isDisabled ?
-        <div className={s('underline-border border-purple-gray-20 mb-sm text-purple-reg text-sm inline-block')}>
+        (selectedPermission.value !== CARD.PERMISSION_OPTION.SPECIFIC_GROUPS &&
+         <div className={s('underline-border border-purple-gray-20 mb-sm text-purple-reg text-sm inline-block')}>
           {selectedPermission.label}
-        </div> :
+          </div>
+        ):
         <Tabs
           activeValue={selectedPermission}
           className={s('mb-sm')}
@@ -53,22 +55,31 @@ const CardPermissions = ({
         </Tabs>
       }
       <AnimateHeight height={selectedPermission.value === CARD.PERMISSION_OPTION.SPECIFIC_GROUPS ? 'auto' : 0}>
-        <Select
-          value={permissionGroups}
-          onChange={onChangePermissionGroups}
-          onInputChange={_.debounce(loadOptions, ANIMATE.DEBOUNCE.MS_300)}
-          onFocus={() => loadOptions('')}
-          placeholder="Add permission groups..."
-          options={permissionGroupOptions}
-          isMulti
-          isSearchable
-          isDisabled={isDisabled}
-          isClearable={false}
-          menuShouldScrollIntoView
-          getOptionLabel={option => option.name}
-          getOptionValue={option => option._id}
-          noOptionsMessage={() => isSearchingPermissionGroups ? 'Searching permission groups...' : 'No options'}
-        />
+        { !isDisabled ?
+          <Select
+            value={permissionGroups}
+            onChange={onChangePermissionGroups}
+            onInputChange={_.debounce(loadOptions, ANIMATE.DEBOUNCE.MS_300)}
+            onFocus={() => loadOptions('')}
+            placeholder="Add permission groups..."
+            options={permissionGroupOptions}
+            isMulti
+            isSearchable
+            isDisabled={isDisabled}
+            isClearable={false}
+            menuShouldScrollIntoView
+            getOptionLabel={option => option.name}
+            getOptionValue={option => option._id}
+            noOptionsMessage={() => isSearchingPermissionGroups ? 'Searching permission groups...' : 'No options'}
+          /> :
+          <div className={s('flex flex-wrap')}>
+            { permissionGroups.length !== 0 && permissionGroups.map(({ name }, i) => (
+              <div key={name} className={s('text-sm mr-sm mb-sm truncate text-purple-reg underline-border border-purple-gray-10')}>
+                {name}{i !== permissionGroups.length - 1 && ','}
+              </div>
+            ))}            
+          </div>
+        }
       </AnimateHeight>
     </div>
   );
