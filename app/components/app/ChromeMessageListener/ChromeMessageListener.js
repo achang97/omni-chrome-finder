@@ -207,6 +207,7 @@ class ChromeMessageListener extends Component {
 
   handlePageUpdate = (isNewPage) => {
     const { requestSearchCards, clearSearchCards, autofindPermissions } = this.props;
+    const { prevText } = this.state;
 
     const integration = this.getIntegration();
     if (this.isValidUser() && autofindPermissions[integration]) {
@@ -215,7 +216,7 @@ class ChromeMessageListener extends Component {
       }
 
       const pageText = this.getPageText(integration);
-      if (pageText !== this.state.prevText) {
+      if (pageText !== prevText) {
         this.setState({ prevText: pageText });
         if (pageText && pageText !== '') {
           requestSearchCards(SEARCH.TYPE.AI_SUGGEST, { text: pageText });
@@ -224,6 +225,10 @@ class ChromeMessageListener extends Component {
         }        
       }
     } else {
+      if (prevText !== '') {
+        this.setState({ prevText: '' });
+      }
+      
       clearSearchCards(SEARCH.TYPE.AI_SUGGEST);
     }
   };
