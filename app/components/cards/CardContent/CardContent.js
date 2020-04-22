@@ -203,7 +203,7 @@ const CardContent = (props) => {
     } = props;
 
     const currAttachments = getAttribute('attachments');
-    const showDescription = hasDescription();
+    const showDescription = hasDescription() || isEditing;
     return (
       <Resizable
         className={s('bg-purple-light py-sm px-2xl min-h-0 flex-shrink-0 flex flex-col')}
