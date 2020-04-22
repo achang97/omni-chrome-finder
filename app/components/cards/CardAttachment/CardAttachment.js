@@ -131,6 +131,7 @@ const CardAttachment = ({
           className: s('flex-1')
         }}
         className={fileNameClassName}
+        placeholder="No file name"
       />
       { isEditable && onRemoveClick && !isLoading &&
         <MdClose onClick={onRemove} className={s(`card-attachment-remove-icon button-hover ${removeIconClassName}`)} />

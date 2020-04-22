@@ -12,7 +12,6 @@ import TextEditor from 'components/editors/TextEditor';
 import SuggestionPanel from 'components/suggestions/SuggestionPanel';
 import { ScreenRecordButton, AttachmentDropdown, AttachmentDropzone } from 'components/attachments';
 
-import { EDITOR_TYPE } from 'appConstants/card';
 import { generateFileKey, isAnyLoading } from 'utils/file';
 
 import style from './create.css';
@@ -76,7 +75,7 @@ const Create = ({
           onEditorStateChange={updateCreateDescriptionEditor}
           editorState={descriptionEditorState}
           editorType="EXTENSION"
-          editorRole={EDITOR_TYPE.DESCRIPTION}
+          placeholder="Add a description here"
         />
       </AnimateHeight>
       <Separator horizontal className={s('my-reg')} />
@@ -84,7 +83,7 @@ const Create = ({
         onEditorStateChange={updateCreateAnswerEditor}
         editorState={answerEditorState}
         editorType="EXTENSION"
-        editorRole={EDITOR_TYPE.ANSWER}
+        placeholder="Add an answer here"
       />
     </div>
   );

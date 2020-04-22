@@ -26,11 +26,7 @@ const RecipientDropdownBody = ({
   const handleKeyPress = (e, mentionOptions) => {
     if (e.key === 'Enter') {
       if (selectedIndex < mentionOptions.length) {
-        onAddMention(mentionOptions[selectedIndex]);
-      }
-
-      if (selectedIndex === mentionOptions.length - 1) {
-        setSelectedIndex(0);
+        addMention(mentionOptions[selectedIndex]);
       }
     }
   }

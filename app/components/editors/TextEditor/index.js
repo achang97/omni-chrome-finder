@@ -8,7 +8,6 @@ import { IoMdArrowDropleft, IoMdArrowDropright } from 'react-icons/io';
 
 import style from './text-editor.css';
 import { getStyleApplicationFn } from 'utils/style';
-import { EDITOR_TYPE } from 'appConstants/card';
 const s = getStyleApplicationFn(style);
 
 export default class TextEditor extends Component {
@@ -30,7 +29,12 @@ export default class TextEditor extends Component {
   }
 
   componentDidUpdate(prevProps, prevState) {
-    const { toolbarHidden } = this.props;
+    const { toolbarHidden, placeholder } = this.props;
+
+    // Force rerender, as it doesn't rerender when placeholder changes
+    if (prevProps.placeholder !== placeholder) {
+      this.setState({});
+    }
 
     if ((prevState.hideToolbar !== toolbarHidden) && !prevState.hideToolbar) {
       this.setState({ hideToolbar: toolbarHidden });
@@ -45,7 +49,7 @@ export default class TextEditor extends Component {
   }
 
   render() {
-    let { editorState, className, wrapperClassName, editorClassName, toolbarClassName, onEditorStateChange, readOnly, editorType, editorRole, onClick } = this.props;
+    let { editorState, className, wrapperClassName, editorClassName, toolbarClassName, onEditorStateChange, readOnly, editorType, placeholder, onClick } = this.props;
     const { hideToolbar } = this.state;
 
     if (editorClassName === '') {
@@ -67,7 +71,7 @@ export default class TextEditor extends Component {
           toolbar={editorType === 'CARD' ? CARD_TOOLBAR_PROPS : EXTENSION_TOOLBAR_PROPS}
           toolbarHidden={hideToolbar}
           readOnly={readOnly}
-          placeholder={editorRole === EDITOR_TYPE.DESCRIPTION ? 'Add a description here' : 'Add an answer here'}
+          placeholder={placeholder}
           handlePastedText={() => false}
         />
         {
@@ -103,8 +107,8 @@ TextEditor.propTypes = {
   readOnly: PropTypes.bool,
   autoFocus: PropTypes.bool,
   editorType: PropTypes.oneOf(['CARD', 'EXTENSION']),
-  editorRole: PropTypes.oneOf(['ANSWER', 'DESCRIPTION']),
   onClick: PropTypes.func,
+  placeholder: PropTypes.string,
 };
 
 
@@ -117,5 +121,4 @@ TextEditor.defaultProps = {
   readOnly: false,
   autoFocus: false,
   editorType: 'CARD',
-  editorRole: EDITOR_TYPE.DESCRIPTION,
 };
