@@ -19,7 +19,9 @@ const MODAL_TRANSITION_STYLES = {
   exited: { opacity: 0, visibility: 'hidden' },
 };
 
-const getButtonProps = ({ disabled, isLoading=false, icon, ...rest }) => {
+const getButtonProps = (props) => {
+  const { disabled, isLoading=false, icon, ...rest } = props || {};
+
   const isLoadingProps = {
     iconLeft: false,
     icon: isLoading ? <Loader className={s('ml-sm')} size="sm" color="white" /> : icon,
