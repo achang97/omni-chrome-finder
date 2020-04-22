@@ -34,7 +34,13 @@ export default function askReducer(state = initialState, action) {
       return { ...state, searchText: text };
     }
     case types.TOGGLE_ASK_FEEDBACK_INPUT: {
-      return { ...state, showFeedback: !state.showFeedback, feedback: '', feedbackSuccess: null, feedbackError: null };
+      const { showFeedback } = state;
+      return {
+        ...state,
+        showFeedback: !showFeedback,
+        feedback: '',
+        ...(!showFeedback ? { feedbackSuccess: null, feedbackError: null } : {})
+      };
     }
     case types.UPDATE_ASK_FEEDBACK: {
       const { feedback } = payload;

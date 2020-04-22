@@ -13,7 +13,7 @@ const s = getStyleApplicationFn(style);
 
 
 const CardAttachments = ({
-  isEditable, attachments, onRemoveClick, onNameChange,
+  isEditable, attachments, onRemoveClick, onFileNameChange,
   token
 }) => {
   const [isLightboxOpen, setLightboxOpenState] = useState(false);
@@ -56,7 +56,7 @@ const CardAttachments = ({
         value={name}
         inputProps={{
           placeholder: 'File Name',
-          onChange: e => onNameChange({ key, name: e.target.value }),
+          onChange: e => onFileNameChange({ key, name: e.target.value }),
         }}
         className={s('truncate text-xs font-semibold text-center')}
       /> :
@@ -121,8 +121,8 @@ const CardAttachments = ({
           className={s('min-w-0')}
           textClassName={s('truncate')}
           isEditable={isEditable}
-          onFileNameChange={fileName => updateCardAttachmentName(key, fileName)}
-          onRemoveClick={() => removeCardAttachment(key)}
+          onFileNameChange={name => onFileNameChange({ key, name })}
+          onRemoveClick={() => onRemoveClick(key)}
         />
       ))}
     </div>
@@ -192,7 +192,7 @@ CardAttachments.propTypes = {
     error: PropTypes.string   
   })).isRequired,
   onRemoveClick: PropTypes.func,
-  onNameChange: PropTypes.func,
+  onFileNameChange: PropTypes.func,
 }
 
 CardAttachments.defaultProps = {

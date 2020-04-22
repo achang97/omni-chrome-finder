@@ -23,7 +23,7 @@ const Create = ({
   question, descriptionEditorState, answerEditorState, attachments, user,
   showCreateDescriptionEditor, isDescriptionEditorShown,
   updateCreateQuestion, updateCreateDescriptionEditor, updateCreateAnswerEditor, clearCreatePanel,
-  requestAddCreateAttachment, requestRemoveCreateAttachment, openCard
+  requestAddCreateAttachment, updateCreateAttachmentName, requestRemoveCreateAttachment, openCard
 }) => {
   const openCardWithProps = (createModalOpen = false) => {
     const { _id, firstname, lastname, profilePicture } = user;

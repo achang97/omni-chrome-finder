@@ -1,4 +1,5 @@
 import React, { useEffect, useRef } from 'react';
+import { useDebouncedCallback } from 'use-debounce';
 import _ from 'lodash';
 import { MdSearch } from 'react-icons/md';
 import AnimateHeight from 'react-animate-height';
@@ -70,9 +71,9 @@ const Navigate = ({
     requestSearchCards(SEARCH.TYPE.NAVIGATE, queryParams, clearCards);
   }
 
-  const debouncedRequestSearch = _.debounce(() => {
-    searchCards(true);
-  }, ANIMATE.DEBOUNCE.MS_300)
+  const [debouncedRequestSearch] = useDebouncedCallback(() => {
+    searchCards(true)
+  }, ANIMATE.DEBOUNCE.MS_300);
 
   const updateSearchText = (e) => {
     updateNavigateSearchText(e.target.value);

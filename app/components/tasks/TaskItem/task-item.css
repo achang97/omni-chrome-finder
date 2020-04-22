@@ -19,6 +19,7 @@
 .task-item-profile-picture {
   height: 27px;
   width: 27px;
+  @apply rounded-full text-xs mr-sm flex-shrink-0;
 }
 
 .task-item-slack-icon {

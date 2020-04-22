@@ -142,6 +142,7 @@ const ProfilePicture = ({
             circularCrop
             onChange={c => setCrop(c)}
             onComplete={makeClientCrop}
+            imageStyle={{ maxHeight: 'none' }}
           />        
         </Modal>
       </>

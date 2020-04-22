@@ -344,6 +344,7 @@ const Ask = ({
               className={s('text-md text-center text-green-reg')}
               animate
               temporary
+              show={feedbackSuccess}
               onHide={toggleAskFeedbackInput}
               type="success"
             /> :
