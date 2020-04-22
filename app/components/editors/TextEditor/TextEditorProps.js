@@ -73,7 +73,8 @@ export const CARD_TOOLBAR_PROPS = {
     showOpenOptionOnHover: true,
     defaultTargetOption: '_self',
     options: ['link', 'unlink'],
-    linkCallback: undefined
+    linkCallback: undefined,
+    defaultTargetOption: '_blank'
   },
   emoji: {
     className: undefined,

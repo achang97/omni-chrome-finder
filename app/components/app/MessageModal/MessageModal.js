@@ -19,12 +19,12 @@ const MessageModal = ({
     overlayClassName={s('rounded-bl-lg rounded-tl-lg')}
     bodyClassName={s('rounded-bl-lg rounded-tl-lg flex flex-col')}
     primaryButtonProps={{
-      text: buttonText
+      text: buttonText || 'Ok'
     }}
   >
     <div className={s('p-xl')}>
-      { !showHeader && <div> {title} </div> }
-      { subtitle && <div className={s('text-center text-sm mt-lg')}> {subtitle} </div> }
+      { !showHeader && <div className={s(subtitle ? 'mt-lg' : '')}> {title} </div> }
+      { subtitle && <div className={s('text-center text-sm')}> {subtitle} </div> }
     </div>
   </Modal>
 );

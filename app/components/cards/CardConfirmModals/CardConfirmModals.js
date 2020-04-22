@@ -80,7 +80,6 @@ const CardConfirmModals = ({
               />
             </div>
           );
-
         })}
       </div>
     );    

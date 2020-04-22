@@ -113,7 +113,7 @@ const ProfilePicture = ({
                 className={s(`profile-picture ${isEditable ? 'opacity-50 cursor-pointer' : ''}`)}
               />
               { isEditable && (isUpdatingPicture ?
-                <Loader size="xs" className="profile-picture-icon" /> :
+                <Loader size="xs" className={s('profile-picture-icon')} /> :
                 <IoMdCamera className={s('profile-picture-icon text-purple-reg')} />
               )}          
             </div>

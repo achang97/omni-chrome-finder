@@ -59,13 +59,14 @@ const CardAttachments = ({
           onChange: e => onFileNameChange({ key, name: e.target.value }),
         }}
         className={s('truncate text-xs font-semibold text-center')}
+        placeholder="No file name"
       /> :
       <a
         href={url}
         target="_blank"
         className={s('block truncate text-xs font-semibold text-center')}
       >
-        {name}
+        {name || 'No file name'}
       </a>   
     );
   };

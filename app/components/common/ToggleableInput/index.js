@@ -5,7 +5,7 @@ import style from './toggleable-input.css';
 import { getStyleApplicationFn } from 'utils/style';
 const s = getStyleApplicationFn(style);
 
-const ToggleableInput = ({ value, isEditable, disabled, inputProps, className }) => {
+const ToggleableInput = ({ value, isEditable, disabled, inputProps, className, placeholder }) => {
   const [isEditing, toggleEdit] = useState(false);
   const isInputToggleable = isEditable && !disabled;
 
@@ -26,7 +26,7 @@ const ToggleableInput = ({ value, isEditable, disabled, inputProps, className })
         className={s(`${isInputToggleable ? 'button-hover' : ''} ${className}`)}
         onClick={() => isInputToggleable && toggleEdit(true)}
       >
-        {value}
+        {value || <span className={s('italic')}> {placeholder || inputProps.placeholder || 'No text...'} </span>}
       </div>
     );
   }
@@ -41,14 +41,13 @@ ToggleableInput.propTypes = {
   }).isRequired,
   isEditable: PropTypes.bool,
   disabled: PropTypes.bool,
-  inputClassName: PropTypes.string,
   className: PropTypes.string,
+  placeholder: PropTypes.string,
 }
 
 ToggleableInput.defaultProps = {
   isEditable: true,
   disabled: false,
-  inputClassName: '',
   className: '',
 }
 

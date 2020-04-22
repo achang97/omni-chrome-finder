@@ -108,9 +108,25 @@ const CardContent = (props) => {
 
     let defaultProps;
     if (editorRole === CARD.EDITOR_TYPE.DESCRIPTION) {
-      defaultProps = { className: 'my-reg', wrapperClassName: '', toolbarHidden: true, readOnly: true, editorState: descriptionEditorState, onEditorStateChange: updateCardDescriptionEditor, onClick: undefined };
+      defaultProps = {
+        className: 'my-reg',
+        wrapperClassName: '',
+        toolbarHidden: true,
+        readOnly: true,
+        editorState: descriptionEditorState,
+        onEditorStateChange: updateCardDescriptionEditor,
+        onClick: undefined
+      };
     } else {
-      defaultProps = { className: 'mt-sm mb-reg', wrapperClassName: '', toolbarHidden: true, readOnly: true, editorState: answerEditorState, onEditorStateChange: updateCardAnswerEditor, onClick: undefined };
+      defaultProps = {
+        className: 'mt-sm mb-reg',
+        wrapperClassName: '',
+        toolbarHidden: true,
+        readOnly: true,
+        editorState: answerEditorState,
+        onEditorStateChange: updateCardAnswerEditor,
+        onClick: undefined
+      };
     }
 
     if (!isEditing) {
@@ -121,44 +137,47 @@ const CardContent = (props) => {
       };
     }
 
+    const editingProps = {
+      placeholder: editorRole === CARD.EDITOR_TYPE.DESCRIPTION ? 'Add a description here' : 'Add an answer here',
+      editorState: editorRole === CARD.EDITOR_TYPE.DESCRIPTION ? edits.descriptionEditorState : edits.answerEditorState,
+    };
+
     if (editorEnabled[editorRole]) {
       return {
         ...defaultProps,
+        ...editingProps,
         editorClassName: 'bg-white',
-        editorState: editorRole === CARD.EDITOR_TYPE.DESCRIPTION ? edits.descriptionEditorState : edits.answerEditorState,
         toolbarHidden: false,
         readOnly: false,
       };
     }
+
     return {
       ...defaultProps,
+      ...editingProps,
       wrapperClassName: 'card-text-editor-wrapper-inactive',
       editorClassName: 'card-text-editor-view',
-      editorState: editorRole === CARD.EDITOR_TYPE.DESCRIPTION ? edits.descriptionEditorState : edits.answerEditorState,
       onClick: editorRole === CARD.EDITOR_TYPE.DESCRIPTION ? () => enableDescriptionEditor() : () => enableAnswerEditor(),
     };
-
-
-    return {};
   }
 
   const renderTextEditor = (editorRole) => {
-    const { className, wrapperClassName, editorClassName, editorState, toolbarHidden, readOnly, onEditorStateChange, onClick } = getTextEditorProps(editorRole);
+    const { className, wrapperClassName, editorClassName, onClick, ...rest } = getTextEditorProps(editorRole);
     return (
       <TextEditor
-        className={s(`${className}`)}
+        className={s(className)}
         onClick={() => onClick && onClick()}
-        onEditorStateChange={onEditorStateChange}
-        editorState={editorState}
         wrapperClassName={s(`flex flex-col flex-grow min-h-0 ${wrapperClassName}`)}
         editorClassName={s(`text-editor overflow-auto ${editorClassName}`)}
         toolbarClassName={s('text-editor-toolbar')}
-        editorRole={editorRole}
-        toolbarHidden={toolbarHidden}
-        readOnly={readOnly}
         autoFocus
+        {...rest}
       />
     );
+  }
+
+  const hasDescription = () => {
+    return props.descriptionEditorState.getCurrentContent().hasText();
   }
 
   const addCardAttachments = (files, cardId) => {
@@ -184,13 +203,14 @@ const CardContent = (props) => {
     } = props;
 
     const currAttachments = getAttribute('attachments');
+    const showDescription = hasDescription();
     return (
       <Resizable
         className={s('bg-purple-light py-sm px-2xl min-h-0 flex-shrink-0 flex flex-col')}
         defaultSize={{ height: CARD.DIMENSIONS.MIN_QUESTION_HEIGHT }}
-        minHeight={CARD.DIMENSIONS.MIN_QUESTION_HEIGHT}
+        minHeight={showDescription ? CARD.DIMENSIONS.MIN_QUESTION_HEIGHT : 'none'}
         maxHeight={getMaxDescriptionHeight()}
-        size={{ height: descriptionSectionHeight }}
+        size={{ height: showDescription ? descriptionSectionHeight : 'auto' }}
         onResizeStop={(e, direction, ref, d) => {
           props.adjustCardDescriptionSectionHeight(descriptionSectionHeight + d.height);
         }}
@@ -226,10 +246,10 @@ const CardContent = (props) => {
           <div className={s('flex items-center')}>
             { !isEditing &&
               <>
-                <button onClick={copyAnswer} className={s('mr-xs text-sm')}>
+                <button onClick={copyAnswer} className={s('mr-sm text-sm')}>
                   <MdContentCopy />          
                 </button>
-                <button onClick={shareCard} className={s('mr-xs text-lg')}>
+                <button onClick={shareCard} className={s('mr-sm text-lg')}>
                   <IoIosShareAlt />
                 </button>
               </>
@@ -246,11 +266,13 @@ const CardContent = (props) => {
             value={props.edits.question}
             onChange={e => updateCardQuestion(e.target.value)}
           /> :
-          <div className={s('text-2xl font-semibold')}>{props.question}</div>
+          <div className={s(`text-2xl font-semibold ${!showDescription ? 'mb-lg' : ''}`)}>{props.question}</div>
         }
-        <div className={s('flex-grow min-h-0 flex flex-col min-h-0')}>
-          { renderTextEditor(CARD.EDITOR_TYPE.DESCRIPTION) }
-        </div>
+        { (isEditing || showDescription) &&
+          <div className={s('flex-grow min-h-0 flex flex-col min-h-0')}>
+            { renderTextEditor(CARD.EDITOR_TYPE.DESCRIPTION) }
+          </div>
+        }
         { isEditing &&
         <div className={s('flex justify-between')}>
           { currAttachments.length !== 0 &&

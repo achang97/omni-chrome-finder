@@ -103,6 +103,7 @@ const Ask = ({
             onEditorStateChange={updateAskQuestionDescription}
             editorState={questionDescription}
             editorType="EXTENSION"
+            placeholder="Add a description here"
           />
         </div>
         <div className={s('flex px-xs pt-reg')}>
