@@ -32,7 +32,7 @@ const AuthView = ({
           }
           { subtitle &&
             <div>
-              <div className={s('text-sm text-gray-light mb-xl')}> {subtitle} </div>
+              <div className={s('text-sm text-gray-reg mb-xl')}> {subtitle} </div>
             </div>
           }
           { isLoading ?
