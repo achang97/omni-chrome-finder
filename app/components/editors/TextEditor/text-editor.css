@@ -87,6 +87,8 @@
 /* Small Button - applies to Inline Buttons */
 .text-editor-button-sm {
   min-width: 18px !important;
+  height: auto !important;
+  align-self: stretch !important;
   border-radius: 8px !important;
   background-color: #BDC8F926 !important;
   color: #7A7DAF !important;
