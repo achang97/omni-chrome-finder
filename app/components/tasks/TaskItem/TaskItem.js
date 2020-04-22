@@ -114,7 +114,7 @@ const TaskItem = ({
             <PlaceholderImg
               name={`${outOfDateReason.sender.firstname} ${outOfDateReason.sender.lastname}`}
               src={outOfDateReason.sender.profilePicture}
-              className={s('task-item-profile-picture rounded-full text-xs mr-sm')}
+              className={s('task-item-profile-picture')}
             />
             <div className={s('bg-gray-xlight p-reg rounded-lg w-full vertical-ellipsis-2 text-xs break-words line-clamp-4')}>
               {outOfDateReason.reason === '' ? 'No reason specified.' : outOfDateReason.reason}

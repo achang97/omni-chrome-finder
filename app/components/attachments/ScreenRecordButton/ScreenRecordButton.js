@@ -57,7 +57,14 @@ class ScreenRecordButton extends Component {
   };
 
   startRecording = async () => {
-    const { addScreenRecordingChunk, startScreenRecording, id, onSuccess } = this.props;
+    const {
+      addScreenRecordingChunk, startScreenRecording, id, onSuccess,
+      dockVisible, toggleDock
+    } = this.props;
+
+    if (dockVisible) {
+      toggleDock();
+    }
 
     let desktopStream, voiceStream;
 
@@ -79,6 +86,10 @@ class ScreenRecordButton extends Component {
         }
       });      
     } catch (e) {
+      // Explicitly get from this.props again, since this is an async function
+      if (!this.props.dockVisible) {
+        toggleDock();
+      }
       return;
     }
 

@@ -99,7 +99,7 @@ const CardStatus = ({ isActionable, status, className, onDropdownOptionClick, ou
               <div className={s(`mb-reg text-sm ${!outOfDateReason.reason ? 'italic text-gray-light' : ''}`)}> {outOfDateReason.reason || 'No reason specified.'} </div>
               <div className={s('flex items-center text-xs')}>
                 <CardUser
-                  img={outOfDateReason.sender.img}
+                  img={outOfDateReason.sender.profilePicture}
                   name={`${outOfDateReason.sender.firstname} ${outOfDateReason.sender.lastname}`}
                   showName={false}
                   size="sm"
