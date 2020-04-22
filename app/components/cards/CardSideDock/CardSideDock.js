@@ -95,7 +95,7 @@ const CardSideDock = (props) => {
           attachments={currAttachments}
           isEditable={isEditing}
           onRemoveClick={removeCardAttachment}
-          onNameChange={({ name, key }) => updateCardAttachmentName(key, name)}
+          onFileNameChange={({ name, key }) => updateCardAttachmentName(key, name)}
         />
       </CardSection>
     );

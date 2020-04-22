@@ -21,10 +21,11 @@ exports.colors = {
   },
   yellow: {
     reg: '#FFDC1E80',
-    light: '#FFDC1E14'
+    light: '#ddb577'
   },
   gold: {
     reg: '#B18B50',
+    light: '#dd9a32',
   },
   red: {
     reg: '#EC6464',

@@ -1,5 +1,6 @@
 import React, { useState, useRef, useEffect } from 'react';
 import PropTypes from 'prop-types';
+import { useDebouncedCallback } from 'use-debounce';
 import { MdClose, MdKeyboardArrowDown, MdKeyboardArrowUp, MdKeyboardArrowLeft } from 'react-icons/md';
 import AnimateHeight from 'react-animate-height';
 import _ from 'lodash';
@@ -37,7 +38,7 @@ const SuggestionPanel = ({
     requestSearchCards(SEARCH.TYPE.POPOUT, { q: query }, clearCards);
   }
 
-  const debouncedRequestSearch = _.debounce(() => {
+  const [debouncedRequestSearch] = useDebouncedCallback(() => {
     searchCards(true);
   }, ANIMATE.DEBOUNCE.MS_300)
 

@@ -2,7 +2,7 @@ import { addStorageListener } from 'utils/storage';
 import { colors } from 'styles/colors';
 import { CHROME } from 'appConstants';
 
-chrome.browserAction.setBadgeBackgroundColor({ color: colors.purple.reg });
+chrome.browserAction.setBadgeBackgroundColor({ color: colors.gold.light });
 
 addStorageListener(CHROME.STORAGE.TASKS, ({ newValue: tasks }) => {
   if (tasks) {        
