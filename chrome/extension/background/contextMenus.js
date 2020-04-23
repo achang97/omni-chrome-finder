@@ -1,4 +1,5 @@
 import { CHROME, URL } from 'appConstants';
+import { injectExtension, loadScript } from './inject';
 
 const IDS = {
   PARENT: 'PARENT_MENU_ID',
@@ -46,10 +47,7 @@ ACTION_MENU_ITEMS.forEach(({ title, id }) => {
   });
 });
 
-
-chrome.contextMenus.onClicked.addListener(({ menuItemId, selectionText = '' }, tab) => {
-  const tabId = tab.id;
-
+function handleMenuAction(tabId, menuItemId, selectionText) {
   switch (menuItemId) {
     case IDS.SEARCH:
       chrome.tabs.sendMessage(tabId, { type: CHROME.MESSAGE.SEARCH, payload: { selectionText } });
@@ -64,6 +62,21 @@ chrome.contextMenus.onClicked.addListener(({ menuItemId, selectionText = '' }, t
     default: {
       break;
     }
-  }    
+  }   
+}
+
+chrome.contextMenus.onClicked.addListener(async ({ menuItemId, selectionText = '' }, tab) => {
+  const tabId = tab.id;
+
+  // Attempt to inject extension
+  // TODO: should take this out once <all_urls> permission is enabled
+  const isInjected = (await injectExtension(tabId))[0];
+  if (!isInjected) {
+    loadScript('inject', tabId, () => {
+      handleMenuAction(tabId, menuItemId, selectionText);
+    });
+  } else {
+    handleMenuAction(tabId, menuItemId, selectionText);
+  }
 });
 

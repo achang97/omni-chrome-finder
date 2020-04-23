@@ -5,7 +5,7 @@ import { setStorage, getStorage, addStorageListener } from 'utils/storage';
 
 let socket;
 
-function injectExtension(tabId) {
+export function injectExtension(tabId) {
   return chrome.tabs.executeScriptAsync(tabId, {
     code: `var injected = window.reactExampleInjected;
       window.reactExampleInjected = true;
@@ -26,7 +26,7 @@ function getActiveTab() {
   });
 }
 
-function loadScript(name, tabId, cb) {
+export function loadScript(name, tabId, cb) {
   if (process.env.NODE_ENV === NODE_ENV.PROD) {
     chrome.tabs.executeScript(tabId, { file: `/js/${name}.bundle.js`, runAt: 'document_end' }, cb);
   } else {
