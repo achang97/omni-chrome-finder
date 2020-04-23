@@ -16,5 +16,6 @@ export {default as Tabs} from './Tabs';
 export {default as Tab} from './Tab';
 export {default as Timeago} from './Timeago';
 export {default as ToggleableInput} from './ToggleableInput';
+export {default as Tooltip} from './Tooltip';
 export {default as Triangle} from './Triangle';
 export {default as VideoPlayer} from './VideoPlayer';

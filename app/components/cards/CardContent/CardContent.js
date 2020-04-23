@@ -261,7 +261,7 @@ const CardContent = (props) => {
         </strong>
         { isEditing ?
           <input
-            placeholder="Question"
+            placeholder="Title or Question"
             className={s('w-full')}
             value={props.edits.question}
             onChange={e => updateCardQuestion(e.target.value)}

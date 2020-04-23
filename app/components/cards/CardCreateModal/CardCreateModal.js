@@ -136,8 +136,7 @@ const CardCreateModal = (props) => {
               <span> Verification Interval </span>
               <HelpTooltip
                 className={s('ml-sm')} 
-                id={'tooltip-side-dock-interval'}
-                text={HINTS.VERIFICATION_INTERVAL}
+                tooltip={HINTS.VERIFICATION_INTERVAL}
                 tooltipProps={{
                   place: 'right'  
                 }}
@@ -192,7 +191,7 @@ const CardCreateModal = (props) => {
           { renderSubscribers() }
           { renderTags() }
         </AnimateHeight>
-        { renderKeywords() }
+        { /* renderKeywords() */ }
         { renderAdvanced(isExisting, onlyShowPermissions) }
         <Message className={s('my-sm')} message={createError} type="error" />
         <div ref={bottomRef} />

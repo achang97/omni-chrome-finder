@@ -25,12 +25,11 @@ const CardSection = ({
           { hint &&
             <HelpTooltip
               className={s('ml-sm')} 
-              id={`tooltip-section-${title}`}
+              tooltip={hint}
               tooltipProps={{
                 place: 'right',
                 className: s('card-section-tooltip')  
               }}
-              text={hint}
             />
           }
           { isExpandable &&

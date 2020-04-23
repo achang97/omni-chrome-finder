@@ -54,7 +54,7 @@ const Create = ({
   const renderInputSection = () => (
     <div>
       <input
-        placeholder="Question"
+        placeholder="Title or Question"
         className={s('w-full my-reg')}
         value={question}
         onChange={e => updateCreateQuestion(e.target.value)}

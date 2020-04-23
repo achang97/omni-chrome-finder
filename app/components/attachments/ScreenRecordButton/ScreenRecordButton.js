@@ -1,10 +1,9 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
-import ReactTooltip from 'react-tooltip';
 import { FaRegDotCircle } from 'react-icons/fa';
 import { IoIosSquare } from 'react-icons/io';
 
-import Button from 'components/common/Button';
+import { Tooltip, Button } from 'components/common';
 
 import attachmentsStyle from '../styles/attachments.css';
 import screenRecordButtonStyle from './screen-record-button.css';
@@ -135,23 +134,22 @@ class ScreenRecordButton extends Component {
 
     return (
       <React.Fragment>
-        <Button
-          onClick={() => onClick()}
-          className={s(`attachment-button screen-record-button ${className}`)}
-          text={showText ? text : ''}
-          underline
-          underlineColor="red-200"
-          icon={<Icon className={s(`${showText ? 'ml-sm' : ''} text-red-500`)} />}
-          iconLeft={false}
-          disabled={!navigator.mediaDevices || (activeId !== null && !isActiveButton)}
-          data-tip
-          data-for="screen-record-button" 
-        />
-        { !navigator.mediaDevices &&
-          <ReactTooltip id="screen-record-button" type="error" effect="float">
-            <span className={s('font-normal text-xs')}> Screen recordings are not allowed on insecure websites. </span>
-          </ReactTooltip>
-        }
+        <Tooltip
+          show={!navigator.mediaDevices}
+          tooltip="Screen recordings are not allowed on insecure websites."
+          tooltipProps={{ type: 'error' }}
+        >
+          <Button
+            onClick={() => onClick()}
+            className={s(`attachment-button screen-record-button ${className}`)}
+            text={showText ? text : ''}
+            underline
+            underlineColor="red-200"
+            icon={<Icon className={s(`${showText ? 'ml-sm' : ''} text-red-500`)} />}
+            iconLeft={false}
+            disabled={!navigator.mediaDevices || (activeId !== null && !isActiveButton)}
+          />          
+        </Tooltip>
       </React.Fragment>
     );
   }

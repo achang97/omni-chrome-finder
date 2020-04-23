@@ -157,8 +157,7 @@ const CardSideDock = (props) => {
               <span> Verification Interval </span>
               <HelpTooltip
                 className={s('ml-sm')} 
-                id={'tooltip-side-dock-interval'}
-                text={HINTS.VERIFICATION_INTERVAL}
+                tooltip={HINTS.VERIFICATION_INTERVAL}
                 tooltipProps={{
                   place: 'right'  
                 }}
@@ -264,7 +263,7 @@ const CardSideDock = (props) => {
               { !isNewCard && renderSubscribers(onlyShowPermissions) }
               { renderAttachments() }
               { !isNewCard && renderTags(onlyShowPermissions) }
-              { !isNewCard && renderKeywords() }
+              { /* !isNewCard && renderKeywords() */ }
               { !isNewCard && renderAdvanced(onlyShowPermissions) }
               { !isNewCard && renderFooter() }
             </div>

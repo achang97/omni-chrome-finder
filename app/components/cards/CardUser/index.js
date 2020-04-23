@@ -1,9 +1,8 @@
 import React, { useState } from 'react';
 import PropTypes from 'prop-types';
 import { MdClose } from 'react-icons/md';
-import ReactTooltip from 'react-tooltip';
 
-import { CircleButton, PlaceholderImg } from 'components/common';
+import { CircleButton, PlaceholderImg, Tooltip } from 'components/common';
 import { NOOP } from 'appConstants';
 
 import style from './card-user.css';
@@ -22,17 +21,15 @@ const CardUser = ({ className, name, img, size, onClick, onRemoveClick, showName
     <div
       className={s(`card-user ${className}`)}
       {...rest}
-      onMouseEnter={() => setHover(true)}
-      onMouseLeave={() => setHover(false)}
     >
       <div className={s('relative')}>
-        <CircleButton
-          content={<PlaceholderImg src={img} name={name} className={s('w-full h-full text-sm')} />}
-          size={size}
-          onClick={protectedOnClick}
-          data-tip
-          data-for="card-user"
-        />
+        <Tooltip tooltip={name}>
+          <CircleButton
+            content={<PlaceholderImg src={img} name={name} className={s('w-full h-full text-sm')} />}
+            size={size}
+            onClick={protectedOnClick}
+          />          
+        </Tooltip>
         { onRemoveClick &&
           <button onClick={onRemoveClick} className={s('card-user-remove')}>
             <MdClose />
@@ -40,11 +37,6 @@ const CardUser = ({ className, name, img, size, onClick, onRemoveClick, showName
         }        
       </div>
       { showName && <div className={s('card-user-label')}> {name} </div> }
-      { isHovering && showTooltip &&
-        <ReactTooltip id="card-user" effect="float">
-          <span className={s('font-normal text-xs')}> {name} </span>
-        </ReactTooltip>
-      }
     </div>
   );
 };
