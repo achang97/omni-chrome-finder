@@ -1,13 +1,14 @@
 import { connect } from 'react-redux';
 import * as screenRecordingActions from 'actions/screenRecording';
-import { toggleDock } from 'actions/display';
+import { withRouter } from 'react-router';
+import { toggleDock, expandDock } from 'actions/display';
 import ScreenRecordButton from './ScreenRecordButton';
 
 const mapStateToProps = (state, ownProps) => {
   const {
     screenRecording,
     display: {
-      dockVisible
+      dockVisible,
     }
   } = state;
 
@@ -16,7 +17,8 @@ const mapStateToProps = (state, ownProps) => {
 
 const mapDispatchToProps = {
   ...screenRecordingActions,
-  toggleDock
+  toggleDock,
+  expandDock
 };
 
-export default connect(mapStateToProps, mapDispatchToProps)(ScreenRecordButton);
+export default connect(mapStateToProps, mapDispatchToProps)(withRouter(ScreenRecordButton));

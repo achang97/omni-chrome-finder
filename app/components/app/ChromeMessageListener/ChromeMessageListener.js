@@ -20,6 +20,7 @@ class ChromeMessageListener extends Component {
     this.state = {
       hasLoaded: false,
       prevText: '',
+      prevUrl: null,
     }
   }
 
@@ -64,18 +65,24 @@ class ChromeMessageListener extends Component {
 
   openChromeExtension = () => {
     const { openCard } = this.props;
-    if (window.location.href.startsWith(URL.EXTENSION)) {
-      this.openDock();
+    const { prevUrl } = this.state;
 
-      if (this.isValidUser()) {
-        const { taskId, cardId, edit } = queryString.parse(window.location.search);
-        if (taskId) {
-          this.openTask(taskId);
+    if (prevUrl !== window.location.href) {
+      this.setState({ prevUrl: window.location.href });
+
+      if (window.location.href.startsWith(URL.EXTENSION)) {
+        this.openDock();
+
+        if (this.isValidUser()) {
+          const { taskId, cardId, edit } = queryString.parse(window.location.search);
+          if (taskId) {
+            this.openTask(taskId);
+          }
+
+          if (cardId) {
+            openCard({ _id: cardId, isEditing: edit === 'true' });
+          }        
         }
-
-        if (cardId) {
-          openCard({ _id: cardId, isEditing: edit === 'true' });
-        }        
       }
     }
   }
