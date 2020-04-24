@@ -13,6 +13,10 @@ export function updateCardTabOrder(source, destination) {
   return { type: types.UPDATE_CARD_TAB_ORDER, payload: { source, destination } };
 }
 
+export function toggleCards() {
+  return { type: types.TOGGLE_CARDS, payload: {} };
+}
+
 /* Card behavior */
 export function openCard(card, createModalOpen = false, isNewCard = false) {
   return { type: types.OPEN_CARD, payload: { card, isNewCard, createModalOpen } };
