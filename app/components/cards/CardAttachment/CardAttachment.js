@@ -1,7 +1,6 @@
 import React, { useState } from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
-import ReactTooltip from 'react-tooltip';
 import {
   FaFileImage, FaFileAudio, FaFileVideo,
   FaFilePdf, FaFileWord, FaFileExcel, FaFilePowerpoint,
@@ -9,7 +8,7 @@ import {
 } from 'react-icons/fa';
 import { MdClose, MdError, MdFileDownload, MdOpenInNew } from 'react-icons/md';
 
-import { Loader, ToggleableInput } from 'components/common';
+import { Loader, ToggleableInput, Tooltip } from 'components/common';
 import { isVideo, isImage, isAudio, isPDF, isDoc, getFileUrl } from 'utils/file';
 import { NOOP } from 'appConstants';
 
@@ -110,38 +109,36 @@ const CardAttachment = ({
   }
 
   return (
-    <div data-tip data-for="card-attachment" onClick={onClick} className={s(`card-attachment ${error ? 'text-red-500' : `text-${color}`} ${className}`)} {...rest}>
-      <div
-        className={s(`card-attachment-file-icon ${isDownloadable ? 'button-hover' : ''} ${typeIconClassName}`)}
-        onMouseEnter={() => setHoverIcon(true)}
-        onMouseLeave={() => setHoverIcon(false)}
-      >
-        { isDownloadable ?
-          <a href={url} target="_blank"> {leftIcon} </a> :
-          leftIcon
+    <Tooltip show={error} tooltip={error} tooltipProps={{ type: 'error' }}>
+      <div onClick={onClick} className={s(`card-attachment ${error ? 'text-red-500' : `text-${color}`} ${className}`)} {...rest}>
+        <div
+          className={s(`card-attachment-file-icon ${isDownloadable ? 'button-hover' : ''} ${typeIconClassName}`)}
+          onMouseEnter={() => setHoverIcon(true)}
+          onMouseLeave={() => setHoverIcon(false)}
+        >
+          { isDownloadable ?
+            <a href={url} target="_blank"> {leftIcon} </a> :
+            leftIcon
+          }
+        </div>
+        <ToggleableInput
+          isEditable={isEditable}
+          disabled={isLoading}
+          value={fileName}
+          inputProps={{
+            placeholder: 'File Name',
+            onChange: e => onFileNameChange(e.target.value),
+            className: s('flex-1')
+          }}
+          className={fileNameClassName}
+          placeholder="No file name"
+        />
+        { isEditable && onRemoveClick && !isLoading &&
+          <MdClose onClick={onRemove} className={s(`card-attachment-remove-icon button-hover ${removeIconClassName}`)} />
         }
-      </div>
-      <ToggleableInput
-        isEditable={isEditable}
-        disabled={isLoading}
-        value={fileName}
-        inputProps={{
-          placeholder: 'File Name',
-          onChange: e => onFileNameChange(e.target.value),
-          className: s('flex-1')
-        }}
-        className={fileNameClassName}
-        placeholder="No file name"
-      />
-      { isEditable && onRemoveClick && !isLoading &&
-        <MdClose onClick={onRemove} className={s(`card-attachment-remove-icon button-hover ${removeIconClassName}`)} />
-      }
-      { error &&
-        <ReactTooltip id="card-attachment" type="error" effect="float">
-          <span className={s('font-normal text-xs')}> {error} </span>
-        </ReactTooltip>
-      }
-    </div>
+      </div>      
+    </Tooltip>
+
   );
 };
 

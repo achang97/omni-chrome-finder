@@ -4,8 +4,16 @@
 }
 
 .card-tab {
-  width: 150px !important;
   @apply p-reg pr-0 outline-none rounded-t-lg rounded-b-none text-xs font-medium flex items-center justify-between bg-white;
+}
+
+.card-header-tab {
+  width: 150px !important;
+}
+
+.card-minimized-tab {
+  width: 175px;
+  @apply fixed bottom-0 left-0 z-10 shadow-lg ml-xs cursor-pointer;
 }
 
 .card-tab-container {

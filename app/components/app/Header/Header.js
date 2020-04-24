@@ -1,7 +1,8 @@
 import React from 'react';
-import { MdNotificationsActive, MdLightbulbOutline } from 'react-icons/md';
+import { MdNotificationsActive, MdLightbulbOutline, MdClose } from 'react-icons/md';
 
 import { Tabs, Tab, Badge, PlaceholderImg } from 'components/common';
+import ToggleTab from '../ToggleTab';
 import { ROUTES } from 'appConstants';
 
 import { segment } from 'utils';
@@ -14,6 +15,7 @@ const s = getStyleApplicationFn(style);
 
 const Header = ({
   user, numAISuggestCards, numTasks,
+  minimizeDock,
   history, location: { pathname }
 }) => {
   const handleTabClick = (activeLink) => {
@@ -23,11 +25,17 @@ const Header = ({
 
   const showAISuggest = numAISuggestCards !== 0;
   return (
-    <div className={s('px-sm bg-purple-xlight')}>
+    <div className={s('px-sm bg-purple-xlight relative')}>
+      <button
+        className={s('bg-white shadow-md mt-xs ml-xs rounded-full w-reg h-reg flex items-center justify-center')}
+        onClick={minimizeDock}
+      >
+        <MdClose className={s('text-purple-reg text-xs')}/>
+      </button>
       <Tabs
         onTabClick={handleTabClick}
         activeValue={pathname}
-        tabClassName={s('text-md py-xl px-0 font-semibold flex items-center')}
+        tabClassName={s('text-md pt-0 pb-xl px-0 font-semibold flex items-center')}
         tabContainerClassName={s('flex align-center')}
         color={colors.purple.reg}
         showRipple={false}

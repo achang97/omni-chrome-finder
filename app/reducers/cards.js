@@ -11,7 +11,7 @@ const initialState = {
   cardsHeight: DIMENSIONS.DEFAULT_CARDS_HEIGHT,
   activeCardIndex: -1,
   activeCard: {},
-  showCloseModal: false,
+  cardsExpanded: true,
   windowPosition: {
     x: window.innerWidth / 2 - DIMENSIONS.DEFAULT_CARDS_WIDTH / 2,
     y: window.innerHeight / 2 - DIMENSIONS.DEFAULT_CARDS_HEIGHT / 2
@@ -209,6 +209,9 @@ export default function cardsReducer(state = initialState, action) {
 
       return { ...state, cards: newCards, activeCardIndex: destination.index };
     }
+    case types.TOGGLE_CARDS: {
+      return { ...state, cardsExpanded: !state.cardsExpanded };
+    }
 
     case types.OPEN_CARD: {
       const { card, isNewCard, createModalOpen } = payload;
@@ -218,7 +221,7 @@ export default function cardsReducer(state = initialState, action) {
       if (!isNewCard) {
         const currIndex = getIndexById(card._id);
         if (currIndex !== -1) {
-          return setActiveCardIndex(currIndex);
+          return { ...setActiveCardIndex(currIndex), cardsExpanded: true };
         }
       }
 
@@ -243,7 +246,8 @@ export default function cardsReducer(state = initialState, action) {
         ...state,
         cards: newCards,
         activeCard: cardInfo,
-        activeCardIndex: newCards.length - 1
+        activeCardIndex: newCards.length - 1,
+        cardsExpanded: true
       };
     }
     case types.SET_ACTIVE_CARD_INDEX: {
@@ -260,13 +264,6 @@ export default function cardsReducer(state = initialState, action) {
     }
     case types.CLOSE_CARD_SIDE_DOCK: {
       return updateActiveCard({ sideDockOpen: false });
-    }
-
-    case types.OPEN_CARD_CONTAINER_MODAL: {
-      return { ...state, showCloseModal: true };
-    }
-    case types.CLOSE_CARD_CONTAINER_MODAL: {
-      return { ...state, showCloseModal: false };
     }
 
     case types.ENABLE_CARD_EDITOR: {

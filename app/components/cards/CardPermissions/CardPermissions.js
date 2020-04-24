@@ -7,8 +7,9 @@ import { Select, Tabs, Tab } from 'components/common';
 import { createSelectOptions } from 'utils/select';
 import { CARD, ANIMATE } from 'appConstants';
 
+import style from './card-permissions.css';
 import { getStyleApplicationFn } from 'utils/style';
-const s = getStyleApplicationFn();
+const s = getStyleApplicationFn(style);
 
 const CardPermissions = ({
   isDisabled, showJustMe, selectedPermission, onChangePermission,
@@ -36,7 +37,7 @@ const CardPermissions = ({
           activeValue={selectedPermission}
           className={s('mb-sm')}
           tabClassName={s(
-            'text-sm font-normal rounded-full py-sm px-reg'
+            'text-sm font-normal rounded-full p-sm text-center'
           )}
           inactiveTabClassName={s('text-purple-reg')}
           activeTabClassName={s(
@@ -47,7 +48,7 @@ const CardPermissions = ({
         >
           {permissionOptions.map((permissionOption) => (
             <Tab key={permissionOption.value} value={permissionOption}>
-              <div className={s(permissionOption.value !== selectedPermission.value ? 'underline-border border-purple-gray-20' : 'primary-underline')}>
+              <div className={s(`${permissionOption.value !== selectedPermission.value ? 'underline-border border-purple-gray-20' : 'primary-underline'} card-permissions-tab`)}>
                 {permissionOption.label}
               </div>
             </Tab>

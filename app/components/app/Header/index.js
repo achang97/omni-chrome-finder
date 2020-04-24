@@ -1,6 +1,7 @@
 import { connect } from 'react-redux';
 import { withRouter } from 'react-router-dom';
 import { SEARCH } from 'appConstants';
+import { minimizeDock } from 'actions/display';
 import Header from './Header';
 
 const mapStateToProps = (state) => {
@@ -23,7 +24,9 @@ const mapStateToProps = (state) => {
   };
 }
 
-const mapDispatchToProps = {};
+const mapDispatchToProps = {
+  minimizeDock
+};
 
 export default connect(mapStateToProps, mapDispatchToProps)(withRouter(Header));
 
