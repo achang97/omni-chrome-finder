@@ -3,7 +3,7 @@ import { withRouter } from 'react-router-dom';
 import queryString from 'query-string';
 import { EditorState, ContentState } from 'draft-js';
 
-import { CHROME, SEARCH, ROUTES, MAIN_CONTAINER_ID, INTEGRATIONS, URL } from 'appConstants';
+import { CHROME, SEARCH, ROUTES, MAIN_CONTAINER_ID, INTEGRATIONS, URL, TASKS } from 'appConstants';
 
 const URL_REGEXES = [
   {
@@ -36,7 +36,7 @@ class ChromeMessageListener extends Component {
       const currEnabled = this.isAutofindEnabled();
 
       if (!prevEnabled && currEnabled) {
-        this.handlePageLoad(true);
+        this.handlePageLoad();
       } else if (prevEnabled && !currEnabled) {
         this.props.clearSearchCards(SEARCH.TYPE.AI_SUGGEST);
       }
@@ -88,6 +88,8 @@ class ChromeMessageListener extends Component {
 
   openTask = (taskId) => {
     const { tasks, updateTasksTab, updateTasksOpenSection, history } = this.props;
+    history.push(ROUTES.TASKS);
+    
     if (taskId) {
       const task = tasks.find(({ _id }) => _id === taskId);
       if (task) {
@@ -100,8 +102,7 @@ class ChromeMessageListener extends Component {
             taskTypes.length === 1 && taskTypes[0] === task.status
           ));
           updateTasksOpenSection(taskSectionType ? taskSectionType.type : TASKS.SECTION_TYPE.ALL);
-        }
-        history.push(ROUTES.TASKS);
+        }        
       }
     }
   }
@@ -286,7 +287,7 @@ class ChromeMessageListener extends Component {
     this.openDock();
 
     if (this.isValidUser()) {
-      const { location: { pathname } } = history;
+      const { location: { pathname } } = this.props;
 
       switch (type) {
         case CHROME.NOTIFICATION_TYPE.TASK: {

@@ -54,8 +54,8 @@ function createNotification({ userId, message, notification }) {
 
   // Create chrome notification
   const notificationId = (_id && !resolved) ?
-    `${CHROME.NOTIFICATION_TYPE.TASK}-${_id}` :
-    `${CHROME.NOTIFICATION_TYPE.CARD}-${card._id}`;
+    `${CHROME.NOTIFICATION_TYPE.TASK}-${status}-${_id}` :
+    `${CHROME.NOTIFICATION_TYPE.CARD}-${status}-${card._id}`;
 
   chrome.notifications.create(notificationId, {
     type: 'basic',
@@ -96,6 +96,15 @@ function initSocket() {
       socket.onclose = () => {
         console.log('Disconnected socket!');
         socket = null;
+
+        // Attempt to reconnect
+        getStorage(CHROME.STORAGE.AUTH).then((auth) => {
+          const isLoggedIn = auth && auth.token;
+          if (isLoggedIn) {
+            console.log('Reconnecting socket!');
+            initSocket();
+          }
+        });
       };
 
       socket.onmessage = (event) => {
@@ -167,36 +176,57 @@ chrome.browserAction.onClicked.addListener(async (tab) => {
   }
 });
 
+function openNotification(windowId, tabId, payload) {
+  chrome.windows.update(windowId, { focused: true });
+  chrome.tabs.sendMessage(tabId, {
+    type: CHROME.MESSAGE.NOTIFICATION_OPENED,
+    payload
+  });      
+}
+
+function openNotificationNewTab(type, id) {
+  let queryParams = {};
+  switch (type) {
+    case CHROME.NOTIFICATION_TYPE.TASK: {
+      queryParams = { taskId: id };
+      break;
+    }
+    case CHROME.NOTIFICATION_TYPE.CARD: {
+      queryParams = { cardId: id };
+      break;
+    }
+  }
+
+  const link = `${URL.EXTENSION}?${queryString.stringify(queryParams)}`;
+  const newWindow = window.open(link, '_blank');
+  newWindow.focus();
+}
+
 chrome.notifications.onClicked.addListener(async (notificationId) => {
   chrome.notifications.clear(notificationId);
-
-  const [match, type, id] = notificationId.match(/(\S+)-(\S+)/);
-  getActiveTab().then(activeTab => {
-    if (activeTab) {
-      const { windowId, id: activeTabId } = activeTab;
-      chrome.windows.update(windowId, { focused: true });
-      chrome.tabs.sendMessage(activeTabId, {
-        type: CHROME.MESSAGE.NOTIFICATION_OPENED,
-        payload: { type, id }
-      });        
-    } else {
-      let queryParams = {};
-      switch (type) {
-        case CHROME.NOTIFICATION_TYPE.TASK: {
-          queryParams = { taskId: id };
-          break;
+  const [match, type, status, id] = notificationId.match(/(\S+)-(\S+)-(\S+)/);
+  
+  getActiveTab().then(async activeTab => {
+    try {
+      if (activeTab) {
+        const { windowId, id: activeTabId } = activeTab;
+        const isInjected = (await injectExtension(activeTabId))[0];
+        if (!chrome.runtime.lastError) {
+          if (!isInjected) {
+            loadScript('inject', tabId, () => {
+              openNotification(windowId, activeTabId, { type, id });
+            });
+          } else {
+            openNotification(windowId, activeTabId, { type, id });
+          }
         }
-        case CHROME.NOTIFICATION_TYPE.CARD: {
-          queryParams = { cardId: id };
-          break;
-        }
+      } else {
+        openNotificationNewTab(type, id);
       }
-
-      const link = `${URL.EXTENSION}?${queryString.stringify(queryParams)}`;
-      const newWindow = window.open(link, '_blank');
-      newWindow.focus();
+    } catch (error) {
+      openNotificationNewTab(type, id);
     }
-  });
+  });   
 });
 
 addStorageListener(CHROME.STORAGE.AUTH, ({ newValue }) => {

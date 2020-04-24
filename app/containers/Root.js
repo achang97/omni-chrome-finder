@@ -2,6 +2,7 @@ import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import { Provider } from 'react-redux';
 import { MemoryRouter } from 'react-router';
+import { ROUTES } from 'appConstants';
 import App from './App';
 
 class Root extends Component {
@@ -9,7 +10,7 @@ class Root extends Component {
     const { store } = this.props;
     return (
       <Provider store={store}>
-        <MemoryRouter>
+        <MemoryRouter initialEntries={[ROUTES.ASK]}>
           <App />
         </MemoryRouter>
       </Provider>
