@@ -221,7 +221,7 @@ const Cards = ({
         unmountOnExit
       >
         {state => (
-          <div style={{ ...baseStyle, ...transitionStyles[state], zIndex: 10, position: 'fixed' }}>
+          <div style={{ ...baseStyle, ...transitionStyles[state] }} className={s('card')}>
             <ReactDraggable
               bounds="html"
               handle="#card-tab-container"

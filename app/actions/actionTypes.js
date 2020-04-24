@@ -71,6 +71,7 @@ export const DELETE_PROFILE_PICTURE_ERROR = 'DELETE_PROFILE_PICTURE_ERROR';
 // Display
 export const EXPAND_DOCK = 'EXPAND_DOCK';
 export const TOGGLE_DOCK = 'TOGGLE_DOCK';
+export const MINIMIZE_DOCK = 'MINIMIZE_DOCK';
 
 export const OPEN_MODAL = 'OPEN_MODAL';
 export const CLOSE_MODAL = 'CLOSE_MODAL'

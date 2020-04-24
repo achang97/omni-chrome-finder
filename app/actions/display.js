@@ -9,6 +9,10 @@ export function expandDock() {
   return { type: types.EXPAND_DOCK, payload: {} };
 }
 
+export function minimizeDock() {
+  return { type: types.MINIMIZE_DOCK, payload: {} };
+}
+
 export function openModal(modalProps) {
   return { type: types.OPEN_MODAL, payload: { modalProps } };
 }

@@ -4,7 +4,6 @@ import queryString from 'query-string';
 import { EditorState, ContentState } from 'draft-js';
 
 import { CHROME, SEARCH, ROUTES, MAIN_CONTAINER_ID, INTEGRATIONS, URL } from 'appConstants';
-import AISuggestTab from '../AISuggestTab';
 
 const URL_REGEXES = [
   {
@@ -331,11 +330,7 @@ class ChromeMessageListener extends Component {
   };
 
   render() {
-    if (!this.isAutofindEnabled()) {
-      return null;
-    }
-
-    return <AISuggestTab />;
+    return null;
   }
 }
 

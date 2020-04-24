@@ -6,7 +6,7 @@ import queryString from 'query-string';
 import { ROUTES, URL } from 'appConstants';
 import { heap, auth } from 'utils';
 
-import { Header, ChromeMessageListener, MessageModal} from 'components/app';
+import { Header, ChromeMessageListener, ToggleTab, MessageModal} from 'components/app';
 import { PublicRoute, PrivateRoute } from 'components/routes';
 
 import Ask from '../Ask';
@@ -73,6 +73,7 @@ const App = ({
   return (
     <div className={s('app-container')}>
       <ChromeMessageListener />
+      <ToggleTab />
       { isLoggedIn && isVerified && dockVisible && <Cards />}
       <Dock
         position="right"

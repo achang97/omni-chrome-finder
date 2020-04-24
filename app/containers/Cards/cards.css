@@ -12,7 +12,7 @@
 }
 
 .card-minimized-tab {
-  width: 200px;
+  width: 175px;
   @apply fixed bottom-0 left-0 z-10 shadow-lg ml-xs cursor-pointer;
 }
 
