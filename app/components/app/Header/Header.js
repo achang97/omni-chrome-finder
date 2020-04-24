@@ -28,10 +28,10 @@ const Header = ({
     <div className={s('bg-purple-xlight relative')}>
       <div className={s('header-minimize-container')}>
         <button
-          className={s('bg-white shadow-md rounded-full w-reg h-reg flex items-center justify-center')}
+          className={s('rounded-full w-reg h-reg flex items-center justify-center')}
           onClick={minimizeDock}
         >
-          <MdClose className={s('text-purple-reg text-xs')}/>
+          <MdClose className={s('text-purple-gray-50 text-xs')}/>
         </button>        
       </div>
       <Tabs
