@@ -95,7 +95,7 @@ const PERFORMANCE_CRITERIA = [
 ];
 
 const MinimizedAsk = ({
-  toggleDockHeight, onboardingStats,
+  toggleDockHeight, onboardingStats, dockExpanded,
   searchText, updateAskSearchText, requestSearchCards,
   toggleAskFeedbackInput, showFeedback, feedback, updateAskFeedback,
   requestSubmitFeedback, isSubmittingFeedback, feedbackSuccess, feedbackError,
@@ -151,7 +151,10 @@ const MinimizedAsk = ({
     }
 
     updateAskSearchText('');
-    toggleDockHeight();
+
+    if (!dockExpanded) {
+      toggleDockHeight();
+    }
   }
 
   const togglePerformance = () => {
