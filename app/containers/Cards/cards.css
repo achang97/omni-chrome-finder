@@ -14,7 +14,7 @@
 .card-minimized-tab {
   width: 175px;
   z-index: 100000000;
-  @apply fixed bottom-0 left-0 z-10 ml-xs cursor-pointer outline-purple-gray-10;
+  @apply fixed bottom-0 left-0 ml-xs cursor-pointer outline-purple-gray-10;
 }
 
 .card-minimized-tab:hover {
