@@ -10,6 +10,8 @@ const initialState = {
   showFeedback: false,
   feedback: '',
 
+  showPerformanceScore: false,
+
   /* Expanded Page */
   activeIntegration: ASK.INTEGRATIONS[0],
   questionTitle: '',
@@ -32,6 +34,13 @@ export default function askReducer(state = initialState, action) {
     case types.UPDATE_ASK_SEARCH_TEXT: {
       const { text } = payload;
       return { ...state, searchText: text };
+    }
+    case types.TOGGLE_PERFORMANCE_SCORE: {
+      const { showPerformanceScore } = state;
+      return {
+        ...state,
+        showPerformanceScore: !showPerformanceScore,
+      }
     }
     case types.TOGGLE_ASK_FEEDBACK_INPUT: {
       const { showFeedback } = state;

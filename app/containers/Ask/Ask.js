@@ -5,6 +5,7 @@ import moment from 'moment';
 import { MdChevronRight, MdPictureInPicture, MdClose, MdCloudUpload, MdAttachment } from 'react-icons/md';
 import { IoMdAdd } from 'react-icons/io';
 import { FaRegDotCircle, FaPaperPlane, FaMinus } from 'react-icons/fa';
+import { CircularProgressbar, buildStyles } from 'react-circular-progressbar';
 
 import {
   Button, Loader, CircleButton, Separator, Message,
@@ -26,6 +27,78 @@ import style from './ask.css';
 import { getStyleApplicationFn } from 'utils/style';
 const s = getStyleApplicationFn(style);
 
+const PROGRESS_BAR_STYLES = {
+  // How long animation takes to go from one percentage to another, in seconds
+  pathTransitionDuration: 0.5,
+
+  // Colors
+  textColor: colors.purple.reg,
+  pathColor: colors.purple.reg,
+
+  textSize: '30px',
+};
+
+const USER_PERFORMANCE = {
+  FIRST_CARD: true,
+  SEARCH_CARD: true,
+  MARK_HELPFUL: true,
+  CREATE_CARD: false,
+  FLAG_OUTDATED: true,
+  ADD_TAG: true,
+  UP_TO_DATE: false,
+  NO_UNRESOLVED: false,
+  CREATE_CARD_RECENT: true,
+  OWN_MULTIPLE: true,
+  ADD_SUBSCRIBER: false,
+}
+
+const PERFORMANCE_CRITERIA = {
+  FIRST_CARD: {
+    title: "Make your first card",
+    weight: 20,
+  },
+  SEARCH_CARD: {
+    title: "Search for a card and open it",
+    weight: 10,
+  },
+  MARK_HELPFUL: {
+    title: "Mark a card as helpful",
+    weight: 10,
+  },
+  CREATE_CARD: {
+    title: "Create a card in the extension",
+    weight: 10,
+  },
+  FLAG_OUTDATED: {
+    title: "Flag a card as out of date",
+    weight: 5,
+  },
+  ADD_TAG: {
+    title: "Add a tag to one of your cards",
+    weight: 5,
+  },
+  UP_TO_DATE: {
+    title: "Make sure all your cards are up to date",
+    weight: 10,
+  },
+  NO_UNRESOLVED: {
+    title: "Make sure all your tasks are resolved",
+    weight: 10,
+  },
+  CREATE_CARD_RECENT: {
+    title: "Created a card in the past week",
+    weight: 5,
+  },
+  OWN_MULTIPLE: {
+    title: "Own at least 4 cards",
+    weight: 10,
+  },
+  ADD_SUBSCRIBER: {
+    title: "Add a subscriber to your card",
+    weight: 5,
+  }
+}
+
 const Ask = ({
   user, token, 
   changeAskIntegration, activeIntegration,
@@ -39,6 +112,7 @@ const Ask = ({
   searchText, updateAskSearchText, requestSearchCards,
   toggleAskFeedbackInput, showFeedback, feedback, updateAskFeedback,
   requestSubmitFeedback, isSubmittingFeedback, feedbackSuccess, feedbackError,
+  togglePerformanceScore, showPerformanceScore,
   history
 }) => {
   const isLoggedInSlack = isLoggedIn(user, INTEGRATIONS.SLACK.type);
@@ -47,6 +121,14 @@ const Ask = ({
       requestGetSlackConversations();
     }
   }, [isLoggedInSlack]);
+
+  const getPerformanceScore = () => {
+    let score = 0;
+    Object.keys(PERFORMANCE_CRITERIA).map((criteria) => {
+      if (USER_PERFORMANCE[criteria]) score += PERFORMANCE_CRITERIA[criteria].weight;
+    })
+    return score;
+  }
 
   const renderTabHeader = () => {
     return (
@@ -307,6 +389,39 @@ const Ask = ({
     expandDock();
   }
 
+  const renderPerformanceScoreSection = () => {
+    return (
+      <AnimateHeight height={showPerformanceScore ? 'auto' : 0}>
+        <Separator horizontal className={s('my-reg')} />
+        <div className={s(('flex justify-between mb-xs text-gray-dark items-center mb-reg'))}>
+          <div className={s('flex items-center')}>
+            <CircularProgressbar
+              className={s('w-3xl h-3xl')}
+              value={getPerformanceScore()}
+              styles={buildStyles(PROGRESS_BAR_STYLES)}
+            />
+            <div className={s('text-xs text-purple-reg font-semibold ml-sm')}>My Performance: {getPerformanceScore()}%</div>
+          </div>
+          <MdClose className={s('cursor-pointer')} onClick={togglePerformanceScore} />
+        </div>
+        <div className={s('overflow-auto')}>
+        {
+          Object.keys(PERFORMANCE_CRITERIA).map((criteria) => {
+            const criteriaInfo = PERFORMANCE_CRITERIA[criteria]
+            const isComplete = USER_PERFORMANCE[criteria]
+            return (
+              <div className={s(`flex justify-between mb-sm text-sm rounded-lg p-sm items-center ${isComplete ? 'gold-gradient' : 'border border-solid border-gray-light'}`)}>
+                <div>{criteriaInfo.title}</div>
+                <div className={s(`p-xs rounded-lg font-semibold ${isComplete ? 'gold-gradient text-gold-reg' : 'text-purple-reg'}`)}>{criteriaInfo.weight}%</div>
+              </div>
+            )
+          })
+        }
+        </div>
+      </AnimateHeight>
+    )
+  }
+
   const renderMinifiedAskPage = () => {
     return (
       <div className={s('p-lg overflow-y-auto')}>
@@ -330,13 +445,24 @@ const Ask = ({
             onClick={showFullDock}
           />
         </div>
-        <AnimateHeight height={showFeedback ? 0 : 'auto'}>
-          <div className={s('flex justify-end mt-reg text-gray-dark text-xs font-medium')}>
-            <div className={s('cursor-pointer')} onClick={toggleAskFeedbackInput}>
-              Have Feedback?
+        <AnimateHeight height={(showFeedback || showPerformanceScore) ? 0 : 'auto'}>
+          <div className={s('flex justify-between items-center mt-reg')}>
+            <div className={s('flex items-center cursor-pointer')} onClick={togglePerformanceScore}>
+              <CircularProgressbar
+                className={s('w-3xl h-3xl')}
+                value={getPerformanceScore()}
+                styles={buildStyles(PROGRESS_BAR_STYLES)}
+              />
+              <div className={s('text-xs text-purple-reg font-semibold ml-sm')}>My Performance: {getPerformanceScore()}%</div>
+            </div>
+            <div className={s('flex justify-end text-gray-dark text-xs font-medium')}>
+              <div className={s('cursor-pointer')} onClick={toggleAskFeedbackInput}>
+                Have Feedback?
+              </div>
             </div>
           </div>
         </AnimateHeight>
+        { renderPerformanceScoreSection() }
         <AnimateHeight height={showFeedback ? 'auto' : 0}>
           <Separator horizontal className={s('my-reg')} />
           { feedbackSuccess ? 
