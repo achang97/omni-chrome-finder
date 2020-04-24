@@ -32,7 +32,7 @@ const PROGRESS_BAR_STYLES = {
   pathTransitionDuration: 0.5,
 
   // Colors
-  textColor: colors.purple.reg,
+  textColor: colors.gold.reg,
   pathColor: colors.purple.reg,
 
   textSize: '30px',
@@ -122,12 +122,27 @@ const Ask = ({
     }
   }, [isLoggedInSlack]);
 
+  const getPerformanceColors = (score) => {
+    switch (true) {
+    case score === 100:
+      return { pathColor: colors.gold.reg, textColor: 'text-gold-reg'};
+    case score < 100 && score >= 80:
+      return { pathColor: colors.green.reg, textColor: 'text-green-reg' };
+    case score < 80 && score >= 60:
+      return { pathColor: colors.yellow.reg, textColor: 'text-yellow-reg' };
+    case score < 60:
+      return { pathColor: colors.red.reg, textColor: 'text-red-reg' };
+    default:
+      return {};
+  }
+  }
+
   const getPerformanceScore = () => {
     let score = 0;
     Object.keys(PERFORMANCE_CRITERIA).map((criteria) => {
       if (USER_PERFORMANCE[criteria]) score += PERFORMANCE_CRITERIA[criteria].weight;
     })
-    return score;
+    return 100;
   }
 
   const renderTabHeader = () => {
@@ -398,9 +413,9 @@ const Ask = ({
             <CircularProgressbar
               className={s('w-3xl h-3xl')}
               value={getPerformanceScore()}
-              styles={buildStyles(PROGRESS_BAR_STYLES)}
+              styles={buildStyles({...PROGRESS_BAR_STYLES, pathColor: getPerformanceColors(getPerformanceScore()).pathColor })}
             />
-            <div className={s('text-xs text-purple-reg font-semibold ml-sm')}>My Performance: {getPerformanceScore()}%</div>
+            <div className={s(`text-xs font-semibold ml-sm ${getPerformanceColors(getPerformanceScore()).textColor}`)}>My Performance: {getPerformanceScore()}%</div>
           </div>
           <MdClose className={s('cursor-pointer')} onClick={togglePerformanceScore} />
         </div>
@@ -451,9 +466,9 @@ const Ask = ({
               <CircularProgressbar
                 className={s('w-3xl h-3xl')}
                 value={getPerformanceScore()}
-                styles={buildStyles(PROGRESS_BAR_STYLES)}
+                styles={buildStyles({...PROGRESS_BAR_STYLES, pathColor: getPerformanceColors(getPerformanceScore()).pathColor })}
               />
-              <div className={s('text-xs text-purple-reg font-semibold ml-sm')}>My Performance: {getPerformanceScore()}%</div>
+              <div className={s(`text-xs font-semibold ml-sm ${getPerformanceColors(getPerformanceScore()).textColor}`)}>My Performance: {getPerformanceScore()}%</div>
             </div>
             <div className={s('flex justify-end text-gray-dark text-xs font-medium')}>
               <div className={s('cursor-pointer')} onClick={toggleAskFeedbackInput}>
