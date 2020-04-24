@@ -1,6 +1,6 @@
 .header-minimize-container {
   width: min-content;
-  @apply rounded-tl-lg bg-purple-gray-10 py-xs px-sm mb-xs flex-grow-0;
+  @apply rounded-tl-lg pt-xs px-reg mb-xs mt-xs flex-grow-0;
 }
 
 .header-profile-picture, .header-badge-container {
