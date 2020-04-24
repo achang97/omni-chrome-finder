@@ -35,6 +35,7 @@ const tasksMiddleware = store => next => (action) => {
     case types.DELETE_CARD_SUCCESS: {
       const { cardId } = payload;
       removeTask(cardId);
+      break;
     }
     case types.MARK_UP_TO_DATE_SUCCESS:
     case types.APPROVE_CARD_SUCCESS:

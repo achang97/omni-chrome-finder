@@ -259,6 +259,13 @@ export default function cardsReducer(state = initialState, action) {
       return removeCardAtIndex(index);
     }
 
+    case types.OPEN_CARD_CONTAINER_MODAL: { 
+      return { ...state, showCloseModal: true, cardsExpanded: true };  
+    } 
+    case types.CLOSE_CARD_CONTAINER_MODAL: {  
+      return { ...state, showCloseModal: false }; 
+    } 
+
     case types.OPEN_CARD_SIDE_DOCK: {
       return updateActiveCard({ sideDockOpen: true });
     }
