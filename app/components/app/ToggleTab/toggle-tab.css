@@ -5,5 +5,5 @@
 }
 
 .toggle-tab:hover {
-  @apply opacity-100;
+  @apply opacity-100 px-xs;
 }
