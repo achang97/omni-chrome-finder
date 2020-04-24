@@ -9,10 +9,9 @@ import { Loader, Button, Modal, Separator, Message, HelpTooltip } from 'componen
 import { HINTS, PERMISSION_OPTION, MODAL_TYPE } from 'appConstants/card';
 import { hasValidEdits, isExistingCard, isJustMe } from 'utils/card';
 
-import style from './card-create-modal.css';
 import { getStyleApplicationFn } from 'utils/style';
 
-const s = getStyleApplicationFn(style);
+const s = getStyleApplicationFn();
 
 const CardCreateModal = (props) => {
   const bottomRef = useRef(null);
@@ -30,108 +29,58 @@ const CardCreateModal = (props) => {
   const renderOwners = () => {
     const { edits: { owners = [] }, addCardOwner, removeCardOwner } = props;
     return (
-      <CardSection title="Owner(s)" hint={HINTS.OWNERS}>
-        <CardUsers
-          isEditable
-          users={owners}
-          onAdd={addCardOwner}
-          onRemoveClick={removeCardOwner}
-          showSelect
-          showTooltips
-        />
-      </CardSection>
+      <CardUsers
+        isEditable
+        users={owners}
+        onAdd={addCardOwner}
+        onRemoveClick={removeCardOwner}
+        showSelect
+        showTooltips
+      />
     );
   }
 
-  const renderSubscribers = (onlyShowPermissions) => {
+  const renderSubscribers = () => {
     const { edits: { subscribers=[], owners=[] }, isEditing, addCardSubscriber, removeCardSubscriber } = props;
     return (
-      <CardSection className={s('mt-reg')} title="Subscribers(s)" hint={HINTS.SUBSCRIBERS}>
-        <CardUsers
-          isEditable={isEditing}
-          users={subscribers.map(subscriber => ({
-            ...subscriber,
-            isEditable: !owners.some(({ _id: ownerId }) => ownerId === subscriber._id)
-          }))}
-          size="xs"
-          showNames={false}
-          onAdd={addCardSubscriber}
-          onRemoveClick={removeCardSubscriber}
-          showTooltips
-        />
-      </CardSection>
+      <CardUsers
+        isEditable={isEditing}
+        users={subscribers.map(subscriber => ({
+          ...subscriber,
+          isEditable: !owners.some(({ _id: ownerId }) => ownerId === subscriber._id)
+        }))}
+        size="xs"
+        showNames={false}
+        onAdd={addCardSubscriber}
+        onRemoveClick={removeCardSubscriber}
+        showTooltips
+      />
     );
   };
 
   const renderTags = () => {
     const { edits: { tags = [] }, updateCardTags, removeCardTag } = props;
     return (
-      <CardSection className={s('mt-reg')} title="Tags">
-        <CardTags
-          isEditable
-          tags={tags}
-          onChange={updateCardTags}
-          onRemoveClick={removeCardTag}
-          showPlaceholder
-          showSelect
-        />
-      </CardSection>
+      <CardTags
+        isEditable
+        tags={tags}
+        onChange={updateCardTags}
+        onRemoveClick={removeCardTag}
+        showPlaceholder
+        showSelect
+      />
     );
   }
 
-  const renderKeywords = () => {
-    const { edits: { keywords = [] }, updateCardKeywords } = props;
-    return (
-      <CardSection
-        className={s('mt-reg')}
-        title="Keywords"
-        startExpanded={false}
-        preview={
-          <div className={s('card-create-modal-keywords-preview')}>
-            { keywords.map(({ label, value }, i) => (
-              <div key={value} className={i !== keywords.length - 1 ? s('mr-xs') : ''}>
-                {label}{i !== keywords.length - 1 && ','}
-              </div>
-            ))}
-          </div>
-        }
-      >
-        <CardKeywords
-          isEditable
-          keywords={keywords}
-          onChange={updateCardKeywords}
-        />
-      </CardSection>
-    );
-  }
-
-  const renderAdvanced = (isExisting, onlyShowPermissions) => {
+  const renderAdvanced = ({ isExisting, justMe }) => {
     const { edits: { verificationInterval = {}, permissions = {}, permissionGroups = [] }, updateCardVerificationInterval, updateCardPermissions, updateCardPermissionGroups } = props;
     return (
-      <CardSection
-        className={s('mt-reg')}
-        title="Advanced"
-        showSeparator={false}
-        startExpanded={false}
-        preview={
-          <div className={s('text-xs text-purple-gray-50 flex')}>
-            { !onlyShowPermissions &&
-              <React.Fragment>
-                <MdAutorenew />
-                <span className={s('ml-xs')}> {verificationInterval.label} </span>
-                <Separator className={s('mx-reg')} />
-              </React.Fragment>
-            }
-            <MdLock />
-            <span className={s('ml-xs')}> {permissions.label} </span>
-          </div>
-        }
-      >
+      <>
         <AnimateHeight
-          height={onlyShowPermissions ? 0 : 'auto'}
+          height={justMe ? 0 : 'auto'}
           onAnimationEnd={({ newHeight }) => newHeight !== 0 && scrollToBottom()}
         >
-          <div>
+          <div className={s('mb-sm')}>
             <div className={s('flex items-center text-gray-reg text-xs mb-xs')}>
               <span> Verification Interval </span>
               <HelpTooltip
@@ -149,7 +98,7 @@ const CardCreateModal = (props) => {
             />
           </div>
         </AnimateHeight>
-        <div className={s('mt-sm')}>
+        <div>
           <div className={s('text-gray-reg text-xs mb-sm')}> Permissions </div>
           <CardPermissions
             selectedPermission={permissions}
@@ -159,45 +108,97 @@ const CardCreateModal = (props) => {
             showJustMe={!isExisting}
           />
         </div>
-      </CardSection>
+      </>
     );
   }
 
-  const { modalOpen, requestCreateCard, requestUpdateCard, closeCardModal, createError, isCreatingCard, isUpdatingCard, edits, _id } = props;
-  const isExisting = isExistingCard(_id);
-  const isLoading = isExisting ? isUpdatingCard : isCreatingCard;
-  const onClick = isExisting ? requestUpdateCard : requestCreateCard;
-
-  const onlyShowPermissions = isJustMe(edits.permissions);
-  const primaryButtonProps = {
-    text: 'Complete Card',
-    onClick: onClick, 
-    isLoading,
-    disabled: !hasValidEdits(edits)
-  };
-  
-  return (
-    <Modal
-      isOpen={modalOpen[MODAL_TYPE.CREATE]}
-      onRequestClose={() => closeCardModal(MODAL_TYPE.CREATE)}
-      title={edits.question}
-      overlayClassName={s('rounded-b-lg')}
-      bodyClassName={s('rounded-b-lg flex flex-col')}
-      primaryButtonProps={primaryButtonProps}
-    >
-      <div className={s('flex-grow overflow-auto p-lg')}>
-        <AnimateHeight height={onlyShowPermissions ? 0 : 'auto'}>
-          { renderOwners() }
-          { renderSubscribers() }
-          { renderTags() }
-        </AnimateHeight>
-        { /* renderKeywords() */ }
-        { renderAdvanced(isExisting, onlyShowPermissions) }
-        <Message className={s('my-sm')} message={createError} type="error" />
-        <div ref={bottomRef} />
+  const renderAdvancedPreview = (justMe) => {
+    const { edits: { verificationInterval={}, permissions={} } } = props;
+    return (
+      <div className={s('text-xs text-purple-gray-50 flex')}>
+        { !justMe &&
+          <React.Fragment>
+            <MdAutorenew />
+            <span className={s('ml-xs')}> {verificationInterval.label} </span>
+            <Separator className={s('mx-reg')} />
+          </React.Fragment>
+        }
+        <MdLock />
+        <span className={s('ml-xs')}> {permissions.label} </span>
       </div>
-    </Modal>
-  );
+    );
+  }
+
+  const render = () => {
+    const { modalOpen, requestCreateCard, requestUpdateCard, closeCardModal, createError, isCreatingCard, isUpdatingCard, edits, _id } = props;
+    const isExisting = isExistingCard(_id);
+    const isLoading = isExisting ? isUpdatingCard : isCreatingCard;
+    const onClick = isExisting ? requestUpdateCard : requestCreateCard;
+
+    const justMe = isJustMe(edits.permissions);
+    const CARD_SECTIONS = [
+      {
+        title: 'Owner(s)',
+        hint: HINTS.OWNERS,
+        renderFn: renderOwners
+      },
+      {
+        title: 'Subscriber(s)',
+        hint: HINTS.SUBSCRIBERS,
+        renderFn: renderSubscribers
+      },
+      {
+        title: 'Tags',
+        renderFn: renderTags,
+      },
+      {
+        title: 'Advanced',
+        startExpanded: false,
+        preview: renderAdvancedPreview(justMe),
+        renderFn: renderAdvanced,
+        showJustMe: true
+      }
+    ];
+
+    const primaryButtonProps = {
+      text: 'Complete Card',
+      onClick: onClick, 
+      isLoading,
+      disabled: !hasValidEdits(edits)
+    };
+    
+    return (
+      <Modal
+        isOpen={modalOpen[MODAL_TYPE.CREATE]}
+        onRequestClose={() => closeCardModal(MODAL_TYPE.CREATE)}
+        title={edits.question}
+        overlayClassName={s('rounded-b-lg')}
+        bodyClassName={s('rounded-b-lg flex flex-col')}
+        primaryButtonProps={primaryButtonProps}
+      >
+        <div className={s('flex-grow overflow-auto p-lg')}>
+          { CARD_SECTIONS.map(({ title, hint, renderFn, showJustMe, startExpanded=true, preview }, i) => (
+            <AnimateHeight height={(!justMe || showJustMe) ? 'auto' : 0}>
+              <CardSection
+                className={s(i < CARD_SECTIONS.length - 1 ? 'mb-lg' : '')}
+                title={title}
+                hint={hint}
+                startExpanded={startExpanded}
+                preview={preview}
+                showSeparator={i < CARD_SECTIONS.length - 1}
+              >
+                {renderFn({ isExisting, justMe })}
+              </CardSection>
+            </AnimateHeight>
+          ))}
+          <Message className={s('my-sm')} message={createError} type="error" />
+          <div ref={bottomRef} />
+        </div>
+      </Modal>
+    );    
+  }
+
+  return render();
 }
 
 export default CardCreateModal;

@@ -3,7 +3,7 @@ import PropTypes from 'prop-types';
 import { Transition } from 'react-transition-group';
 import AnimateHeight from 'react-animate-height';
 import moment from 'moment';
-import { MdClose } from 'react-icons/md';
+import { MdClose, MdEdit } from 'react-icons/md';
 import { FaRegTrashAlt } from 'react-icons/fa';
 
 import { CardSection, CardUsers, CardTags, CardAttachments, CardPermissions, CardKeywords, CardVerificationInterval } from 'components/cards';
@@ -25,10 +25,6 @@ const SIDE_DOCK_TRANSITION_MS = 200;
 const CardSideDock = (props) => {
   const permissionRef = useRef(null);
 
-  const closeSideDock = () => {
-    props.closeCardSideDock();
-  };
-
   const getAttribute = (attribute) => {
     const { isEditing, edits } = props;
     return isEditing ? edits[attribute] : props[attribute];
@@ -37,27 +33,23 @@ const CardSideDock = (props) => {
   const renderHeader = () => (
     <div className={s('flex justify-between text-purple-gray-50 mb-sm')}>
       <div className={s('text-xs')}> Card Information </div>
-      <button onClick={closeSideDock}>
+      <button onClick={props.closeCardSideDock}>
         <MdClose />
       </button>
     </div>
   );
 
-  const renderOwners = (onlyShowPermissions) => {
+  const renderOwners = () => {
     const { isEditing, addCardOwner, removeCardOwner } = props;
     const currOwners = getAttribute('owners');
     return (
-      <AnimateHeight height={onlyShowPermissions ? 0 : 'auto'}>
-        <CardSection className={s('mt-reg')} title="Owner(s)" hint={HINTS.OWNERS}>
-          <CardUsers
-            isEditable={isEditing}
-            users={currOwners}
-            onAdd={addCardOwner}
-            onRemoveClick={removeCardOwner}
-            showTooltips
-          />
-        </CardSection>
-      </AnimateHeight>
+      <CardUsers
+        isEditable={isEditing}
+        users={currOwners}
+        onAdd={addCardOwner}
+        onRemoveClick={removeCardOwner}
+        showTooltips
+      />
     );
   };
 
@@ -66,71 +58,45 @@ const CardSideDock = (props) => {
     const currSubscribers = getAttribute('subscribers');
     const currOwners = getAttribute('owners');
     return (
-      <AnimateHeight height={onlyShowPermissions ? 0 : 'auto'}>
-        <CardSection className={s('mt-reg')} title="Subscribers(s)" hint={HINTS.SUBSCRIBERS}>
-          <CardUsers
-            isEditable={isEditing}
-            users={currSubscribers.map(subscriber => ({
-              ...subscriber,
-              isEditable: !currOwners.some(({ _id: ownerId }) => ownerId === subscriber._id)
-            }))}
-            size="xs"
-            showNames={false}
-            onAdd={addCardSubscriber}
-            onRemoveClick={removeCardSubscriber}
-            showTooltips
-          />
-        </CardSection>
-      </AnimateHeight>
+      <CardUsers
+        isEditable={isEditing}
+        users={currSubscribers.map(subscriber => ({
+          ...subscriber,
+          isEditable: !currOwners.some(({ _id: ownerId }) => ownerId === subscriber._id)
+        }))}
+        size="xs"
+        showNames={false}
+        onAdd={addCardSubscriber}
+        onRemoveClick={removeCardSubscriber}
+        showTooltips
+      />
     );
   };
 
   const renderAttachments = () => {
     const { removeCardAttachment, updateCardAttachmentName, isEditing } = props;
     const currAttachments = getAttribute('attachments');
-
     return (
-      <CardSection className={s('mt-lg')} title="Attachments">
-        <CardAttachments
-          attachments={currAttachments}
-          isEditable={isEditing}
-          onRemoveClick={removeCardAttachment}
-          onFileNameChange={({ name, key }) => updateCardAttachmentName(key, name)}
-        />
-      </CardSection>
+      <CardAttachments
+        attachments={currAttachments}
+        isEditable={isEditing}
+        onRemoveClick={removeCardAttachment}
+        onFileNameChange={({ name, key }) => updateCardAttachmentName(key, name)}
+      />
     );
   };
 
   const renderTags = (onlyShowPermissions) => {
     const { isEditing, updateCardTags, removeCardTag } = props;
     const currTags = getAttribute('tags');
-
     return (
-      <AnimateHeight height={onlyShowPermissions ? 0 : 'auto'}>
-        <CardSection className={s('mt-lg')} title="Tags">
-          <CardTags
-            isEditable={isEditing}
-            tags={currTags}
-            onChange={updateCardTags}
-            onRemoveClick={removeCardTag}
-            showPlaceholder
-          />
-        </CardSection>
-      </AnimateHeight>
-    );
-  };
-
-  const renderKeywords = () => {
-    const { isEditing, updateCardKeywords } = props;
-    const currKeywords = getAttribute('keywords');
-    return (
-      <CardSection className={s('mt-lg')} title="Keywords">
-        <CardKeywords
-          isEditable={isEditing}
-          keywords={currKeywords}
-          onChange={updateCardKeywords}
-        />
-      </CardSection>
+      <CardTags
+        isEditable={isEditing}
+        tags={currTags}
+        onChange={updateCardTags}
+        onRemoveClick={removeCardTag}
+        showPlaceholder
+      />
     );
   };
 
@@ -140,16 +106,16 @@ const CardSideDock = (props) => {
     }
   };
 
-  const renderAdvanced = (onlyShowPermissions) => {
+  const renderAdvanced = (justMe) => {
     const { isEditing, permissions, updateCardPermissions, updateCardPermissionGroups, updateCardVerificationInterval } = props;
     const currVerificationInterval = getAttribute('verificationInterval');
     const currPermissions = getAttribute('permissions');
     const currPermissionGroups = getAttribute('permissionGroups');
 
     return (
-      <CardSection className={s('mt-lg')} title="Advanced">
+      <>
         <AnimateHeight
-          height={onlyShowPermissions ? 0 : 'auto'}
+          height={justMe ? 0 : 'auto'}
           onAnimationEnd={handleHideSections}
         >
           <div className={s('mb-sm')}>
@@ -183,7 +149,7 @@ const CardSideDock = (props) => {
             showJustMe={permissions.value === PERMISSION_OPTION.JUST_ME}
           />
         </div>
-      </CardSection>
+      </>
     );
   };
 
@@ -216,7 +182,7 @@ const CardSideDock = (props) => {
   };
 
   const renderOverlay = () => {
-    const { sideDockOpen } = props;
+    const { sideDockOpen, closeCardSideDock } = props;
 
     const baseStyle = getBaseAnimationStyle(SIDE_DOCK_TRANSITION_MS);
     return (
@@ -227,11 +193,51 @@ const CardSideDock = (props) => {
         unmountOnExit
       >
         {state => (
-          <div className={s('card-side-dock-overlay')} style={{ ...baseStyle, ...TRANSITIONS.FADE_IN[state] }} onClick={closeSideDock} />
+          <div className={s('card-side-dock-overlay')} style={{ ...baseStyle, ...TRANSITIONS.FADE_IN[state] }} onClick={closeCardSideDock} />
         )}
       </Transition>
     );
   };
+
+  const renderEditButton = () => {
+    const { isEditing, editCard } = props;
+
+    if (isEditing) return null;
+
+    return (
+      <button onClick={editCard} className={s('flex items-center text-purple-gray-50')}>
+        <span className={s('text-xs mr-xs')}> Edit </span>
+        <MdEdit className={s('text-sm self-end')}/>
+      </button>  
+    )
+  }
+
+  const CARD_SECTIONS = [
+    {
+      title: 'Owner(s)',
+      hint: HINTS.OWNERS,
+      renderFn: renderOwners
+    },
+    {
+      title: 'Subscriber(s)',
+      hint: HINTS.SUBSCRIBERS,
+      renderFn: renderSubscribers
+    },
+    {
+      title: 'Attachments',
+      renderFn: renderAttachments,
+      showJustMe: true,
+    },
+    {
+      title: 'Tags',
+      renderFn: renderTags,
+    },
+    {
+      title: 'Advanced',
+      renderFn: renderAdvanced,
+      showJustMe: true
+    }
+  ];
 
   const render = () => {
     const { sideDockOpen, status, edits } = props;
@@ -245,7 +251,7 @@ const CardSideDock = (props) => {
     };
 
     const isNewCard = status === STATUS.NOT_DOCUMENTED;
-    const onlyShowPermissions = isJustMe(getAttribute('permissions'));
+    const justMe = isJustMe(getAttribute('permissions'));
 
     return (
       <div className={s('card-side-dock-container')}>
@@ -259,12 +265,18 @@ const CardSideDock = (props) => {
           {state => (
             <div className={s('card-side-dock overflow-auto')} style={{ ...baseStyle, ...transitionStyles[state] }}>
               { renderHeader() }
-              { !isNewCard && renderOwners(onlyShowPermissions) }
-              { !isNewCard && renderSubscribers(onlyShowPermissions) }
-              { renderAttachments() }
-              { !isNewCard && renderTags(onlyShowPermissions) }
-              { /* !isNewCard && renderKeywords() */ }
-              { !isNewCard && renderAdvanced(onlyShowPermissions) }
+              { CARD_SECTIONS.map(({ title, hint, renderFn, showJustMe }, i) => (
+                <AnimateHeight height={(!justMe || showJustMe) ? 'auto' : 0}>
+                  <CardSection
+                    className={s(i < CARD_SECTIONS.length - 1 ? 'mb-lg' : '')}
+                    title={title}
+                    hint={hint}
+                    headerEnd={renderEditButton()}
+                  >
+                    {renderFn(justMe)}
+                  </CardSection>
+                </AnimateHeight>
+              ))}
               { !isNewCard && renderFooter() }
             </div>
           )}

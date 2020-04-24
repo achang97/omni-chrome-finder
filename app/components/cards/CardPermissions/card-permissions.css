@@ -1,0 +1,4 @@
+.card-permissions-tab {
+  width: min-content;
+  @apply whitespace-no-wrap;
+}

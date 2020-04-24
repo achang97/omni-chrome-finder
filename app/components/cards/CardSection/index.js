@@ -10,7 +10,7 @@ import { getStyleApplicationFn } from 'utils/style';
 const s = getStyleApplicationFn(style);
 
 const CardSection = ({
-  title, hint, startExpanded, isExpandable, showSeparator, className, preview, children
+  title, hint, startExpanded, isExpandable, showSeparator, className, preview, children, headerEnd
 }) => {
   const [isExpanded, setExpanded] = useState(startExpanded);
   const toggleSection = () => setExpanded(!isExpanded);
@@ -33,12 +33,13 @@ const CardSection = ({
             />
           }
           { isExpandable &&
-          <button className={s('text-gray-light flex items-center ml-reg')} onClick={toggleSection}>
-            { isExpanded ? <MdExpandLess /> : <MdExpandMore /> }
-          </button>
+            <button className={s('text-gray-light flex items-center ml-reg')} onClick={toggleSection}>
+              { isExpanded ? <MdExpandLess /> : <MdExpandMore /> }
+            </button>
           }
         </div>
         { !isExpanded && preview }
+        { headerEnd }
       </div>
       <AnimateHeight height={isExpandable && isExpanded ? 'auto' : 0}>
         { children }
@@ -58,6 +59,7 @@ CardSection.propTypes = {
   showSeparator: PropTypes.bool,
   className: PropTypes.string,
   preview: PropTypes.element,
+  headerEnd: PropTypes.node,
 };
 
 CardSection.defaultProps = {

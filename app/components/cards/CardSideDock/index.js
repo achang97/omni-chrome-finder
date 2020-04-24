@@ -8,6 +8,7 @@ import {
   updateCardTags, removeCardTag,
   updateCardKeywords,
   updateCardVerificationInterval, updateCardPermissions, updateCardPermissionGroups,
+  editCard
 } from 'actions/cards';
 import CardSideDock from './CardSideDock';
 
@@ -38,7 +39,8 @@ const mapDispatchToProps = {
   updateCardKeywords,
   updateCardVerificationInterval,
   updateCardPermissions,
-  updateCardPermissionGroups,  
+  updateCardPermissionGroups,
+  editCard,
 }
 
 export default connect(mapStateToProps, mapDispatchToProps)(CardSideDock);

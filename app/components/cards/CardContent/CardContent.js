@@ -8,7 +8,7 @@ import { EditorState } from 'draft-js';
 import { Resizable } from 're-resizable';
 
 import TextEditor from 'components/editors/TextEditor';
-import { Button, Dropzone, Timeago, Modal, CheckBox, Loader, Separator, Message } from 'components/common';
+import { Button, Dropzone, Timeago, Modal, CheckBox, Loader, Separator, Message, Tooltip } from 'components/common';
 import { ScreenRecordButton, AttachmentDropzone } from 'components/attachments';
 import { CardStatus, CardTags, CardSideDock, CardCreateModal, CardConfirmModals, CardConfirmModal } from 'components/cards';
 
@@ -187,22 +187,122 @@ const CardContent = (props) => {
     });
   }
 
-  const shareCard = () => {
-    setToastMessage('Copied link to clipboard!');
-    copyCardUrl(props._id);
+  const renderHeaderButtons = () => {
+    const { openCardSideDock, answer, _id, isEditing } = props;
+
+    const headerButtons = [
+      {
+        Icon: MdContentCopy,
+        toast: 'Copied answer to clipboard!',
+        tooltip: 'Copy Answer',
+        onClick: () => copyText(answer),
+      },
+      {
+        Icon: IoIosShareAlt,
+        toast: 'Copied link to clipboard!',
+        tooltip: 'Share Card',
+        className: 'text-lg',
+        onClick: () => copyCardUrl(_id),
+      },
+      {
+        Icon: MdMoreHoriz,
+        tooltip: 'Advanced Settings',
+        onClick: openCardSideDock,
+        showEdit: true
+      }
+    ];
+
+    const headerOnClick = (onClick, toast) => {
+      if (toast) setToastMessage(toast);
+      onClick();
+    }
+
+    return (
+      <div className={s('flex items-center')}>
+        { headerButtons.map(({ Icon, toast, tooltip, onClick, className, showEdit }, i) => (
+          (!isEditing || showEdit) &&
+            <Tooltip show={!!tooltip} tooltip={tooltip} tooltipProps={{ place: 'left' }}>
+              <button onClick={() => headerOnClick(onClick, toast)}>
+                <Icon className={s(`${i < headerButtons.length - 1 ? 'mr-sm' : ''} ${className}`)} />
+              </button>
+            </Tooltip>
+        ))}
+      </div>
+    );
+  }
+
+  const renderAdvancedSettings = () => { 
+    const { attachments, openCardSideDock, outOfDateReason, tags, isEditing, cardsWidth, _id: cardId } = props;
+    const currAttachments = getAttribute('attachments');
+    return (isEditing ?
+      <div className={s('flex justify-between')}>
+        { currAttachments.length !== 0 &&
+          <Tooltip tooltip="View Attachments">
+            <div className={s('flex items-center')}>
+              <div className={s('flex text-purple-reg text-sm cursor-pointer underline-border border-purple-gray-20 items-center')} onClick={openCardSideDock}>
+                { isAnyLoading(currAttachments) ? 
+                  <Loader size="sm" className={s('mr-sm')} /> :
+                  <MdAttachment className={s('mr-sm')} />
+                }
+                <div> {currAttachments.length} Attachment{currAttachments.length !== 0 && 's'}</div>
+              </div>
+            </div>            
+          </Tooltip>
+        }
+        <div className={s('flex ml-auto')}>
+          <ScreenRecordButton
+            id={cardId}
+            onSuccess={({ recording, activeId }) => addCardAttachments([recording], activeId)}
+            abbrText={true}
+            className={s('py-0 px-sm mr-xs')}
+          />
+          <AttachmentDropzone
+            buttonClassName={s('py-0 px-sm')}
+            showText={true}
+            onDrop={addCardAttachments}
+          />
+        </div>
+      </div> :
+      <div className={s('flex items-center justify-between')}>
+        <CardTags
+          tags={tags}
+          onTagClick={openCardSideDock}
+          maxWidth={cardsWidth * 0.5}
+          isEditable={false}
+        />
+        <div className={s('flex flex-shrink-0 z-10 bg-purple-light ml-sm')}>
+          <Tooltip tooltip="View Attachments">
+            <Button
+              text={attachments.length}
+              iconLeft={false}
+              icon={<MdAttachment className={s('ml-xs')} />}
+              color={attachments.length > 0 ? 'gold' : 'secondary'}
+              className={s('py-sm px-reg rounded-full')}
+              onClick={openCardSideDock}
+            />            
+          </Tooltip>
+          <Separator />
+          <CardStatus
+            status={props.status}
+            isActionable={status !== CARD.STATUS.NEEDS_APPROVAL || isApprover(user, tags)}
+            outOfDateReason={outOfDateReason}
+            onDropdownOptionClick={cardStatusOnClick}
+          />
+        </div>
+      </div>
+    );
   }
 
   const renderHeader = () => {
     const {
-      isEditing, tags, createdAt, outOfDateReason, lastVerified, lastEdited,
+      isEditing, createdAt, lastVerified, lastEdited,
       sideDockOpen, openCardSideDock, closeCardSideDock,
       editorEnabled, descriptionSectionHeight, cardsWidth,
-      attachments, openCardModal, status,
+      openCardModal, status,
       updateCardQuestion,
       user, _id: cardId, activeScreenRecordingId
     } = props;
 
-    const currAttachments = getAttribute('attachments');
     const showDescription = hasDescription() || isEditing;
     return (
       <Resizable
@@ -243,21 +343,7 @@ const CardContent = (props) => {
               }
             </div>
           }
-          <div className={s('flex items-center')}>
-            { !isEditing &&
-              <>
-                <button onClick={copyAnswer} className={s('mr-sm text-sm')}>
-                  <MdContentCopy />          
-                </button>
-                <button onClick={shareCard} className={s('mr-sm text-lg')}>
-                  <IoIosShareAlt />
-                </button>
-              </>
-            }
-            <button onClick={openCardSideDock}>
-              <MdMoreHoriz />
-            </button>
-          </div>
+          { renderHeaderButtons() }
         </strong>
         { isEditing ?
           <input
@@ -273,68 +359,9 @@ const CardContent = (props) => {
             { renderTextEditor(CARD.EDITOR_TYPE.DESCRIPTION) }
           </div>
         }
-        { isEditing &&
-        <div className={s('flex justify-between')}>
-          { currAttachments.length !== 0 &&
-            <div className={s('flex items-center')}>
-              <div className={s('flex text-purple-reg text-sm cursor-pointer underline-border border-purple-gray-20 items-center')} onClick={openCardSideDock}>
-                { isAnyLoading(currAttachments) ? 
-                  <Loader size="sm" className={s('mr-sm')} /> :
-                  <MdAttachment className={s('mr-sm')} />
-                }
-                <div> {currAttachments.length} Attachment{currAttachments.length !== 0 && 's'}</div>
-              </div>
-            </div>
-          }
-          <div className={s('flex ml-auto')}>
-            <ScreenRecordButton
-              id={cardId}
-              onSuccess={({ recording, activeId }) => addCardAttachments([recording], activeId)}
-              abbrText={true}
-              className={s('py-0 px-sm mr-xs')}
-            />
-            <AttachmentDropzone
-              buttonClassName={s('py-0 px-sm')}
-              showText={true}
-              onDrop={addCardAttachments}
-            />
-          </div>
-        </div>
-        }
-        { !isEditing &&
-        <div className={s('flex items-center justify-between')}>
-          <CardTags
-            tags={tags}
-            onTagClick={openCardSideDock}
-            maxWidth={cardsWidth * 0.5}
-            isEditable={false}
-          />
-          <div className={s('flex flex-shrink-0 z-10 bg-purple-light ml-sm')}>
-            <Button
-              text={attachments.length}
-              iconLeft={false}
-              icon={<MdAttachment className={s('ml-xs')} />}
-              color={attachments.length > 0 ? 'gold' : 'secondary'}
-              className={s('py-sm px-reg rounded-full')}
-              onClick={openCardSideDock}
-            />
-            <Separator />
-            <CardStatus
-              status={props.status}
-              isActionable={status !== CARD.STATUS.NEEDS_APPROVAL || isApprover(user, tags)}
-              outOfDateReason={outOfDateReason}
-              onDropdownOptionClick={cardStatusOnClick}
-            />
-          </div>
-        </div>
-        }
+        { renderAdvancedSettings() }
       </Resizable>
     );
-  }
-
-  const copyAnswer = () => {
-    setToastMessage('Copied answer to clipboard!');
-    copyText(props.answer);
   }
 
   const renderAnswer = () => {
@@ -449,13 +476,15 @@ const CardContent = (props) => {
                   disabled={isTogglingUpvote}
                   onClick={() => requestToggleUpvote(toggleUpvotes(upvotes, user._id))}
                 />
-                <Button
-                  icon={<MdBookmarkBorder />}
-                  color={'secondary'}
-                  color={hasBookmarked ? 'gold' : 'secondary'}
-                  disabled={isUpdatingBookmark}
-                  onClick={() => bookmarkOnClick(_id)}
-                />
+                <Tooltip tooltip={hasBookmarked ? 'Remove Bookmark' : 'Add Bookmark'} tooltipProps={{ place: 'left' }}>
+                  <Button
+                    icon={<MdBookmarkBorder />}
+                    color={'secondary'}
+                    color={hasBookmarked ? 'gold' : 'secondary'}
+                    disabled={isUpdatingBookmark}
+                    onClick={() => bookmarkOnClick(_id)}
+                  />                  
+                </Tooltip>
               </div>
             </div>
         }
@@ -464,11 +493,7 @@ const CardContent = (props) => {
   }
 
   const render = () => {
-    const {
-      hasLoaded, isGettingCard, getError,
-      isEditing, tags, sideDockOpen, closeCardModal, modalOpen, openCardSideDock, closeCardSideDock, status,
-      requestGetCard
-    } = props;
+    const { hasLoaded, isGettingCard, getError, requestGetCard } = props;
 
     if (!hasLoaded && getError) {
       const { message, status } = getError;
