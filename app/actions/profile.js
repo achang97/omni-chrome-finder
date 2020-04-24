@@ -12,6 +12,20 @@ export function handleGetUserError(error) {
   return { type: types.GET_USER_ERROR, payload: { error } };
 }
 
+
+export function requestGetUserOnboardingStats() {
+  return { type: types.GET_USER_ONBOARDING_STATS_REQUEST, payload: { } };
+}
+
+export function handleGetUserOnboardingStatsSuccess(onboardingStats) {
+  return { type: types.GET_USER_ONBOARDING_STATS_SUCCESS, payload: { onboardingStats } };
+}
+
+export function handleGetUserOnboardingStatsError(error) {
+  return { type: types.GET_USER_ONBOARDING_STATS_ERROR, payload: { error } };
+}
+
+
 export function editUser() {
   return { type: types.EDIT_USER, payload: {} };
 }

@@ -1,7 +1,7 @@
 import { connect } from 'react-redux';
 import * as screenRecordingActions from 'actions/screenRecording';
 import { withRouter } from 'react-router';
-import { toggleDock, expandDock } from 'actions/display';
+import { toggleDock } from 'actions/display';
 import ScreenRecordButton from './ScreenRecordButton';
 
 const mapStateToProps = (state, ownProps) => {
@@ -17,8 +17,7 @@ const mapStateToProps = (state, ownProps) => {
 
 const mapDispatchToProps = {
   ...screenRecordingActions,
-  toggleDock,
-  expandDock
+  toggleDock
 };
 
 export default connect(mapStateToProps, mapDispatchToProps)(withRouter(ScreenRecordButton));

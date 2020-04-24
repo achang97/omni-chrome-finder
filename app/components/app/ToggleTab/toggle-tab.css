@@ -1,9 +1,6 @@
 .toggle-tab { 
   top: 10px;
   width: 25px;
-  @apply absolute right-0 z-10 rounded-r-none px-0;
-}
-
-.toggle-tab:hover {
-  @apply opacity-100;
+  z-index: 10000000000;
+  @apply absolute right-0 rounded-r-none px-0;
 }

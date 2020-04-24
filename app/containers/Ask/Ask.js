@@ -1,8 +1,7 @@
 import React, { useEffect } from 'react';
-import AnimateHeight from 'react-animate-height';
 import _ from 'lodash';
 import moment from 'moment';
-import { MdChevronRight, MdPictureInPicture, MdClose, MdCloudUpload, MdAttachment } from 'react-icons/md';
+import { MdPictureInPicture, MdClose, MdCloudUpload, MdAttachment } from 'react-icons/md';
 import { IoMdAdd } from 'react-icons/io';
 import { FaRegDotCircle, FaPaperPlane, FaMinus } from 'react-icons/fa';
 
@@ -12,8 +11,7 @@ import {
 } from 'components/common';
 import { ScreenRecordButton, AttachmentDropdown, AttachmentDropzone } from 'components/attachments';
 import TextEditor from 'components/editors/TextEditor';
-import SuggestionPanel from 'components/suggestions/SuggestionPanel';
-import RecipientDropdownBody from 'components/ask/RecipientDropdownBody';
+import { RecipientDropdownBody, MinimizedAsk } from 'components/ask';
 import CardAttachment from 'components/cards/CardAttachment';
 
 import { colors } from 'styles/colors';
@@ -35,10 +33,7 @@ const Ask = ({
   questionDescription, updateAskQuestionDescription,
   recipients, removeAskRecipient, updateAskRecipient, addAskRecipient,
   slackConversations, requestGetSlackConversations, isGettingSlackConversations, getSlackConversationsError,
-  dockExpanded, expandDock,
-  searchText, updateAskSearchText, requestSearchCards,
-  toggleAskFeedbackInput, showFeedback, feedback, updateAskFeedback,
-  requestSubmitFeedback, isSubmittingFeedback, feedbackSuccess, feedbackError,
+  dockExpanded, showPerformanceScore,
   history
 }) => {
   const isLoggedInSlack = isLoggedIn(user, INTEGRATIONS.SLACK.type);
@@ -297,92 +292,9 @@ const Ask = ({
     );
   };
 
-  const showFullDock = () => {
-    if (showFeedback) {
-      toggleAskFeedbackInput();
-      updateAskFeedback('');
-    }
-
-    updateAskSearchText('');
-    expandDock();
-  }
-
-  const renderMinifiedAskPage = () => {
-    return (
-      <div className={s('p-lg overflow-y-auto')}>
-        <input
-          onChange={e => updateAskSearchText(e.target.value)}
-          value={searchText}
-          placeholder="Let's find what you're looking for"
-          className={s('w-full')}
-          autoFocus
-        />
-        <div className={s('mt-lg flex flex-row justify-center items-center')}>
-          <span className={s('flex-1 text-gray-dark ml-sm text-xs font-medium')}>
-            Don't see your question?
-          </span>
-          <Button
-            text="Ask Question"
-            color="primary"
-            className={s('justify-between')}
-            iconLeft={false}
-            icon={<MdChevronRight color="white" className={s('ml-sm')} />}
-            onClick={showFullDock}
-          />
-        </div>
-        <AnimateHeight height={showFeedback ? 0 : 'auto'}>
-          <div className={s('flex justify-end mt-reg text-gray-dark text-xs font-medium')}>
-            <div className={s('cursor-pointer')} onClick={toggleAskFeedbackInput}>
-              Have Feedback?
-            </div>
-          </div>
-        </AnimateHeight>
-        <AnimateHeight height={showFeedback ? 'auto' : 0}>
-          <Separator horizontal className={s('my-reg')} />
-          { feedbackSuccess ? 
-            <Message
-              message={<span> 🎉 <span className={s('mx-sm')}> Thanks for your feedback! </span> 🎉 </span>}
-              className={s('text-md text-center text-green-reg')}
-              animate
-              temporary
-              show={feedbackSuccess}
-              onHide={toggleAskFeedbackInput}
-              type="success"
-            /> :
-            <div>
-              <div className={s(('flex justify-between mb-xs text-gray-dark'))}>
-                <div className={s('text-xs')}> Enter your feedback: </div>
-                <MdClose className={s('cursor-pointer')} onClick={toggleAskFeedbackInput} />
-              </div>
-              <textarea
-                className={s('w-full resize')}
-                value={feedback}
-                onChange={e => updateAskFeedback(e.target.value)}
-              />
-              <Message className={s('my-sm')} message={feedbackError} type="error" />
-              <Button
-                text="Submit Feedback"
-                color="transparent"
-                className={s('p-xs')}
-                iconLeft={false}
-                icon={isSubmittingFeedback ?
-                  <Loader size="xs" className={s('ml-sm')} color="white" /> :
-                  null
-                }
-                disabled={feedback.length === 0}
-                onClick={requestSubmitFeedback}
-              />
-            </div>
-          }
-        </AnimateHeight>
-        <SuggestionPanel
-          query={searchText}
-        />
-      </div>
-    );
-  };
-
-  return (dockExpanded ? renderExpandedAskPage() : renderMinifiedAskPage());
+  return (dockExpanded && !showPerformanceScore) ?
+    renderExpandedAskPage() :
+    <MinimizedAsk />;
 }
 
 export default Ask;

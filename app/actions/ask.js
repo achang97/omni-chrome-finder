@@ -4,6 +4,10 @@ export function updateAskSearchText(text) {
   return { type: types.UPDATE_ASK_SEARCH_TEXT, payload: { text } };
 }
 
+export function togglePerformanceScore() {
+  return { type: types.TOGGLE_PERFORMANCE_SCORE, payload: { } };
+}
+
 export function toggleAskFeedbackInput() {
   return { type: types.TOGGLE_ASK_FEEDBACK_INPUT, payload: { } };
 }
