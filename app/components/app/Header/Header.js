@@ -25,13 +25,15 @@ const Header = ({
 
   const showAISuggest = numAISuggestCards !== 0;
   return (
-    <div className={s('px-sm bg-purple-xlight relative')}>
-      <button
-        className={s('bg-white shadow-md mt-xs ml-xs rounded-full w-reg h-reg flex items-center justify-center')}
-        onClick={minimizeDock}
-      >
-        <MdClose className={s('text-purple-reg text-xs')}/>
-      </button>
+    <div className={s('bg-purple-xlight relative')}>
+      <div className={s('header-minimize-container')}>
+        <button
+          className={s('bg-white shadow-md rounded-full w-reg h-reg flex items-center justify-center')}
+          onClick={minimizeDock}
+        >
+          <MdClose className={s('text-purple-reg text-xs')}/>
+        </button>        
+      </div>
       <Tabs
         onTabClick={handleTabClick}
         activeValue={pathname}
