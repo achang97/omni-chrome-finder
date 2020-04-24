@@ -1,12 +1,29 @@
 import { connect } from 'react-redux';
-import { expandDock } from 'actions/display';
 import { requestSearchCards } from 'actions/search';
-import * as askActions from 'actions/ask';
+import {
+  changeAskIntegration,
+  requestAddAskAttachment, requestRemoveAskAttachment, updateAskAttachmentName,
+  requestAskQuestion, updateAskQuestionTitle, updateAskQuestionDescription,
+  removeAskRecipient, updateAskRecipient, addAskRecipient,
+  requestGetSlackConversations,  
+} from 'actions/ask';
 import Ask from './Ask';
 
 const mapStateToProps = state => {
   const { 
-    ask,
+    ask: {
+      activeIntegration,
+      attachments,
+      isAskingQuestion,
+      askError, askSuccess,
+      questionTitle, 
+      questionDescription,
+      recipients,
+      slackConversations,
+      isGettingSlackConversations,
+      getSlackConversationsError,
+      showPerformanceScore,
+    },
     display: {
       dockExpanded
     },
@@ -18,12 +35,36 @@ const mapStateToProps = state => {
     }
   } = state;
 
-  return { ...ask, dockExpanded, user, token };
+  return {
+    activeIntegration,
+    attachments,
+    isAskingQuestion,
+    askError, askSuccess,
+    questionTitle, 
+    questionDescription,
+    recipients,
+    slackConversations,
+    isGettingSlackConversations,
+    getSlackConversationsError,
+    dockExpanded,
+    showPerformanceScore,
+    user,
+    token
+  };
 }
 
 const mapDispatchToProps = {
-  ...askActions,
-  expandDock,
+  changeAskIntegration,
+  requestAddAskAttachment,
+  requestRemoveAskAttachment,
+  updateAskAttachmentName,
+  requestAskQuestion,
+  updateAskQuestionTitle,
+  updateAskQuestionDescription,
+  removeAskRecipient,
+  updateAskRecipient,
+  addAskRecipient,
+  requestGetSlackConversations,
   requestSearchCards, 
 }
 

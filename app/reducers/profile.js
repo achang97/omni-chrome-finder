@@ -10,6 +10,7 @@ export const initialState = {
     upToDateCount: 0,
     outOfDateCount: 0
   },
+  onboardingStats: {},
 
   userEdits: {},
   isEditingAbout: false,
@@ -62,6 +63,18 @@ export default function displayReducer(state = initialState, action) {
     case types.GET_USER_ERROR: {
       const { error } = payload;
       return { ...state, isGettingUser: false, getUserError: error };
+    }
+
+    case types.GET_USER_ONBOARDING_STATS_REQUEST: {
+      return { ...state, isGettingOnboardingStats: true, getOnboardingStatsError: null };
+    }
+    case types.GET_USER_ONBOARDING_STATS_SUCCESS: {
+      const { onboardingStats } = payload;
+      return { ...state, isGettingOnboardingStats: false, onboardingStats };
+    }
+    case types.GET_USER_ONBOARDING_STATS_ERROR: {
+      const { error } = payload;
+      return { ...state, isGettingOnboardingStats: false, getOnboardingStatsError: error };
     }
 
     // Changes to User

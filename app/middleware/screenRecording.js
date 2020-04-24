@@ -1,6 +1,6 @@
 import * as types from 'actions/actionTypes';
 import { clearScreenRecording } from 'actions/screenRecording';
-import { toggleDock, expandDock } from 'actions/display';
+import { toggleDock, toggleDockHeight } from 'actions/display';
 
 const cardsMiddleware = store => next => (action) => {
   const nextAction = next(action);
@@ -15,14 +15,17 @@ const cardsMiddleware = store => next => (action) => {
       break;
     }
     case types.CLEAR_SCREEN_RECORDING: {
-      const { display: { dockVisible } } = store.getState();
+      const { display: { dockVisible, dockExpanded } } = store.getState();
 
       if (!dockVisible) {
         store.dispatch(toggleDock());
       }
 
       // Expand in all cases (not technically accurate but ok for now)
-      store.dispatch(expandDock());
+      if (!dockExpanded) {
+        store.dispatch(toggleDockHeight());
+      }
+
       break;
     }
     default: {

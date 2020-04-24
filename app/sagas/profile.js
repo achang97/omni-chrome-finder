@@ -2,11 +2,12 @@ import { take, call, fork, put, all, select } from 'redux-saga/effects';
 import { doGet, doPut, doPost, doDelete, getErrorMessage } from 'utils/request';
 import { SETTING_SECTION_TYPE } from 'appConstants/profile';
 import {
-  GET_USER_REQUEST, SAVE_USER_REQUEST, UPDATE_USER_PERMISSIONS_REQUEST,
+  GET_USER_REQUEST, GET_USER_ONBOARDING_STATS_REQUEST, SAVE_USER_REQUEST, UPDATE_USER_PERMISSIONS_REQUEST,
   LOGOUT_USER_INTEGRATION_REQUEST, UPDATE_PROFILE_PICTURE_REQUEST, DELETE_PROFILE_PICTURE_REQUEST
 } from 'actions/actionTypes';
 import {
   handleGetUserSuccess, handleGetUserError,
+  handleGetUserOnboardingStatsSuccess, handleGetUserOnboardingStatsError,
   handleSaveUserSuccess, handleSaveUserError,
   handleUpdateProfilePictureSuccess, handleUpdateProfilePictureError,
   handleDeleteProfilePictureSuccess, handleDeleteProfilePictureError,
@@ -18,13 +19,17 @@ export default function* watchProfileRequests() {
   let action;
 
   while (action = yield take([
-    GET_USER_REQUEST, SAVE_USER_REQUEST, UPDATE_USER_PERMISSIONS_REQUEST,
+    GET_USER_REQUEST, GET_USER_ONBOARDING_STATS_REQUEST, SAVE_USER_REQUEST, UPDATE_USER_PERMISSIONS_REQUEST,
     LOGOUT_USER_INTEGRATION_REQUEST, UPDATE_PROFILE_PICTURE_REQUEST, DELETE_PROFILE_PICTURE_REQUEST
   ])) {
     const { type, payload  } = action;
     switch (type) {
       case GET_USER_REQUEST: {
         yield fork(getUser);
+        break;
+      }
+      case GET_USER_ONBOARDING_STATS_REQUEST: {
+        yield fork(getUserOnboardingStats);
         break;
       }
       case SAVE_USER_REQUEST: {
@@ -73,13 +78,22 @@ function* getUser() {
     const [{ userJson }, integrations, analytics] = yield all([
       call(doGet, '/users'),
       call(doGet, '/users/me/integrations'),
-      call(doGet, '/analytics/my/cards')
+      call(doGet, '/analytics/my/cards'),
     ]);
 
     const { user, ...userAnalytics } = analytics;
     yield put(handleGetUserSuccess({ ...userJson, integrations }, userAnalytics));
   } catch (error) {
     yield put(handleGetUserError(getErrorMessage(error)));
+  }
+}
+
+function* getUserOnboardingStats() {
+  try {
+    const onboardingStats = yield call(doGet, '/users/me/onboarding/completeStats');
+    yield put(handleGetUserOnboardingStatsSuccess(onboardingStats));
+  } catch (error) {
+    yield put(handleGetUserOnboardingStatsError(getErrorMessage(error)));
   }
 }
 

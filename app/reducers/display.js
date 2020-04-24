@@ -18,8 +18,8 @@ export default function displayReducer(state = initialState, action) {
     case types.TOGGLE_DOCK: {
       return { ...state, dockVisible: !state.dockVisible, dockExpanded: false, showToggleTab: false };
     }
-    case types.EXPAND_DOCK: {
-      return { ...state, dockExpanded: true };
+    case types.TOGGLE_DOCK_HEIGHT: {
+      return { ...state, dockExpanded: !state.dockExpanded };
     }
     case types.MINIMIZE_DOCK: {
       return { ...state, showToggleTab: true, dockVisible: false, dockExpanded: false  };
