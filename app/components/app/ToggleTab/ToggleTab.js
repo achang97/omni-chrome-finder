@@ -8,7 +8,7 @@ import { ROUTES } from 'appConstants';
 import style from './toggle-tab.css';
 import { getStyleApplicationFn } from 'utils/style';
 
-import logo from 'assets/images/logos/logo-light-icon.png';
+import logo from 'assets/images/logos/logo-light-icon.svg';
 
 const s = getStyleApplicationFn(style);
 

@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg width="86px" height="86px" viewBox="0 0 86 86" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+    <!-- Generator: Sketch 64 (93537) - https://sketch.com -->
+    <title>Combined Shape 2 Copy</title>
+    <desc>Created with Sketch.</desc>
+    <defs>
+        <linearGradient x1="-36.5%" y1="100%" x2="45.5410156%" y2="5.47851562%" id="linearGradient-1">
+            <stop stop-color="#666894" offset="1.83186799e-12%"></stop>
+            <stop stop-color="#9294C2" offset="100%"></stop>
+        </linearGradient>
+        <path d="M42.5737705,0 C66.0866147,0 85.147541,19.0609263 85.147541,42.5737705 C85.147541,66.0866147 66.0866147,85.147541 42.5737705,85.147541 C19.0609263,85.147541 0,66.0866147 0,42.5737705 C0,19.0609263 19.0609263,0 42.5737705,0 Z M42.5737705,17.0295082 C28.466064,17.0295082 17.0295082,28.466064 17.0295082,42.5737705 C17.0295082,56.681477 28.466064,68.1180328 42.5737705,68.1180328 C56.681477,68.1180328 68.1180328,56.681477 68.1180328,42.5737705 C68.1180328,28.466064 56.681477,17.0295082 42.5737705,17.0295082 Z" id="path-2"></path>
+        <linearGradient x1="50%" y1="6.27620046%" x2="70.7340892%" y2="64.2530488%" id="linearGradient-4">
+            <stop stop-color="#60638E" offset="0%"></stop>
+            <stop stop-color="#9294C2" offset="100%"></stop>
+        </linearGradient>
+    </defs>
+    <g id="Landing-Pages" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
+        <g id="Landing-Page---Omni----New---Light" transform="translate(-525.000000, -6067.000000)">
+            <g id="Group-11" transform="translate(159.000000, 5739.000000)">
+                <g id="Group-10">
+                    <g id="Combined-Shape-2-Copy" transform="translate(366.426230, 328.426230)">
+                        <mask id="mask-3" fill="white">
+                            <use xlink:href="#path-2"></use>
+                        </mask>
+                        <use id="Combined-Shape" fill="url(#linearGradient-1)" fill-rule="nonzero" xlink:href="#path-2"></use>
+                        <circle id="Oval" fill="url(#linearGradient-4)" fill-rule="nonzero" mask="url(#mask-3)" cx="51.6967213" cy="39.5327869" r="35.1885246"></circle>
+                    </g>
+                </g>
+            </g>
+        </g>
+    </g>
+</svg>
