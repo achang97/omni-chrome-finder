@@ -1,6 +1,6 @@
 import React, { useEffect, useRef } from 'react';
 import AnimateHeight from 'react-animate-height';
-import { MdClose, MdChevronRight } from 'react-icons/md';
+import { MdClose, MdChevronRight, MdCheck, MdKeyboardArrowUp } from 'react-icons/md';
 import { CircularProgressbar, buildStyles } from 'react-circular-progressbar';
 
 import { Button, Message, Separator, Loader } from 'components/common';
@@ -9,7 +9,11 @@ import SuggestionPanel from 'components/suggestions/SuggestionPanel';
 import { colors } from 'styles/colors';
 import { getStyleApplicationFn } from 'utils/style';
 
+import omnibot from 'assets/images/general/omnibot.png';
+
 const s = getStyleApplicationFn();
+
+const GET_STARTED_PERFORMANCE_CUTOFF = 60;
 
 const PROGRESS_BAR_STYLES = {
   // How long animation takes to go from one percentage to another, in seconds
@@ -126,7 +130,7 @@ const MinimizedAsk = ({
       case score < 80 && score >= 60:
         return { pathColor: colors.yellow.reg, textColor: 'text-yellow-500' };
       case score < 60:
-        return { pathColor: colors.red.reg, textColor: 'text-red-reg' };
+        return { pathColor: colors.purple.reg, textColor: 'text-purple-reg' };
       default:
         return {};
     }
@@ -163,7 +167,7 @@ const MinimizedAsk = ({
     return (
       <AnimateHeight height={showPerformanceScore ? 'auto' : 0}>
         <Separator horizontal className={s('my-reg')} />
-        <div className={s(('flex justify-between mb-xs text-gray-dark items-center mb-reg'))}>
+        <div className={s(('flex justify-between mb-xs text-gray-dark items-center mb-reg cursor-pointer'))} onClick={togglePerformance}>
           <div className={s('flex items-center')}>
             <CircularProgressbar
               className={s('w-3xl h-3xl')}
@@ -172,13 +176,14 @@ const MinimizedAsk = ({
             />
             <div className={s(`text-xs font-semibold ml-sm ${getPerformanceColors(getPerformanceScore()).textColor}`)}>My Performance: {getPerformanceScore()}%</div>
           </div>
-          <MdClose className={s('cursor-pointer')} onClick={togglePerformance} />
+          <MdKeyboardArrowUp className={s('cursor-pointer')}/>
         </div>
+        <div className={s('text-sm text-purple-reg mb-lg')}>Perform these simple tasks to familiarize yourself with Omni and boost your score to 100%.</div>
         <div className={s('overflow-auto')}>
         { PERFORMANCE_CRITERIA.map(({ weight, title, type }) => (
-          <div className={s(`flex justify-between mb-sm text-sm rounded-lg p-sm items-center ${onboardingStats[type] ? 'gold-gradient italic' : 'border border-solid border-gray-light'}`)}>
+          <div className={s(`flex justify-between mb-sm text-sm rounded-lg p-sm items-center ${onboardingStats[type] ? 'gold-gradient italic opacity-50' : 'border border-solid border-gray-light'}`)}>
             <div className={s('text-xs')}>{title}</div>
-            <div className={s(`p-xs rounded-lg font-semibold ${onboardingStats[type] ? 'gold-gradient text-gold-reg' : 'text-purple-reg'}`)}>{weight}%</div>
+            <div className={s(`p-xs rounded-lg font-semibold flex ${onboardingStats[type] ? 'gold-gradient text-gold-reg' : 'text-purple-light bg-purple-light border border-solid border-gray-xlight'}`)}><MdCheck /></div>
           </div>
         ))}
         </div>
@@ -242,7 +247,7 @@ const MinimizedAsk = ({
             Don't see your question?
           </span>
           <Button
-            text="Ask Question"
+            text="Ask a Teammate"
             color="primary"
             className={s('justify-between')}
             iconLeft={false}
@@ -253,13 +258,19 @@ const MinimizedAsk = ({
       </div>
       <AnimateHeight height={(showFeedback || showPerformanceScore) ? 0 : 'auto'}>
         <div className={s('flex justify-between items-center mt-reg px-lg')}>
-          <div className={s('flex items-center cursor-pointer')} onClick={togglePerformance}>
-            <CircularProgressbar
-              className={s('w-3xl h-3xl')}
-              value={getPerformanceScore()}
-              styles={buildStyles({...PROGRESS_BAR_STYLES, pathColor: getPerformanceColors(getPerformanceScore()).pathColor })}
-            />
-            <div className={s(`text-xs font-semibold ml-sm ${getPerformanceColors(getPerformanceScore()).textColor}`)}>My Performance: {getPerformanceScore()}%</div>
+          <div className={s('flex flex-col justify-center items-center')}>
+            <div className={s('flex items-center cursor-pointer')} onClick={togglePerformance}>
+              <CircularProgressbar
+                className={s('w-3xl h-3xl')}
+                value={getPerformanceScore()}
+                styles={buildStyles({...PROGRESS_BAR_STYLES, pathColor: getPerformanceColors(getPerformanceScore()).pathColor })}
+              />
+              <div className={s(`text-xs font-semibold ml-sm ${getPerformanceColors(getPerformanceScore()).textColor}`)}>My Performance: {getPerformanceScore()}%</div>
+            </div>
+            {
+              getPerformanceScore() < GET_STARTED_PERFORMANCE_CUTOFF &&
+              <div className={s('text-green-reg text-xs cursor-pointer font-semibold mt-xs')} onClick={togglePerformance}>Get started here </div>
+            }
           </div>
           <div className={s('flex justify-end text-gray-dark text-xs font-medium')}>
             <div className={s('cursor-pointer')} onClick={toggleAskFeedbackInput}>
