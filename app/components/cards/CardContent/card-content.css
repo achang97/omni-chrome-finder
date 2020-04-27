@@ -43,6 +43,18 @@
   border-radius: 0 !important;
 }
 
+.card-text-editor-edit-spacing {
+  @apply mx-lg my-sm;
+}
+
+.card-text-editor-view-spacing {
+  @apply px-lg pt-reg mb-xs;
+}
+
+.card-content-spacing {
+  @apply px-lg;
+}
+
 .card-content-toast {
   @apply absolute rounded-full bg-gray-overlay text-white px-xl py-reg mx-lg;
   left: 50%;
