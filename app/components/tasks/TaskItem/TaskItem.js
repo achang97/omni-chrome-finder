@@ -22,9 +22,18 @@ const TaskItem = ({
   requestMarkUpToDateFromTasks, requestDismissTask, requestApproveCardFromTasks, openCard,
   ...rest
 }) => {
+  const getNotifierName = () => {
+    if (!notifier) {
+      return 'Omni';
+    } else if (notifier._id === ownUserId) {
+      return 'You';
+    } else {
+      return `${notifier.firstname} ${notifier.lastname}`;
+    }
+  }
 
   const getHeaderInfo = () => {
-    const notifierName = notifier._id === ownUserId ? 'You' : `${notifier.firstname} ${notifier.lastname}`;
+    const notifierName = getNotifierName();
     switch (type) {
       case TASKS.TYPE.NEEDS_VERIFICATION:
         return { headerTitle: 'Omni needs you to verify this card', headerTitleClassName: '', headerIcon: <IoMdAlert className={s('tasks-icon-container text-yellow-reg mr-reg')} /> };
@@ -156,7 +165,7 @@ const TaskItem = ({
     const { primaryOption, primaryAction, secondaryOption, secondaryAction} = getTaskActionsInfo();
 
     return (isLoading ?
-      <Loader className={s('')} /> :
+      <Loader /> :
       <>
         <div className={s('flex items-center')}>
           {headerIcon}
