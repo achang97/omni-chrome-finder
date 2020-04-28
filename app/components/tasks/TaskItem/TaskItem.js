@@ -6,6 +6,7 @@ import { MdKeyboardArrowDown, MdKeyboardArrowUp, MdCheck, MdAdd, MdEdit, MdLock,
 import { AiFillMinusCircle, AiFillQuestionCircle } from 'react-icons/ai';
 
 import { Button, PlaceholderImg, Timeago, Loader, Message } from 'components/common';
+import { CardTags } from 'components/cards';
 import { TASKS, NOOP } from 'appConstants';
 
 import SlackIcon from 'assets/images/icons/Slack_Mark.svg';
@@ -17,12 +18,13 @@ const s = getStyleApplicationFn(style);
 
 const TaskItem = ({
   id, createdAt, type, card, resolved, notifier, isLoading, error, onHide, className,
-  ownUserId, requestMarkUpToDateFromTasks, requestDismissTask, requestApproveCardFromTasks, openCard,
+  ownUserId, isAdmin,
+  requestMarkUpToDateFromTasks, requestDismissTask, requestApproveCardFromTasks, openCard,
   ...rest
 }) => {
 
   const getHeaderInfo = () => {
-    const notifierName = notifier.id === ownUserId ? 'You' : notifier.name;
+    const notifierName = notifier._id === ownUserId ? 'You' : `${notifier.firstname} ${notifier.lastname}`;
     switch (type) {
       case TASKS.TYPE.NEEDS_VERIFICATION:
         return { headerTitle: 'Omni needs you to verify this card', headerTitleClassName: '', headerIcon: <IoMdAlert className={s('tasks-icon-container text-yellow-reg mr-reg')} /> };
@@ -104,7 +106,12 @@ const TaskItem = ({
   }
 
   const renderTaskPreview = () => {
-    const { answer, outOfDateReason, owners } = card;
+    const { answer, tags, outOfDateReason } = card;
+
+    const lockedTags = tags.filter(({ locked, approvers }) => (
+      locked && (isAdmin || apporvers.some(({ _id }) => _id === ownUserId))
+    ));
+
     switch (type) {
       case TASKS.TYPE.NEEDS_VERIFICATION:
         return (<div className={s('text-xs text-gray-dark mt-reg vertical-ellipsis-2 break-words line-clamp-4')}>{answer}</div>);
@@ -129,20 +136,12 @@ const TaskItem = ({
       case TASKS.TYPE.NEEDS_APPROVAL:
         return (
           <div className={s('flex mt-reg')}>
-            <div className={s('flex flex-shrink-0 mr-reg')}>
-              {/* Show the first owner of the card */}
-              <div className={s('flex-shrink-0')}>
-                <PlaceholderImg
-                  name={`${owners[0].firstname} ${owners[0].lastname}`}
-                  src={owners[0].profilePicture}
-                  className={s('task-item-profile-picture rounded-full text-xs')}
-                />
-              </div>
-            </div>
-            <div className={s('card-tag overflow-hidden')}>
-              <div className={s('truncate')}>Onboarding</div>
-              <MdLock className={s('ml-reg flex-shrink-0')} />
-            </div>
+            <PlaceholderImg
+              name={`${notifier.firstname} ${notifier.lastname}`}
+              src={notifier.profilePicture}
+              className={s('task-item-profile-picture')}
+            />
+            <CardTags tags={lockedTags} className="flex-1" />
           </div>);
       default:
         return '';

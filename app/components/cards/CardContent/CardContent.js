@@ -109,7 +109,7 @@ const CardContent = (props) => {
     let defaultProps;
     if (editorRole === CARD.EDITOR_TYPE.DESCRIPTION) {
       defaultProps = {
-        className: 'my-reg',
+        className: '', // 'my-reg',
         wrapperClassName: '',
         toolbarHidden: true,
         readOnly: true,
@@ -119,7 +119,7 @@ const CardContent = (props) => {
       };
     } else {
       defaultProps = {
-        className: 'mt-sm mb-reg',
+        className: '', // 'mt-sm mb-reg',
         wrapperClassName: '',
         toolbarHidden: true,
         readOnly: true,
@@ -133,7 +133,7 @@ const CardContent = (props) => {
       return {
         ...defaultProps,
         wrapperClassName: 'rounded-0',
-        editorClassName: 'text-editor card-text-editor-view p-0',
+        editorClassName: 'text-editor card-text-editor-view card-text-editor-view-spacing',
       };
     }
 
@@ -141,6 +141,8 @@ const CardContent = (props) => {
       placeholder: editorRole === CARD.EDITOR_TYPE.DESCRIPTION ? 'Add a description here' : 'Add an answer here',
       editorState: editorRole === CARD.EDITOR_TYPE.DESCRIPTION ? edits.descriptionEditorState : edits.answerEditorState,
     };
+
+    defaultProps.className = 'card-text-editor-edit-spacing';
 
     if (editorEnabled[editorRole]) {
       return {
@@ -232,10 +234,10 @@ const CardContent = (props) => {
   }
 
   const renderAdvancedSettings = () => { 
-    const { attachments, openCardSideDock, outOfDateReason, tags, isEditing, cardsWidth, _id: cardId } = props;
+    const { attachments, openCardSideDock, outOfDateReason, tags, status, isEditing, cardsWidth, _id: cardId, user } = props;
     const currAttachments = getAttribute('attachments');
     return (isEditing ?
-      <div className={s('flex justify-between')}>
+      <div className={s('card-content-spacing flex justify-between')}>
         { currAttachments.length !== 0 &&
           <Tooltip tooltip="View Attachments">
             <div className={s('flex items-center')}>
@@ -263,7 +265,7 @@ const CardContent = (props) => {
           />
         </div>
       </div> :
-      <div className={s('flex items-center justify-between')}>
+      <div className={s('card-content-spacing flex items-center justify-between')}>
         <CardTags
           tags={tags}
           onTagClick={openCardSideDock}
@@ -283,7 +285,7 @@ const CardContent = (props) => {
           </Tooltip>
           <Separator />
           <CardStatus
-            status={props.status}
+            status={status}
             isActionable={status !== CARD.STATUS.NEEDS_APPROVAL || isApprover(user, tags)}
             outOfDateReason={outOfDateReason}
             onDropdownOptionClick={cardStatusOnClick}
@@ -306,7 +308,7 @@ const CardContent = (props) => {
     const showDescription = hasDescription() || isEditing;
     return (
       <Resizable
-        className={s('bg-purple-light py-sm px-2xl min-h-0 flex-shrink-0 flex flex-col')}
+        className={s('bg-purple-light py-sm min-h-0 flex-shrink-0 flex flex-col')}
         defaultSize={{ height: CARD.DIMENSIONS.MIN_QUESTION_HEIGHT }}
         minHeight={showDescription ? CARD.DIMENSIONS.MIN_QUESTION_HEIGHT : 'none'}
         maxHeight={getMaxDescriptionHeight()}
@@ -316,7 +318,7 @@ const CardContent = (props) => {
         }}
         enable={{ top: false, right: false, bottom: true, left: false, topRight: false, bottomRight: true, bottomLeft: false, topLeft: false }}
       >
-        <strong className={s('text-xs text-purple-reg pt-xs pb-sm flex items-center justify-between opacity-75')}>
+        <strong className={s('card-content-spacing text-xs text-purple-reg pt-xs pb-sm flex items-center justify-between opacity-75')}>
           {/* Case 1: Card is documented and in edit*/}
           { (isEditing && status !== CARD.STATUS.NOT_DOCUMENTED) &&
           <div className={s('flex cursor-pointer')} onClick={() => { cancelEditCard(); }}>
@@ -345,15 +347,18 @@ const CardContent = (props) => {
           }
           { renderHeaderButtons() }
         </strong>
-        { isEditing ?
-          <input
-            placeholder="Title or Question"
-            className={s('w-full')}
-            value={props.edits.question}
-            onChange={e => updateCardQuestion(e.target.value)}
-          /> :
-          <div className={s(`text-2xl font-semibold ${!showDescription ? 'mb-lg' : ''}`)}>{props.question}</div>
-        }
+        <div className={s('card-content-spacing')}>
+          { isEditing ?
+            <input
+              placeholder="Title or Question"
+              className={s('w-full')}
+              value={props.edits.question}
+              onChange={e => updateCardQuestion(e.target.value)}
+            /> :
+            <div className={s(`text-2xl font-semibold ${!showDescription ? 'mb-lg' : ''}`)}>{props.question}</div>
+          }          
+        </div>
+
         { (isEditing || showDescription) &&
           <div className={s('flex-grow min-h-0 flex flex-col min-h-0')}>
             { renderTextEditor(CARD.EDITOR_TYPE.DESCRIPTION) }
@@ -367,20 +372,22 @@ const CardContent = (props) => {
   const renderAnswer = () => {
     const { isEditing, editorEnabled, selectedMessages, slackReplies, edits } = props;
     return (
-      <div className={s('px-2xl py-sm flex-grow min-h-0 flex flex-col min-h-0 relative')}>
+      <div className={s('flex-grow min-h-0 flex flex-col min-h-0 relative')}>
         <div className={s('flex-grow min-h-0 flex flex-col min-h-0')}>
           { renderTextEditor(CARD.EDITOR_TYPE.ANSWER) }
         </div>
         { isEditing && edits.slackReplies.length !== 0 &&
-          <Button
-            text={'Manage Message Display'}
-            color={'transparent'}
-            className={s('flex justify-between shadow-none')}
-            icon={<FaSlack />}
-            onClick={() => props.openCardModal(CARD.MODAL_TYPE.THREAD)}
-            iconLeft={false}
-            underline
-          />
+          <div className={s('card-content-spacing mb-sm')}>
+            <Button
+              text={'Manage Message Display'}
+              color={'transparent'}
+              className={s('flex justify-between shadow-none')}
+              icon={<FaSlack />}
+              onClick={() => props.openCardModal(CARD.MODAL_TYPE.THREAD)}
+              iconLeft={false}
+              underline
+            />            
+          </div>
         }
         { !isEditing && slackReplies.length !== 0 &&
           <Button
@@ -393,14 +400,23 @@ const CardContent = (props) => {
             iconLeft={false}
             underline={false}
           />
-        }
+        }          
       </div>
     );
   }
 
+  const updateCard = () => {
+    const { requestUpdateCard, cancelEditCard } = props;
+    if (cardStateChanged(props)) {
+      requestUpdateCard();
+    } else {
+      cancelEditCard();
+    }
+  }
+
   const renderFooter = () => {
     const {
-      isUpdatingCard, isEditing, _id, status, openCardModal, question, edits, requestUpdateCard, modalOpen,
+      isUpdatingCard, isEditing, _id, status, openCardModal, question, edits, modalOpen,
       upvotes, user, isTogglingUpvote, requestToggleUpvote,
       requestAddBookmark, requestRemoveBookmark, isUpdatingBookmark,
       activeScreenRecordingId,
@@ -440,7 +456,7 @@ const CardContent = (props) => {
             <Button
               text={'Save Updates'}
               color="primary"
-              onClick={requestUpdateCard}
+              onClick={updateCard}
               iconLeft={false}
               icon={isUpdatingCard && !modalOpen[CARD.MODAL_TYPE.CONFIRM_CLOSE] ? <Loader className={s('ml-sm')} size="sm" color="white" /> : null}
               className={s('rounded-t-none p-lg')}

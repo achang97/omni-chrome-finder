@@ -1,6 +1,7 @@
 import { connect } from 'react-redux';
 import { requestMarkUpToDateFromTasks, requestDismissTask, requestApproveCardFromTasks } from 'actions/tasks';
 import { openCard } from 'actions/cards';
+import { USER_ROLE } from 'appConstants/profile';
 import TaskItem from './TaskItem'
 
 const mapStateToProps = state => {
@@ -8,7 +9,7 @@ const mapStateToProps = state => {
     profile: { user }
   } = state;
 
-  return { ownUserId: user._id };
+  return { ownUserId: user._id, isAdmin: user.role === USER_ROLE.ADMIN };
 }
 
 const mapDispatchToProps = {
