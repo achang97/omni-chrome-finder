@@ -234,7 +234,7 @@ const CardContent = (props) => {
   }
 
   const renderAdvancedSettings = () => { 
-    const { attachments, openCardSideDock, outOfDateReason, tags, isEditing, cardsWidth, _id: cardId } = props;
+    const { attachments, openCardSideDock, outOfDateReason, tags, status, isEditing, cardsWidth, _id: cardId, user } = props;
     const currAttachments = getAttribute('attachments');
     return (isEditing ?
       <div className={s('card-content-spacing flex justify-between')}>
@@ -285,7 +285,7 @@ const CardContent = (props) => {
           </Tooltip>
           <Separator />
           <CardStatus
-            status={props.status}
+            status={status}
             isActionable={status !== CARD.STATUS.NEEDS_APPROVAL || isApprover(user, tags)}
             outOfDateReason={outOfDateReason}
             onDropdownOptionClick={cardStatusOnClick}
@@ -405,9 +405,18 @@ const CardContent = (props) => {
     );
   }
 
+  const updateCard = () => {
+    const { requestUpdateCard, cancelEditCard } = props;
+    if (cardStateChanged(props)) {
+      requestUpdateCard();
+    } else {
+      cancelEditCard();
+    }
+  }
+
   const renderFooter = () => {
     const {
-      isUpdatingCard, isEditing, _id, status, openCardModal, question, edits, requestUpdateCard, modalOpen,
+      isUpdatingCard, isEditing, _id, status, openCardModal, question, edits, modalOpen,
       upvotes, user, isTogglingUpvote, requestToggleUpvote,
       requestAddBookmark, requestRemoveBookmark, isUpdatingBookmark,
       activeScreenRecordingId,
@@ -447,7 +456,7 @@ const CardContent = (props) => {
             <Button
               text={'Save Updates'}
               color="primary"
-              onClick={requestUpdateCard}
+              onClick={updateCard}
               iconLeft={false}
               icon={isUpdatingCard && !modalOpen[CARD.MODAL_TYPE.CONFIRM_CLOSE] ? <Loader className={s('ml-sm')} size="sm" color="white" /> : null}
               className={s('rounded-t-none p-lg')}
