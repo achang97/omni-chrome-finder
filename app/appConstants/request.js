@@ -2,8 +2,8 @@ import { NODE_ENV } from './general';
 
 let url, protocol;
 if (process.env.NODE_ENV === NODE_ENV.DEV) {
-  url = 'api-dev.addomni.com';
-  protocol = 'https://';
+  url = 'localhost:8000';
+  protocol = 'http://';
 } else {
   url = 'api.addomni.com';
   protocol = 'https://';
