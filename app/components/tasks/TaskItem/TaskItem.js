@@ -142,7 +142,7 @@ const TaskItem = ({
               src={notifier.profilePicture}
               className={s('task-item-profile-picture')}
             />
-            <CardTags tags={lockedTags} className="flex-1" />
+            <CardTags tags={lockedTags} className={s('flex-1')} />
           </div>);
       default:
         return '';
