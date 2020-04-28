@@ -13,6 +13,7 @@ const initialState = {
   showPerformanceScore: false,
 
   /* Expanded Page */
+  isDescriptionEditorShown: false,
   activeIntegration: ASK.INTEGRATIONS[0],
   questionTitle: '',
   questionDescription: EditorState.createEmpty(),
@@ -56,6 +57,10 @@ export default function askReducer(state = initialState, action) {
       return { ...state, feedback };
     }
     
+    case types.SHOW_ASK_DESCRIPTION_EDITOR: {
+      return { ...state, isDescriptionEditorShown: true }
+    }
+
     case types.CHANGE_ASK_INTEGRATION: {
       const { integration } = payload;
       return { ...state, activeIntegration: integration };

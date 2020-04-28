@@ -26,14 +26,14 @@ const s = getStyleApplicationFn(style);
 
 const Ask = ({
   user, token, 
-  changeAskIntegration, activeIntegration,
+  changeAskIntegration, activeIntegration, isDescriptionEditorShown,
   requestAddAskAttachment, requestRemoveAskAttachment, attachments, updateAskAttachmentName,
   requestAskQuestion, isAskingQuestion, askError, askSuccess,
   questionTitle, updateAskQuestionTitle,
   questionDescription, updateAskQuestionDescription,
   recipients, removeAskRecipient, updateAskRecipient, addAskRecipient,
   slackConversations, requestGetSlackConversations, isGettingSlackConversations, getSlackConversationsError,
-  dockExpanded, showPerformanceScore,
+  dockExpanded, showPerformanceScore, showAskDescriptionEditor, 
   history
 }) => {
   const isLoggedInSlack = isLoggedIn(user, INTEGRATIONS.SLACK.type);
@@ -99,6 +99,9 @@ const Ask = ({
             editorState={questionDescription}
             editorType="EXTENSION"
             placeholder="Add a description here"
+            // minimizedPlaceholder="Add Description"
+            // onExpandEditor={showAskDescriptionEditor}
+            // expanded={isDescriptionEditorShown}
           />
         </div>
         <div className={s('flex px-xs pt-reg')}>
@@ -230,7 +233,6 @@ const Ask = ({
         text="Ask Question"
         disabled={
           questionTitle === '' ||
-          !questionDescription.getCurrentContent().hasText() ||
           recipients.length === 0 ||
           isAnyLoading(attachments) ||
           isAskingQuestion
@@ -281,7 +283,7 @@ const Ask = ({
     return (
       <div className={s('flex flex-col flex-1 min-h-0 relative')}>
         <div className={s('flex flex-col flex-1 overflow-y-auto bg-purple-light')}>
-          <div className={s('p-lg bg-white flex-1')}>
+          <div className={s('p-lg bg-white')}>
             { renderTabHeader() }
             { (!loggedIn || isDisabled) ? renderDisabledView() : renderAskInputs() }
           </div>
