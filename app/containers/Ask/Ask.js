@@ -99,9 +99,9 @@ const Ask = ({
             editorState={questionDescription}
             editorType="EXTENSION"
             placeholder="Add a description here"
-            // minimizedPlaceholder="Add Description"
-            // onExpandEditor={showAskDescriptionEditor}
-            // expanded={isDescriptionEditorShown}
+            minimizedPlaceholder="Add Description"
+            onExpandEditor={showAskDescriptionEditor}
+            expanded={isDescriptionEditorShown}
           />
         </div>
         <div className={s('flex px-xs pt-reg')}>
