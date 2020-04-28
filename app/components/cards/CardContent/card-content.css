@@ -45,6 +45,8 @@
 
 .card-text-editor-edit-spacing {
   @apply mx-lg my-sm;
+  /*@apply px-lg pt-reg mb-xs;*/
+  
 }
 
 .card-text-editor-view-spacing {

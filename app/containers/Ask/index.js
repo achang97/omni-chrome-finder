@@ -5,7 +5,7 @@ import {
   requestAddAskAttachment, requestRemoveAskAttachment, updateAskAttachmentName,
   requestAskQuestion, updateAskQuestionTitle, updateAskQuestionDescription,
   removeAskRecipient, updateAskRecipient, addAskRecipient,
-  requestGetSlackConversations,  
+  requestGetSlackConversations, showAskDescriptionEditor
 } from 'actions/ask';
 import Ask from './Ask';
 
@@ -23,6 +23,7 @@ const mapStateToProps = state => {
       isGettingSlackConversations,
       getSlackConversationsError,
       showPerformanceScore,
+      isDescriptionEditorShown
     },
     display: {
       dockExpanded
@@ -37,6 +38,7 @@ const mapStateToProps = state => {
 
   return {
     activeIntegration,
+    isDescriptionEditorShown,
     attachments,
     isAskingQuestion,
     askError, askSuccess,
@@ -55,6 +57,7 @@ const mapStateToProps = state => {
 
 const mapDispatchToProps = {
   changeAskIntegration,
+  showAskDescriptionEditor,
   requestAddAskAttachment,
   requestRemoveAskAttachment,
   updateAskAttachmentName,

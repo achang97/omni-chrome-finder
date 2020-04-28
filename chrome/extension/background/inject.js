@@ -57,12 +57,13 @@ function createNotification({ userId, message, notification }) {
     `${CHROME.NOTIFICATION_TYPE.TASK}-${status}-${_id}` :
     `${CHROME.NOTIFICATION_TYPE.CARD}-${status}-${card._id}`;
 
+  const notifierName = notifier ? `${notifier.firstname} ${notifier.lastname}` : 'Omni';
   chrome.notifications.create(notificationId, {
     type: 'basic',
     iconUrl: chrome.runtime.getURL('/img/icon-128.png'),
     title: message,
     message: `Card: "${question}"`,
-    contextMessage: `Sent by ${resolved ? resolver.name : notifier.name}`,
+    contextMessage: `Sent by ${resolved ? resolver.name : notifierName}`,
   });
 
   if (_id) {

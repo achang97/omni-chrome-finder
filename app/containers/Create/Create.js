@@ -60,24 +60,15 @@ const Create = ({
         onChange={e => updateCreateQuestion(e.target.value)}
         autoFocus
       />
-      <AnimateHeight height={!isDescriptionEditorShown ? 'auto' : 0}>
-        <Button
-          text={'Add Description'}
-          onClick={showCreateDescriptionEditor}
-          color={'secondary'}
-          className={s('description-button justify-start shadow-none')}
-          icon={<MdAdd className={s('mr-reg')} />}
-          underline={false}
-        />
-      </AnimateHeight>
-      <AnimateHeight height={isDescriptionEditorShown ? 'auto' : 0}>
-        <TextEditor
-          onEditorStateChange={updateCreateDescriptionEditor}
-          editorState={descriptionEditorState}
-          editorType="EXTENSION"
-          placeholder="Add a description here"
-        />
-      </AnimateHeight>
+      <TextEditor
+        onEditorStateChange={updateCreateDescriptionEditor}
+        editorState={descriptionEditorState}
+        editorType="EXTENSION"
+        placeholder="Add a description here"
+        minimizedPlaceholder="Add Description"
+        expanded={isDescriptionEditorShown}
+        onExpandEditor={showCreateDescriptionEditor}
+      />
       <Separator horizontal className={s('my-reg')} />
       <TextEditor
         onEditorStateChange={updateCreateAnswerEditor}

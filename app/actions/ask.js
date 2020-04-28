@@ -16,6 +16,10 @@ export function updateAskFeedback(feedback) {
   return { type: types.UPDATE_ASK_FEEDBACK, payload: { feedback } };
 }
 
+export function showAskDescriptionEditor() {
+  return { type: types.SHOW_ASK_DESCRIPTION_EDITOR, payload: { } };
+}
+
 export function changeAskIntegration(integration) {
   return { type: types.CHANGE_ASK_INTEGRATION, payload: { integration } };
 }

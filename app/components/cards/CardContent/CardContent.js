@@ -29,7 +29,7 @@ const CardContent = (props) => {
   const [toastMessage, setToastMessage] = useState(null);
 
   useEffect(() => {
-    const { hasLoaded, status, slackThreadConvoPairs, slackReplies, openCardModal } = props;
+    const { hasLoaded, status, slackThreadConvoPairs, slackReplies, openCardModal, adjustCardDescriptionSectionHeight } = props;
     if (hasLoaded && status === CARD.STATUS.NOT_DOCUMENTED && slackThreadConvoPairs.length !== 0 && slackReplies.length === 0) {
       openCardModal(CARD.MODAL_TYPE.SELECT_THREAD);
     }
@@ -51,6 +51,7 @@ const CardContent = (props) => {
     const { disableCardEditor, enableCardEditor, adjustCardDescriptionSectionHeight } = props;
     disableCardEditor(CARD.EDITOR_TYPE.ANSWER);
     enableCardEditor(CARD.EDITOR_TYPE.DESCRIPTION);
+    console.log(getMaxDescriptionHeight())
     adjustCardDescriptionSectionHeight(getMaxDescriptionHeight());
   }
 
@@ -106,28 +107,14 @@ const CardContent = (props) => {
       updateCardDescriptionEditor, updateCardAnswerEditor,
     } = props;
 
-    let defaultProps;
-    if (editorRole === CARD.EDITOR_TYPE.DESCRIPTION) {
-      defaultProps = {
-        className: '', // 'my-reg',
-        wrapperClassName: '',
-        toolbarHidden: true,
-        readOnly: true,
-        editorState: descriptionEditorState,
-        onEditorStateChange: updateCardDescriptionEditor,
-        onClick: undefined
-      };
-    } else {
-      defaultProps = {
-        className: '', // 'mt-sm mb-reg',
-        wrapperClassName: '',
-        toolbarHidden: true,
-        readOnly: true,
-        editorState: answerEditorState,
-        onEditorStateChange: updateCardAnswerEditor,
-        onClick: undefined
-      };
-    }
+    const isDescription = editorRole === CARD.EDITOR_TYPE.DESCRIPTION;
+
+    let defaultProps = {
+      toolbarHidden: true,
+      readOnly: true,
+      editorState: isDescription ? descriptionEditorState : answerEditorState,
+      onEditorStateChange: isDescription ? updateCardDescriptionEditor : updateCardAnswerEditor,
+    };
 
     if (!isEditing) {
       return {
@@ -137,17 +124,17 @@ const CardContent = (props) => {
       };
     }
 
-    const editingProps = {
-      placeholder: editorRole === CARD.EDITOR_TYPE.DESCRIPTION ? 'Add a description here' : 'Add an answer here',
-      editorState: editorRole === CARD.EDITOR_TYPE.DESCRIPTION ? edits.descriptionEditorState : edits.answerEditorState,
+    // Add editing props
+    defaultProps = {
+      ...defaultProps,
+      className: 'card-text-editor-edit-spacing',
+      placeholder: isDescription ? 'Add a description here' : 'Add an answer here',
+      editorState: isDescription ? edits.descriptionEditorState : edits.answerEditorState,
     };
-
-    defaultProps.className = 'card-text-editor-edit-spacing';
 
     if (editorEnabled[editorRole]) {
       return {
         ...defaultProps,
-        ...editingProps,
         editorClassName: 'bg-white',
         toolbarHidden: false,
         readOnly: false,
@@ -156,15 +143,14 @@ const CardContent = (props) => {
 
     return {
       ...defaultProps,
-      ...editingProps,
       wrapperClassName: 'card-text-editor-wrapper-inactive',
       editorClassName: 'card-text-editor-view',
-      onClick: editorRole === CARD.EDITOR_TYPE.DESCRIPTION ? () => enableDescriptionEditor() : () => enableAnswerEditor(),
+      onClick: isDescription ? () => enableDescriptionEditor() : () => enableAnswerEditor(),
     };
   }
 
   const renderTextEditor = (editorRole) => {
-    const { className, wrapperClassName, editorClassName, onClick, ...rest } = getTextEditorProps(editorRole);
+    const { className='', wrapperClassName='', editorClassName='', onClick, ...rest } = getTextEditorProps(editorRole);
     return (
       <TextEditor
         className={s(className)}
@@ -306,13 +292,14 @@ const CardContent = (props) => {
     } = props;
 
     const showDescription = hasDescription() || isEditing;
+    const maxDescriptionHeight = getMaxDescriptionHeight();
+
     return (
       <Resizable
-        className={s('bg-purple-light py-sm min-h-0 flex-shrink-0 flex flex-col')}
-        defaultSize={{ height: CARD.DIMENSIONS.MIN_QUESTION_HEIGHT }}
         minHeight={showDescription ? CARD.DIMENSIONS.MIN_QUESTION_HEIGHT : 'none'}
-        maxHeight={getMaxDescriptionHeight()}
         size={{ height: showDescription ? descriptionSectionHeight : 'auto' }}
+        className={s('bg-purple-light py-sm min-h-0 flex-shrink-0 flex flex-col')}
+        maxHeight={maxDescriptionHeight}
         onResizeStop={(e, direction, ref, d) => {
           props.adjustCardDescriptionSectionHeight(descriptionSectionHeight + d.height);
         }}
@@ -358,8 +345,7 @@ const CardContent = (props) => {
             <div className={s(`text-2xl font-semibold ${!showDescription ? 'mb-lg' : ''}`)}>{props.question}</div>
           }          
         </div>
-
-        { (isEditing || showDescription) &&
+        { showDescription &&
           <div className={s('flex-grow min-h-0 flex flex-col min-h-0')}>
             { renderTextEditor(CARD.EDITOR_TYPE.DESCRIPTION) }
           </div>
@@ -393,7 +379,7 @@ const CardContent = (props) => {
           <Button
             text={'Thread'}
             onClick={() => props.openCardModal(CARD.MODAL_TYPE.THREAD)}
-            className={s('view-thread-button p-sm absolute text-xs mb-lg mr-2xl')}
+            className={s('view-thread-button p-sm absolute text-xs mb-lg mr-lg')}
             color={'secondary'}
             imgSrc={SlackIcon}
             imgClassName={s('slack-icon ml-sm')}

@@ -108,8 +108,9 @@ const TaskItem = ({
   const renderTaskPreview = () => {
     const { answer, tags, outOfDateReason } = card;
 
+    // Autopopulate depth doesn't populate approvers, so they're IDs by default
     const lockedTags = tags.filter(({ locked, approvers }) => (
-      locked && (isAdmin || apporvers.some(({ _id }) => _id === ownUserId))
+      locked && approvers.some(approverId => approverId === ownUserId)
     ));
 
     switch (type) {
