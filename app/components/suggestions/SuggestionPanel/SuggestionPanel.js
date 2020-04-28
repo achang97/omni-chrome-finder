@@ -21,7 +21,7 @@ const SuggestionPanel = ({
   requestSearchCards, clearSearchCards
 }) => {
   const [isVisible, setIsVisible] = useState(true);
-  const [showExternalResults, setShowExternalResults] = useState(false);
+  const [showExternalResults, setShowExternalResults] = useState(true);
   const [showIntegration, setShowIntegration] = useState({});
 
   const externalResultsRef = useRef(null);
@@ -172,7 +172,7 @@ const SuggestionPanel = ({
     }
 
     return (
-      <div className={s('flex-col bg-purple-light justify-center items-center')} ref={externalResultsRef}>
+      <div className={s('flex-col bg-purple-light justify-center items-center rounded-b-lg')} ref={externalResultsRef}>
         { cards.length !== 0 &&
           <Separator horizontal className={s('my-sm')} />
         }
@@ -199,7 +199,7 @@ const SuggestionPanel = ({
     return (
       <div className={s('suggestion-panel-footer flex-col bg-white justify-center items-center mt-sm')}>
         <Button
-          text={`Show results from your current documentation ${numExternalResults !== 0 ? `(${numExternalResults})` : ''}`}
+          text={`Found in your documentation ${numExternalResults !== 0 ? `(${numExternalResults})` : ''}`}
           underline
           onClick={() => setShowExternalResults(true)}
           color="transparent"
@@ -218,7 +218,7 @@ const SuggestionPanel = ({
   return (
     <div className={s(`suggestion-panel ${!showMainPanel ? 'border-0' :''}`)}>
       <AnimateHeight height={showMainPanel ? 'auto' : 0}>
-        <div className={s('pt-reg')}>
+        <div className={s('pt-reg rounded-b-lg overflow-hidden')}>
           <div className={s('flex justify-between mb-sm px-reg')}>
             <div className={s('text-purple-gray-50 text-sm')}>
               {cards.length} card{cards.length !== 1 && 's'}
