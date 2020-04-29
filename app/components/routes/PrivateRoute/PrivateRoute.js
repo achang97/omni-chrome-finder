@@ -15,7 +15,7 @@ const PrivateRoute = ({ isLoggedIn, isVerified, hasCompletedOnboarding, ...given
       return <Redirect to={{ pathname: ROUTES.COMPLETE_ONBOARDING, state: { from: givenProps.location } }} />;
     }
   } else {
-    return <Redirect to={{ pathname: ROUTES.LOGIN, state: { from: givenProps.location } }} />;
+    return <Redirect to={{ pathname: ROUTES.MAIN_AUTH, state: { from: givenProps.location } }} />;
   }
 }
 

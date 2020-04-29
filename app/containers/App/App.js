@@ -16,6 +16,7 @@ import Tasks from '../Tasks';
 import Cards from '../Cards';
 import AISuggest from '../AISuggest';
 import Profile from '../Profile';
+import MainAuth from '../MainAuth';
 import Login from '../Login';
 import Signup from '../Signup';
 import Verify from '../Verify';
@@ -100,12 +101,13 @@ const App = ({
             { !isVerified && <PrivateRoute path={ROUTES.VERIFY} component={Verify} /> }
             { showAISuggest && <PrivateRoute path={ROUTES.SUGGEST} component={AISuggest} /> }
 
+            <PublicRoute path={ROUTES.MAIN_AUTH} component={MainAuth} />
             <PublicRoute path={ROUTES.LOGIN} component={Login} />
             <PublicRoute path={ROUTES.SIGNUP} component={Signup} />
             <PublicRoute path={ROUTES.FORGOT_PASSWORD} component={ForgotPassword} />
 
             {/* A catch-all route: put all other routes ABOVE here */}
-            <Redirect to={isLoggedIn ? ROUTES.ASK : ROUTES.LOGIN } />
+            <Redirect to={isLoggedIn ? ROUTES.ASK : ROUTES.MAIN_AUTH } />
           </Switch>
         </div>
       </Dock>

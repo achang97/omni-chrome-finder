@@ -3,8 +3,7 @@ import PropTypes from 'prop-types';
 import { withRouter } from 'react-router-dom';
 
 import { Button, Loader, Message } from 'components/common';
-
-import logo from 'assets/images/logos/logo-dark.svg';
+import AuthHeader from '../AuthHeader';
 
 import style from './auth-view.css';
 import { getStyleApplicationFn } from 'utils/style';
@@ -22,27 +21,26 @@ const AuthView = ({
   }
 
   return (
-    <form onSubmit={protectedOnClick} className={s(`m-0 flex-1 flex flex-col pt-2xl ${className}`)}>
-      <div className={s('px-2xl')}>
-        <img src={logo} className={s('h-3xl mb-reg')} />
-          { title &&
-            <div>
-              <div className={s('font-semibold mb-reg')}> {title} </div>
-            </div>
-          }
-          { subtitle &&
-            <div>
-              <div className={s('text-sm text-gray-reg mb-xl')}> {subtitle} </div>
-            </div>
-          }
-          { isLoading ?
-            <Loader className={s('mb-reg')} /> :
-            <div className={s('auth-view-input-body mb-reg')}>
-              {inputBody}
-            </div>
-          }          
+    <form onSubmit={protectedOnClick} className={s(`m-0 flex-1 flex flex-col ${className}`)}>
+      <AuthHeader>
+        { title &&
+          <div>
+            <div className={s('font-semibold mb-reg')}> {title} </div>
+          </div>
+        }
+        { subtitle &&
+          <div>
+            <div className={s('text-sm text-gray-reg mb-xl')}> {subtitle} </div>
+          </div>
+        }
+        { isLoading ?
+          <Loader className={s('mb-reg')} /> :
+          <div className={s('auth-view-input-body mb-reg')}>
+            {inputBody}
+          </div>
+        }          
         <Message className={s('my-reg')} message={error} type="error" />
-      </div>
+      </AuthHeader>
       <div className={s('bg-purple-light p-2xl rounded-lg')}>
         {/* Avoid using actual button due to weird styling across pages */}
         <input className={s('hidden')} type="submit" onClick={protectedOnClick} />

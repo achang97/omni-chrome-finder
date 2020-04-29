@@ -16,6 +16,7 @@ export const ROUTES = {
   PROFILE: '/profile',
   VERIFY: '/verify',
   SUGGEST: '/suggest',
+  MAIN_AUTH: '/mainAuth',
   LOGIN: '/login',
   SIGNUP: '/signup',
   FORGOT_PASSWORD: '/forgot',
