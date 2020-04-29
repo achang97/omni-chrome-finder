@@ -17,6 +17,15 @@
     "persistent": false,
     "page": "background.html"
   },
+  "commands": {
+    "OPEN_EXTENSION": {
+      "suggested_key": {
+        "default": "Ctrl+Shift+O",
+        "mac": "Command+Shift+O"
+      },
+      "description": "Open Omni extension"
+    }
+  },
   "permissions": ["activeTab", "storage", "contextMenus", "notifications", "https://app.addomni.com/*",  "https://mail.google.com/*"],
   "content_security_policy": "default-src 'self'; script-src 'self'; ; connect-src wss://api.addomni.com; style-src * 'unsafe-inline'; img-src 'self' data:;"
 }

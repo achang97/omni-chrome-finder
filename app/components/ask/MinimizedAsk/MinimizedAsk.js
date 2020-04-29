@@ -99,7 +99,7 @@ const PERFORMANCE_CRITERIA = [
 ];
 
 const MinimizedAsk = ({
-  toggleDockHeight, onboardingStats, dockExpanded,
+  toggleDockHeight, onboardingStats, dockVisible, dockExpanded,
   searchText, updateAskSearchText, requestSearchCards,
   toggleAskFeedbackInput, showFeedback, feedback, updateAskFeedback,
   requestSubmitFeedback, isSubmittingFeedback, feedbackSuccess, feedbackError,
@@ -107,6 +107,7 @@ const MinimizedAsk = ({
   requestGetUserOnboardingStats,
 }) => {
   const isMounted = useRef(null);
+  const inputRef = useRef(null);
 
   useEffect(() => {
     let refreshStats = showPerformanceScore;
@@ -119,7 +120,11 @@ const MinimizedAsk = ({
     if (refreshStats) {
       requestGetUserOnboardingStats();
     }
-  }, [showPerformanceScore])
+  }, [showPerformanceScore]);
+
+  useEffect(() => {
+    inputRef.current.focus();
+  }, [dockExpanded, dockVisible]);
 
   const getPerformanceColors = (score) => {
     switch (true) {
@@ -243,6 +248,8 @@ const MinimizedAsk = ({
           value={searchText}
           placeholder="Let's find what you're looking for"
           className={s('w-full minimized-search-input')}
+          className={s('w-full')}
+          ref={inputRef}
           autoFocus
         />
         <div className={s('mt-lg flex flex-row justify-end items-center pb-lg border-b border-r-0 border-t-0 border-l-0 border-solid border-gray-xlight')}>
