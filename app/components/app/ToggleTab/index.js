@@ -1,6 +1,6 @@
 import { connect } from 'react-redux';
 import { withRouter } from 'react-router-dom';
-import { toggleDock } from 'actions/display';
+import { toggleDock, hideToggleTab } from 'actions/display';
 import { SEARCH } from 'appConstants';
 import ToggleTab from './ToggleTab';
 
@@ -14,15 +14,16 @@ const mapStateToProps = (state) => {
       }
     },
     display: {
-      showToggleTab
+      toggleTabShown
     }
   } = state;
 
-  return { numCards: cards.length, showToggleTab }
+  return { numCards: cards.length, toggleTabShown }
 }
 
 const mapDispatchToProps = {
-  toggleDock
+  toggleDock,
+  hideToggleTab
 }
 
 export default connect(mapStateToProps, mapDispatchToProps)(withRouter(ToggleTab));
