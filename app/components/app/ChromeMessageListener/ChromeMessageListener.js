@@ -305,9 +305,27 @@ class ChromeMessageListener extends Component {
     }
   }
 
+  handleCommand = (command) => {
+    const { dockVisible, toggleDock, minimizeDock } = this.props;
+
+    switch (command) {
+      case CHROME.COMMAND.OPEN_EXTENSION: {
+        if (dockVisible) {
+          minimizeDock();
+        } else {
+          toggleDock();
+        }
+        break;
+      }
+      default: {
+        break;
+      }
+    }
+  }
+
   listener = (msg) => {
     const { type, payload } = msg;
-    switch (msg.type) {
+    switch (type) {
       case CHROME.MESSAGE.TOGGLE: {
         this.props.toggleDock();
         break;
@@ -325,6 +343,10 @@ class ChromeMessageListener extends Component {
       }
       case CHROME.MESSAGE.NOTIFICATION_OPENED: {
         this.handleNotificationOpened(payload);
+        break;
+      }
+      case CHROME.COMMAND.OPEN_EXTENSION: {
+        this.handleCommand(type);
         break;
       }
     }

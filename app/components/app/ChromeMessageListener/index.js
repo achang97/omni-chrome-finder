@@ -1,6 +1,6 @@
 import { connect } from 'react-redux';
 import { withRouter } from 'react-router-dom';
-import { toggleDock } from 'actions/display';
+import { toggleDock, minimizeDock } from 'actions/display';
 import { updateAskSearchText, updateAskQuestionTitle } from 'actions/ask';
 import { openCard } from 'actions/cards';
 import { requestSearchCards, clearSearchCards } from 'actions/search';
@@ -51,6 +51,7 @@ const mapStateToProps = (state) => {
 
 const mapDispatchToProps = {
   toggleDock,
+  minimizeDock,
   openCard,
   updateAskSearchText,
   updateAskQuestionTitle,

@@ -1,9 +1,7 @@
 import _ from 'lodash';
-import queryString from 'query-string';
 import { URL, NODE_ENV, CHROME, REQUEST } from 'appConstants';
 import { setStorage, getStorage, addStorageListener } from 'utils/storage';
-
-let socket;
+import { initSocket, closeSocket } from './socket';
 
 export function injectExtension(tabId) {
   return chrome.tabs.executeScriptAsync(tabId, {
@@ -14,7 +12,7 @@ export function injectExtension(tabId) {
   });
 }
 
-function getActiveTab() {
+export function getActiveTab() {
   return new Promise((resolve, reject) => {
     chrome.tabs.query({ active: true, lastFocusedWindow: true }, function(tabs) {
       if (tabs.length !== 0) {
@@ -49,91 +47,11 @@ export function loadScript(name, tabId, cb) {
   }
 }
 
-function createNotification({ userId, message, notification }) {
-  const { notifier, resolver, card, question, status, resolved, _id } = notification;
-
-  // Create chrome notification
-  const notificationId = (_id && !resolved) ?
-    `${CHROME.NOTIFICATION_TYPE.TASK}-${status}-${_id}` :
-    `${CHROME.NOTIFICATION_TYPE.CARD}-${status}-${card._id}`;
-
-  const notifierName = notifier ? `${notifier.firstname} ${notifier.lastname}` : 'Omni';
-  chrome.notifications.create(notificationId, {
-    type: 'basic',
-    iconUrl: chrome.runtime.getURL('/img/icon-128.png'),
-    title: message,
-    message: `Card: "${question}"`,
-    contextMessage: `Sent by ${resolved ? resolver.name : notifierName}`,
-  });
-
-  if (_id) {
-    getStorage(CHROME.STORAGE.TASKS).then(tasks => {
-      if (tasks) {
-        let newTasks;
-        if (resolved) {
-          newTasks = tasks.filter(task => task._id !== _id);
-        } else {
-          newTasks = _.unionBy(tasks, [notification], '_id');
-        }
-
-        setStorage(CHROME.STORAGE.TASKS, newTasks);
-      }
-    });    
-  }
-}
-
-function initSocket() {
-  getStorage(CHROME.STORAGE.AUTH).then((auth) => {
-    const token = auth && auth.token;
-    if (token && !socket) {
-      const protocol = process.env.NODE_ENV === NODE_ENV.DEV ? 'ws://' : 'wss://';
-      const wsToken = token.replace('Bearer ', '');
-      socket = new WebSocket(`${protocol}${REQUEST.URL.BASE}/ws/generic?auth=${wsToken}`);
-
-      socket.onopen = () => {
-        console.log('Connected socket!');
-      };
-
-      socket.onclose = () => {
-        console.log('Disconnected socket!');
-        socket = null;
-
-        // Attempt to reconnect
-        getStorage(CHROME.STORAGE.AUTH).then((auth) => {
-          const isLoggedIn = auth && auth.token;
-          if (isLoggedIn) {
-            console.log('Reconnecting socket!');
-            initSocket();
-          }
-        });
-      };
-
-      socket.onmessage = (event) => {
-        console.log('Received data from socket: ', event);
-        getStorage(CHROME.STORAGE.AUTH).then((auth) => {
-          const isLoggedIn = auth && auth.token;
-          const isVerified = auth && auth.user && auth.user.isVerified;
-          if (isLoggedIn && isVerified) {
-            const { type, data: payload } = JSON.parse(event.data);
-            createNotification(payload);
-          }
-        });
-      };
-
-      socket.onerror = (error) => {
-        console.log('Socket error: ', error);
-      };
-    }
-  });
-}
-
 chrome.tabs.onUpdated.addListener(async (tabId, changeInfo, tab) => {
   try {
     switch (changeInfo.status) {
       case 'loading': {
-        if (!socket) {
-          initSocket();
-        }
+        initSocket();
         
         const isInjected = (await injectExtension(tabId))[0];
         if (!chrome.runtime.lastError && !isInjected) {
@@ -165,9 +83,7 @@ chrome.browserAction.onClicked.addListener(async (tab) => {
           chrome.tabs.sendMessage(tabId, { type: CHROME.MESSAGE.TOGGLE });
         });
 
-        if (!socket) {
-          initSocket();
-        }
+        initSocket();
       } else {
         chrome.tabs.sendMessage(tabId, { type: CHROME.MESSAGE.TOGGLE });
       }
@@ -177,65 +93,11 @@ chrome.browserAction.onClicked.addListener(async (tab) => {
   }
 });
 
-function openNotification(windowId, tabId, payload) {
-  chrome.windows.update(windowId, { focused: true });
-  chrome.tabs.sendMessage(tabId, {
-    type: CHROME.MESSAGE.NOTIFICATION_OPENED,
-    payload
-  });      
-}
-
-function openNotificationNewTab(type, id) {
-  let queryParams = {};
-  switch (type) {
-    case CHROME.NOTIFICATION_TYPE.TASK: {
-      queryParams = { taskId: id };
-      break;
-    }
-    case CHROME.NOTIFICATION_TYPE.CARD: {
-      queryParams = { cardId: id };
-      break;
-    }
-  }
-
-  const link = `${URL.EXTENSION}?${queryString.stringify(queryParams)}`;
-  const newWindow = window.open(link, '_blank');
-  newWindow.focus();
-}
-
-chrome.notifications.onClicked.addListener(async (notificationId) => {
-  chrome.notifications.clear(notificationId);
-  const [match, type, status, id] = notificationId.match(/(\S+)-(\S+)-(\S+)/);
-  
-  getActiveTab().then(async activeTab => {
-    try {
-      if (activeTab) {
-        const { windowId, id: activeTabId } = activeTab;
-        const isInjected = (await injectExtension(activeTabId))[0];
-        if (!chrome.runtime.lastError) {
-          if (!isInjected) {
-            loadScript('inject', tabId, () => {
-              openNotification(windowId, activeTabId, { type, id });
-            });
-          } else {
-            openNotification(windowId, activeTabId, { type, id });
-          }
-        }
-      } else {
-        openNotificationNewTab(type, id);
-      }
-    } catch (error) {
-      openNotificationNewTab(type, id);
-    }
-  });   
-});
-
 addStorageListener(CHROME.STORAGE.AUTH, ({ newValue }) => {
-  if (!newValue.token && socket) {
+  if (!newValue.token) {
     console.log('Logged out, closing socket.');
-    socket.close();
-    socket = null;
-  } else if (newValue.token && !socket) {
+    closeSocket();
+  } else if (newValue.token) {
     initSocket();
   }
 });
