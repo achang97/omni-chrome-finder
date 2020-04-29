@@ -9,8 +9,7 @@ import SuggestionPanel from 'components/suggestions/SuggestionPanel';
 import { colors } from 'styles/colors';
 import { getStyleApplicationFn } from 'utils/style';
 
-import omnibot from 'assets/images/general/omnibot.png';
-import robotGetStarted from 'assets/images/general/robotGetStarted2.png';
+import robotGetStarted from 'assets/images/general/robotGetStarted.png';
 
 const s = getStyleApplicationFn();
 
