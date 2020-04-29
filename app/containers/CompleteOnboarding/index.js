@@ -22,6 +22,9 @@ const mapStateToProps = state => {
           extension
         }
       }
+    },
+    display: {
+      dockVisible
     }
   } = state;
 
@@ -33,7 +36,7 @@ const mapStateToProps = state => {
   ];
 
   const section = sections.find(section => extension[section] !== ONBOARDING_COMPLETE);
-  return { isGettingUser, onboardingSection: section, onboardingSubsection: extension[section] };
+  return { dockVisible, isGettingUser, onboardingSection: section, onboardingSubsection: extension[section] };
 }
 
 const mapDispatchToProps = {

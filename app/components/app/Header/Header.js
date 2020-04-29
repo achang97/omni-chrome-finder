@@ -15,7 +15,6 @@ const s = getStyleApplicationFn(style);
 
 const Header = ({
   user, numAISuggestCards, numTasks,
-  minimizeDock,
   history, location: { pathname }
 }) => {
   const handleTabClick = (activeLink) => {
@@ -26,18 +25,10 @@ const Header = ({
   const showAISuggest = numAISuggestCards !== 0;
   return (
     <div className={s('bg-purple-xlight relative')}>
-      <div className={s('header-minimize-container')}>
-        <button
-          className={s('rounded-full w-reg h-reg flex items-center justify-center')}
-          onClick={minimizeDock}
-        >
-          <MdClose className={s('text-purple-gray-50 text-xs')}/>
-        </button>        
-      </div>
       <Tabs
         onTabClick={handleTabClick}
         activeValue={pathname}
-        tabClassName={s('text-md pt-0 pb-xl px-0 font-semibold flex items-center')}
+        tabClassName={s('text-md py-xl px-0 font-semibold flex items-center')}
         tabContainerClassName={s('flex align-center')}
         color={colors.purple.reg}
         showRipple={false}

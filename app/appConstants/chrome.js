@@ -7,9 +7,18 @@ export const MESSAGE = {
   NOTIFICATION_OPENED: 'NOTIFICATION_OPENED',
 };
 
+export const COMMAND = {
+  OPEN_EXTENSION: 'OPEN_EXTENSION'
+}
+
+export const SOCKET_MESSAGE_TYPE = {
+  OAUTH_SUCCESS: 'oauthSuccess',
+  NOTIFICATION: 'notification',
+}
+
 export const NOTIFICATION_TYPE = {
   CARD: 'CARD',
-  TASK: 'TASK'
+  TASK: 'TASK',
 }
 
 export const STORAGE = {
@@ -17,4 +26,4 @@ export const STORAGE = {
   TASKS: 'tasks',
 }
 
-export default { MESSAGE, STORAGE, NOTIFICATION_TYPE };
+export default { MESSAGE, STORAGE, NOTIFICATION_TYPE, COMMAND, SOCKET_MESSAGE_TYPE };

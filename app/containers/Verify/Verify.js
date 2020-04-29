@@ -7,10 +7,16 @@ import { getStyleApplicationFn } from 'utils/style';
 const s = getStyleApplicationFn();
 
 const Verify = ({
-  verificationCode, isVerifying, verifyError, isGettingUser,
+  dockVisible, verificationCode, isVerifying, verifyError, isGettingUser,
   isResendingVerification, resendVerificationSuccess, resendVerificationError,
   updateVerificationCode, requestVerify, requestResendVerificationEmail, requestGetUser, logout
 }) => {
+  useEffect(() => {
+    if (dockVisible && !isGettingUser) {
+      requestGetUser();
+    }
+  }, [dockVisible]);
+  
   const renderFooter = () => (
     <>
       <Separator horizontal className={s('m-0')}/>

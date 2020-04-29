@@ -1,4 +1,5 @@
 import React, { useEffect, useRef } from 'react';
+import _ from 'lodash';
 import AnimateHeight from 'react-animate-height';
 import { MdClose, MdChevronRight, MdCheck, MdKeyboardArrowUp, MdPeople } from 'react-icons/md';
 import { CircularProgressbar, buildStyles } from 'react-circular-progressbar';
@@ -99,7 +100,7 @@ const PERFORMANCE_CRITERIA = [
 ];
 
 const MinimizedAsk = ({
-  toggleDockHeight, onboardingStats, dockExpanded,
+  toggleDockHeight, isGettingOnboardingStats, onboardingStats, dockVisible, dockExpanded,
   searchText, updateAskSearchText, requestSearchCards,
   toggleAskFeedbackInput, showFeedback, feedback, updateAskFeedback,
   requestSubmitFeedback, isSubmittingFeedback, feedbackSuccess, feedbackError,
@@ -107,6 +108,7 @@ const MinimizedAsk = ({
   requestGetUserOnboardingStats,
 }) => {
   const isMounted = useRef(null);
+  const inputRef = useRef(null);
 
   useEffect(() => {
     let refreshStats = showPerformanceScore;
@@ -119,7 +121,11 @@ const MinimizedAsk = ({
     if (refreshStats) {
       requestGetUserOnboardingStats();
     }
-  }, [showPerformanceScore])
+  }, [showPerformanceScore]);
+
+  useEffect(() => {
+    inputRef.current.focus();
+  }, [dockExpanded, dockVisible]);
 
   const getPerformanceColors = (score) => {
     switch (true) {
@@ -235,57 +241,72 @@ const MinimizedAsk = ({
     </AnimateHeight>
   );
 
-  return (
-    <div className={s('pt-lg flex flex-col min-h-0')}>
-      <div className={s('px-lg')}>
-        <input
-          onChange={e => updateAskSearchText(e.target.value)}
-          value={searchText}
-          placeholder="Let's find what you're looking for"
-          className={s('w-full minimized-search-input')}
-          autoFocus
-        />
-        <div className={s('mt-lg flex flex-row justify-end items-center pb-lg border-b border-r-0 border-t-0 border-l-0 border-solid border-gray-xlight')}>
-          <div 
-            className={s('text-purple-reg font-semibold cursor-pointer flex items-center ask-teammate-container')}
-            onClick={showFullDock}>
-            <div>Ask a Teammate</div>
-            <MdPeople className={s('text-md ml-sm')}/>
-          </div>
-        </div>        
-      </div>
-      <AnimateHeight height={(showFeedback || showPerformanceScore) ? 0 : 'auto'}>
-        <div className={s('flex justify-between items-center mt-reg px-lg')}>
-          <div className={s('flex flex-col justify-center items-center relative')}>
-            <div className={s('flex items-center cursor-pointer')} onClick={togglePerformance}>
-              <CircularProgressbar
-                className={s('w-3xl h-3xl')}
-                value={getPerformanceScore()}
-                styles={buildStyles({...PROGRESS_BAR_STYLES, pathColor: getPerformanceColors(getPerformanceScore()).pathColor })}
-              />
-              <div className={s(`text-xs font-semibold ml-sm ${getPerformanceColors(getPerformanceScore()).textColor}`)}>My Performance: {getPerformanceScore()}%</div>
+  const render = () => {
+    const performanceScore = getPerformanceScore();
+    const showRobot = !isGettingOnboardingStats && !_.isEmpty(onboardingStats) &&
+      performanceScore < GET_STARTED_PERFORMANCE_CUTOFF;
+
+    return (
+      <div className={s('pt-lg flex flex-col min-h-0')}>
+        <div className={s('px-lg')}>
+          <input
+            onChange={e => updateAskSearchText(e.target.value)}
+            value={searchText}
+            placeholder="Let's find what you're looking for"
+            className={s('w-full minimized-search-input')}
+            className={s('w-full')}
+            ref={inputRef}
+            autoFocus
+          />
+          <div className={s('mt-lg flex flex-row justify-end items-center pb-lg border-b border-r-0 border-t-0 border-l-0 border-solid border-gray-xlight')}>
+            <div 
+              className={s('text-purple-reg font-semibold cursor-pointer flex items-center ask-teammate-container')}
+              onClick={showFullDock}>
+              <div>Ask a Teammate</div>
+              <MdPeople className={s('text-md ml-sm')}/>
             </div>
-            {
-              getPerformanceScore() < GET_STARTED_PERFORMANCE_CUTOFF &&
-              <img src={robotGetStarted} className={s('cursor-pointer absolute')} onClick={togglePerformance} style={{height:'50px', bottom: '-40px'}}/>
-            }
-          </div>
-          <div className={s('flex justify-end text-gray-dark text-xs font-medium')}>
-            <div className={s('cursor-pointer')} onClick={toggleAskFeedbackInput}>
-              Have Feedback?
-            </div>
-          </div>
+          </div>        
         </div>
-      </AnimateHeight>
-      <div className={s('px-lg pb-lg min-h-0 overflow-auto')}>
-        { renderPerformanceScoreSection() }
-        { renderFeedbackSection() }        
+        <AnimateHeight height={(showFeedback || showPerformanceScore) ? 0 : 'auto'}>
+          <div className={s('flex justify-between items-center mt-reg px-lg')}>
+            <div className={s('flex flex-col justify-center items-center relative')}>
+              <div className={s('flex items-center cursor-pointer')} onClick={togglePerformance}>
+                { isGettingOnboardingStats ?
+                  <Loader size="sm" /> :
+                  <CircularProgressbar
+                    className={s('w-3xl h-3xl')}
+                    value={getPerformanceScore()}
+                    styles={buildStyles({...PROGRESS_BAR_STYLES, pathColor: getPerformanceColors(getPerformanceScore()).pathColor })}
+                  />
+                }
+                <div className={s(`text-xs font-semibold ml-sm ${getPerformanceColors(getPerformanceScore()).textColor}`)}>My Performance: {getPerformanceScore()}%</div>
+              </div>
+              <img
+                src={robotGetStarted}
+                className={s('robot-img')} 
+                onClick={togglePerformance}
+                style={{ opacity: showRobot ? 1 : 0 }}
+              />
+            </div>
+            <div className={s('flex justify-end text-gray-dark text-xs font-medium')}>
+              <div className={s('cursor-pointer')} onClick={toggleAskFeedbackInput}>
+                Have Feedback?
+              </div>
+            </div>
+          </div>
+        </AnimateHeight>
+        <div className={s('px-lg pb-lg min-h-0 overflow-auto')}>
+          { renderPerformanceScoreSection() }
+          { renderFeedbackSection() }        
+        </div>
+        <SuggestionPanel
+          query={searchText}
+        />
       </div>
-      <SuggestionPanel
-        query={searchText}
-      />
-    </div>
-  );
+    );    
+  }
+
+  return render();
 }
 
 export default MinimizedAsk;

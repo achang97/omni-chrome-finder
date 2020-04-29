@@ -173,7 +173,6 @@ const Tasks = ({
         { isGettingTasks ?
           <Loader className={s('mt-2xl')} /> :
           <React.Fragment>
-            {getTasksError && <div> {getTasksError} </div>}
             { currTasks.length === 0 &&
               <div>
                 {renderNoTasksScreen()}

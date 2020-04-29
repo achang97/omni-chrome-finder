@@ -24,9 +24,5 @@ const mapStateToProps = (state) => {
   };
 }
 
-const mapDispatchToProps = {
-  minimizeDock
-};
-
-export default connect(mapStateToProps, mapDispatchToProps)(withRouter(Header));
+export default connect(mapStateToProps, undefined)(withRouter(Header));
 

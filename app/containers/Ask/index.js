@@ -7,6 +7,8 @@ import {
   removeAskRecipient, updateAskRecipient, addAskRecipient,
   requestGetSlackConversations, showAskDescriptionEditor
 } from 'actions/ask';
+import { toggleDockHeight } from 'actions/display';
+
 import Ask from './Ask';
 
 const mapStateToProps = state => {
@@ -56,6 +58,7 @@ const mapStateToProps = state => {
 }
 
 const mapDispatchToProps = {
+  toggleDockHeight,
   changeAskIntegration,
   showAskDescriptionEditor,
   requestAddAskAttachment,

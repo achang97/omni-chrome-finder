@@ -6,7 +6,7 @@ import queryString from 'query-string';
 import { ROUTES, URL } from 'appConstants';
 import { heap, auth } from 'utils';
 
-import { Header, ChromeMessageListener, ToggleTab, MessageModal} from 'components/app';
+import { Header, ChromeMessageListener, ToggleTab, MessageModal, MinimizeButton} from 'components/app';
 import { PublicRoute, PrivateRoute } from 'components/routes';
 
 import Ask from '../Ask';
@@ -88,6 +88,7 @@ const App = ({
       >
         <div className={s(`flex relative flex-col ${showFullDock ? 'h-screen' : ''}`)}>
           <MessageModal />
+          <MinimizeButton />
           { isLoggedIn && isVerified && completedOnboarding && <Header /> }
           <Switch>
             <PrivateRoute path={ROUTES.ASK} component={Ask} />

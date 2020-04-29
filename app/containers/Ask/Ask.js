@@ -1,7 +1,7 @@
 import React, { useEffect } from 'react';
 import _ from 'lodash';
 import moment from 'moment';
-import { MdPictureInPicture, MdClose, MdCloudUpload, MdAttachment } from 'react-icons/md';
+import { MdPictureInPicture, MdClose, MdCloudUpload, MdAttachment, MdArrowBack } from 'react-icons/md';
 import { IoMdAdd } from 'react-icons/io';
 import { FaRegDotCircle, FaPaperPlane, FaMinus } from 'react-icons/fa';
 
@@ -33,7 +33,7 @@ const Ask = ({
   questionDescription, updateAskQuestionDescription,
   recipients, removeAskRecipient, updateAskRecipient, addAskRecipient,
   slackConversations, requestGetSlackConversations, isGettingSlackConversations, getSlackConversationsError,
-  dockExpanded, showPerformanceScore, showAskDescriptionEditor, 
+  dockExpanded, toggleDockHeight, showPerformanceScore, showAskDescriptionEditor, 
   history
 }) => {
   const isLoggedInSlack = isLoggedIn(user, INTEGRATIONS.SLACK.type);
@@ -45,10 +45,15 @@ const Ask = ({
 
   const renderTabHeader = () => {
     return (
-      <div className={s('flex flex-row justify-between')}>
+      <div className={s('flex flex-row items-center mb-lg')}>
+        <button
+          className={s('mr-sm bg-purple-light rounded-full w-2xl h-2xl flex justify-center items-center')}
+          onClick={toggleDockHeight}
+        >
+          <MdArrowBack className={s('text-purple-reg')} />
+        </button>
         <Tabs
           activeValue={activeIntegration}
-          className={s('mb-lg')}
           tabClassName={s(
             'text-sm font-normal rounded-full py-sm px-reg'
           )}
@@ -70,6 +75,7 @@ const Ask = ({
         <CircleButton
           content={<IoMdAdd color={colors.purple.reg} />}
           size="md"
+          className={s('ml-auto')}
           buttonClassName={s('bg-purple-light')}
           onClick={() => history.push(ROUTES.PROFILE)}
         />
@@ -282,7 +288,7 @@ const Ask = ({
 
     return (
       <div className={s('flex flex-col flex-1 min-h-0 relative')}>
-        <div className={s('flex flex-col flex-1 overflow-y-auto bg-purple-light')}>
+        <div className={s('flex flex-col flex-1 overflow-y-auto')}>
           <div className={s('p-lg bg-white')}>
             { renderTabHeader() }
             { (!loggedIn || isDisabled) ? renderDisabledView() : renderAskInputs() }

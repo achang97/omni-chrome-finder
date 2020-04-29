@@ -21,8 +21,10 @@ const mapStateToProps = state => {
     },
     profile: {
       onboardingStats,
+      isGettingOnboardingStats,
     },
     display: {
+      dockVisible,
       dockExpanded
     }
   } = state;
@@ -35,7 +37,9 @@ const mapStateToProps = state => {
     feedbackError,
     showPerformanceScore,
     searchText,
+    isGettingOnboardingStats,
     onboardingStats,
+    dockVisible,
     dockExpanded
   };
 }
