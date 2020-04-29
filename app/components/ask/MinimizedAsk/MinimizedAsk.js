@@ -10,6 +10,7 @@ import { colors } from 'styles/colors';
 import { getStyleApplicationFn } from 'utils/style';
 
 import omnibot from 'assets/images/general/omnibot.png';
+import robotGetStarted from 'assets/images/general/robotGetStarted2.png';
 
 const s = getStyleApplicationFn();
 
@@ -261,7 +262,7 @@ const MinimizedAsk = ({
       </div>
       <AnimateHeight height={(showFeedback || showPerformanceScore) ? 0 : 'auto'}>
         <div className={s('flex justify-between items-center mt-reg px-lg')}>
-          <div className={s('flex flex-col justify-center items-center')}>
+          <div className={s('flex flex-col justify-center items-center relative')}>
             <div className={s('flex items-center cursor-pointer')} onClick={togglePerformance}>
               <CircularProgressbar
                 className={s('w-3xl h-3xl')}
@@ -272,7 +273,7 @@ const MinimizedAsk = ({
             </div>
             {
               getPerformanceScore() < GET_STARTED_PERFORMANCE_CUTOFF &&
-              <div className={s('text-green-reg text-xs cursor-pointer font-semibold mt-xs')} onClick={togglePerformance}>Get started here </div>
+              <img src={robotGetStarted} className={s('cursor-pointer absolute')} onClick={togglePerformance} style={{height:'50px', bottom: '-40px'}}/>
             }
           </div>
           <div className={s('flex justify-end text-gray-dark text-xs font-medium')}>

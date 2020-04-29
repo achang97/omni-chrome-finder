@@ -42,7 +42,7 @@ const Header = ({
         color={colors.purple.reg}
         showRipple={false}
       >
-        <Tab label="Ask" key="ask" value={ROUTES.ASK} tabContainerClassName={s("mx-reg")} />
+        <Tab label="Search" key="ask" value={ROUTES.ASK} tabContainerClassName={s("mx-reg")} />
         <Tab label="Create" key="create" value={ROUTES.CREATE} tabContainerClassName={s("mx-reg")} />
         <Tab label="Cards" key="cards" value={ROUTES.NAVIGATE} tabContainerClassName={s("mx-reg")} />
         { showAISuggest &&
