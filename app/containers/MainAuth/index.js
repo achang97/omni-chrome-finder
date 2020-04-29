@@ -27,7 +27,7 @@ const MainAuth = ({ }) => {
   const renderBody = (title, subtitle) => {
     return (
       <div>
-        <div className={s('mb-reg text-xs')}> {subtitle} </div>
+        <div className={s('mb-sm text-xs')}> {subtitle} </div>
         <div className={s('font-semibold text-lg')}> {title} </div>
       </div>
     );
