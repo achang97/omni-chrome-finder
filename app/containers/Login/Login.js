@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import { Link } from 'react-router-dom';
 
 import AuthView from 'components/auth/AuthView';
-import { ROUTES, URL } from 'appConstants';
+import { ROUTES, URL, WEB_APP_ROUTES } from 'appConstants';
 
 import { getStyleApplicationFn } from 'utils/style';
 const s = getStyleApplicationFn();
@@ -45,7 +45,7 @@ const Login = ({
     }}
     footer={
       <a
-        href={`${URL.WEB_APP}/signup`}
+        href={`${URL.WEB_APP}${WEB_APP_ROUTES.SIGNUP}`}
         target="_blank"
         className={s('text-xs text-gray-dark text-center block')}
       >

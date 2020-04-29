@@ -6,6 +6,7 @@ import { openCard } from 'actions/cards';
 import { requestSearchCards, clearSearchCards } from 'actions/search';
 import { updateCreateAnswerEditor } from 'actions/create';
 import { updateNavigateSearchText } from 'actions/navigate';
+import { requestGetUser } from 'actions/profile';
 import { requestGetTasks, updateTasksOpenSection, updateTasksTab } from 'actions/tasks';
 import { SEARCH } from 'appConstants';
 import { hasCompletedOnboarding } from 'utils/auth';
@@ -52,6 +53,7 @@ const mapStateToProps = (state) => {
 const mapDispatchToProps = {
   toggleDock,
   minimizeDock,
+  requestGetUser,
   openCard,
   updateAskSearchText,
   updateAskQuestionTitle,

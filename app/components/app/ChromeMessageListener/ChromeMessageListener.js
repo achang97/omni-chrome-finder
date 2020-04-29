@@ -305,6 +305,17 @@ class ChromeMessageListener extends Component {
     }
   }
 
+  handleSocketMessage = (type, payload) => {
+    const { requestGetUser } = this.props;
+
+    switch (type) {
+      case CHROME.SOCKET_MESSAGE_TYPE.OAUTH_SUCCESS: {
+        requestGetUser();
+        break;
+      }
+    }
+  }
+
   handleCommand = (command) => {
     const { dockVisible, toggleDock, minimizeDock } = this.props;
 
@@ -326,6 +337,7 @@ class ChromeMessageListener extends Component {
   listener = (msg) => {
     const { type, payload } = msg;
     switch (type) {
+      // Messages
       case CHROME.MESSAGE.TOGGLE: {
         this.props.toggleDock();
         break;
@@ -345,6 +357,14 @@ class ChromeMessageListener extends Component {
         this.handleNotificationOpened(payload);
         break;
       }
+
+      // Socket messages
+      case CHROME.SOCKET_MESSAGE_TYPE.OAUTH_SUCCESS: {
+        this.handleSocketMessage(type, payload);
+        break;
+      }
+
+      // Shortcuts
       case CHROME.COMMAND.OPEN_EXTENSION: {
         this.handleCommand(type);
         break;

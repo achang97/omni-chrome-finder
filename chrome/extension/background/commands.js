@@ -15,7 +15,7 @@ chrome.commands.onCommand.addListener(async (command) => {
       if (activeTab) {
         const tabId = activeTab.id;
 
-        const isInjected = (await injectExtension(tabId))[0];
+        const isInjected = await injectExtension(tabId);
         if (!isInjected) {
           loadScript('inject', tabId, () => {
             handleCommand(tabId, command);

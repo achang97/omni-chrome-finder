@@ -1,12 +1,33 @@
 import { CHROME, NODE_ENV, REQUEST } from 'appConstants';
-import { getStorage } from 'utils/storage';
+import { getStorage, addStorageListener } from 'utils/storage';
 import { createNotification } from './notifications';
+import { getActiveTab } from './inject';
 
 let socket;
 
-export function closeSocket() {
+function closeSocket() {
   socket.close();
   socket = null;
+}
+
+function handleSocketMessage(type, payload) {
+  switch (type) {
+    case CHROME.SOCKET_MESSAGE_TYPE.OAUTH_SUCCESS: {
+      // TODO: Only send to one tab with injected extension. Currently, send to all tabs
+      // (since the focused tab is not necessarily the one with injected extension). 
+      chrome.tabs.query({}, (tabs) => {
+        tabs.forEach(tab => chrome.tabs.sendMessage(tab.id, { type, payload }));
+      });
+      break;
+    }
+    case CHROME.SOCKET_MESSAGE_TYPE.NOTIFICATION: {
+      createNotification(payload);
+      break;
+    }
+    default: {
+      break;
+    }
+  }
 }
 
 export function initSocket() {
@@ -46,7 +67,7 @@ export function initSocket() {
           const isVerified = auth && auth.user && auth.user.isVerified;
           if (isLoggedIn && isVerified) {
             const { type, data: payload } = JSON.parse(event.data);
-            createNotification(payload);
+            handleSocketMessage(type, payload);
           }
         });
       };
@@ -57,3 +78,12 @@ export function initSocket() {
     }
   });
 }
+
+addStorageListener(CHROME.STORAGE.AUTH, ({ newValue }) => {
+  if (!newValue.token) {
+    console.log('Logged out, closing socket.');
+    closeSocket();
+  } else if (newValue.token) {
+    initSocket();
+  }
+});

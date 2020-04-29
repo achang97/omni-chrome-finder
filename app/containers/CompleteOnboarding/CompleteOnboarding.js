@@ -1,15 +1,21 @@
 import React, { useEffect } from 'react';
 import AuthView from 'components/auth/AuthView';
-import { URL } from 'appConstants';
+import { URL, WEB_APP_ROUTES } from 'appConstants';
 
 import { getStyleApplicationFn } from 'utils/style';
 const s = getStyleApplicationFn();
 
 const CompleteOnboarding = ({
-  isGettingUser, onboardingSection, onboardingSubsection,
+  dockVisible, isGettingUser, onboardingSection, onboardingSubsection,
   logout, requestGetUser
 }) => {
-  const onboardingUrl = `${URL.WEB_APP}/onboarding/extension/${onboardingSection}/${onboardingSubsection}`;
+  useEffect(() => {
+    if (dockVisible && !isGettingUser) {
+      requestGetUser();
+    }
+  }, [dockVisible]);
+
+  const onboardingUrl = `${URL.WEB_APP}${WEB_APP_ROUTES.ONBOARDING}/${onboardingSection}/${onboardingSubsection}`;
   return (
     <AuthView
       //title="Complete Onboarding"

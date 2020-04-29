@@ -13,10 +13,13 @@ const mapStateToProps = (state) => {
       resendVerificationSuccess,
       resendVerificationError,
       isGettingUser
+    },
+    display: {
+      dockVisible
     }
   } = state;
 
-  return { verificationCode, isVerifying, verifyError, isResendingVerification, resendVerificationSuccess, resendVerificationError, isGettingUser };
+  return { dockVisible, verificationCode, isVerifying, verifyError, isResendingVerification, resendVerificationSuccess, resendVerificationError, isGettingUser };
 }
 
 const mapDispatchToProps = {

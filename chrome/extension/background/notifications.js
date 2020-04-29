@@ -70,7 +70,7 @@ chrome.notifications.onClicked.addListener(async (notificationId) => {
     try {
       if (activeTab) {
         const { windowId, id: activeTabId } = activeTab;
-        const isInjected = (await injectExtension(activeTabId))[0];
+        const isInjected = await injectExtension(activeTabId);
         if (!chrome.runtime.lastError) {
           if (!isInjected) {
             loadScript('inject', tabId, () => {

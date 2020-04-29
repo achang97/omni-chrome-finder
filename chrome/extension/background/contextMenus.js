@@ -70,7 +70,7 @@ chrome.contextMenus.onClicked.addListener(async ({ menuItemId, selectionText = '
 
   // Attempt to inject extension
   // TODO: should take this out once <all_urls> permission is enabled
-  const isInjected = (await injectExtension(tabId))[0];
+  const isInjected = await injectExtension(tabId);
   if (!isInjected) {
     loadScript('inject', tabId, () => {
       handleMenuAction(tabId, menuItemId, selectionText);

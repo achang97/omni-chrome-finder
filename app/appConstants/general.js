@@ -29,10 +29,16 @@ export const NODE_ENV = {
 
 export const MAIN_CONTAINER_ID = 'omni-chrome-ext-main-container';
 
+export const WEB_APP_ROUTES = {
+  EXTENSION: '/extension',
+  SIGNUP: '/signup',
+  ONBOARDING: '/onboarding/extension',
+};
+
 const PROD_WEB_APP_URL = 'https://app.addomni.com';
 export const URL = {
   WEB_APP: process.env.NODE_ENV === NODE_ENV.DEV ? 'http://localhost:5000' : PROD_WEB_APP_URL,
-  EXTENSION: 'https://app.addomni.com/extension', 
+  EXTENSION: `${PROD_WEB_APP_URL}/extension`, 
 }
 
 export const INTEGRATIONS = {
@@ -48,4 +54,4 @@ export const INTEGRATIONS = {
 
 export const NOOP = () => {};
 
-export default { ROUTES, NODE_ENV, MAIN_CONTAINER_ID, URL, INTEGRATIONS, NOOP };
+export default { ROUTES, WEB_APP_ROUTES, NODE_ENV, MAIN_CONTAINER_ID, URL, INTEGRATIONS, NOOP };

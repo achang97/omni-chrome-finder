@@ -3,13 +3,14 @@ import { URL, NODE_ENV, CHROME, REQUEST } from 'appConstants';
 import { setStorage, getStorage, addStorageListener } from 'utils/storage';
 import { initSocket, closeSocket } from './socket';
 
-export function injectExtension(tabId) {
-  return chrome.tabs.executeScriptAsync(tabId, {
+export async function injectExtension(tabId) {
+  const res = await chrome.tabs.executeScriptAsync(tabId, {
     code: `var injected = window.reactExampleInjected;
       window.reactExampleInjected = true;
       injected;`,
     runAt: 'document_start'
   });
+  return res[0];
 }
 
 export function getActiveTab() {
@@ -53,7 +54,7 @@ chrome.tabs.onUpdated.addListener(async (tabId, changeInfo, tab) => {
       case 'loading': {
         initSocket();
         
-        const isInjected = (await injectExtension(tabId))[0];
+        const isInjected = await injectExtension(tabId);
         if (!chrome.runtime.lastError && !isInjected) {
           loadScript('inject', tabId);
         }
@@ -61,7 +62,7 @@ chrome.tabs.onUpdated.addListener(async (tabId, changeInfo, tab) => {
         break;      
       }
       case 'complete': {
-        const isInjected = (await injectExtension(tabId))[0];
+        const isInjected = await injectExtension(tabId);
         if (isInjected) {
           chrome.tabs.sendMessage(tabId, { type: CHROME.MESSAGE.TAB_UPDATE });
         }
@@ -76,7 +77,7 @@ chrome.tabs.onUpdated.addListener(async (tabId, changeInfo, tab) => {
 chrome.browserAction.onClicked.addListener(async (tab) => {
   try {
     const tabId = tab.id;
-    const isInjected = (await injectExtension(tabId))[0];
+    const isInjected = await injectExtension(tabId);
     if (!chrome.runtime.lastError) {
       if (!isInjected) {
         loadScript('inject', tabId, () => {
@@ -90,14 +91,5 @@ chrome.browserAction.onClicked.addListener(async (tab) => {
     }
   } catch (error) {
     window.open(URL.EXTENSION);
-  }
-});
-
-addStorageListener(CHROME.STORAGE.AUTH, ({ newValue }) => {
-  if (!newValue.token) {
-    console.log('Logged out, closing socket.');
-    closeSocket();
-  } else if (newValue.token) {
-    initSocket();
   }
 });
