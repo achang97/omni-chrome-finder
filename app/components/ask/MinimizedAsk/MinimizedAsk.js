@@ -1,6 +1,6 @@
 import React, { useEffect, useRef } from 'react';
 import AnimateHeight from 'react-animate-height';
-import { MdClose, MdChevronRight, MdCheck, MdKeyboardArrowUp } from 'react-icons/md';
+import { MdClose, MdChevronRight, MdCheck, MdKeyboardArrowUp, MdPeople } from 'react-icons/md';
 import { CircularProgressbar, buildStyles } from 'react-circular-progressbar';
 
 import { Button, Message, Separator, Loader } from 'components/common';
@@ -10,8 +10,8 @@ import { colors } from 'styles/colors';
 import { getStyleApplicationFn } from 'utils/style';
 
 import robotGetStarted from 'assets/images/general/robotGetStarted.png';
-
-const s = getStyleApplicationFn();
+import style from './minimized-ask.css';
+const s = getStyleApplicationFn(style);
 
 const GET_STARTED_PERFORMANCE_CUTOFF = 60;
 
@@ -242,21 +242,16 @@ const MinimizedAsk = ({
           onChange={e => updateAskSearchText(e.target.value)}
           value={searchText}
           placeholder="Let's find what you're looking for"
-          className={s('w-full')}
+          className={s('w-full minimized-search-input')}
           autoFocus
         />
-        <div className={s('mt-lg flex flex-row justify-center items-center')}>
-          <span className={s('flex-1 text-gray-dark ml-sm text-xs font-medium')}>
-            Don't see your question?
-          </span>
-          <Button
-            text="Ask a Teammate"
-            color="primary"
-            className={s('justify-between')}
-            iconLeft={false}
-            icon={<MdChevronRight color="white" className={s('ml-sm')} />}
-            onClick={showFullDock}
-          />
+        <div className={s('mt-lg flex flex-row justify-end items-center pb-lg border-b border-r-0 border-t-0 border-l-0 border-solid border-gray-xlight')}>
+          <div 
+            className={s('text-purple-reg font-semibold cursor-pointer flex items-center ask-teammate-container')}
+            onClick={showFullDock}>
+            <div>Ask a Teammate</div>
+            <MdPeople className={s('text-md ml-sm')}/>
+          </div>
         </div>        
       </div>
       <AnimateHeight height={(showFeedback || showPerformanceScore) ? 0 : 'auto'}>
