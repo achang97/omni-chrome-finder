@@ -18,3 +18,10 @@
 .minimized-search-input:hover {
 	box-shadow: 0 1px 6px 0 rgba(32,33,36,0.28) !important;
 }
+
+.robot-img {
+  @apply cursor-pointer absolute;
+  height: 50px;
+  bottom: -40px;
+  transition: opacity 1s ease;
+}
