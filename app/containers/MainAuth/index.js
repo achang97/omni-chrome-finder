@@ -27,7 +27,7 @@ const MainAuth = ({ }) => {
   const renderBody = (title, subtitle) => {
     return (
       <div>
-        <div className={s('mb-reg text-xs')}> {subtitle} </div>
+        <div className={s('mb-sm text-xs')}> {subtitle} </div>
         <div className={s('font-semibold text-lg')}> {title} </div>
       </div>
     );
@@ -44,7 +44,7 @@ const MainAuth = ({ }) => {
             className={s('mb-sm justify-between pl-xl py-xl')}
             color={color}
             iconLeft={false}
-            icon={<MdChevronRight className="text-lg" />}
+            icon={<MdChevronRight className={s('text-lg')} />}
           />          
         </Link>
       ))}

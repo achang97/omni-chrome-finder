@@ -36,6 +36,10 @@
   cursor: pointer;
 }
 
+.card-question-tooltip {
+  max-width: 100%;
+}
+
 .card-text-editor-view {
   border-radius: 0 0 8px 8px !important;
   justify-content: space-between !important;

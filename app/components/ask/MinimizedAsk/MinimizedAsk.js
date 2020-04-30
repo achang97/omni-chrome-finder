@@ -175,7 +175,6 @@ const MinimizedAsk = ({
   const renderPerformanceScoreSection = () => {
     return (
       <AnimateHeight height={showPerformanceScore ? 'auto' : 0}>
-        <Separator horizontal className={s('my-reg')} />
         <div className={s(('flex justify-between mb-xs text-gray-dark items-center mb-reg cursor-pointer'))} onClick={togglePerformance}>
           <div className={s('flex items-center')}>
             <CircularProgressbar
@@ -202,7 +201,6 @@ const MinimizedAsk = ({
 
   const renderFeedbackSection = () => (
     <AnimateHeight height={showFeedback ? 'auto' : 0}>
-      <Separator horizontal className={s('my-reg')} />
       { feedbackSuccess ? 
         <Message
           message={<span> 🎉 <span className={s('mx-sm')}> Thanks for your feedback! </span> 🎉 </span>}
@@ -246,6 +244,8 @@ const MinimizedAsk = ({
     const showRobot = !isGettingOnboardingStats && !_.isEmpty(onboardingStats) &&
       performanceScore < GET_STARTED_PERFORMANCE_CUTOFF;
 
+    const showFooter = showFeedback || showPerformanceScore;
+
     return (
       <div className={s('pt-lg flex flex-col min-h-0')}>
         <div className={s('px-lg')}>
@@ -254,20 +254,20 @@ const MinimizedAsk = ({
             value={searchText}
             placeholder="Let's find what you're looking for"
             className={s('w-full minimized-search-input')}
-            className={s('w-full')}
             ref={inputRef}
             autoFocus
           />
-          <div className={s('mt-lg flex flex-row justify-end items-center pb-lg border-b border-r-0 border-t-0 border-l-0 border-solid border-gray-xlight')}>
+          <div className={s('mt-lg flex flex-row justify-end items-center pb-lg')}>
             <div 
               className={s('text-purple-reg font-semibold cursor-pointer flex items-center ask-teammate-container')}
               onClick={showFullDock}>
               <div>Ask a Teammate</div>
               <MdPeople className={s('text-md ml-sm')}/>
             </div>
-          </div>        
+          </div>
+          <Separator horizontal className={s(showFooter ? 'mb-reg' : '')} />
         </div>
-        <AnimateHeight height={(showFeedback || showPerformanceScore) ? 0 : 'auto'}>
+        <AnimateHeight height={showFooter ? 0 : 'auto'}>
           <div className={s('flex justify-between items-center mt-reg px-lg')}>
             <div className={s('flex flex-col justify-center items-center relative')}>
               <div className={s('flex items-center cursor-pointer')} onClick={togglePerformance}>

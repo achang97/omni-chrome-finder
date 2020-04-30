@@ -8,3 +8,8 @@
   max-width: 25px;
   @apply rounded-r-none px-0;
 }
+
+.toggle-close-button {
+  font-size: 10px;
+  @apply pt-0;
+}
