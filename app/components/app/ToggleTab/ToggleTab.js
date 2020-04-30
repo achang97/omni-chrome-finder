@@ -35,7 +35,7 @@ const ToggleTab = ({
       <Button
         color={color}
         icon={<MdClose />}
-        className={s('toggle-tab-button')}
+        className={s('toggle-tab-button toggle-close-button')}
         onClick={hideToggleTab}
       />      
       <Button
