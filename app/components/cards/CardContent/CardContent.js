@@ -26,6 +26,9 @@ const s = getStyleApplicationFn(style);
 
 const CardContent = (props) => {
   const footerRef = useRef(null);
+  const questionRef = useRef(null);
+
+  const [showQuestionTooltip, setShowQuestionTooltip] = useState(false);
   const [toastMessage, setToastMessage] = useState(null);
 
   useEffect(() => {
@@ -41,6 +44,13 @@ const CardContent = (props) => {
       requestGetCard();
     }
   }, [props._id]);
+
+  useEffect(() => {
+    const questionElem = questionRef.current;
+    if (questionElem) {
+      setShowQuestionTooltip(questionElem.scrollHeight > questionElem.clientHeight);       
+    }
+  }, [props.question])
 
   const getAttribute = (attribute) => {
     const { isEditing, edits } = props;
@@ -280,13 +290,13 @@ const CardContent = (props) => {
       </div>
     );
   }
-
+ 
   const renderHeader = () => {
     const {
       isEditing, createdAt, lastVerified, lastEdited,
       sideDockOpen, openCardSideDock, closeCardSideDock,
       editorEnabled, descriptionSectionHeight, cardsWidth,
-      openCardModal, status,
+      openCardModal, status, question, edits,
       updateCardQuestion,
       user, _id: cardId, activeScreenRecordingId
     } = props;
@@ -339,10 +349,14 @@ const CardContent = (props) => {
             <input
               placeholder="Title or Question"
               className={s('w-full')}
-              value={props.edits.question}
+              value={edits.question}
               onChange={e => updateCardQuestion(e.target.value)}
             /> :
-            <div className={s(`text-2xl font-semibold ${!showDescription ? 'mb-lg' : ''}`)}>{props.question}</div>
+            <Tooltip tooltip={question} show={showQuestionTooltip} tooltipProps={{ className: s('card-question-tooltip') }}>
+              <div className={s(`text-2xl line-clamp-2 font-semibold ${!showDescription ? 'mb-lg' : ''}`)} ref={questionRef}>
+                {question}
+              </div>              
+            </Tooltip>
           }          
         </div>
         { showDescription &&
