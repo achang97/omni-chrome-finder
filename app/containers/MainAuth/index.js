@@ -44,7 +44,7 @@ const MainAuth = ({ }) => {
             className={s('mb-sm justify-between pl-xl py-xl')}
             color={color}
             iconLeft={false}
-            icon={<MdChevronRight className="text-lg" />}
+            icon={<MdChevronRight className={s('text-lg')} />}
           />          
         </Link>
       ))}
