@@ -14,11 +14,12 @@ const mapStateToProps = (state) => {
       }
     },
     display: {
+      dockVisible,
       toggleTabShown
     }
   } = state;
 
-  return { numCards: cards.length, toggleTabShown }
+  return { numCards: cards.length, toggleTabShown, dockVisible }
 }
 
 const mapDispatchToProps = {

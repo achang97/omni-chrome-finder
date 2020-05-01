@@ -13,7 +13,7 @@ import logo from 'assets/images/logos/logo-light-icon.svg';
 const s = getStyleApplicationFn(style);
 
 const ToggleTab = ({
-  toggleTabShown, history,
+  dockVisible, toggleTabShown, history,
   numCards, toggleDock, hideToggleTab,
 }) => {
   const onOpenClick = () => {
@@ -24,7 +24,7 @@ const ToggleTab = ({
     toggleDock();
   };
 
-  if (!toggleTabShown && numCards === 0) {
+  if (dockVisible || (!toggleTabShown && numCards === 0)) {
     return null;
   }
 
