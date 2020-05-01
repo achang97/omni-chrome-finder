@@ -14,7 +14,7 @@ import { getStyleApplicationFn } from 'utils/style';
 const s = getStyleApplicationFn(style);
 
 const Header = ({
-  user, numAISuggestCards, numTasks,
+  user, numAutofindCards, numTasks,
   history, location: { pathname }
 }) => {
   const handleTabClick = (activeLink) => {
@@ -22,7 +22,7 @@ const Header = ({
     history.push(activeLink);
   }
 
-  const showAISuggest = numAISuggestCards !== 0;
+  const showAutofind = numAutofindCards !== 0;
   return (
     <div className={s('bg-purple-xlight relative')}>
       <Tabs
@@ -36,15 +36,15 @@ const Header = ({
         <Tab label="Search" key="ask" value={ROUTES.ASK} tabContainerClassName={s("mx-reg")} />
         <Tab label="Create" key="create" value={ROUTES.CREATE} tabContainerClassName={s("mx-reg")} />
         <Tab label="Cards" key="cards" value={ROUTES.NAVIGATE} tabContainerClassName={s("mx-reg")} />
-        { showAISuggest &&
+        { showAutofind &&
           <Tab key="suggest" value={ROUTES.SUGGEST} tabContainerClassName={s('header-small-tab ml-auto')}>
             <div className={s("header-badge-container gold-gradient")}>
               <MdLightbulbOutline className={s("text-gold-reg")} />
-              <Badge count={numAISuggestCards} size="sm" className={s("bg-gold-reg")}  />
+              <Badge count={numAutofindCards} size="sm" className={s("bg-gold-reg")}  />
             </div>
           </Tab>
         }
-        <Tab key="tasks" value={ROUTES.TASKS} tabContainerClassName={s(`header-small-tab ${!showAISuggest ?'ml-auto' : ''}`)}>
+        <Tab key="tasks" value={ROUTES.TASKS} tabContainerClassName={s(`header-small-tab ${!showAutofind ?'ml-auto' : ''}`)}>
           <div className={s("header-badge-container bg-gray-xlight")}>
             <MdNotificationsActive />
             <Badge count={numTasks} size="sm" className={s("bg-red-500")}  />

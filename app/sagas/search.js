@@ -101,7 +101,7 @@ function* searchCards({ type, query, clearCards }) {
 
     if (!query.ids || query.ids.length !== 0) {
       const body = { ...query, page };
-      if (type === SEARCH.TYPE.AI_SUGGEST) {
+      if (type === SEARCH.TYPE.AUTOFIND) {
         allRequests.push({ requestFn: doPost, url: '/suggest', body });
       } else {
         allRequests.push({ url: '/cards/query', body });

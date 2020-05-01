@@ -1,13 +1,13 @@
 import { connect } from 'react-redux';
 import { requestSearchCards } from 'actions/search';
 import { SEARCH } from 'appConstants';
-import AISuggest from './AISuggest';
+import Autofind from './Autofind';
 
 const mapStateToProps = state => {
   const {
     search: {
       cards: {
-        [SEARCH.TYPE.AI_SUGGEST]: {
+        [SEARCH.TYPE.AUTOFIND]: {
           cards, isSearchingCards, hasReachedLimit
         }
       }
@@ -21,4 +21,4 @@ const mapDispatchToProps = {
   requestSearchCards,
 }
 
-export default connect(mapStateToProps, mapDispatchToProps)(AISuggest);
+export default connect(mapStateToProps, mapDispatchToProps)(Autofind);

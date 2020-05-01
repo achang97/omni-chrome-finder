@@ -7,7 +7,7 @@ import { SEARCH } from 'appConstants';
 import { getStyleApplicationFn } from 'utils/style';
 const s = getStyleApplicationFn();
 
-const AISuggest = ({
+const Autofind = ({
   isSearchingCards, cards, hasReachedLimit,
   requestSearchCards
 }) => (
@@ -17,11 +17,11 @@ const AISuggest = ({
     verticalMarginAdjust
     isSearchingCards={isSearchingCards}
     hasReachedLimit={hasReachedLimit}
-    onBottom={() => requestSearchCards(SEARCH.TYPE.AI_SUGGEST)}
+    onBottom={() => requestSearchCards(SEARCH.TYPE.AUTOFIND)}
     getCardProps={(card, i) => ({
       className: i === 0 ? 'my-reg' : ''
     })}
   />  
 )
 
-export default AISuggest;
+export default Autofind;
