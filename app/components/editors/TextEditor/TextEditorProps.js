@@ -56,7 +56,7 @@ export const CARD_TOOLBAR_PROPS = {
   colorPicker: {
     className: s('text-editor-button-sm no-hover-shadow'),
     component: undefined,
-    popupClassName: undefined,
+    popupClassName: s('text-editor-popup'),
     colors: ['rgb(97,189,109)', 'rgb(26,188,156)', 'rgb(84,172,210)', 'rgb(44,130,201)',
       'rgb(147,101,184)', 'rgb(71,85,119)', 'rgb(204,204,204)', 'rgb(65,168,95)', 'rgb(0,168,133)',
       'rgb(61,142,185)', 'rgb(41,105,176)', 'rgb(85,57,130)', 'rgb(40,50,78)', 'rgb(0,0,0)',
@@ -68,7 +68,7 @@ export const CARD_TOOLBAR_PROPS = {
     inDropdown: true,
     className: s('text-editor-dropdown-container-md no-hover-shadow'),
     component: undefined,
-    popupClassName: undefined,
+    popupClassName: s('text-editor-popup text-editor-link-popup'),
     dropdownClassName: s('text-editor-dropdown no-hover-shadow'),
     showOpenOptionOnHover: true,
     defaultTargetOption: '_self',
