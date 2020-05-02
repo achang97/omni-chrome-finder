@@ -51,13 +51,8 @@ export function initSocket() {
         socket = null;
 
         // Attempt to reconnect
-        getStorage(CHROME.STORAGE.AUTH).then((auth) => {
-          const isLoggedIn = auth && auth.token;
-          if (isLoggedIn) {
-            console.log('Reconnecting socket!');
-            initSocket();
-          }
-        });
+        console.log('Attempting to reconnect socket!');
+        initSocket();
       };
 
       socket.onmessage = (event) => {
