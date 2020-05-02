@@ -20,6 +20,23 @@
   overflow: initial !important;
 }
 
+.app-container h1,
+.app-container h2,
+.app-container h3,
+.app-container h4,
+.app-container h5,
+.app-container h6 {
+  @apply mt-0 font-bold !important;
+  font-family: "HelveticaNeue-Light", "Helvetica Neue Light", "Helvetica Neue", Helvetica, Arial, sans-serif !important;
+}
+
+.app-container h1 { font-size: 2em; }
+.app-container h2 { font-size: 1.5em; }
+.app-container h3 { font-size: 1.3em; }
+.app-container h4 { font-size: 1em; }
+.app-container h5 { font-size: 0.8em; }
+.app-container h6 { font-size: 0.7em; }
+
 /* Button Overrides */
 .app-container button {
   all: unset;
