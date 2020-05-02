@@ -33,7 +33,7 @@ export const CARD_TOOLBAR_PROPS = {
     dropdownClassName: s('text-editor-dropdown no-hover-shadow'),
   },
   fontFamily: {
-    options: ['Arial', 'Georgia', 'Impact', 'Tahoma', 'Times New Roman', 'Verdana'],
+    options: ['HelveticaNeue-Light', 'Arial', 'Georgia', 'Impact', 'Tahoma', 'Times New Roman', 'Verdana'],
     className: s('text-editor-dropdown-container-lg no-hover-shadow'),
     component: undefined,
     dropdownClassName: s('text-editor-dropdown no-hover-shadow'),

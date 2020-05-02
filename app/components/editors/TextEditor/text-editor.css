@@ -44,7 +44,7 @@
   padding: 10px;
   border-radius: 0 0 8px 8px;
   justify-content: space-between;
-  font-size: 14px !important;
+  font-size: 14px;
 }
 
 .text-editor *, .text-editor-extension * {
@@ -147,7 +147,8 @@
 }
 
 .text-editor-link-popup > input {
-  @apply mb-sm !important;
+  height: 30px !important;
+  @apply mb-xs !important;
 }
 
 .text-editor-link-popup > span  {
