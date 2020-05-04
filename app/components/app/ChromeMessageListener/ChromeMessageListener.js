@@ -38,7 +38,7 @@ class ChromeMessageListener extends Component {
       if (!prevEnabled && currEnabled) {
         this.handlePageLoad();
       } else if (prevEnabled && !currEnabled) {
-        this.props.clearSearchCards(SEARCH.TYPE.AI_SUGGEST);
+        this.props.clearSearchCards(SEARCH.TYPE.AUTOFIND);
       }
     }
   }
@@ -55,6 +55,19 @@ class ChromeMessageListener extends Component {
     return isLoggedIn && isVerified && hasCompletedOnboarding;
   }
 
+  hasUrlChanged = () => {
+    const { prevUrl } = this.state;
+    const { toggleAutofindTab, autofindShown } = this.props;
+
+    const hasChanged = prevUrl !== window.location.href;
+    if (hasChanged) {
+      this.setState({ prevUrl: window.location.href });
+      if (!autofindShown) toggleAutofindTab();
+    }
+
+    return hasChanged;
+  }
+
   openDock = () => {
     const { toggleDock, dockVisible } = this.props;
     if (!dockVisible) {
@@ -64,11 +77,8 @@ class ChromeMessageListener extends Component {
 
   openChromeExtension = () => {
     const { openCard } = this.props;
-    const { prevUrl } = this.state;
 
-    if (prevUrl !== window.location.href) {
-      this.setState({ prevUrl: window.location.href });
-
+    if (this.hasUrlChanged()) {
       if (window.location.href.startsWith(URL.EXTENSION)) {
         this.openDock();
 
@@ -129,6 +139,18 @@ class ChromeMessageListener extends Component {
     return text.replace(/^[^a-z\d]+|[^a-z\d]+$/gi, '');
   }
 
+  removeAll = (nodes, transform) => {
+    nodes.forEach(node => {
+      if (transform) {
+        node = transform(node);
+      }
+
+      if (node) {
+        node.remove()
+      }
+    });
+  }
+
   getGoogleText = () => {
     let text = '';
 
@@ -152,21 +174,19 @@ class ChromeMessageListener extends Component {
             const emailCopy = email.cloneNode(true);
 
             const removeFwds = emailCopy.querySelectorAll('.gmail_quote');
-            removeFwds.forEach(fwd => fwd.remove());
+            this.removeAll(removeFwds);
 
             const removeShowContentToggle = [
               ...emailCopy.querySelectorAll('[aria-label="Show trimmed content"]'),
               ...emailCopy.querySelectorAll('[aria-label="Hide expanded content"]'),
             ];
-            removeShowContentToggle.forEach(toggle => toggle.parentElement.nextSibling.remove());
+            this.removeAll(removeShowContentToggle, toggle => toggle.parentElement.nextSibling);
 
             const removeTables = emailCopy.querySelectorAll('table');
-            removeTables.forEach(table => table.remove());
+            this.removeAll(removeTables);
 
-            const removeSignature = emailCopy.querySelector('[data-smartmail="gmail_signature"]');
-            if (removeSignature) {
-              removeSignature.remove();
-            }
+            const removeSignatures = emailCopy.querySelectorAll('[data-smartmail="gmail_signature"]');
+            this.removeAll(removeSignatures);
 
             const textContent = this.trimAlphanumeric(emailCopy.textContent);
             text += `${textContent}\n\n`;
@@ -226,9 +246,9 @@ class ChromeMessageListener extends Component {
       if (pageText !== prevText) {
         this.setState({ prevText: pageText });
         if (pageText && pageText !== '') {
-          requestSearchCards(SEARCH.TYPE.AI_SUGGEST, { text: pageText });
+          requestSearchCards(SEARCH.TYPE.AUTOFIND, { text: pageText });
         } else if (isNewPage) {
-          clearSearchCards(SEARCH.TYPE.AI_SUGGEST);
+          clearSearchCards(SEARCH.TYPE.AUTOFIND);
         }        
       }
     } else {
@@ -236,7 +256,7 @@ class ChromeMessageListener extends Component {
         this.setState({ prevText: '' });
       }
       
-      clearSearchCards(SEARCH.TYPE.AI_SUGGEST);
+      clearSearchCards(SEARCH.TYPE.AUTOFIND);
     }
   };
 

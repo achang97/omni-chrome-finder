@@ -14,7 +14,7 @@ import Create from '../Create';
 import Navigate from '../Navigate';
 import Tasks from '../Tasks';
 import Cards from '../Cards';
-import AISuggest from '../AISuggest';
+import Autofind from '../Autofind';
 import Profile from '../Profile';
 import MainAuth from '../MainAuth';
 import Login from '../Login';
@@ -42,7 +42,7 @@ const dockPanelStyles = {
 };
 
 const App = ({ 
-  dockVisible, dockExpanded, isLoggedIn, user, showAISuggest, location: { pathname }, history,
+  dockVisible, dockExpanded, isLoggedIn, user, showAutofind, location: { pathname }, history,
   toggleDock, requestGetUser, requestGetTasks, openCard,
 }) => {
   useEffect(() => {
@@ -99,7 +99,7 @@ const App = ({
             <PrivateRoute path={ROUTES.PROFILE} component={Profile} />
             { !completedOnboarding && <PrivateRoute path={ROUTES.COMPLETE_ONBOARDING} component={CompleteOnboarding} /> }
             { !isVerified && <PrivateRoute path={ROUTES.VERIFY} component={Verify} /> }
-            { showAISuggest && <PrivateRoute path={ROUTES.SUGGEST} component={AISuggest} /> }
+            { showAutofind && <PrivateRoute path={ROUTES.SUGGEST} component={Autofind} /> }
 
             <PublicRoute path={ROUTES.MAIN_AUTH} component={MainAuth} />
             <PublicRoute path={ROUTES.LOGIN} component={Login} />

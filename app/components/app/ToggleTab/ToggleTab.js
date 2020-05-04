@@ -13,8 +13,10 @@ import logo from 'assets/images/logos/logo-light-icon.svg';
 const s = getStyleApplicationFn(style);
 
 const ToggleTab = ({
-  dockVisible, toggleTabShown, history,
+  dockVisible, toggleTabShown,
+  autofindShown, toggleAutofindTab,
   numCards, toggleDock, hideToggleTab,
+  history,
 }) => {
   const onOpenClick = () => {
     if (numCards > 0) {
@@ -24,19 +26,24 @@ const ToggleTab = ({
     toggleDock();
   };
 
-  if (dockVisible || (!toggleTabShown && numCards === 0)) {
+  const onCloseClick = () => {
+    hideToggleTab();
+    if (autofindShown) toggleAutofindTab();
+  }
+
+  const showAutofind = autofindShown && numCards !== 0;
+  if (dockVisible || (!toggleTabShown && !showAutofind)) {
     return null;
   }
 
   const color = numCards > 0 ? 'gold' : 'primary';
-
   return (
     <div className={s('toggle-tab')}>
       <Button
         color={color}
         icon={<MdClose />}
         className={s('toggle-tab-button toggle-close-button')}
-        onClick={hideToggleTab}
+        onClick={onCloseClick}
       />      
       <Button
         color={color}

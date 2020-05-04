@@ -1,6 +1,6 @@
 import { connect } from 'react-redux';
 import { withRouter } from 'react-router-dom';
-import { toggleDock, minimizeDock } from 'actions/display';
+import { toggleDock, minimizeDock, toggleAutofindTab } from 'actions/display';
 import { updateAskSearchText, updateAskQuestionTitle } from 'actions/ask';
 import { openCard } from 'actions/cards';
 import { requestSearchCards, clearSearchCards } from 'actions/search';
@@ -16,7 +16,8 @@ const mapStateToProps = (state) => {
   const { 
     display: {
       dockVisible,
-      dockExpanded
+      dockExpanded,
+      autofindShown,
     },
     auth: {
       token
@@ -29,7 +30,7 @@ const mapStateToProps = (state) => {
     },
     search: {
       cards: {
-        [SEARCH.TYPE.AI_SUGGEST]: {
+        [SEARCH.TYPE.AUTOFIND]: {
           isSearchingCards,
         }
       }
@@ -41,6 +42,7 @@ const mapStateToProps = (state) => {
   return {
     dockVisible,
     dockExpanded,
+    autofindShown,
     isSearchingCards,
     isLoggedIn: !!token,
     isVerified,
@@ -53,6 +55,7 @@ const mapStateToProps = (state) => {
 const mapDispatchToProps = {
   toggleDock,
   minimizeDock,
+  toggleAutofindTab,
   requestGetUser,
   openCard,
   updateAskSearchText,

@@ -24,7 +24,7 @@ const mapStateToProps = (state) => {
     },
     search: {
       cards: {
-        [SEARCH.TYPE.AI_SUGGEST]: {
+        [SEARCH.TYPE.AUTOFIND]: {
           cards
         }
       }
@@ -36,7 +36,7 @@ const mapStateToProps = (state) => {
     dockExpanded,
     isLoggedIn: !!token,
     user,
-    showAISuggest: cards.length !== 0,
+    showAutofind: cards.length !== 0,
   };
 }
 

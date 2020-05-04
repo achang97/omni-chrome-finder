@@ -9,7 +9,7 @@ const mapStateToProps = (state) => {
     profile: { user },
     search: {
       cards: {
-        [SEARCH.TYPE.AI_SUGGEST]: {
+        [SEARCH.TYPE.AUTOFIND]: {
           cards
         }
       }
@@ -19,7 +19,7 @@ const mapStateToProps = (state) => {
 
   return {
     user,
-    numAISuggestCards: cards.length,
+    numAutofindCards: cards.length,
     numTasks: tasks.filter(({ resolved }) => !resolved).length
   };
 }

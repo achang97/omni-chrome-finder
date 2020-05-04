@@ -17,6 +17,10 @@ export function minimizeDock() {
   return { type: types.MINIMIZE_DOCK, payload: {} };
 }
 
+export function toggleAutofindTab() {
+  return { type: types.TOGGLE_AUTOFIND_TAB, payload: {} };
+}
+
 export function openModal(modalProps) {
   return { type: types.OPEN_MODAL, payload: { modalProps } };
 }

@@ -4,6 +4,7 @@ const initialState = {
   dockVisible: false,
   dockExpanded: false,
   toggleTabShown: false,
+  autofindShown: true,
 
   modalOpen: false,
   modalProps: {
@@ -26,6 +27,9 @@ export default function displayReducer(state = initialState, action) {
     }
     case types.HIDE_TOGGLE_TAB: {
       return { ...state, toggleTabShown: false };
+    }
+    case types.TOGGLE_AUTOFIND_TAB: {
+      return { ...state, autofindShown: !state.autofindShown };
     }
 
     case types.OPEN_MODAL: {

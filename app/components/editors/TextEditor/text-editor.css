@@ -44,7 +44,7 @@
   padding: 10px;
   border-radius: 0 0 8px 8px;
   justify-content: space-between;
-  font-size: 14px !important;
+  font-size: 14px;
 }
 
 .text-editor *, .text-editor-extension * {
@@ -120,14 +120,6 @@
   width: 80px !important;
 }
 
-.text-editor-dropdown-container-md, .text-editor-dropdown-container-lg {
-  @apply rounded-lg !important;
-  background-color: #BDC8F926 !important;
-  color: #7A7DAF !important;
-  border: 0 !important;
-  z-index: 2 !important;
-}
-
 .text-editor-dropdown-container-md > a, .text-editor-dropdown-container-lg > a {
   color: #7A7DAF !important;
   text-decoration: none !important;
@@ -137,58 +129,59 @@
   @apply truncate;
 }
 
-.text-editor-dropdown-container-md div, .text-editor-dropdown-container-lg div {
-  border-top-color: #7A7DAF !important;
+.text-editor-dropdown-container-md, .text-editor-dropdown-container-lg {
+  @apply rounded-lg !important;
+  background-color: #BDC8F926 !important;
+  color: #7A7DAF !important;
+  border: 0 !important;
+  z-index: 2 !important;
 }
 
-.text-editor-dropdown-container-md + div:not(.text-editor-dropdown-container-md):not([aria-label="rdw-link-control"]),
-.text-editor-dropdown-container-lg + div:not(.text-editor-dropdown-container-lg):not([aria-label="rdw-link-control"]) {
-  right: 5px !important;
-  left: unset !important;
-  height: auto !important;
-  @apply rounded-lg shadow-md !important;
-}
-
-.text-editor-dropdown-container-md + div:not(.text-editor-dropdown-container-md):not([aria-label="rdw-link-control"]) > label,
-.text-editor-dropdown-container-lg + div:not(.text-editor-dropdown-container-lg):not([aria-label="rdw-link-control"]) > label {
+.text-editor-link-popup > label  {
   @apply mb-xs text-xs text-gray-dark !important;
 }
 
 /* Hide checkbox */ 
-.text-editor-dropdown-container-md + div:not(.text-editor-dropdown-container-md):not([aria-label="rdw-link-control"]) > label:nth-last-child(2),  
-.text-editor-dropdown-container-lg + div:not(.text-editor-dropdown-container-lg):not([aria-label="rdw-link-control"]) > label:nth-last-child(2) { 
+.text-editor-link-popup > label:nth-last-child(2)  { 
   display: none !important; 
 }
 
-.text-editor-dropdown-container-md + div:not(.text-editor-dropdown-container-md):not([aria-label="rdw-link-control"]) > input,
-.text-editor-dropdown-container-lg + div:not(.text-editor-dropdown-container-lg):not([aria-label="rdw-link-control"]) > input {
-  @apply mb-sm !important;
+.text-editor-link-popup > input {
+  height: 30px !important;
+  @apply mb-xs !important;
 }
 
-.text-editor-dropdown-container-md + div:not(.text-editor-dropdown-container-md):not([aria-label="rdw-link-control"]) > span,
-.text-editor-dropdown-container-lg + div:not(.text-editor-dropdown-container-lg):not([aria-label="rdw-link-control"]) > span {
+.text-editor-link-popup > span  {
   @apply flex items-center justify-between m-0 !important;
 }
 
-.text-editor-dropdown-container-md + div:not(.text-editor-dropdown-container-md):not([aria-label="rdw-link-control"]) > span > button,
-.text-editor-dropdown-container-lg + div:not(.text-editor-dropdown-container-lg):not([aria-label="rdw-link-control"]) > span  > button {
+.text-editor-link-popup > span > button  {
   @apply flex-1 mt-sm p-xs text-sm text-center !important;
 }
 
-.text-editor-dropdown-container-md + div:not(.text-editor-dropdown-container-md):not([aria-label="rdw-link-control"]) > span > button:first-child,
-.text-editor-dropdown-container-lg + div:not(.text-editor-dropdown-container-lg):not([aria-label="rdw-link-control"]) > span  > button:first-child {
+.text-editor-link-popup > span > button:first-child  {
   @apply text-white rounded-l-lg !important;
   background: linear-gradient(143deg, #777BAD 0%, #A0A1CD 100%) !important;
 }
 
-.text-editor-dropdown-container-md + div:not(.text-editor-dropdown-container-md):not([aria-label="rdw-link-control"]) > span > button:last-child,
-.text-editor-dropdown-container-lg + div:not(.text-editor-dropdown-container-lg):not([aria-label="rdw-link-control"]) > span  > button:last-child {
+.text-editor-link-popup > span > button:last-child{
   @apply bg-purple-gray-10 rounded-r-lg !important;
 }
 
 /* Dropdown - applies to all dropdowns to standardize styling*/
+.text-editor-dropdown, .text-editor-popup {
+  max-height: 180px !important;
+}
+
 .text-editor-dropdown {
   border-radius: 8px !important;
+}
+
+/* Color Picker*/
+.text-editor-popup {
+  left: unset !important;
+  right: 5px;
+  @apply rounded-lg shadow-md overflow-auto !important;
 }
 
 /* Applies to all buttons and dropdowns to remove hover shadow */
