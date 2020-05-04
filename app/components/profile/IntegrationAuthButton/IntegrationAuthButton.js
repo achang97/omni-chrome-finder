@@ -12,21 +12,25 @@ import { getStyleApplicationFn } from 'utils/style';
 const s = getStyleApplicationFn(style);
 
 const IntegrationAuthButton = ({
-  integration: { type, title, logo }, showIntegration,
+  integration: { type, title, logo }, showIntegration, onWindowOpen, className,
   user, token, isLoading, error, requestLogoutUserIntegration
 }) => {
-  const authWindow = useRef(null);
+  const [authWindow, setAuthWindow] = useState(null);
   const loggedIn = isLoggedIn(user, type);
   const [dropdownOpen, setDropdownOpen] = useState(false);
 
   const onSignIn = () => {
     const authLink = getIntegrationAuthLink(user._id, token, type);
-    authWindow.current = window.open(authLink, 'popup', 'width=600,height=600');
+    const newWindow = window.open(authLink, 'popup', 'width=600,height=600');
+
+    setAuthWindow(newWindow);
+    if (onWindowOpen) onWindowOpen(newWindow);
   }
 
   useEffect(() => {
-    if (loggedIn) {
-      if (authWindow.current) authWindow.current.close();
+    if (loggedIn && authWindow) {
+      authWindow.close();
+      setAuthWindow(null);
     }
   }, [loggedIn]);
 
@@ -38,7 +42,7 @@ const IntegrationAuthButton = ({
   let textSuffix = '';
   let icon;
   if (showIntegration) {
-    textSuffix = `to ${title}`;
+    textSuffix = ` to ${title}`;
     icon = <img className="h-xl mr-sm" src={logo} />;
   }
 
@@ -52,7 +56,7 @@ const IntegrationAuthButton = ({
             <Button
               text={`Connected${textSuffix}`}
               color="secondary"
-              className={s('text-green-reg bg-green-xlight p-reg shadow-none')}
+              className={s(`text-green-reg bg-green-xlight p-reg shadow-none ${className}`)}
               icon={isLoading ?
                 <Loader size="sm" className={s('ml-reg')} /> :
                 <MdKeyboardArrowDown className={s('ml-reg')} />
@@ -80,7 +84,7 @@ const IntegrationAuthButton = ({
         text={`Sign In${textSuffix}`}
         color="transparent"
         icon={icon}
-        className={s('p-reg')}
+        className={s(`p-reg ${className}`)}
         onClick={onSignIn}
       />
     );
@@ -90,6 +94,7 @@ const IntegrationAuthButton = ({
 IntegrationAuthButton.propTypes = {
   integration: PropTypes.string.isRequired,
   showIntegration: PropTypes.bool,
+  onWindowOpen: PropTypes.func,
 };
 
 IntegrationAuthButton.defaultProps = {

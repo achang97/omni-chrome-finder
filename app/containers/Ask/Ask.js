@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 import _ from 'lodash';
 import moment from 'moment';
 import { MdPictureInPicture, MdClose, MdCloudUpload, MdAttachment, MdArrowBack } from 'react-icons/md';
@@ -12,11 +12,12 @@ import {
 import { ScreenRecordButton, AttachmentDropdown, AttachmentDropzone } from 'components/attachments';
 import TextEditor from 'components/editors/TextEditor';
 import { RecipientDropdownBody, MinimizedAsk } from 'components/ask';
+import IntegrationAuthButton from 'components/profile/IntegrationAuthButton';
 import CardAttachment from 'components/cards/CardAttachment';
 
 import { colors } from 'styles/colors';
 import { generateFileKey, isAnyLoading } from 'utils/file';
-import { isLoggedIn, getIntegrationAuthLink } from 'utils/auth';
+import { isLoggedIn } from 'utils/auth';
 import { getArrayWithout } from 'utils/array';
 import { ROUTES, INTEGRATIONS, ASK } from 'appConstants';
 
@@ -36,10 +37,19 @@ const Ask = ({
   dockExpanded, toggleDockHeight, showPerformanceScore, showAskDescriptionEditor, 
   history
 }) => {
+  const [authWindow, setAuthWindow] = useState(null);
+
   const isLoggedInSlack = isLoggedIn(user, INTEGRATIONS.SLACK.type);
   useEffect(() => {
     if (isLoggedInSlack) {
       requestGetSlackConversations();
+
+      // Duplicate logic here in case IntegrationAuthButton dismounts before being able to
+      // automatically log out
+      if (authWindow) {
+        authWindow.close();
+        setAuthWindow(null);
+      }
     }
   }, [isLoggedInSlack]);
 
@@ -257,7 +267,6 @@ const Ask = ({
   
   const renderDisabledView = () => {
     const { type, title, logo, disabled } = activeIntegration;
-    const authLink = getIntegrationAuthLink(user._id, token, type);
 
     return (
       <div className={s('flex flex-col items-center')}>
@@ -271,12 +280,11 @@ const Ask = ({
           }
         </div>
         { !disabled &&
-          <div className={s('rounded-lg shadow-md py-sm px-lg')}>
-            <a target="_blank" href={authLink} className={s('flex items-center')}>
-              <span className={s('mr-sm text-md')}> Connect to {title} </span>
-              <img src={logo} className={s('h-lg')} />
-            </a>
-          </div>
+          <IntegrationAuthButton
+            integration={activeIntegration}
+            onWindowOpen={setAuthWindow}
+            className={s('py-sm')}
+          />         
         }
       </div>
     );
