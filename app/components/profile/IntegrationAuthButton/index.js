@@ -3,7 +3,7 @@ import { requestLogoutUserIntegration } from 'actions/profile';
 import IntegrationAuthButton from './IntegrationAuthButton';
 
 const mapStateToProps = (state, ownProps) => {
-  const { integration } = ownProps;
+  const { integration: { type } } = ownProps;
   const {
     auth: { token },
     profile: { user, integrationState },
@@ -12,8 +12,8 @@ const mapStateToProps = (state, ownProps) => {
   return {
     user,
     token,
-    isLoading: integrationState[integration].isLoading,
-    error: integrationState[integration].error,
+    isLoading: integrationState[type].isLoading,
+    error: integrationState[type].error,
   };
 }
 
