@@ -176,7 +176,8 @@ const Profile = ({
     
     return (
       <div>
-        { options.map(({ type: optionType, title, logo, disabled }, i) => {
+        { options.map((integration, i) => {
+          const { type: optionType, title, logo, disabled } = integration;
           return (
             <div key={title} className={s(`flex bg-white p-reg justify-between border border-solid border-gray-xlight items-center rounded-lg ${i > 0 ? 'mt-sm' : ''}`)}>
               <div className={s('flex flex-1 items-center')}>
@@ -200,7 +201,7 @@ const Profile = ({
                   icons={false}
                   onChange={() => requestUpdateUserPermissions(type, optionType)}
                 /> :
-                <IntegrationAuthButton integration={optionType} />
+                <IntegrationAuthButton integration={integration} showIntegration={false} />
               }
             </div>
           );
