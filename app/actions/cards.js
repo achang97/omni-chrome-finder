@@ -18,7 +18,7 @@ export function toggleCards() {
 }
 
 /* Card behavior */
-export function openCard(card, createModalOpen = false, isNewCard = false) {
+export function openCard(card, isNewCard = false, createModalOpen = false) {
   return { type: types.OPEN_CARD, payload: { card, isNewCard, createModalOpen } };
 }
 

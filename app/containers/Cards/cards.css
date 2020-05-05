@@ -22,7 +22,7 @@
 }
 
 .card-tab-container {
-  @apply flex flex-shrink-0 min-h-0 items-center bg-white rounded-t-lg px-reg pt-reg;
+  @apply flex flex-shrink-0 min-h-0 items-center bg-white rounded-t-lg px-sm pt-reg;
   box-sizing: border-box;
   cursor: grab;
 }

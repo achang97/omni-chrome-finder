@@ -43,7 +43,7 @@ const IntegrationAuthButton = ({
   let icon;
   if (showIntegration) {
     textSuffix = ` to ${title}`;
-    icon = <img className="h-xl mr-sm" src={logo} />;
+    icon = <img className={s('h-xl mr-sm')} src={logo} />;
   }
 
   if (loggedIn) {

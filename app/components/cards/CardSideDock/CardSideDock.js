@@ -227,6 +227,7 @@ const CardSideDock = (props) => {
       title: 'Attachments',
       renderFn: renderAttachments,
       showJustMe: true,
+      showNewCard: true,
     },
     {
       title: 'Tags',
@@ -265,8 +266,8 @@ const CardSideDock = (props) => {
           {state => (
             <div className={s('card-side-dock overflow-auto')} style={{ ...baseStyle, ...transitionStyles[state] }}>
               { renderHeader() }
-              { CARD_SECTIONS.map(({ title, hint, renderFn, showJustMe }, i) => (
-                <AnimateHeight height={(!justMe || showJustMe) ? 'auto' : 0}>
+              { CARD_SECTIONS.map(({ title, hint, renderFn, showJustMe, showNewCard=false }, i) => (
+                <AnimateHeight height={((!justMe || showJustMe) && (!isNewCard || showNewCard)) ? 'auto' : 0}>
                   <CardSection
                     className={s(i < CARD_SECTIONS.length - 1 ? 'mb-lg' : '')}
                     title={title}
