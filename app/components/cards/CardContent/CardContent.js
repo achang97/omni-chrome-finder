@@ -61,7 +61,6 @@ const CardContent = (props) => {
     const { disableCardEditor, enableCardEditor, adjustCardDescriptionSectionHeight } = props;
     disableCardEditor(CARD.EDITOR_TYPE.ANSWER);
     enableCardEditor(CARD.EDITOR_TYPE.DESCRIPTION);
-    console.log(getMaxDescriptionHeight())
     adjustCardDescriptionSectionHeight(getMaxDescriptionHeight());
   }
 

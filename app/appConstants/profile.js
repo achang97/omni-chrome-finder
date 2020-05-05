@@ -10,6 +10,12 @@ export const USER_ROLE = {
   MEMBER: 'Member'
 };
 
+export const AUDIT_TYPE = {
+  CREATE_CARD_EXTENSION: 'createCardExtension',
+  CONTEXT_MENU_SEARCH: 'contextMenuSearch',
+  OPEN_EXTERNAL_DOC: 'openExternalDoc'
+}
+
 export const ONBOARDING_COMPLETE = -1;
 
-export default { SETTING_SECTION_TYPE, USER_ROLE, ONBOARDING_COMPLETE };
+export default { SETTING_SECTION_TYPE, USER_ROLE, AUDIT_TYPE, ONBOARDING_COMPLETE };

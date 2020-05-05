@@ -3,7 +3,7 @@ import { withRouter } from 'react-router-dom';
 import queryString from 'query-string';
 import { EditorState, ContentState } from 'draft-js';
 
-import { CHROME, SEARCH, ROUTES, MAIN_CONTAINER_ID, INTEGRATIONS, URL, TASKS } from 'appConstants';
+import { CHROME, SEARCH, ROUTES, MAIN_CONTAINER_ID, INTEGRATIONS, URL, TASKS, PROFILE } from 'appConstants';
 
 const URL_REGEXES = [
   {
@@ -266,6 +266,7 @@ class ChromeMessageListener extends Component {
       updateAskSearchText, updateAskQuestionTitle,
       updateCreateAnswerEditor,
       updateNavigateSearchText,
+      requestLogAudit,
     } = this.props;
 
     this.openDock();
@@ -280,6 +281,7 @@ class ChromeMessageListener extends Component {
           } else {
             updateAskSearchText(selectedText);
           }
+          requestLogAudit(PROFILE.AUDIT_TYPE.CONTEXT_MENU_SEARCH, { query: selectedText });
           break;
         }
         case CHROME.MESSAGE.CREATE: {
@@ -290,6 +292,7 @@ class ChromeMessageListener extends Component {
         case CHROME.MESSAGE.SEARCH: {
           url = ROUTES.NAVIGATE;
           updateNavigateSearchText(selectedText);
+          requestLogAudit(PROFILE.AUDIT_TYPE.CONTEXT_MENU_SEARCH, { query: selectedText });
           break;
         }
       }

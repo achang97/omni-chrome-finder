@@ -2,7 +2,7 @@ import { applyMiddleware, createStore, compose } from 'redux';
 import thunk from 'redux-thunk';
 import createSagaMiddleware from 'redux-saga';
 import rootReducer from 'reducers';
-import { authMiddleware, cardsMiddleware, searchMiddleware, tasksMiddleware, screenRecordingMiddleware } from 'middleware';
+import { authMiddleware, cardsMiddleware, searchMiddleware, tasksMiddleware, screenRecordingMiddleware, auditLogMiddleware } from 'middleware';
 import rootSaga from 'sagas';
 import { authEnhancer, tasksEnhancer } from './enhancers';
 
@@ -18,7 +18,7 @@ const composeEnhancers = window.__REDUX_DEVTOOLS_EXTENSION_COMPOSE__ ?
 const sagaMiddleware = createSagaMiddleware();
 
 const enhancer = composeEnhancers(
-  applyMiddleware(sagaMiddleware, thunk, authMiddleware, cardsMiddleware, searchMiddleware, tasksMiddleware, screenRecordingMiddleware),
+  applyMiddleware(sagaMiddleware, thunk, authMiddleware, cardsMiddleware, searchMiddleware, tasksMiddleware, screenRecordingMiddleware, auditLogMiddleware),
   authEnhancer(),
   tasksEnhancer()
 );
