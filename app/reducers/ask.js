@@ -176,7 +176,7 @@ export default function askReducer(state = initialState, action) {
       return { ...state, isAskingQuestion: false, askSuccess: false, askError: error };
     }
     case types.CLEAR_ASK_QUESTION_INFO: {
-      return { ...state, askError: null, askSuccess: null };
+      return { ...state,  askError: null, askSuccess: null };
     }
 
     case types.SUBMIT_FEEDBACK_REQUEST: {
