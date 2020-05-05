@@ -54,7 +54,7 @@ function* getTasks() {
 
 function* markUpToDate({ taskId, cardId }) {
   try {
-    const updatedCard = yield call(doPost, '/cards/uptodate', { cardId });
+    const updatedCard = yield call(doPost, `/cards/${cardId}/markUpToDate`);
     yield put(handleMarkUpToDateFromTasksSuccess(taskId, updatedCard));
   } catch (error) {
     yield put(handleMarkUpToDateFromTasksError(taskId, getErrorMessage(error)));
@@ -72,7 +72,7 @@ function* dismissTask({ taskId }) {
 
 function* approveCard({ taskId, cardId }) {
   try {
-    const updatedCard = yield call(doPost, '/cards/approve', { cardId });
+    const updatedCard = yield call(doPost, `/cards/${cardId}/approve`);
     yield put(handleApproveCardFromTasksSuccess(taskId, updatedCard));
   } catch (error) {
     yield put(handleApproveCardFromTasksError(taskId, getErrorMessage(error)));
