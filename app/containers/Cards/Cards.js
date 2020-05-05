@@ -10,7 +10,7 @@ import { FiMinus, FiPlus } from 'react-icons/fi';
 import { CardContent, CardConfirmModal } from 'components/cards';
 import { Tabs, Tab, Modal, Button } from 'components/common';
 
-import { cardStateChanged } from 'utils/card';
+import { cardStateChanged, getNewCardBaseState } from 'utils/card';
 import { getBaseAnimationStyle } from 'utils/animate';
 
 import { colors } from 'styles/colors';
@@ -22,8 +22,9 @@ const s = getStyleApplicationFn(style);
 const CARDS_TRANSITION_MS = 300;
 
 const Cards = ({
+  user,
   cards, cardsExpanded, activeCardIndex, activeCard, cardsWidth, cardsHeight, windowPosition, showCloseModal,
-  closeCard, closeAllCards, setActiveCardIndex, updateCardWindowPosition,
+  openCard, closeCard, closeAllCards, setActiveCardIndex, updateCardWindowPosition,
   adjustCardsDimensions, updateCardTabOrder, openCardModal, openCardContainerModal, closeCardContainerModal, 
   toggleCards,
 }) => {
@@ -84,7 +85,7 @@ const Cards = ({
   }
 
   const renderTabHeaderButtons = () => (
-    <div className={s('px-sm flex flex-shrink-0 text-purple-gray-50')} onClick={e => e.stopPropagation()}>
+    <div className={s('flex flex-shrink-0 text-purple-gray-50')} onClick={e => e.stopPropagation()}>
       <button onClick={toggleCards} className={s('mr-xs')}>
         { cardsExpanded ? <FiMinus /> : <FiPlus /> }
       </button>
@@ -174,7 +175,7 @@ const Cards = ({
               <div
                 ref={provided.innerRef}
                 {...provided.droppableProps}
-                className={s('flex-1 min-w-0 max-h-full')}
+                className={s('flex items-center flex-1 min-w-0 max-h-full')}
               >
                 <Tabs
                   activeValue={activeCardIndex}
@@ -182,9 +183,15 @@ const Cards = ({
                   scrollButtonColor={colors.purple['gray-50']}
                   clickOnMouseDown={true}
                   onTabClick={updateTab}
+                  className={s(`${snapshot.draggingFromThisWith ? 'flex-1' : ''}`)}
                 >
                   {cards.map(renderTab)}
                 </Tabs>
+                { !snapshot.draggingFromThisWith &&
+                  <button onClick={() => openCard(getNewCardBaseState(user), true)} className={s('mx-xs text-purple-gray-50')}>
+                    <FiPlus />
+                  </button>
+                }
                 {provided.placeholder}
               </div>
             )}
@@ -263,7 +270,9 @@ const Cards = ({
             {cards.length}
           </div> 
         }
-        {renderTabHeaderButtons()}
+        <div className={s('px-xs')}>
+          {renderTabHeaderButtons()}
+        </div>
       </div> 
     )
   }

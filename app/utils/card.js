@@ -109,6 +109,19 @@ export function isApprover(user, tags) {
     );
 }
 
+export function getNewCardBaseState(user) {
+  const { _id, firstname, lastname, profilePicture } = user;
+  const ownUser = [{ _id, name: `${firstname} ${lastname}`, profilePicture }];
+  return {
+    owners: ownUser,
+    subscribers: ownUser,
+    edits: {
+      owners: ownUser,
+      subscribers: ownUser
+    }
+  }
+}
+
 export function cardStateChanged(card) {
   const editAttributes = Object.entries(card.edits);
 

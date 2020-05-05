@@ -2,7 +2,7 @@ import { connect } from 'react-redux';
 import {
   updateCardWindowPosition, updateCardTabOrder, closeCard, closeAllCards,
   setActiveCardIndex, adjustCardsDimensions, openCardModal, openCardContainerModal,
-  closeCardContainerModal, toggleCards
+  closeCardContainerModal, toggleCards, openCard
 } from 'actions/cards';
 import Cards from './Cards';
 
@@ -17,13 +17,17 @@ const mapStateToProps = state => {
       cardsHeight,
       windowPosition,
       showCloseModal
+    },
+    profile: {
+      user
     }
   } = state;
 
-  return { cardsExpanded, cards, activeCardIndex, activeCard, cardsWidth, cardsHeight, windowPosition, showCloseModal };
+  return { user, cardsExpanded, cards, activeCardIndex, activeCard, cardsWidth, cardsHeight, windowPosition, showCloseModal };
 }
 
 const mapDispatchToProps = {
+  openCard,
   closeCard,
   closeAllCards,
   toggleCards,

@@ -13,6 +13,7 @@ import SuggestionPanel from 'components/suggestions/SuggestionPanel';
 import { ScreenRecordButton, AttachmentDropdown, AttachmentDropzone } from 'components/attachments';
 
 import { generateFileKey, isAnyLoading } from 'utils/file';
+import { getNewCardBaseState } from 'utils/card';
 
 import style from './create.css';
 import { getStyleApplicationFn } from 'utils/style';
@@ -25,23 +26,16 @@ const Create = ({
   requestAddCreateAttachment, updateCreateAttachmentName, requestRemoveCreateAttachment, openCard
 }) => {
   const openCardWithProps = (createModalOpen = false) => {
-    const { _id, firstname, lastname, profilePicture } = user;
-
     // Open card with random ID and clear out Create panel
-    const ownUser = [{ _id, name: `${firstname} ${lastname}`, profilePicture }];
-    const newCardInfo = {
-      owners: ownUser,
-      subscribers: ownUser,  
-      edits: {
-        question,
-        descriptionEditorState,
-        answerEditorState,
-        attachments,
-        owners: ownUser,
-        subscribers: ownUser   
-      }
+    let newCardInfo = getNewCardBaseState(user);
+    newCardInfo.edits = {
+      ...newCardInfo.edits,
+      question,
+      descriptionEditorState,
+      answerEditorState,
+      attachments
     };
-    openCard(newCardInfo, createModalOpen, true);
+    openCard(newCardInfo, true, createModalOpen);
     clearCreatePanel();
   }
 
