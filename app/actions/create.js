@@ -22,6 +22,27 @@ export function clearCreatePanel() {
 }
 
 
+export function toggleTemplateView() {
+  return { type: types.TOGGLE_TEMPLATE_VIEW, payload: {} };
+}
+
+export function updateSelectedTemplateCategory(category) {
+  return { type: types.UPDATE_SELECTED_TEMPLATE_CATEGORY, payload: { category } };
+}
+
+export function requestGetTemplates() {
+  return { type: types.GET_TEMPLATES_REQUEST, payload: { } };
+}
+
+export function handleGetTemplatesSuccess(templates) {
+  return { type: types.GET_TEMPLATES_SUCCESS, payload: { templates } };
+}
+
+export function handleGetTemplatesError(error) {
+  return { type: types.GET_TEMPLATES_ERROR, payload: { error } };
+}
+
+
 export function requestAddCreateAttachment(key, file) {
   return { type: types.ADD_CREATE_ATTACHMENT_REQUEST, payload: { key, file } };
 }

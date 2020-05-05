@@ -3,6 +3,10 @@ import { updateArrayOfObjects } from 'utils/array';
 import * as types from 'actions/actionTypes';
 
 const initialState = {
+  isTemplateView: false,
+  templates: {},
+  selectedTemplateCategory: null,
+
   isDescriptionEditorShown: false,
   question: '',
   descriptionEditorState: EditorState.createEmpty(),
@@ -36,6 +40,26 @@ export default function createReducer(state = initialState, action) {
     }
     case types.CLEAR_CREATE_PANEL: {
       return { ...initialState, isDescriptionEditorShown: state.isDescriptionEditorShown };
+    }
+
+    case types.TOGGLE_TEMPLATE_VIEW: {
+      return { ...state, isTemplateView: !state.isTemplateView };
+    }
+    case types.UPDATE_SELECTED_TEMPLATE_CATEGORY: {
+      const { category } = payload;
+      return { ...state, selectedTemplateCategory: category };
+    }
+
+    case types.GET_TEMPLATES_REQUEST: {
+      return { ...state, isGettingTemplates: true, templatesError: null };
+    }
+    case types.GET_TEMPLATES_SUCCESS: {
+      const { templates } = payload;
+      return { ...state, isGettingTemplates: false, templates };
+    }
+    case types.GET_TEMPLATES_ERROR: {
+      const { error } = payload;
+      return { ...state, isGettingTemplates: false, templatesError: error };
     }
 
     case types.ADD_CREATE_ATTACHMENT_REQUEST: {

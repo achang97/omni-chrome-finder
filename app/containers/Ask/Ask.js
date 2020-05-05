@@ -1,13 +1,13 @@
 import React, { useEffect, useState } from 'react';
 import _ from 'lodash';
 import moment from 'moment';
-import { MdPictureInPicture, MdClose, MdCloudUpload, MdAttachment, MdArrowBack } from 'react-icons/md';
+import { MdPictureInPicture, MdClose, MdCloudUpload, MdAttachment } from 'react-icons/md';
 import { IoMdAdd } from 'react-icons/io';
 import { FaRegDotCircle, FaPaperPlane, FaMinus } from 'react-icons/fa';
 
 import {
   Button, Loader, CircleButton, Separator, Message,
-  Tabs, Tab, Select, Dropzone, Dropdown, Badge
+  Tabs, Tab, Select, Dropzone, Dropdown, Badge, BackButton
 } from 'components/common';
 import { ScreenRecordButton, AttachmentDropdown, AttachmentDropzone } from 'components/attachments';
 import TextEditor from 'components/editors/TextEditor';
@@ -56,12 +56,7 @@ const Ask = ({
   const renderTabHeader = () => {
     return (
       <div className={s('flex flex-row items-center mb-lg')}>
-        <button
-          className={s('mr-sm bg-purple-light rounded-full w-2xl h-2xl flex justify-center items-center')}
-          onClick={toggleDockHeight}
-        >
-          <MdArrowBack className={s('text-purple-reg')} />
-        </button>
+        <BackButton className={s('mr-sm')} onClick={toggleDockHeight} />
         <Tabs
           activeValue={activeIntegration}
           tabClassName={s(

@@ -204,6 +204,7 @@ const CardContent = (props) => {
       },
       {
         Icon: MdMoreHoriz,
+        label: 'More',
         tooltip: 'Advanced Settings',
         onClick: openCardSideDock,
         showEdit: true
@@ -217,10 +218,13 @@ const CardContent = (props) => {
 
     return (
       <div className={s('flex items-center')}>
-        { headerButtons.map(({ Icon, toast, tooltip, onClick, className, showEdit }, i) => (
+        { headerButtons.map(({ Icon, toast, label, tooltip, onClick, className, showEdit }, i) => (
           (!isEditing || showEdit) &&
             <Tooltip show={!!tooltip} tooltip={tooltip} tooltipProps={{ place: 'left' }}>
-              <button onClick={() => headerOnClick(onClick, toast)}>
+              <button onClick={() => headerOnClick(onClick, toast)} className={s('flex items-center')}>
+                { label &&
+                  <div className={s('text-xs mr-xs font-medium')}> {label} </div>
+                }
                 <Icon className={s(`${i < headerButtons.length - 1 ? 'mr-sm' : ''} ${className}`)} />
               </button>
             </Tooltip>
