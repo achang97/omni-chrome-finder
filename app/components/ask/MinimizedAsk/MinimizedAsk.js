@@ -18,6 +18,16 @@ import silverImg from 'assets/images/badges/silver.svg';
 import goldImg from 'assets/images/badges/gold.svg';
 import platinumImg from 'assets/images/badges/platinum.svg';
 
+import searchCardImg from 'assets/images/accomplishments/search-card.png';
+import createCardImg from 'assets/images/accomplishments/create-card.png';
+import flagOutdatedImg from 'assets/images/accomplishments/flag-outdated.png';
+import markHelpfulImg from 'assets/images/accomplishments/mark-helpful.png';
+import contextSearchImg from 'assets/images/accomplishments/context-search.png';
+
+import profilePictureImg from 'assets/images/accomplishments/profile-picture.png';
+import ownFourImg from 'assets/images/accomplishments/own-four.png';
+
+
 import style from './minimized-ask.css';
 const s = getStyleApplicationFn(style);
 
@@ -48,6 +58,34 @@ const BADGE_PROPS = {
     imgSrc: platinumImg, textClassName: 'badge-platinum'
   }
 };
+
+const ACCOMPLISHMENT_IMAGES = {
+  ['Make your first card']: {
+    imgSrc: searchCardImg
+  },
+  ['Search for a card and open it']: {
+    imgSrc: searchCardImg
+  },
+  ['Create a card in the extension']: {
+    imgSrc: createCardImg
+  },
+  ['Flag a card as out of date']: {
+    imgSrc: flagOutdatedImg
+  },
+  ['Mark a card as helpful']: {
+    imgSrc: markHelpfulImg
+  },
+  ['Highlight, right click, and search Omni']: {
+    imgSrc: contextSearchImg
+  },
+
+  ['Add a profile picture']: {
+    imgSrc: profilePictureImg
+  },
+  ['Own at least 4 cards']: {
+    imgSrc: ownFourImg
+  },
+}
 
 const MinimizedAsk = ({
   badge, percentage, performance, remainingAccomplishments, isGettingOnboardingStats,
@@ -151,6 +189,7 @@ const MinimizedAsk = ({
     const numRemainingAccomplishments = remainingAccomplishments.length;
     const carouselDisabled = numRemainingAccomplishments <= 1;
     const { label } = remainingAccomplishments[carouselIndex];
+    const { imgSrc } = ACCOMPLISHMENT_IMAGES[label]
     
     return (
       <div>
@@ -163,12 +202,13 @@ const MinimizedAsk = ({
               </button>
               <div className={s('w-full rounded-lg minimized-search-accomplishment-img-container')}>
                 { /* TODO */ }
+                <img src={imgSrc} className={s('h-full w-full object-cover rounded-lg')}/>
               </div>
               <button onClick={() => updateCarouselIndex(+1)} disabled={carouselDisabled}>
                 <MdKeyboardArrowRight />
               </button>
             </div>
-            <div className={s('text-xs mt-reg text-center')}>
+            <div className={s('text-xs mt-reg text-center shadow-md rounded-lg p-xs bg-white text-purple-reg')}>
               <span className={s('font-semibold')}> {label} </span>
               <span> ({carouselIndex + 1}/{numRemainingAccomplishments}) </span>
             </div>
