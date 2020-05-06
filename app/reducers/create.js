@@ -39,7 +39,7 @@ export default function createReducer(state = initialState, action) {
       return { ...state, descriptionEditorState: editorState };
     }
     case types.CLEAR_CREATE_PANEL: {
-      return { ...initialState, isDescriptionEditorShown: state.isDescriptionEditorShown };
+      return initialState;
     }
 
     case types.TOGGLE_TEMPLATE_VIEW: {
