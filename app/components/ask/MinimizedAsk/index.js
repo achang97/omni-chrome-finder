@@ -5,7 +5,6 @@ import {
   toggleAskFeedbackInput, updateAskFeedback, requestSubmitFeedback,
   togglePerformanceScore, updateAskSearchText,
 } from 'actions/ask';
-import { requestSearchCards } from 'actions/search';
 import MinimizedAsk from './MinimizedAsk';
 
 const mapStateToProps = state => {
@@ -20,7 +19,9 @@ const mapStateToProps = state => {
       searchText,
     },
     profile: {
-      onboardingStats,
+      badge,
+      percentage,
+      performance,
       isGettingOnboardingStats,
     },
     display: {
@@ -28,6 +29,11 @@ const mapStateToProps = state => {
       dockExpanded
     }
   } = state;
+
+  let remainingAccomplishments = [];
+  if (performance.length !== 0) {
+    remainingAccomplishments = performance[0].accomplishments.filter(({ isComplete }) => !isComplete);
+  }
 
   return {
     showFeedback,
@@ -38,7 +44,10 @@ const mapStateToProps = state => {
     showPerformanceScore,
     searchText,
     isGettingOnboardingStats,
-    onboardingStats,
+    badge,
+    percentage,
+    performance,
+    remainingAccomplishments,
     dockVisible,
     dockExpanded
   };
@@ -50,7 +59,6 @@ const mapDispatchToProps = {
   requestSubmitFeedback,
   togglePerformanceScore,
   updateAskSearchText,
-  requestSearchCards,
   toggleDockHeight,
   requestGetUserOnboardingStats,
 }

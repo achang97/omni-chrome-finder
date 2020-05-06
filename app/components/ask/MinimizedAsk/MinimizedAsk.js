@@ -1,7 +1,7 @@
-import React, { useEffect, useRef } from 'react';
+import React, { useEffect, useState, useRef } from 'react';
 import _ from 'lodash';
 import AnimateHeight from 'react-animate-height';
-import { MdClose, MdChevronRight, MdCheck, MdKeyboardArrowUp, MdPeople } from 'react-icons/md';
+import { MdClose, MdChevronRight, MdCheck, MdKeyboardArrowUp, MdPeople, MdKeyboardArrowLeft, MdKeyboardArrowRight } from 'react-icons/md';
 import { CircularProgressbar, buildStyles } from 'react-circular-progressbar';
 
 import { Button, Message, Separator, Loader } from 'components/common';
@@ -9,8 +9,33 @@ import SuggestionPanel from 'components/suggestions/SuggestionPanel';
 
 import { colors } from 'styles/colors';
 import { getStyleApplicationFn } from 'utils/style';
+import { USER_BADGE } from 'appConstants/profile';
 
 import robotGetStarted from 'assets/images/general/robotGetStarted.png';
+
+import bronzeImg from 'assets/images/badges/bronze.svg';
+import silverImg from 'assets/images/badges/silver.svg';
+import goldImg from 'assets/images/badges/gold.svg';
+import platinumImg from 'assets/images/badges/platinum.svg';
+
+import searchCardImg from 'assets/images/accomplishments/search-card.png';
+import createCardImg from 'assets/images/accomplishments/create-card.png';
+import flagOutdatedImg from 'assets/images/accomplishments/flag-outdated.png';
+import markHelpfulImg from 'assets/images/accomplishments/mark-helpful.png';
+import contextSearchImg from 'assets/images/accomplishments/context-search.png';
+
+import profilePictureImg from 'assets/images/accomplishments/profile-picture.png';
+import ownFourImg from 'assets/images/accomplishments/own-four.png';
+
+import allUpdatedImg from 'assets/images/accomplishments/all-updated.png';
+import addSubscriberImg from 'assets/images/accomplishments/add-subscriber.png';
+import addTagImg from 'assets/images/accomplishments/add-tag.png';
+
+import addSlackImg from 'assets/images/accomplishments/add-slack.png';
+import addDriveImg from 'assets/images/accomplishments/add-drive.png';
+import slackFindImg from 'assets/images/accomplishments/slack-find.png';
+import existingKnowledgeImg from 'assets/images/accomplishments/existing-knowledge.png';
+
 import style from './minimized-ask.css';
 const s = getStyleApplicationFn(style);
 
@@ -27,88 +52,88 @@ const PROGRESS_BAR_STYLES = {
   textSize: '30px',
 };
 
-const USER_PERFORMANCE = {
-  FIRST_CARD: 'createdCard',
-  SEARCH_CARD: 'searchedAndViewed',
-  MARK_HELPFUL: 'markedHelpful',
-  CREATE_CARD: 'createdCardExtension',
-  FLAG_OUTDATED: 'markedOutOfDate',
-  ADD_TAG: 'addedTag',
-  UP_TO_DATE: 'allUpToDate',
-  NO_UNRESOLVED: 'noUnresolvedTasks',
-  CREATE_CARD_RECENT: 'createdCardLastWeek',
-  OWN_MULTIPLE: 'ownFourCards',
-  ADD_SUBSCRIBER: 'addedSubscriber',
+const BADGE_PROPS = {
+  [USER_BADGE.BRONZE]: {
+    imgSrc: bronzeImg, textClassName: 'badge-bronze'
+  },
+  [USER_BADGE.SILVER]: {
+    imgSrc: silverImg, textClassName: 'badge-silver'
+  },
+  [USER_BADGE.GOLD]: {
+    imgSrc: goldImg, textClassName: 'badge-gold'
+  },
+  [USER_BADGE.PLATINUM]: {
+    imgSrc: platinumImg, textClassName: 'badge-platinum'
+  }
+};
+
+const ACCOMPLISHMENT_IMAGES = {
+  ['Make your first card']: {
+    imgSrc: searchCardImg
+  },
+  ['Search for a card and open it']: {
+    imgSrc: searchCardImg
+  },
+  ['Create a card in the extension']: {
+    imgSrc: createCardImg
+  },
+  ['Flag a card as out of date']: {
+    imgSrc: flagOutdatedImg
+  },
+  ['Mark a card as helpful']: {
+    imgSrc: markHelpfulImg
+  },
+  ['Highlight, right click, and search Omni']: {
+    imgSrc: contextSearchImg
+  },
+
+  ['Add a profile picture']: {
+    imgSrc: profilePictureImg
+  },
+  ['Own at least 4 cards']: {
+    imgSrc: ownFourImg
+  },
+
+  ['Keep all your cards up to date']: {
+    imgSrc: allUpdatedImg
+  },
+  ['Add a subscriber to one of your cards']: {
+    imgSrc: addSubscriberImg
+  },
+  ['Add a tag to one of your cards']: {
+    imgSrc: addTagImg
+  },
+  ['Created a card this past week']: {
+    imgSrc: createCardImg
+  },
+
+  ['Add the Slack integration']: {
+    imgSrc: addSlackImg
+  },
+  ['Add the Google Drive integration']: {
+    imgSrc: addDriveImg
+  },
+  ['Open a document from your integrations']: {
+    imgSrc: existingKnowledgeImg
+  },
+  ['Use /find on slack']: {
+    imgSrc: slackFindImg
+  },
 }
 
-const PERFORMANCE_CRITERIA = [
-  {
-    type: USER_PERFORMANCE.FIRST_CARD,
-    title: "Make your first card",
-    weight: 20,
-  },
-  {
-    type: USER_PERFORMANCE.SEARCH_CARD,
-    title: "Search for a card and open it",
-    weight: 10,
-  },
-  {
-    type: USER_PERFORMANCE.MARK_HELPFUL,
-    title: "Mark a card as helpful",
-    weight: 10,
-  },
-  {
-    type: USER_PERFORMANCE.CREATE_CARD,
-    title: "Create a card in the extension",
-    weight: 10,
-  },
-  {
-    type: USER_PERFORMANCE.FLAG_OUTDATED,
-    title: "Flag a card as out of date",
-    weight: 5,
-  },
-  {
-    type: USER_PERFORMANCE.ADD_TAG,
-    title: "Add a tag to one of your cards",
-    weight: 5,
-  },
-  {
-    type: USER_PERFORMANCE.UP_TO_DATE,
-    title: "Make sure all your cards are up to date",
-    weight: 10,
-  },
-  {
-    type: USER_PERFORMANCE.NO_UNRESOLVED,
-    title: "Make sure all your tasks are resolved",
-    weight: 10,
-  },
-  {
-    type: USER_PERFORMANCE.CREATE_CARD_RECENT,
-    title: "Created a card in the past week",
-    weight: 5,
-  },
-  {
-    type: USER_PERFORMANCE.OWN_MULTIPLE,
-    title: "Own at least 4 cards",
-    weight: 10,
-  },
-  {
-    type: USER_PERFORMANCE.ADD_SUBSCRIBER,
-    title: "Add a subscriber to your card",
-    weight: 5,
-  }
-];
-
 const MinimizedAsk = ({
-  toggleDockHeight, isGettingOnboardingStats, onboardingStats, dockVisible, dockExpanded,
-  searchText, updateAskSearchText, requestSearchCards,
+  badge, percentage, performance, remainingAccomplishments, isGettingOnboardingStats,
+  dockVisible, dockExpanded,
+  searchText, updateAskSearchText,
   toggleAskFeedbackInput, showFeedback, feedback, updateAskFeedback,
   requestSubmitFeedback, isSubmittingFeedback, feedbackSuccess, feedbackError,
   togglePerformanceScore, showPerformanceScore,
-  requestGetUserOnboardingStats,
+  toggleDockHeight, requestGetUserOnboardingStats,
 }) => {
   const isMounted = useRef(null);
   const inputRef = useRef(null);
+
+  const [carouselIndex, setCarouselIndex] = useState(0);
 
   useEffect(() => {
     let refreshStats = showPerformanceScore;
@@ -142,14 +167,6 @@ const MinimizedAsk = ({
     }
   }
 
-  const getPerformanceScore = () => {
-    let score = 0;
-    PERFORMANCE_CRITERIA.map(({ type, weight }) => {
-      if (onboardingStats[type]) score += weight;
-    })
-    return score;
-  }
-
   const showFullDock = () => {
     if (showFeedback) {
       toggleAskFeedbackInput();
@@ -168,82 +185,194 @@ const MinimizedAsk = ({
   }
 
   const togglePerformance = () => {
-    toggleDockHeight();
+    if (dockExpanded) {
+      toggleDockHeight();
+    }
     togglePerformanceScore();
+  }
+
+  const getPerformanceMessage = () => {
+    const baseText = "Perform these tasks to ";
+    switch (badge) {
+      case null:
+        return baseText + "learn how to use Omni and earn a badge!";
+      case USER_BADGE.BRONZE:
+        return baseText + "earn a silver badge:";
+      case USER_BADGE.SILVER:
+        return baseText + "earn a gold badge:";
+      case USER_BADGE.GOLD:
+        return baseText + "earn a platinum badge:";
+      case USER_BADGE.PLATINUM:
+        return "Congrats! You've achieved the highest Omni badge:";
+      default:
+        return '';
+    }
+  }
+
+  const updateCarouselIndex = (delta) => {
+    const numRemainingAccomplishments = remainingAccomplishments.length;
+    const newIndex = (carouselIndex + numRemainingAccomplishments + delta) % numRemainingAccomplishments;
+    setCarouselIndex(newIndex);
+  }
+
+  const renderAccomplishmentCarousel = () => {
+    if (remainingAccomplishments.length === 0) {
+      return null;
+    }
+
+    const numRemainingAccomplishments = remainingAccomplishments.length;
+    const carouselDisabled = numRemainingAccomplishments <= 1;
+    const { label } = remainingAccomplishments[carouselIndex];
+    const { imgSrc } = ACCOMPLISHMENT_IMAGES[label];
+    
+    return (
+      <div>
+        <div className={s('text-xs font-semibold text-gray-reg')}>{getPerformanceMessage()}</div>
+        { badge !== USER_BADGE.PLATINUM &&
+          <>
+            <div className={s('flex items-center mt-reg')}>
+              <button onClick={() => updateCarouselIndex(-1)} disabled={carouselDisabled}>
+                <MdKeyboardArrowLeft />
+              </button>
+              <div className={s('w-full rounded-lg minimized-search-accomplishment-img-container')}>
+                <img src={imgSrc} className={s('h-full w-full object-cover rounded-lg')}/>
+              </div>
+              <button onClick={() => updateCarouselIndex(+1)} disabled={carouselDisabled}>
+                <MdKeyboardArrowRight />
+              </button>
+            </div>
+            <div className={s('text-xs mt-reg text-center shadow-md rounded-lg p-xs bg-white text-purple-reg')}>
+              <span className={s('font-semibold')}> {label} </span>
+              <span> ({carouselIndex + 1}/{numRemainingAccomplishments}) </span>
+            </div>
+          </>
+        }
+      </div>
+    )
+  }
+
+  const getPerformanceScoreOrBadge = () => {
+    if(!badge) {
+      return (
+        <React.Fragment>
+          <CircularProgressbar
+            className={s('w-3xl h-3xl')}
+            value={percentage}
+            styles={buildStyles({...PROGRESS_BAR_STYLES, pathColor: getPerformanceColors(percentage).pathColor })}
+          />
+          <div className={s(`text-xs font-semibold ml-sm ${getPerformanceColors(percentage).textColor}`)}>My Performance: {percentage}%</div>
+        </React.Fragment>
+      )
+    } else {
+      const { imgSrc, textClassName } = BADGE_PROPS[badge];
+      return (
+        <React.Fragment>
+          <img src={imgSrc} className={s('minimized-search-badge-container')} />
+          <div className={s(`${textClassName} text-xs font-semibold ml-sm`)}> {badge} </div>
+        </React.Fragment>
+      )
+    }
   }
 
   const renderPerformanceScoreSection = () => {
     return (
-      <AnimateHeight height={showPerformanceScore ? 'auto' : 0}>
-        <div className={s(('flex justify-between mb-xs text-gray-dark items-center mb-reg cursor-pointer'))} onClick={togglePerformance}>
-          <div className={s('flex items-center')}>
-            <CircularProgressbar
-              className={s('w-3xl h-3xl')}
-              value={getPerformanceScore()}
-              styles={buildStyles({...PROGRESS_BAR_STYLES, pathColor: getPerformanceColors(getPerformanceScore()).pathColor })}
-            />
-            <div className={s(`text-xs font-semibold ml-sm ${getPerformanceColors(getPerformanceScore()).textColor}`)}>My Performance: {getPerformanceScore()}%</div>
+      <AnimateHeight
+        height={showPerformanceScore ? 'auto' : 0}
+        animationStateClasses={{
+          staticHeightAuto: s('performance-score-container')
+        }}
+      >
+        <div className={s('minimized-ask-accomplishment-section-container p-lg')}>
+          <div className={s(('flex justify-between mb-xs text-gray-dark items-center mb-reg cursor-pointer'))} onClick={togglePerformance}>
+            <div className={s('flex items-center')}>
+              { getPerformanceScoreOrBadge() }
+            </div>
+            <MdKeyboardArrowUp className={s('cursor-pointer')}/>
           </div>
-          <MdKeyboardArrowUp className={s('cursor-pointer')}/>
+          { renderAccomplishmentCarousel() }
         </div>
-        <div className={s('text-sm text-purple-reg mb-lg')}>Perform these simple tasks to familiarize yourself with Omni and boost your score to 100%.</div>
-        <div className={s('overflow-auto')}>
-        { PERFORMANCE_CRITERIA.map(({ weight, title, type }) => (
-          <div className={s(`flex justify-between mb-sm text-sm rounded-lg p-sm items-center ${onboardingStats[type] ? 'gold-gradient italic opacity-50' : 'border border-solid border-gray-light'}`)}>
-            <div className={s('text-xs')}>{title}</div>
-            <div className={s(`p-xs rounded-lg font-semibold flex ${onboardingStats[type] ? 'gold-gradient text-gold-reg' : 'text-purple-light bg-purple-light border border-solid border-gray-xlight'}`)}><MdCheck /></div>
+        { !dockExpanded ?
+          <div
+            className={s('text-center my-reg text-xs underline text-purple-reg cursor-pointer')}
+            onClick={toggleDockHeight}
+          >
+            Show All Tasks
+          </div> :
+          <div className={s('overflow-auto px-lg pb-lg')}>
+            { performance.map(({ badge: sectionTitle, accomplishments }) => (
+              <div>
+                <div className={s('text-gray-light text-sm my-sm')}> {sectionTitle} </div>
+                { accomplishments.map(({ label, isComplete }) => (
+                  <div
+                    className={s(`flex justify-between mb-sm text-sm rounded-lg p-sm items-center ${isComplete ?
+                      'gold-gradient italic opacity-50' :
+                      'border border-solid border-gray-light'}`
+                    )}
+                  >
+                    <div className={s('text-xs')}> {label} </div>
+                    <div
+                      className={s(`p-xs rounded-lg font-semibold flex ${isComplete ?
+                        'gold-gradient text-gold-reg' :
+                        'text-purple-light bg-purple-light border border-solid border-gray-xlight'}`
+                      )}
+                    >
+                      <MdCheck />
+                    </div>
+                  </div>
+                ))}
+              </div>
+            ))}
           </div>
-        ))}
-        </div>
+        }
       </AnimateHeight>
     )
   }
 
   const renderFeedbackSection = () => (
     <AnimateHeight height={showFeedback ? 'auto' : 0}>
-      { feedbackSuccess ? 
-        <Message
-          message={<span> 🎉 <span className={s('mx-sm')}> Thanks for your feedback! </span> 🎉 </span>}
-          className={s('text-md text-center text-green-reg')}
-          animate
-          temporary
-          show={feedbackSuccess}
-          onHide={toggleAskFeedbackInput}
-          type="success"
-        /> :
-        <div>
-          <div className={s(('flex justify-between mb-xs text-gray-dark'))}>
-            <div className={s('text-xs')}> Enter your feedback: </div>
-            <MdClose className={s('cursor-pointer')} onClick={toggleAskFeedbackInput} />
+      <div className={s('p-lg')}>
+        { feedbackSuccess ? 
+          <Message
+            message={<span> 🎉 <span className={s('mx-sm')}> Thanks for your feedback! </span> 🎉 </span>}
+            className={s('text-md text-center text-green-reg')}
+            animate
+            temporary
+            show={feedbackSuccess}
+            onHide={toggleAskFeedbackInput}
+            type="success"
+          /> :
+          <div>
+            <div className={s(('flex justify-between mb-xs text-gray-dark'))}>
+              <div className={s('text-xs')}> Enter your feedback: </div>
+              <MdClose className={s('cursor-pointer')} onClick={toggleAskFeedbackInput} />
+            </div>
+            <textarea
+              className={s('w-full resize')}
+              value={feedback}
+              onChange={e => updateAskFeedback(e.target.value)}
+            />
+            <Message className={s('my-sm')} message={feedbackError} type="error" />
+            <Button
+              text="Submit Feedback"
+              color="transparent"
+              className={s('p-xs')}
+              iconLeft={false}
+              icon={isSubmittingFeedback ?
+                <Loader size="xs" className={s('ml-sm')} color="white" /> :
+                null
+              }
+              disabled={feedback.length === 0}
+              onClick={requestSubmitFeedback}
+            />
           </div>
-          <textarea
-            className={s('w-full resize')}
-            value={feedback}
-            onChange={e => updateAskFeedback(e.target.value)}
-          />
-          <Message className={s('my-sm')} message={feedbackError} type="error" />
-          <Button
-            text="Submit Feedback"
-            color="transparent"
-            className={s('p-xs')}
-            iconLeft={false}
-            icon={isSubmittingFeedback ?
-              <Loader size="xs" className={s('ml-sm')} color="white" /> :
-              null
-            }
-            disabled={feedback.length === 0}
-            onClick={requestSubmitFeedback}
-          />
-        </div>
-      }
+        }
+      </div>
     </AnimateHeight>
   );
 
   const render = () => {
-    const performanceScore = getPerformanceScore();
-    const showRobot = !isGettingOnboardingStats && !_.isEmpty(onboardingStats) &&
-      performanceScore < GET_STARTED_PERFORMANCE_CUTOFF;
-
+    const showRobot = !isGettingOnboardingStats && performance.length !== 0 &&
+      percentage < GET_STARTED_PERFORMANCE_CUTOFF;
     const showFooter = showFeedback || showPerformanceScore;
 
     return (
@@ -265,21 +394,16 @@ const MinimizedAsk = ({
               <MdPeople className={s('text-md ml-sm')}/>
             </div>
           </div>
-          <Separator horizontal className={s(showFooter ? 'mb-reg' : '')} />
+          <Separator horizontal className={s(showFooter ? 'mb-0' : '')} />
         </div>
         <AnimateHeight height={showFooter ? 0 : 'auto'}>
-          <div className={s('flex justify-between items-center mt-reg px-lg')}>
+          <div className={s('flex justify-between items-center mt-reg px-lg pb-lg ')}>
             <div className={s('flex flex-col justify-center items-center relative')}>
-              <div className={s('flex items-center cursor-pointer')} onClick={togglePerformance}>
+              <div className={s('flex items-center cursor-pointer')} onClick={togglePerformanceScore}>
                 { isGettingOnboardingStats ?
                   <Loader size="sm" /> :
-                  <CircularProgressbar
-                    className={s('w-3xl h-3xl')}
-                    value={getPerformanceScore()}
-                    styles={buildStyles({...PROGRESS_BAR_STYLES, pathColor: getPerformanceColors(getPerformanceScore()).pathColor })}
-                  />
+                  getPerformanceScoreOrBadge()
                 }
-                <div className={s(`text-xs font-semibold ml-sm ${getPerformanceColors(getPerformanceScore()).textColor}`)}>My Performance: {getPerformanceScore()}%</div>
               </div>
               <img
                 src={robotGetStarted}
@@ -295,7 +419,7 @@ const MinimizedAsk = ({
             </div>
           </div>
         </AnimateHeight>
-        <div className={s('px-lg pb-lg min-h-0 overflow-auto')}>
+        <div className={s('min-h-0')}>
           { renderPerformanceScoreSection() }
           { renderFeedbackSection() }        
         </div>

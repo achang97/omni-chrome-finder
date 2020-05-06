@@ -17,8 +17,8 @@ export function requestGetUserOnboardingStats() {
   return { type: types.GET_USER_ONBOARDING_STATS_REQUEST, payload: { } };
 }
 
-export function handleGetUserOnboardingStatsSuccess(onboardingStats) {
-  return { type: types.GET_USER_ONBOARDING_STATS_SUCCESS, payload: { onboardingStats } };
+export function handleGetUserOnboardingStatsSuccess(badge, percentage, performance) {
+  return { type: types.GET_USER_ONBOARDING_STATS_SUCCESS, payload: { badge, percentage, performance } };
 }
 
 export function handleGetUserOnboardingStatsError(error) {
