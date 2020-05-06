@@ -19,6 +19,35 @@
 	box-shadow: 0 1px 6px 0 rgba(32,33,36,0.28) !important;
 }
 
+.minimized-search-accomplishment-img-container {
+	height: 200px;
+	background: white;
+}
+
+.minimized-search-badge-container {
+	height: 30px;
+}
+
+.badge-bronze {
+	color: #AC7746;
+	border-bottom: 2px solid #AC774633;
+}
+
+.badge-silver {
+	color: #7A7DAF;
+	border-bottom: 2px solid #7A7DAF33;
+}
+
+.badge-gold {
+	color: #BA955D;
+	border-bottom: 2px solid #BA955D33;
+}
+
+.badge-platinum {
+	color: #7EA9A7;
+	border-bottom: 2px solid #7EA9A733;
+}
+
 .robot-img {
   @apply cursor-pointer absolute;
   height: 50px;

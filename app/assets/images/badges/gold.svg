@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg width="38px" height="38px" viewBox="0 0 38 38" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+    <!-- Generator: Sketch 55.2 (78181) - https://sketchapp.com -->
+    <title>Group 16</title>
+    <desc>Created with Sketch.</desc>
+    <defs>
+        <linearGradient x1="50%" y1="-30.0551471%" x2="14.3785782%" y2="162.423407%" id="linearGradient-1">
+            <stop stop-color="#B18B50" offset="0%"></stop>
+            <stop stop-color="#E3C295" offset="100%"></stop>
+        </linearGradient>
+        <linearGradient x1="50%" y1="-30.0551471%" x2="14.3785782%" y2="162.423407%" id="linearGradient-2">
+            <stop stop-color="#FFE4B8" offset="0%"></stop>
+            <stop stop-color="#E3C295" offset="100%"></stop>
+        </linearGradient>
+        <linearGradient x1="50%" y1="-10.0413603%" x2="14.3785782%" y2="134.317555%" id="linearGradient-3">
+            <stop stop-color="#FFE4B8" offset="0%"></stop>
+            <stop stop-color="#E3C295" offset="100%"></stop>
+        </linearGradient>
+        <linearGradient x1="-2.76855469%" y1="-31.004902%" x2="104.208984%" y2="111.642157%" id="linearGradient-4">
+            <stop stop-color="#BB965E" offset="0%"></stop>
+            <stop stop-color="#977F5C" offset="100%"></stop>
+        </linearGradient>
+    </defs>
+    <g id="Design" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
+        <g id="Badges" transform="translate(-670.000000, -389.000000)">
+            <g id="Group-Copy-2" transform="translate(645.000000, 80.000000)">
+                <g id="Group-Copy">
+                    <g id="Group-11">
+                        <g id="Group-33" transform="translate(0.000000, 78.000000)">
+                            <g id="Group-16" transform="translate(26.000000, 232.000000)">
+                                <circle id="Oval" fill="#FFFFFF" cx="18" cy="20.88" r="15.12"></circle>
+                                <circle id="Oval" stroke="url(#linearGradient-1)" stroke-width="2" cx="18" cy="18" r="18"></circle>
+                                <g id="Group-105" transform="translate(2.880000, 2.880000)">
+                                    <circle id="Oval" fill="url(#linearGradient-1)" cx="15.12" cy="15.12" r="15.12"></circle>
+                                    <polygon id="Star" fill="url(#linearGradient-2)" opacity="0.5" points="15.12 22.6509375 10.08 23.8495361 8.59801681 18.8854688 5.04 15.12 8.59801681 11.3545313 10.08 6.39046393 15.12 7.5890625 20.16 6.39046393 21.6419832 11.3545312 25.2 15.12 21.6419832 18.8854687 20.16 23.8495361"></polygon>
+                                    <polygon id="Star" fill="url(#linearGradient-3)" transform="translate(15.120000, 15.120000) rotate(-330.000000) translate(-15.120000, -15.120000) " points="15.12 22.6509375 10.08 23.8495361 8.59801681 18.8854687 5.04 15.12 8.59801681 11.3545312 10.08 6.39046393 15.12 7.5890625 20.16 6.39046393 21.6419832 11.3545312 25.2 15.12 21.6419832 18.8854687 20.16 23.8495361"></polygon>
+                                    <polygon id="Star" fill="url(#linearGradient-4)" transform="translate(15.120000, 15.120000) rotate(-315.000000) translate(-15.120000, -15.120000) " points="15.12 17.28 12.0652987 18.1747013 12.96 15.12 12.0652987 12.0652987 15.12 12.96 18.1747013 12.0652987 17.28 15.12 18.1747013 18.1747013"></polygon>
+                                </g>
+                                <g id="Group-102" transform="translate(3.600000, 3.600000)">
+                                    <g id="Group-104"></g>
+                                </g>
+                            </g>
+                        </g>
+                    </g>
+                </g>
+            </g>
+        </g>
+    </g>
+</svg>

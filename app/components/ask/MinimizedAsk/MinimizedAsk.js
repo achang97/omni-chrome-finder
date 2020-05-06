@@ -1,7 +1,7 @@
 import React, { useEffect, useRef } from 'react';
 import _ from 'lodash';
 import AnimateHeight from 'react-animate-height';
-import { MdClose, MdChevronRight, MdCheck, MdKeyboardArrowUp, MdPeople } from 'react-icons/md';
+import { MdClose, MdChevronRight, MdCheck, MdKeyboardArrowUp, MdPeople, MdKeyboardArrowLeft, MdKeyboardArrowRight } from 'react-icons/md';
 import { CircularProgressbar, buildStyles } from 'react-circular-progressbar';
 
 import { Button, Message, Separator, Loader } from 'components/common';
@@ -11,6 +11,12 @@ import { colors } from 'styles/colors';
 import { getStyleApplicationFn } from 'utils/style';
 
 import robotGetStarted from 'assets/images/general/robotGetStarted.png';
+
+import bronzeImg from 'assets/images/badges/bronze.svg';
+import silverImg from 'assets/images/badges/silver.svg';
+import goldImg from 'assets/images/badges/gold.svg';
+import platinumImg from 'assets/images/badges/platinum.svg';
+
 import style from './minimized-ask.css';
 const s = getStyleApplicationFn(style);
 
@@ -99,6 +105,45 @@ const PERFORMANCE_CRITERIA = [
   }
 ];
 
+
+const BADGE = {
+  BRONZE: 'bronze',
+  SILVER: 'silver',
+  GOLD: 'gold',
+  PLATINUM: 'platinum',
+}
+
+const BADGE_PROPS = [
+  { value: BADGE.BRONZE, imgSrc: bronzeImg, textClassName: 'badge-bronze' },
+  { value: BADGE.SILVER, imgSrc: silverImg, textClassName: 'badge-silver' },
+  { value: BADGE.GOLD, imgSrc: goldImg, textClassName: 'badge-gold' },
+  { value: BADGE.PLATINUM, imgSrc: platinumImg, textClassName: 'badge-platinum' },
+]
+
+const MOCK_USER = {
+    badge: 'silver', // or numeric percentage
+      /*
+      performance: [
+          {
+              badge: 'Bronze', 
+              accomplishments: [
+                  { label: '', isComplete: true / false }
+              ]
+          },
+          {
+              badge: 'Silver', 
+              accomplishments: [
+                  { label: '', isComplete: true / false }
+                  { label: '', isComplete: true / false }
+              ]
+          },
+          { // This is your current badge
+              badge: 'Gold',
+              ...
+          }
+      ],*/
+  }
+
 const MinimizedAsk = ({
   toggleDockHeight, isGettingOnboardingStats, onboardingStats, dockVisible, dockExpanded,
   searchText, updateAskSearchText, requestSearchCards,
@@ -168,39 +213,94 @@ const MinimizedAsk = ({
   }
 
   const togglePerformance = () => {
-    toggleDockHeight();
+    //toggleDockHeight();
     togglePerformanceScore();
+  }
+
+  const getPerformanceMessage = () => {
+    const baseText = "Perform these tasks to ";
+    if (!MOCK_USER.badge) return baseText + "learn how to use Omni and earn a badge!";
+    switch (MOCK_USER.badge) {
+      case BADGE.BRONZE:
+        return baseText + "earn a silver badge:";
+      case BADGE.SILVER:
+        return baseText + "earn a gold badge:";
+      case BADGE.GOLD:
+        return baseText + "earn a platinum badge:";
+      case BADGE.PLATINUM:
+        return "Congrats! You've achieved the highest Omni badge:";
+      default:
+        return {};
+    }
+  }
+  const renderAccomplishmentCarousel = () => {
+    return (
+      <div>
+        <div className={s('text-xs font-semibold text-gray-reg mb-xs')}>{getPerformanceMessage()}</div>
+        <div className={s('flex items-center')}>
+          <MdKeyboardArrowLeft className={s('cursor-pointer')} />
+          <div className={s('w-full rounded-lg minimized-search-accomplishment-img-container')}></div>
+          <MdKeyboardArrowRight className={s('cursor-pointer')} />
+        </div>
+        <div className={s('text-xs font-semibold mt-sm text-center')}>The name of this accomp</div>
+      </div>
+    )
+  }
+
+  const getPerformanceScoreOrBadge = () => {
+    if(!MOCK_USER.badge) {
+      return (
+        <React.Fragment>
+          <CircularProgressbar
+            className={s('w-3xl h-3xl')}
+            value={getPerformanceScore()}
+            styles={buildStyles({...PROGRESS_BAR_STYLES, pathColor: getPerformanceColors(getPerformanceScore()).pathColor })}
+          />
+          <div className={s(`text-xs font-semibold ml-sm ${getPerformanceColors(getPerformanceScore()).textColor}`)}>My Performance: {getPerformanceScore()}%</div>
+        </React.Fragment>
+      )
+    } else {
+      const { value, imgSrc, textClassName } = BADGE_PROPS.find(b => b.value === MOCK_USER.badge);
+      return (
+        <React.Fragment>
+          <img src={imgSrc} className={s('minimized-search-badge-container')}/>
+          <div className={s(`${textClassName} text-xs font-semibold ml-sm`)}> {value} </div>
+        </React.Fragment>
+      )
+    }
   }
 
   const renderPerformanceScoreSection = () => {
     return (
       <AnimateHeight height={showPerformanceScore ? 'auto' : 0}>
+        <div className={s('bg-purple-xlight p-lg')}>
         <div className={s(('flex justify-between mb-xs text-gray-dark items-center mb-reg cursor-pointer'))} onClick={togglePerformance}>
           <div className={s('flex items-center')}>
-            <CircularProgressbar
-              className={s('w-3xl h-3xl')}
-              value={getPerformanceScore()}
-              styles={buildStyles({...PROGRESS_BAR_STYLES, pathColor: getPerformanceColors(getPerformanceScore()).pathColor })}
-            />
-            <div className={s(`text-xs font-semibold ml-sm ${getPerformanceColors(getPerformanceScore()).textColor}`)}>My Performance: {getPerformanceScore()}%</div>
+            {
+              getPerformanceScoreOrBadge()
+            }
           </div>
           <MdKeyboardArrowUp className={s('cursor-pointer')}/>
         </div>
-        <div className={s('text-sm text-purple-reg mb-lg')}>Perform these simple tasks to familiarize yourself with Omni and boost your score to 100%.</div>
-        <div className={s('overflow-auto')}>
+        { renderAccomplishmentCarousel() }
+        </div>
+        <div className={s('text-center my-reg text-xs underline text-purple-reg cursor-pointer')}>Show All Tasks</div>
+        {/*
+        <div className={s('overflow-auto px-lg pb-lg')}>
         { PERFORMANCE_CRITERIA.map(({ weight, title, type }) => (
           <div className={s(`flex justify-between mb-sm text-sm rounded-lg p-sm items-center ${onboardingStats[type] ? 'gold-gradient italic opacity-50' : 'border border-solid border-gray-light'}`)}>
             <div className={s('text-xs')}>{title}</div>
             <div className={s(`p-xs rounded-lg font-semibold flex ${onboardingStats[type] ? 'gold-gradient text-gold-reg' : 'text-purple-light bg-purple-light border border-solid border-gray-xlight'}`)}><MdCheck /></div>
           </div>
         ))}
-        </div>
+        </div>*/}
       </AnimateHeight>
     )
   }
 
   const renderFeedbackSection = () => (
     <AnimateHeight height={showFeedback ? 'auto' : 0}>
+      <div className={s('px-lg pt-lg')}>
       { feedbackSuccess ? 
         <Message
           message={<span> 🎉 <span className={s('mx-sm')}> Thanks for your feedback! </span> 🎉 </span>}
@@ -236,6 +336,7 @@ const MinimizedAsk = ({
           />
         </div>
       }
+      </div>
     </AnimateHeight>
   );
 
@@ -265,21 +366,23 @@ const MinimizedAsk = ({
               <MdPeople className={s('text-md ml-sm')}/>
             </div>
           </div>
-          <Separator horizontal className={s(showFooter ? 'mb-reg' : '')} />
+          <Separator horizontal className={s(showFooter ? 'mb-0' : '')} />
         </div>
         <AnimateHeight height={showFooter ? 0 : 'auto'}>
-          <div className={s('flex justify-between items-center mt-reg px-lg')}>
+          <div className={s('flex justify-between items-center mt-reg px-lg pb-lg ')}>
             <div className={s('flex flex-col justify-center items-center relative')}>
               <div className={s('flex items-center cursor-pointer')} onClick={togglePerformance}>
                 { isGettingOnboardingStats ?
                   <Loader size="sm" /> :
+                  getPerformanceScoreOrBadge()
+                  /*
                   <CircularProgressbar
                     className={s('w-3xl h-3xl')}
                     value={getPerformanceScore()}
                     styles={buildStyles({...PROGRESS_BAR_STYLES, pathColor: getPerformanceColors(getPerformanceScore()).pathColor })}
-                  />
+                  />*/
                 }
-                <div className={s(`text-xs font-semibold ml-sm ${getPerformanceColors(getPerformanceScore()).textColor}`)}>My Performance: {getPerformanceScore()}%</div>
+                {/*<div className={s(`text-xs font-semibold ml-sm ${getPerformanceColors(getPerformanceScore()).textColor}`)}>My Performance: {getPerformanceScore()}%</div>*/}
               </div>
               <img
                 src={robotGetStarted}
@@ -295,7 +398,7 @@ const MinimizedAsk = ({
             </div>
           </div>
         </AnimateHeight>
-        <div className={s('px-lg pb-lg min-h-0 overflow-auto')}>
+        <div className={s('min-h-0 overflow-auto')}>
           { renderPerformanceScoreSection() }
           { renderFeedbackSection() }        
         </div>
