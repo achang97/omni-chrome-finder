@@ -148,8 +148,10 @@ const MinimizedAsk = ({
       return null;
     }
 
-    const carouselDisabled = remainingAccomplishments.length <= 1;
+    const numRemainingAccomplishments = remainingAccomplishments.length;
+    const carouselDisabled = numRemainingAccomplishments <= 1;
     const { label } = remainingAccomplishments[carouselIndex];
+    
     return (
       <div>
         <div className={s('text-xs font-semibold text-gray-reg')}>{getPerformanceMessage()}</div>
@@ -157,17 +159,18 @@ const MinimizedAsk = ({
           <>
             <div className={s('flex items-center mt-reg')}>
               <button onClick={() => updateCarouselIndex(-1)} disabled={carouselDisabled}>
-                <MdKeyboardArrowLeft className={s('cursor-pointer')} />
+                <MdKeyboardArrowLeft />
               </button>
               <div className={s('w-full rounded-lg minimized-search-accomplishment-img-container')}>
                 { /* TODO */ }
               </div>
               <button onClick={() => updateCarouselIndex(+1)} disabled={carouselDisabled}>
-                <MdKeyboardArrowRight className={s('cursor-pointer')} />
+                <MdKeyboardArrowRight />
               </button>
             </div>
-            <div className={s('text-xs font-semibold mt-reg text-center')}>
-              {label}
+            <div className={s('text-xs mt-reg text-center')}>
+              <span className={s('font-semibold')}> {label} </span>
+              <span> ({carouselIndex + 1}/{numRemainingAccomplishments}) </span>
             </div>
           </>
         }
