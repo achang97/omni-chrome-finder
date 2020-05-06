@@ -17,6 +17,12 @@ export const USER_BADGE = {
   PLATINUM: 'Platinum',
 };
 
+export const AUDIT_TYPE = {
+  CREATE_CARD_EXTENSION: 'createCardExtension',
+  CONTEXT_MENU_SEARCH: 'contextMenuSearch',
+  OPEN_EXTERNAL_DOC: 'openExternalDoc'
+}
+
 export const ONBOARDING_COMPLETE = -1;
 
-export default { SETTING_SECTION_TYPE, USER_ROLE, USER_BADGE, ONBOARDING_COMPLETE };
+export default { SETTING_SECTION_TYPE, USER_ROLE, USER_BADGE, AUDIT_TYPE, ONBOARDING_COMPLETE };

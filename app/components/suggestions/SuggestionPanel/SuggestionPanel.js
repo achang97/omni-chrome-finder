@@ -9,7 +9,7 @@ import SuggestionScrollContainer from '../SuggestionScrollContainer';
 import { Loader, Button, Triangle, Timeago, Separator } from 'components/common';
 
 import { colors } from 'styles/colors';
-import { SEARCH, INTEGRATIONS, ANIMATE } from 'appConstants';
+import { SEARCH, INTEGRATIONS, ANIMATE, PROFILE } from 'appConstants';
 
 import style from './suggestion-panel.css';
 import { getStyleApplicationFn } from 'utils/style';
@@ -18,7 +18,8 @@ const s = getStyleApplicationFn(style);
 
 const SuggestionPanel = ({
   query, cards, externalResults, isSearchingCards, hasReachedLimit,
-  requestSearchCards, clearSearchCards
+  requestSearchCards, clearSearchCards,
+  requestLogAudit,
 }) => {
   const [isVisible, setIsVisible] = useState(true);
   const [showExternalResults, setShowExternalResults] = useState(true);
@@ -151,7 +152,11 @@ const SuggestionPanel = ({
         </div>
         <AnimateHeight height={isOpen ? 'auto' : 0}>
           <div className={s('px-lg')}>
-            { results.map(result => renderFn(result)) }
+            { results.map(result => (
+              <div onClick={() => requestLogAudit(PROFILE.AUDIT_TYPE.OPEN_EXTERNAL_DOC, { type, ...result })}>
+                {renderFn(result)}
+              </div>
+            ))}
           </div>
         </AnimateHeight>
       </div>

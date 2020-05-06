@@ -7,6 +7,7 @@ import { requestSearchCards, clearSearchCards } from 'actions/search';
 import { updateCreateAnswerEditor } from 'actions/create';
 import { updateNavigateSearchText } from 'actions/navigate';
 import { requestGetUser } from 'actions/profile';
+import { requestLogAudit } from 'actions/auditLog';
 import { requestGetTasks, updateTasksOpenSection, updateTasksTab } from 'actions/tasks';
 import { SEARCH } from 'appConstants';
 import { hasCompletedOnboarding } from 'utils/auth';
@@ -67,6 +68,7 @@ const mapDispatchToProps = {
   requestGetTasks,
   updateTasksTab,
   updateTasksOpenSection,
+  requestLogAudit
 }
 
 export default connect(mapStateToProps, mapDispatchToProps)(withRouter(ChromeMessageListener));

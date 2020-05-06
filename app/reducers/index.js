@@ -9,6 +9,7 @@ import navigate from './navigate';
 import tasks from './tasks';
 import search from './search';
 import screenRecording from './screenRecording';
+import auditLog from './auditLog';
 
 import { LOGOUT } from 'actions/actionTypes';
 
@@ -23,6 +24,7 @@ const appReducer = combineReducers({
   tasks,
   search,
   screenRecording,
+  auditLog,
 });
 
 const rootReducer = (state, action) => {

@@ -239,7 +239,7 @@ function* toggleUpvote({ upvotes }) {
 function* markUpToDate() {
   const cardId = yield call(getActiveCardId);
   try {
-    const updatedCard = yield call(doPost, '/cards/uptodate', { cardId });
+    const updatedCard = yield call(doPost, `/cards/${cardId}/markUpToDate`);
     yield put(handleMarkUpToDateSuccess(updatedCard));
   } catch (error) {
     yield put(handleMarkUpToDateError(cardId, getErrorMessage(error)));
@@ -251,7 +251,7 @@ function* markOutOfDate() {
   const reason = yield select(state => state.cards.activeCard.outOfDateReasonInput);
 
   try {
-    const updatedCard = yield call(doPost, '/cards/outofdate', { cardId, reason });
+    const updatedCard = yield call(doPost, `/cards/${cardId}/markOutOfDate`, { reason });
     yield put(handleMarkOutOfDateSuccess(updatedCard));
   } catch (error) {
     yield put(handleMarkOutOfDateError(cardId, getErrorMessage(error)));
@@ -262,7 +262,7 @@ function* approveCard() {
   const cardId = yield call(getActiveCardId);
 
   try {
-    const { updatedCard } = yield call(doPost, '/cards/approve', { cardId });
+    const { updatedCard } = yield call(doPost, `/cards/${cardId}/approve`);
     yield put(handleApproveCardSuccess(updatedCard));    
   } catch (error) {
     yield put(handleApproveCardError(cardId, getErrorMessage(error)));
