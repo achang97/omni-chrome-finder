@@ -189,7 +189,7 @@ const MinimizedAsk = ({
     const numRemainingAccomplishments = remainingAccomplishments.length;
     const carouselDisabled = numRemainingAccomplishments <= 1;
     const { label } = remainingAccomplishments[carouselIndex];
-    const { imgSrc } = ACCOMPLISHMENT_IMAGES[label]
+    const { imgSrc } = ACCOMPLISHMENT_IMAGES[label] || {};
     
     return (
       <div>
@@ -201,8 +201,9 @@ const MinimizedAsk = ({
                 <MdKeyboardArrowLeft />
               </button>
               <div className={s('w-full rounded-lg minimized-search-accomplishment-img-container')}>
-                { /* TODO */ }
-                <img src={imgSrc} className={s('h-full w-full object-cover rounded-lg')}/>
+                { imgSrc &&
+                  <img src={imgSrc} className={s('h-full w-full object-cover rounded-lg')}/>
+                }
               </div>
               <button onClick={() => updateCarouselIndex(+1)} disabled={carouselDisabled}>
                 <MdKeyboardArrowRight />
