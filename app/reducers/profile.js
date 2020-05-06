@@ -10,7 +10,11 @@ export const initialState = {
     upToDateCount: 0,
     outOfDateCount: 0
   },
-  onboardingStats: {},
+
+  // Onboarding Stats
+  badge: null,
+  percentage: 0,
+  performance: [],
 
   userEdits: {},
   isEditingAbout: false,
@@ -69,8 +73,8 @@ export default function displayReducer(state = initialState, action) {
       return { ...state, isGettingOnboardingStats: true, getOnboardingStatsError: null };
     }
     case types.GET_USER_ONBOARDING_STATS_SUCCESS: {
-      const { onboardingStats } = payload;
-      return { ...state, isGettingOnboardingStats: false, onboardingStats };
+      const { badge, percentage, performance } = payload;
+      return { ...state, isGettingOnboardingStats: false, badge, percentage, performance };
     }
     case types.GET_USER_ONBOARDING_STATS_ERROR: {
       const { error } = payload;

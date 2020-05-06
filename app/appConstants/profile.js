@@ -10,6 +10,13 @@ export const USER_ROLE = {
   MEMBER: 'Member'
 };
 
+export const USER_BADGE = {
+  BRONZE: 'Bronze',
+  SILVER: 'Silver',
+  GOLD: 'Gold',
+  PLATINUM: 'Platinum',
+};
+
 export const ONBOARDING_COMPLETE = -1;
 
-export default { SETTING_SECTION_TYPE, USER_ROLE, ONBOARDING_COMPLETE };
+export default { SETTING_SECTION_TYPE, USER_ROLE, USER_BADGE, ONBOARDING_COMPLETE };

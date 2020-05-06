@@ -90,8 +90,8 @@ function* getUser() {
 
 function* getUserOnboardingStats() {
   try {
-    const onboardingStats = yield call(doGet, '/users/me/onboarding/completeStats');
-    yield put(handleGetUserOnboardingStatsSuccess(onboardingStats));
+    const { badge, percentage, performance } = yield call(doGet, '/users/me/onboarding/completeStats');
+    yield put(handleGetUserOnboardingStatsSuccess(badge, percentage, performance));
   } catch (error) {
     yield put(handleGetUserOnboardingStatsError(getErrorMessage(error)));
   }

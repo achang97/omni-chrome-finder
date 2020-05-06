@@ -48,6 +48,14 @@
 	border-bottom: 2px solid #7EA9A733;
 }
 
+.performance-score-container {
+	max-height: 100%;
+}
+
+.performance-score-container, .performance-score-container > * {
+	@apply min-h-0 flex flex-col flex-1;
+}
+
 .robot-img {
   @apply cursor-pointer absolute;
   height: 50px;
