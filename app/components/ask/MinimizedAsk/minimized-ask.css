@@ -19,6 +19,10 @@
 	box-shadow: 0 1px 6px 0 rgba(32,33,36,0.28) !important;
 }
 
+.minimized-ask-accomplishment-section-container {
+	background: #dde5ff26 !important;
+}
+
 .minimized-search-accomplishment-img-container {
 	height: 200px;
 	background: white;

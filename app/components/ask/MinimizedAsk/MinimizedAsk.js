@@ -27,6 +27,14 @@ import contextSearchImg from 'assets/images/accomplishments/context-search.png';
 import profilePictureImg from 'assets/images/accomplishments/profile-picture.png';
 import ownFourImg from 'assets/images/accomplishments/own-four.png';
 
+import allUpdatedImg from 'assets/images/accomplishments/all-updated.png';
+import addSubscriberImg from 'assets/images/accomplishments/add-subscriber.png';
+import addTagImg from 'assets/images/accomplishments/add-tag.png';
+
+import addSlackImg from 'assets/images/accomplishments/add-slack.png';
+import addDriveImg from 'assets/images/accomplishments/add-drive.png';
+import slackFindImg from 'assets/images/accomplishments/slack-find.png';
+import existingKnowledgeImg from 'assets/images/accomplishments/existing-knowledge.png';
 
 import style from './minimized-ask.css';
 const s = getStyleApplicationFn(style);
@@ -84,6 +92,32 @@ const ACCOMPLISHMENT_IMAGES = {
   },
   ['Own at least 4 cards']: {
     imgSrc: ownFourImg
+  },
+
+  ['Keep all your cards up to date']: {
+    imgSrc: allUpdatedImg
+  },
+  ['Add a subscriber to one of your cards']: {
+    imgSrc: addSubscriberImg
+  },
+  ['Add a tag to one of your cards']: {
+    imgSrc: addTagImg
+  },
+  ['Created a card this past week']: {
+    imgSrc: createCardImg
+  },
+
+  ['Add the Slack integration']: {
+    imgSrc: addSlackImg
+  },
+  ['Add the Google Drive integration']: {
+    imgSrc: addDriveImg
+  },
+  ['Open a document from your integrations']: {
+    imgSrc: existingKnowledgeImg
+  },
+  ['Use /find on slack']: {
+    imgSrc: slackFindImg
   },
 }
 
@@ -250,7 +284,7 @@ const MinimizedAsk = ({
           staticHeightAuto: s('performance-score-container')
         }}
       >
-        <div className={s('bg-purple-xlight p-lg')}>
+        <div className={s('minimized-ask-accomplishment-section-container p-lg')}>
           <div className={s(('flex justify-between mb-xs text-gray-dark items-center mb-reg cursor-pointer'))} onClick={togglePerformance}>
             <div className={s('flex items-center')}>
               { getPerformanceScoreOrBadge() }
