@@ -218,7 +218,7 @@ const MinimizedAsk = ({
   const renderAccomplishmentCarousel = () => {
     const numRemainingAccomplishments = remainingAccomplishments.length;
 
-    if (badge !== USER_BADGE.PLATINUM || numRemainingAccomplishments === 0) {
+    if (badge === USER_BADGE.PLATINUM || numRemainingAccomplishments === 0) {
       return null;
     }
 
