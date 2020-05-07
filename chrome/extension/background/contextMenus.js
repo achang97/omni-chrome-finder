@@ -4,7 +4,6 @@ import { injectExtension, loadScript } from './inject';
 const IDS = {
   PARENT: 'PARENT_MENU_ID',
   SEARCH: 'SEARCH_MENU_ID',
-  ASK: 'ASK_MENU_ID',
   CREATE: 'CREATE_MENU_ID',
 };
 
@@ -17,15 +16,12 @@ const BASE_CONTEXT_MENU_PROPS = {
 
 const ACTION_MENU_ITEMS = [
   {
-    title: 'Ask Question',
-    id: IDS.ASK,
+    title: 'Search Omni',
+    id: IDS.SEARCH,
   }, {
     title: 'Create Card',
     id: IDS.CREATE,
-  }, {
-    title: 'Search Omni',
-    id: IDS.SEARCH,
-  },
+  }
 ];
 
 // Remove all context menus
@@ -51,9 +47,6 @@ function handleMenuAction(tabId, menuItemId, selectionText) {
   switch (menuItemId) {
     case IDS.SEARCH:
       chrome.tabs.sendMessage(tabId, { type: CHROME.MESSAGE.SEARCH, payload: { selectionText } });
-      break;
-    case IDS.ASK:
-      chrome.tabs.sendMessage(tabId, { type: CHROME.MESSAGE.ASK, payload: { selectionText } });
       break;
     case IDS.CREATE: {
       chrome.tabs.sendMessage(tabId, { type: CHROME.MESSAGE.CREATE, payload: { selectionText } });
