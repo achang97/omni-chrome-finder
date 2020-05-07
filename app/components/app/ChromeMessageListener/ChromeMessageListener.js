@@ -274,7 +274,7 @@ class ChromeMessageListener extends Component {
     if (this.isValidUser()) {
       let url;
       switch (action) {
-        case CHROME.MESSAGE.ASK: {
+        case CHROME.MESSAGE.SEARCH: {
           url = ROUTES.ASK;
           if (dockExpanded) {
             updateAskQuestionTitle(selectedText);
@@ -287,12 +287,6 @@ class ChromeMessageListener extends Component {
         case CHROME.MESSAGE.CREATE: {
           url = ROUTES.CREATE;
           updateCreateAnswerEditor(EditorState.createWithContent(ContentState.createFromText(selectedText)));
-          break;
-        }
-        case CHROME.MESSAGE.SEARCH: {
-          url = ROUTES.NAVIGATE;
-          updateNavigateSearchText(selectedText);
-          requestLogAudit(PROFILE.AUDIT_TYPE.CONTEXT_MENU_SEARCH, { query: selectedText });
           break;
         }
       }
@@ -371,7 +365,6 @@ class ChromeMessageListener extends Component {
         break;
       }
       case CHROME.MESSAGE.SEARCH:
-      case CHROME.MESSAGE.ASK:
       case CHROME.MESSAGE.CREATE: {
         this.handleContextMenuAction(type, payload.selectionText);
         break;
