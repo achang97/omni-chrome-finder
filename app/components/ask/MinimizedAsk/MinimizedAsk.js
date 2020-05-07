@@ -203,7 +203,7 @@ const MinimizedAsk = ({
       case USER_BADGE.GOLD:
         return baseText + "earn a platinum badge:";
       case USER_BADGE.PLATINUM:
-        return "Congrats! You've achieved the highest Omni badge:";
+        return "Congrats! You've achieved the highest Omni badge.";
       default:
         return '';
     }
@@ -216,39 +216,35 @@ const MinimizedAsk = ({
   }
 
   const renderAccomplishmentCarousel = () => {
-    if (remainingAccomplishments.length === 0) {
+    const numRemainingAccomplishments = remainingAccomplishments.length;
+
+    if (badge !== USER_BADGE.PLATINUM || numRemainingAccomplishments === 0) {
       return null;
     }
 
-    const numRemainingAccomplishments = remainingAccomplishments.length;
     const carouselDisabled = numRemainingAccomplishments <= 1;
     const { label } = remainingAccomplishments[carouselIndex];
     const { imgSrc } = ACCOMPLISHMENT_IMAGES[label];
     
     return (
-      <div>
-        <div className={s('text-xs font-semibold text-gray-reg')}>{getPerformanceMessage()}</div>
-        { badge !== USER_BADGE.PLATINUM &&
-          <>
-            <div className={s('flex items-center mt-reg')}>
-              <button onClick={() => updateCarouselIndex(-1)} disabled={carouselDisabled}>
-                <MdKeyboardArrowLeft />
-              </button>
-              <div className={s('w-full rounded-lg minimized-search-accomplishment-img-container')}>
-                <img src={imgSrc} className={s('h-full w-full object-cover rounded-lg')}/>
-              </div>
-              <button onClick={() => updateCarouselIndex(+1)} disabled={carouselDisabled}>
-                <MdKeyboardArrowRight />
-              </button>
-            </div>
-            <div className={s('text-xs mt-reg text-center shadow-md rounded-lg p-xs bg-white text-purple-reg')}>
-              <span className={s('font-semibold')}> {label} </span>
-              <span> ({carouselIndex + 1}/{numRemainingAccomplishments}) </span>
-            </div>
-          </>
-        }
-      </div>
-    )
+      <>
+        <div className={s('flex items-center mt-reg')}>
+          <button onClick={() => updateCarouselIndex(-1)} disabled={carouselDisabled}>
+            <MdKeyboardArrowLeft />
+          </button>
+          <div className={s('w-full rounded-lg minimized-search-accomplishment-img-container')}>
+            <img src={imgSrc} className={s('h-full w-full object-cover rounded-lg')}/>
+          </div>
+          <button onClick={() => updateCarouselIndex(+1)} disabled={carouselDisabled}>
+            <MdKeyboardArrowRight />
+          </button>
+        </div>
+        <div className={s('text-xs mt-reg text-center shadow-md rounded-lg p-xs bg-white text-purple-reg')}>
+          <span className={s('font-semibold')}> {label} </span>
+          <span> ({carouselIndex + 1}/{numRemainingAccomplishments}) </span>
+        </div>
+      </>
+    );
   }
 
   const getPerformanceScoreOrBadge = () => {
@@ -288,6 +284,9 @@ const MinimizedAsk = ({
               { getPerformanceScoreOrBadge() }
             </div>
             <MdKeyboardArrowUp className={s('cursor-pointer')}/>
+          </div>
+          <div className={s('text-xs font-semibold text-gray-reg')}>
+            {getPerformanceMessage()}
           </div>
           { renderAccomplishmentCarousel() }
         </div>

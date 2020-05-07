@@ -11,7 +11,7 @@ const s = getStyleApplicationFn(style);
 const CardConfirmModal = ({
   isOpen, title, description, body, error,
   onRequestClose, primaryButtonProps, secondaryButtonProps, showPrimary,
-  showSecondary, bodyClassName, ...rest
+  showSecondary, bodyClassName, overlayClassName, ...rest
 }) => {
   if (!secondaryButtonProps) {
     secondaryButtonProps = { text: 'No', onClick: onRequestClose };
@@ -22,7 +22,7 @@ const CardConfirmModal = ({
       isOpen={isOpen}
       onRequestClose={onRequestClose}
       headerClassName={s('bg-purple-light')}
-      overlayClassName={s('rounded-b-lg')}
+      overlayClassName={s(`rounded-b-lg ${overlayClassName}`)}
       title={title}
       important
       secondaryButtonProps={showSecondary ? secondaryButtonProps : null}
@@ -55,12 +55,14 @@ CardConfirmModal.propTypes = {
   }),
   showPrimary: PropTypes.bool,
   showSecondary: PropTypes.bool,
+  overlayClassName: PropTypes.string,
   bodyClassName: PropTypes.string,
 };
 
 CardConfirmModal.defaultProps = {
   showPrimary: true,
   showSecondary: true,
+  overlayClassName: '',
   bodyClassName: '',
 };
 
