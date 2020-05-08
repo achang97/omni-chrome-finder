@@ -19,11 +19,11 @@ const initialState = {
 export default function navigateReducer(state = initialState, action) {
   const { type, payload = {} } = action;
 
-  const updateCardStateByType = (type, updateFn) => ({
+  const updateCardStateByType = (searchType, updateFn) => ({
     ...state,
     cards: {
       ...state.cards,
-      [type]: { ...state.cards[type], ...updateFn(state.cards[type]) }
+      [searchType]: { ...state.cards[searchType], ...updateFn(state.cards[searchType]) }
     }
   });
 
@@ -36,11 +36,6 @@ export default function navigateReducer(state = initialState, action) {
   });
 
   const removeCard = (cards, cardId) => cards.filter(({ _id }) => _id !== cardId);
-
-  const removeCardByType = (type, cardId) =>
-    updateCardStateByType(type, (cardState) => ({
-      cards: removeCard(cardState.cards, cardId)
-    }));
 
   switch (type) {
     case types.SEARCH_CARDS_REQUEST: {

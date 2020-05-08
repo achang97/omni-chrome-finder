@@ -1,4 +1,3 @@
-import _ from 'lodash';
 import * as types from 'actions/actionTypes';
 import { updateArrayOfObjects } from 'utils/array';
 import { TASKS } from 'appConstants';

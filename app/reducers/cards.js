@@ -9,7 +9,6 @@ import {
   DIMENSIONS,
   MODAL_TYPE,
   DEFAULT_VERIFICATION_INTERVAL,
-  VERIFICATION_INTERVAL_OPTIONS,
   PERMISSION_OPTIONS
 } from 'appConstants/card';
 
@@ -86,7 +85,6 @@ export default function cardsReducer(state = initialState, action) {
   const updateActiveCardEdits = (newEditsInfo) => updateActiveCard({}, newEditsInfo);
 
   const updateCardById = (id, newInfo, updateCardsArray = false) => {
-    // TODO FIX
     if (id === state.activeCard._id && !updateCardsArray) {
       return updateActiveCard(newInfo);
     }
@@ -235,7 +233,6 @@ export default function cardsReducer(state = initialState, action) {
       const { card, isNewCard, createModalOpen } = payload;
       const { activeCardIndex } = state;
 
-      // TODO: Check if card is already open. If so, should switch to that tab.
       if (!isNewCard) {
         const currIndex = getIndexById(card._id);
         if (currIndex !== -1) {
@@ -487,7 +484,7 @@ export default function cardsReducer(state = initialState, action) {
     case types.UPDATE_CARD_ATTACHMENT_NAME: {
       const { key, name } = payload;
       const {
-        activeCard: { edits, _id }
+        activeCard: { _id }
       } = state;
       return updateAttachmentsByKey(_id, key, { name });
     }

@@ -25,23 +25,25 @@ export function getStorage(key) {
           resolve(value ? JSON.parse(value) : null);
         }
       });
+    } else {
+      reject(new Error('The variable `chrome.storage` does not exist'));
     }
-
-    reject(new Error('The variable `chrome.storage` does not exist'));
   });
 }
 
 export function addStorageListener(storageKey, callback) {
-  chrome.storage.onChanged.addListener((changes, namespace) => {
-    Object.entries(changes).forEach(([key, change]) => {
-      const { oldValue, newValue } = change;
-      if (namespace === 'local' && key === getStorageName(storageKey)) {
-        const oldValueJSON = oldValue ? JSON.parse(oldValue) : oldValue;
-        const newValueJSON = newValue ? JSON.parse(newValue) : newValue;
-        callback({ oldValue: oldValueJSON, newValue: newValueJSON });
-      }
+  if (chrome.storage) {
+    chrome.storage.onChanged.addListener((changes, namespace) => {
+      Object.entries(changes).forEach(([key, change]) => {
+        const { oldValue, newValue } = change;
+        if (namespace === 'local' && key === getStorageName(storageKey)) {
+          const oldValueJSON = oldValue ? JSON.parse(oldValue) : oldValue;
+          const newValueJSON = newValue ? JSON.parse(newValue) : newValue;
+          callback({ oldValue: oldValueJSON, newValue: newValueJSON });
+        }
+      });
     });
-  });
+  }
 }
 
 export default { getStorageName, setStorage, getStorage, addStorageListener };

@@ -35,9 +35,11 @@ export default function screenRecordingReducer(state = initialState, action) {
         const { recordingChunk } = payload;
         return { ...state, recordedChunks: [...state.recordedChunks, recordingChunk] };
       }
+
+      return state;
     }
     case types.END_SCREEN_RECORDING: {
-      const { recordedChunks, activeId } = state;
+      const { recordedChunks } = state;
 
       const now = moment().format('DD.MM.YYYY HH:mm:ss');
       const recording = new File(recordedChunks, `Screen Recording ${now}.webm`, {
