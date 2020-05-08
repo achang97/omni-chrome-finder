@@ -4,12 +4,12 @@ import { IoMdAdd } from 'react-icons/io';
 import { MdClose, MdLock } from 'react-icons/md';
 import _ from 'lodash';
 
-import CardTag from '../CardTag';
 import Select from 'components/common/Select';
 import { NOOP, ANIMATE } from 'appConstants';
 
-import style from './card-tags.css';
 import { getStyleApplicationFn } from 'utils/style';
+import style from './card-tags.css';
+import CardTag from '../CardTag';
 
 const s = getStyleApplicationFn(style);
 
@@ -152,7 +152,7 @@ class CardTags extends Component {
             isMulti
             menuShouldScrollIntoView
             isClearable={false}
-            placeholder={'Add tags...'}
+            placeholder="Add tags..."
             onBlur={hideSelectOnBlur ? () => this.setState({ showSelect: false }) : NOOP}
             getOptionLabel={(option) => option.name}
             getOptionValue={(option) => option._id}
@@ -160,7 +160,7 @@ class CardTags extends Component {
             noOptionsMessage={() => (isSearchingTags ? 'Searching tags...' : 'No options')}
           />
         ) : (
-          <React.Fragment>
+          <>
             {tags.map((tag, i) => this.renderTag(tag, i))}
             {!isEditable && tags.length === 0 && showPlaceholder && (
               <div className={s('text-sm text-gray-light')}>No current tags</div>
@@ -177,7 +177,7 @@ class CardTags extends Component {
                 onClick={() => this.setState({ showSelect: true })}
               />
             )}
-          </React.Fragment>
+          </>
         )}
       </div>
     );

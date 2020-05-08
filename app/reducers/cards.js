@@ -535,13 +535,13 @@ export default function cardsReducer(state = initialState, action) {
       return updateActiveCard({ isUpdatingCard: true, updateError: null });
     }
     case types.UPDATE_CARD_SUCCESS: {
-      const { closeCard, card, isApprover } = payload;
+      const { shouldCloseCard, card, isApprover } = payload;
 
       const cardStatus = card.status;
       const isOutdated = cardStatus !== STATUS.UP_TO_DATE;
 
       // Remove card
-      if (closeCard && !isOutdated) {
+      if (shouldCloseCard && !isOutdated) {
         return removeCardById(card._id);
       }
 
@@ -559,20 +559,20 @@ export default function cardsReducer(state = initialState, action) {
       // Open corresponding modals
       if (isOutdated && isApprover) {
         newInfo.modalOpen = { ...currCard.modalOpen, [MODAL_TYPE.CONFIRM_UP_TO_DATE_SAVE]: true };
-      } else if (closeCard) {
+      } else if (shouldCloseCard) {
         newInfo.modalOpen = { ...currCard.modalOpen, [MODAL_TYPE.CONFIRM_CLOSE]: false };
       }
 
       return updateCardById(card._id, newInfo, true);
     }
     case types.UPDATE_CARD_ERROR: {
-      const { cardId, error, closeCard } = payload;
+      const { cardId, error, shouldCloseCard } = payload;
       const newInfo = {
         isUpdatingCard: false,
         updateError: error,
         modalOpen: {
           ...BASE_MODAL_OPEN_STATE,
-          [closeCard ? MODAL_TYPE.ERROR_UPDATE_CLOSE : MODAL_TYPE.ERROR_UPDATE]: true
+          [shouldCloseCard ? MODAL_TYPE.ERROR_UPDATE_CLOSE : MODAL_TYPE.ERROR_UPDATE]: true
         }
       };
       return updateCardById(cardId, newInfo);

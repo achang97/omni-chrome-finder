@@ -48,12 +48,12 @@ const baseDevConfig = () => ({
   ],
   resolve: {
     modules: ['app', 'node_modules'],
-    extensions: ['*', '.js']
+    extensions: ['*', '.js', '.jsx']
   },
   module: {
     rules: [
       {
-        test: /\.js$/,
+        test: /\.js|\.jsx$/,
         loader: 'babel-loader',
         exclude: /node_modules/,
         options: {

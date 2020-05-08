@@ -1,4 +1,3 @@
-import React from 'react';
 import { take, call, all, fork, put, select } from 'redux-saga/effects';
 import { doPost, getErrorMessage } from 'utils/request';
 import {
@@ -23,18 +22,16 @@ import {
 import { openModal } from 'actions/display';
 
 export default function* watchAuthRequests() {
-  let action;
-
-  while (
-    (action = yield take([
+  while (true) {
+    const action = yield take([
       LOGIN_REQUEST,
       SIGNUP_REQUEST,
       SEND_RECOVERY_EMAIL_REQUEST,
       VERIFY_REQUEST,
       RESEND_VERIFICATION_EMAIL_REQUEST
-    ]))
-  ) {
-    const { type /* payload */ } = action;
+    ]);
+
+    const { type } = action;
     switch (type) {
       case LOGIN_REQUEST: {
         yield fork(login);
@@ -103,11 +100,7 @@ function* verify() {
       put(handleVerifySuccess()),
       put(
         openModal({
-          title: (
-            <span>
-              We've successfully verified your account, <b>{firstname}</b>!
-            </span>
-          ),
+          title: `We've successfully verified your account, ${firstname}!`,
           buttonText: 'Ok!',
           showHeader: false
         })

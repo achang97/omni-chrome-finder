@@ -1,4 +1,3 @@
-import { setStorage } from 'utils/storage';
 import { TAB_OPTION } from 'appConstants/navigate';
 import * as types from 'actions/actionTypes';
 import { addSearchCard, updateSearchCard, removeSearchCard } from 'actions/search';

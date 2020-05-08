@@ -19,6 +19,7 @@ export function convertCardToFrontendFormat(card) {
     outOfDateReason,
     upvotes,
     slackReplies,
+    status,
     ...rest
   } = card;
 

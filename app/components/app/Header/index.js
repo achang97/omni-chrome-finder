@@ -1,7 +1,6 @@
 import { connect } from 'react-redux';
 import { withRouter } from 'react-router-dom';
 import { SEARCH } from 'appConstants';
-import { minimizeDock } from 'actions/display';
 import Header from './Header';
 
 const mapStateToProps = (state) => {

@@ -28,10 +28,8 @@ import {
 } from 'actions/profile';
 
 export default function* watchProfileRequests() {
-  let action;
-
-  while (
-    (action = yield take([
+  while (true) {
+    const action = yield take([
       GET_USER_REQUEST,
       GET_USER_ONBOARDING_STATS_REQUEST,
       SAVE_USER_REQUEST,
@@ -39,8 +37,8 @@ export default function* watchProfileRequests() {
       LOGOUT_USER_INTEGRATION_REQUEST,
       UPDATE_PROFILE_PICTURE_REQUEST,
       DELETE_PROFILE_PICTURE_REQUEST
-    ]))
-  ) {
+    ]);
+
     const { type, payload } = action;
     switch (type) {
       case GET_USER_REQUEST: {

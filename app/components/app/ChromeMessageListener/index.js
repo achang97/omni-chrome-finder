@@ -9,7 +9,6 @@ import { updateNavigateSearchText } from 'actions/navigate';
 import { requestGetUser } from 'actions/profile';
 import { requestLogAudit } from 'actions/auditLog';
 import { requestGetTasks, updateTasksOpenSection, updateTasksTab } from 'actions/tasks';
-import { SEARCH } from 'appConstants';
 import { hasCompletedOnboarding } from 'utils/auth';
 import ChromeMessageListener from './ChromeMessageListener';
 
@@ -18,12 +17,7 @@ const mapStateToProps = (state) => {
     display: { dockVisible, dockExpanded, autofindShown },
     auth: { token },
     profile: { user = {} },
-    tasks: { tasks },
-    search: {
-      cards: {
-        [SEARCH.TYPE.AUTOFIND]: { isSearchingCards }
-      }
-    }
+    tasks: { tasks }
   } = state;
 
   const { isVerified, autofindPermissions = {}, onboarding } = user;
@@ -32,7 +26,6 @@ const mapStateToProps = (state) => {
     dockVisible,
     dockExpanded,
     autofindShown,
-    isSearchingCards,
     isLoggedIn: !!token,
     isVerified,
     autofindPermissions,

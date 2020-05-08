@@ -4,12 +4,12 @@ import { toggleDock, toggleDockHeight } from 'actions/display';
 
 const cardsMiddleware = (store) => (next) => (action) => {
   const nextAction = next(action);
-  const { type, payload } = action;
+  const { type } = action;
 
   switch (type) {
     case types.END_SCREEN_RECORDING: {
       const {
-        screenRecording: { recording, onSuccess, activeId }
+        screenRecording: { recording, onSuccess }
       } = store.getState();
 
       onSuccess({ recording });

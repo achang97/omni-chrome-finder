@@ -5,6 +5,7 @@ import onClickOutside from 'react-onclickoutside';
 import { NOOP } from 'appConstants';
 
 import { getStyleApplicationFn } from 'utils/style';
+
 const s = getStyleApplicationFn();
 
 const getPositionStyle = (isDown, isLeft) => {

@@ -49,16 +49,14 @@ const DOCUMENTATION_INTEGRATIONS = [
 ];
 
 export default function* watchSearchRequests() {
-  let action;
-
-  while (
-    (action = yield take([
+  while (true) {
+    const action = yield take([
       SEARCH_CARDS_REQUEST,
       SEARCH_TAGS_REQUEST,
       SEARCH_USERS_REQUEST,
       SEARCH_PERMISSION_GROUPS_REQUEST
-    ]))
-  ) {
+    ]);
+
     const { type, payload } = action;
     switch (type) {
       case SEARCH_CARDS_REQUEST: {
@@ -97,6 +95,7 @@ function* searchCards({ type, query, clearCards }) {
   const cancelToken = cancelRequest(CANCEL_TYPE.CARDS);
 
   if (!query) {
+    // eslint-disable-next-line no-param-reassign
     query = yield select((state) => state.search.cards[type].oldQuery);
   }
 

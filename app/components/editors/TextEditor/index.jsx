@@ -7,10 +7,11 @@ import { MdTextFormat, MdKeyboardArrowLeft, MdAdd } from 'react-icons/md';
 import { IoMdArrowDropleft, IoMdArrowDropright } from 'react-icons/io';
 
 import { Button } from 'components/common';
+import { getStyleApplicationFn } from 'utils/style';
 import { CARD_TOOLBAR_PROPS, EXTENSION_TOOLBAR_PROPS } from './TextEditorProps.js';
 
 import style from './text-editor.css';
-import { getStyleApplicationFn } from 'utils/style';
+
 const s = getStyleApplicationFn(style);
 
 export default class TextEditor extends Component {
@@ -130,7 +131,7 @@ export default class TextEditor extends Component {
           <Button
             text={minimizedPlaceholder || placeholder}
             onClick={this.onExpandEditor}
-            color={'secondary'}
+            color="secondary"
             className={s('text-editor-minimized-button justify-start shadow-none')}
             icon={<MdAdd className={s('mr-reg')} />}
             underline={false}

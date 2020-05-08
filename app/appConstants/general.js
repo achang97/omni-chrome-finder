@@ -6,7 +6,6 @@ import JiraIcon from 'assets/images/icons/Jira_Icon.svg';
 import SalesforceIcon from 'assets/images/icons/Salesforce_Icon.svg';
 import HubspotIcon from 'assets/images/icons/Hubspot_Icon.svg';
 import HelpscoutIcon from 'assets/images/icons/Helpscout_Icon.svg';
-import GoogleChromeIcon from 'assets/images/icons/GoogleChrome_Icon.svg';
 
 export const ROUTES = {
   ASK: '/ask',
@@ -49,7 +48,7 @@ export const INTEGRATIONS = {
   HELPSCOUT: { type: 'helpscout', title: 'Helpscout', logo: HelpscoutIcon },
   GMAIL: { type: 'gmail', title: 'Gmail', logo: GmailIcon },
   SALESFORCE: { type: 'salesforce', title: 'Salesforce', logo: SalesforceIcon },
-  JIRA: { type: 'jira', title: 'Jira', logo: SalesforceIcon },
+  JIRA: { type: 'jira', title: 'Jira', logo: JiraIcon },
   HUBSPOT: { type: 'hubspot', title: 'Hubspot', logo: HubspotIcon }
 };
 

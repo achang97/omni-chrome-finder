@@ -5,16 +5,9 @@ export const getStorageName = (name) =>
 
 export function setStorage(key, value) {
   if (chrome.storage) {
-    return chrome.storage.local.set(
-      {
-        [getStorageName(key)]: JSON.stringify(value)
-      },
-      () => {
-        if (chrome.runtime.lastError) {
-          console.log(chrome.runtime.lastError);
-        }
-      }
-    );
+    return chrome.storage.local.set({
+      [getStorageName(key)]: JSON.stringify(value)
+    });
   }
 
   return null;
@@ -24,7 +17,7 @@ export function getStorage(key) {
   return new Promise((resolve, reject) => {
     if (chrome.storage) {
       const keyName = getStorageName(key);
-      return chrome.storage.local.get(keyName, (obj) => {
+      chrome.storage.local.get(keyName, (obj) => {
         if (chrome.runtime.lastError) {
           reject(chrome.runtime.lastError);
         } else {
@@ -34,7 +27,7 @@ export function getStorage(key) {
       });
     }
 
-    reject('The variable `chrome.storage` does not exist');
+    reject(new Error('The variable `chrome.storage` does not exist'));
   });
 }
 

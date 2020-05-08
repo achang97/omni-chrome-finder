@@ -59,7 +59,7 @@ const IntegrationAuthButton = ({
         <Dropdown
           className={s('ml-xs')}
           isOpen={dropdownOpen}
-          toggler={(
+          toggler={
             <Button
               text={`Connected${textSuffix}`}
               color="secondary"
@@ -73,9 +73,9 @@ const IntegrationAuthButton = ({
               }
               iconLeft={false}
             />
-          )}
+          }
           onToggle={(dropdownOpen) => setDropdownOpen(dropdownOpen)}
-          body={(
+          body={
             <div className={s('integration-auth-sign-out-dropdown')}>
               <Button
                 text="Sign Out"
@@ -84,7 +84,7 @@ const IntegrationAuthButton = ({
                 onClick={onSignOut}
               />
             </div>
-          )}
+          }
         />
       </div>
     );

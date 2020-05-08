@@ -26,17 +26,15 @@ import {
 import { openModal } from 'actions/display';
 
 export default function* watchAskRequests() {
-  let action;
-
-  while (
-    (action = yield take([
+  while (true) {
+    const action = yield take([
       ASK_QUESTION_REQUEST,
       GET_SLACK_CONVERSATIONS_REQUEST,
       ADD_ASK_ATTACHMENT_REQUEST,
       REMOVE_ASK_ATTACHMENT_REQUEST,
       SUBMIT_FEEDBACK_REQUEST
-    ]))
-  ) {
+    ]);
+
     const { type, payload } = action;
     switch (type) {
       case ASK_QUESTION_REQUEST: {

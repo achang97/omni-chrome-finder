@@ -1,4 +1,4 @@
-import { CHROME, URL } from 'appConstants';
+import { CHROME } from 'appConstants';
 import { injectExtension, loadScript } from './inject';
 
 const IDS = {

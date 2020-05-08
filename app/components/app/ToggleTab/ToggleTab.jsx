@@ -1,11 +1,6 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import {
-  MdLightbulbOutline,
-  MdKeyboardArrowLeft,
-  MdKeyboardArrowRight,
-  MdClose
-} from 'react-icons/md';
+import { MdClose } from 'react-icons/md';
 
 import { Button } from 'components/common';
 import { ROUTES } from 'appConstants';
@@ -56,7 +51,7 @@ const ToggleTab = ({
       />
       <Button
         color={color}
-        icon={<img src={logo} className={s('w-3/4')} />}
+        icon={<img src={logo} className={s('w-3/4')} alt="Omni Logo" />}
         className={s('toggle-tab-button rounded-l-none')}
         onClick={onOpenClick}
       />

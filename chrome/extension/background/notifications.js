@@ -1,9 +1,10 @@
+import _ from 'lodash';
 import queryString from 'query-string';
 import { CHROME, URL } from 'appConstants';
 import { getStorage, setStorage } from 'utils/storage';
 import { getActiveTab, injectExtension, loadScript } from './inject';
 
-export function createNotification({ userId, message, notification }) {
+export default function createNotification({ message, notification }) {
   const { notifier, resolver, card, question, status, resolved, _id } = notification;
 
   // Create chrome notification
@@ -56,6 +57,8 @@ function openNotificationNewTab(type, id) {
       queryParams = { cardId: id };
       break;
     }
+    default:
+      break;
   }
 
   const link = `${URL.EXTENSION}?${queryString.stringify(queryParams)}`;
@@ -65,7 +68,10 @@ function openNotificationNewTab(type, id) {
 
 chrome.notifications.onClicked.addListener(async (notificationId) => {
   chrome.notifications.clear(notificationId);
-  const [match, type, status, id] = notificationId.match(/(\S+)-(\S+)-(\S+)/);
+
+  const match = notificationId.match(/(\S+)-(\S+)-(\S+)/);
+  const type = match[1];
+  const id = match[3];
 
   getActiveTab().then(async (activeTab) => {
     try {
@@ -74,7 +80,7 @@ chrome.notifications.onClicked.addListener(async (notificationId) => {
         const isInjected = await injectExtension(activeTabId);
         if (!chrome.runtime.lastError) {
           if (!isInjected) {
-            loadScript('inject', tabId, () => {
+            loadScript('inject', activeTabId, () => {
               openNotification(windowId, activeTabId, { type, id });
             });
           } else {

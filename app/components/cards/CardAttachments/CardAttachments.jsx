@@ -133,7 +133,8 @@ const CardAttachments = ({ isEditable, attachments, onRemoveClick, onFileNameCha
               )}
               onCloseRequest={() => setLightboxOpenState(false)}
               onMovePrevRequest={() =>
-                setLightboxIndex((lightboxIndex + images.length - 1) % images.length)}
+                setLightboxIndex((lightboxIndex + images.length - 1) % images.length)
+              }
               onMoveNextRequest={() => setLightboxIndex((lightboxIndex + 1) % images.length)}
             />
           )}

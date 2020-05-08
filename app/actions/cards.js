@@ -195,16 +195,16 @@ export function handleCreateCardError(cardId, error) {
   return { type: types.CREATE_CARD_ERROR, payload: { cardId, error } };
 }
 
-export function requestUpdateCard(closeCard = false) {
-  return { type: types.UPDATE_CARD_REQUEST, payload: { closeCard } };
+export function requestUpdateCard(shouldCloseCard = false) {
+  return { type: types.UPDATE_CARD_REQUEST, payload: { shouldCloseCard } };
 }
 
-export function handleUpdateCardSuccess(card, closeCard, isApprover) {
-  return { type: types.UPDATE_CARD_SUCCESS, payload: { closeCard, card, isApprover } };
+export function handleUpdateCardSuccess(card, shouldCloseCard, isApprover) {
+  return { type: types.UPDATE_CARD_SUCCESS, payload: { shouldCloseCard, card, isApprover } };
 }
 
-export function handleUpdateCardError(cardId, error, closeCard) {
-  return { type: types.UPDATE_CARD_ERROR, payload: { cardId, error, closeCard } };
+export function handleUpdateCardError(cardId, error, shouldCloseCard) {
+  return { type: types.UPDATE_CARD_ERROR, payload: { cardId, error, shouldCloseCard } };
 }
 
 export function requestDeleteCard() {

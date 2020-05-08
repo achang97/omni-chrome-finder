@@ -5,9 +5,10 @@ import { IoIosSquare } from 'react-icons/io';
 
 import { Tooltip, Button } from 'components/common';
 
+import { getStyleApplicationFn } from 'utils/style';
 import attachmentsStyle from '../styles/attachments.css';
 import screenRecordButtonStyle from './screen-record-button.css';
-import { getStyleApplicationFn } from 'utils/style';
+
 const s = getStyleApplicationFn(attachmentsStyle, screenRecordButtonStyle);
 
 /*
@@ -70,16 +71,15 @@ class ScreenRecordButton extends Component {
       toggleDock();
     }
 
-    let desktopStream, voiceStream;
+    let desktopStream;
+    let voiceStream;
 
     try {
       voiceStream = await navigator.mediaDevices.getUserMedia({
         audio: true,
         video: false
       });
-    } catch (e) {
-      console.log(e);
-    }
+    } catch {}
 
     try {
       desktopStream = await navigator.mediaDevices.getDisplayMedia({
@@ -126,7 +126,9 @@ class ScreenRecordButton extends Component {
     const { isSharingDesktop, abbrText, showText, className, id, activeId } = this.props;
     const isActiveButton = id === activeId;
 
-    let onClick, text, Icon;
+    let onClick;
+    let text;
+    let Icon;
     if (!isSharingDesktop || !isActiveButton) {
       onClick = this.startRecording;
       text = abbrText ? 'Record' : 'Screen Record';
@@ -138,7 +140,7 @@ class ScreenRecordButton extends Component {
     }
 
     return (
-      <React.Fragment>
+      <>
         <Tooltip
           show={!navigator.mediaDevices}
           tooltip="Screen recordings are not allowed on insecure websites."
@@ -155,7 +157,7 @@ class ScreenRecordButton extends Component {
             disabled={!navigator.mediaDevices || (activeId !== null && !isActiveButton)}
           />
         </Tooltip>
-      </React.Fragment>
+      </>
     );
   }
 }

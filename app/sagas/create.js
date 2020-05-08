@@ -1,6 +1,6 @@
 import { take, call, fork, put } from 'redux-saga/effects';
 import { doGet, doPost, doDelete, getErrorMessage } from 'utils/request';
-import { convertAttachmentsToBackendFormat, isUploadedFile } from 'utils/file';
+import { isUploadedFile } from 'utils/file';
 import {
   GET_TEMPLATES_REQUEST,
   ADD_CREATE_ATTACHMENT_REQUEST,
@@ -16,15 +16,13 @@ import {
 } from 'actions/create';
 
 export default function* watchCreateRequests() {
-  let action;
-
-  while (
-    (action = yield take([
+  while (true) {
+    const action = yield take([
       GET_TEMPLATES_REQUEST,
       ADD_CREATE_ATTACHMENT_REQUEST,
       REMOVE_CREATE_ATTACHMENT_REQUEST
-    ]))
-  ) {
+    ]);
+
     const { type, payload } = action;
     switch (type) {
       case GET_TEMPLATES_REQUEST: {

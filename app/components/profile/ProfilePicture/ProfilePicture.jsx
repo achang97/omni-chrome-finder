@@ -44,9 +44,7 @@ const ProfilePicture = ({
         .then((blob) => {
           setCroppedImg(blob);
         })
-        .catch((error) => {
-          console.log(error);
-        });
+        .catch();
     }
   };
 

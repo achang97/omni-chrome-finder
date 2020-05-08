@@ -1,8 +1,8 @@
 const fs = require('fs');
 const ChromeExtension = require('crx');
+const argv = require('minimist')(process.argv.slice(2));
 /* eslint import/no-unresolved: 0 */
 const { name } = require('../build/manifest.json');
-const argv = require('minimist')(process.argv.slice(2));
 
 const keyPath = argv.key || 'key.pem';
 const existsKey = fs.existsSync(keyPath);

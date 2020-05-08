@@ -1,18 +1,9 @@
-import React, { Component } from 'react';
-import { withRouter } from 'react-router-dom';
+import { Component } from 'react';
+import PropTypes from 'prop-types';
 import queryString from 'query-string';
 import { EditorState, ContentState } from 'draft-js';
 
-import {
-  CHROME,
-  SEARCH,
-  ROUTES,
-  MAIN_CONTAINER_ID,
-  INTEGRATIONS,
-  URL,
-  TASKS,
-  PROFILE
-} from 'appConstants';
+import { CHROME, SEARCH, ROUTES, INTEGRATIONS, URL, TASKS, PROFILE } from 'appConstants';
 
 const URL_REGEXES = [
   {
@@ -40,14 +31,17 @@ class ChromeMessageListener extends Component {
   }
 
   componentDidUpdate(prevProps) {
-    if (this.state.hasLoaded && this.isValidUser()) {
+    const { hasLoaded } = this.state;
+    const { clearSearchCards } = this.props;
+
+    if (hasLoaded && this.isValidUser()) {
       const prevEnabled = this.isAutofindEnabled(prevProps.autofindPermissions);
       const currEnabled = this.isAutofindEnabled();
 
       if (!prevEnabled && currEnabled) {
         this.handlePageLoad();
       } else if (prevEnabled && !currEnabled) {
-        this.props.clearSearchCards(SEARCH.TYPE.AUTOFIND);
+        clearSearchCards(SEARCH.TYPE.AUTOFIND);
       }
     }
   }
@@ -134,7 +128,7 @@ class ChromeMessageListener extends Component {
     }
   };
 
-  createMutator(targetNode, config) {
+  createMutator = (targetNode, config) => {
     const callback = (mutations) => {
       this.handlePageUpdate(false);
     };
@@ -142,7 +136,7 @@ class ChromeMessageListener extends Component {
     // Create an observer instance linked to the callback function
     this.observer = new MutationObserver(callback);
     this.observer.observe(targetNode, config);
-  }
+  };
 
   trimAlphanumeric = (text) => {
     return text.replace(/^[^a-z\d]+|[^a-z\d]+$/gi, '');
@@ -214,9 +208,8 @@ class ChromeMessageListener extends Component {
 
     if (urlRegex) {
       return urlRegex.integration;
-    } else {
-      return null;
     }
+    return null;
   };
 
   isAutofindEnabled = (autofindPermissions) => {
@@ -230,6 +223,8 @@ class ChromeMessageListener extends Component {
       case INTEGRATIONS.GMAIL.type: {
         return this.getGoogleText();
       }
+      default:
+        break;
     }
 
     return '';
@@ -304,6 +299,8 @@ class ChromeMessageListener extends Component {
           );
           break;
         }
+        default:
+          break;
       }
 
       history.push(url);
@@ -332,6 +329,8 @@ class ChromeMessageListener extends Component {
           openCard({ _id: id });
           break;
         }
+        default:
+          break;
       }
     }
   };
@@ -344,6 +343,8 @@ class ChromeMessageListener extends Component {
         requestGetUser();
         break;
       }
+      default:
+        break;
     }
   };
 
@@ -399,6 +400,9 @@ class ChromeMessageListener extends Component {
         this.handleCommand(type);
         break;
       }
+
+      default:
+        break;
     }
   };
 
@@ -406,5 +410,45 @@ class ChromeMessageListener extends Component {
     return null;
   }
 }
+
+ChromeMessageListener.propTypes = {
+  // Redux State
+  dockVisible: PropTypes.bool.isRequired,
+  dockExpanded: PropTypes.bool.isRequired,
+  autofindShown: PropTypes.bool.isRequired,
+  isLoggedIn: PropTypes.bool.isRequired,
+  isVerified: PropTypes.bool.isRequired,
+  autofindPermissions: PropTypes.shape({
+    gmail: PropTypes.bool,
+    zendesk: PropTypes.bool,
+    helpscout: PropTypes.bool,
+    salesforce: PropTypes.bool,
+    jira: PropTypes.bool,
+    hubspot: PropTypes.bool
+  }).isRequired,
+  hasCompletedOnboarding: PropTypes.bool.isRequired,
+  tasks: PropTypes.arrayOf(
+    PropTypes.shape({
+      _id: PropTypes.string.isRequired
+    })
+  ).isRequired,
+
+  // Redux Actions
+  toggleDock: PropTypes.func.isRequired,
+  minimizeDock: PropTypes.func.isRequired,
+  toggleAutofindTab: PropTypes.func.isRequired,
+  requestGetUser: PropTypes.func.isRequired,
+  openCard: PropTypes.func.isRequired,
+  updateAskSearchText: PropTypes.func.isRequired,
+  updateAskQuestionTitle: PropTypes.func.isRequired,
+  updateCreateAnswerEditor: PropTypes.func.isRequired,
+  updateNavigateSearchText: PropTypes.func.isRequired,
+  requestSearchCards: PropTypes.func.isRequired,
+  clearSearchCards: PropTypes.func.isRequired,
+  requestGetTasks: PropTypes.func.isRequired,
+  updateTasksTab: PropTypes.func.isRequired,
+  updateTasksOpenSection: PropTypes.func.isRequired,
+  requestLogAudit: PropTypes.func.isRequired
+};
 
 export default ChromeMessageListener;

@@ -1,3 +1,4 @@
+import _ from 'lodash';
 import { take, call, fork, put, select } from 'redux-saga/effects';
 import { doGet, doPost, doPut, doDelete, getErrorMessage } from 'utils/request';
 import { getArrayIds, getArrayField } from 'utils/array';
@@ -45,15 +46,12 @@ import {
   handleGetSlackThreadSuccess,
   handleGetSlackThreadError
 } from 'actions/cards';
-import { addSearchCard, removeSearchCard } from 'actions/search';
 
 const INCOMPLETE_CARD_ERROR = 'Failed to save card: some fields are incomplete.';
 
 export default function* watchCardsRequests() {
-  let action;
-
-  while (
-    (action = yield take([
+  while (true) {
+    const action = yield take([
       GET_CARD_REQUEST,
       CREATE_CARD_REQUEST,
       UPDATE_CARD_REQUEST,
@@ -66,8 +64,8 @@ export default function* watchCardsRequests() {
       REMOVE_BOOKMARK_REQUEST,
       ADD_CARD_ATTACHMENT_REQUEST,
       GET_SLACK_THREAD_REQUEST
-    ]))
-  ) {
+    ]);
+
     const { type, payload } = action;
     switch (type) {
       case GET_CARD_REQUEST: {
@@ -238,7 +236,7 @@ function* createCard() {
   }
 }
 
-function* updateCard({ closeCard }) {
+function* updateCard({ shouldCloseCard }) {
   const activeCard = yield call(getActiveCard);
   const cardId = activeCard._id;
 
@@ -251,12 +249,12 @@ function* updateCard({ closeCard }) {
       const card = yield call(doPut, `/cards/${cardId}`, newCardInfo);
 
       const user = yield select((state) => state.profile.user);
-      yield put(handleUpdateCardSuccess(card, closeCard, isApprover(user, card.tags)));
+      yield put(handleUpdateCardSuccess(card, shouldCloseCard, isApprover(user, card.tags)));
     } else {
-      yield put(handleUpdateCardError(cardId, INCOMPLETE_CARD_ERROR, closeCard));
+      yield put(handleUpdateCardError(cardId, INCOMPLETE_CARD_ERROR, shouldCloseCard));
     }
   } catch (error) {
-    yield put(handleUpdateCardError(cardId, getErrorMessage(error), closeCard));
+    yield put(handleUpdateCardError(cardId, getErrorMessage(error), shouldCloseCard));
   }
 }
 
@@ -338,6 +336,7 @@ function* removeBookmark({ cardId }) {
 
 function* addAttachment({ cardId, key, file }) {
   if (!cardId) {
+    // eslint-disable-next-line no-param-reassign
     cardId = yield call(getActiveCardId);
   }
 

@@ -1,4 +1,3 @@
-import { setStorage, getStorage } from 'utils/storage';
 import * as types from 'actions/actionTypes';
 import { handleDeleteCardSuccess, updateCard, requestGetCard } from 'actions/cards';
 

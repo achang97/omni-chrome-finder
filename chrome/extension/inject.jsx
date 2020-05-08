@@ -1,6 +1,6 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
-import { heap, window as windowUtils, storage } from 'utils';
+import { getStorage } from 'utils/storage';
 import { MAIN_CONTAINER_ID, CHROME } from 'appConstants';
 import { initialState as authInitialState } from 'reducers/auth';
 import { initialState as profileInitialState } from 'reducers/profile';
@@ -9,11 +9,12 @@ import Root from 'containers/Root';
 
 function render(state, wrapper) {
   // Import has to be here for Redux dev tools to work
+  // eslint-disable-next-line global-require
   const createStore = require('store/configureStore').default;
   ReactDOM.render(<Root store={createStore(state)} />, wrapper);
 }
 
-(function () {
+(() => {
   const { body } = document;
 
   const wrapper = document.createElement('div');
@@ -23,7 +24,7 @@ function render(state, wrapper) {
 
   const initialState = {};
 
-  Promise.all([storage.getStorage(CHROME.STORAGE.AUTH), storage.getStorage(CHROME.STORAGE.TASKS)])
+  Promise.all([getStorage(CHROME.STORAGE.AUTH), getStorage(CHROME.STORAGE.TASKS)])
     .then(([auth, tasks]) => {
       if (auth) {
         const { user, token, refreshToken } = auth;
@@ -48,7 +49,7 @@ function render(state, wrapper) {
 
       render(initialState, wrapper);
     })
-    .catch((error) => {
+    .catch(() => {
       render(initialState, wrapper);
     });
 })();
