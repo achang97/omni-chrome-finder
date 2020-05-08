@@ -3,9 +3,17 @@ import PropTypes from 'prop-types';
 import _ from 'lodash';
 import { MdCheck, MdMoreVert } from 'react-icons/md';
 
-import SuggestionPreview from '../SuggestionPreview';
 import { CardStatus, CardConfirmModal } from 'components/cards';
-import { Button, Dropdown, Triangle, Modal, Message, Loader, Timeago, Separator } from 'components/common';
+import {
+  Button,
+  Dropdown,
+  Triangle,
+  Modal,
+  Message,
+  Loader,
+  Timeago,
+  Separator
+} from 'components/common';
 
 import { CARD, URL } from 'appConstants';
 import { getContentStateHTMLFromString } from 'utils/editor';
@@ -13,8 +21,9 @@ import { copyCardUrl } from 'utils/card';
 
 import { colors } from 'styles/colors';
 
-import style from './suggestion-card.css';
 import { getStyleApplicationFn } from 'utils/style';
+import style from './suggestion-card.css';
+import SuggestionPreview from '../SuggestionPreview';
 
 const s = getStyleApplicationFn(style);
 
@@ -24,7 +33,14 @@ const BUTTON_TYPE = {
 };
 
 const SuggestionCard = ({
-  id, question, answer, updatedAt, status, className, showMoreMenu, deleteProps,
+  id,
+  question,
+  answer,
+  updatedAt,
+  status,
+  className,
+  showMoreMenu,
+  deleteProps,
   openCard
 }) => {
   const [dropdownOpen, setDropdownOpen] = useState(false);
@@ -36,7 +52,7 @@ const SuggestionCard = ({
       if (!isDeleting && !deleteProps.error) {
         toggleActiveButton(BUTTON_TYPE.DELETE, false);
       }
-    }, [isDeleting])    
+    }, [isDeleting]);
   }
 
   const getButtonProps = ({ isLoading, onClick }) => {
@@ -44,16 +60,18 @@ const SuggestionCard = ({
       onClick: () => onClick(id),
       iconLeft: false,
       icon: isLoading ? <Loader className={s('ml-sm')} size="sm" color="white" /> : null,
-      disabled: isLoading,
+      disabled: isLoading
     };
-  }
+  };
 
   const getActions = () => {
-    const actions = [{
-      label: 'Share Card',
-      buttonType: BUTTON_TYPE.SHARE,
-      onClick: () => shareCard(),
-    }];
+    const actions = [
+      {
+        label: 'Share Card',
+        buttonType: BUTTON_TYPE.SHARE,
+        onClick: () => shareCard()
+      }
+    ];
 
     if (deleteProps) {
       actions.push({
@@ -72,20 +90,20 @@ const SuggestionCard = ({
     }
 
     return actions;
-  }
+  };
 
   const toggleActiveButton = (type, value) => {
     setButtonActive({
       ...buttonActive,
       [type]: value !== undefined ? value : !buttonActive[type]
     });
-  }
+  };
 
   const shareCard = () => {
     // Create invisible element with text
     copyCardUrl(id);
     toggleActiveButton(BUTTON_TYPE.SHARE);
-  }
+  };
 
   const protectedOnClick = (onClick, buttonType) => {
     if (onClick) {
@@ -95,7 +113,7 @@ const SuggestionCard = ({
     }
 
     setDropdownOpen(false);
-  }
+  };
 
   const renderDropdown = () => {
     if (!showMoreMenu) {
@@ -113,17 +131,15 @@ const SuggestionCard = ({
           onToggle={setDropdownOpen}
           body={
             <div className={s('navigate-more-dropdown')}>
-              { actions.map(({ label, onClick, buttonType }, i) => (
+              {actions.map(({ label, onClick, buttonType }, i) => (
                 <div key={buttonType}>
                   <Button
                     key={label}
                     text={label}
-                    className={'shadow-none text-purple-reg'}
+                    className="shadow-none text-purple-reg"
                     onClick={() => protectedOnClick(onClick, buttonType)}
                   />
-                  { i !== actions.length - 1 &&
-                    <Separator horizontal className={s('my-0')} />
-                  }
+                  {i !== actions.length - 1 && <Separator horizontal className={s('my-0')} />}
                 </div>
               ))}
             </div>
@@ -131,15 +147,19 @@ const SuggestionCard = ({
         />
       </div>
     );
-  }
+  };
 
   const renderShareSuccess = () => {
     return (
       <Message
         message={
-          <div className={s('flex-1 mt-sm mx-sm p-sm text-center bg-purple-light rounded-full text-xs')}>
+          <div
+            className={s(
+              'flex-1 mt-sm mx-sm p-sm text-center bg-purple-light rounded-full text-xs'
+            )}
+          >
             Copied link to clipboard!
-          </div>          
+          </div>
         }
         show={buttonActive[BUTTON_TYPE.SHARE]}
         onHide={() => toggleActiveButton(BUTTON_TYPE.SHARE)}
@@ -147,40 +167,45 @@ const SuggestionCard = ({
         temporary
       />
     );
-  }
+  };
 
   const renderModals = () => {
     const actions = getActions();
 
     return (
       <div>
-        { actions.filter(({ modalProps }) => !!modalProps).map(({ modalProps, buttonType }) =>
-          <div key={buttonType}>
-            <CardConfirmModal
-              isOpen={buttonActive[buttonType]}
-              onRequestClose={() => toggleActiveButton(buttonType)}
-              {...modalProps}
-            />
-          </div>
-        )}
+        {actions
+          .filter(({ modalProps }) => !!modalProps)
+          .map(({ modalProps, buttonType }) => (
+            <div key={buttonType}>
+              <CardConfirmModal
+                isOpen={buttonActive[buttonType]}
+                onRequestClose={() => toggleActiveButton(buttonType)}
+                {...modalProps}
+              />
+            </div>
+          ))}
       </div>
     );
-  }
+  };
 
   return (
-    <div className={s(`${className} rounded-xl p-lg bg-white cursor-pointer`)} onClick={() => openCard({ _id: id })}>
+    <div
+      className={s(`${className} rounded-xl p-lg bg-white cursor-pointer`)}
+      onClick={() => openCard({ _id: id })}
+    >
       <div className={s('flex flex-col')}>
         <div className={s('flex')}>
           <span className={s('flex-grow text-lg text-left font-semibold break-words line-clamp-3')}>
             {question}
           </span>
-          { renderDropdown() }
+          {renderDropdown()}
         </div>
-        { answer &&
+        {answer && (
           <span className={s('mt-sm text-xs text-gray-dark font-medium line-clamp-3 break-words')}>
             {answer}
           </span>
-        }
+        )}
       </div>
       <div className={s('mt-reg pt-reg flex-col')}>
         <Separator horizontal className={s('mb-sm')} />
@@ -191,30 +216,36 @@ const SuggestionCard = ({
           <CardStatus status={status} />
         </div>
       </div>
-      { renderShareSuccess() }
-      { renderModals() }
+      {renderShareSuccess()}
+      {renderModals()}
     </div>
   );
-}
+};
 
 SuggestionCard.propTypes = {
   id: PropTypes.string.isRequired,
   question: PropTypes.string.isRequired,
   answer: PropTypes.string,
   updatedAt: PropTypes.string.isRequired,
-  status: PropTypes.oneOf([CARD.STATUS.UP_TO_DATE, CARD.STATUS.OUT_OF_DATE, CARD.STATUS.NEEDS_VERIFICATION, CARD.STATUS.NEEDS_APPROVAL, CARD.STATUS.NOT_DOCUMENTED]),
+  status: PropTypes.oneOf([
+    CARD.STATUS.UP_TO_DATE,
+    CARD.STATUS.OUT_OF_DATE,
+    CARD.STATUS.NEEDS_VERIFICATION,
+    CARD.STATUS.NEEDS_APPROVAL,
+    CARD.STATUS.NOT_DOCUMENTED
+  ]),
   className: PropTypes.string,
   showMoreMenu: PropTypes.bool,
   deleteProps: PropTypes.shape({
     onClick: PropTypes.func.isRequired,
     isLoading: PropTypes.bool,
-    error: PropTypes.string,
-  }),
+    error: PropTypes.string
+  })
 };
 
 SuggestionCard.defaultProps = {
   className: '',
-  showMoreMenu: false,
+  showMoreMenu: false
 };
 
 export default SuggestionCard;

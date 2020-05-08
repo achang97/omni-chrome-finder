@@ -2,16 +2,26 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import Ripples from 'react-ripples';
 
-import style from './tab.css';
 import { getStyleApplicationFn } from 'utils/style';
+import style from './tab.css';
 
 const s = getStyleApplicationFn(style);
 
 const Tab = ({
-  isActive, label, value,
-  onTabClick, clickOnMouseDown,
-  rippleClassName, tabContainerClassName, tabClassName, activeTabClassName, inactiveTabClassName, style,
-  color, indicatorColor, showIndicator,
+  isActive,
+  label,
+  value,
+  onTabClick,
+  clickOnMouseDown,
+  rippleClassName,
+  tabContainerClassName,
+  tabClassName,
+  activeTabClassName,
+  inactiveTabClassName,
+  style,
+  color,
+  indicatorColor,
+  showIndicator,
   showRipple,
   children,
   ...rest
@@ -19,7 +29,7 @@ const Tab = ({
   let activeTabStyle = {};
   if (isActive && showIndicator) {
     activeTabStyle = {
-      borderBottom: (color || indicatorColor) ? `2px solid ${indicatorColor || color}` : null,
+      borderBottom: color || indicatorColor ? `2px solid ${indicatorColor || color}` : null
     };
   }
 
@@ -31,9 +41,7 @@ const Tab = ({
       style={{ color }}
       className={s(`
         tab button-hover ${tabClassName}
-        ${isActive ?
-          `${activeTabClassName}` :
-          `tab-inactive ${inactiveTabClassName}`}
+        ${isActive ? `${activeTabClassName}` : `tab-inactive ${inactiveTabClassName}`}
       `)}
     >
       {label || children}
@@ -42,10 +50,11 @@ const Tab = ({
 
   return (
     <div className={s(tabContainerClassName)} style={{ ...style, ...activeTabStyle }} {...rest}>
-      { showRipple ?
-        <Ripples className={s(`rounded h-full ${rippleClassName}`)}> {renderButton()} </Ripples> :
+      {showRipple ? (
+        <Ripples className={s(`rounded h-full ${rippleClassName}`)}> {renderButton()} </Ripples>
+      ) : (
         renderButton()
-      }
+      )}
     </div>
   );
 };
@@ -65,7 +74,7 @@ Tab.propTypes = {
   color: PropTypes.string,
   indicatorColor: PropTypes.string,
   showIndicator: PropTypes.bool,
-  showRipple: PropTypes.bool,
+  showRipple: PropTypes.bool
 };
 
 Tab.defaultProps = {
@@ -74,7 +83,7 @@ Tab.defaultProps = {
   tabClassName: '',
   activeTabClassName: '',
   inactiveTabClassName: '',
-  style: {},
+  style: {}
 };
 
 export default Tab;

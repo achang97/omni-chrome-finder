@@ -5,20 +5,22 @@ export const getContentStateFromEditorState = (editorState) => {
   const contentState = editorState.getCurrentContent();
   return {
     text: contentState.getPlainText(),
-    contentState: JSON.stringify(convertToRaw(contentState)),
+    contentState: JSON.stringify(convertToRaw(contentState))
   };
 };
 
-export const getContentStateFromString = contentStateString => (
-  convertFromRaw(JSON.parse(contentStateString))
-);
+export const getContentStateFromString = (contentStateString) =>
+  convertFromRaw(JSON.parse(contentStateString));
 
-export const getContentStateHTMLFromString = contentStateString => (
-  stateToHTML(getContentStateFromString(contentStateString))
-);
+export const getContentStateHTMLFromString = (contentStateString) =>
+  stateToHTML(getContentStateFromString(contentStateString));
 
-export const getEditorStateFromContentState = contentStateString => (
-  EditorState.createWithContent(getContentStateFromString(contentStateString))
-);
+export const getEditorStateFromContentState = (contentStateString) =>
+  EditorState.createWithContent(getContentStateFromString(contentStateString));
 
-export default { getContentStateFromEditorState, getContentStateFromString, getContentStateHTMLFromString, getEditorStateFromContentState };
+export default {
+  getContentStateFromEditorState,
+  getContentStateFromString,
+  getContentStateHTMLFromString,
+  getEditorStateFromContentState
+};

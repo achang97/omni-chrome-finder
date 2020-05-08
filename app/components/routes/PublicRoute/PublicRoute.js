@@ -4,10 +4,9 @@ import { ROUTES } from 'appConstants';
 
 const PublicRoute = ({ isLoggedIn, ...givenProps }) => {
   if (!isLoggedIn) {
-    return <Route {...givenProps} />
-  } else {
-    return <Redirect to={{ pathname: ROUTES.ASK, state: { from: givenProps.location } }} />;
+    return <Route {...givenProps} />;
   }
-}
+  return <Redirect to={{ pathname: ROUTES.ASK, state: { from: givenProps.location } }} />;
+};
 
 export default PublicRoute;

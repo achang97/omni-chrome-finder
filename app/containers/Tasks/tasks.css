@@ -12,8 +12,8 @@
   width: 16px;
   padding: 3.375px !important;
   margin: 1.625px;
-  background-image: linear-gradient(190deg, #FFE4B8 0%, #E3C295 100%);
-  color: #B18B50;
+  background-image: linear-gradient(190deg, #ffe4b8 0%, #e3c295 100%);
+  color: #b18b50;
 }
 
 .tasks-section-container {
@@ -24,16 +24,18 @@
   @apply flex flex-shrink-0 items-center px-reg cursor-pointer;
 }
 
-.tasks-section-container, .tasks-section-header {
+.tasks-section-container,
+.tasks-section-header {
   min-height: 42px;
 }
 
 .tasks-section-header-active {
-  background-image: linear-gradient(0deg, #FFFFFF 40%, #f4f5ff9e 100%);
+  background-image: linear-gradient(0deg, #fff 40%, #f4f5ff9e 100%);
 }
 
 .card-tag {
   @apply flex items-center bg-purple-gray-10 text-purple-reg rounded-full font-semibold text-xs;
+
   padding: 6px;
   width: fit-content;
 }
@@ -43,10 +45,6 @@
 }
 
 .tasks-out-of-date-shadow {
-  /*background: linear-gradient(45deg, #ffa8a9, #ffc8c8);*/
+  /* background: linear-gradient(45deg, #ffa8a9, #ffc8c8); */
   background: linear-gradient(45deg, #ffbebf, #ffdada);
-}
-
-.tasks-undocumented-shadow {
-
 }

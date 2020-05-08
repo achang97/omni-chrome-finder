@@ -5,12 +5,10 @@ import SuggestionScrollContainer from 'components/suggestions/SuggestionScrollCo
 import { SEARCH } from 'appConstants';
 
 import { getStyleApplicationFn } from 'utils/style';
+
 const s = getStyleApplicationFn();
 
-const Autofind = ({
-  isSearchingCards, cards, hasReachedLimit,
-  requestSearchCards
-}) => (
+const Autofind = ({ isSearchingCards, cards, hasReachedLimit, requestSearchCards }) => (
   <SuggestionScrollContainer
     className={s('min-h-0 flex-1')}
     cards={cards}
@@ -21,7 +19,7 @@ const Autofind = ({
     getCardProps={(card, i) => ({
       className: i === 0 ? 'my-reg' : ''
     })}
-  />  
-)
+  />
+);
 
 export default Autofind;

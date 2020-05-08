@@ -30,4 +30,4 @@ chrome.commands.onCommand.addListener(async (command) => {
       window.open(URL.EXTENSION);
     }
   });
-})
+});

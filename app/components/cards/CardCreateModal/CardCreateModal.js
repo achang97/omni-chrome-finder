@@ -3,7 +3,15 @@ import PropTypes from 'prop-types';
 import AnimateHeight from 'react-animate-height';
 import { MdLock, MdAutorenew } from 'react-icons/md';
 
-import { CardSection, CardUsers, CardTags, CardAttachment, CardPermissions, CardKeywords, CardVerificationInterval } from 'components/cards';
+import {
+  CardSection,
+  CardUsers,
+  CardTags,
+  CardAttachment,
+  CardPermissions,
+  CardKeywords,
+  CardVerificationInterval
+} from 'components/cards';
 import { Loader, Button, Modal, Separator, Message, HelpTooltip } from 'components/common';
 
 import { HINTS, PERMISSION_OPTION, MODAL_TYPE } from 'appConstants/card';
@@ -20,14 +28,18 @@ const CardCreateModal = (props) => {
     if (props.createError) {
       scrollToBottom();
     }
-  }, [props.createError])
+  }, [props.createError]);
 
   const scrollToBottom = () => {
     bottomRef.current.scrollIntoView({ behavior: 'smooth', block: 'end' });
-  }
+  };
 
   const renderOwners = () => {
-    const { edits: { owners = [] }, addCardOwner, removeCardOwner } = props;
+    const {
+      edits: { owners = [] },
+      addCardOwner,
+      removeCardOwner
+    } = props;
     return (
       <CardUsers
         isEditable
@@ -38,14 +50,19 @@ const CardCreateModal = (props) => {
         showTooltips
       />
     );
-  }
+  };
 
   const renderSubscribers = () => {
-    const { edits: { subscribers=[], owners=[] }, isEditing, addCardSubscriber, removeCardSubscriber } = props;
+    const {
+      edits: { subscribers = [], owners = [] },
+      isEditing,
+      addCardSubscriber,
+      removeCardSubscriber
+    } = props;
     return (
       <CardUsers
         isEditable={isEditing}
-        users={subscribers.map(subscriber => ({
+        users={subscribers.map((subscriber) => ({
           ...subscriber,
           isEditable: !owners.some(({ _id: ownerId }) => ownerId === subscriber._id)
         }))}
@@ -59,7 +76,11 @@ const CardCreateModal = (props) => {
   };
 
   const renderTags = () => {
-    const { edits: { tags = [] }, updateCardTags, removeCardTag } = props;
+    const {
+      edits: { tags = [] },
+      updateCardTags,
+      removeCardTag
+    } = props;
     return (
       <CardTags
         isEditable
@@ -70,10 +91,15 @@ const CardCreateModal = (props) => {
         showSelect
       />
     );
-  }
+  };
 
   const renderAdvanced = ({ isExisting, justMe }) => {
-    const { edits: { verificationInterval = {}, permissions = {}, permissionGroups = [] }, updateCardVerificationInterval, updateCardPermissions, updateCardPermissionGroups } = props;
+    const {
+      edits: { verificationInterval = {}, permissions = {}, permissionGroups = [] },
+      updateCardVerificationInterval,
+      updateCardPermissions,
+      updateCardPermissionGroups
+    } = props;
     return (
       <>
         <AnimateHeight
@@ -84,10 +110,10 @@ const CardCreateModal = (props) => {
             <div className={s('flex items-center text-gray-reg text-xs mb-xs')}>
               <span> Verification Interval </span>
               <HelpTooltip
-                className={s('ml-sm')} 
+                className={s('ml-sm')}
                 tooltip={HINTS.VERIFICATION_INTERVAL}
                 tooltipProps={{
-                  place: 'right'  
+                  place: 'right'
                 }}
               />
             </div>
@@ -110,27 +136,39 @@ const CardCreateModal = (props) => {
         </div>
       </>
     );
-  }
+  };
 
   const renderAdvancedPreview = (justMe) => {
-    const { edits: { verificationInterval={}, permissions={} } } = props;
+    const {
+      edits: { verificationInterval = {}, permissions = {} }
+    } = props;
     return (
       <div className={s('text-xs text-purple-gray-50 flex')}>
-        { !justMe &&
-          <React.Fragment>
+        {!justMe && (
+          <>
             <MdAutorenew />
             <span className={s('ml-xs')}> {verificationInterval.label} </span>
             <Separator className={s('mx-reg')} />
-          </React.Fragment>
-        }
+          </>
+        )}
         <MdLock />
         <span className={s('ml-xs')}> {permissions.label} </span>
       </div>
     );
-  }
+  };
 
   const render = () => {
-    const { modalOpen, requestCreateCard, requestUpdateCard, closeCardModal, createError, isCreatingCard, isUpdatingCard, edits, _id } = props;
+    const {
+      modalOpen,
+      requestCreateCard,
+      requestUpdateCard,
+      closeCardModal,
+      createError,
+      isCreatingCard,
+      isUpdatingCard,
+      edits,
+      _id
+    } = props;
     const isExisting = isExistingCard(_id);
     const isLoading = isExisting ? isUpdatingCard : isCreatingCard;
     const onClick = isExisting ? requestUpdateCard : requestCreateCard;
@@ -149,7 +187,7 @@ const CardCreateModal = (props) => {
       },
       {
         title: 'Tags',
-        renderFn: renderTags,
+        renderFn: renderTags
       },
       {
         title: 'Advanced',
@@ -162,11 +200,11 @@ const CardCreateModal = (props) => {
 
     const primaryButtonProps = {
       text: 'Complete Card',
-      onClick: onClick, 
+      onClick,
       isLoading,
       disabled: !hasValidEdits(edits)
     };
-    
+
     return (
       <Modal
         isOpen={modalOpen[MODAL_TYPE.CREATE]}
@@ -177,28 +215,30 @@ const CardCreateModal = (props) => {
         primaryButtonProps={primaryButtonProps}
       >
         <div className={s('flex-grow overflow-auto p-lg')}>
-          { CARD_SECTIONS.map(({ title, hint, renderFn, showJustMe, startExpanded=true, preview }, i) => (
-            <AnimateHeight height={(!justMe || showJustMe) ? 'auto' : 0}>
-              <CardSection
-                className={s(i < CARD_SECTIONS.length - 1 ? 'mb-lg' : '')}
-                title={title}
-                hint={hint}
-                startExpanded={startExpanded}
-                preview={preview}
-                showSeparator={i < CARD_SECTIONS.length - 1}
-              >
-                {renderFn({ isExisting, justMe })}
-              </CardSection>
-            </AnimateHeight>
-          ))}
+          {CARD_SECTIONS.map(
+            ({ title, hint, renderFn, showJustMe, startExpanded = true, preview }, i) => (
+              <AnimateHeight height={!justMe || showJustMe ? 'auto' : 0}>
+                <CardSection
+                  className={s(i < CARD_SECTIONS.length - 1 ? 'mb-lg' : '')}
+                  title={title}
+                  hint={hint}
+                  startExpanded={startExpanded}
+                  preview={preview}
+                  showSeparator={i < CARD_SECTIONS.length - 1}
+                >
+                  {renderFn({ isExisting, justMe })}
+                </CardSection>
+              </AnimateHeight>
+            )
+          )}
           <Message className={s('my-sm')} message={createError} type="error" />
           <div ref={bottomRef} />
         </div>
       </Modal>
-    );    
-  }
+    );
+  };
 
   return render();
-}
+};
 
 export default CardCreateModal;

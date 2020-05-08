@@ -1,23 +1,33 @@
 import { take, call, fork, put } from 'redux-saga/effects';
 import { doGet, doPost, doPut, getErrorMessage } from 'utils/request';
 import {
-  GET_TASKS_REQUEST, MARK_UP_TO_DATE_FROM_TASKS_REQUEST,
-  DISMISS_TASK_REQUEST, APPROVE_CARD_FROM_TASKS_REQUEST
+  GET_TASKS_REQUEST,
+  MARK_UP_TO_DATE_FROM_TASKS_REQUEST,
+  DISMISS_TASK_REQUEST,
+  APPROVE_CARD_FROM_TASKS_REQUEST
 } from 'actions/actionTypes';
 import {
-  handleGetTasksSuccess, handleGetTasksError,
-  handleMarkUpToDateFromTasksSuccess, handleMarkUpToDateFromTasksError,
-  handleDismissTaskSuccess, handleDismissTaskError,
-  handleApproveCardFromTasksSuccess, handleApproveCardFromTasksError,
+  handleGetTasksSuccess,
+  handleGetTasksError,
+  handleMarkUpToDateFromTasksSuccess,
+  handleMarkUpToDateFromTasksError,
+  handleDismissTaskSuccess,
+  handleDismissTaskError,
+  handleApproveCardFromTasksSuccess,
+  handleApproveCardFromTasksError
 } from 'actions/tasks';
 
 export default function* watchTasksRequests() {
   let action;
 
-  while (action = yield take([
-    GET_TASKS_REQUEST, MARK_UP_TO_DATE_FROM_TASKS_REQUEST,
-    DISMISS_TASK_REQUEST, APPROVE_CARD_FROM_TASKS_REQUEST
-  ])) {
+  while (
+    (action = yield take([
+      GET_TASKS_REQUEST,
+      MARK_UP_TO_DATE_FROM_TASKS_REQUEST,
+      DISMISS_TASK_REQUEST,
+      APPROVE_CARD_FROM_TASKS_REQUEST
+    ]))
+  ) {
     const { type, payload } = action;
     switch (type) {
       case GET_TASKS_REQUEST: {

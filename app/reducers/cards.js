@@ -3,7 +3,15 @@ import { EditorState } from 'draft-js';
 import * as types from 'actions/actionTypes';
 import { removeIndex, updateIndex, updateArrayOfObjects } from 'utils/array';
 import { convertCardToFrontendFormat, generateCardId } from 'utils/card';
-import { STATUS, EDITOR_TYPE, DIMENSIONS, MODAL_TYPE, DEFAULT_VERIFICATION_INTERVAL, VERIFICATION_INTERVAL_OPTIONS, PERMISSION_OPTIONS } from 'appConstants/card';
+import {
+  STATUS,
+  EDITOR_TYPE,
+  DIMENSIONS,
+  MODAL_TYPE,
+  DEFAULT_VERIFICATION_INTERVAL,
+  VERIFICATION_INTERVAL_OPTIONS,
+  PERMISSION_OPTIONS
+} from 'appConstants/card';
 
 const initialState = {
   cards: [],
@@ -15,7 +23,7 @@ const initialState = {
   windowPosition: {
     x: window.innerWidth / 2 - DIMENSIONS.DEFAULT_CARDS_WIDTH / 2,
     y: window.innerHeight / 2 - DIMENSIONS.DEFAULT_CARDS_HEIGHT / 2
-  },
+  }
 };
 
 const BASE_MODAL_OPEN_STATE = _.mapValues(MODAL_TYPE, () => false);
@@ -43,14 +51,14 @@ const BASE_CARD_STATE = {
   subscribers: [],
   question: '',
   answerEditorState: EditorState.createEmpty(),
-  descriptionEditorState:  EditorState.createEmpty(),
+  descriptionEditorState: EditorState.createEmpty()
 };
 
 export default function cardsReducer(state = initialState, action) {
   const { type, payload = {} } = action;
 
   /* General helpers */
-  const getIndexById = id => state.cards.findIndex(card => card._id === id);
+  const getIndexById = (id) => state.cards.findIndex((card) => card._id === id);
 
   const getCardById = (id) => {
     const { activeCard, cards } = state;
@@ -75,32 +83,42 @@ export default function cardsReducer(state = initialState, action) {
     }
   });
 
-  const updateActiveCardEdits = newEditsInfo => updateActiveCard({}, newEditsInfo);
+  const updateActiveCardEdits = (newEditsInfo) => updateActiveCard({}, newEditsInfo);
 
   const updateCardById = (id, newInfo, updateCardsArray = false) => {
     // TODO FIX
     if (id === state.activeCard._id && !updateCardsArray) {
       return updateActiveCard(newInfo);
-    } else if (id === state.activeCard._id && updateCardsArray) {
+    }
+    if (id === state.activeCard._id && updateCardsArray) {
       const newActiveCard = { ...state.activeCard, ...newInfo };
       return {
         ...state,
         activeCard: newActiveCard,
         cards: updateArrayOfObjects(state.cards, { _id: id }, newActiveCard, false)
       };
-    } else {
-      return {
-        ...state,
-        cards: updateArrayOfObjects(state.cards, { _id: id }, newInfo)
-      };      
     }
+    return {
+      ...state,
+      cards: updateArrayOfObjects(state.cards, { _id: id }, newInfo)
+    };
   };
 
   const createCardEdits = (card) => {
     const {
-      owners, subscribers, attachments, tags, keywords, permissions, permissionGroups,
-      verificationInterval, question, answerEditorState, descriptionEditorState,
-      slackReplies, edits
+      owners,
+      subscribers,
+      attachments,
+      tags,
+      keywords,
+      permissions,
+      permissionGroups,
+      verificationInterval,
+      question,
+      answerEditorState,
+      descriptionEditorState,
+      slackReplies,
+      edits
     } = card;
     return {
       ...card,
@@ -232,7 +250,7 @@ export default function cardsReducer(state = initialState, action) {
           ...cardInfo,
           _id: generateCardId(),
           modalOpen: { ...cardInfo.modalOpen, [MODAL_TYPE.CREATE]: createModalOpen },
-          editorEnabled: { ...cardInfo.editorEnabled, [EDITOR_TYPE.ANSWER]: true },
+          editorEnabled: { ...cardInfo.editorEnabled, [EDITOR_TYPE.ANSWER]: true }
         });
       } else {
         // Will have to update this section in the future
@@ -259,12 +277,12 @@ export default function cardsReducer(state = initialState, action) {
       return removeCardAtIndex(index);
     }
 
-    case types.OPEN_CARD_CONTAINER_MODAL: { 
-      return { ...state, showCloseModal: true, cardsExpanded: true };  
-    } 
-    case types.CLOSE_CARD_CONTAINER_MODAL: {  
-      return { ...state, showCloseModal: false }; 
-    } 
+    case types.OPEN_CARD_CONTAINER_MODAL: {
+      return { ...state, showCloseModal: true, cardsExpanded: true };
+    }
+    case types.CLOSE_CARD_CONTAINER_MODAL: {
+      return { ...state, showCloseModal: false };
+    }
 
     case types.OPEN_CARD_SIDE_DOCK: {
       return updateActiveCard({ sideDockOpen: true });
@@ -331,10 +349,15 @@ export default function cardsReducer(state = initialState, action) {
       const { messageIndex } = payload;
       const { activeCard } = state;
 
-      const slackReplies = activeCard.edits.slackReplies;
-      const newSlackReplies = updateIndex(slackReplies, messageIndex, {
-        selected: !slackReplies[messageIndex].selected
-      }, true);
+      const { slackReplies } = activeCard.edits;
+      const newSlackReplies = updateIndex(
+        slackReplies,
+        messageIndex,
+        {
+          selected: !slackReplies[messageIndex].selected
+        },
+        true
+      );
       return updateActiveCardEdits({ slackReplies: newSlackReplies });
     }
     case types.CANCEL_EDIT_CARD_MESSAGES: {
@@ -344,7 +367,9 @@ export default function cardsReducer(state = initialState, action) {
 
     case types.ADD_CARD_OWNER: {
       const { owner } = payload;
-      const { activeCard: { edits } } = state;
+      const {
+        activeCard: { edits }
+      } = state;
       return updateActiveCardEdits({
         owners: _.unionBy(edits.owners, [owner], '_id'),
         subscribers: _.unionBy(edits.subscribers, [owner], '_id')
@@ -352,18 +377,26 @@ export default function cardsReducer(state = initialState, action) {
     }
     case types.REMOVE_CARD_OWNER: {
       const { index } = payload;
-      const { activeCard: { edits } } = state;
+      const {
+        activeCard: { edits }
+      } = state;
       return updateActiveCardEdits({ owners: removeIndex(edits.owners, index) });
     }
 
     case types.ADD_CARD_SUBSCRIBER: {
       const { subscriber } = payload;
-      const { activeCard: { edits } } = state;
-      return updateActiveCardEdits({ subscribers: _.unionBy(edits.subscribers, [subscriber], '_id') });
+      const {
+        activeCard: { edits }
+      } = state;
+      return updateActiveCardEdits({
+        subscribers: _.unionBy(edits.subscribers, [subscriber], '_id')
+      });
     }
     case types.REMOVE_CARD_SUBSCRIBER: {
       const { index } = payload;
-      const { activeCard: { edits } } = state;
+      const {
+        activeCard: { edits }
+      } = state;
       return updateActiveCardEdits({ subscribers: removeIndex(edits.subscribers, index) });
     }
 
@@ -373,7 +406,9 @@ export default function cardsReducer(state = initialState, action) {
     }
     case types.REMOVE_CARD_TAG: {
       const { index } = payload;
-      const { activeCard: { edits } } = state;
+      const {
+        activeCard: { edits }
+      } = state;
       return updateActiveCardEdits({ tags: removeIndex(edits.tags, index) });
     }
 
@@ -415,7 +450,7 @@ export default function cardsReducer(state = initialState, action) {
     /* API REQUESTS */
     case types.ADD_CARD_ATTACHMENT_REQUEST: {
       const { cardId, key, file } = payload;
-      
+
       const currCard = getCardById(cardId);
       if (!currCard) {
         return state;
@@ -442,14 +477,18 @@ export default function cardsReducer(state = initialState, action) {
 
     case types.REMOVE_CARD_ATTACHMENT: {
       const { key } = payload;
-      const { activeCard: { edits } } = state;
+      const {
+        activeCard: { edits }
+      } = state;
       return updateActiveCardEdits({
         attachments: edits.attachments.filter((attachment) => attachment.key !== key)
       });
     }
     case types.UPDATE_CARD_ATTACHMENT_NAME: {
       const { key, name } = payload;
-      const { activeCard: { edits, _id } } = state;
+      const {
+        activeCard: { edits, _id }
+      } = state;
       return updateAttachmentsByKey(_id, key, { name });
     }
 
@@ -460,7 +499,7 @@ export default function cardsReducer(state = initialState, action) {
       const { cardId, card } = payload;
 
       const currCard = getCardById(cardId);
-      const isEditing = currCard && currCard.isEditing || card.status === STATUS.NOT_DOCUMENTED;
+      const isEditing = (currCard && currCard.isEditing) || card.status === STATUS.NOT_DOCUMENTED;
 
       let newCardInfo = convertCardToFrontendFormat(card);
       if (isEditing) {
@@ -619,7 +658,12 @@ export default function cardsReducer(state = initialState, action) {
     case types.GET_SLACK_THREAD_SUCCESS: {
       const { cardId, slackReplies } = payload;
       const { edits } = getCardById(cardId);
-      return updateCardById(cardId, { isGettingSlackThread: false, modalOpen: BASE_MODAL_OPEN_STATE, slackReplies, edits: { ...edits, slackReplies } });
+      return updateCardById(cardId, {
+        isGettingSlackThread: false,
+        modalOpen: BASE_MODAL_OPEN_STATE,
+        slackReplies,
+        edits: { ...edits, slackReplies }
+      });
     }
     case types.GET_SLACK_THREAD_ERROR: {
       const { cardId, error } = payload;

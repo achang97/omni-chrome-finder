@@ -2,28 +2,30 @@ import { connect } from 'react-redux';
 import {
   closeCardSideDock,
   openCardModal,
-  removeCardAttachment, updateCardAttachmentName,
-  addCardOwner, removeCardOwner,
-  addCardSubscriber, removeCardSubscriber,
-  updateCardTags, removeCardTag,
+  removeCardAttachment,
+  updateCardAttachmentName,
+  addCardOwner,
+  removeCardOwner,
+  addCardSubscriber,
+  removeCardSubscriber,
+  updateCardTags,
+  removeCardTag,
   updateCardKeywords,
-  updateCardVerificationInterval, updateCardPermissions, updateCardPermissionGroups,
+  updateCardVerificationInterval,
+  updateCardPermissions,
+  updateCardPermissionGroups,
   editCard
 } from 'actions/cards';
 import CardSideDock from './CardSideDock';
 
-const mapStateToProps = state => {
+const mapStateToProps = (state) => {
   const {
-    cards: {
-      activeCard
-    },
-    auth: {
-      token
-    }
+    cards: { activeCard },
+    auth: { token }
   } = state;
 
   return { ...activeCard, token };
-}
+};
 
 const mapDispatchToProps = {
   closeCardSideDock,
@@ -40,7 +42,7 @@ const mapDispatchToProps = {
   updateCardVerificationInterval,
   updateCardPermissions,
   updateCardPermissionGroups,
-  editCard,
-}
+  editCard
+};
 
 export default connect(mapStateToProps, mapDispatchToProps)(CardSideDock);

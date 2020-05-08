@@ -2,6 +2,7 @@ import React from 'react';
 import PropTypes from 'prop-types';
 
 import { getStyleApplicationFn } from 'utils/style';
+
 const s = getStyleApplicationFn();
 
 const getStyle = (direction, color, size, isInner) => {
@@ -11,28 +12,28 @@ const getStyle = (direction, color, size, isInner) => {
         borderLeft: `${size}px solid transparent`,
         borderRight: `${size}px solid transparent`,
         borderBottom: `${size}px solid ${color}`,
-        position: isInner ? 'absolute' : 'relative',
+        position: isInner ? 'absolute' : 'relative'
       };
     case 'down':
       return {
         borderLeft: `${size}px solid transparent`,
         borderRight: `${size}px solid transparent`,
         borderTop: `${size}px solid ${color}`,
-        position: isInner ? 'absolute' : 'relative',
+        position: isInner ? 'absolute' : 'relative'
       };
     case 'right':
       return {
         borderTop: `${size}px solid transparent`,
         borderBottom: `${size}px solid transparent`,
         borderLeft: `${size}px solid ${color}`,
-        position: isInner ? 'absolute' : 'relative',
+        position: isInner ? 'absolute' : 'relative'
       };
     case 'left':
       return {
         borderTop: `${size}px solid transparent`,
         borderBottom: `${size}px solid transparent`,
         borderRight: `${size}px solid ${color}`,
-        position: isInner ? 'absolute' : 'relative',
+        position: isInner ? 'absolute' : 'relative'
       };
   }
 };
@@ -52,14 +53,20 @@ const getPositionStyle = (direction, size, outlineSize) => {
       return { top: `-${size}px`, left: `-${size + outlineSize}px` };
     }
   }
-}
+};
 
 const Triangle = ({ direction, color, size, outlineSize, outlineColor, className, style }) => {
-  const innerStyle = { ...getStyle(direction, color, size, true), ...getPositionStyle(direction, size, outlineSize) };
+  const innerStyle = {
+    ...getStyle(direction, color, size, true),
+    ...getPositionStyle(direction, size, outlineSize)
+  };
   const outerStyle = getStyle(direction, outlineColor, size + outlineSize, false);
 
   return (
-    <div className={s(`w-0 h-0 flex items-center ${className}`)} style={{ ...outerStyle, ...style }}>
+    <div
+      className={s(`w-0 h-0 flex items-center ${className}`)}
+      style={{ ...outerStyle, ...style }}
+    >
       <div className={s('w-0 h-0')} style={innerStyle} />
     </div>
   );
@@ -72,14 +79,14 @@ Triangle.propTypes = {
   className: PropTypes.string,
   style: PropTypes.object,
   outlineSize: PropTypes.number,
-  outlineColor: PropTypes.string,
+  outlineColor: PropTypes.string
 };
 
 Triangle.defaultProps = {
   className: '',
   outlineSize: 0,
   outlineColor: 'transparent',
-  style: {},
+  style: {}
 };
 
 export default Triangle;

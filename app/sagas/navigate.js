@@ -1,14 +1,12 @@
 import { take, call, fork, put } from 'redux-saga/effects';
 import { doDelete, getErrorMessage } from 'utils/request';
 import { DELETE_NAVIGATE_CARD_REQUEST } from 'actions/actionTypes';
-import {
-  handleDeleteNavigateCardSuccess, handleDeleteNavigateCardError,
-} from 'actions/navigate';
+import { handleDeleteNavigateCardSuccess, handleDeleteNavigateCardError } from 'actions/navigate';
 
 export default function* watchNavigateRequests() {
   let action;
 
-  while (action = yield take([DELETE_NAVIGATE_CARD_REQUEST])) {
+  while ((action = yield take([DELETE_NAVIGATE_CARD_REQUEST]))) {
     const { type, payload } = action;
     switch (type) {
       case DELETE_NAVIGATE_CARD_REQUEST: {

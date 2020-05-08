@@ -19,7 +19,7 @@ class CardTags extends Component {
 
     this.state = {
       firstHiddenIndex: props.tags.length,
-      showSelect: false,
+      showSelect: false
     };
 
     this.tagRefs = [];
@@ -31,7 +31,10 @@ class CardTags extends Component {
   }
 
   componentDidUpdate(prevProps) {
-    if (prevProps.maxWidth !== this.props.maxWidth || JSON.stringify(prevProps.tags) !== JSON.stringify(this.props.tags)) {
+    if (
+      prevProps.maxWidth !== this.props.maxWidth ||
+      JSON.stringify(prevProps.tags) !== JSON.stringify(this.props.tags)
+    ) {
       const firstHiddenIndex = this.getFirstHiddenIndex();
       this.setState({ firstHiddenIndex });
     }
@@ -57,7 +60,7 @@ class CardTags extends Component {
     }
 
     return tags.length;
-  }
+  };
 
   getContainerStyle = () => {
     const { maxWidth } = this.props;
@@ -65,12 +68,12 @@ class CardTags extends Component {
       return {};
     }
     return { maxWidth };
-  }
+  };
 
   renderOptionLabel = ({ name, locked }) => (
     <div className={s('flex items-center')}>
       <div> {name} </div>
-      { locked && <MdLock className={s('ml-xs')} /> }
+      {locked && <MdLock className={s('ml-xs')} />}
     </div>
   );
 
@@ -79,40 +82,65 @@ class CardTags extends Component {
     const { firstHiddenIndex } = this.state;
     return (
       <React.Fragment key={_id}>
-        {i === firstHiddenIndex &&
-        <CardTag
-          name={`+${tags.length - firstHiddenIndex}`}
-          className={s(`flex items-center mb-xs ${className}`)}
-          onClick={onTagClick}
-        />
-        }
+        {i === firstHiddenIndex && (
+          <CardTag
+            name={`+${tags.length - firstHiddenIndex}`}
+            className={s(`flex items-center mb-xs ${className}`)}
+            onClick={onTagClick}
+          />
+        )}
         <CardTag
           name={name}
           locked={locked}
-          ref={maxWidth && ((instance) => { this.tagRefs[i] = instance; })}
-          className={s(`flex items-center mr-xs mb-xs ${maxWidth ? `whitespace-no-wrap ${i >= firstHiddenIndex ? 'invisible' : ''}` : ''} ${className}`)}
+          ref={
+            maxWidth &&
+            ((instance) => {
+              this.tagRefs[i] = instance;
+            })
+          }
+          className={s(
+            `flex items-center mr-xs mb-xs ${
+              maxWidth ? `whitespace-no-wrap ${i >= firstHiddenIndex ? 'invisible' : ''}` : ''
+            } ${className}`
+          )}
           onClick={onTagClick}
           onRemoveClick={isEditable ? () => onRemoveClick(i) : null}
         />
       </React.Fragment>
     );
-  }
+  };
 
   loadOptions = (inputValue) => {
     this.props.requestSearchTags(inputValue);
-  }
+  };
 
   render() {
-    const { className, tags, tagOptions, isSearchingTags, onChange, onTagClick, onRemoveClick, maxWidth, isEditable, showPlaceholder, hideSelectOnBlur } = this.props;
+    const {
+      className,
+      tags,
+      tagOptions,
+      isSearchingTags,
+      onChange,
+      onTagClick,
+      onRemoveClick,
+      maxWidth,
+      isEditable,
+      showPlaceholder,
+      hideSelectOnBlur
+    } = this.props;
     const { firstHiddenIndex } = this.state;
     const containerStyle = this.getContainerStyle();
 
     return (
       <div
-        className={s(`card-tags-container ${maxWidth ? 'flex-shrink-1 min-w-0' : 'card-tags-container-wrap'} ${className}`)}
+        className={s(
+          `card-tags-container ${
+            maxWidth ? 'flex-shrink-1 min-w-0' : 'card-tags-container-wrap'
+          } ${className}`
+        )}
         style={containerStyle}
       >
-        { (this.state.showSelect || this.props.showSelect) ?
+        {this.state.showSelect || this.props.showSelect ? (
           <Select
             className={s('w-full')}
             value={tags}
@@ -126,19 +154,18 @@ class CardTags extends Component {
             isClearable={false}
             placeholder={'Add tags...'}
             onBlur={hideSelectOnBlur ? () => this.setState({ showSelect: false }) : NOOP}
-            getOptionLabel={option => option.name}
-            getOptionValue={option => option._id}
+            getOptionLabel={(option) => option.name}
+            getOptionValue={(option) => option._id}
             formatOptionLabel={this.renderOptionLabel}
-            noOptionsMessage={() => isSearchingTags ? 'Searching tags...' : 'No options'}
-          /> :
-            <React.Fragment>
-              { tags.map((tag, i) => this.renderTag(tag, i)) }
-              { !isEditable && tags.length === 0 && showPlaceholder &&
-              <div className={s('text-sm text-gray-light')}>
-                No current tags
-              </div>
-            }
-              { isEditable &&
+            noOptionsMessage={() => (isSearchingTags ? 'Searching tags...' : 'No options')}
+          />
+        ) : (
+          <React.Fragment>
+            {tags.map((tag, i) => this.renderTag(tag, i))}
+            {!isEditable && tags.length === 0 && showPlaceholder && (
+              <div className={s('text-sm text-gray-light')}>No current tags</div>
+            )}
+            {isEditable && (
               <CardTag
                 name={
                   <div className={s('flex items-center')}>
@@ -149,9 +176,9 @@ class CardTags extends Component {
                 className={s('mr-xs mb-xs primary-gradient text-white')}
                 onClick={() => this.setState({ showSelect: true })}
               />
-            }
-            </React.Fragment>
-        }
+            )}
+          </React.Fragment>
+        )}
       </div>
     );
   }
@@ -160,19 +187,21 @@ class CardTags extends Component {
 CardTags.propTypes = {
   isEditable: PropTypes.bool.isRequired,
   className: PropTypes.string,
-  tags: PropTypes.arrayOf(PropTypes.shape({
-    name: PropTypes.string.isRequired,
-    _id: PropTypes.string.isRequired,
-    locked: PropTypes.bool.isRequired,
-    className: PropTypes.string,
-  })).isRequired,
+  tags: PropTypes.arrayOf(
+    PropTypes.shape({
+      name: PropTypes.string.isRequired,
+      _id: PropTypes.string.isRequired,
+      locked: PropTypes.bool.isRequired,
+      className: PropTypes.string
+    })
+  ).isRequired,
   maxWidth: PropTypes.number,
   onChange: PropTypes.func,
   onTagClick: PropTypes.func,
   onRemoveClick: PropTypes.func,
   showPlaceholder: PropTypes.bool,
   showSelect: PropTypes.bool,
-  hideSelectOnBlur: PropTypes.bool,
+  hideSelectOnBlur: PropTypes.bool
 };
 
 CardTags.defaultProps = {
@@ -180,7 +209,7 @@ CardTags.defaultProps = {
   size: 'md',
   showPlaceholder: false,
   showSelect: false,
-  hideSelectOnBlur: false,
+  hideSelectOnBlur: false
 };
 
 export default CardTags;

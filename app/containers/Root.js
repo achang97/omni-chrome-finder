@@ -19,7 +19,7 @@ class Root extends Component {
 }
 
 Root.propTypes = {
-  store: PropTypes.object.isRequired,
+  store: PropTypes.object.isRequired
 };
 
 export default Root;

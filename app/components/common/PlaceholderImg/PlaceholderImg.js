@@ -2,48 +2,53 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import { getFileUrl } from 'utils/file';
 
-import style from './placeholder-img.css';
 import { getStyleApplicationFn } from 'utils/style';
+import style from './placeholder-img.css';
 
 const s = getStyleApplicationFn(style);
 
 const NUM_COLORS = 3;
 
-const hashCode = s => Math.abs(s.split('').reduce((a, b) => { a = ((a << 5) - a) + b.charCodeAt(0); return a & a; }, 0));
+const hashCode = (s) =>
+  Math.abs(
+    s.split('').reduce((a, b) => {
+      a = (a << 5) - a + b.charCodeAt(0);
+      return a & a;
+    }, 0)
+  );
 
 const getPlaceholder = (name, className) => {
   if (!name) return null;
 
   const bucket = hashCode(name) % NUM_COLORS;
   const tokens = name.trim().split(' ');
-  const initials = tokens.length === 0 ? '' : `${tokens[0][0]}${tokens.length > 1 ? tokens[tokens.length - 1][0] : ''}`;
+  const initials =
+    tokens.length === 0
+      ? ''
+      : `${tokens[0][0]}${tokens.length > 1 ? tokens[tokens.length - 1][0] : ''}`;
 
   return (
-    <div className={s(`placeholder-img placeholder-img-${bucket} ${className}`)}>
-      { initials }
-    </div>
+    <div className={s(`placeholder-img placeholder-img-${bucket} ${className}`)}>{initials}</div>
   );
 };
 
-export const PlaceholderImg = ({ 
-  name, src, className, isUrl,
-  token
-}) => (
-  src ?
-    <img src={isUrl ? src : getFileUrl(src, token)} className={className} /> :
+export const PlaceholderImg = ({ name, src, className, isUrl, token }) =>
+  src ? (
+    <img src={isUrl ? src : getFileUrl(src, token)} className={className} />
+  ) : (
     getPlaceholder(name, className)
-);
+  );
 
 PlaceholderImg.propTypes = {
   name: PropTypes.string.isRequired,
   src: PropTypes.string,
   className: PropTypes.string,
-  isUrl: PropTypes.bool,
+  isUrl: PropTypes.bool
 };
 
 PlaceholderImg.defaultProps = {
   className: '',
-  isUrl: false,
+  isUrl: false
 };
 
 export default PlaceholderImg;

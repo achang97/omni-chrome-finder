@@ -1,24 +1,28 @@
 import { connect } from 'react-redux';
 import {
-  requestCreateCard, requestUpdateCard,
+  requestCreateCard,
+  requestUpdateCard,
   closeCardModal,
-  addCardOwner, removeCardOwner,
-  addCardSubscriber, removeCardSubscriber,
-  updateCardTags, removeCardTag,
+  addCardOwner,
+  removeCardOwner,
+  addCardSubscriber,
+  removeCardSubscriber,
+  updateCardTags,
+  removeCardTag,
   updateCardKeywords,
-  updateCardVerificationInterval, updateCardPermissions, updateCardPermissionGroups,
+  updateCardVerificationInterval,
+  updateCardPermissions,
+  updateCardPermissionGroups
 } from 'actions/cards';
 import CardCreateModal from './CardCreateModal';
 
-const mapStateToProps = state => {
+const mapStateToProps = (state) => {
   const {
-    cards: {
-      activeCard
-    }
+    cards: { activeCard }
   } = state;
 
   return { ...activeCard };
-}
+};
 
 const mapDispatchToProps = {
   requestCreateCard,
@@ -33,7 +37,7 @@ const mapDispatchToProps = {
   updateCardKeywords,
   updateCardVerificationInterval,
   updateCardPermissions,
-  updateCardPermissionGroups  
-}
+  updateCardPermissionGroups
+};
 
 export default connect(mapStateToProps, mapDispatchToProps)(CardCreateModal);

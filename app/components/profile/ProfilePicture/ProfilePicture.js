@@ -5,15 +5,17 @@ import { IoMdCamera } from 'react-icons/io';
 import { Dropzone, Modal, PlaceholderImg, Loader } from 'components/common';
 import { getFileUrl } from 'utils/file';
 
-import style from './profile-picture.css';
 import { getStyleApplicationFn } from 'utils/style';
+import style from './profile-picture.css';
 
 const s = getStyleApplicationFn(style);
 
 const ProfilePicture = ({
   isEditable,
-  user, isUpdatingPicture,
-  requestUpdateProfilePicture, requestDeleteProfilePicture,
+  user,
+  isUpdatingPicture,
+  requestUpdateProfilePicture,
+  requestDeleteProfilePicture
 }) => {
   const [uploadedImg, setUploadedImg] = useState();
   const [imgRef, setImgRef] = useState(null);
@@ -32,17 +34,17 @@ const ProfilePicture = ({
     }
   };
 
-  const onLoad = useCallback(img => {
+  const onLoad = useCallback((img) => {
     setImgRef(img);
   }, []);
 
-  const makeClientCrop = crop => {
+  const makeClientCrop = (crop) => {
     if (imgRef && crop.width && crop.height) {
       createCropPreview(imgRef, crop, 'newFile.jpeg')
-        .then(blob => {
+        .then((blob) => {
           setCroppedImg(blob);
         })
-        .catch(error => {
+        .catch((error) => {
           console.log(error);
         });
     }
@@ -69,7 +71,7 @@ const ProfilePicture = ({
     );
 
     return new Promise((resolve, reject) => {
-      canvas.toBlob(blob => {
+      canvas.toBlob((blob) => {
         if (!blob) {
           reject(new Error('Canvas is empty'));
           return;
@@ -95,34 +97,39 @@ const ProfilePicture = ({
         {children}
       </Dropzone>
     );
-  }
+  };
 
   const saveProfilePicture = () => {
     requestUpdateProfilePicture(croppedImg);
-  }
+  };
 
   const render = () => {
     return (
       <>
         <div>
-          { wrapDropzone(
+          {wrapDropzone(
             <div className={s('relative flex justify-center')}>
               <PlaceholderImg
                 name={`${user.firstname} ${user.lastname}`}
                 src={user.profilePicture}
                 className={s(`profile-picture ${isEditable ? 'opacity-50 cursor-pointer' : ''}`)}
               />
-              { isEditable && (isUpdatingPicture ?
-                <Loader size="xs" className={s('profile-picture-icon')} /> :
-                <IoMdCamera className={s('profile-picture-icon text-purple-reg')} />
-              )}          
+              {isEditable &&
+                (isUpdatingPicture ? (
+                  <Loader size="xs" className={s('profile-picture-icon')} />
+                ) : (
+                  <IoMdCamera className={s('profile-picture-icon text-purple-reg')} />
+                ))}
             </div>
           )}
-          { isEditable && user.profilePicture &&
-            <div className={s('mt-xs text-gray-light text-xs cursor-pointer')} onClick={requestDeleteProfilePicture}>
+          {isEditable && user.profilePicture && (
+            <div
+              className={s('mt-xs text-gray-light text-xs cursor-pointer')}
+              onClick={requestDeleteProfilePicture}
+            >
               Remove Picture
             </div>
-          }          
+          )}
         </div>
         <Modal
           isOpen={uploadedImg}
@@ -131,7 +138,7 @@ const ProfilePicture = ({
           primaryButtonProps={{
             text: 'Save Profile Picture',
             onClick: saveProfilePicture,
-            isLoading: isUpdatingPicture,
+            isLoading: isUpdatingPicture
           }}
         >
           <ReactCrop
@@ -139,26 +146,25 @@ const ProfilePicture = ({
             onImageLoaded={onLoad}
             crop={crop}
             circularCrop
-            onChange={c => setCrop(c)}
+            onChange={(c) => setCrop(c)}
             onComplete={makeClientCrop}
             imageStyle={{ maxHeight: 'none' }}
-          />        
+          />
         </Modal>
       </>
-    );    
-  }
+    );
+  };
 
   return render();
 };
 
 PropTypes.propTypes = {
   isEditable: PropTypes.bool,
-  imageKey: PropTypes.string,
-}
+  imageKey: PropTypes.string
+};
 
 PropTypes.defaultProps = {
-  isEditable: false,
-}
-
+  isEditable: false
+};
 
 export default ProfilePicture;

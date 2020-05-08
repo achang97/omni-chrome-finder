@@ -1,15 +1,16 @@
 import queryString from 'query-string';
 import { CHROME, URL } from 'appConstants';
-import { getActiveTab, injectExtension, loadScript } from './inject';
 import { getStorage, setStorage } from 'utils/storage';
+import { getActiveTab, injectExtension, loadScript } from './inject';
 
 export function createNotification({ userId, message, notification }) {
   const { notifier, resolver, card, question, status, resolved, _id } = notification;
 
   // Create chrome notification
-  const notificationId = (_id && !resolved) ?
-    `${CHROME.NOTIFICATION_TYPE.TASK}-${status}-${_id}` :
-    `${CHROME.NOTIFICATION_TYPE.CARD}-${status}-${card._id}`;
+  const notificationId =
+    _id && !resolved
+      ? `${CHROME.NOTIFICATION_TYPE.TASK}-${status}-${_id}`
+      : `${CHROME.NOTIFICATION_TYPE.CARD}-${status}-${card._id}`;
 
   const notifierName = notifier ? `${notifier.firstname} ${notifier.lastname}` : 'Omni';
   chrome.notifications.create(notificationId, {
@@ -17,22 +18,22 @@ export function createNotification({ userId, message, notification }) {
     iconUrl: chrome.runtime.getURL('/img/icon-128.png'),
     title: message,
     message: `Card: "${question}"`,
-    contextMessage: `Sent by ${resolved ? resolver.name : notifierName}`,
+    contextMessage: `Sent by ${resolved ? resolver.name : notifierName}`
   });
 
   if (_id) {
-    getStorage(CHROME.STORAGE.TASKS).then(tasks => {
+    getStorage(CHROME.STORAGE.TASKS).then((tasks) => {
       if (tasks) {
         let newTasks;
         if (resolved) {
-          newTasks = tasks.filter(task => task._id !== _id);
+          newTasks = tasks.filter((task) => task._id !== _id);
         } else {
           newTasks = _.unionBy(tasks, [notification], '_id');
         }
 
         setStorage(CHROME.STORAGE.TASKS, newTasks);
       }
-    });    
+    });
   }
 }
 
@@ -41,7 +42,7 @@ function openNotification(windowId, tabId, payload) {
   chrome.tabs.sendMessage(tabId, {
     type: CHROME.MESSAGE.NOTIFICATION_OPENED,
     payload
-  });      
+  });
 }
 
 function openNotificationNewTab(type, id) {
@@ -65,8 +66,8 @@ function openNotificationNewTab(type, id) {
 chrome.notifications.onClicked.addListener(async (notificationId) => {
   chrome.notifications.clear(notificationId);
   const [match, type, status, id] = notificationId.match(/(\S+)-(\S+)-(\S+)/);
-  
-  getActiveTab().then(async activeTab => {
+
+  getActiveTab().then(async (activeTab) => {
     try {
       if (activeTab) {
         const { windowId, id: activeTabId } = activeTab;
@@ -86,5 +87,5 @@ chrome.notifications.onClicked.addListener(async (notificationId) => {
     } catch (error) {
       openNotificationNewTab(type, id);
     }
-  });   
+  });
 });

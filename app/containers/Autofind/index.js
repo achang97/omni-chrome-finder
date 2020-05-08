@@ -3,22 +3,20 @@ import { requestSearchCards } from 'actions/search';
 import { SEARCH } from 'appConstants';
 import Autofind from './Autofind';
 
-const mapStateToProps = state => {
+const mapStateToProps = (state) => {
   const {
     search: {
       cards: {
-        [SEARCH.TYPE.AUTOFIND]: {
-          cards, isSearchingCards, hasReachedLimit
-        }
+        [SEARCH.TYPE.AUTOFIND]: { cards, isSearchingCards, hasReachedLimit }
       }
     }
   } = state;
-  
+
   return { cards, isSearchingCards, hasReachedLimit };
-}
+};
 
 const mapDispatchToProps = {
-  requestSearchCards,
-}
+  requestSearchCards
+};
 
 export default connect(mapStateToProps, mapDispatchToProps)(Autofind);

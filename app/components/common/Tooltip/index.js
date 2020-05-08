@@ -2,8 +2,9 @@ import React, { useState } from 'react';
 import PropTypes from 'prop-types';
 import ReactTooltip from 'react-tooltip';
 
-import style from './tooltip.css';
 import { getStyleApplicationFn } from 'utils/style';
+import style from './tooltip.css';
+
 const s = getStyleApplicationFn(style);
 
 const Tooltip = ({ tooltip, tooltipProps, show, children }) => {
@@ -18,29 +19,25 @@ const Tooltip = ({ tooltip, tooltipProps, show, children }) => {
   const { className, ...restTooltipProps } = tooltipProps;
   return (
     <>
-      { React.cloneElement(children, childProps) }
-      { show && isHovering &&
-        <ReactTooltip
-          effect="float"
-          className={s(`tooltip ${className}`)}
-          {...restTooltipProps}
-        >
+      {React.cloneElement(children, childProps)}
+      {show && isHovering && (
+        <ReactTooltip effect="float" className={s(`tooltip ${className}`)} {...restTooltipProps}>
           {tooltip}
         </ReactTooltip>
-      }
-    </> 
+      )}
+    </>
   );
-}
+};
 
 Tooltip.propTypes = {
   tooltip: PropTypes.node.isRequired,
   tooltipProps: PropTypes.object,
-  show: PropTypes.bool,
-}
+  show: PropTypes.bool
+};
 
 Tooltip.defaultProps = {
   tooltipProps: {},
-  show: true,
-}
+  show: true
+};
 
 export default Tooltip;

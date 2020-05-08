@@ -17,17 +17,35 @@ import { getNewCardBaseState } from 'utils/card';
 import { createSelectOptions, createSelectOption } from 'utils/select';
 import { getEditorStateFromContentState } from 'utils/editor';
 
-import style from './create.css';
 import { getStyleApplicationFn } from 'utils/style';
+import style from './create.css';
+
 const s = getStyleApplicationFn(style);
 
 const Create = ({
-  question, descriptionEditorState, answerEditorState, attachments, user, isTemplateView,
-  showCreateDescriptionEditor, isDescriptionEditorShown,
-  templates, selectedTemplateCategory, selectedTemplate,
-  updateSelectedTemplateCategory, updateSelectedTemplate, toggleTemplateView, requestGetTemplates,
-  updateCreateQuestion, updateCreateDescriptionEditor, updateCreateAnswerEditor, clearCreatePanel,
-  requestAddCreateAttachment, updateCreateAttachmentName, requestRemoveCreateAttachment, openCard
+  question,
+  descriptionEditorState,
+  answerEditorState,
+  attachments,
+  user,
+  isTemplateView,
+  showCreateDescriptionEditor,
+  isDescriptionEditorShown,
+  templates,
+  selectedTemplateCategory,
+  selectedTemplate,
+  updateSelectedTemplateCategory,
+  updateSelectedTemplate,
+  toggleTemplateView,
+  requestGetTemplates,
+  updateCreateQuestion,
+  updateCreateDescriptionEditor,
+  updateCreateAnswerEditor,
+  clearCreatePanel,
+  requestAddCreateAttachment,
+  updateCreateAttachmentName,
+  requestRemoveCreateAttachment,
+  openCard
 }) => {
   useEffect(() => {
     if (isTemplateView) {
@@ -35,9 +53,9 @@ const Create = ({
     }
   }, [isTemplateView]);
 
-  const openCardWithProps = (createModalOpen = false, edits={}) => {
+  const openCardWithProps = (createModalOpen = false, edits = {}) => {
     // Open card with random ID and clear out Create panel
-    let newCardInfo = getNewCardBaseState(user);
+    const newCardInfo = getNewCardBaseState(user);
     newCardInfo.edits = {
       ...newCardInfo.edits,
       question,
@@ -48,13 +66,13 @@ const Create = ({
     };
     openCard(newCardInfo, true, createModalOpen);
     clearCreatePanel();
-  }
+  };
 
   const addCreateAttachments = (files) => {
     files.forEach((file) => {
       requestAddCreateAttachment(generateFileKey(), file);
     });
-  }
+  };
 
   const renderInputSection = () => (
     <div>
@@ -62,7 +80,7 @@ const Create = ({
         placeholder="Title or Question"
         className={s('w-full my-reg')}
         value={question}
-        onChange={e => updateCreateQuestion(e.target.value)}
+        onChange={(e) => updateCreateQuestion(e.target.value)}
         autoFocus
       />
       <TextEditor
@@ -90,10 +108,7 @@ const Create = ({
         onSuccess={({ recording }) => addCreateAttachments([recording])}
         id="create"
       />
-      <AttachmentDropzone
-        className={s('mx-xs')}
-        onDrop={addCreateAttachments}
-      />
+      <AttachmentDropzone className={s('mx-xs')} onDrop={addCreateAttachments} />
       <AttachmentDropdown
         attachments={attachments}
         onFileNameChange={({ key, fileName }) => updateCreateAttachmentName(key, fileName)}
@@ -103,8 +118,11 @@ const Create = ({
   );
 
   const openTemplate = ({ question, answer }) => {
-    openCardWithProps(false, { question, answerEditorState: getEditorStateFromContentState(answer) })
-  }
+    openCardWithProps(false, {
+      question,
+      answerEditorState: getEditorStateFromContentState(answer)
+    });
+  };
 
   const renderTemplateView = () => {
     const selectedCategory = selectedTemplateCategory || createSelectOption(user.team);
@@ -124,24 +142,28 @@ const Create = ({
             onChange={updateSelectedTemplateCategory}
           />
           <div className={s('mt-lg mb-sm text-gray-dark text-xs')}> Templates </div>
-          { selectedTemplates.length === 0 &&
-            <div className={s('text-gray-light my-sm text-center')}> Please select a template category. </div>
-          }          
+          {selectedTemplates.length === 0 && (
+            <div className={s('text-gray-light my-sm text-center')}>
+              Please select a template category.
+            </div>
+          )}
         </div>
         <div className={s('pb-lg')}>
-          { selectedTemplates.map(template => (
+          {selectedTemplates.map((template) => (
             <div
-              className={s('flex items-center justify-between text-purple-reg text-sm font-semibold px-lg py-reg cursor-pointer hover:bg-purple-gray-10')}
+              className={s(
+                'flex items-center justify-between text-purple-reg text-sm font-semibold px-lg py-reg cursor-pointer hover:bg-purple-gray-10'
+              )}
               onClick={() => openTemplate(template)}
             >
               <div className={s('truncate flex-1')}> {template.title} </div>
               <MdOpenInNew />
             </div>
-          ))}          
+          ))}
         </div>
       </div>
-    )
-  }
+    );
+  };
 
   const renderMainView = () => {
     return (
@@ -150,10 +172,10 @@ const Create = ({
           <div className={s('flex justify-between items-center')}>
             <div> Create a Card </div>
             <Button
-              text={'Expand Card'}
+              text="Expand Card"
               onClick={openCardWithProps}
               disabled={isAnyLoading(attachments)}
-              color={'primary'}
+              color="primary"
               className={s('p-sm text-xs')}
               icon={<FiMaximize2 className={s('ml-reg')} />}
               iconLeft={false}
@@ -170,11 +192,13 @@ const Create = ({
             <div className={s('text-xs')}> OR </div>
             <Separator horizontal className={s('section-separator')} />
           </div>
-          { renderInputSection() }
-          { renderAttachmentSection() }
+          {renderInputSection()}
+          {renderAttachmentSection()}
         </div>
         <Button
-          className={s('self-stretch justify-between rounded-t-none rounded-br-none rounded-bl-reg text-reg flex-shrink-0')}
+          className={s(
+            'self-stretch justify-between rounded-t-none rounded-br-none rounded-bl-reg text-reg flex-shrink-0'
+          )}
           onClick={() => openCardWithProps(true)}
           color="primary"
           text="Create Card"
@@ -185,19 +209,21 @@ const Create = ({
             isAnyLoading(attachments)
           }
           icon={
-            <span className={s('rounded-full h-3xl w-3xl flex justify-center items-center bg-white text-purple-reg')}>
+            <span
+              className={s(
+                'rounded-full h-3xl w-3xl flex justify-center items-center bg-white text-purple-reg'
+              )}
+            >
               <MdAdd />
             </span>
           }
         />
-        <SuggestionPanel
-          query={question}
-        />
+        <SuggestionPanel query={question} />
       </div>
-    );    
-  }
+    );
+  };
 
   return isTemplateView ? renderTemplateView() : renderMainView();
-}
+};
 
 export default Create;

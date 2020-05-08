@@ -18,9 +18,9 @@ export default class TextEditor extends Component {
     super(props);
     this.state = {
       hideToolbar: props.toolbarHidden,
-      expanded: props.expanded,
+      expanded: props.expanded
     };
-    this.setDomEditorRef = editorRef => this.domEditor = editorRef;
+    this.setDomEditorRef = (editorRef) => (this.domEditor = editorRef);
   }
 
   componentDidMount() {
@@ -40,7 +40,7 @@ export default class TextEditor extends Component {
       this.setState({});
     }
 
-    if ((prevState.hideToolbar !== toolbarHidden) && !prevState.hideToolbar) {
+    if (prevState.hideToolbar !== toolbarHidden && !prevState.hideToolbar) {
       this.setState({ hideToolbar: toolbarHidden });
     }
   }
@@ -50,7 +50,7 @@ export default class TextEditor extends Component {
 
     this.setState({ hideToolbar: !hideToolbar });
     this.domEditor.focus();
-  }
+  };
 
   onExpandEditor = () => {
     const { onExpandEditor } = this.props;
@@ -59,13 +59,21 @@ export default class TextEditor extends Component {
     } else {
       this.setState({ expanded: true });
     }
-  }
+  };
 
   render() {
     let {
-      editorState, className, wrapperClassName, editorClassName,
-      toolbarClassName, onEditorStateChange, readOnly, editorType,
-      minimizedPlaceholder, placeholder, onClick
+      editorState,
+      className,
+      wrapperClassName,
+      editorClassName,
+      toolbarClassName,
+      onEditorStateChange,
+      readOnly,
+      editorType,
+      minimizedPlaceholder,
+      placeholder,
+      onClick
     } = this.props;
     const { hideToolbar } = this.state;
 
@@ -79,9 +87,13 @@ export default class TextEditor extends Component {
     return (
       <>
         <div
-          className={s(`text-editor-container ${editorType === 'CARD' ? 'flex-grow' : ''} ${className}`)}
+          className={s(
+            `text-editor-container ${editorType === 'CARD' ? 'flex-grow' : ''} ${className}`
+          )}
           style={{ height: expanded ? 'auto' : 0, maxHeight: expanded ? '100vh' : 0 }}
-          onClick={() => { onClick && onClick(); }}
+          onClick={() => {
+            onClick && onClick();
+          }}
         >
           <Editor
             editorRef={this.setDomEditorRef}
@@ -96,23 +108,23 @@ export default class TextEditor extends Component {
             placeholder={placeholder}
             handlePastedText={() => false}
           />
-          {
-            !readOnly &&
+          {!readOnly && (
             <div
               className={s('text-editor-toggle-rte-button button-hover')}
               onClick={() => this.toggleToolbar()}
             >
-              { hideToolbar ?
+              {hideToolbar ? (
                 <div className={s('flex')}>
                   <IoMdArrowDropleft className={s('text-editor-toggle-arrow')} />
                   <MdTextFormat />
-                </div> :
+                </div>
+              ) : (
                 <div className={s('flex')}>
                   <IoMdArrowDropright className={s('text-editor-toggle-arrow')} />
                 </div>
-              }
+              )}
             </div>
-          }
+          )}
         </div>
         <AnimateHeight height={!expanded ? 'auto' : 0}>
           <Button
@@ -144,9 +156,8 @@ TextEditor.propTypes = {
   placeholder: PropTypes.string,
   expanded: PropTypes.bool,
   onExpandEditor: PropTypes.func,
-  minimizedPlaceholder: PropTypes.string,
+  minimizedPlaceholder: PropTypes.string
 };
-
 
 TextEditor.defaultProps = {
   className: '',
@@ -157,5 +168,5 @@ TextEditor.defaultProps = {
   readOnly: false,
   autoFocus: false,
   editorType: 'CARD',
-  expanded: true,
+  expanded: true
 };

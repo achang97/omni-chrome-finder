@@ -14,31 +14,19 @@ import { hasCompletedOnboarding } from 'utils/auth';
 import ChromeMessageListener from './ChromeMessageListener';
 
 const mapStateToProps = (state) => {
-  const { 
-    display: {
-      dockVisible,
-      dockExpanded,
-      autofindShown,
-    },
-    auth: {
-      token
-    },
-    profile: {
-      user={}
-    },
-    tasks: {
-      tasks
-    },
+  const {
+    display: { dockVisible, dockExpanded, autofindShown },
+    auth: { token },
+    profile: { user = {} },
+    tasks: { tasks },
     search: {
       cards: {
-        [SEARCH.TYPE.AUTOFIND]: {
-          isSearchingCards,
-        }
+        [SEARCH.TYPE.AUTOFIND]: { isSearchingCards }
       }
     }
   } = state;
 
-  const { isVerified, autofindPermissions={}, onboarding } = user;
+  const { isVerified, autofindPermissions = {}, onboarding } = user;
 
   return {
     dockVisible,
@@ -51,7 +39,7 @@ const mapStateToProps = (state) => {
     hasCompletedOnboarding: hasCompletedOnboarding(onboarding),
     tasks
   };
-}
+};
 
 const mapDispatchToProps = {
   toggleDock,
@@ -69,6 +57,6 @@ const mapDispatchToProps = {
   updateTasksTab,
   updateTasksOpenSection,
   requestLogAudit
-}
+};
 
 export default connect(mapStateToProps, mapDispatchToProps)(withRouter(ChromeMessageListener));

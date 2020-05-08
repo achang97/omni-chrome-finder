@@ -1,8 +1,7 @@
 import _ from 'lodash';
 import * as types from 'actions/actionTypes';
 
-export const initialState = {
-};
+export const initialState = {};
 
 export default function auditLogReducer(state = initialState, action) {
   const { type, payload = {} } = action;

@@ -2,13 +2,13 @@ import { setStorage, getStorage } from 'utils/storage';
 import * as types from 'actions/actionTypes';
 import { handleDeleteCardSuccess, updateCard, requestGetCard } from 'actions/cards';
 
-const cardsMiddleware = store => next => (action) => {
+const cardsMiddleware = (store) => (next) => (action) => {
   const nextAction = next(action);
   const { type, payload } = action;
 
   switch (type) {
     // Handle tasks actions
-    case types.MARK_UP_TO_DATE_FROM_TASKS_SUCCESS: 
+    case types.MARK_UP_TO_DATE_FROM_TASKS_SUCCESS:
     case types.APPROVE_CARD_FROM_TASKS_SUCCESS: {
       const { card } = payload;
       store.dispatch(updateCard(card));

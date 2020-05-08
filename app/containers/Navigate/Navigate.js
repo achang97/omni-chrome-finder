@@ -14,27 +14,39 @@ import { CARD, NAVIGATE, SEARCH, ANIMATE } from 'appConstants';
 
 import { colors } from 'styles/colors';
 
-import style from './navigate.css';
 import { getStyleApplicationFn } from 'utils/style';
+import style from './navigate.css';
+
 const s = getStyleApplicationFn(style);
 
 const Navigate = ({
-  searchText, activeTab, filterTags, user,
-  cards, isSearchingCards, hasReachedLimit,
-  isDeletingCard, deleteError,
-  updateNavigateTab, updateNavigateSearchText, updateFilterTags, removeFilterTag, clearSearchCards,
-  requestDeleteNavigateCard, requestSearchCards,
+  searchText,
+  activeTab,
+  filterTags,
+  user,
+  cards,
+  isSearchingCards,
+  hasReachedLimit,
+  isDeletingCard,
+  deleteError,
+  updateNavigateTab,
+  updateNavigateSearchText,
+  updateFilterTags,
+  removeFilterTag,
+  clearSearchCards,
+  requestDeleteNavigateCard,
+  requestSearchCards
 }) => {
   const isInitialMount = useRef(true);
 
   useEffect(() => {
     return () => {
       updateNavigateTab(NAVIGATE.TAB_OPTION.ALL);
-    }
-  }, [])
+    };
+  }, []);
 
   const prevTab = usePrevious(activeTab);
-  const prevTags = usePrevious(filterTags); 
+  const prevTags = usePrevious(filterTags);
 
   useEffect(() => {
     if (prevTab !== activeTab || prevTags !== filterTags) {
@@ -42,18 +54,17 @@ const Navigate = ({
     } else {
       debouncedRequestSearch();
     }
-  }, [activeTab, filterTags, searchText])
-
+  }, [activeTab, filterTags, searchText]);
 
   const searchCards = (clearCards) => {
     const queryParams = { q: searchText };
     switch (activeTab) {
       case NAVIGATE.TAB_OPTION.ALL: {
-        queryParams.tags = getArrayIds(filterTags).join(",");
+        queryParams.tags = getArrayIds(filterTags).join(',');
         break;
       }
       case NAVIGATE.TAB_OPTION.MY_CARDS: {
-        queryParams.statuses = Object.values(CARD.STATUS).join(",");
+        queryParams.statuses = Object.values(CARD.STATUS).join(',');
         queryParams.owners = user._id;
         break;
       }
@@ -61,23 +72,23 @@ const Navigate = ({
         if (user.bookmarkIds.length === 0) {
           clearSearchCards(SEARCH.TYPE.NAVIGATE);
           return;
-        } 
-        queryParams.statuses = Object.values(CARD.STATUS).join(",");
-        queryParams.ids = user.bookmarkIds.join(",");
+        }
+        queryParams.statuses = Object.values(CARD.STATUS).join(',');
+        queryParams.ids = user.bookmarkIds.join(',');
         break;
       }
     }
 
     requestSearchCards(SEARCH.TYPE.NAVIGATE, queryParams, clearCards);
-  }
+  };
 
   const [debouncedRequestSearch] = useDebouncedCallback(() => {
-    searchCards(true)
+    searchCards(true);
   }, ANIMATE.DEBOUNCE.MS_300);
 
   const updateSearchText = (e) => {
     updateNavigateSearchText(e.target.value);
-  }
+  };
 
   return (
     <div className={s('flex flex-col flex-grow min-h-0')}>
@@ -91,7 +102,13 @@ const Navigate = ({
             autoFocus
             onChange={updateSearchText}
           />
-          <div className={s('navigate-search-input-icon-container bg-white flex flex-col items-center justify-center text-purple-reg rounded-r-lg pr-reg')}> <MdSearch /> </div>
+          <div
+            className={s(
+              'navigate-search-input-icon-container bg-white flex flex-col items-center justify-center text-purple-reg rounded-r-lg pr-reg'
+            )}
+          >
+            <MdSearch />
+          </div>
         </div>
         <AnimateHeight height={activeTab === NAVIGATE.TAB_OPTION.ALL ? 'auto' : 0}>
           <div className={s('my-reg text-xs')}> Filter cards by tags </div>
@@ -109,19 +126,19 @@ const Navigate = ({
         <Tabs
           activeValue={activeTab}
           className={s('flex-1 flex')}
-          tabClassName={s('bg-purple-xlight flex flex-col text-xs font-medium flex items-center justify-between opacity-100')}
+          tabClassName={s(
+            'bg-purple-xlight flex flex-col text-xs font-medium flex items-center justify-between opacity-100'
+          )}
           activeTabClassName={s('bg-purple-xlight')}
           onTabClick={updateNavigateTab}
           showRipple={false}
           color={colors.purple.reg}
         >
-          {
-            NAVIGATE.TAB_OPTIONS.map(navigateTab => (
-              <Tab tabContainerClassName={s('flex-1')} value={navigateTab} key={navigateTab}>
-                <div>{navigateTab}</div>
-              </Tab>
-            ))
-          }
+          {NAVIGATE.TAB_OPTIONS.map((navigateTab) => (
+            <Tab tabContainerClassName={s('flex-1')} value={navigateTab} key={navigateTab}>
+              <div>{navigateTab}</div>
+            </Tab>
+          ))}
         </Tabs>
       </div>
       <SuggestionScrollContainer
@@ -136,13 +153,13 @@ const Navigate = ({
           deleteProps: {
             onClick: requestDeleteNavigateCard,
             isLoading: isDeletingCard,
-            error: deleteError,
+            error: deleteError
           },
           className: i === 0 ? 'my-reg' : ''
         })}
       />
     </div>
   );
-}
+};
 
 export default Navigate;

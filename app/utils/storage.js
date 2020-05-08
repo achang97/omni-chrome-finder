@@ -1,22 +1,24 @@
 import { NODE_ENV } from 'appConstants';
 
-export const getStorageName = name => (
-  `OMNI_EXTENSION_${process.env.NODE_ENV === NODE_ENV.DEV ? 'DEV' : 'PROD'}_${name}`
-);
+export const getStorageName = (name) =>
+  `OMNI_EXTENSION_${process.env.NODE_ENV === NODE_ENV.DEV ? 'DEV' : 'PROD'}_${name}`;
 
 export function setStorage(key, value) {
   if (chrome.storage) {
-    return chrome.storage.local.set({
-      [getStorageName(key)]: JSON.stringify(value)
-    }, () => {
-      if (chrome.runtime.lastError) {
-        console.log(chrome.runtime.lastError);
+    return chrome.storage.local.set(
+      {
+        [getStorageName(key)]: JSON.stringify(value)
+      },
+      () => {
+        if (chrome.runtime.lastError) {
+          console.log(chrome.runtime.lastError);
+        }
       }
-    });
+    );
   }
 
   return null;
-};
+}
 
 export function getStorage(key) {
   return new Promise((resolve, reject) => {
@@ -33,8 +35,8 @@ export function getStorage(key) {
     }
 
     reject('The variable `chrome.storage` does not exist');
-  })
-};
+  });
+}
 
 export function addStorageListener(storageKey, callback) {
   chrome.storage.onChanged.addListener((changes, namespace) => {
@@ -49,4 +51,4 @@ export function addStorageListener(storageKey, callback) {
   });
 }
 
-export default { getStorageName, setStorage, getStorage, addStorageListener }
+export default { getStorageName, setStorage, getStorage, addStorageListener };

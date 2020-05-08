@@ -7,18 +7,32 @@ import { animate } from 'utils/animate';
 import { usePrevious } from 'utils/react';
 import { DEBOUNCE } from 'appConstants/animate';
 
+import { getStyleApplicationFn } from 'utils/style';
 import Tab from '../Tab';
 
 import style from './tabs.css';
-import { getStyleApplicationFn } from 'utils/style';
 
 const s = getStyleApplicationFn(style);
 
 const Tabs = ({
-  tabOptions, activeValue, onTabClick, clickOnMouseDown, style, className,
-  allTabsContainerClassName, rippleClassName, tabContainerClassName, tabClassName,
-  activeTabClassName, inactiveTabClassName, color, indicatorColor, showIndicator, showRipple,
-  scrollButtonColor, children
+  tabOptions,
+  activeValue,
+  onTabClick,
+  clickOnMouseDown,
+  style,
+  className,
+  allTabsContainerClassName,
+  rippleClassName,
+  tabContainerClassName,
+  tabClassName,
+  activeTabClassName,
+  inactiveTabClassName,
+  color,
+  indicatorColor,
+  showIndicator,
+  showRipple,
+  scrollButtonColor,
+  children
 }) => {
   const [displayScroll, setDisplayScroll] = useState({ start: false, end: false });
   const tabsRef = useRef(null);
@@ -39,8 +53,8 @@ const Tabs = ({
         const { scrollWidth, scrollLeft } = tabsRef.current;
         moveTabsScroll(scrollWidth - scrollLeft);
       }
-    }    
-  }, [children, tabOptions])
+    }
+  }, [children, tabOptions]);
 
   const moveTabsScroll = (delta) => {
     if (tabsRef.current) {
@@ -63,15 +77,15 @@ const Tabs = ({
 
       if (showStartScroll !== displayScroll.start || showEndScroll !== displayScroll.end) {
         setDisplayScroll({ start: showStartScroll, end: showEndScroll });
-      }      
+      }
     }
-  }, DEBOUNCE.MS_300)
+  }, DEBOUNCE.MS_300);
 
   const protectedOnTabClick = (value) => {
     if (onTabClick) {
       onTabClick(value);
     }
-  }
+  };
 
   const getBaseTabProps = (value, i) => {
     const actualValue = value || i;
@@ -90,26 +104,20 @@ const Tabs = ({
       color,
       indicatorColor,
       showIndicator,
-      showRipple,
+      showRipple
     };
-  }
+  };
 
   const renderTab = ({ label, value }, i) => {
     const baseTabProps = getBaseTabProps(value, i);
-    return (
-      <Tab
-        key={typeof (label) === 'string' ? label : i}
-        label={label}
-        {...baseTabProps}
-      />
-    );
-  }
+    return <Tab key={typeof label === 'string' ? label : i} label={label} {...baseTabProps} />;
+  };
 
   const mergeProps = (baseProps, childProps) => {
     const mergedProps = baseProps;
 
     Object.entries(childProps).forEach(([propKey, childPropValue]) => {
-      if (childPropValue !== undefined && childPropValue !== null & childPropValue !== '') {
+      if (childPropValue !== undefined && (childPropValue !== null) & (childPropValue !== '')) {
         if (propKey.endsWith('ClassName')) {
           mergedProps[propKey] += ` ${childPropValue}`;
         } else {
@@ -119,15 +127,15 @@ const Tabs = ({
     });
 
     return mergedProps;
-  }
+  };
 
   const renderChildren = () => {
-    return (
-      children.map((child, i) => (
-        child && React.cloneElement(child, mergeProps(getBaseTabProps(child.props.value, i), child.props))
-      ))
+    return children.map(
+      (child, i) =>
+        child &&
+        React.cloneElement(child, mergeProps(getBaseTabProps(child.props.value, i), child.props))
     );
-  }
+  };
 
   const renderScrollButton = (isStart) => {
     const { start: displayScrollStart, end: displayScrollEnd } = displayScroll;
@@ -145,7 +153,7 @@ const Tabs = ({
         <Icon onClick={() => handleScrollClick(isStart)} color={scrollButtonColor} />
       </button>
     );
-  }
+  };
 
   return (
     <div className={s(`tabs-all-container ${className}`)} style={style}>
@@ -155,23 +163,24 @@ const Tabs = ({
         className={s(`tabs-tab-container hide-scrollbar ${allTabsContainerClassName}`)}
         onScroll={handleResize}
       >
-        {tabOptions ?
-          tabOptions.map((tabOption, i) => renderTab(tabOption, i)) :
-          renderChildren()
-        }
+        {tabOptions ? tabOptions.map((tabOption, i) => renderTab(tabOption, i)) : renderChildren()}
         <ReactResizeDetector handleWidth onResize={handleResize} />
       </div>
       {renderScrollButton(false)}
     </div>
   );
-}
+};
 
 Tabs.propTypes = {
-  tabOptions: PropTypes.arrayOf(PropTypes.shape({
-    label: PropTypes.oneOfType([PropTypes.element, PropTypes.string, PropTypes.string]).isRequired,
-    value: PropTypes.oneOfType([PropTypes.string, PropTypes.number, PropTypes.object]),
-  })),
-  activeValue: PropTypes.oneOfType([PropTypes.string, PropTypes.number, PropTypes.object]).isRequired,
+  tabOptions: PropTypes.arrayOf(
+    PropTypes.shape({
+      label: PropTypes.oneOfType([PropTypes.element, PropTypes.string, PropTypes.string])
+        .isRequired,
+      value: PropTypes.oneOfType([PropTypes.string, PropTypes.number, PropTypes.object])
+    })
+  ),
+  activeValue: PropTypes.oneOfType([PropTypes.string, PropTypes.number, PropTypes.object])
+    .isRequired,
   onTabClick: PropTypes.func.isRequired,
   clickOnMouseDown: PropTypes.bool,
   style: PropTypes.object,
@@ -201,7 +210,7 @@ Tabs.defaultProps = {
   activeTabClassName: '',
   inactiveTabClassName: '',
   showIndicator: true,
-  showRipple: true,
+  showRipple: true
 };
 
 export default Tabs;

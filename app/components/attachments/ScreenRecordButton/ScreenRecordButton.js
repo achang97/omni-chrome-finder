@@ -15,11 +15,11 @@ const s = getStyleApplicationFn(attachmentsStyle, screenRecordButtonStyle);
  * callbacks related to MediaRecorder.
  */
 class ScreenRecordButton extends Component {
-  stopStream = stream => {
+  stopStream = (stream) => {
     if (stream) {
-      stream.getTracks().forEach(track => track.stop());
+      stream.getTracks().forEach((track) => track.stop());
     }
-  }
+  };
 
   stopAllMedia = () => {
     const { mediaRecorder, localStream, desktopStream, voiceStream } = this.props;
@@ -31,7 +31,7 @@ class ScreenRecordButton extends Component {
     this.stopStream(localStream);
     this.stopStream(desktopStream);
     this.stopStream(voiceStream);
-  }
+  };
 
   mergeAudioStreams = (desktopStream, voiceStream) => {
     const context = new AudioContext();
@@ -44,7 +44,7 @@ class ScreenRecordButton extends Component {
       desktopGain.gain.value = 0.7;
       source1.connect(desktopGain).connect(destination);
     }
-    
+
     if (voiceStream && voiceStream.getAudioTracks().length > 0) {
       const source2 = context.createMediaStreamSource(voiceStream);
       const voiceGain = context.createGain();
@@ -57,8 +57,13 @@ class ScreenRecordButton extends Component {
 
   startRecording = async () => {
     const {
-      addScreenRecordingChunk, startScreenRecording, id, onSuccess,
-      dockVisible, toggleDock, clearScreenRecording
+      addScreenRecordingChunk,
+      startScreenRecording,
+      id,
+      onSuccess,
+      dockVisible,
+      toggleDock,
+      clearScreenRecording
     } = this.props;
 
     if (dockVisible) {
@@ -83,7 +88,7 @@ class ScreenRecordButton extends Component {
           width: { ideal: 4096 },
           height: { ideal: 2160 }
         }
-      });      
+      });
     } catch (e) {
       // Explicitly get from this.props again, since this is an async function
       clearScreenRecording();
@@ -92,7 +97,7 @@ class ScreenRecordButton extends Component {
     }
 
     const tracks = [
-      ...desktopStream.getVideoTracks(), 
+      ...desktopStream.getVideoTracks(),
       ...(voiceStream ? this.mergeAudioStreams(desktopStream, voiceStream) : [])
     ];
 
@@ -115,7 +120,7 @@ class ScreenRecordButton extends Component {
     mediaRecorder.start(10);
 
     startScreenRecording({ id, stream, desktopStream, voiceStream, mediaRecorder, onSuccess });
-  }
+  };
 
   render() {
     const { isSharingDesktop, abbrText, showText, className, id, activeId } = this.props;
@@ -148,7 +153,7 @@ class ScreenRecordButton extends Component {
             icon={<Icon className={s(`${showText ? 'ml-sm' : ''} text-red-500`)} />}
             iconLeft={false}
             disabled={!navigator.mediaDevices || (activeId !== null && !isActiveButton)}
-          />          
+          />
         </Tooltip>
       </React.Fragment>
     );
@@ -160,13 +165,13 @@ ScreenRecordButton.propTypes = {
   onSuccess: PropTypes.func.isRequired,
   className: PropTypes.string,
   showText: PropTypes.bool,
-  abbrText: PropTypes.bool,
-}
+  abbrText: PropTypes.bool
+};
 
 ScreenRecordButton.defaultProps = {
   className: '',
   showText: true,
-  abbrText: false,
-}
+  abbrText: false
+};
 
 export default ScreenRecordButton;

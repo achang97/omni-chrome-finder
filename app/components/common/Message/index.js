@@ -2,28 +2,38 @@ import React, { useEffect, useState } from 'react';
 import AnimateHeight from 'react-animate-height';
 import PropTypes from 'prop-types';
 
-import style from './message.css';
 import { getStyleApplicationFn } from 'utils/style';
+import style from './message.css';
 
 const s = getStyleApplicationFn(style);
 
 const getColorClassName = (type) => {
   switch (type) {
-    case "error":
+    case 'error':
       return 'text-red-500';
-    case "success":
+    case 'success':
       return 'text-green-500';
     default:
       return '';
   }
-}
+};
 
-const Message = ({ message, type, className, animate, show, temporary, showDuration, onHide, ...rest }) => {
+const Message = ({
+  message,
+  type,
+  className,
+  animate,
+  show,
+  temporary,
+  showDuration,
+  onHide,
+  ...rest
+}) => {
   const [showState, setShowState] = useState(show);
-  
+
   const protectedOnHide = () => {
     if (onHide) onHide();
-  }
+  };
 
   useEffect(() => {
     if (show) {
@@ -57,10 +67,9 @@ const Message = ({ message, type, className, animate, show, temporary, showDurat
         {body}
       </AnimateHeight>
     );
-  } else {
-    return shouldShow ? body : null;
   }
-}
+  return shouldShow ? body : null;
+};
 
 Message.propTypes = {
   message: PropTypes.any,
@@ -70,15 +79,15 @@ Message.propTypes = {
   show: PropTypes.bool,
   temporary: PropTypes.bool,
   showDuration: PropTypes.number,
-  onHide: PropTypes.func,
-}
+  onHide: PropTypes.func
+};
 
 Message.defaultProps = {
   className: '',
   animate: false,
   show: true,
   temporary: false,
-  showDuration: 3000,
-}
+  showDuration: 3000
+};
 
 export default Message;

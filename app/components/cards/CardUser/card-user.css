@@ -4,10 +4,12 @@
 
 .card-user-label {
   max-width: 50px;
+
   @apply truncate mt-xs text-xs;
 }
 
 .card-user-remove {
   @apply absolute text-purple-gray-50 top-0 right-0 bg-white rounded-full w-reg h-reg flex justify-center items-center shadow-md text-xs !important;
+
   transform: translate(20%, -30%) !important;
 }

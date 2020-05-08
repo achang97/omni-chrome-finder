@@ -9,7 +9,7 @@ const initialState = {
   modalOpen: false,
   modalProps: {
     title: ''
-  },
+  }
 };
 
 export default function displayReducer(state = initialState, action) {
@@ -17,13 +17,18 @@ export default function displayReducer(state = initialState, action) {
 
   switch (type) {
     case types.TOGGLE_DOCK: {
-      return { ...state, dockVisible: !state.dockVisible, dockExpanded: false, toggleTabShown: false };
+      return {
+        ...state,
+        dockVisible: !state.dockVisible,
+        dockExpanded: false,
+        toggleTabShown: false
+      };
     }
     case types.TOGGLE_DOCK_HEIGHT: {
       return { ...state, dockExpanded: !state.dockExpanded };
     }
     case types.MINIMIZE_DOCK: {
-      return { ...state, toggleTabShown: true, dockVisible: false, dockExpanded: false  };
+      return { ...state, toggleTabShown: true, dockVisible: false, dockExpanded: false };
     }
     case types.HIDE_TOGGLE_TAB: {
       return { ...state, toggleTabShown: false };

@@ -1,21 +1,40 @@
 import React from 'react';
 import { take, call, all, fork, put, select } from 'redux-saga/effects';
 import { doPost, getErrorMessage } from 'utils/request';
-import { LOGIN_REQUEST, SIGNUP_REQUEST, SEND_RECOVERY_EMAIL_REQUEST, VERIFY_REQUEST, RESEND_VERIFICATION_EMAIL_REQUEST } from 'actions/actionTypes';
 import {
-  handleLoginSuccess, handleLoginError,
-  handleSignupSuccess, handleSignupError,
-  handleVerifySuccess, handleVerifyError,
-  handleResendVerificationEmailSuccess, handleResendVerificationEmailError,
-  handleSendRecoveryEmailSuccess, handleSendRecoveryEmailError,
+  LOGIN_REQUEST,
+  SIGNUP_REQUEST,
+  SEND_RECOVERY_EMAIL_REQUEST,
+  VERIFY_REQUEST,
+  RESEND_VERIFICATION_EMAIL_REQUEST
+} from 'actions/actionTypes';
+import {
+  handleLoginSuccess,
+  handleLoginError,
+  handleSignupSuccess,
+  handleSignupError,
+  handleVerifySuccess,
+  handleVerifyError,
+  handleResendVerificationEmailSuccess,
+  handleResendVerificationEmailError,
+  handleSendRecoveryEmailSuccess,
+  handleSendRecoveryEmailError
 } from 'actions/auth';
 import { openModal } from 'actions/display';
 
 export default function* watchAuthRequests() {
   let action;
 
-  while (action = yield take([LOGIN_REQUEST, SIGNUP_REQUEST, SEND_RECOVERY_EMAIL_REQUEST, VERIFY_REQUEST, RESEND_VERIFICATION_EMAIL_REQUEST])) {
-    const { type, /* payload */ } = action;
+  while (
+    (action = yield take([
+      LOGIN_REQUEST,
+      SIGNUP_REQUEST,
+      SEND_RECOVERY_EMAIL_REQUEST,
+      VERIFY_REQUEST,
+      RESEND_VERIFICATION_EMAIL_REQUEST
+    ]))
+  ) {
+    const { type /* payload */ } = action;
     switch (type) {
       case LOGIN_REQUEST: {
         yield fork(login);
@@ -26,7 +45,7 @@ export default function* watchAuthRequests() {
         break;
       }
       case SEND_RECOVERY_EMAIL_REQUEST: {
-        yield fork(sendRecoveryEmail)
+        yield fork(sendRecoveryEmail);
         break;
       }
       case VERIFY_REQUEST: {
@@ -46,8 +65,11 @@ export default function* watchAuthRequests() {
 
 function* login() {
   try {
-    const { loginEmail, loginPassword } = yield select(state => state.auth);
-    const { userJson, token, refreshToken } = yield call(doPost, '/users/login', { email: loginEmail, password: loginPassword });
+    const { loginEmail, loginPassword } = yield select((state) => state.auth);
+    const { userJson, token, refreshToken } = yield call(doPost, '/users/login', {
+      email: loginEmail,
+      password: loginPassword
+    });
     yield put(handleLoginSuccess(userJson, token, refreshToken));
   } catch (error) {
     yield put(handleLoginError(getErrorMessage(error)));
@@ -56,9 +78,14 @@ function* login() {
 
 function* signup() {
   try {
-    const { signupFirstName, signupLastName, signupEmail, signupPassword } = yield select(state => state.auth);
+    const { signupFirstName, signupLastName, signupEmail, signupPassword } = yield select(
+      (state) => state.auth
+    );
     const { userJson, token, refreshToken } = yield call(doPost, '/users/signup', {
-      firstname: signupFirstName, lastname: signupLastName, email: signupEmail, password: signupPassword
+      firstname: signupFirstName,
+      lastname: signupLastName,
+      email: signupEmail,
+      password: signupPassword
     });
     yield put(handleSignupSuccess(userJson, token, refreshToken));
   } catch (error) {
@@ -68,17 +95,23 @@ function* signup() {
 
 function* verify() {
   try {
-    const verificationCode = yield select(state => state.auth.verificationCode);
-    const firstname = yield select(state => state.profile.user.firstname);
+    const verificationCode = yield select((state) => state.auth.verificationCode);
+    const firstname = yield select((state) => state.profile.user.firstname);
 
     yield call(doPost, '/users/verifyCheck', { code: verificationCode });
     yield all([
       put(handleVerifySuccess()),
-      put(openModal({
-        title: <span> We've successfully verified your account, <b>{firstname}</b>! </span>,
-        buttonText: 'Ok!',
-        showHeader: false,
-      }))
+      put(
+        openModal({
+          title: (
+            <span>
+              We've successfully verified your account, <b>{firstname}</b>!
+            </span>
+          ),
+          buttonText: 'Ok!',
+          showHeader: false
+        })
+      )
     ]);
   } catch (error) {
     yield put(handleVerifyError(getErrorMessage(error)));
@@ -87,10 +120,10 @@ function* verify() {
 
 function* sendRecoveryEmail() {
   try {
-    const email = yield select(state => state.auth.recoveryEmail);
+    const email = yield select((state) => state.auth.recoveryEmail);
     yield call(doPost, '/users/forgotPassword', { email });
     yield put(handleSendRecoveryEmailSuccess());
-  } catch(error) {
+  } catch (error) {
     yield put(handleSendRecoveryEmailError(getErrorMessage(error)));
   }
 }

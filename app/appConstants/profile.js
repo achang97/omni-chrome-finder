@@ -14,14 +14,14 @@ export const USER_BADGE = {
   BRONZE: 'Bronze',
   SILVER: 'Silver',
   GOLD: 'Gold',
-  PLATINUM: 'Platinum',
+  PLATINUM: 'Platinum'
 };
 
 export const AUDIT_TYPE = {
   CREATE_CARD_EXTENSION: 'createCardExtension',
   CONTEXT_MENU_SEARCH: 'contextMenuSearch',
   OPEN_EXTERNAL_DOC: 'openExternalDoc'
-}
+};
 
 export const ONBOARDING_COMPLETE = -1;
 

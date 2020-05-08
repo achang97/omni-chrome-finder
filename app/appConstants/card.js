@@ -8,9 +8,11 @@ export const DIMENSIONS = {
 };
 
 export const HINTS = {
-  OWNERS: 'Owners are in charge of the knowledge in this card and will be tasked to keep it updated over time.',
+  OWNERS:
+    'Owners are in charge of the knowledge in this card and will be tasked to keep it updated over time.',
   SUBSCRIBERS: 'Subscribers will be notified when this card is created or changed.',
-  VERIFICATION_INTERVAL: 'Interval at which we remind owners to verify the information on this card is up-to-date.',
+  VERIFICATION_INTERVAL:
+    'Interval at which we remind owners to verify the information on this card is up-to-date.'
 };
 
 export const MODAL_TYPE = {
@@ -33,7 +35,7 @@ export const MODAL_TYPE = {
 
 export const EDITOR_TYPE = {
   DESCRIPTION: 'DESCRIPTION',
-  ANSWER: 'ANSWER',
+  ANSWER: 'ANSWER'
 };
 
 export const STATUS = {
@@ -41,7 +43,7 @@ export const STATUS = {
   OUT_OF_DATE: 2,
   NEEDS_VERIFICATION: 3,
   NEEDS_APPROVAL: 4,
-  NOT_DOCUMENTED: 5,
+  NOT_DOCUMENTED: 5
 };
 
 export const VERIFICATION_INTERVAL_OPTION = {
@@ -53,7 +55,7 @@ export const VERIFICATION_INTERVAL_OPTION = {
   AUTOREMIND: 6,
   NEVER: 7,
   ONE_DAY: 8,
-  ONE_WEEK: 9,
+  ONE_WEEK: 9
 };
 
 export const VERIFICATION_INTERVAL_OPTIONS = [
@@ -65,19 +67,29 @@ export const VERIFICATION_INTERVAL_OPTIONS = [
   { label: '3 Months', value: VERIFICATION_INTERVAL_OPTION.THREE_MONTHS },
   { label: '6 Months', value: VERIFICATION_INTERVAL_OPTION.SIX_MONTHS },
   { label: '1 Year', value: VERIFICATION_INTERVAL_OPTION.ONE_YEAR },
-  { label: 'Never', value: VERIFICATION_INTERVAL_OPTION.NEVER },
+  { label: 'Never', value: VERIFICATION_INTERVAL_OPTION.NEVER }
 ];
 export const DEFAULT_VERIFICATION_INTERVAL = VERIFICATION_INTERVAL_OPTIONS[2];
 
 export const PERMISSION_OPTION = {
   ANYONE: 'ANYONE',
   JUST_ME: 'JUST_ME',
-  SPECIFIC_GROUPS: 'SPECIFIC_GROUPS',
+  SPECIFIC_GROUPS: 'SPECIFIC_GROUPS'
 };
 export const PERMISSION_OPTIONS = [
   { label: 'Anyone', value: PERMISSION_OPTION.ANYONE },
   { label: 'Just Me', value: PERMISSION_OPTION.JUST_ME },
-  { label: 'Specific Groups', value: PERMISSION_OPTION.SPECIFIC_GROUPS },
+  { label: 'Specific Groups', value: PERMISSION_OPTION.SPECIFIC_GROUPS }
 ];
 
-export default { DIMENSIONS, HINTS, MODAL_TYPE, EDITOR_TYPE, STATUS, VERIFICATION_INTERVAL_OPTION, VERIFICATION_INTERVAL_OPTIONS, PERMISSION_OPTION, PERMISSION_OPTIONS };
+export default {
+  DIMENSIONS,
+  HINTS,
+  MODAL_TYPE,
+  EDITOR_TYPE,
+  STATUS,
+  VERIFICATION_INTERVAL_OPTION,
+  VERIFICATION_INTERVAL_OPTIONS,
+  PERMISSION_OPTION,
+  PERMISSION_OPTIONS
+};

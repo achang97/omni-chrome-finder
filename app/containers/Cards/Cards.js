@@ -14,19 +14,35 @@ import { cardStateChanged, getNewCardBaseState } from 'utils/card';
 import { getBaseAnimationStyle } from 'utils/animate';
 
 import { colors } from 'styles/colors';
-import style from './cards.css';
 import { CARD, ANIMATE } from 'appConstants';
 import { getStyleApplicationFn } from 'utils/style';
+import style from './cards.css';
+
 const s = getStyleApplicationFn(style);
 
 const CARDS_TRANSITION_MS = 300;
 
 const Cards = ({
   user,
-  cards, cardsExpanded, activeCardIndex, activeCard, cardsWidth, cardsHeight, windowPosition, showCloseModal,
-  openCard, closeCard, closeAllCards, setActiveCardIndex, updateCardWindowPosition,
-  adjustCardsDimensions, updateCardTabOrder, openCardModal, openCardContainerModal, closeCardContainerModal, 
-  toggleCards,
+  cards,
+  cardsExpanded,
+  activeCardIndex,
+  activeCard,
+  cardsWidth,
+  cardsHeight,
+  windowPosition,
+  showCloseModal,
+  openCard,
+  closeCard,
+  closeAllCards,
+  setActiveCardIndex,
+  updateCardWindowPosition,
+  adjustCardsDimensions,
+  updateCardTabOrder,
+  openCardModal,
+  openCardContainerModal,
+  closeCardContainerModal,
+  toggleCards
 }) => {
   const getCurrentCard = (index) => {
     // Get updated current card
@@ -36,7 +52,7 @@ const Cards = ({
     }
 
     return currentCard;
-  }
+  };
 
   const handleCloseClick = (e, index) => {
     e.stopPropagation();
@@ -46,12 +62,13 @@ const Cards = ({
     // Check to make sure edit state is different than saved state
     if (cardStateChanged(currentCard)) {
       if (index !== activeCardIndex) updateTab(index);
-      if (currentCard.status === CARD.STATUS.NOT_DOCUMENTED) openCardModal(CARD.MODAL_TYPE.CONFIRM_CLOSE_UNDOCUMENTED);
+      if (currentCard.status === CARD.STATUS.NOT_DOCUMENTED)
+        openCardModal(CARD.MODAL_TYPE.CONFIRM_CLOSE_UNDOCUMENTED);
       else openCardModal(CARD.MODAL_TYPE.CONFIRM_CLOSE);
     } else {
       closeCard(index);
     }
-  }
+  };
 
   const handleCloseAllCards = () => {
     const cardChanges = cards.some((card, i) => {
@@ -63,7 +80,7 @@ const Cards = ({
     } else {
       closeAllCards();
     }
-  }
+  };
 
   const renderCloseModal = () => {
     return (
@@ -78,27 +95,30 @@ const Cards = ({
         }}
         secondaryButtonProps={{
           text: 'No',
-          onClick: closeCardContainerModal,
+          onClick: closeCardContainerModal
         }}
         overlayClassName={s('rounded-lg')}
       />
     );
-  }
+  };
 
   const renderTabHeaderButtons = () => (
-    <div className={s('flex flex-shrink-0 text-purple-gray-50')} onClick={e => e.stopPropagation()}>
+    <div
+      className={s('flex flex-shrink-0 text-purple-gray-50')}
+      onClick={(e) => e.stopPropagation()}
+    >
       <button onClick={toggleCards} className={s('mr-xs')}>
-        { cardsExpanded ? <FiMinus /> : <FiPlus /> }
+        {cardsExpanded ? <FiMinus /> : <FiPlus />}
       </button>
       <button onClick={handleCloseAllCards}>
         <MdClose />
       </button>
     </div>
-  )
+  );
 
   const updateTab = (tabValue) => {
     if (tabValue !== activeCardIndex) setActiveCardIndex(tabValue);
-  }
+  };
 
   const onDragEnd = (result) => {
     // dropped outside the list
@@ -107,7 +127,7 @@ const Cards = ({
     }
 
     updateCardTabOrder(result.source, result.destination);
-  }
+  };
 
   const getItemStyle = (isDragging, draggableStyle) => {
     const { top, left, ...rest } = draggableStyle;
@@ -120,7 +140,7 @@ const Cards = ({
       // styles we need to apply on draggables
       top: top - windowPosition.y,
       left: left - windowPosition.x,
-      ...rest,
+      ...rest
     };
   };
 
@@ -141,27 +161,30 @@ const Cards = ({
               ref={provided.innerRef}
               {...provided.draggableProps}
               {...provided.dragHandleProps}
-              style={getItemStyle(
-                snapshot.isDragging,
-                provided.draggableProps.style
+              style={getItemStyle(snapshot.isDragging, provided.draggableProps.style)}
+              className={s(
+                `card-tab card-header-tab ${!dragDisabled ? 'card-disable-window-drag' : ''} ${
+                  isActiveCard ? 'bg-purple-light' : ''
+                }`
               )}
-              className={s(`card-tab card-header-tab ${!dragDisabled ? 'card-disable-window-drag' : ''} ${isActiveCard ? 'bg-purple-light' : ''}`)}
             >
-              <div className={s('truncate')}> { (!isEditing ? question : edits.question) || 'Untitled' } </div>
+              <div className={s('truncate')}>
+                {(!isEditing ? question : edits.question) || 'Untitled'}
+              </div>
               <div className={s('flex ml-xs')}>
-                <div onClick={e => handleCloseClick(e, i)} className={s('mr-reg cursor-pointer')}>
+                <div onClick={(e) => handleCloseClick(e, i)} className={s('mr-reg cursor-pointer')}>
                   <MdClose color={colors.purple['gray-50']} />
                 </div>
-                { (i !== activeCardIndex && i !== activeCardIndex - 1) &&
+                {i !== activeCardIndex && i !== activeCardIndex - 1 && (
                   <div className={s('text-purple-gray-50')}> | </div>
-                }
+                )}
               </div>
             </div>
           )}
         </Draggable>
       </Tab>
     );
-  }
+  };
 
   const renderTabHeader = () => {
     return (
@@ -182,17 +205,20 @@ const Cards = ({
                   activeValue={activeCardIndex}
                   showRipple={false}
                   scrollButtonColor={colors.purple['gray-50']}
-                  clickOnMouseDown={true}
+                  clickOnMouseDown
                   onTabClick={updateTab}
                   className={s(`${snapshot.draggingFromThisWith ? 'flex-1' : ''}`)}
                 >
                   {cards.map(renderTab)}
                 </Tabs>
-                { !snapshot.draggingFromThisWith &&
-                  <button onClick={() => openCard(getNewCardBaseState(user), true)} className={s('mx-xs text-purple-gray-50')}>
+                {!snapshot.draggingFromThisWith && (
+                  <button
+                    onClick={() => openCard(getNewCardBaseState(user), true)}
+                    className={s('mx-xs text-purple-gray-50')}
+                  >
                     <FiPlus />
                   </button>
-                }
+                )}
                 {provided.placeholder}
               </div>
             )}
@@ -201,11 +227,11 @@ const Cards = ({
         {renderTabHeaderButtons()}
       </div>
     );
-  }
+  };
 
   const onResize = (e, direction, ref, d) => {
     adjustCardsDimensions(ref.clientWidth, ref.clientHeight);
-  }
+  };
 
   const renderExpandedCards = () => {
     const baseStyle = getBaseAnimationStyle(CARDS_TRANSITION_MS);
@@ -216,19 +242,14 @@ const Cards = ({
 
     const transitionStyles = {
       entering: { transform },
-      entered: { },
+      entered: {},
       exiting: { transform },
-      exited: { transform },
+      exited: { transform }
     };
 
     return (
-      <Transition
-        in={cardsExpanded}
-        timeout={CARDS_TRANSITION_MS}
-        mountOnEnter
-        unmountOnExit
-      >
-        {state => (
+      <Transition in={cardsExpanded} timeout={CARDS_TRANSITION_MS} mountOnEnter unmountOnExit>
+        {(state) => (
           <div style={{ ...baseStyle, ...transitionStyles[state] }} className={s('card')}>
             <ReactDraggable
               bounds="html"
@@ -245,18 +266,27 @@ const Cards = ({
                 onResizeStop={onResize}
                 minWidth={CARD.DIMENSIONS.DEFAULT_CARDS_WIDTH}
                 minHeight={CARD.DIMENSIONS.DEFAULT_CARDS_HEIGHT}
-                enable={{ top: false, right: true, bottom: true, left: false, topRight: false, bottomRight: true, bottomLeft: false, topLeft: false }}
+                enable={{
+                  top: false,
+                  right: true,
+                  bottom: true,
+                  left: false,
+                  topRight: false,
+                  bottomRight: true,
+                  bottomLeft: false,
+                  topLeft: false
+                }}
               >
-                { renderTabHeader() }
+                {renderTabHeader()}
                 <CardContent />
-                { renderCloseModal() }
+                {renderCloseModal()}
               </Resizable>
-            </ReactDraggable>            
+            </ReactDraggable>
           </div>
         )}
       </Transition>
     );
-  }
+  };
 
   const renderMinimizedCards = () => {
     const { question, edits, isEditing } = activeCard;
@@ -264,19 +294,19 @@ const Cards = ({
     return (
       <div className={s('card-tab card-minimized-tab')} onClick={toggleCards}>
         <div className={s('font-semibold truncate')}>
-          { (!isEditing ? question : edits.question) || 'Untitled' }
+          {(!isEditing ? question : edits.question) || 'Untitled'}
         </div>
-        { numCards > 1 &&
-          <div className={s('bg-purple-gray-50 text-white font-semibold rounded-full px-xs ml-auto')}>
+        {numCards > 1 && (
+          <div
+            className={s('bg-purple-gray-50 text-white font-semibold rounded-full px-xs ml-auto')}
+          >
             {cards.length}
-          </div> 
-        }
-        <div className={s('px-xs')}>
-          {renderTabHeaderButtons()}
-        </div>
-      </div> 
-    )
-  }
+          </div>
+        )}
+        <div className={s('px-xs')}>{renderTabHeaderButtons()}</div>
+      </div>
+    );
+  };
 
   if (cards.length === 0) {
     return null;
@@ -285,9 +315,9 @@ const Cards = ({
   return (
     <>
       {renderExpandedCards()}
-      { !cardsExpanded && renderMinimizedCards() }
+      {!cardsExpanded && renderMinimizedCards()}
     </>
   );
-}
+};
 
 export default Cards;

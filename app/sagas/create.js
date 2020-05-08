@@ -1,19 +1,30 @@
 import { take, call, fork, put } from 'redux-saga/effects';
 import { doGet, doPost, doDelete, getErrorMessage } from 'utils/request';
 import { convertAttachmentsToBackendFormat, isUploadedFile } from 'utils/file';
-import { GET_TEMPLATES_REQUEST, ADD_CREATE_ATTACHMENT_REQUEST, REMOVE_CREATE_ATTACHMENT_REQUEST } from 'actions/actionTypes';
 import {
-  handleGetTemplatesSuccess, handleGetTemplatesError,
-  handleAddCreateAttachmentSuccess, handleAddCreateAttachmentError,
-  handleRemoveCreateAttachmentSuccess, handleRemoveCreateAttachmentError,
+  GET_TEMPLATES_REQUEST,
+  ADD_CREATE_ATTACHMENT_REQUEST,
+  REMOVE_CREATE_ATTACHMENT_REQUEST
+} from 'actions/actionTypes';
+import {
+  handleGetTemplatesSuccess,
+  handleGetTemplatesError,
+  handleAddCreateAttachmentSuccess,
+  handleAddCreateAttachmentError,
+  handleRemoveCreateAttachmentSuccess,
+  handleRemoveCreateAttachmentError
 } from 'actions/create';
 
 export default function* watchCreateRequests() {
   let action;
 
-  while (action = yield take([
-    GET_TEMPLATES_REQUEST, ADD_CREATE_ATTACHMENT_REQUEST, REMOVE_CREATE_ATTACHMENT_REQUEST
-  ])) {
+  while (
+    (action = yield take([
+      GET_TEMPLATES_REQUEST,
+      ADD_CREATE_ATTACHMENT_REQUEST,
+      REMOVE_CREATE_ATTACHMENT_REQUEST
+    ]))
+  ) {
     const { type, payload } = action;
     switch (type) {
       case GET_TEMPLATES_REQUEST: {

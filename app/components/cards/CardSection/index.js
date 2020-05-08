@@ -5,12 +5,21 @@ import AnimateHeight from 'react-animate-height';
 
 import { Separator, HelpTooltip } from 'components/common';
 
-import style from './card-section.css';
 import { getStyleApplicationFn } from 'utils/style';
+import style from './card-section.css';
+
 const s = getStyleApplicationFn(style);
 
 const CardSection = ({
-  title, hint, startExpanded, isExpandable, showSeparator, className, preview, children, headerEnd
+  title,
+  hint,
+  startExpanded,
+  isExpandable,
+  showSeparator,
+  className,
+  preview,
+  children,
+  headerEnd
 }) => {
   const [isExpanded, setExpanded] = useState(startExpanded);
   const toggleSection = () => setExpanded(!isExpanded);
@@ -19,37 +28,39 @@ const CardSection = ({
     <div className={className}>
       <div className={s('flex mb-lg items-center justify-between')}>
         <div className={s('flex items-center')}>
-          <div className={s('font-semibold text-sm text-black button-hover')} onClick={toggleSection}>
+          <div
+            className={s('font-semibold text-sm text-black button-hover')}
+            onClick={toggleSection}
+          >
             {title}
           </div>
-          { hint &&
+          {hint && (
             <HelpTooltip
-              className={s('ml-sm')} 
+              className={s('ml-sm')}
               tooltip={hint}
               tooltipProps={{
                 place: 'right',
-                className: s('card-section-tooltip')  
+                className: s('card-section-tooltip')
               }}
             />
-          }
-          { isExpandable &&
-            <button className={s('text-gray-light flex items-center ml-reg')} onClick={toggleSection}>
-              { isExpanded ? <MdExpandLess /> : <MdExpandMore /> }
+          )}
+          {isExpandable && (
+            <button
+              className={s('text-gray-light flex items-center ml-reg')}
+              onClick={toggleSection}
+            >
+              {isExpanded ? <MdExpandLess /> : <MdExpandMore />}
             </button>
-          }
+          )}
         </div>
-        { !isExpanded && preview }
-        { headerEnd }
+        {!isExpanded && preview}
+        {headerEnd}
       </div>
-      <AnimateHeight height={isExpandable && isExpanded ? 'auto' : 0}>
-        { children }
-      </AnimateHeight>
-      { showSeparator &&
-        <Separator horizontal className={s('mt-lg')} />
-      }
+      <AnimateHeight height={isExpandable && isExpanded ? 'auto' : 0}>{children}</AnimateHeight>
+      {showSeparator && <Separator horizontal className={s('mt-lg')} />}
     </div>
   );
-}
+};
 
 CardSection.propTypes = {
   title: PropTypes.string.isRequired,
@@ -59,14 +70,14 @@ CardSection.propTypes = {
   showSeparator: PropTypes.bool,
   className: PropTypes.string,
   preview: PropTypes.element,
-  headerEnd: PropTypes.node,
+  headerEnd: PropTypes.node
 };
 
 CardSection.defaultProps = {
   isExpandable: true,
   startExpanded: true,
   showSeparator: true,
-  className: '',
+  className: ''
 };
 
 export default CardSection;

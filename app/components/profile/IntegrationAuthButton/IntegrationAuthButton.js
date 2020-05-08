@@ -6,14 +6,21 @@ import { Button, Dropdown, Loader } from 'components/common';
 import { getIntegrationAuthLink, isLoggedIn } from 'utils/auth';
 
 import { colors } from 'styles/colors';
-import style from './integration-auth-button.css';
 import { getStyleApplicationFn } from 'utils/style';
+import style from './integration-auth-button.css';
 
 const s = getStyleApplicationFn(style);
 
 const IntegrationAuthButton = ({
-  integration: { type, title, logo }, showIntegration, onWindowOpen, className,
-  user, token, isLoading, error, requestLogoutUserIntegration
+  integration: { type, title, logo },
+  showIntegration,
+  onWindowOpen,
+  className,
+  user,
+  token,
+  isLoading,
+  error,
+  requestLogoutUserIntegration
 }) => {
   const [authWindow, setAuthWindow] = useState(null);
   const loggedIn = isLoggedIn(user, type);
@@ -25,7 +32,7 @@ const IntegrationAuthButton = ({
 
     setAuthWindow(newWindow);
     if (onWindowOpen) onWindowOpen(newWindow);
-  }
+  };
 
   useEffect(() => {
     if (loggedIn && authWindow) {
@@ -37,7 +44,7 @@ const IntegrationAuthButton = ({
   const onSignOut = () => {
     setDropdownOpen(false);
     requestLogoutUserIntegration(type);
-  }
+  };
 
   let textSuffix = '';
   let icon;
@@ -52,53 +59,55 @@ const IntegrationAuthButton = ({
         <Dropdown
           className={s('ml-xs')}
           isOpen={dropdownOpen}
-          toggler={
+          toggler={(
             <Button
               text={`Connected${textSuffix}`}
               color="secondary"
               className={s(`text-green-reg bg-green-xlight p-reg shadow-none ${className}`)}
-              icon={isLoading ?
-                <Loader size="sm" className={s('ml-reg')} /> :
-                <MdKeyboardArrowDown className={s('ml-reg')} />
+              icon={
+                isLoading ? (
+                  <Loader size="sm" className={s('ml-reg')} />
+                ) : (
+                  <MdKeyboardArrowDown className={s('ml-reg')} />
+                )
               }
               iconLeft={false}
             />
-          }
-          onToggle={dropdownOpen => setDropdownOpen(dropdownOpen)}
-          body={
+          )}
+          onToggle={(dropdownOpen) => setDropdownOpen(dropdownOpen)}
+          body={(
             <div className={s('integration-auth-sign-out-dropdown')}>
               <Button
                 text="Sign Out"
                 icon={icon}
-                className={'shadow-none text-purple-reg py-sm px-reg'}
+                className="shadow-none text-purple-reg py-sm px-reg"
                 onClick={onSignOut}
               />
             </div>
-          }
+          )}
         />
       </div>
     );
-  } else {
-    return (
-      <Button
-        text={`Sign In${textSuffix}`}
-        color="transparent"
-        icon={icon}
-        className={s(`p-reg ${className}`)}
-        onClick={onSignIn}
-      />
-    );
   }
-}
+  return (
+    <Button
+      text={`Sign In${textSuffix}`}
+      color="transparent"
+      icon={icon}
+      className={s(`p-reg ${className}`)}
+      onClick={onSignIn}
+    />
+  );
+};
 
 IntegrationAuthButton.propTypes = {
   integration: PropTypes.string.isRequired,
   showIntegration: PropTypes.bool,
-  onWindowOpen: PropTypes.func,
+  onWindowOpen: PropTypes.func
 };
 
 IntegrationAuthButton.defaultProps = {
-  showIntegration: true,
+  showIntegration: true
 };
 
 export default IntegrationAuthButton;

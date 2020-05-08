@@ -39,4 +39,13 @@ export function getFileUrl(key, token, contentType) {
   return `${URL.SERVER}/files/${key}?${queryParams}`;
 }
 
-export default { generateFileKey, isUploadedFile, convertAttachmentsToBackendFormat, isVideo, isAudio, isImage, isAnyLoading, getFileUrl };
+export default {
+  generateFileKey,
+  isUploadedFile,
+  convertAttachmentsToBackendFormat,
+  isVideo,
+  isAudio,
+  isImage,
+  isAnyLoading,
+  getFileUrl
+};

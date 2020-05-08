@@ -6,6 +6,7 @@ import { Button } from 'components/common';
 import { ROUTES } from 'appConstants';
 
 import { getStyleApplicationFn } from 'utils/style';
+
 const s = getStyleApplicationFn();
 
 const BUTTONS = [
@@ -23,7 +24,7 @@ const BUTTONS = [
   }
 ];
 
-const MainAuth = ({ }) => {
+const MainAuth = ({}) => {
   const renderBody = (title, subtitle) => {
     return (
       <div>
@@ -31,11 +32,11 @@ const MainAuth = ({ }) => {
         <div className={s('font-semibold text-lg')}> {title} </div>
       </div>
     );
-  }
+  };
 
   return (
     <AuthHeader>
-      { BUTTONS.map(({ title, subtitle, route, color }) => (
+      {BUTTONS.map(({ title, subtitle, route, color }) => (
         <Link to={route}>
           <Button
             key={title}
@@ -45,11 +46,11 @@ const MainAuth = ({ }) => {
             color={color}
             iconLeft={false}
             icon={<MdChevronRight className={s('text-lg')} />}
-          />          
+          />
         </Link>
       ))}
     </AuthHeader>
-  )
-}
+  );
+};
 
 export default MainAuth;

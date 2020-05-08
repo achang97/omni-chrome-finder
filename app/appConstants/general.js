@@ -25,22 +25,22 @@ export const ROUTES = {
 
 export const NODE_ENV = {
   DEV: 'development',
-  PROD: 'production',
-}
+  PROD: 'production'
+};
 
 export const MAIN_CONTAINER_ID = 'omni-chrome-ext-main-container';
 
 export const WEB_APP_ROUTES = {
   EXTENSION: '/extension',
   SIGNUP: '/signup',
-  ONBOARDING: '/onboarding/extension',
+  ONBOARDING: '/onboarding/extension'
 };
 
 const PROD_WEB_APP_URL = 'https://app.addomni.com';
 export const URL = {
   WEB_APP: process.env.NODE_ENV === NODE_ENV.DEV ? 'http://localhost:5000' : PROD_WEB_APP_URL,
-  EXTENSION: `${PROD_WEB_APP_URL}/extension`, 
-}
+  EXTENSION: `${PROD_WEB_APP_URL}/extension`
+};
 
 export const INTEGRATIONS = {
   GOOGLE: { type: 'google', title: 'Google Drive', logo: GoogleDriveIcon },
@@ -50,7 +50,7 @@ export const INTEGRATIONS = {
   GMAIL: { type: 'gmail', title: 'Gmail', logo: GmailIcon },
   SALESFORCE: { type: 'salesforce', title: 'Salesforce', logo: SalesforceIcon },
   JIRA: { type: 'jira', title: 'Jira', logo: SalesforceIcon },
-  HUBSPOT: { type: 'hubspot', title: 'Hubspot', logo: HubspotIcon },
+  HUBSPOT: { type: 'hubspot', title: 'Hubspot', logo: HubspotIcon }
 };
 
 export const NOOP = () => {};

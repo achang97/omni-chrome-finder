@@ -4,23 +4,22 @@ import { injectExtension, loadScript } from './inject';
 const IDS = {
   PARENT: 'PARENT_MENU_ID',
   SEARCH: 'SEARCH_MENU_ID',
-  CREATE: 'CREATE_MENU_ID',
+  CREATE: 'CREATE_MENU_ID'
 };
 
 const BASE_CONTEXT_MENU_PROPS = {
-  contexts: ["all"],
-  documentUrlPatterns: [
-    'https://*/*', 'http://*/*',
-  ]
+  contexts: ['all'],
+  documentUrlPatterns: ['https://*/*', 'http://*/*']
 };
 
 const ACTION_MENU_ITEMS = [
   {
     title: 'Search Omni',
-    id: IDS.SEARCH,
-  }, {
+    id: IDS.SEARCH
+  },
+  {
     title: 'Create Card',
-    id: IDS.CREATE,
+    id: IDS.CREATE
   }
 ];
 
@@ -55,7 +54,7 @@ function handleMenuAction(tabId, menuItemId, selectionText) {
     default: {
       break;
     }
-  }   
+  }
 }
 
 chrome.contextMenus.onClicked.addListener(async ({ menuItemId, selectionText = '' }, tab) => {
@@ -72,4 +71,3 @@ chrome.contextMenus.onClicked.addListener(async ({ menuItemId, selectionText = '
     handleMenuAction(tabId, menuItemId, selectionText);
   }
 });
-

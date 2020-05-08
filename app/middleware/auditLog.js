@@ -2,7 +2,7 @@ import * as types from 'actions/actionTypes';
 import { requestLogAudit } from 'actions/auditLog';
 import { AUDIT_TYPE } from 'appConstants/profile';
 
-const auditLogMiddleware = store => next => (action) => {
+const auditLogMiddleware = (store) => (next) => (action) => {
   const nextAction = next(action);
   const { type, payload } = action;
 

@@ -6,7 +6,7 @@ const REQUEST_TYPE = {
   POST: 'POST',
   PUT: 'PUT',
   GET: 'GET',
-  DELETE: 'DELETE',
+  DELETE: 'DELETE'
 };
 
 function isValidResponse(response) {
@@ -14,7 +14,7 @@ function isValidResponse(response) {
 }
 
 function* getConfig(isForm) {
-  const token = yield select(state => state.auth.token);
+  const token = yield select((state) => state.auth.token);
 
   const config = {};
 
@@ -109,7 +109,7 @@ export function getErrorMessage(error) {
   let message = _.get(error, 'response.data.error.message');
 
   if (!message) {
-    message = _.get(error, "message", "Something went wrong!");
+    message = _.get(error, 'message', 'Something went wrong!');
   }
 
   return message;

@@ -4,24 +4,22 @@ import { MdClose } from 'react-icons/md';
 
 import Separator from 'components/common/Separator';
 
-import style from './recipient-dropdown-body.css';
 import { getStyleApplicationFn } from 'utils/style';
+import style from './recipient-dropdown-body.css';
 
 const s = getStyleApplicationFn(style);
 
-const RecipientDropdownBody = ({
-  mentionOptions, mentions, onAddMention
-}) => {
+const RecipientDropdownBody = ({ mentionOptions, mentions, onAddMention }) => {
   const [mentionInputText, setInputText] = useState('');
   const [selectedIndex, setSelectedIndex] = useState(0);
 
   const inputRef = useRef(null);
-  const mentionRefs = mentionOptions.map(option => useRef(null));
+  const mentionRefs = mentionOptions.map((option) => useRef(null));
 
   const handleChange = (e) => {
     setInputText(e.target.value);
     setSelectedIndex(0);
-  }
+  };
 
   const handleKeyPress = (e, mentionOptions) => {
     if (e.key === 'Enter') {
@@ -29,14 +27,14 @@ const RecipientDropdownBody = ({
         addMention(mentionOptions[selectedIndex]);
       }
     }
-  }
+  };
 
   const addMention = (mention) => {
     onAddMention(mention);
     setInputText('');
     setSelectedIndex(0);
     inputRef.current.focus();
-  }
+  };
 
   const handleKeyDown = (e, mentionOptions) => {
     let newSelectedIndex = selectedIndex;
@@ -44,9 +42,11 @@ const RecipientDropdownBody = ({
       newSelectedIndex = 0;
     }
 
-    if (e.keyCode === 38) { // UP
+    if (e.keyCode === 38) {
+      // UP
       newSelectedIndex = (newSelectedIndex + mentionOptions.length - 1) % mentionOptions.length;
-    } else if (e.keyCode === 40) { // DOWN
+    } else if (e.keyCode === 40) {
+      // DOWN
       newSelectedIndex = (newSelectedIndex + mentionOptions.length + 1) % mentionOptions.length;
     }
 
@@ -54,15 +54,15 @@ const RecipientDropdownBody = ({
     if (mentionRefs[newSelectedIndex].current) {
       mentionRefs[newSelectedIndex].current.scrollIntoView();
     }
-  }
+  };
 
   const getMentionOptions = () => {
-    return mentionOptions
-      .filter(mention => (
-        !mentions.some(currMention => currMention.id === mention.id) &&
+    return mentionOptions.filter(
+      (mention) =>
+        !mentions.some((currMention) => currMention.id === mention.id) &&
         `@${mention.name.toLowerCase()}`.includes(mentionInputText.trim().toLowerCase())
-      ));
-  }
+    );
+  };
 
   const addMentionOptions = getMentionOptions();
   return (
@@ -73,20 +73,23 @@ const RecipientDropdownBody = ({
           autoFocus
           className={s('recipient-dropdown-input w-full')}
           placeholder="@mention"
-          onChange={e => handleChange(e)}
+          onChange={(e) => handleChange(e)}
           value={mentionInputText}
-          onKeyPress={e => handleKeyPress(e, addMentionOptions)}
-          onKeyDown={e => handleKeyDown(e, addMentionOptions)}
+          onKeyPress={(e) => handleKeyPress(e, addMentionOptions)}
+          onKeyDown={(e) => handleKeyDown(e, addMentionOptions)}
         />
         <Separator horizontal />
       </div>
       <div className={s('recipient-dropdown-select-options')}>
-        { addMentionOptions.length === 0 ?
-          <div className={s('px-sm text-center font-normal')}> No mention options </div> :
+        {addMentionOptions.length === 0 ? (
+          <div className={s('px-sm text-center font-normal')}> No mention options </div>
+        ) : (
           addMentionOptions.map((mention, i) => (
             <div
               key={mention.id}
-              className={s(`px-sm py-xs button-hover ${selectedIndex === i ? 'bg-purple-gray-10' : ''}`)}
+              className={s(
+                `px-sm py-xs button-hover ${selectedIndex === i ? 'bg-purple-gray-10' : ''}`
+              )}
               onClick={() => addMention(mention)}
               onMouseEnter={() => setSelectedIndex(i)}
               ref={mentionRefs[i]}
@@ -94,26 +97,28 @@ const RecipientDropdownBody = ({
               <div className={s('w-full truncate font-semibold')}> @{mention.name} </div>
             </div>
           ))
-        }
+        )}
       </div>
     </div>
   );
-}
+};
 
 RecipientDropdownBody.propTypes = {
-  mentionOptions: PropTypes.arrayOf(PropTypes.shape({
-    id: PropTypes.string.isRequired,
-    name: PropTypes.string.isRequired,
-  })),
-  mentions: PropTypes.arrayOf(PropTypes.shape({
-    id: PropTypes.string.isRequired,
-    name: PropTypes.string.isRequired,
-  })).isRequired,
-  onAddMention: PropTypes.func.isRequired,
+  mentionOptions: PropTypes.arrayOf(
+    PropTypes.shape({
+      id: PropTypes.string.isRequired,
+      name: PropTypes.string.isRequired
+    })
+  ),
+  mentions: PropTypes.arrayOf(
+    PropTypes.shape({
+      id: PropTypes.string.isRequired,
+      name: PropTypes.string.isRequired
+    })
+  ).isRequired,
+  onAddMention: PropTypes.func.isRequired
 };
 
-RecipientDropdownBody.defaultProps = {
-
-};
+RecipientDropdownBody.defaultProps = {};
 
 export default RecipientDropdownBody;

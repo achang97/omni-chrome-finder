@@ -3,15 +3,25 @@ import PropTypes from 'prop-types';
 
 import { Modal, Button, Message } from 'components/common';
 
-import style from './card-confirm-modal.css';
 import { getStyleApplicationFn } from 'utils/style';
+import style from './card-confirm-modal.css';
 
 const s = getStyleApplicationFn(style);
 
 const CardConfirmModal = ({
-  isOpen, title, description, body, error,
-  onRequestClose, primaryButtonProps, secondaryButtonProps, showPrimary,
-  showSecondary, bodyClassName, overlayClassName, ...rest
+  isOpen,
+  title,
+  description,
+  body,
+  error,
+  onRequestClose,
+  primaryButtonProps,
+  secondaryButtonProps,
+  showPrimary,
+  showSecondary,
+  bodyClassName,
+  overlayClassName,
+  ...rest
 }) => {
   if (!secondaryButtonProps) {
     secondaryButtonProps = { text: 'No', onClick: onRequestClose };
@@ -30,8 +40,8 @@ const CardConfirmModal = ({
       {...rest}
     >
       <div className={s(`card-confirm-modal-body ${bodyClassName}`)}>
-        { description && <div> {description} </div> }
-        { body }
+        {description && <div> {description} </div>}
+        {body}
         <Message className={s('mt-xs')} message={error} type="error" />
       </div>
     </Modal>
@@ -47,23 +57,23 @@ CardConfirmModal.propTypes = {
   onRequestClose: PropTypes.func,
   primaryButtonProps: PropTypes.shape({
     text: PropTypes.oneOfType([PropTypes.string, PropTypes.number]).isRequired,
-    onClick: PropTypes.func.isRequired,
+    onClick: PropTypes.func.isRequired
   }).isRequired,
   secondaryButtonProps: PropTypes.shape({
     text: PropTypes.oneOfType([PropTypes.string, PropTypes.number]).isRequired,
-    onClick: PropTypes.func.isRequired,
+    onClick: PropTypes.func.isRequired
   }),
   showPrimary: PropTypes.bool,
   showSecondary: PropTypes.bool,
   overlayClassName: PropTypes.string,
-  bodyClassName: PropTypes.string,
+  bodyClassName: PropTypes.string
 };
 
 CardConfirmModal.defaultProps = {
   showPrimary: true,
   showSecondary: true,
   overlayClassName: '',
-  bodyClassName: '',
+  bodyClassName: ''
 };
 
 export default CardConfirmModal;

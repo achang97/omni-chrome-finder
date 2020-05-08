@@ -7,8 +7,9 @@ import CardAttachment from 'components/cards/CardAttachment';
 
 import { isAnyLoading } from 'utils/file';
 
-import style from './attachment-dropdown.css';
 import { getStyleApplicationFn } from 'utils/style';
+import style from './attachment-dropdown.css';
+
 const s = getStyleApplicationFn(style);
 
 const AttachmentDropdown = ({ attachments, onFileNameChange, onRemoveClick, className }) => (
@@ -18,9 +19,12 @@ const AttachmentDropdown = ({ attachments, onFileNameChange, onRemoveClick, clas
       <div className={s('relative')}>
         <Button
           className={s('bg-white py-reg px-sm text-purple-reg')}
-          icon={isAnyLoading(attachments) ?
-            <Loader size="xs" className={'attachment-dropdown-icon'} /> :
-            <MdAttachFile className={s('attachment-dropdown-icon')} />
+          icon={
+            isAnyLoading(attachments) ? (
+              <Loader size="xs" className="attachment-dropdown-icon" />
+            ) : (
+              <MdAttachFile className={s('attachment-dropdown-icon')} />
+            )
           }
         />
         <Badge count={attachments.length} />
@@ -28,12 +32,8 @@ const AttachmentDropdown = ({ attachments, onFileNameChange, onRemoveClick, clas
     }
     body={
       <div className={s('attachment-dropdown')}>
-        { attachments.length === 0 &&
-          <div className={s('text-center')}>
-            No current attachments
-          </div>
-        }
-        { attachments.map(({ name, key, mimetype, isLoading, error }, i) => (
+        {attachments.length === 0 && <div className={s('text-center')}>No current attachments</div>}
+        {attachments.map(({ name, key, mimetype, isLoading, error }, i) => (
           <CardAttachment
             key={key}
             fileKey={key}
@@ -54,21 +54,23 @@ const AttachmentDropdown = ({ attachments, onFileNameChange, onRemoveClick, clas
 );
 
 AttachmentDropdown.propTypes = {
-  attachments: PropTypes.arrayOf(PropTypes.shape({
-    name: PropTypes.string.isRequired,
-    key: PropTypes.string.isRequired,
-    mimetype: PropTypes.string.isRequired,
-    location: PropTypes.string,
-    isLoading: PropTypes.bool,
-    error: PropTypes.string,
-  })),
+  attachments: PropTypes.arrayOf(
+    PropTypes.shape({
+      name: PropTypes.string.isRequired,
+      key: PropTypes.string.isRequired,
+      mimetype: PropTypes.string.isRequired,
+      location: PropTypes.string,
+      isLoading: PropTypes.bool,
+      error: PropTypes.string
+    })
+  ),
   onFileNameChange: PropTypes.func.isRequired,
   onRemoveClick: PropTypes.func.isRequired,
-  className: PropTypes.string,
-}
+  className: PropTypes.string
+};
 
 AttachmentDropdown.defaultProps = {
-  className: '',
-}
+  className: ''
+};
 
 export default AttachmentDropdown;

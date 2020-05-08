@@ -12,21 +12,12 @@ import App from './App';
 
 const mapStateToProps = (state) => {
   const {
-    display: {
-      dockVisible,
-      dockExpanded
-    },
-    auth: {
-      token
-    },
-    profile: {
-      user
-    },
+    display: { dockVisible, dockExpanded },
+    auth: { token },
+    profile: { user },
     search: {
       cards: {
-        [SEARCH.TYPE.AUTOFIND]: {
-          cards
-        }
+        [SEARCH.TYPE.AUTOFIND]: { cards }
       }
     }
   } = state;
@@ -36,24 +27,15 @@ const mapStateToProps = (state) => {
     dockExpanded,
     isLoggedIn: !!token,
     user,
-    showAutofind: cards.length !== 0,
+    showAutofind: cards.length !== 0
   };
-}
+};
 
 const mapDispatchToProps = {
   toggleDock,
   requestGetUser,
   requestGetTasks,
-  openCard,
-}
+  openCard
+};
 
 export default connect(mapStateToProps, mapDispatchToProps)(withRouter(App));
-
-
-
-
-
-
-
-
-            

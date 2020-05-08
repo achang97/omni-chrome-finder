@@ -4,18 +4,15 @@ import MessageModal from './MessageModal';
 
 const mapStateToProps = (state) => {
   const {
-    display: {
-      modalOpen,
-      modalProps
-    }
+    display: { modalOpen, modalProps }
   } = state;
 
   return { modalOpen, modalProps };
-}
+};
 
 const mapDispatchToProps = {
   openModal,
-  closeModal,
+  closeModal
 };
 
 export default connect(mapStateToProps, mapDispatchToProps)(MessageModal);

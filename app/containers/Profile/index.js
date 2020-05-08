@@ -1,21 +1,24 @@
 import { connect } from 'react-redux';
 import {
-  changeFirstname, changeLastname, changeBio, editUser,
-  requestSaveUser, requestGetUser, requestUpdateUserPermissions
+  changeFirstname,
+  changeLastname,
+  changeBio,
+  editUser,
+  requestSaveUser,
+  requestGetUser,
+  requestUpdateUserPermissions
 } from 'actions/profile';
 import { logout } from 'actions/auth';
 import Profile from './Profile';
 
-const mapStateToProps = state => {
+const mapStateToProps = (state) => {
   const {
     profile,
-    auth: {
-      token
-    }
+    auth: { token }
   } = state;
 
   return { ...profile, token };
-}
+};
 
 const mapDispatchToProps = {
   changeFirstname,
@@ -25,7 +28,7 @@ const mapDispatchToProps = {
   editUser,
   requestGetUser,
   requestUpdateUserPermissions,
-  logout,  
-}
+  logout
+};
 
 export default connect(mapStateToProps, mapDispatchToProps)(Profile);

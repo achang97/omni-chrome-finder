@@ -4,10 +4,12 @@
 
 .card-status-main-dropdown {
   @apply bg-white rounded-b-lg p-sm flex items-center shadow-md w-full cursor-pointer;
+
   box-sizing: border-box;
 }
 
 .card-status-reason-dropdown {
   @apply bg-white mt-xs rounded-lg p-reg shadow-md;
+
   width: 300px;
 }

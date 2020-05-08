@@ -8,40 +8,39 @@ const ONBOARDING_SECTION = {
   CREATE_CARDS: 'createCards',
   SEARCH: 'search',
   SCREEN_RECORD: 'screenRecord',
-  INTEGRATIONS: 'integrations',
+  INTEGRATIONS: 'integrations'
 };
 
-const mapStateToProps = state => {
+const mapStateToProps = (state) => {
   const {
-    auth: {
-      isGettingUser
-    },
+    auth: { isGettingUser },
     profile: {
       user: {
-        onboarding: {
-          extension
-        }
+        onboarding: { extension }
       }
     },
-    display: {
-      dockVisible
-    }
+    display: { dockVisible }
   } = state;
 
   const sections = [
     ONBOARDING_SECTION.CREATE_CARDS,
     ONBOARDING_SECTION.SEARCH,
     ONBOARDING_SECTION.SCREEN_RECORD,
-    ONBOARDING_SECTION.INTEGRATIONS,
+    ONBOARDING_SECTION.INTEGRATIONS
   ];
 
-  const section = sections.find(section => extension[section] !== ONBOARDING_COMPLETE);
-  return { dockVisible, isGettingUser, onboardingSection: section, onboardingSubsection: extension[section] };
-}
+  const section = sections.find((section) => extension[section] !== ONBOARDING_COMPLETE);
+  return {
+    dockVisible,
+    isGettingUser,
+    onboardingSection: section,
+    onboardingSubsection: extension[section]
+  };
+};
 
 const mapDispatchToProps = {
   logout,
   requestGetUser
-}
+};
 
 export default connect(mapStateToProps, mapDispatchToProps)(CompleteOnboarding);

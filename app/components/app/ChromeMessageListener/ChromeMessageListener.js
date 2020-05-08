@@ -3,7 +3,16 @@ import { withRouter } from 'react-router-dom';
 import queryString from 'query-string';
 import { EditorState, ContentState } from 'draft-js';
 
-import { CHROME, SEARCH, ROUTES, MAIN_CONTAINER_ID, INTEGRATIONS, URL, TASKS, PROFILE } from 'appConstants';
+import {
+  CHROME,
+  SEARCH,
+  ROUTES,
+  MAIN_CONTAINER_ID,
+  INTEGRATIONS,
+  URL,
+  TASKS,
+  PROFILE
+} from 'appConstants';
 
 const URL_REGEXES = [
   {
@@ -19,8 +28,8 @@ class ChromeMessageListener extends Component {
     this.state = {
       hasLoaded: false,
       prevText: '',
-      prevUrl: null,
-    }
+      prevUrl: null
+    };
   }
 
   componentDidMount() {
@@ -53,7 +62,7 @@ class ChromeMessageListener extends Component {
   isValidUser = () => {
     const { isLoggedIn, isVerified, hasCompletedOnboarding } = this.props;
     return isLoggedIn && isVerified && hasCompletedOnboarding;
-  }
+  };
 
   hasUrlChanged = () => {
     const { prevUrl } = this.state;
@@ -66,14 +75,14 @@ class ChromeMessageListener extends Component {
     }
 
     return hasChanged;
-  }
+  };
 
   openDock = () => {
     const { toggleDock, dockVisible } = this.props;
     if (!dockVisible) {
       toggleDock();
     }
-  }
+  };
 
   openChromeExtension = () => {
     const { openCard } = this.props;
@@ -90,16 +99,16 @@ class ChromeMessageListener extends Component {
 
           if (cardId) {
             openCard({ _id: cardId, isEditing: edit === 'true' });
-          }        
+          }
         }
       }
     }
-  }
+  };
 
   openTask = (taskId) => {
     const { tasks, updateTasksTab, updateTasksOpenSection, history } = this.props;
     history.push(ROUTES.TASKS);
-    
+
     if (taskId) {
       const task = tasks.find(({ _id }) => _id === taskId);
       if (task) {
@@ -108,14 +117,14 @@ class ChromeMessageListener extends Component {
           updateTasksTab(1);
         } else {
           updateTasksTab(0);
-          const taskSectionType = TASKS.SECTIONS.find(({ taskTypes }) => (
-            taskTypes.length === 1 && taskTypes[0] === task.status
-          ));
+          const taskSectionType = TASKS.SECTIONS.find(
+            ({ taskTypes }) => taskTypes.length === 1 && taskTypes[0] === task.status
+          );
           updateTasksOpenSection(taskSectionType ? taskSectionType.type : TASKS.SECTION_TYPE.ALL);
-        }        
+        }
       }
     }
-  }
+  };
 
   disconnectMutatorObserver = () => {
     if (this.observer) {
@@ -123,7 +132,7 @@ class ChromeMessageListener extends Component {
       this.observer.disconnect();
       this.observer = null;
     }
-  }
+  };
 
   createMutator(targetNode, config) {
     const callback = (mutations) => {
@@ -137,19 +146,19 @@ class ChromeMessageListener extends Component {
 
   trimAlphanumeric = (text) => {
     return text.replace(/^[^a-z\d]+|[^a-z\d]+$/gi, '');
-  }
+  };
 
   removeAll = (nodes, transform) => {
-    nodes.forEach(node => {
+    nodes.forEach((node) => {
       if (transform) {
         node = transform(node);
       }
 
       if (node) {
-        node.remove()
+        node.remove();
       }
     });
-  }
+  };
 
   getGoogleText = () => {
     let text = '';
@@ -178,14 +187,16 @@ class ChromeMessageListener extends Component {
 
             const removeShowContentToggle = [
               ...emailCopy.querySelectorAll('[aria-label="Show trimmed content"]'),
-              ...emailCopy.querySelectorAll('[aria-label="Hide expanded content"]'),
+              ...emailCopy.querySelectorAll('[aria-label="Hide expanded content"]')
             ];
-            this.removeAll(removeShowContentToggle, toggle => toggle.parentElement.nextSibling);
+            this.removeAll(removeShowContentToggle, (toggle) => toggle.parentElement.nextSibling);
 
             const removeTables = emailCopy.querySelectorAll('table');
             this.removeAll(removeTables);
 
-            const removeSignatures = emailCopy.querySelectorAll('[data-smartmail="gmail_signature"]');
+            const removeSignatures = emailCopy.querySelectorAll(
+              '[data-smartmail="gmail_signature"]'
+            );
             this.removeAll(removeSignatures);
 
             const textContent = this.trimAlphanumeric(emailCopy.textContent);
@@ -196,23 +207,23 @@ class ChromeMessageListener extends Component {
     }
 
     return text;
-  }
+  };
 
   getIntegration = () => {
     const urlRegex = URL_REGEXES.find(({ regex }) => regex.test(window.location.href));
-    
+
     if (urlRegex) {
       return urlRegex.integration;
     } else {
       return null;
     }
-  }
+  };
 
   isAutofindEnabled = (autofindPermissions) => {
     const permissionsObj = autofindPermissions || this.props.autofindPermissions;
     const integration = this.getIntegration();
     return integration && permissionsObj && permissionsObj[integration];
-  }
+  };
 
   getPageText = (integration) => {
     switch (integration) {
@@ -220,7 +231,7 @@ class ChromeMessageListener extends Component {
         return this.getGoogleText();
       }
     }
-    
+
     return '';
   };
 
@@ -249,24 +260,26 @@ class ChromeMessageListener extends Component {
           requestSearchCards(SEARCH.TYPE.AUTOFIND, { text: pageText });
         } else if (isNewPage) {
           clearSearchCards(SEARCH.TYPE.AUTOFIND);
-        }        
+        }
       }
     } else {
       if (prevText !== '') {
         this.setState({ prevText: '' });
       }
-      
+
       clearSearchCards(SEARCH.TYPE.AUTOFIND);
     }
   };
 
   handleContextMenuAction = (action, selectedText) => {
     const {
-      dockExpanded, history,
-      updateAskSearchText, updateAskQuestionTitle,
+      dockExpanded,
+      history,
+      updateAskSearchText,
+      updateAskQuestionTitle,
       updateCreateAnswerEditor,
       updateNavigateSearchText,
-      requestLogAudit,
+      requestLogAudit
     } = this.props;
 
     this.openDock();
@@ -286,25 +299,26 @@ class ChromeMessageListener extends Component {
         }
         case CHROME.MESSAGE.CREATE: {
           url = ROUTES.CREATE;
-          updateCreateAnswerEditor(EditorState.createWithContent(ContentState.createFromText(selectedText)));
+          updateCreateAnswerEditor(
+            EditorState.createWithContent(ContentState.createFromText(selectedText))
+          );
           break;
         }
       }
 
       history.push(url);
     }
-  }
+  };
 
   handleNotificationOpened = ({ type, id }) => {
-    const {
-      openCard,
-      requestGetTasks,
-    } = this.props;
+    const { openCard, requestGetTasks } = this.props;
 
     this.openDock();
 
     if (this.isValidUser()) {
-      const { location: { pathname } } = this.props;
+      const {
+        location: { pathname }
+      } = this.props;
 
       switch (type) {
         case CHROME.NOTIFICATION_TYPE.TASK: {
@@ -320,7 +334,7 @@ class ChromeMessageListener extends Component {
         }
       }
     }
-  }
+  };
 
   handleSocketMessage = (type, payload) => {
     const { requestGetUser } = this.props;
@@ -331,7 +345,7 @@ class ChromeMessageListener extends Component {
         break;
       }
     }
-  }
+  };
 
   handleCommand = (command) => {
     const { dockVisible, toggleDock, minimizeDock } = this.props;
@@ -349,7 +363,7 @@ class ChromeMessageListener extends Component {
         break;
       }
     }
-  }
+  };
 
   listener = (msg) => {
     const { type, payload } = msg;

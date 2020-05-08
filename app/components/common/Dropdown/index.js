@@ -31,7 +31,7 @@ class Dropdown extends Component {
     super(props);
 
     this.state = {
-      isOpen: false,
+      isOpen: false
     };
   }
 
@@ -57,16 +57,25 @@ class Dropdown extends Component {
     } else {
       this.setState({ isOpen: !this.state.isOpen });
     }
-  }
+  };
 
   handleMouseBehavior = (e) => {
     if (!this.props.disabled) {
       e.stopPropagation();
     }
-  }
+  };
 
   render() {
-    const { isDown, isLeft, toggler, body, disabled, isTogglerRelative, className, togglerClassName } = this.props;
+    const {
+      isDown,
+      isLeft,
+      toggler,
+      body,
+      disabled,
+      isTogglerRelative,
+      className,
+      togglerClassName
+    } = this.props;
     const isOpen = this.props.isOpen !== undefined ? this.props.isOpen : this.state.isOpen;
 
     const style = getPositionStyle(isDown, isLeft);
@@ -83,7 +92,7 @@ class Dropdown extends Component {
         >
           {toggler}
         </div>
-        { isOpen && React.cloneElement(body, { style }) }
+        {isOpen && React.cloneElement(body, { style })}
       </div>
     );
   }
@@ -99,7 +108,7 @@ Dropdown.propTypes = {
   disabled: PropTypes.bool,
   isTogglerRelative: PropTypes.bool,
   className: PropTypes.string,
-  togglerClassName: PropTypes.string,
+  togglerClassName: PropTypes.string
 };
 
 Dropdown.defaultProps = {
@@ -108,7 +117,7 @@ Dropdown.defaultProps = {
   disabled: false,
   isTogglerRelative: true,
   className: '',
-  togglerClassName: '',
+  togglerClassName: ''
 };
 
 export default onClickOutside(Dropdown);

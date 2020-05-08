@@ -1,67 +1,69 @@
 .ask-teammate-container {
-	font-size: 12px;
-	border-bottom: 1px solid #7a7daf7a;
+  font-size: 12px;
+  border-bottom: 1px solid #7a7daf7a;
 }
 
 .ask-teammate-container:hover {
-	opacity: .75;
+  opacity: 0.75;
 }
 
 .minimized-search-input {
-	box-shadow: 0px 0px 10px -4px rgba(122,125,175,0.5) !important;
+  box-shadow: 0 0 10px -4px rgba(122, 125, 175, 0.5) !important;
 }
 
 .minimized-search-input::placeholder {
-	font-size: 14px !important;
+  font-size: 14px !important;
 }
 
 .minimized-search-input:hover {
-	box-shadow: 0 1px 6px 0 rgba(32,33,36,0.28) !important;
+  box-shadow: 0 1px 6px 0 rgba(32, 33, 36, 0.28) !important;
 }
 
 .minimized-ask-accomplishment-section-container {
-	background: #dde5ff26 !important;
+  background: #dde5ff26 !important;
 }
 
 .minimized-search-accomplishment-img-container {
-	height: 200px;
-	background: white;
+  height: 200px;
+  background: white;
 }
 
 .minimized-search-badge-container {
-	height: 30px;
+  height: 30px;
 }
 
 .badge-bronze {
-	color: #AC7746;
-	border-bottom: 2px solid #AC774633;
+  color: #ac7746;
+  border-bottom: 2px solid #ac774633;
 }
 
 .badge-silver {
-	color: #7A7DAF;
-	border-bottom: 2px solid #7A7DAF33;
+  color: #7a7daf;
+  border-bottom: 2px solid #7a7daf33;
 }
 
 .badge-gold {
-	color: #BA955D;
-	border-bottom: 2px solid #BA955D33;
+  color: #ba955d;
+  border-bottom: 2px solid #ba955d33;
 }
 
 .badge-platinum {
-	color: #7EA9A7;
-	border-bottom: 2px solid #7EA9A733;
+  color: #7ea9a7;
+  border-bottom: 2px solid #7ea9a733;
 }
 
 .performance-score-container {
-	max-height: 100%;
+  max-height: 100%;
 }
 
-.performance-score-container, .performance-score-container > * {
-	@apply min-h-0 flex flex-col flex-1;
+.performance-score-container,
+.performance-score-container > * {
+  @apply min-h-0 flex flex-col flex-1;
 }
 
 .robot-img {
   @apply cursor-pointer absolute;
+
   height: 50px;
   bottom: -40px;
   transition: opacity 1s ease;

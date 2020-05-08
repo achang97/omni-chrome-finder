@@ -7,8 +7,8 @@ import { getStyleApplicationFn } from 'utils/style';
 
 const s = getStyleApplicationFn();
 
-const CardVerificationInterval = ({ isEditable, verificationInterval, onChange }) => (
-  isEditable ?
+const CardVerificationInterval = ({ isEditable, verificationInterval, onChange }) =>
+  isEditable ? (
     <Select
       value={verificationInterval}
       onChange={onChange}
@@ -16,23 +16,28 @@ const CardVerificationInterval = ({ isEditable, verificationInterval, onChange }
       placeholder="Select verification interval..."
       isSearchable
       menuShouldScrollIntoView
-    /> :
-    <div className={s('underline-border border-purple-gray-20 mb-sm text-purple-reg text-sm inline-block')}>
+    />
+  ) : (
+    <div
+      className={s(
+        'underline-border border-purple-gray-20 mb-sm text-purple-reg text-sm inline-block'
+      )}
+    >
       {verificationInterval.label}
     </div>
-);
+  );
 
 CardVerificationInterval.propTypes = {
   isEditable: PropTypes.bool,
   onChange: PropTypes.func,
   verificationInterval: PropTypes.shape({
     label: PropTypes.string.isRequired,
-    value: PropTypes.number.isRequired,
+    value: PropTypes.number.isRequired
   }).isRequired
-}
+};
 
 CardVerificationInterval.defaultProps = {
   isEditable: false
-}
+};
 
 export default CardVerificationInterval;

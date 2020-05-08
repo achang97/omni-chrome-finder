@@ -1,7 +1,7 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import style from './button.css';
 import { getStyleApplicationFn } from 'utils/style';
+import style from './button.css';
 
 const s = getStyleApplicationFn(style);
 
@@ -29,8 +29,18 @@ const getClassNames = (color, underline) => {
 };
 
 const Button = ({
-  text, textClassName, icon, iconLeft, className, underline, underlineColor,
-  color, onClick, imgSrc, imgClassName, disabled,
+  text,
+  textClassName,
+  icon,
+  iconLeft,
+  className,
+  underline,
+  underlineColor,
+  color,
+  onClick,
+  imgSrc,
+  imgClassName,
+  disabled,
   ...rest
 }) => {
   const { outerClassName = '', innerClassName = '' } = getClassNames(color, underline);
@@ -40,15 +50,29 @@ const Button = ({
   };
 
   return (
-    <div className={s(`button-container ${className} ${outerClassName} ${disabled ? 'cursor-not-allowed opacity-75' : 'button-hover'}`)} onClick={protectedOnClick} {...rest} >
-      { iconLeft && icon }
-      { iconLeft && imgSrc && <img className={s(`${imgClassName}`)} src={imgSrc} /> }
-      <div className={s(`button-text ${underline && underlineColor ? `underline-border border-${underlineColor}` : ''} ${innerClassName} ${textClassName}`)}>
+    <div
+      className={s(
+        `button-container ${className} ${outerClassName} ${
+          disabled ? 'cursor-not-allowed opacity-75' : 'button-hover'
+        }`
+      )}
+      onClick={protectedOnClick}
+      {...rest}
+    >
+      {iconLeft && icon}
+      {iconLeft && imgSrc && <img className={s(`${imgClassName}`)} src={imgSrc} />}
+      <div
+        className={s(
+          `button-text ${
+            underline && underlineColor ? `underline-border border-${underlineColor}` : ''
+          } ${innerClassName} ${textClassName}`
+        )}
+      >
         {text}
       </div>
-      { !iconLeft && icon }
-      { !iconLeft && imgSrc && <img className={s(`${imgClassName}`)} src={imgSrc} /> }
-    </div>      
+      {!iconLeft && icon}
+      {!iconLeft && imgSrc && <img className={s(`${imgClassName}`)} src={imgSrc} />}
+    </div>
   );
 };
 
@@ -63,9 +87,8 @@ Button.propTypes = {
   icon: PropTypes.element,
   iconLeft: PropTypes.bool,
   color: PropTypes.oneOf(['primary', 'secondary', 'transparent', 'gold']),
-  disabled: PropTypes.bool,
+  disabled: PropTypes.bool
 };
-
 
 Button.defaultProps = {
   text: '',
@@ -76,7 +99,7 @@ Button.defaultProps = {
   icon: null,
   iconLeft: true,
   imgSrc: null,
-  disabled: false,
+  disabled: false
 };
 
 export default Button;

@@ -3,11 +3,14 @@ import PropTypes from 'prop-types';
 import { MdArrowBack } from 'react-icons/md';
 
 import { getStyleApplicationFn } from 'utils/style';
+
 const s = getStyleApplicationFn();
 
 const BackButton = ({ onClick, className }) => (
   <button
-    className={s(`bg-purple-light rounded-full w-2xl h-2xl flex justify-center items-center text-purple-reg ${className}`)}
+    className={s(
+      `bg-purple-light rounded-full w-2xl h-2xl flex justify-center items-center text-purple-reg ${className}`
+    )}
     onClick={onClick}
   >
     <MdArrowBack className={s('')} />
@@ -16,11 +19,11 @@ const BackButton = ({ onClick, className }) => (
 
 BackButton.propTypes = {
   onClick: PropTypes.func,
-  className: PropTypes.string,
-}
+  className: PropTypes.string
+};
 
 BackButton.defaultProps = {
-  className: '',
-}
+  className: ''
+};
 
 export default BackButton;

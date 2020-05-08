@@ -1,6 +1,8 @@
-.header-profile-picture, .header-badge-container {
+.header-profile-picture,
+.header-badge-container {
   width: 27px;
   height: 27px;
+
   @apply rounded-full;
 }
 

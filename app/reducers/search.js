@@ -6,14 +6,14 @@ const BASE_CARDS_STATE = {
   cards: [],
   externalResults: [],
   page: 0,
-  hasReachedLimit: false,
+  hasReachedLimit: false
 };
 
 const initialState = {
   cards: _.mapValues(SEARCH.TYPE, () => BASE_CARDS_STATE),
   tags: [],
   users: [],
-  permissionGroups: [],
+  permissionGroups: []
 };
 
 export default function navigateReducer(state = initialState, action) {
@@ -27,9 +27,9 @@ export default function navigateReducer(state = initialState, action) {
     }
   });
 
-  const updateAllCards = updateCardsFn => ({
+  const updateAllCards = (updateCardsFn) => ({
     ...state,
-    cards: _.mapValues(state.cards, val => ({
+    cards: _.mapValues(state.cards, (val) => ({
       ...val,
       cards: updateCardsFn(val.cards)
     }))
@@ -37,14 +37,15 @@ export default function navigateReducer(state = initialState, action) {
 
   const removeCard = (cards, cardId) => cards.filter(({ _id }) => _id !== cardId);
 
-  const removeCardByType = (type, cardId) => updateCardStateByType(type, cardState => ({
-    cards: removeCard(cardState.cards, cardId)
-  }));
+  const removeCardByType = (type, cardId) =>
+    updateCardStateByType(type, (cardState) => ({
+      cards: removeCard(cardState.cards, cardId)
+    }));
 
   switch (type) {
     case types.SEARCH_CARDS_REQUEST: {
       const { type: searchType, query, clearCards } = payload;
-      return updateCardStateByType(searchType, cardState => ({
+      return updateCardStateByType(searchType, (cardState) => ({
         ...(clearCards ? BASE_CARDS_STATE : {}),
         isSearchingCards: true,
         searchCardsError: null,
@@ -53,7 +54,7 @@ export default function navigateReducer(state = initialState, action) {
     }
     case types.SEARCH_CARDS_SUCCESS: {
       const { type: searchType, cards, externalResults, clearCards } = payload;
-      return updateCardStateByType(searchType, cardState => ({
+      return updateCardStateByType(searchType, (cardState) => ({
         isSearchingCards: false,
         cards: clearCards ? cards : _.unionBy(cardState.cards, cards, '_id'),
         externalResults: externalResults || cardState.externalResults,
@@ -74,24 +75,22 @@ export default function navigateReducer(state = initialState, action) {
       return updateCardStateByType(searchType, () => BASE_CARDS_STATE);
     }
 
-
     case types.ADD_SEARCH_CARD: {
       const { card } = payload;
-      return updateCardStateByType(SEARCH.TYPE.NAVIGATE, cardState => ({
+      return updateCardStateByType(SEARCH.TYPE.NAVIGATE, (cardState) => ({
         cards: _.unionBy(cardState.cards, [card], '_id')
       }));
     }
     case types.UPDATE_SEARCH_CARD: {
       const { card } = payload;
-      return updateAllCards(cards => cards.map(currCard => (
-        currCard._id === card._id ? card : currCard
-      )));
+      return updateAllCards((cards) =>
+        cards.map((currCard) => (currCard._id === card._id ? card : currCard))
+      );
     }
     case types.REMOVE_SEARCH_CARD: {
       const { cardId } = payload;
-      return updateAllCards(cards => removeCard(cards, cardId));
+      return updateAllCards((cards) => removeCard(cards, cardId));
     }
-
 
     case types.SEARCH_TAGS_REQUEST: {
       return { ...state, isSearchingTags: true, searchTagsError: null };

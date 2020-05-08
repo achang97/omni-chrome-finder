@@ -3,6 +3,7 @@
 }
 
 .suggestion-scroll-container-card {
-  box-shadow: 0 10px 30px 0 rgba(33,26,29,0.05);
+  box-shadow: 0 10px 30px 0 rgba(33, 26, 29, 0.05);
+
   @apply mx-sm mb-reg;
 }

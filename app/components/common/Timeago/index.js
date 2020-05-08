@@ -9,25 +9,22 @@ const TIMEAGO_FORMATTER = (textTransform) => {
     }
 
     if (value !== 1) {
-      unit += 's'
+      unit += 's';
     }
-    return textTransform(value + ' ' + unit + ' ' + suffix);
-  }
+    return textTransform(`${value} ${unit} ${suffix}`);
+  };
 };
 
 const CustomTimeago = ({ textTransform, ...rest }) => (
-    <Timeago
-      formatter={TIMEAGO_FORMATTER(textTransform)}
-      {...rest}
-    />
+  <Timeago formatter={TIMEAGO_FORMATTER(textTransform)} {...rest} />
 );
 
 CustomTimeago.propTypes = {
-  textTransform: PropTypes.func,
-}
+  textTransform: PropTypes.func
+};
 
 CustomTimeago.defaultProps = {
-  textTransform: time => time,
-}
+  textTransform: (time) => time
+};
 
 export default CustomTimeago;

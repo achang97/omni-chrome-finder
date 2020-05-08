@@ -2,9 +2,16 @@ import React, { useState } from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import {
-  FaFileImage, FaFileAudio, FaFileVideo,
-  FaFilePdf, FaFileWord, FaFileExcel, FaFilePowerpoint,
-  FaFileAlt, FaFileCode, FaFileArchive,
+  FaFileImage,
+  FaFileAudio,
+  FaFileVideo,
+  FaFilePdf,
+  FaFileWord,
+  FaFileExcel,
+  FaFilePowerpoint,
+  FaFileAlt,
+  FaFileCode,
+  FaFileArchive
 } from 'react-icons/fa';
 import { MdClose, MdError, MdFileDownload, MdOpenInNew } from 'react-icons/md';
 
@@ -12,8 +19,9 @@ import { Loader, ToggleableInput, Tooltip } from 'components/common';
 import { isVideo, isImage, isAudio, isPDF, isDoc, getFileUrl } from 'utils/file';
 import { NOOP } from 'appConstants';
 
-import style from './card-attachment.css';
 import { getStyleApplicationFn } from 'utils/style';
+import style from './card-attachment.css';
+
 const s = getStyleApplicationFn(style);
 
 const COLORS = {
@@ -32,9 +40,11 @@ function getAttachmentProps(type) {
 
   if (isImage(type)) {
     return { ...COLORS.IMAGE, Icon: FaFileImage };
-  } else if (isAudio(type)) {
+  }
+  if (isAudio(type)) {
     return { ...COLORS.AUDIO_VIDEO, Icon: FaFileAudio };
-  } else if (isVideo(type)) {
+  }
+  if (isVideo(type)) {
     return { ...COLORS.AUDIO_VIDEO, Icon: FaFileVideo };
   }
 
@@ -80,9 +90,21 @@ function getAttachmentProps(type) {
 }
 
 const CardAttachment = ({
-  fileName, fileKey, type, onClick, onRemoveClick, className, textClassName,
-  removeIconClassName, typeIconClassName, isEditable, onFileNameChange, isLoading, error,
-  token, ...rest
+  fileName,
+  fileKey,
+  type,
+  onClick,
+  onRemoveClick,
+  className,
+  textClassName,
+  removeIconClassName,
+  typeIconClassName,
+  isEditable,
+  onFileNameChange,
+  isLoading,
+  error,
+  token,
+  ...rest
 }) => {
   const [isHoveringIcon, setHoverIcon] = useState(false);
 
@@ -92,7 +114,9 @@ const CardAttachment = ({
   };
 
   const { color, underlineColor, Icon } = getAttachmentProps(type);
-  const fileNameClassName = s(`underline-border ${error ? 'border-red-200' : `border-${underlineColor}`} ${textClassName}`);
+  const fileNameClassName = s(
+    `underline-border ${error ? 'border-red-200' : `border-${underlineColor}`} ${textClassName}`
+  );
 
   const url = getFileUrl(fileKey, token, type);
   const isDownloadable = isHoveringIcon && !isLoading && url;
@@ -110,16 +134,25 @@ const CardAttachment = ({
 
   return (
     <Tooltip show={error} tooltip={error} tooltipProps={{ type: 'error' }}>
-      <div onClick={onClick} className={s(`card-attachment ${error ? 'text-red-500' : `text-${color}`} ${className}`)} {...rest}>
+      <div
+        onClick={onClick}
+        className={s(`card-attachment ${error ? 'text-red-500' : `text-${color}`} ${className}`)}
+        {...rest}
+      >
         <div
-          className={s(`card-attachment-file-icon ${isDownloadable ? 'button-hover' : ''} ${typeIconClassName}`)}
+          className={s(
+            `card-attachment-file-icon ${isDownloadable ? 'button-hover' : ''} ${typeIconClassName}`
+          )}
           onMouseEnter={() => setHoverIcon(true)}
           onMouseLeave={() => setHoverIcon(false)}
         >
-          { isDownloadable ?
-            <a href={url} target="_blank"> {leftIcon} </a> :
+          {isDownloadable ? (
+            <a href={url} target="_blank">
+              {leftIcon}
+            </a>
+          ) : (
             leftIcon
-          }
+          )}
         </div>
         <ToggleableInput
           isEditable={isEditable}
@@ -127,18 +160,20 @@ const CardAttachment = ({
           value={fileName}
           inputProps={{
             placeholder: 'File Name',
-            onChange: e => onFileNameChange(e.target.value),
+            onChange: (e) => onFileNameChange(e.target.value),
             className: s('flex-1')
           }}
           className={fileNameClassName}
           placeholder="No file name"
         />
-        { isEditable && onRemoveClick && !isLoading &&
-          <MdClose onClick={onRemove} className={s(`card-attachment-remove-icon button-hover ${removeIconClassName}`)} />
-        }
-      </div>      
+        {isEditable && onRemoveClick && !isLoading && (
+          <MdClose
+            onClick={onRemove}
+            className={s(`card-attachment-remove-icon button-hover ${removeIconClassName}`)}
+          />
+        )}
+      </div>
     </Tooltip>
-
   );
 };
 
@@ -156,7 +191,7 @@ CardAttachment.propTypes = {
   isLoading: PropTypes.bool,
   isEditable: PropTypes.bool,
   onFileNameChange: PropTypes.func,
-  token: PropTypes.string.isRequired,
+  token: PropTypes.string.isRequired
 };
 
 CardAttachment.defaultProps = {
@@ -166,7 +201,7 @@ CardAttachment.defaultProps = {
   typeIconClassName: '',
   isLoading: false,
   isEditable: false,
-  onFileNameChange: NOOP,
+  onFileNameChange: NOOP
 };
 
 export default CardAttachment;

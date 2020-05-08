@@ -4,21 +4,19 @@ import { requestSearchCards } from 'actions/search';
 import * as createActions from 'actions/create';
 import Create from './Create';
 
-const mapStateToProps = state => {
-  const { 
+const mapStateToProps = (state) => {
+  const {
     create,
-    profile: {
-      user
-    }
+    profile: { user }
   } = state;
 
   return { ...create, user };
-}
+};
 
 const mapDispatchToProps = {
   openCard,
   requestSearchCards,
-  ...createActions,  
+  ...createActions
 };
 
 export default connect(mapStateToProps, mapDispatchToProps)(Create);

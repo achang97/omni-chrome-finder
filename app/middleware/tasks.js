@@ -4,14 +4,15 @@ import { requestGetTasks } from 'actions/tasks';
 import { CARD, CHROME } from 'appConstants';
 
 const removeTask = (cardId) => {
-  getStorage(CHROME.STORAGE.TASKS).then(tasks => {
-    const newTasks = tasks.map(task => (task.card._id === cardId ? { ...task, resolved: true } : task));
+  getStorage(CHROME.STORAGE.TASKS).then((tasks) => {
+    const newTasks = tasks.map((task) =>
+      task.card._id === cardId ? { ...task, resolved: true } : task
+    );
     setStorage(CHROME.STORAGE.TASKS, newTasks);
-  });    
-}
+  });
+};
 
-
-const tasksMiddleware = store => next => (action) => {
+const tasksMiddleware = (store) => (next) => (action) => {
   const nextAction = next(action);
   const { type, payload } = action;
 
@@ -28,7 +29,7 @@ const tasksMiddleware = store => next => (action) => {
       break;
     }
     case types.REMOVE_TASK: {
-      const tasks = store.getState().tasks.tasks;
+      const { tasks } = store.getState().tasks;
       setStorage(CHROME.STORAGE.TASKS, tasks);
       break;
     }

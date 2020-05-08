@@ -10,15 +10,12 @@ import Root from 'containers/Root';
 function render(state, wrapper) {
   // Import has to be here for Redux dev tools to work
   const createStore = require('store/configureStore').default;
-  ReactDOM.render(
-    <Root store={createStore(state)} />,
-    wrapper
-  );  
+  ReactDOM.render(<Root store={createStore(state)} />, wrapper);
 }
 
 (function () {
-  const body = document.body;
-  
+  const { body } = document;
+
   const wrapper = document.createElement('div');
   wrapper.id = MAIN_CONTAINER_ID;
   wrapper.style = 'all: initial;';
@@ -54,4 +51,4 @@ function render(state, wrapper) {
     .catch((error) => {
       render(initialState, wrapper);
     });
-}());
+})();

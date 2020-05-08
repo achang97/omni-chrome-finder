@@ -1,22 +1,31 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import { MdLightbulbOutline, MdKeyboardArrowLeft, MdKeyboardArrowRight, MdClose } from 'react-icons/md';
+import {
+  MdLightbulbOutline,
+  MdKeyboardArrowLeft,
+  MdKeyboardArrowRight,
+  MdClose
+} from 'react-icons/md';
 
 import { Button } from 'components/common';
 import { ROUTES } from 'appConstants';
 
-import style from './toggle-tab.css';
 import { getStyleApplicationFn } from 'utils/style';
 
 import logo from 'assets/images/logos/logo-light-icon.svg';
+import style from './toggle-tab.css';
 
 const s = getStyleApplicationFn(style);
 
 const ToggleTab = ({
-  dockVisible, toggleTabShown,
-  autofindShown, toggleAutofindTab,
-  numCards, toggleDock, hideToggleTab,
-  history,
+  dockVisible,
+  toggleTabShown,
+  autofindShown,
+  toggleAutofindTab,
+  numCards,
+  toggleDock,
+  hideToggleTab,
+  history
 }) => {
   const onOpenClick = () => {
     if (numCards > 0) {
@@ -29,7 +38,7 @@ const ToggleTab = ({
   const onCloseClick = () => {
     hideToggleTab();
     if (autofindShown) toggleAutofindTab();
-  }
+  };
 
   const showAutofind = autofindShown && numCards !== 0;
   if (dockVisible || (!toggleTabShown && !showAutofind)) {
@@ -44,7 +53,7 @@ const ToggleTab = ({
         icon={<MdClose />}
         className={s('toggle-tab-button toggle-close-button')}
         onClick={onCloseClick}
-      />      
+      />
       <Button
         color={color}
         icon={<img src={logo} className={s('w-3/4')} />}

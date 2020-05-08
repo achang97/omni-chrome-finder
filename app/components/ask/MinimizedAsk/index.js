@@ -2,13 +2,16 @@ import { connect } from 'react-redux';
 import { requestGetUserOnboardingStats } from 'actions/profile';
 import { toggleDockHeight } from 'actions/display';
 import {
-  toggleAskFeedbackInput, updateAskFeedback, requestSubmitFeedback,
-  togglePerformanceScore, updateAskSearchText,
+  toggleAskFeedbackInput,
+  updateAskFeedback,
+  requestSubmitFeedback,
+  togglePerformanceScore,
+  updateAskSearchText
 } from 'actions/ask';
 import MinimizedAsk from './MinimizedAsk';
 
-const mapStateToProps = state => {
-  const { 
+const mapStateToProps = (state) => {
+  const {
     ask: {
       showFeedback,
       feedback,
@@ -16,23 +19,17 @@ const mapStateToProps = state => {
       feedbackSuccess,
       feedbackError,
       showPerformanceScore,
-      searchText,
+      searchText
     },
-    profile: {
-      badge,
-      percentage,
-      performance,
-      isGettingOnboardingStats,
-    },
-    display: {
-      dockVisible,
-      dockExpanded
-    }
+    profile: { badge, percentage, performance, isGettingOnboardingStats },
+    display: { dockVisible, dockExpanded }
   } = state;
 
   let remainingAccomplishments = [];
   if (performance.length !== 0) {
-    remainingAccomplishments = performance[0].accomplishments.filter(({ isComplete }) => !isComplete);
+    remainingAccomplishments = performance[0].accomplishments.filter(
+      ({ isComplete }) => !isComplete
+    );
   }
 
   return {
@@ -51,7 +48,7 @@ const mapStateToProps = state => {
     dockVisible,
     dockExpanded
   };
-}
+};
 
 const mapDispatchToProps = {
   toggleAskFeedbackInput,
@@ -60,7 +57,7 @@ const mapDispatchToProps = {
   togglePerformanceScore,
   updateAskSearchText,
   toggleDockHeight,
-  requestGetUserOnboardingStats,
-}
+  requestGetUserOnboardingStats
+};
 
 export default connect(mapStateToProps, mapDispatchToProps)(MinimizedAsk);

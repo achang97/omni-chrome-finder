@@ -1,7 +1,7 @@
 import React, { useMemo, useCallback } from 'react';
 import PropTypes from 'prop-types';
-import { useDropzone } from 'react-dropzone';
-import Dropzone from 'react-dropzone';
+import Dropzone, { useDropzone } from 'react-dropzone';
+
 import { colors } from 'styles/colors';
 
 const baseStyle = {
@@ -13,7 +13,7 @@ const baseStyle = {
   color: '#bdbdbd',
   outline: 'none',
   transition: 'border .24s ease-in-out',
-  cursor: 'pointer',
+  cursor: 'pointer'
 };
 
 const activeStyle = {
@@ -29,26 +29,23 @@ const rejectStyle = {
 };
 
 const StyledDropzone = ({ onDrop, accept, style, className, children, useBaseStyle }) => {
-  const onDropCallback = useCallback(acceptedFiles => onDrop(acceptedFiles), []);
+  const onDropCallback = useCallback((acceptedFiles) => onDrop(acceptedFiles), []);
 
-  const {
-    getRootProps,
-    getInputProps,
-    isDragActive,
-    isDragAccept,
-    isDragReject
-  } = useDropzone({ accept: accept, onDrop: onDropCallback });
+  const { getRootProps, getInputProps, isDragActive, isDragAccept, isDragReject } = useDropzone({
+    accept,
+    onDrop: onDropCallback
+  });
 
-  const customStyle = useMemo(() => ({
-    ...(useBaseStyle ? baseStyle : {}),
-    ...style,
-    ...(isDragActive ? activeStyle : {}),
-    ...(isDragAccept ? acceptStyle : {}),
-    ...(isDragReject ? rejectStyle : {})
-  }), [
-    isDragActive,
-    isDragReject
-  ]);
+  const customStyle = useMemo(
+    () => ({
+      ...(useBaseStyle ? baseStyle : {}),
+      ...style,
+      ...(isDragActive ? activeStyle : {}),
+      ...(isDragAccept ? acceptStyle : {}),
+      ...(isDragReject ? rejectStyle : {})
+    }),
+    [isDragActive, isDragReject]
+  );
 
   return (
     <div {...getRootProps({ style: customStyle })} className={className}>
@@ -56,21 +53,21 @@ const StyledDropzone = ({ onDrop, accept, style, className, children, useBaseSty
       {children}
     </div>
   );
-}
+};
 
 StyledDropzone.propTypes = {
   accept: PropTypes.string,
   onDrop: PropTypes.func.isRequired,
   className: PropTypes.string,
   style: PropTypes.object,
-  useBaseStyle: PropTypes.bool,
+  useBaseStyle: PropTypes.bool
 };
 
 StyledDropzone.defaultProps = {
   accept: '',
   className: '',
   style: {},
-  useBaseStyle: true,
+  useBaseStyle: true
 };
 
 export default StyledDropzone;

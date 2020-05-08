@@ -9,9 +9,7 @@ const mapStateToProps = (state) => {
     profile: { user },
     search: {
       cards: {
-        [SEARCH.TYPE.AUTOFIND]: {
-          cards
-        }
+        [SEARCH.TYPE.AUTOFIND]: { cards }
       }
     },
     tasks: { tasks }
@@ -22,7 +20,6 @@ const mapStateToProps = (state) => {
     numAutofindCards: cards.length,
     numTasks: tasks.filter(({ resolved }) => !resolved).length
   };
-}
+};
 
 export default connect(mapStateToProps, undefined)(withRouter(Header));
-

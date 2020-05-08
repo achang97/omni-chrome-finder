@@ -14,6 +14,7 @@
 .card-minimized-tab {
   width: 175px;
   z-index: 100000000;
+
   @apply fixed bottom-0 left-0 ml-xs cursor-pointer outline-purple-gray-10;
 }
 
@@ -23,6 +24,7 @@
 
 .card-tab-container {
   @apply flex flex-shrink-0 min-h-0 items-center bg-white rounded-t-lg px-sm pt-reg;
+
   box-sizing: border-box;
   cursor: grab;
 }

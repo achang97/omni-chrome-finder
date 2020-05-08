@@ -3,7 +3,7 @@ import { TAB_OPTION } from 'appConstants/navigate';
 import * as types from 'actions/actionTypes';
 import { addSearchCard, updateSearchCard, removeSearchCard } from 'actions/search';
 
-const cardsMiddleware = store => next => (action) => {
+const cardsMiddleware = (store) => (next) => (action) => {
   const nextAction = next(action);
   const { type, payload } = action;
 
@@ -15,7 +15,7 @@ const cardsMiddleware = store => next => (action) => {
     case types.MARK_OUT_OF_DATE_SUCCESS:
     case types.MARK_UP_TO_DATE_SUCCESS:
     case types.APPROVE_CARD_SUCCESS:
-    case types.MARK_UP_TO_DATE_FROM_TASKS_SUCCESS: 
+    case types.MARK_UP_TO_DATE_FROM_TASKS_SUCCESS:
     case types.APPROVE_CARD_FROM_TASKS_SUCCESS: {
       const { card } = payload;
       store.dispatch(updateSearchCard(card));
@@ -23,11 +23,13 @@ const cardsMiddleware = store => next => (action) => {
     }
 
     // Add cards
-    case types.CREATE_CARD_SUCCESS: 
+    case types.CREATE_CARD_SUCCESS:
     case types.ADD_BOOKMARK_SUCCESS: {
       const { card } = payload;
-      if ((type === types.CREATE_CARD_SUCCESS && activeNavigateTab === TAB_OPTION.MY_CARDS) ||
-        (type === types.ADD_BOOKMARK_SUCCESS && activeNavigateTab === TAB_OPTION.BOOKMARKED)) {
+      if (
+        (type === types.CREATE_CARD_SUCCESS && activeNavigateTab === TAB_OPTION.MY_CARDS) ||
+        (type === types.ADD_BOOKMARK_SUCCESS && activeNavigateTab === TAB_OPTION.BOOKMARKED)
+      ) {
         store.dispatch(addSearchCard(card));
       }
       break;

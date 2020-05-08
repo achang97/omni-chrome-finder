@@ -4,23 +4,39 @@ import { doGet, doPost, doDelete, getErrorMessage } from 'utils/request';
 import { getContentStateFromEditorState } from 'utils/editor';
 import { ASK, REQUEST } from 'appConstants';
 import { convertAttachmentsToBackendFormat, isUploadedFile } from 'utils/file';
-import { ASK_QUESTION_REQUEST, GET_SLACK_CONVERSATIONS_REQUEST, ADD_ASK_ATTACHMENT_REQUEST, REMOVE_ASK_ATTACHMENT_REQUEST, SUBMIT_FEEDBACK_REQUEST } from 'actions/actionTypes';
 import {
-  handleAskQuestionSuccess, handleAskQuestionError,
-  handleGetSlackConversationsSuccess, handleGetSlackConversationsError,
-  handleAddAskAttachmentSuccess, handleAddAskAttachmentError,
-  handleRemoveAskAttachmentSuccess, handleRemoveAskAttachmentError,
-  handleSubmitFeedbackSuccess, handleSubmitFeedbackError,
+  ASK_QUESTION_REQUEST,
+  GET_SLACK_CONVERSATIONS_REQUEST,
+  ADD_ASK_ATTACHMENT_REQUEST,
+  REMOVE_ASK_ATTACHMENT_REQUEST,
+  SUBMIT_FEEDBACK_REQUEST
+} from 'actions/actionTypes';
+import {
+  handleAskQuestionSuccess,
+  handleAskQuestionError,
+  handleGetSlackConversationsSuccess,
+  handleGetSlackConversationsError,
+  handleAddAskAttachmentSuccess,
+  handleAddAskAttachmentError,
+  handleRemoveAskAttachmentSuccess,
+  handleRemoveAskAttachmentError,
+  handleSubmitFeedbackSuccess,
+  handleSubmitFeedbackError
 } from 'actions/ask';
 import { openModal } from 'actions/display';
 
 export default function* watchAskRequests() {
   let action;
 
-  while (action = yield take([
-    ASK_QUESTION_REQUEST, GET_SLACK_CONVERSATIONS_REQUEST,
-    ADD_ASK_ATTACHMENT_REQUEST, REMOVE_ASK_ATTACHMENT_REQUEST, SUBMIT_FEEDBACK_REQUEST,
-  ])) {
+  while (
+    (action = yield take([
+      ASK_QUESTION_REQUEST,
+      GET_SLACK_CONVERSATIONS_REQUEST,
+      ADD_ASK_ATTACHMENT_REQUEST,
+      REMOVE_ASK_ATTACHMENT_REQUEST,
+      SUBMIT_FEEDBACK_REQUEST
+    ]))
+  ) {
     const { type, payload } = action;
     switch (type) {
       case ASK_QUESTION_REQUEST: {
@@ -52,23 +68,25 @@ export default function* watchAskRequests() {
 
 function* askQuestion() {
   try {
+    const { questionTitle, questionDescription, recipients, attachments } = yield select(
+      (state) => state.ask
+    );
     const {
-      questionTitle, questionDescription, recipients, attachments
-    } = yield select(state => state.ask);
-    const {
-      contentState: contentStateDescription, text: descriptionText
+      contentState: contentStateDescription,
+      text: descriptionText
     } = getContentStateFromEditorState(questionDescription);
 
     yield call(doPost, '/slack/sendUserMessage', {
       channels: recipients.map(({ id, name, type, mentions }) => ({
         id,
         name,
-        mentions: type === ASK.SLACK_RECIPIENT_TYPE.CHANNEL ? mentions.map(mention => mention.id) : null
+        mentions:
+          type === ASK.SLACK_RECIPIENT_TYPE.CHANNEL ? mentions.map((mention) => mention.id) : null
       })),
       question: questionTitle,
       description: descriptionText,
       contentStateDescription,
-      attachments: convertAttachmentsToBackendFormat(attachments),
+      attachments: convertAttachmentsToBackendFormat(attachments)
     });
     yield all([
       put(handleAskQuestionSuccess()),
@@ -99,7 +117,9 @@ function* addAttachment({ key, file }) {
 
     const attachment = yield call(doPost, '/files/upload', formData, { isForm: true });
     const { token } = yield call(doGet, `/files/${attachment.key}/accesstoken`);
-    const location = `${REQUEST.URL.SERVER}/files/bytoken/${attachment.key}?${queryString.stringify({ token })}`;
+    const location = `${REQUEST.URL.SERVER}/files/bytoken/${
+      attachment.key
+    }?${queryString.stringify({ token })}`;
 
     yield put(handleAddAskAttachmentSuccess(key, { ...attachment, location }));
   } catch (error) {
@@ -120,10 +140,10 @@ function* removeAttachment({ key }) {
 
 function* submitFeedback() {
   try {
-    const feedback = yield select(state => state.ask.feedback);
+    const feedback = yield select((state) => state.ask.feedback);
     yield call(doPost, '/feedback', { feedback });
     yield put(handleSubmitFeedbackSuccess());
   } catch (error) {
     yield put(handleSubmitFeedbackError(getErrorMessage(error)));
-  }  
+  }
 }

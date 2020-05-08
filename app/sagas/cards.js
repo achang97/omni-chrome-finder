@@ -6,24 +6,44 @@ import { toggleUpvotes, hasValidEdits, isApprover } from 'utils/card';
 import { convertAttachmentsToBackendFormat } from 'utils/file';
 import { STATUS, PERMISSION_OPTION, VERIFICATION_INTERVAL_OPTION } from 'appConstants/card';
 import {
-  GET_CARD_REQUEST, CREATE_CARD_REQUEST, UPDATE_CARD_REQUEST, TOGGLE_UPVOTE_REQUEST,
-  DELETE_CARD_REQUEST, MARK_UP_TO_DATE_REQUEST, MARK_OUT_OF_DATE_REQUEST, APPROVE_CARD_REQUEST,
-  ADD_BOOKMARK_REQUEST, REMOVE_BOOKMARK_REQUEST, ADD_CARD_ATTACHMENT_REQUEST,
+  GET_CARD_REQUEST,
+  CREATE_CARD_REQUEST,
+  UPDATE_CARD_REQUEST,
+  TOGGLE_UPVOTE_REQUEST,
+  DELETE_CARD_REQUEST,
+  MARK_UP_TO_DATE_REQUEST,
+  MARK_OUT_OF_DATE_REQUEST,
+  APPROVE_CARD_REQUEST,
+  ADD_BOOKMARK_REQUEST,
+  REMOVE_BOOKMARK_REQUEST,
+  ADD_CARD_ATTACHMENT_REQUEST,
   GET_SLACK_THREAD_REQUEST
 } from 'actions/actionTypes';
 import {
-  handleGetCardSuccess, handleGetCardError,
-  handleCreateCardSuccess, handleCreateCardError,
-  handleUpdateCardSuccess, handleUpdateCardError,
-  handleDeleteCardSuccess, handleDeleteCardError,
-  handleToggleUpvoteSuccess, handleToggleUpvoteError,
-  handleMarkUpToDateSuccess, handleMarkUpToDateError,
-  handleMarkOutOfDateSuccess, handleMarkOutOfDateError,
-  handleApproveCardSuccess, handleApproveCardError,
-  handleAddBookmarkSuccess, handleAddBookmarkError,
-  handleRemoveBookmarkSuccess, handleRemoveBookmarkError,
-  handleAddCardAttachmentSuccess, handleAddCardAttachmentError,
-  handleGetSlackThreadSuccess, handleGetSlackThreadError,
+  handleGetCardSuccess,
+  handleGetCardError,
+  handleCreateCardSuccess,
+  handleCreateCardError,
+  handleUpdateCardSuccess,
+  handleUpdateCardError,
+  handleDeleteCardSuccess,
+  handleDeleteCardError,
+  handleToggleUpvoteSuccess,
+  handleToggleUpvoteError,
+  handleMarkUpToDateSuccess,
+  handleMarkUpToDateError,
+  handleMarkOutOfDateSuccess,
+  handleMarkOutOfDateError,
+  handleApproveCardSuccess,
+  handleApproveCardError,
+  handleAddBookmarkSuccess,
+  handleAddBookmarkError,
+  handleRemoveBookmarkSuccess,
+  handleRemoveBookmarkError,
+  handleAddCardAttachmentSuccess,
+  handleAddCardAttachmentError,
+  handleGetSlackThreadSuccess,
+  handleGetSlackThreadError
 } from 'actions/cards';
 import { addSearchCard, removeSearchCard } from 'actions/search';
 
@@ -32,12 +52,22 @@ const INCOMPLETE_CARD_ERROR = 'Failed to save card: some fields are incomplete.'
 export default function* watchCardsRequests() {
   let action;
 
-  while (action = yield take([
-    GET_CARD_REQUEST, CREATE_CARD_REQUEST, UPDATE_CARD_REQUEST,
-    TOGGLE_UPVOTE_REQUEST, DELETE_CARD_REQUEST, MARK_UP_TO_DATE_REQUEST, APPROVE_CARD_REQUEST,
-    MARK_OUT_OF_DATE_REQUEST, ADD_BOOKMARK_REQUEST, REMOVE_BOOKMARK_REQUEST,
-    ADD_CARD_ATTACHMENT_REQUEST, GET_SLACK_THREAD_REQUEST,
-  ])) {
+  while (
+    (action = yield take([
+      GET_CARD_REQUEST,
+      CREATE_CARD_REQUEST,
+      UPDATE_CARD_REQUEST,
+      TOGGLE_UPVOTE_REQUEST,
+      DELETE_CARD_REQUEST,
+      MARK_UP_TO_DATE_REQUEST,
+      APPROVE_CARD_REQUEST,
+      MARK_OUT_OF_DATE_REQUEST,
+      ADD_BOOKMARK_REQUEST,
+      REMOVE_BOOKMARK_REQUEST,
+      ADD_CARD_ATTACHMENT_REQUEST,
+      GET_SLACK_THREAD_REQUEST
+    ]))
+  ) {
     const { type, payload } = action;
     switch (type) {
       case GET_CARD_REQUEST: {
@@ -96,12 +126,12 @@ export default function* watchCardsRequests() {
 }
 
 function* getActiveCardId() {
-  const cardId = yield select(state => state.cards.activeCard._id);
+  const cardId = yield select((state) => state.cards.activeCard._id);
   return cardId;
 }
 
 function* getActiveCard() {
-  const card = yield select(state => state.cards.activeCard);
+  const card = yield select((state) => state.cards.activeCard);
   return card;
 }
 
@@ -111,12 +141,17 @@ function* getCard() {
     const card = yield call(doGet, `/cards/${cardId}`);
     yield put(handleGetCardSuccess(cardId, card));
   } catch (error) {
-    yield put(handleGetCardError(cardId, { status: _.get(error, 'response.status'), message: getErrorMessage(error) }));
+    yield put(
+      handleGetCardError(cardId, {
+        status: _.get(error, 'response.status'),
+        message: getErrorMessage(error)
+      })
+    );
   }
 }
 
 function* getUserId() {
-  const _id = yield select(state => state.profile.user._id);
+  const _id = yield select((state) => state.profile.user._id);
   return _id;
 }
 
@@ -124,24 +159,34 @@ function* convertCardToBackendFormat(isNewCard) {
   const {
     status,
     edits: {
-      question, answerEditorState, descriptionEditorState, owners, subscribers, tags,
-      keywords, verificationInterval, permissions, permissionGroups,
-      slackReplies, attachments      
+      question,
+      answerEditorState,
+      descriptionEditorState,
+      owners,
+      subscribers,
+      tags,
+      keywords,
+      verificationInterval,
+      permissions,
+      permissionGroups,
+      slackReplies,
+      attachments
     }
-  } = yield select(state => state.cards.activeCard);
+  } = yield select((state) => state.cards.activeCard);
   const _id = yield call(getUserId);
 
   const {
-    contentState: contentStateDescription, text: descriptionText
+    contentState: contentStateDescription,
+    text: descriptionText
   } = getContentStateFromEditorState(descriptionEditorState);
-  const {
-    contentState: contentStateAnswer, text: answerText
-  } = getContentStateFromEditorState(answerEditorState);
+  const { contentState: contentStateAnswer, text: answerText } = getContentStateFromEditorState(
+    answerEditorState
+  );
 
   const permissionsInfo = {
     userPermissions: permissions.value === PERMISSION_OPTION.JUST_ME ? [_id] : [],
-    permissionGroups: permissions.value === PERMISSION_OPTION.SPECIFIC_GROUPS ?
-      permissionGroups : [],
+    permissionGroups:
+      permissions.value === PERMISSION_OPTION.SPECIFIC_GROUPS ? permissionGroups : []
   };
 
   let cardOwners = getArrayIds(owners);
@@ -172,7 +217,7 @@ function* convertCardToBackendFormat(isNewCard) {
     tags: cardTags,
     slackReplies: cardSlackReplies,
     updateInterval: cardUpdateInterval,
-    status: isNewCard ? STATUS.UP_TO_DATE : status,
+    status: isNewCard ? STATUS.UP_TO_DATE : status
   };
 }
 
@@ -199,10 +244,13 @@ function* updateCard({ closeCard }) {
 
   try {
     if (hasValidEdits(activeCard.edits)) {
-      const newCardInfo = yield call(convertCardToBackendFormat, activeCard.status === STATUS.NOT_DOCUMENTED);
+      const newCardInfo = yield call(
+        convertCardToBackendFormat,
+        activeCard.status === STATUS.NOT_DOCUMENTED
+      );
       const card = yield call(doPut, `/cards/${cardId}`, newCardInfo);
 
-      const user = yield select(state => state.profile.user);
+      const user = yield select((state) => state.profile.user);
       yield put(handleUpdateCardSuccess(card, closeCard, isApprover(user, card.tags)));
     } else {
       yield put(handleUpdateCardError(cardId, INCOMPLETE_CARD_ERROR, closeCard));
@@ -248,7 +296,7 @@ function* markUpToDate() {
 
 function* markOutOfDate() {
   const cardId = yield call(getActiveCardId);
-  const reason = yield select(state => state.cards.activeCard.outOfDateReasonInput);
+  const reason = yield select((state) => state.cards.activeCard.outOfDateReasonInput);
 
   try {
     const updatedCard = yield call(doPost, `/cards/${cardId}/markOutOfDate`, { reason });
@@ -263,12 +311,11 @@ function* approveCard() {
 
   try {
     const { updatedCard } = yield call(doPost, `/cards/${cardId}/approve`);
-    yield put(handleApproveCardSuccess(updatedCard));    
+    yield put(handleApproveCardSuccess(updatedCard));
   } catch (error) {
     yield put(handleApproveCardError(cardId, getErrorMessage(error)));
   }
 }
-
 
 function* addBookmark({ cardId }) {
   const activeCard = yield call(getActiveCard);
@@ -317,4 +364,3 @@ function* getSlackThread() {
     yield put(handleGetSlackThreadError(activeCard._id, getErrorMessage(error)));
   }
 }
-
