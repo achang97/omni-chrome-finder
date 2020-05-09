@@ -174,9 +174,8 @@ const Tabs = ({
 Tabs.propTypes = {
   tabOptions: PropTypes.arrayOf(
     PropTypes.shape({
-      label: PropTypes.oneOfType([PropTypes.element, PropTypes.string, PropTypes.string])
-        .isRequired,
-      value: PropTypes.oneOfType([PropTypes.string, PropTypes.number, PropTypes.object])
+      label: PropTypes.node.isRequired,
+      value: PropTypes.node.isRequired
     })
   ),
   activeValue: PropTypes.oneOfType([PropTypes.string, PropTypes.number, PropTypes.object])

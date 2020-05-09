@@ -1,4 +1,5 @@
-import React, { Component } from 'react';
+import React from 'react';
+import PropTypes from 'prop-types';
 import { Link } from 'react-router-dom';
 
 import AuthView from 'components/auth/AuthView';
@@ -19,6 +20,12 @@ const ForgotPassword = ({
   requestSendRecoveryEmail,
   history
 }) => {
+  const renderFooter = () => (
+    <Link to={ROUTES.LOGIN} className={s('text-xs text-gray-dark text-center block')}>
+      Back to sign in
+    </Link>
+  );
+
   return (
     <AuthView
       title="Forgot Password?"
@@ -48,13 +55,27 @@ const ForgotPassword = ({
               disabled: recoveryEmail === ''
             }
       }
-      footer={
-        <Link to={ROUTES.LOGIN} className={s('text-xs text-gray-dark text-center block')}>
-          Back to sign in
-        </Link>
-      }
+      footer={renderFooter()}
     />
   );
+};
+
+ForgotPassword.propTypes = {
+  // Redux State
+  recoveryEmail: PropTypes.string.isRequired,
+  isSendingRecoveryEmail: PropTypes.bool,
+  recoverySuccess: PropTypes.bool,
+  recoveryError: PropTypes.string,
+
+  // Redux Actions
+  updateRecoveryEmail: PropTypes.func.isRequired,
+  requestSendRecoveryEmail: PropTypes.func.isRequired
+};
+
+ForgotPassword.defaultProps = {
+  isSendingRecoveryEmail: false,
+  recoverySuccess: null,
+  recoveryError: null
 };
 
 export default ForgotPassword;

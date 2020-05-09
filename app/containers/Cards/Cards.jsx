@@ -1,17 +1,19 @@
 import React from 'react';
+import PropTypes from 'prop-types';
 import ReactDraggable from 'react-draggable';
 import { Resizable } from 're-resizable';
 import { Transition } from 'react-transition-group';
 import { DragDropContext, Droppable, Draggable } from 'react-beautiful-dnd';
 import _ from 'lodash';
-import { MdClose, MdMoreHoriz } from 'react-icons/md';
+import { MdClose } from 'react-icons/md';
 import { FiMinus, FiPlus } from 'react-icons/fi';
 
 import { CardContent, CardConfirmModal } from 'components/cards';
-import { Tabs, Tab, Modal, Button } from 'components/common';
+import { Tabs, Tab } from 'components/common';
 
 import { cardStateChanged, getNewCardBaseState } from 'utils/card';
 import { getBaseAnimationStyle } from 'utils/animate';
+import { UserPropTypes } from 'utils/propTypes';
 
 import { colors } from 'styles/colors';
 import { CARD, ANIMATE } from 'appConstants';
@@ -54,6 +56,10 @@ const Cards = ({
     return currentCard;
   };
 
+  const updateTab = (tabValue) => {
+    if (tabValue !== activeCardIndex) setActiveCardIndex(tabValue);
+  };
+
   const handleCloseClick = (e, index) => {
     e.stopPropagation();
 
@@ -61,10 +67,15 @@ const Cards = ({
 
     // Check to make sure edit state is different than saved state
     if (cardStateChanged(currentCard)) {
-      if (index !== activeCardIndex) updateTab(index);
-      if (currentCard.status === CARD.STATUS.NOT_DOCUMENTED)
+      if (index !== activeCardIndex) {
+        updateTab(index);
+      }
+
+      if (currentCard.status === CARD.STATUS.NOT_DOCUMENTED) {
         openCardModal(CARD.MODAL_TYPE.CONFIRM_CLOSE_UNDOCUMENTED);
-      else openCardModal(CARD.MODAL_TYPE.CONFIRM_CLOSE);
+      } else {
+        openCardModal(CARD.MODAL_TYPE.CONFIRM_CLOSE);
+      }
     } else {
       closeCard(index);
     }
@@ -107,18 +118,14 @@ const Cards = ({
       className={s('flex flex-shrink-0 text-purple-gray-50')}
       onClick={(e) => e.stopPropagation()}
     >
-      <button onClick={toggleCards} className={s('mr-xs')}>
+      <button onClick={toggleCards} className={s('mr-xs')} type="button">
         {cardsExpanded ? <FiMinus /> : <FiPlus />}
       </button>
-      <button onClick={handleCloseAllCards}>
+      <button onClick={handleCloseAllCards} type="button">
         <MdClose />
       </button>
     </div>
   );
-
-  const updateTab = (tabValue) => {
-    if (tabValue !== activeCardIndex) setActiveCardIndex(tabValue);
-  };
 
   const onDragEnd = (result) => {
     // dropped outside the list
@@ -132,7 +139,7 @@ const Cards = ({
   const getItemStyle = (isDragging, draggableStyle) => {
     const { top, left, ...rest } = draggableStyle;
 
-    if (isNaN(top) || isNaN(left)) {
+    if (!top || !left) {
       return rest;
     }
 
@@ -145,14 +152,12 @@ const Cards = ({
   };
 
   const renderTab = (card, i) => {
-    const isActiveCard = i === activeCardIndex;
-    if (isActiveCard) {
-      card = activeCard;
-    }
-
     const dragDisabled = cards.length <= 1;
 
-    const { isEditing, question, edits, _id } = card;
+    const isActiveCard = i === activeCardIndex;
+    const currCard = isActiveCard ? activeCard : card;
+    const { isEditing, question, edits, _id } = currCard;
+
     return (
       <Tab key={_id} tabClassName={s('p-0 border-0')}>
         <Draggable key={_id} draggableId={_id} index={i} isDragDisabled={dragDisabled}>
@@ -175,7 +180,7 @@ const Cards = ({
                 <div onClick={(e) => handleCloseClick(e, i)} className={s('mr-reg cursor-pointer')}>
                   <MdClose color={colors.purple['gray-50']} />
                 </div>
-                {i !== activeCardIndex && i !== activeCardIndex - 1 && (
+                {!isActiveCard && i !== activeCardIndex - 1 && (
                   <div className={s('text-purple-gray-50')}> | </div>
                 )}
               </div>
@@ -215,6 +220,7 @@ const Cards = ({
                   <button
                     onClick={() => openCard(getNewCardBaseState(user), true)}
                     className={s('mx-xs text-purple-gray-50')}
+                    type="button"
                   >
                     <FiPlus />
                   </button>
@@ -229,7 +235,7 @@ const Cards = ({
     );
   };
 
-  const onResize = (e, direction, ref, d) => {
+  const onResize = (e, direction, ref) => {
     adjustCardsDimensions(ref.clientWidth, ref.clientHeight);
   };
 
@@ -318,6 +324,38 @@ const Cards = ({
       {!cardsExpanded && renderMinimizedCards()}
     </>
   );
+};
+
+Cards.propTypes = {
+  user: UserPropTypes.isRequired,
+  cards: PropTypes.arrayOf(PropTypes.object).isRequired,
+  cardsExpanded: PropTypes.bool.isRequired,
+  activeCardIndex: PropTypes.number.isRequired,
+  activeCard: PropTypes.shape({
+    question: PropTypes.string,
+    edits: PropTypes.object,
+    isEditing: PropTypes.bool
+  }).isRequired,
+  cardsWidth: PropTypes.number.isRequired,
+  cardsHeight: PropTypes.number.isRequired,
+  windowPosition: PropTypes.shape({
+    x: PropTypes.number.isRequired,
+    y: PropTypes.number.isRequired
+  }).isRequired,
+  showCloseModal: PropTypes.bool.isRequired,
+
+  // Redux Actions
+  openCard: PropTypes.func.isRequired,
+  closeCard: PropTypes.func.isRequired,
+  closeAllCards: PropTypes.func.isRequired,
+  setActiveCardIndex: PropTypes.func.isRequired,
+  updateCardWindowPosition: PropTypes.func.isRequired,
+  adjustCardsDimensions: PropTypes.func.isRequired,
+  updateCardTabOrder: PropTypes.func.isRequired,
+  openCardModal: PropTypes.func.isRequired,
+  openCardContainerModal: PropTypes.func.isRequired,
+  closeCardContainerModal: PropTypes.func.isRequired,
+  toggleCards: PropTypes.func.isRequired
 };
 
 export default Cards;

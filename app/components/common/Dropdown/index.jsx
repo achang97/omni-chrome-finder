@@ -102,8 +102,8 @@ class Dropdown extends Component {
 Dropdown.propTypes = {
   isDown: PropTypes.bool,
   isLeft: PropTypes.bool,
-  toggler: PropTypes.element.isRequired,
-  body: PropTypes.element,
+  toggler: PropTypes.node.isRequired,
+  body: PropTypes.node,
   isOpen: PropTypes.bool,
   onToggle: PropTypes.func,
   disabled: PropTypes.bool,

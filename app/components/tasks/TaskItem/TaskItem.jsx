@@ -1,21 +1,13 @@
-import React, { useState, useEffect } from 'react';
+import React from 'react';
 import PropTypes from 'prop-types';
-import AnimateHeight from 'react-animate-height';
 import { IoMdAlert } from 'react-icons/io';
-import {
-  MdKeyboardArrowDown,
-  MdKeyboardArrowUp,
-  MdCheck,
-  MdAdd,
-  MdEdit,
-  MdLock,
-  MdCheckCircle
-} from 'react-icons/md';
+import { MdCheck, MdAdd, MdEdit, MdCheckCircle } from 'react-icons/md';
 import { AiFillMinusCircle, AiFillQuestionCircle } from 'react-icons/ai';
 
 import { Button, PlaceholderImg, Timeago, Loader, Message } from 'components/common';
 import { CardTags } from 'components/cards';
 import { TASKS, NOOP } from 'appConstants';
+import { UserPropTypes } from 'utils/propTypes';
 
 import SlackIcon from 'assets/images/icons/Slack_Mark.svg';
 
@@ -215,7 +207,11 @@ const TaskItem = ({
         return (
           <div className={s('text-xs text-gray-dark mt-reg flex items-center')}>
             <div className={s('flex-grow')}>Question asked through Slack</div>
-            <img src={SlackIcon} className={s('task-item-slack-icon rounded-full flex-shrink-0')} />
+            <img
+              src={SlackIcon}
+              className={s('task-item-slack-icon rounded-full flex-shrink-0')}
+              alt="Slack"
+            />
           </div>
         );
       case TASKS.TYPE.NEEDS_APPROVAL:
@@ -313,7 +309,13 @@ const TaskItem = ({
       temporary
       message={renderItem(
         <div className={s('text-sm text-center')}>
-          🎉 <span className={s('mx-sm')}> You've resolved this task! </span> 🎉
+          <span role="img" aria-label="Party">
+            🎉
+          </span>
+          <span className={s('mx-sm')}> You&apos;ve resolved this task! </span>
+          <span role="img" aria-label="Party">
+            🎉
+          </span>
         </div>
       )}
       onHide={onHide}
@@ -332,22 +334,37 @@ TaskItem.propTypes = {
     TASKS.TYPE.NOT_DOCUMENTED,
     TASKS.TYPE.NEEDS_APPROVAL
   ]).isRequired,
-  card: PropTypes.object.isRequired,
-  resolved: PropTypes.bool.isRequired,
-  notifier: PropTypes.shape({
-    id: PropTypes.string,
-    name: PropTypes.string.isRequired
+  card: PropTypes.shape({
+    _id: PropTypes.string.isRequired,
+    question: PropTypes.string.isRequired,
+    answer: PropTypes.string.isRequired,
+    tags: PropTypes.array,
+    outOfDateReason: PropTypes.object
   }).isRequired,
+  resolved: PropTypes.bool.isRequired,
+  notifier: UserPropTypes,
   isLoading: PropTypes.bool,
   error: PropTypes.string,
   onHide: PropTypes.func,
-  className: PropTypes.string
+  className: PropTypes.string,
+
+  // Redux State
+  ownUserId: PropTypes.string.isRequired,
+  isAdmin: PropTypes.bool.isRequired,
+
+  // Redux Actions
+  requestMarkUpToDateFromTasks: PropTypes.func.isRequired,
+  requestDismissTask: PropTypes.func.isRequired,
+  requestApproveCardFromTasks: PropTypes.func.isRequired,
+  openCard: PropTypes.func.isRequired
 };
 
 TaskItem.defaultProps = {
-  className: '',
+  notifier: null,
   onHide: NOOP,
-  isLoading: false
+  isLoading: false,
+  error: null,
+  className: ''
 };
 
 export default TaskItem;

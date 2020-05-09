@@ -60,6 +60,7 @@ export function convertCardToFrontendFormat(card) {
       ...reply,
       selected: status !== CARD.STATUS.NOT_DOCUMENTED
     })),
+    status,
     ...rest
   };
 }

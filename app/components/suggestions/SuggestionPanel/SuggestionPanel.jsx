@@ -8,18 +8,20 @@ import {
   MdKeyboardArrowLeft
 } from 'react-icons/md';
 import AnimateHeight from 'react-animate-height';
-import _ from 'lodash';
 
-import { Loader, Button, Triangle, Timeago, Separator } from 'components/common';
+import { Button, Triangle, Separator } from 'components/common';
 
 import { colors } from 'styles/colors';
 import { SEARCH, INTEGRATIONS, ANIMATE, PROFILE } from 'appConstants';
 
 import { getStyleApplicationFn } from 'utils/style';
-import style from './suggestion-panel.css';
+import mainStyle from './suggestion-panel.css';
+import externalIconStyle from '../ExternalResults/external-results.css';
+
+import { SlackResult, GoogleResult, ZendeskResult, GmailResult } from '../ExternalResults';
 import SuggestionScrollContainer from '../SuggestionScrollContainer';
 
-const s = getStyleApplicationFn(style);
+const s = getStyleApplicationFn(mainStyle, externalIconStyle);
 
 const SuggestionPanel = ({
   query,
@@ -37,14 +39,6 @@ const SuggestionPanel = ({
 
   const externalResultsRef = useRef(null);
 
-  useEffect(() => {
-    if (query === '') {
-      clearSearchCards(SEARCH.TYPE.POPOUT);
-    } else {
-      debouncedRequestSearch();
-    }
-  }, [query]);
-
   const searchCards = (clearCards) => {
     requestSearchCards(SEARCH.TYPE.POPOUT, { q: query }, clearCards);
   };
@@ -53,6 +47,14 @@ const SuggestionPanel = ({
     searchCards(true);
   }, ANIMATE.DEBOUNCE.MS_300);
 
+  useEffect(() => {
+    if (query === '') {
+      clearSearchCards(SEARCH.TYPE.POPOUT);
+    } else {
+      debouncedRequestSearch();
+    }
+  }, [query]);
+
   const toggleIntegration = (integration) => {
     setShowIntegration({
       ...showIntegration,
@@ -60,133 +62,36 @@ const SuggestionPanel = ({
     });
   };
 
-  const renderExternalSourceResults = ({ integration: { type, logo, title }, results }) => {
-    let renderFn;
+  const renderExternalSourceResults = (externalSource) => {
+    const {
+      integration: { type, logo, title },
+      results
+    } = externalSource;
+
+    const onClick = (result) => {
+      requestLogAudit(PROFILE.AUDIT_TYPE.OPEN_EXTERNAL_DOC, { type, ...result });
+    };
+
+    let ResultComponent;
     switch (type) {
       case INTEGRATIONS.SLACK.type: {
-        renderFn = ({ text, link, sender, channel }) => (
-          <a target="_blank" href={link} key={link}>
-            <div className={s('suggestion-panel-external-result flex-col')}>
-              <div className={s('flex justify-between mb-sm')}>
-                <div>
-                  <div
-                    className={s(
-                      'suggestion-panel-external-result-text font-semibold text-purple-reg mb-xs'
-                    )}
-                  >
-                    {channel === 'Personal Message' ? 'Direct Message' : `#${channel}`}
-                  </div>
-                  <div
-                    className={s(
-                      'suggestion-panel-external-result-text suggestion-panel-external-result-sender'
-                    )}
-                  >
-                    @{sender}
-                  </div>
-                </div>
-                <div className={s('suggestion-panel-external-result-icon ml-xs')}>
-                  <img src={logo} />
-                </div>
-              </div>
-              <div className={s('text-xs line-clamp-3')}> {text} </div>
-            </div>
-          </a>
-        );
+        ResultComponent = SlackResult;
         break;
       }
       case INTEGRATIONS.GOOGLE.type: {
-        renderFn = ({ name, id, webViewLink, iconLink }) => (
-          <a target="_blank" href={webViewLink} key={id}>
-            <div className={s('suggestion-panel-external-result items-center')}>
-              <div
-                className={s(
-                  'suggestion-panel-external-result-text suggestion-panel-external-result-link'
-                )}
-              >
-                {name}
-              </div>
-              <div className={s('suggestion-panel-external-result-icon ml-xs')}>
-                <img src={logo} />
-              </div>
-            </div>
-          </a>
-        );
+        ResultComponent = GoogleResult;
         break;
       }
       case INTEGRATIONS.ZENDESK.type: {
-        renderFn = ({
-          id,
-          agentUrl,
-          updated_at,
-          type,
-          raw_subject,
-          description,
-          priority,
-          status
-        }) => (
-          <a target="_blank" href={agentUrl} key={id}>
-            <div className={s('suggestion-panel-external-result flex-col')}>
-              <div className={s('flex justify-between mb-sm')}>
-                <div className={s('min-w-0')}>
-                  <div
-                    className={s(
-                      'suggestion-panel-external-result-text font-semibold text-purple-reg mb-xs'
-                    )}
-                  >
-                    {raw_subject}
-                  </div>
-                  <div className={s('text-xs text-gray-light')}>
-                    <span>
-                      Priority: <span className={s('italic')}> {priority} </span>
-                    </span>
-                    <span className={s('ml-sm')}>
-                      Status: <span className={s('italic')}> {status} </span>
-                    </span>
-                  </div>
-                </div>
-                <div className={s('suggestion-panel-external-result-icon ml-xs')}>
-                  <img src={logo} />
-                </div>
-              </div>
-              <div className={s('text-xs line-clamp-3')}> {description} </div>
-              <Timeago date={updated_at} className={s('suggestion-panel-external-result-date')} />
-            </div>
-          </a>
-        );
+        ResultComponent = ZendeskResult;
         break;
       }
       case INTEGRATIONS.GMAIL.type: {
-        renderFn = ({ id, webLink, deliveredTo, date, from, subject }) => (
-          <a target="_blank" href={webLink} key={id}>
-            <div className={s('suggestion-panel-external-result flex-col')}>
-              <div className={s('flex justify-between mb-xs')}>
-                <div
-                  className={s(
-                    'suggestion-panel-external-result-text font-semibold text-purple-reg mb-xs'
-                  )}
-                >
-                  {subject}
-                </div>
-                <div className={s('suggestion-panel-external-result-icon ml-xs')}>
-                  <img src={logo} />
-                </div>
-              </div>
-              <div className={s('text-xs flex mb-xs')}>
-                <div className={s('font-semibold w-4xl flex-shrink-0 text-xs')}> From: </div>
-                <div className={s('suggestion-panel-external-result-text text-xs')}> {from} </div>
-              </div>
-              <div className={s('suggestion-panel-external-result-text flex')}>
-                <div className={s('font-semibold w-4xl flex-shrink-0 text-xs')}> To: </div>
-                <div className={s('suggestion-panel-external-result-text text-xs')}>
-                  {deliveredTo}
-                </div>
-              </div>
-              <Timeago date={date} className={s('suggestion-panel-external-result-date')} />
-            </div>
-          </a>
-        );
+        ResultComponent = GmailResult;
         break;
       }
+      default:
+        break;
     }
 
     const isOpen = showIntegration[type];
@@ -199,8 +104,8 @@ const SuggestionPanel = ({
           onClick={() => toggleIntegration(type)}
         >
           <div className={s('flex items-center text-md text-gray-dark')}>
-            <div className={s('suggestion-panel-external-result-icon mr-sm')}>
-              <img src={logo} />
+            <div className={s('external-result-icon mr-sm')}>
+              <img src={logo} alt={title} />
             </div>
             <span className={s('font-semibold mr-sm')}> {title} </span>
             <span> ({results.length}) </span>
@@ -210,13 +115,12 @@ const SuggestionPanel = ({
         <AnimateHeight height={isOpen ? 'auto' : 0}>
           <div className={s('px-lg')}>
             {results.map((result) => (
-              <div
-                onClick={() =>
-                  requestLogAudit(PROFILE.AUDIT_TYPE.OPEN_EXTERNAL_DOC, { type, ...result })
-                }
-              >
-                {renderFn(result)}
-              </div>
+              <ResultComponent
+                key={ResultComponent.getKey(result)}
+                logo={logo}
+                onClick={() => onClick(result)}
+                {...result}
+              />
             ))}
           </div>
         </AnimateHeight>
@@ -226,7 +130,9 @@ const SuggestionPanel = ({
 
   const countExternalResults = () => {
     let numExternalResults = 0;
-    externalResults.forEach(({ results }) => (numExternalResults += results.length));
+    externalResults.forEach(({ results }) => {
+      numExternalResults += results.length;
+    });
     return numExternalResults;
   };
 
@@ -348,7 +254,31 @@ const SuggestionPanel = ({
 };
 
 SuggestionPanel.propTypes = {
-  query: PropTypes.string.isRequired
+  query: PropTypes.string.isRequired,
+
+  // Redux State
+  cards: PropTypes.arrayOf(PropTypes.object).isRequired,
+  externalResults: PropTypes.arrayOf(
+    PropTypes.shape({
+      integration: PropTypes.shape({
+        type: PropTypes.string.isRequired,
+        logo: PropTypes.string.isRequired,
+        title: PropTypes.string.isRequired
+      }),
+      results: PropTypes.array
+    })
+  ).isRequired,
+  isSearchingCards: PropTypes.bool,
+  hasReachedLimit: PropTypes.bool.isRequired,
+
+  // Redux Actions
+  requestSearchCards: PropTypes.func.isRequired,
+  clearSearchCards: PropTypes.func.isRequired,
+  requestLogAudit: PropTypes.func.isRequired
+};
+
+SuggestionPanel.defaultProps = {
+  isSearchingCards: false
 };
 
 export default SuggestionPanel;

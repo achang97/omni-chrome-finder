@@ -13,11 +13,19 @@ import Profile from './Profile';
 
 const mapStateToProps = (state) => {
   const {
-    profile,
+    profile: { user, userEdits, analytics, permissionState, isSavingUser, isEditingAbout },
     auth: { token }
   } = state;
 
-  return { ...profile, token };
+  return {
+    user,
+    userEdits,
+    analytics,
+    permissionState,
+    isSavingUser,
+    isEditingAbout,
+    token
+  };
 };
 
 const mapDispatchToProps = {

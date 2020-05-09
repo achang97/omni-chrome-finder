@@ -72,7 +72,7 @@ const Message = ({
 };
 
 Message.propTypes = {
-  message: PropTypes.any,
+  message: PropTypes.node,
   type: PropTypes.string,
   className: PropTypes.string,
   animate: PropTypes.bool,

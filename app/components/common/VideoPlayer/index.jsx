@@ -56,19 +56,20 @@ const VideoPlayer = ({ url, fullscreenControlBarItems, minimizedControlBarItems,
   const [player, setPlayer] = useState({});
   const playerRef = useRef(null);
 
-  useEffect(() => {
-    playerRef.current.subscribeToStateChange(handleStateChange);
-  }, []);
-
   const handleStateChange = (state) => {
     // copy player state to this component's state
     setPlayer(state);
   };
 
+  useEffect(() => {
+    playerRef.current.subscribeToStateChange(handleStateChange);
+  }, []);
+
   const controlBarItems =
     player.isFullscreen && fullscreenControlBarItems
       ? fullscreenControlBarItems
       : minimizedControlBarItems;
+
   return (
     <div className={s('rounded overflow-hidden')}>
       <Player ref={playerRef} {...rest}>

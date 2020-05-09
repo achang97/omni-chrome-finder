@@ -67,7 +67,7 @@ AuthView.propTypes = {
   title: PropTypes.string.isRequired,
   subtitle: PropTypes.string,
   isLoading: PropTypes.bool,
-  inputBody: PropTypes.element.isRequired,
+  inputBody: PropTypes.node.isRequired,
   error: PropTypes.string,
   submitButtonProps: PropTypes.object,
   footer: PropTypes.any,

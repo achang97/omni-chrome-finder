@@ -1,16 +1,8 @@
 import React, { useEffect } from 'react';
+import PropTypes from 'prop-types';
 import AnimateHeight from 'react-animate-height';
-import { FaDotCircle } from 'react-icons/fa';
 import { IoMdAlert } from 'react-icons/io';
-import {
-  MdKeyboardArrowDown,
-  MdKeyboardArrowUp,
-  MdCheck,
-  MdAdd,
-  MdEdit,
-  MdLock,
-  MdNotifications
-} from 'react-icons/md';
+import { MdKeyboardArrowDown, MdKeyboardArrowUp, MdNotifications } from 'react-icons/md';
 import { AiFillMinusCircle, AiFillQuestionCircle } from 'react-icons/ai';
 
 import { Tabs, Tab, Loader } from 'components/common';
@@ -31,7 +23,6 @@ const Tasks = ({
   tasks,
   openSection,
   isGettingTasks,
-  getTasksError,
   updateTasksOpenSection,
   updateTasksTab,
   requestGetTasks,
@@ -48,10 +39,10 @@ const Tasks = ({
     requestGetTasks();
   }, [tabIndex]);
 
-  const getCurrTasks = (tabIndex) => {
+  const getTasks = (index) => {
     const currTasks = tasks.filter(({ status }) => {
       const needsApproval = status === TYPE.NEEDS_APPROVAL;
-      return tabIndex === 0 ? !needsApproval : needsApproval;
+      return index === 0 ? !needsApproval : needsApproval;
     });
     return currTasks;
   };
@@ -103,14 +94,18 @@ const Tasks = ({
       }
       case SECTION_TYPE.NOT_DOCUMENTED: {
         icon = <AiFillQuestionCircle className={s('tasks-icon-container text-purple-reg')} />;
+        break;
       }
+      default:
+        break;
     }
 
     const filteredTasks = tasks.filter(({ status }) => taskTypes.includes(status));
     return { icon, filteredTasks };
   };
 
-  const renderTaskSection = ({ type, title, taskTypes }) => {
+  const renderTaskSection = (section) => {
+    const { type, title, taskTypes } = section;
     const { icon, filteredTasks } = getTaskSectionProps(type, taskTypes);
     const isSectionOpen = openSection === type;
     const isAllTasksSection = type === SECTION_TYPE.ALL;
@@ -151,7 +146,7 @@ const Tasks = ({
   const renderNoTasksScreen = () => {
     return (
       <div className={s('flex flex-col items-center p-reg justify-center mt-2xl')}>
-        <img src={NoNotificationsImg} />
+        <img src={NoNotificationsImg} alt="No Notifications" />
         <div className={s('text-reg font-semibold')}>
           No {tabIndex === 0 ? 'unresolved tasks' : 'cards to approve'}
         </div>
@@ -164,7 +159,7 @@ const Tasks = ({
   };
 
   const renderTab = (tasksTab, i) => {
-    const numTasks = getCurrTasks(i).length;
+    const numTasks = getTasks(i).length;
     return (
       <Tab tabContainerClassName={s('flex-1')} key={tasksTab}>
         <div className={s('flex items-center')}>
@@ -175,7 +170,7 @@ const Tasks = ({
     );
   };
 
-  const currTasks = getCurrTasks(tabIndex);
+  const currTasks = getTasks(tabIndex);
   return (
     <div className={s('flex flex-col min-h-0 flex-grow')}>
       <Tabs
@@ -209,6 +204,24 @@ const Tasks = ({
       </>
     </div>
   );
+};
+
+Tasks.propTypes = {
+  // Redux State
+  tabIndex: PropTypes.number.isRequired,
+  tasks: PropTypes.arrayOf(PropTypes.object).isRequired,
+  openSection: PropTypes.string.isRequired,
+  isGettingTasks: PropTypes.bool,
+
+  // Redux Actions
+  updateTasksOpenSection: PropTypes.func.isRequired,
+  updateTasksTab: PropTypes.func.isRequired,
+  requestGetTasks: PropTypes.func.isRequired,
+  removeTask: PropTypes.func.isRequired
+};
+
+Tasks.defaultProps = {
+  isGettingTasks: false
 };
 
 export default Tasks;

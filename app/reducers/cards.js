@@ -22,7 +22,8 @@ const initialState = {
   windowPosition: {
     x: window.innerWidth / 2 - DIMENSIONS.DEFAULT_CARDS_WIDTH / 2,
     y: window.innerHeight / 2 - DIMENSIONS.DEFAULT_CARDS_HEIGHT / 2
-  }
+  },
+  showCloseModal: false
 };
 
 const BASE_MODAL_OPEN_STATE = _.mapValues(MODAL_TYPE, () => false);

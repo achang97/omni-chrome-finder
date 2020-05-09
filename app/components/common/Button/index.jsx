@@ -84,7 +84,7 @@ Button.propTypes = {
   underline: PropTypes.bool,
   underlineColor: PropTypes.string,
   onClick: PropTypes.func,
-  icon: PropTypes.element,
+  icon: PropTypes.node,
   iconLeft: PropTypes.bool,
   color: PropTypes.oneOf(['primary', 'secondary', 'transparent', 'gold']),
   disabled: PropTypes.bool

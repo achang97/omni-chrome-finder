@@ -9,9 +9,9 @@ const s = getStyleApplicationFn(style);
 
 const NUM_COLORS = 3;
 
-const hashCode = (s) =>
+const hashCode = (string) =>
   Math.abs(
-    s.split('').reduce((a, b) => {
+    string.split('').reduce((a, b) => {
       a = (a << 5) - a + b.charCodeAt(0);
       return a & a;
     }, 0)
@@ -34,7 +34,7 @@ const getPlaceholder = (name, className) => {
 
 export const PlaceholderImg = ({ name, src, className, isUrl, token }) =>
   src ? (
-    <img src={isUrl ? src : getFileUrl(src, token)} className={className} />
+    <img src={isUrl ? src : getFileUrl(src, token)} className={className} alt={name} />
   ) : (
     getPlaceholder(name, className)
   );
@@ -43,11 +43,15 @@ PlaceholderImg.propTypes = {
   name: PropTypes.string.isRequired,
   src: PropTypes.string,
   className: PropTypes.string,
-  isUrl: PropTypes.bool
+  isUrl: PropTypes.bool,
+
+  // Redux State
+  token: PropTypes.string.isRequired
 };
 
 PlaceholderImg.defaultProps = {
   className: '',
+  src: null,
   isUrl: false
 };
 

@@ -35,6 +35,8 @@ const getStyle = (direction, color, size, isInner) => {
         borderRight: `${size}px solid ${color}`,
         position: isInner ? 'absolute' : 'relative'
       };
+    default:
+      return {};
   }
 };
 
@@ -52,6 +54,8 @@ const getPositionStyle = (direction, size, outlineSize) => {
     case 'right': {
       return { top: `-${size}px`, left: `-${size + outlineSize}px` };
     }
+    default:
+      return {};
   }
 };
 
@@ -77,7 +81,7 @@ Triangle.propTypes = {
   color: PropTypes.string.isRequired,
   size: PropTypes.number.isRequired,
   className: PropTypes.string,
-  style: PropTypes.object,
+  style: PropTypes.shape({}),
   outlineSize: PropTypes.number,
   outlineColor: PropTypes.string
 };

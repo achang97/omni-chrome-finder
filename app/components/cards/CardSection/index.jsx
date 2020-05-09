@@ -69,7 +69,7 @@ CardSection.propTypes = {
   startExpanded: PropTypes.bool,
   showSeparator: PropTypes.bool,
   className: PropTypes.string,
-  preview: PropTypes.element,
+  preview: PropTypes.node,
   headerEnd: PropTypes.node
 };
 

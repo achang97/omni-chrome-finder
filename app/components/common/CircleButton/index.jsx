@@ -45,7 +45,7 @@ const CircleButton = ({
 
 CircleButton.propTypes = {
   size: PropTypes.oneOfType([PropTypes.number, PropTypes.oneOf(['xs', 'sm', 'md', 'lg'])]),
-  content: PropTypes.oneOfType([PropTypes.element, PropTypes.string]).isRequired,
+  content: PropTypes.node.isRequired,
   onClick: PropTypes.func,
   label: PropTypes.string,
   containerClassName: PropTypes.string,

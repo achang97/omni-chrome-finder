@@ -60,8 +60,8 @@ const Tab = ({
 };
 
 Tab.propTypes = {
-  label: PropTypes.oneOfType([PropTypes.element, PropTypes.string, PropTypes.string]),
-  value: PropTypes.oneOfType([PropTypes.string, PropTypes.number, PropTypes.object]),
+  label: PropTypes.node,
+  value: PropTypes.node,
   isActive: PropTypes.bool,
   onTabClick: PropTypes.func,
   clickOnMouseDown: PropTypes.bool,
@@ -78,6 +78,8 @@ Tab.propTypes = {
 };
 
 Tab.defaultProps = {
+  label: null,
+  value: null,
   tabContainerClassName: '',
   rippleClassName: '',
   tabClassName: '',

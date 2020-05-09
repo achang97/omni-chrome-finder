@@ -1,24 +1,16 @@
 import React, { useState, useEffect } from 'react';
+import PropTypes from 'prop-types';
 import AnimateHeight from 'react-animate-height';
 import { CircularProgressbar, buildStyles } from 'react-circular-progressbar';
-import { MdKeyboardArrowDown, MdKeyboardArrowUp, MdSettings, MdEdit } from 'react-icons/md';
+import { MdKeyboardArrowDown, MdKeyboardArrowUp, MdEdit } from 'react-icons/md';
 import _ from 'lodash';
 import Toggle from 'react-toggle';
 
-import {
-  Button,
-  CheckBox,
-  PlaceholderImg,
-  Dropdown,
-  Message,
-  Separator,
-  Loader
-} from 'components/common';
+import { Button, Message, Separator, Loader } from 'components/common';
 import { IntegrationAuthButton, ProfilePicture } from 'components/profile';
 
-import { PROFILE, INTEGRATIONS, NOOP } from 'appConstants';
-
-import { isLoggedIn } from 'utils/auth';
+import { PROFILE, INTEGRATIONS } from 'appConstants';
+import { UserPropTypes } from 'utils/propTypes';
 
 import { colors } from 'styles/colors';
 import { getStyleApplicationFn } from 'utils/style';
@@ -83,15 +75,14 @@ const Profile = ({
   userEdits,
   analytics,
   permissionState,
-  changeUserPermissionsError,
+  isSavingUser,
+  isEditingAbout,
   changeFirstname,
   changeLastname,
   changeBio,
-  isSavingUser,
-  isEditingAbout,
+  requestSaveUser,
   editUser,
   requestGetUser,
-  requestSaveUser,
   requestUpdateUserPermissions,
   logout
 }) => {
@@ -173,7 +164,7 @@ const Profile = ({
   };
 
   const renderMetricsSection = () => {
-    const { count = 0, totalUpvotes, upToDateCount, outOfDateCount } = analytics;
+    const { count = 0, upToDateCount } = analytics;
     let upToDatePercentage = 0;
     let upToDatePercentageText = '--';
 
@@ -198,7 +189,8 @@ const Profile = ({
     );
   };
 
-  const renderIntegrations = ({ type, toggle, options }) => {
+  const renderIntegrations = (integrationSection) => {
+    const { type, toggle, options } = integrationSection;
     const { autofindPermissions, notificationPermissions } = user;
 
     return (
@@ -216,7 +208,7 @@ const Profile = ({
             >
               <div className={s('flex flex-1 items-center')}>
                 <div className={s('profile-integration-img-container')}>
-                  <img src={logo} className={s('profile-integration-img')} />
+                  <img src={logo} className={s('profile-integration-img')} alt={title} />
                 </div>
                 <div className={s('flex-1 text-sm')}> {title} </div>
               </div>
@@ -256,13 +248,7 @@ const Profile = ({
           const { type, title, toggle } = profileSettingSection;
           const isOpen = sectionOpen[type];
           const Icon = isOpen ? MdKeyboardArrowUp : MdKeyboardArrowDown;
-
-          let error;
-          let isLoading;
-          if (toggle) {
-            error = permissionState[type].error;
-            isLoading = permissionState[type].isLoading;
-          }
+          const { error, isLoading } = permissionState[type] || {};
 
           return (
             <div
@@ -318,6 +304,42 @@ const Profile = ({
       </div>
     </div>
   );
+};
+
+Profile.propTypes = {
+  // Redux State
+  user: UserPropTypes.isRequired,
+  userEdits: PropTypes.shape({
+    firstname: PropTypes.string,
+    lastname: PropTypes.string,
+    bio: PropTypes.string
+  }).isRequired,
+  analytics: PropTypes.shape({
+    count: PropTypes.number.isRequired,
+    upToDateCount: PropTypes.number.isRequired
+  }).isRequired,
+  permissionState: PropTypes.objectOf(
+    PropTypes.shape({
+      error: PropTypes.string,
+      isLoading: PropTypes.bool
+    })
+  ).isRequired,
+  isSavingUser: PropTypes.bool,
+  isEditingAbout: PropTypes.bool.isRequired,
+
+  // Redux Actions
+  changeFirstname: PropTypes.func.isRequired,
+  changeLastname: PropTypes.func.isRequired,
+  changeBio: PropTypes.func.isRequired,
+  requestSaveUser: PropTypes.func.isRequired,
+  editUser: PropTypes.func.isRequired,
+  requestGetUser: PropTypes.func.isRequired,
+  requestUpdateUserPermissions: PropTypes.func.isRequired,
+  logout: PropTypes.func.isRequired
+};
+
+Profile.defaultProps = {
+  isSavingUser: false
 };
 
 export default Profile;

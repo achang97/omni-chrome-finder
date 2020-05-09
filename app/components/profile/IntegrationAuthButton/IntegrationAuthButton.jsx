@@ -1,11 +1,11 @@
-import React, { useState, useEffect, useRef } from 'react';
+import React, { useState, useEffect } from 'react';
 import PropTypes from 'prop-types';
-import { MdKeyboardArrowDown, MdKeyboardArrowUp } from 'react-icons/md';
+import { MdKeyboardArrowDown } from 'react-icons/md';
 
 import { Button, Dropdown, Loader } from 'components/common';
 import { getIntegrationAuthLink, isLoggedIn } from 'utils/auth';
+import { UserPropTypes } from 'utils/propTypes';
 
-import { colors } from 'styles/colors';
 import { getStyleApplicationFn } from 'utils/style';
 import style from './integration-auth-button.css';
 
@@ -19,7 +19,6 @@ const IntegrationAuthButton = ({
   user,
   token,
   isLoading,
-  error,
   requestLogoutUserIntegration
 }) => {
   const [authWindow, setAuthWindow] = useState(null);
@@ -50,7 +49,7 @@ const IntegrationAuthButton = ({
   let icon;
   if (showIntegration) {
     textSuffix = ` to ${title}`;
-    icon = <img className={s('h-xl mr-sm')} src={logo} />;
+    icon = <img className={s('h-xl mr-sm')} src={logo} alt={title} />;
   }
 
   if (loggedIn) {
@@ -74,7 +73,7 @@ const IntegrationAuthButton = ({
               iconLeft={false}
             />
           }
-          onToggle={(dropdownOpen) => setDropdownOpen(dropdownOpen)}
+          onToggle={(isOpen) => setDropdownOpen(isOpen)}
           body={
             <div className={s('integration-auth-sign-out-dropdown')}>
               <Button
@@ -101,13 +100,29 @@ const IntegrationAuthButton = ({
 };
 
 IntegrationAuthButton.propTypes = {
-  integration: PropTypes.string.isRequired,
+  integration: PropTypes.shape({
+    type: PropTypes.string.isRequired,
+    title: PropTypes.string.isRequired,
+    logo: PropTypes.string.isRequired
+  }).isRequired,
   showIntegration: PropTypes.bool,
-  onWindowOpen: PropTypes.func
+  onWindowOpen: PropTypes.func,
+  className: PropTypes.string,
+
+  // Redux State
+  user: UserPropTypes.isRequired,
+  token: PropTypes.string.isRequired,
+  isLoading: PropTypes.bool,
+
+  // Redux Actions
+  requestLogoutUserIntegration: PropTypes.func.isRequired
 };
 
 IntegrationAuthButton.defaultProps = {
-  showIntegration: true
+  showIntegration: true,
+  onWindowOpen: null,
+  className: '',
+  isLoading: false
 };
 
 export default IntegrationAuthButton;

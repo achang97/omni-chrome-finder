@@ -69,15 +69,15 @@ const ScrollContainer = ({
 
 ScrollContainer.propTypes = {
   list: PropTypes.arrayOf(PropTypes.any).isRequired,
-  placeholder: PropTypes.element,
+  placeholder: PropTypes.node,
   renderScrollElement: PropTypes.func.isRequired,
   renderOverflowElement: PropTypes.func.isRequired,
   showCondition: PropTypes.oneOfType([PropTypes.oneOf(['hover']), PropTypes.func]),
   className: PropTypes.string,
   scrollContainerClassName: PropTypes.string,
   scrollElementClassName: PropTypes.string,
-  header: PropTypes.element,
-  footer: PropTypes.element,
+  header: PropTypes.node,
+  footer: PropTypes.node,
   position: PropTypes.oneOf(['top', 'left', 'bottom', 'right']),
   matchDimensions: PropTypes.bool,
   horizontalMarginAdjust: PropTypes.bool,

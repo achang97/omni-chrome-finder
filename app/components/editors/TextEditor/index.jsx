@@ -3,12 +3,12 @@ import { EditorState } from 'draft-js';
 import { Editor } from 'react-draft-wysiwyg';
 import PropTypes from 'prop-types';
 import AnimateHeight from 'react-animate-height';
-import { MdTextFormat, MdKeyboardArrowLeft, MdAdd } from 'react-icons/md';
+import { MdTextFormat, MdAdd } from 'react-icons/md';
 import { IoMdArrowDropleft, IoMdArrowDropright } from 'react-icons/io';
 
 import { Button } from 'components/common';
 import { getStyleApplicationFn } from 'utils/style';
-import { CARD_TOOLBAR_PROPS, EXTENSION_TOOLBAR_PROPS } from './TextEditorProps.js';
+import { CARD_TOOLBAR_PROPS, EXTENSION_TOOLBAR_PROPS } from './TextEditorProps';
 
 import style from './text-editor.css';
 
@@ -17,17 +17,19 @@ const s = getStyleApplicationFn(style);
 export default class TextEditor extends Component {
   constructor(props) {
     super(props);
+
     this.state = {
       hideToolbar: props.toolbarHidden,
       expanded: props.expanded
     };
-    this.setDomEditorRef = (editorRef) => (this.domEditor = editorRef);
+
+    this.setDomEditorRef = (editorRef) => {
+      this.domEditor = editorRef;
+    };
   }
 
   componentDidMount() {
-    const { autoFocus, toolbarHidden } = this.props;
-    const { hideToolbar } = this.state;
-
+    const { autoFocus } = this.props;
     if (autoFocus && !!this.domEditor) {
       this.domEditor.focus();
     }
@@ -36,6 +38,7 @@ export default class TextEditor extends Component {
   componentDidUpdate(prevProps, prevState) {
     const { toolbarHidden, placeholder } = this.props;
 
+    /* eslint-disable react/no-did-update-set-state */
     // Force rerender, as it doesn't rerender when placeholder changes
     if (prevProps.placeholder !== placeholder) {
       this.setState({});
@@ -44,6 +47,7 @@ export default class TextEditor extends Component {
     if (prevState.hideToolbar !== toolbarHidden && !prevState.hideToolbar) {
       this.setState({ hideToolbar: toolbarHidden });
     }
+    /* eslint-enable react/no-did-update-set-state */
   }
 
   toggleToolbar = () => {
@@ -63,7 +67,7 @@ export default class TextEditor extends Component {
   };
 
   render() {
-    let {
+    const {
       editorState,
       className,
       wrapperClassName,
@@ -74,16 +78,13 @@ export default class TextEditor extends Component {
       editorType,
       minimizedPlaceholder,
       placeholder,
-      onClick
+      onClick,
+      expanded: propsExpanded
     } = this.props;
-    const { hideToolbar } = this.state;
-
-    if (editorClassName === '') {
-      editorClassName = editorType === 'CARD' ? 'text-editor' : 'text-editor-extension';
-    }
+    const { hideToolbar, expanded: stateExpanded } = this.state;
 
     // Allow for either controlled or uncontrolled behavior
-    const expanded = this.props.expanded || this.state.expanded;
+    const expanded = propsExpanded || stateExpanded;
 
     return (
       <>
@@ -92,15 +93,16 @@ export default class TextEditor extends Component {
             `text-editor-container ${editorType === 'CARD' ? 'flex-grow' : ''} ${className}`
           )}
           style={{ height: expanded ? 'auto' : 0, maxHeight: expanded ? '100vh' : 0 }}
-          onClick={() => {
-            onClick && onClick();
-          }}
+          onClick={() => onClick && onClick()}
         >
           <Editor
             editorRef={this.setDomEditorRef}
             editorState={editorState}
             wrapperClassName={s(wrapperClassName)}
-            editorClassName={s(`${editorClassName} ${hideToolbar ? 'rounded-lg' : ''}`)}
+            editorClassName={s(`
+              ${editorClassName || editorType === 'CARD' ? 'text-editor' : 'text-editor-extension'}
+              ${hideToolbar ? 'rounded-lg' : ''}
+            `)}
             toolbarClassName={s(toolbarClassName)}
             onEditorStateChange={onEditorStateChange}
             toolbar={editorType === 'CARD' ? CARD_TOOLBAR_PROPS : EXTENSION_TOOLBAR_PROPS}
@@ -143,21 +145,21 @@ export default class TextEditor extends Component {
 }
 
 TextEditor.propTypes = {
-  editorState: PropTypes.instanceOf(EditorState),
+  editorState: PropTypes.instanceOf(EditorState).isRequired,
+  onEditorStateChange: PropTypes.func.isRequired,
   className: PropTypes.string,
   wrapperClassName: PropTypes.string,
   editorClassName: PropTypes.string,
   toolbarClassName: PropTypes.string,
-  onEditorStateChange: PropTypes.func,
   toolbarHidden: PropTypes.bool,
   readOnly: PropTypes.bool,
   autoFocus: PropTypes.bool,
   editorType: PropTypes.oneOf(['CARD', 'EXTENSION']),
   onClick: PropTypes.func,
   placeholder: PropTypes.string,
+  minimizedPlaceholder: PropTypes.string,
   expanded: PropTypes.bool,
-  onExpandEditor: PropTypes.func,
-  minimizedPlaceholder: PropTypes.string
+  onExpandEditor: PropTypes.func
 };
 
 TextEditor.defaultProps = {
@@ -169,5 +171,9 @@ TextEditor.defaultProps = {
   readOnly: false,
   autoFocus: false,
   editorType: 'CARD',
-  expanded: true
+  expanded: true,
+  onExpandEditor: null,
+  onClick: null,
+  placeholder: null,
+  minimizedPlaceholder: null
 };

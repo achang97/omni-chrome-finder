@@ -1,29 +1,16 @@
 import React, { useState, useEffect } from 'react';
 import PropTypes from 'prop-types';
 import _ from 'lodash';
-import { MdCheck, MdMoreVert } from 'react-icons/md';
+import { MdMoreVert } from 'react-icons/md';
 
 import { CardStatus, CardConfirmModal } from 'components/cards';
-import {
-  Button,
-  Dropdown,
-  Triangle,
-  Modal,
-  Message,
-  Loader,
-  Timeago,
-  Separator
-} from 'components/common';
+import { Button, Dropdown, Message, Loader, Timeago, Separator } from 'components/common';
 
-import { CARD, URL } from 'appConstants';
-import { getContentStateHTMLFromString } from 'utils/editor';
+import { CARD } from 'appConstants';
 import { copyCardUrl } from 'utils/card';
-
-import { colors } from 'styles/colors';
 
 import { getStyleApplicationFn } from 'utils/style';
 import style from './suggestion-card.css';
-import SuggestionPreview from '../SuggestionPreview';
 
 const s = getStyleApplicationFn(style);
 
@@ -46,6 +33,13 @@ const SuggestionCard = ({
   const [dropdownOpen, setDropdownOpen] = useState(false);
   const [buttonActive, setButtonActive] = useState(_.mapValues(BUTTON_TYPE, () => false));
 
+  const toggleActiveButton = (type, value) => {
+    setButtonActive({
+      ...buttonActive,
+      [type]: value !== undefined ? value : !buttonActive[type]
+    });
+  };
+
   if (deleteProps) {
     const isDeleting = deleteProps.isLoading;
     useEffect(() => {
@@ -62,6 +56,12 @@ const SuggestionCard = ({
       icon: isLoading ? <Loader className={s('ml-sm')} size="sm" color="white" /> : null,
       disabled: isLoading
     };
+  };
+
+  const shareCard = () => {
+    // Create invisible element with text
+    copyCardUrl(id);
+    toggleActiveButton(BUTTON_TYPE.SHARE);
   };
 
   const getActions = () => {
@@ -90,19 +90,6 @@ const SuggestionCard = ({
     }
 
     return actions;
-  };
-
-  const toggleActiveButton = (type, value) => {
-    setButtonActive({
-      ...buttonActive,
-      [type]: value !== undefined ? value : !buttonActive[type]
-    });
-  };
-
-  const shareCard = () => {
-    // Create invisible element with text
-    copyCardUrl(id);
-    toggleActiveButton(BUTTON_TYPE.SHARE);
   };
 
   const protectedOnClick = (onClick, buttonType) => {
@@ -225,27 +212,25 @@ const SuggestionCard = ({
 SuggestionCard.propTypes = {
   id: PropTypes.string.isRequired,
   question: PropTypes.string.isRequired,
-  answer: PropTypes.string,
+  answer: PropTypes.string.isRequired,
   updatedAt: PropTypes.string.isRequired,
-  status: PropTypes.oneOf([
-    CARD.STATUS.UP_TO_DATE,
-    CARD.STATUS.OUT_OF_DATE,
-    CARD.STATUS.NEEDS_VERIFICATION,
-    CARD.STATUS.NEEDS_APPROVAL,
-    CARD.STATUS.NOT_DOCUMENTED
-  ]),
+  status: PropTypes.oneOf(Object.values(CARD.STATUS)).isRequired,
   className: PropTypes.string,
   showMoreMenu: PropTypes.bool,
   deleteProps: PropTypes.shape({
     onClick: PropTypes.func.isRequired,
     isLoading: PropTypes.bool,
     error: PropTypes.string
-  })
+  }),
+
+  // Redux Actions
+  openCard: PropTypes.func.isRequired
 };
 
 SuggestionCard.defaultProps = {
   className: '',
-  showMoreMenu: false
+  showMoreMenu: false,
+  deleteProps: null
 };
 
 export default SuggestionCard;

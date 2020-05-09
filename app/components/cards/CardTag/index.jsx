@@ -40,7 +40,7 @@ const CardTag = React.forwardRef(
 );
 
 CardTag.propTypes = {
-  name: PropTypes.oneOfType([PropTypes.string, PropTypes.element]).isRequired,
+  name: PropTypes.node.isRequired,
   locked: PropTypes.bool,
   onClick: PropTypes.func,
   onRemoveClick: PropTypes.func,

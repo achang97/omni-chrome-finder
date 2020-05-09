@@ -1,5 +1,4 @@
 import { connect } from 'react-redux';
-import { requestSearchCards } from 'actions/search';
 import {
   changeAskIntegration,
   requestAddAskAttachment,
@@ -24,20 +23,15 @@ const mapStateToProps = (state) => {
       activeIntegration,
       attachments,
       isAskingQuestion,
-      askError,
-      askSuccess,
       questionTitle,
       questionDescription,
       recipients,
       slackConversations,
-      isGettingSlackConversations,
-      getSlackConversationsError,
       showPerformanceScore,
       isDescriptionEditorShown
     },
     display: { dockExpanded },
-    profile: { user },
-    auth: { token }
+    profile: { user }
   } = state;
 
   return {
@@ -45,18 +39,13 @@ const mapStateToProps = (state) => {
     isDescriptionEditorShown,
     attachments,
     isAskingQuestion,
-    askError,
-    askSuccess,
     questionTitle,
     questionDescription,
     recipients,
     slackConversations,
-    isGettingSlackConversations,
-    getSlackConversationsError,
     dockExpanded,
     showPerformanceScore,
-    user,
-    token
+    user
   };
 };
 
@@ -73,8 +62,7 @@ const mapDispatchToProps = {
   removeAskRecipient,
   updateAskRecipient,
   addAskRecipient,
-  requestGetSlackConversations,
-  requestSearchCards
+  requestGetSlackConversations
 };
 
 export default connect(mapStateToProps, mapDispatchToProps)(Ask);

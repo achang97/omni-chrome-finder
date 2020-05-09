@@ -4,6 +4,7 @@ import PropTypes from 'prop-types';
 import { Loader, Triangle, ScrollContainer } from 'components/common';
 import { colors } from 'styles/colors';
 import { getStyleApplicationFn } from 'utils/style';
+
 import SuggestionCard from '../SuggestionCard';
 import SuggestionPreview from '../SuggestionPreview';
 
@@ -37,7 +38,7 @@ const SuggestionScrollContainer = ({
 
   const renderScrollElement = (card, i) => {
     const { _id, question, answer, lastEdited, createdAt, status } = card;
-    const { className = '', ...rest } = getCardProps ? getCardProps(card, i) : {};
+    const { className = '', ...restCardProps } = getCardProps ? getCardProps(card, i) : {};
     return (
       <SuggestionCard
         id={_id}
@@ -46,12 +47,13 @@ const SuggestionScrollContainer = ({
         updatedAt={lastEdited ? lastEdited.time : createdAt}
         status={status}
         className={s(`suggestion-scroll-container-card ${className}`)}
-        {...rest}
+        {...restCardProps}
       />
     );
   };
 
-  const renderOverflowElement = ({ _id, question, description, answer }, i, positions) => {
+  const renderOverflowElement = (card, i, positions) => {
+    const { _id, question, description, answer } = card;
     const { overflow, scroll } = positions;
 
     const overflowTop = overflow.top || 0;
@@ -123,7 +125,7 @@ SuggestionScrollContainer.propTypes = {
   isSearchingCards: PropTypes.bool,
   onBottom: PropTypes.func.isRequired,
   showPlaceholder: PropTypes.bool,
-  footer: PropTypes.element,
+  footer: PropTypes.node,
   triangleColor: PropTypes.string,
   hasReachedLimit: PropTypes.bool,
   scrollContainerClassName: PropTypes.string
@@ -131,6 +133,8 @@ SuggestionScrollContainer.propTypes = {
 
 SuggestionScrollContainer.defaultProps = {
   cards: [],
+  getCardProps: null,
+  footer: null,
   isSearchingCards: false,
   hasReachedLimit: false,
   showPlaceholder: true,

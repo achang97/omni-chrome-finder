@@ -24,7 +24,7 @@ const BUTTONS = [
   }
 ];
 
-const MainAuth = ({}) => {
+const MainAuth = () => {
   const renderBody = (title, subtitle) => {
     return (
       <div>
@@ -37,7 +37,7 @@ const MainAuth = ({}) => {
   return (
     <AuthHeader>
       {BUTTONS.map(({ title, subtitle, route, color }) => (
-        <Link to={route}>
+        <Link to={route} key={title}>
           <Button
             key={title}
             text={renderBody(title, subtitle)}
