@@ -129,7 +129,7 @@ class ChromeMessageListener extends Component {
   };
 
   createMutator = (targetNode, config) => {
-    const callback = (mutations) => {
+    const callback = () => {
       this.handlePageUpdate(false);
     };
 
@@ -145,6 +145,7 @@ class ChromeMessageListener extends Component {
   removeAll = (nodes, transform) => {
     nodes.forEach((node) => {
       if (transform) {
+        // eslint-disable-next-line no-param-reassign
         node = transform(node);
       }
 
@@ -273,7 +274,6 @@ class ChromeMessageListener extends Component {
       updateAskSearchText,
       updateAskQuestionTitle,
       updateCreateAnswerEditor,
-      updateNavigateSearchText,
       requestLogAudit
     } = this.props;
 
@@ -319,7 +319,7 @@ class ChromeMessageListener extends Component {
 
       switch (type) {
         case CHROME.NOTIFICATION_TYPE.TASK: {
-          if (location === ROUTES.TASKS) {
+          if (pathname === ROUTES.TASKS) {
             requestGetTasks();
           }
           this.openTask(id);
@@ -335,7 +335,7 @@ class ChromeMessageListener extends Component {
     }
   };
 
-  handleSocketMessage = (type, payload) => {
+  handleSocketMessage = (type) => {
     const { requestGetUser } = this.props;
 
     switch (type) {
@@ -442,7 +442,6 @@ ChromeMessageListener.propTypes = {
   updateAskSearchText: PropTypes.func.isRequired,
   updateAskQuestionTitle: PropTypes.func.isRequired,
   updateCreateAnswerEditor: PropTypes.func.isRequired,
-  updateNavigateSearchText: PropTypes.func.isRequired,
   requestSearchCards: PropTypes.func.isRequired,
   clearSearchCards: PropTypes.func.isRequired,
   requestGetTasks: PropTypes.func.isRequired,

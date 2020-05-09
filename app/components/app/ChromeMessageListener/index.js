@@ -5,7 +5,6 @@ import { updateAskSearchText, updateAskQuestionTitle } from 'actions/ask';
 import { openCard } from 'actions/cards';
 import { requestSearchCards, clearSearchCards } from 'actions/search';
 import { updateCreateAnswerEditor } from 'actions/create';
-import { updateNavigateSearchText } from 'actions/navigate';
 import { requestGetUser } from 'actions/profile';
 import { requestLogAudit } from 'actions/auditLog';
 import { requestGetTasks, updateTasksOpenSection, updateTasksTab } from 'actions/tasks';
@@ -43,7 +42,6 @@ const mapDispatchToProps = {
   updateAskSearchText,
   updateAskQuestionTitle,
   updateCreateAnswerEditor,
-  updateNavigateSearchText,
   requestSearchCards,
   clearSearchCards,
   requestGetTasks,
