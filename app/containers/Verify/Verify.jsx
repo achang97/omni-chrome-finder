@@ -1,8 +1,7 @@
 import React, { useEffect } from 'react';
-
+import PropTypes from 'prop-types';
 import { AuthView } from 'components/auth';
 import { Loader, Message, Separator } from 'components/common';
-
 import { getStyleApplicationFn } from 'utils/style';
 
 const s = getStyleApplicationFn();
@@ -33,7 +32,12 @@ const Verify = ({
       <Separator horizontal className={s('m-0')} />
       <div className={s('flex justify-between mt-lg text-xs text-gray-dark')}>
         <div>
-          <div onClick={requestResendVerificationEmail} className={s('flex cursor-pointer')}>
+          <div
+            onClick={requestResendVerificationEmail}
+            className={s('flex cursor-pointer')}
+            role="button"
+            tabIndex="0"
+          >
             <span className={s('mr-xs')}> Re-send verification code </span>
             {isResendingVerification && <Loader size="xs" className={s('ml-sm')} />}
           </div>
@@ -51,9 +55,31 @@ const Verify = ({
             type="error"
           />
         </div>
-        <div className={s('cursor-pointer')} onClick={logout}>
+        <div className={s('cursor-pointer')} onClick={logout} role="button" tabIndex="0">
           Logout
         </div>
+      </div>
+    </>
+  );
+
+  const renderInputBody = () => (
+    <>
+      <input
+        value={verificationCode}
+        placeholder="Verification code"
+        onChange={(e) => updateVerificationCode(e.target.value)}
+        className={s('mt-reg')}
+      />
+      <div className={s('flex justify-end')}>
+        <div
+          className={s('text-gray-dark text-xs cursor-pointer mr-sm')}
+          onClick={requestGetUser}
+          role="button"
+          tabIndex="0"
+        >
+          Already verified? Click to refresh
+        </div>
+        {isGettingUser && <Loader size="xs" />}
       </div>
     </>
   );
@@ -63,25 +89,7 @@ const Verify = ({
       title="Verify your account"
       className={s('text-center')}
       isLoading={isVerifying}
-      inputBody={
-        <>
-          <input
-            value={verificationCode}
-            placeholder="Verification code"
-            onChange={(e) => updateVerificationCode(e.target.value)}
-            className={s('mt-reg')}
-          />
-          <div className={s('flex justify-end')}>
-            <div
-              className={s('text-gray-dark text-xs cursor-pointer mr-sm')}
-              onClick={requestGetUser}
-            >
-              Already verified? Click to refresh
-            </div>
-            {isGettingUser && <Loader size="xs" />}
-          </div>
-        </>
-      }
+      inputBody={renderInputBody()}
       error={verifyError}
       submitButtonProps={{
         text: 'Verify',
@@ -91,6 +99,32 @@ const Verify = ({
       footer={renderFooter()}
     />
   );
+};
+
+Verify.propTypes = {
+  // Redux State
+  dockVisible: PropTypes.bool.isRequired,
+  verificationCode: PropTypes.string.isRequired,
+  isVerifying: PropTypes.bool,
+  verifyError: PropTypes.string,
+  isGettingUser: PropTypes.bool,
+  isResendingVerification: PropTypes.bool,
+
+  // Redux Actions
+  resendVerificationSuccess: PropTypes.func.isRequired,
+  resendVerificationError: PropTypes.func.isRequired,
+  updateVerificationCode: PropTypes.func.isRequired,
+  requestVerify: PropTypes.func.isRequired,
+  requestResendVerificationEmail: PropTypes.func.isRequired,
+  requestGetUser: PropTypes.func.isRequired,
+  logout: PropTypes.func.isRequired
+};
+
+Verify.defaultProps = {
+  isVerifying: false,
+  verifyError: null,
+  isGettingUser: false,
+  isResendingVerification: false
 };
 
 export default Verify;
