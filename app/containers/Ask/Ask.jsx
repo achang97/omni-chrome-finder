@@ -1,32 +1,29 @@
 import React, { useEffect, useState } from 'react';
+import PropTypes from 'prop-types';
 import _ from 'lodash';
-import moment from 'moment';
-import { MdPictureInPicture, MdClose, MdCloudUpload, MdAttachment } from 'react-icons/md';
+import { EditorState } from 'draft-js';
+import { MdClose } from 'react-icons/md';
 import { IoMdAdd } from 'react-icons/io';
-import { FaRegDotCircle, FaPaperPlane, FaMinus } from 'react-icons/fa';
-
+import { FaPaperPlane } from 'react-icons/fa';
 import {
   Button,
   Loader,
   CircleButton,
   Separator,
-  Message,
   Tabs,
   Tab,
   Select,
-  Dropzone,
   Dropdown,
-  Badge,
   BackButton
 } from 'components/common';
 import { ScreenRecordButton, AttachmentDropdown, AttachmentDropzone } from 'components/attachments';
 import TextEditor from 'components/editors/TextEditor';
 import { RecipientDropdownBody, MinimizedAsk } from 'components/ask';
 import IntegrationAuthButton from 'components/profile/IntegrationAuthButton';
-import CardAttachment from 'components/cards/CardAttachment';
 
 import { colors } from 'styles/colors';
 import { generateFileKey, isAnyLoading } from 'utils/file';
+import { UserPropTypes } from 'utils/propTypes';
 import { isLoggedIn } from 'utils/auth';
 import { getArrayWithout } from 'utils/array';
 import { ROUTES, INTEGRATIONS, ASK } from 'appConstants';
@@ -38,7 +35,6 @@ const s = getStyleApplicationFn(style);
 
 const Ask = ({
   user,
-  token,
   changeAskIntegration,
   activeIntegration,
   isDescriptionEditorShown,
@@ -48,8 +44,6 @@ const Ask = ({
   updateAskAttachmentName,
   requestAskQuestion,
   isAskingQuestion,
-  askError,
-  askSuccess,
   questionTitle,
   updateAskQuestionTitle,
   questionDescription,
@@ -60,8 +54,6 @@ const Ask = ({
   addAskRecipient,
   slackConversations,
   requestGetSlackConversations,
-  isGettingSlackConversations,
-  getSlackConversationsError,
   dockExpanded,
   toggleDockHeight,
   showPerformanceScore,
@@ -164,23 +156,20 @@ const Ask = ({
     );
   };
 
-  const renderIndividualRecipient = ({ id, name }, index) => {
+  const renderIndividualRecipient = (individual, index) => {
+    const { id, name } = individual;
     return (
       <div key={id} className={s('bg-white ask-recipient')}>
         <span className={s('truncate')}> @ {name} </span>
-        <div>
-          <button onClick={() => removeAskRecipient(index)}>
-            <MdClose className={s('text-purple-gray-50 ml-xs')} />
-          </button>
-        </div>
+        <button onClick={() => removeAskRecipient(index)} type="button">
+          <MdClose className={s('text-purple-gray-50 ml-xs')} />
+        </button>
       </div>
     );
   };
 
-  const renderChannelRecipient = (
-    { id, name, mentions, members, isDropdownOpen, isDropdownSelectOpen },
-    index
-  ) => {
+  const renderChannelRecipient = (channel, index) => {
+    const { id, name, mentions, members, isDropdownOpen, isDropdownSelectOpen } = channel;
     return (
       <div
         key={id}
@@ -193,7 +182,7 @@ const Ask = ({
         <span className={s('truncate')}> # {name} </span>
         <Dropdown
           isOpen={isDropdownOpen}
-          onToggle={(isDropdownOpen) => updateAskRecipient(index, { isDropdownOpen })}
+          onToggle={(dropdownOpen) => updateAskRecipient(index, { isDropdownOpen: dropdownOpen })}
           isDown={false}
           isTogglerRelative={false}
           toggler={
@@ -214,6 +203,7 @@ const Ask = ({
                         onClick={() =>
                           updateAskRecipient(index, { mentions: _.without(mentions, mention) })
                         }
+                        type="button"
                       >
                         <MdClose className={s('text-purple-reg')} />
                       </button>
@@ -227,11 +217,13 @@ const Ask = ({
         <Separator className={s('bg-purple-gray-50')} />
         <Dropdown
           isOpen={isDropdownSelectOpen}
-          onToggle={(isDropdownSelectOpen) => updateAskRecipient(index, { isDropdownSelectOpen })}
+          onToggle={(dropdownOpen) =>
+            updateAskRecipient(index, { isDropdownSelectOpen: dropdownOpen })
+          }
           isDown={false}
           isTogglerRelative={false}
           toggler={
-            <button>
+            <button type="button">
               <IoMdAdd className={s('text-purple-reg mr-xs')} />
             </button>
           }
@@ -247,7 +239,7 @@ const Ask = ({
             </div>
           }
         />
-        <button onClick={() => removeAskRecipient(index)}>
+        <button onClick={() => removeAskRecipient(index)} type="button">
           <MdClose className={s('text-purple-reg')} />
         </button>
       </div>
@@ -320,12 +312,12 @@ const Ask = ({
   };
 
   const renderDisabledView = () => {
-    const { type, title, logo, disabled } = activeIntegration;
+    const { title, logo, disabled } = activeIntegration;
 
     return (
       <div className={s('flex flex-col items-center')}>
         <div className={s('large-icon-container my-reg')}>
-          <img src={logo} className={s('w-full h-full')} />
+          <img src={logo} className={s('w-full h-full')} alt={title} />
         </div>
         <div className={s('mt-reg mb-lg font-semibold')}>
           {disabled
@@ -362,6 +354,39 @@ const Ask = ({
   };
 
   return dockExpanded && !showPerformanceScore ? renderExpandedAskPage() : <MinimizedAsk />;
+};
+
+Ask.propTypes = {
+  activeIntegration: PropTypes.oneOf(ASK.INTEGRATIONS).isRequired,
+  isDescriptionEditorShown: PropTypes.bool.isRequired,
+  attachments: PropTypes.arrayOf(PropTypes.object).isRequired,
+  isAskingQuestion: PropTypes.bool,
+  questionTitle: PropTypes.string.isRequired,
+  questionDescription: PropTypes.instanceOf(EditorState).isRequired,
+  recipients: PropTypes.arrayOf(PropTypes.object).isRequired,
+  slackConversations: PropTypes.arrayOf(PropTypes.object).isRequired,
+  dockExpanded: PropTypes.bool.isRequired,
+  showPerformanceScore: PropTypes.bool.isRequired,
+  user: UserPropTypes.isRequired,
+
+  // Redux Actions
+  toggleDockHeight: PropTypes.func.isRequired,
+  changeAskIntegration: PropTypes.func.isRequired,
+  showAskDescriptionEditor: PropTypes.func.isRequired,
+  requestAddAskAttachment: PropTypes.func.isRequired,
+  requestRemoveAskAttachment: PropTypes.func.isRequired,
+  updateAskAttachmentName: PropTypes.func.isRequired,
+  requestAskQuestion: PropTypes.func.isRequired,
+  updateAskQuestionTitle: PropTypes.func.isRequired,
+  updateAskQuestionDescription: PropTypes.func.isRequired,
+  removeAskRecipient: PropTypes.func.isRequired,
+  updateAskRecipient: PropTypes.func.isRequired,
+  addAskRecipient: PropTypes.func.isRequired,
+  requestGetSlackConversations: PropTypes.func.isRequired
+};
+
+Ask.defaultProps = {
+  isAskingQuestion: false
 };
 
 export default Ask;

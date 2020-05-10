@@ -3,15 +3,18 @@ import PropTypes from 'prop-types';
 import Timeago from 'react-timeago';
 
 const TIMEAGO_FORMATTER = (textTransform) => {
-  return (value, unit, suffix, epochSeconds) => {
+  return (value, unit, suffix) => {
+    let unitLabel = unit;
+
     if (unit === 'second' && value < 30) {
       return textTransform('Just now');
     }
 
     if (value !== 1) {
-      unit += 's';
+      unitLabel += 's';
     }
-    return textTransform(`${value} ${unit} ${suffix}`);
+
+    return textTransform(`${value} ${unitLabel} ${suffix}`);
   };
 };
 

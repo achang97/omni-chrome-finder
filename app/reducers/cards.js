@@ -22,7 +22,8 @@ const initialState = {
   windowPosition: {
     x: window.innerWidth / 2 - DIMENSIONS.DEFAULT_CARDS_WIDTH / 2,
     y: window.innerHeight / 2 - DIMENSIONS.DEFAULT_CARDS_HEIGHT / 2
-  }
+  },
+  showCloseModal: false
 };
 
 const BASE_MODAL_OPEN_STATE = _.mapValues(MODAL_TYPE, () => false);
@@ -38,7 +39,6 @@ const BASE_CARD_STATE = {
   outOfDateReasonInput: '',
   status: STATUS.NOT_DOCUMENTED,
   tags: [],
-  keywords: [],
   verificationInterval: DEFAULT_VERIFICATION_INTERVAL,
   permissions: PERMISSION_OPTIONS[0],
   permissionGroups: [],
@@ -108,7 +108,6 @@ export default function cardsReducer(state = initialState, action) {
       subscribers,
       attachments,
       tags,
-      keywords,
       permissions,
       permissionGroups,
       verificationInterval,
@@ -126,7 +125,6 @@ export default function cardsReducer(state = initialState, action) {
         subscribers,
         attachments,
         tags,
-        keywords,
         permissions,
         permissionGroups,
         verificationInterval,
@@ -409,10 +407,6 @@ export default function cardsReducer(state = initialState, action) {
       return updateActiveCardEdits({ tags: removeIndex(edits.tags, index) });
     }
 
-    case types.UPDATE_CARD_KEYWORDS: {
-      const { keywords } = payload;
-      return updateActiveCardEdits({ keywords: keywords || [] });
-    }
     case types.UPDATE_CARD_VERIFICATION_INTERVAL: {
       const { verificationInterval } = payload;
       return updateActiveCardEdits({ verificationInterval });

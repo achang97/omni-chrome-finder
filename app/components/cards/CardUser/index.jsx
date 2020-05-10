@@ -1,9 +1,8 @@
-import React, { useState } from 'react';
+import React from 'react';
 import PropTypes from 'prop-types';
 import { MdClose } from 'react-icons/md';
 
 import { CircleButton, PlaceholderImg, Tooltip } from 'components/common';
-import { NOOP } from 'appConstants';
 
 import { getStyleApplicationFn } from 'utils/style';
 import style from './card-user.css';
@@ -18,19 +17,16 @@ const CardUser = ({
   onClick,
   onRemoveClick,
   showName,
-  showTooltip,
-  ...rest
+  showTooltip
 }) => {
   const protectedOnClick = () => {
     if (onClick) onClick({ img, name });
   };
 
-  const [isHovering, setHover] = useState(false);
-
   return (
-    <div className={s(`card-user ${className}`)} {...rest}>
+    <div className={s(`card-user ${className}`)}>
       <div className={s('relative')}>
-        <Tooltip tooltip={name}>
+        <Tooltip tooltip={name} show={showTooltip}>
           <CircleButton
             content={
               <PlaceholderImg src={img} name={name} className={s('w-full h-full text-sm')} />
@@ -40,7 +36,7 @@ const CardUser = ({
           />
         </Tooltip>
         {onRemoveClick && (
-          <button onClick={onRemoveClick} className={s('card-user-remove')}>
+          <button onClick={onRemoveClick} className={s('card-user-remove')} type="button">
             <MdClose />
           </button>
         )}
@@ -65,7 +61,10 @@ CardUser.defaultProps = {
   className: '',
   size: 'md',
   showName: true,
-  showTooltip: false
+  showTooltip: false,
+  img: null,
+  onClick: null,
+  onRemoveClick: null
 };
 
 export default CardUser;

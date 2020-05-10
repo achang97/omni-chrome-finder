@@ -1,10 +1,11 @@
 import React, { useEffect } from 'react';
-import { Switch, Redirect, withRouter } from 'react-router-dom';
+import PropTypes from 'prop-types';
+import { Switch, Redirect } from 'react-router-dom';
 import Dock from 'react-dock';
-import queryString from 'query-string';
 
-import { ROUTES, URL } from 'appConstants';
-import { heap, auth, segment, window as windowUtils } from 'utils';
+import { ROUTES } from 'appConstants';
+import { auth, segment, window as windowUtils } from 'utils';
+import { UserPropTypes } from 'utils/propTypes';
 
 import {
   Header,
@@ -52,12 +53,9 @@ const App = ({
   isLoggedIn,
   user,
   showAutofind,
-  location: { pathname },
-  history,
-  toggleDock,
   requestGetUser,
   requestGetTasks,
-  openCard
+  location: { pathname }
 }) => {
   useEffect(() => {
     if (isLoggedIn) {
@@ -131,4 +129,18 @@ const App = ({
     </div>
   );
 };
+
+App.propTypes = {
+  // Redux State
+  dockVisible: PropTypes.bool.isRequired,
+  dockExpanded: PropTypes.bool.isRequired,
+  isLoggedIn: PropTypes.bool.isRequired,
+  user: UserPropTypes.isRequired,
+  showAutofind: PropTypes.bool.isRequired,
+
+  // Redux Actions
+  requestGetUser: PropTypes.func.isRequired,
+  requestGetTasks: PropTypes.func.isRequired
+};
+
 export default App;

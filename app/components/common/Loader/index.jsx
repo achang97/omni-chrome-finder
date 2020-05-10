@@ -20,15 +20,17 @@ const getSize = (size) => {
         return 30;
       case 'lg':
         return 50;
+      default:
+        break;
     }
   }
 
   return size;
 };
 
-const Loader = ({ color, size, className, centered, ...rest }) => (
+const Loader = ({ color, size, className, centered }) => (
   <div className={s(`loader ${centered ? 'flex justify-center items-center' : ''} ${className}`)}>
-    <MoonLoader color={color} size={getSize(size)} {...rest} />
+    <MoonLoader color={color} size={getSize(size)} />
   </div>
 );
 

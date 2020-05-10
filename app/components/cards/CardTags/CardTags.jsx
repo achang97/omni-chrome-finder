@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import { IoMdAdd } from 'react-icons/io';
-import { MdClose, MdLock } from 'react-icons/md';
+import { MdLock } from 'react-icons/md';
 import _ from 'lodash';
 
 import Select from 'components/common/Select';
@@ -31,11 +31,14 @@ class CardTags extends Component {
   }
 
   componentDidUpdate(prevProps) {
+    const { maxWidth, tags } = this.props;
     if (
-      prevProps.maxWidth !== this.props.maxWidth ||
-      JSON.stringify(prevProps.tags) !== JSON.stringify(this.props.tags)
+      prevProps.maxWidth !== maxWidth ||
+      JSON.stringify(prevProps.tags) !== JSON.stringify(tags)
     ) {
       const firstHiddenIndex = this.getFirstHiddenIndex();
+
+      // eslint-disable-next-line react/no-did-update-set-state
       this.setState({ firstHiddenIndex });
     }
   }
@@ -111,7 +114,8 @@ class CardTags extends Component {
   };
 
   loadOptions = (inputValue) => {
-    this.props.requestSearchTags(inputValue);
+    const { requestSearchTags } = this.props;
+    requestSearchTags(inputValue);
   };
 
   render() {
@@ -121,14 +125,13 @@ class CardTags extends Component {
       tagOptions,
       isSearchingTags,
       onChange,
-      onTagClick,
-      onRemoveClick,
       maxWidth,
       isEditable,
       showPlaceholder,
-      hideSelectOnBlur
+      hideSelectOnBlur,
+      showSelect: propsShowSelect
     } = this.props;
-    const { firstHiddenIndex } = this.state;
+    const { showSelect: stateShowSelect } = this.state;
     const containerStyle = this.getContainerStyle();
 
     return (
@@ -140,7 +143,7 @@ class CardTags extends Component {
         )}
         style={containerStyle}
       >
-        {this.state.showSelect || this.props.showSelect ? (
+        {stateShowSelect || propsShowSelect ? (
           <Select
             className={s('w-full')}
             value={tags}
@@ -201,15 +204,27 @@ CardTags.propTypes = {
   onRemoveClick: PropTypes.func,
   showPlaceholder: PropTypes.bool,
   showSelect: PropTypes.bool,
-  hideSelectOnBlur: PropTypes.bool
+  hideSelectOnBlur: PropTypes.bool,
+
+  // Redux State
+  tagOptions: PropTypes.arrayOf(PropTypes.object).isRequired,
+  isSearchingTags: PropTypes.bool,
+
+  // Redux Actions
+  requestSearchTags: PropTypes.func.isRequired
 };
 
 CardTags.defaultProps = {
   className: '',
-  size: 'md',
   showPlaceholder: false,
   showSelect: false,
-  hideSelectOnBlur: false
+  hideSelectOnBlur: false,
+  maxWidth: null,
+  onChange: null,
+  onTagClick: null,
+  onRemoveClick: null,
+
+  isSearchingTags: false
 };
 
 export default CardTags;

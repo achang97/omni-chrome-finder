@@ -1,15 +1,8 @@
 import { connect } from 'react-redux';
 import { logout } from 'actions/auth';
 import { requestGetUser } from 'actions/profile';
-import { ONBOARDING_COMPLETE } from 'appConstants/profile';
+import { ONBOARDING_COMPLETE, ONBOARDING_SECTION } from 'appConstants/profile';
 import CompleteOnboarding from './CompleteOnboarding';
-
-const ONBOARDING_SECTION = {
-  CREATE_CARDS: 'createCards',
-  SEARCH: 'search',
-  SCREEN_RECORD: 'screenRecord',
-  INTEGRATIONS: 'integrations'
-};
 
 const mapStateToProps = (state) => {
   const {
@@ -22,19 +15,14 @@ const mapStateToProps = (state) => {
     display: { dockVisible }
   } = state;
 
-  const sections = [
-    ONBOARDING_SECTION.CREATE_CARDS,
-    ONBOARDING_SECTION.SEARCH,
-    ONBOARDING_SECTION.SCREEN_RECORD,
-    ONBOARDING_SECTION.INTEGRATIONS
-  ];
+  const sections = [ONBOARDING_SECTION.CREATE_CARDS, ONBOARDING_SECTION.INTEGRATIONS];
+  const currSection = sections.find((section) => extension[section] !== ONBOARDING_COMPLETE);
 
-  const section = sections.find((section) => extension[section] !== ONBOARDING_COMPLETE);
   return {
     dockVisible,
     isGettingUser,
-    onboardingSection: section,
-    onboardingSubsection: extension[section]
+    onboardingSection: currSection,
+    onboardingSubsection: extension[currSection]
   };
 };
 

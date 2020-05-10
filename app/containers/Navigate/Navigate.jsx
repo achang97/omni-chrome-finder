@@ -1,13 +1,14 @@
-import React, { useEffect, useRef } from 'react';
+import React, { useEffect } from 'react';
+import PropTypes from 'prop-types';
 import { useDebouncedCallback } from 'use-debounce';
-import _ from 'lodash';
 import { MdSearch } from 'react-icons/md';
 import AnimateHeight from 'react-animate-height';
 
 import CardTags from 'components/cards/CardTags';
-import { Tabs, Tab, Separator, Loader, Button } from 'components/common';
+import { Tabs, Tab, Separator } from 'components/common';
 import SuggestionScrollContainer from 'components/suggestions/SuggestionScrollContainer';
 
+import { UserPropTypes } from 'utils/propTypes';
 import { getArrayIds } from 'utils/array';
 import { usePrevious } from 'utils/react';
 import { CARD, NAVIGATE, SEARCH, ANIMATE } from 'appConstants';
@@ -37,8 +38,6 @@ const Navigate = ({
   requestDeleteNavigateCard,
   requestSearchCards
 }) => {
-  const isInitialMount = useRef(true);
-
   useEffect(() => {
     return () => {
       updateNavigateTab(NAVIGATE.TAB_OPTION.ALL);
@@ -47,14 +46,6 @@ const Navigate = ({
 
   const prevTab = usePrevious(activeTab);
   const prevTags = usePrevious(filterTags);
-
-  useEffect(() => {
-    if (prevTab !== activeTab || prevTags !== filterTags) {
-      searchCards(true);
-    } else {
-      debouncedRequestSearch();
-    }
-  }, [activeTab, filterTags, searchText]);
 
   const searchCards = (clearCards) => {
     const queryParams = { q: searchText };
@@ -77,6 +68,8 @@ const Navigate = ({
         queryParams.ids = user.bookmarkIds.join(',');
         break;
       }
+      default:
+        break;
     }
 
     requestSearchCards(SEARCH.TYPE.NAVIGATE, queryParams, clearCards);
@@ -85,6 +78,14 @@ const Navigate = ({
   const [debouncedRequestSearch] = useDebouncedCallback(() => {
     searchCards(true);
   }, ANIMATE.DEBOUNCE.MS_300);
+
+  useEffect(() => {
+    if (prevTab !== activeTab || prevTags !== filterTags) {
+      searchCards(true);
+    } else {
+      debouncedRequestSearch();
+    }
+  }, [activeTab, filterTags, searchText]);
 
   const updateSearchText = (e) => {
     updateNavigateSearchText(e.target.value);
@@ -160,6 +161,34 @@ const Navigate = ({
       />
     </div>
   );
+};
+
+Navigate.propTypes = {
+  // Redux State
+  searchText: PropTypes.string.isRequired,
+  activeTab: PropTypes.oneOf(NAVIGATE.TAB_OPTIONS).isRequired,
+  filterTags: PropTypes.arrayOf(PropTypes.object).isRequired,
+  user: UserPropTypes.isRequired,
+  cards: PropTypes.arrayOf(PropTypes.object).isRequired,
+  isSearchingCards: PropTypes.bool,
+  hasReachedLimit: PropTypes.bool.isRequired,
+  isDeletingCard: PropTypes.bool,
+  deleteError: PropTypes.string,
+
+  // Redux Actions
+  updateNavigateTab: PropTypes.func.isRequired,
+  updateNavigateSearchText: PropTypes.func.isRequired,
+  updateFilterTags: PropTypes.func.isRequired,
+  removeFilterTag: PropTypes.func.isRequired,
+  clearSearchCards: PropTypes.func.isRequired,
+  requestDeleteNavigateCard: PropTypes.func.isRequired,
+  requestSearchCards: PropTypes.func.isRequired
+};
+
+Navigate.defaultProps = {
+  isSearchingCards: false,
+  isDeletingCard: false,
+  deleteError: null
 };
 
 export default Navigate;

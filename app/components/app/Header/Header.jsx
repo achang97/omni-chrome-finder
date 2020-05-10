@@ -6,6 +6,7 @@ import { Tabs, Tab, Badge, PlaceholderImg } from 'components/common';
 import { ROUTES } from 'appConstants';
 
 import { segment } from 'utils';
+import { UserPropTypes } from 'utils/propTypes';
 
 import { colors } from 'styles/colors';
 import { getStyleApplicationFn } from 'utils/style';
@@ -78,7 +79,7 @@ const Header = ({ user, numAutofindCards, numTasks, history, location: { pathnam
 };
 
 Header.propTypes = {
-  user: PropTypes.object.isRequired,
+  user: UserPropTypes.isRequired,
   numAutofindCards: PropTypes.number.isRequired,
   numTasks: PropTypes.number.isRequired
 };

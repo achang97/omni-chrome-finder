@@ -1,8 +1,5 @@
 import React, { useEffect } from 'react';
 import PropTypes from 'prop-types';
-import _ from 'lodash';
-import AnimateHeight from 'react-animate-height';
-import { bindActionCreators } from 'redux';
 import { FiMaximize2 } from 'react-icons/fi';
 import { MdAdd, MdOpenInNew } from 'react-icons/md';
 import { EditorState } from 'draft-js';
@@ -16,6 +13,7 @@ import { generateFileKey, isAnyLoading } from 'utils/file';
 import { getNewCardBaseState } from 'utils/card';
 import { createSelectOptions, createSelectOption } from 'utils/select';
 import { getEditorStateFromContentState } from 'utils/editor';
+import { UserPropTypes } from 'utils/propTypes';
 
 import { getStyleApplicationFn } from 'utils/style';
 import style from './create.css';
@@ -33,9 +31,7 @@ const Create = ({
   isDescriptionEditorShown,
   templates,
   selectedTemplateCategory,
-  selectedTemplate,
   updateSelectedTemplateCategory,
-  updateSelectedTemplate,
   toggleTemplateView,
   requestGetTemplates,
   updateCreateQuestion,
@@ -117,9 +113,9 @@ const Create = ({
     </div>
   );
 
-  const openTemplate = ({ question, answer }) => {
+  const openTemplate = ({ question: templateQuestion, answer }) => {
     openCardWithProps(false, {
-      question,
+      question: templateQuestion,
       answerEditorState: getEditorStateFromContentState(answer)
     });
   };
@@ -151,6 +147,7 @@ const Create = ({
         <div className={s('pb-lg')}>
           {selectedTemplates.map((template) => (
             <div
+              key={template.title}
               className={s(
                 'flex items-center justify-between text-purple-reg text-sm font-semibold px-lg py-reg cursor-pointer hover:bg-purple-gray-10'
               )}
@@ -224,6 +221,39 @@ const Create = ({
   };
 
   return isTemplateView ? renderTemplateView() : renderMainView();
+};
+
+Create.propTypes = {
+  question: PropTypes.string.isRequired,
+  descriptionEditorState: PropTypes.instanceOf(EditorState).isRequired,
+  answerEditorState: PropTypes.instanceOf(EditorState).isRequired,
+  attachments: PropTypes.arrayOf(PropTypes.object).isRequired,
+  user: UserPropTypes.isRequired,
+  isTemplateView: PropTypes.bool.isRequired,
+  isDescriptionEditorShown: PropTypes.bool.isRequired,
+  templates: PropTypes.objectOf(PropTypes.arrayOf(PropTypes.object)).isRequired,
+  selectedTemplateCategory: PropTypes.shape({
+    label: PropTypes.string.isRequired,
+    value: PropTypes.string.isRequired
+  }),
+
+  // Redux Actions
+  showCreateDescriptionEditor: PropTypes.func.isRequired,
+  updateSelectedTemplateCategory: PropTypes.func.isRequired,
+  toggleTemplateView: PropTypes.func.isRequired,
+  requestGetTemplates: PropTypes.func.isRequired,
+  updateCreateQuestion: PropTypes.func.isRequired,
+  updateCreateDescriptionEditor: PropTypes.func.isRequired,
+  updateCreateAnswerEditor: PropTypes.func.isRequired,
+  clearCreatePanel: PropTypes.func.isRequired,
+  requestAddCreateAttachment: PropTypes.func.isRequired,
+  updateCreateAttachmentName: PropTypes.func.isRequired,
+  requestRemoveCreateAttachment: PropTypes.func.isRequired,
+  openCard: PropTypes.func.isRequired
+};
+
+Create.defaultProps = {
+  selectedTemplateCategory: null
 };
 
 export default Create;

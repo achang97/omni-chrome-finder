@@ -3,9 +3,9 @@ import PropTypes from 'prop-types';
 import Ripples from 'react-ripples';
 
 import { getStyleApplicationFn } from 'utils/style';
-import style from './tab.css';
+import tabStyle from './tab.css';
 
-const s = getStyleApplicationFn(style);
+const s = getStyleApplicationFn(tabStyle);
 
 const Tab = ({
   isActive,
@@ -23,8 +23,7 @@ const Tab = ({
   indicatorColor,
   showIndicator,
   showRipple,
-  children,
-  ...rest
+  children
 }) => {
   let activeTabStyle = {};
   if (isActive && showIndicator) {
@@ -35,7 +34,6 @@ const Tab = ({
 
   const renderButton = () => (
     <div
-      {...rest}
       onClick={() => onTabClick(value)}
       onMouseDown={() => clickOnMouseDown && onTabClick(value)}
       style={{ color }}
@@ -49,7 +47,7 @@ const Tab = ({
   );
 
   return (
-    <div className={s(tabContainerClassName)} style={{ ...style, ...activeTabStyle }} {...rest}>
+    <div className={s(tabContainerClassName)} style={{ ...style, ...activeTabStyle }}>
       {showRipple ? (
         <Ripples className={s(`rounded h-full ${rippleClassName}`)}> {renderButton()} </Ripples>
       ) : (
@@ -60,8 +58,8 @@ const Tab = ({
 };
 
 Tab.propTypes = {
-  label: PropTypes.oneOfType([PropTypes.element, PropTypes.string, PropTypes.string]),
-  value: PropTypes.oneOfType([PropTypes.string, PropTypes.number, PropTypes.object]),
+  label: PropTypes.node,
+  value: PropTypes.any, // eslint-disable-line react/forbid-prop-types
   isActive: PropTypes.bool,
   onTabClick: PropTypes.func,
   clickOnMouseDown: PropTypes.bool,
@@ -70,20 +68,31 @@ Tab.propTypes = {
   tabClassName: PropTypes.string,
   activeTabClassName: PropTypes.string,
   inactiveTabClassName: PropTypes.string,
-  style: PropTypes.object,
+  style: PropTypes.shape({}),
   color: PropTypes.string,
   indicatorColor: PropTypes.string,
   showIndicator: PropTypes.bool,
-  showRipple: PropTypes.bool
+  showRipple: PropTypes.bool,
+  children: PropTypes.node
 };
 
 Tab.defaultProps = {
+  label: null,
+  value: null,
+  isActive: null,
+  onTabClick: null,
+  clickOnMouseDown: true,
   tabContainerClassName: '',
   rippleClassName: '',
   tabClassName: '',
   activeTabClassName: '',
   inactiveTabClassName: '',
-  style: {}
+  style: {},
+  color: null,
+  indicatorColor: null,
+  showIndicator: true,
+  showRipple: false,
+  children: null
 };
 
 export default Tab;

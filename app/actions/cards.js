@@ -102,10 +102,6 @@ export function removeCardTag(index) {
   return { type: types.REMOVE_CARD_TAG, payload: { index } };
 }
 
-export function updateCardKeywords(keywords) {
-  return { type: types.UPDATE_CARD_KEYWORDS, payload: { keywords } };
-}
-
 export function updateCardVerificationInterval(verificationInterval) {
   return { type: types.UPDATE_CARD_VERIFICATION_INTERVAL, payload: { verificationInterval } };
 }

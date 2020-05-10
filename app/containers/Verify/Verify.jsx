@@ -32,12 +32,7 @@ const Verify = ({
       <Separator horizontal className={s('m-0')} />
       <div className={s('flex justify-between mt-lg text-xs text-gray-dark')}>
         <div>
-          <div
-            onClick={requestResendVerificationEmail}
-            className={s('flex cursor-pointer')}
-            role="button"
-            tabIndex="0"
-          >
+          <div onClick={requestResendVerificationEmail} className={s('flex cursor-pointer')}>
             <span className={s('mr-xs')}> Re-send verification code </span>
             {isResendingVerification && <Loader size="xs" className={s('ml-sm')} />}
           </div>
@@ -55,7 +50,7 @@ const Verify = ({
             type="error"
           />
         </div>
-        <div className={s('cursor-pointer')} onClick={logout} role="button" tabIndex="0">
+        <div className={s('cursor-pointer')} onClick={logout}>
           Logout
         </div>
       </div>
@@ -71,12 +66,7 @@ const Verify = ({
         className={s('mt-reg')}
       />
       <div className={s('flex justify-end')}>
-        <div
-          className={s('text-gray-dark text-xs cursor-pointer mr-sm')}
-          onClick={requestGetUser}
-          role="button"
-          tabIndex="0"
-        >
+        <div className={s('text-gray-dark text-xs cursor-pointer mr-sm')} onClick={requestGetUser}>
           Already verified? Click to refresh
         </div>
         {isGettingUser && <Loader size="xs" />}

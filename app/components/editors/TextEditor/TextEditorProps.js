@@ -3,8 +3,6 @@ import style from './text-editor.css';
 
 const s = getStyleApplicationFn(style);
 
-const BOLD_ICON = 'https://www.dropbox.com/s/16aoaoliaac3q55/Combined%20Shape.svg?dl=0';
-
 export const CARD_TOOLBAR_PROPS = {
   options: [
     'history',
@@ -64,7 +62,6 @@ export const CARD_TOOLBAR_PROPS = {
   },
   textAlign: {
     inDropdown: true,
-    className: undefined,
     className: s('text-editor-dropdown-container-md no-hover-shadow'),
     component: undefined,
     dropdownClassName: s('text-editor-dropdown no-hover-shadow'),
@@ -111,7 +108,6 @@ export const CARD_TOOLBAR_PROPS = {
     popupClassName: s('text-editor-popup text-editor-link-popup'),
     dropdownClassName: s('text-editor-dropdown no-hover-shadow'),
     showOpenOptionOnHover: true,
-    defaultTargetOption: '_self',
     options: ['link', 'unlink'],
     linkCallback: undefined,
     defaultTargetOption: '_blank'

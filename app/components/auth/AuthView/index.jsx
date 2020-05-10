@@ -1,4 +1,4 @@
-import React, { Component } from 'react';
+import React from 'react';
 import PropTypes from 'prop-types';
 import { withRouter } from 'react-router-dom';
 
@@ -67,16 +67,22 @@ AuthView.propTypes = {
   title: PropTypes.string.isRequired,
   subtitle: PropTypes.string,
   isLoading: PropTypes.bool,
-  inputBody: PropTypes.element.isRequired,
+  inputBody: PropTypes.node.isRequired,
   error: PropTypes.string,
-  submitButtonProps: PropTypes.object,
-  footer: PropTypes.any,
+  submitButtonProps: PropTypes.shape({
+    onClick: PropTypes.func,
+    disabled: PropTypes.func
+  }).isRequired,
+  footer: PropTypes.node,
   className: PropTypes.string
 };
 
 AuthView.defaultProps = {
   isLoading: false,
-  className: ''
+  className: '',
+  subtitle: null,
+  error: null,
+  footer: null
 };
 
 export default withRouter(AuthView);

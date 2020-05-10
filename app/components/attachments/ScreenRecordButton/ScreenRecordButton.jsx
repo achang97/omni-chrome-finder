@@ -6,7 +6,7 @@ import { IoIosSquare } from 'react-icons/io';
 import { Tooltip, Button } from 'components/common';
 
 import { getStyleApplicationFn } from 'utils/style';
-import attachmentsStyle from '../styles/attachments.css';
+import attachmentsStyle from '../attachments.css';
 import screenRecordButtonStyle from './screen-record-button.css';
 
 const s = getStyleApplicationFn(attachmentsStyle, screenRecordButtonStyle);
@@ -56,6 +56,13 @@ class ScreenRecordButton extends Component {
     return destination.stream.getAudioTracks();
   };
 
+  endStream = () => {
+    const { localStream, voiceStream, endScreenRecording } = this.props;
+    this.stopStream(localStream);
+    this.stopStream(voiceStream);
+    endScreenRecording();
+  };
+
   startRecording = async () => {
     const {
       addScreenRecordingChunk,
@@ -79,7 +86,9 @@ class ScreenRecordButton extends Component {
         audio: true,
         video: false
       });
-    } catch {}
+    } catch {
+      // Do nothing
+    }
 
     try {
       desktopStream = await navigator.mediaDevices.getDisplayMedia({
@@ -102,12 +111,7 @@ class ScreenRecordButton extends Component {
     ];
 
     const stream = new MediaStream(tracks);
-    desktopStream.oninactive = () => {
-      const { localStream, voiceStream, endScreenRecording } = this.props;
-      this.stopStream(localStream);
-      this.stopStream(voiceStream);
-      endScreenRecording();
-    };
+    desktopStream.oninactive = this.endStream;
 
     const mediaRecorder = new MediaRecorder(stream, {
       mimeType: `video/webm${voiceStream ? '; codecs=vp8,opus' : ''}`
@@ -167,13 +171,42 @@ ScreenRecordButton.propTypes = {
   onSuccess: PropTypes.func.isRequired,
   className: PropTypes.string,
   showText: PropTypes.bool,
-  abbrText: PropTypes.bool
+  abbrText: PropTypes.bool,
+
+  // Redux State
+  activeId: PropTypes.string,
+  isSharingDesktop: PropTypes.bool.isRequired,
+  dockVisible: PropTypes.bool.isRequired,
+  mediaRecorder: PropTypes.shape({
+    stop: PropTypes.func.isRequired
+  }),
+  localStream: PropTypes.shape({
+    getAudioTracks: PropTypes.func.isRequired
+  }),
+  desktopStream: PropTypes.shape({
+    getAudioTracks: PropTypes.func.isRequired
+  }),
+  voiceStream: PropTypes.shape({
+    getAudioTracks: PropTypes.func.isRequired
+  }),
+
+  // Redux Actions
+  addScreenRecordingChunk: PropTypes.func.isRequired,
+  startScreenRecording: PropTypes.func.isRequired,
+  toggleDock: PropTypes.func.isRequired,
+  clearScreenRecording: PropTypes.func.isRequired,
+  endScreenRecording: PropTypes.func.isRequired
 };
 
 ScreenRecordButton.defaultProps = {
   className: '',
   showText: true,
-  abbrText: false
+  abbrText: false,
+  activeId: null,
+  mediaRecorder: null,
+  localStream: null,
+  desktopStream: null,
+  voiceStream: null
 };
 
 export default ScreenRecordButton;

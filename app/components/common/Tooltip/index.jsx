@@ -30,13 +30,19 @@ const Tooltip = ({ tooltip, tooltipProps, show, children }) => {
 };
 
 Tooltip.propTypes = {
-  tooltip: PropTypes.node.isRequired,
-  tooltipProps: PropTypes.object,
-  show: PropTypes.bool
+  tooltip: PropTypes.node,
+  tooltipProps: PropTypes.shape({
+    className: PropTypes.string
+  }),
+  show: PropTypes.bool,
+  children: PropTypes.node.isRequired
 };
 
 Tooltip.defaultProps = {
-  tooltipProps: {},
+  tooltip: null,
+  tooltipProps: {
+    className: ''
+  },
   show: true
 };
 

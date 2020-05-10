@@ -49,7 +49,9 @@ const Select = ({ className, type, styles, ...rest }) => {
 };
 
 Select.propTypes = {
-  type: PropTypes.oneOf(['default', 'creatable', 'async'])
+  type: PropTypes.oneOf(['default', 'creatable', 'async']),
+  className: PropTypes.string,
+  styles: PropTypes.shape({})
 };
 
 Select.defaultProps = {

@@ -214,7 +214,8 @@ class ChromeMessageListener extends Component {
   };
 
   isAutofindEnabled = (autofindPermissions) => {
-    const permissionsObj = autofindPermissions || this.props.autofindPermissions;
+    const { autofindPermissions: propsAutofindPermissions } = this.props;
+    const permissionsObj = autofindPermissions || propsAutofindPermissions;
     const integration = this.getIntegration();
     return integration && permissionsObj && permissionsObj[integration];
   };
@@ -232,9 +233,10 @@ class ChromeMessageListener extends Component {
   };
 
   handlePageLoad = () => {
+    const { hasLoaded } = this.state;
     this.handlePageUpdate(true);
 
-    if (!this.state.hasLoaded) {
+    if (!hasLoaded) {
       this.setState({ hasLoaded: true });
     }
   };
@@ -367,11 +369,12 @@ class ChromeMessageListener extends Component {
   };
 
   listener = (msg) => {
+    const { toggleDock } = this.props;
     const { type, payload } = msg;
     switch (type) {
       // Messages
       case CHROME.MESSAGE.TOGGLE: {
-        this.props.toggleDock();
+        toggleDock();
         break;
       }
       case CHROME.MESSAGE.TAB_UPDATE: {
@@ -427,11 +430,7 @@ ChromeMessageListener.propTypes = {
     hubspot: PropTypes.bool
   }).isRequired,
   hasCompletedOnboarding: PropTypes.bool.isRequired,
-  tasks: PropTypes.arrayOf(
-    PropTypes.shape({
-      _id: PropTypes.string.isRequired
-    })
-  ).isRequired,
+  tasks: PropTypes.arrayOf(PropTypes.object).isRequired,
 
   // Redux Actions
   toggleDock: PropTypes.func.isRequired,

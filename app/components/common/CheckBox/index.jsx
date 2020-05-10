@@ -29,14 +29,13 @@ const CheckBox = ({
 
 CheckBox.propTypes = {
   isSelected: PropTypes.bool.isRequired,
-  toggleCheckbox: PropTypes.func,
-  className: PropTypes.string.isRequired,
+  toggleCheckbox: PropTypes.func.isRequired,
+  className: PropTypes.string,
   selectedClassName: PropTypes.string,
   unselectedClassName: PropTypes.string
 };
 
 CheckBox.defaultProps = {
-  isSelected: false,
   className: '',
   selectedClassName: '',
   unselectedClassName: ''

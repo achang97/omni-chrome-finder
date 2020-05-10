@@ -34,9 +34,9 @@ MessageModal.propTypes = {
   // Redux State
   modalOpen: PropTypes.bool.isRequired,
   modalProps: PropTypes.shape({
-    title: PropTypes.any.isRequired,
-    subtitle: PropTypes.any,
-    buttonText: PropTypes.any,
+    title: PropTypes.node.isRequired,
+    subtitle: PropTypes.node,
+    buttonText: PropTypes.node,
     showHeader: PropTypes.bool
   }).isRequired,
 

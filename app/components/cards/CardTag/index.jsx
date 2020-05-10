@@ -9,38 +9,37 @@ import style from './card-tag.css';
 
 const s = getStyleApplicationFn(style);
 
-const CardTag = React.forwardRef(
-  ({ name, locked, onClick, onRemoveClick, className, ...rest }, ref) => {
-    const onRemove = (e, name) => {
-      e.stopPropagation();
-      onRemoveClick(name);
-    };
+const CardTag = React.forwardRef(({ name, locked, onClick, onRemoveClick, className }, ref) => {
+  const onRemove = (e) => {
+    e.stopPropagation();
+    onRemoveClick(name);
+  };
 
-    const protectedOnClick = () => {
-      if (onClick) onClick(name);
-    };
+  const protectedOnClick = () => {
+    if (onClick) onClick(name);
+  };
 
-    return (
-      <div
-        onClick={protectedOnClick}
-        ref={ref}
-        className={s(`card-tag ${onClick ? 'button-hover' : ''} ${className}`)}
-        {...rest}
-      >
-        <div className={s('flex items-center')}>
-          <div> {name} </div>
-          {locked && <MdLock className={s('ml-xs')} />}
-        </div>
-        {onRemoveClick && (
-          <MdClose onClick={(e) => onRemove(e)} className={s('ml-xs button-hover')} />
-        )}
+  return (
+    <div
+      onClick={protectedOnClick}
+      ref={ref}
+      className={s(`card-tag ${onClick ? 'button-hover' : ''} ${className}`)}
+    >
+      <div className={s('flex items-center')}>
+        <div> {name} </div>
+        {locked && <MdLock className={s('ml-xs')} />}
       </div>
-    );
-  }
-);
+      {onRemoveClick && (
+        <MdClose onClick={(e) => onRemove(e)} className={s('ml-xs button-hover')} />
+      )}
+    </div>
+  );
+});
+
+CardTag.displayName = 'CardTag';
 
 CardTag.propTypes = {
-  name: PropTypes.oneOfType([PropTypes.string, PropTypes.element]).isRequired,
+  name: PropTypes.node.isRequired,
   locked: PropTypes.bool,
   onClick: PropTypes.func,
   onRemoveClick: PropTypes.func,
@@ -50,7 +49,8 @@ CardTag.propTypes = {
 CardTag.defaultProps = {
   className: '',
   onClick: NOOP,
-  locked: false
+  locked: false,
+  onRemoveClick: null
 };
 
 export default CardTag;

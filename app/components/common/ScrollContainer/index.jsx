@@ -11,23 +11,20 @@ const s = getStyleApplicationFn(style);
 
 const ScrollContainer = ({
   list,
+  getKey,
   placeholder,
   renderScrollElement,
   renderOverflowElement,
   header,
   footer,
   showCondition,
-  positionAdjust,
   horizontalMarginAdjust,
   verticalMarginAdjust,
   matchDimensions,
-  scrollY,
   className,
   scrollContainerClassName,
   scrollElementClassName,
-  children,
   position,
-  relative,
   onBottom,
   bottomOffset
 }) => {
@@ -36,7 +33,7 @@ const ScrollContainer = ({
       {header}
       {list.map((listElem, i) => (
         <ScrollElement
-          key={`scroll-element-${i}`}
+          key={getKey(listElem)}
           element={listElem}
           index={i}
           renderScrollElement={renderScrollElement}
@@ -69,38 +66,37 @@ const ScrollContainer = ({
 
 ScrollContainer.propTypes = {
   list: PropTypes.arrayOf(PropTypes.any).isRequired,
-  placeholder: PropTypes.element,
+  getKey: PropTypes.func.isRequired,
+  placeholder: PropTypes.node,
   renderScrollElement: PropTypes.func.isRequired,
   renderOverflowElement: PropTypes.func.isRequired,
   showCondition: PropTypes.oneOfType([PropTypes.oneOf(['hover']), PropTypes.func]),
   className: PropTypes.string,
   scrollContainerClassName: PropTypes.string,
   scrollElementClassName: PropTypes.string,
-  header: PropTypes.element,
-  footer: PropTypes.element,
+  header: PropTypes.node,
+  footer: PropTypes.node,
   position: PropTypes.oneOf(['top', 'left', 'bottom', 'right']),
   matchDimensions: PropTypes.bool,
   horizontalMarginAdjust: PropTypes.bool,
   verticalMarginAdjust: PropTypes.bool,
-  positionAdjust: PropTypes.shape({
-    top: PropTypes.number,
-    bottom: PropTypes.number,
-    left: PropTypes.number,
-    right: PropTypes.number
-  }),
   onBottom: PropTypes.func,
   bottomOffset: PropTypes.number
 };
 
 ScrollContainer.defaultProps = {
   showCondition: 'hover',
+  placeholder: null,
   className: '',
   scrollContainerClassName: '',
   scrollElementClassName: '',
+  header: null,
+  footer: null,
   position: 'left',
   matchDimensions: false,
   horizontalMarginAdjust: false,
   verticalMarginAdjust: false,
+  onBottom: null,
   bottomOffset: 0
 };
 

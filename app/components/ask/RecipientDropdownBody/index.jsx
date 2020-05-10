@@ -1,6 +1,5 @@
 import React, { useState, useRef } from 'react';
 import PropTypes from 'prop-types';
-import { MdClose } from 'react-icons/md';
 
 import Separator from 'components/common/Separator';
 
@@ -14,19 +13,11 @@ const RecipientDropdownBody = ({ mentionOptions, mentions, onAddMention }) => {
   const [selectedIndex, setSelectedIndex] = useState(0);
 
   const inputRef = useRef(null);
-  const mentionRefs = mentionOptions.map((option) => useRef(null));
+  const mentionRefs = mentionOptions.map(() => useRef(null));
 
   const handleChange = (e) => {
     setInputText(e.target.value);
     setSelectedIndex(0);
-  };
-
-  const handleKeyPress = (e, mentionOptions) => {
-    if (e.key === 'Enter') {
-      if (selectedIndex < mentionOptions.length) {
-        addMention(mentionOptions[selectedIndex]);
-      }
-    }
   };
 
   const addMention = (mention) => {
@@ -36,7 +27,15 @@ const RecipientDropdownBody = ({ mentionOptions, mentions, onAddMention }) => {
     inputRef.current.focus();
   };
 
-  const handleKeyDown = (e, mentionOptions) => {
+  const handleKeyPress = (e) => {
+    if (e.key === 'Enter') {
+      if (selectedIndex < mentionOptions.length) {
+        addMention(mentionOptions[selectedIndex]);
+      }
+    }
+  };
+
+  const handleKeyDown = (e) => {
     let newSelectedIndex = selectedIndex;
     if (selectedIndex >= mentionOptions.length) {
       newSelectedIndex = 0;
@@ -109,7 +108,7 @@ RecipientDropdownBody.propTypes = {
       id: PropTypes.string.isRequired,
       name: PropTypes.string.isRequired
     })
-  ),
+  ).isRequired,
   mentions: PropTypes.arrayOf(
     PropTypes.shape({
       id: PropTypes.string.isRequired,

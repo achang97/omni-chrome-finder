@@ -1,4 +1,5 @@
 import React, { useEffect, useState, useRef } from 'react';
+import PropTypes from 'prop-types';
 import AnimateHeight from 'react-animate-height';
 import {
   MdClose,
@@ -19,118 +20,15 @@ import { USER_BADGE } from 'appConstants/profile';
 
 import robotGetStarted from 'assets/images/general/robotGetStarted.png';
 
-import bronzeImg from 'assets/images/badges/bronze.svg';
-import silverImg from 'assets/images/badges/silver.svg';
-import goldImg from 'assets/images/badges/gold.svg';
-import platinumImg from 'assets/images/badges/platinum.svg';
-
-import searchCardImg from 'assets/images/accomplishments/search-card.png';
-import createCardImg from 'assets/images/accomplishments/create-card.png';
-import flagOutdatedImg from 'assets/images/accomplishments/flag-outdated.png';
-import markHelpfulImg from 'assets/images/accomplishments/mark-helpful.png';
-import contextSearchImg from 'assets/images/accomplishments/context-search.png';
-
-import profilePictureImg from 'assets/images/accomplishments/profile-picture.png';
-import ownFourImg from 'assets/images/accomplishments/own-four.png';
-
-import allUpdatedImg from 'assets/images/accomplishments/all-updated.png';
-import addSubscriberImg from 'assets/images/accomplishments/add-subscriber.png';
-import addTagImg from 'assets/images/accomplishments/add-tag.png';
-
-import addSlackImg from 'assets/images/accomplishments/add-slack.png';
-import addDriveImg from 'assets/images/accomplishments/add-drive.png';
-import slackFindImg from 'assets/images/accomplishments/slack-find.png';
-import existingKnowledgeImg from 'assets/images/accomplishments/existing-knowledge.png';
-
+import {
+  GET_STARTED_PERFORMANCE_CUTOFF,
+  PROGRESS_BAR_STYLES,
+  BADGE_PROPS,
+  ACCOMPLISHMENT_IMAGES
+} from './PerformanceProps';
 import style from './minimized-ask.css';
 
 const s = getStyleApplicationFn(style);
-
-const GET_STARTED_PERFORMANCE_CUTOFF = 60;
-
-const PROGRESS_BAR_STYLES = {
-  // How long animation takes to go from one percentage to another, in seconds
-  pathTransitionDuration: 0.5,
-
-  // Colors
-  textColor: colors.gold.reg,
-  pathColor: colors.purple.reg,
-
-  textSize: '30px'
-};
-
-const BADGE_PROPS = {
-  [USER_BADGE.BRONZE]: {
-    imgSrc: bronzeImg,
-    textClassName: 'badge-bronze'
-  },
-  [USER_BADGE.SILVER]: {
-    imgSrc: silverImg,
-    textClassName: 'badge-silver'
-  },
-  [USER_BADGE.GOLD]: {
-    imgSrc: goldImg,
-    textClassName: 'badge-gold'
-  },
-  [USER_BADGE.PLATINUM]: {
-    imgSrc: platinumImg,
-    textClassName: 'badge-platinum'
-  }
-};
-
-const ACCOMPLISHMENT_IMAGES = {
-  'Make your first card': {
-    imgSrc: searchCardImg
-  },
-  'Search for a card and open it': {
-    imgSrc: searchCardImg
-  },
-  'Create a card in the extension': {
-    imgSrc: createCardImg
-  },
-  'Flag a card as out of date': {
-    imgSrc: flagOutdatedImg
-  },
-  'Mark a card as helpful': {
-    imgSrc: markHelpfulImg
-  },
-  'Highlight, right click, and search Omni': {
-    imgSrc: contextSearchImg
-  },
-
-  'Add a profile picture': {
-    imgSrc: profilePictureImg
-  },
-  'Own at least 4 cards': {
-    imgSrc: ownFourImg
-  },
-
-  'Keep all your cards up to date': {
-    imgSrc: allUpdatedImg
-  },
-  'Add a subscriber to one of your cards': {
-    imgSrc: addSubscriberImg
-  },
-  'Add a tag to one of your cards': {
-    imgSrc: addTagImg
-  },
-  'Created a card this past week': {
-    imgSrc: createCardImg
-  },
-
-  'Add the Slack integration': {
-    imgSrc: addSlackImg
-  },
-  'Add the Google Drive integration': {
-    imgSrc: addDriveImg
-  },
-  'Open a document from your integrations': {
-    imgSrc: existingKnowledgeImg
-  },
-  'Use /find on slack': {
-    imgSrc: slackFindImg
-  }
-};
 
 const MinimizedAsk = ({
   badge,
@@ -255,13 +153,13 @@ const MinimizedAsk = ({
     return (
       <>
         <div className={s('flex items-center mt-reg')}>
-          <button onClick={() => updateCarouselIndex(-1)} disabled={carouselDisabled}>
+          <button onClick={() => updateCarouselIndex(-1)} disabled={carouselDisabled} type="button">
             <MdKeyboardArrowLeft />
           </button>
           <div className={s('w-full rounded-lg minimized-search-accomplishment-img-container')}>
-            <img src={imgSrc} alt="Accomplishment Image" className={s('h-full w-full object-cover rounded-lg')} />
+            <img src={imgSrc} className={s('h-full w-full object-cover rounded-lg')} alt={label} />
           </div>
-          <button onClick={() => updateCarouselIndex(+1)} disabled={carouselDisabled}>
+          <button onClick={() => updateCarouselIndex(+1)} disabled={carouselDisabled} type="button">
             <MdKeyboardArrowRight />
           </button>
         </div>
@@ -304,7 +202,7 @@ const MinimizedAsk = ({
     const { imgSrc, textClassName } = BADGE_PROPS[badge];
     return (
       <>
-        <img src={imgSrc} alt="Badge Image" className={s('minimized-search-badge-container')} />
+        <img src={imgSrc} className={s('minimized-search-badge-container')} alt={badge} />
         <div className={s(`${textClassName} text-xs font-semibold ml-sm`)}> {badge} </div>
       </>
     );
@@ -341,10 +239,11 @@ const MinimizedAsk = ({
         ) : (
           <div className={s('overflow-auto px-lg pb-lg')}>
             {performance.map(({ badge: sectionTitle, accomplishments }) => (
-              <div>
+              <div key={sectionTitle}>
                 <div className={s('text-gray-light text-sm my-sm')}> {sectionTitle} </div>
                 {accomplishments.map(({ label, isComplete }) => (
                   <div
+                    key={label}
                     className={s(
                       `flex justify-between mb-sm text-sm rounded-lg p-sm items-center ${
                         isComplete
@@ -382,7 +281,13 @@ const MinimizedAsk = ({
           <Message
             message={
               <span>
-                🎉 <span className={s('mx-sm')}> Thanks for your feedback! </span> 🎉
+                <span role="img" aria-label="Party">
+                  🎉
+                </span>
+                <span className={s('mx-sm')}> Thanks for your feedback! </span>
+                <span role="img" aria-label="Party">
+                  🎉
+                </span>
               </span>
             }
             className={s('text-md text-center text-green-reg')}
@@ -463,12 +368,14 @@ const MinimizedAsk = ({
               >
                 {isGettingOnboardingStats ? <Loader size="sm" /> : getPerformanceScoreOrBadge()}
               </div>
-              <img
-                src={robotGetStarted}
-                className={s('robot-img')}
-                onClick={togglePerformance}
-                style={{ opacity: showRobot ? 1 : 0 }}
-              />
+              <div onClick={togglePerformance} className={s('robot-img')}>
+                <img
+                  src={robotGetStarted}
+                  style={{ opacity: showRobot ? 1 : 0 }}
+                  alt="Omni Robot"
+                  className={s('h-full')}
+                />
+              </div>
             </div>
             <div className={s('flex justify-end text-gray-dark text-xs font-medium')}>
               <div className={s('cursor-pointer')} onClick={toggleAskFeedbackInput}>
@@ -487,6 +394,47 @@ const MinimizedAsk = ({
   };
 
   return render();
+};
+
+MinimizedAsk.propTypes = {
+  badge: PropTypes.string,
+  percentage: PropTypes.number.isRequired,
+  performance: PropTypes.arrayOf(
+    PropTypes.shape({
+      badge: PropTypes.string.isRequired,
+      accomplishments: PropTypes.arrayOf(
+        PropTypes.shape({
+          label: PropTypes.string.isRequired,
+          isComplete: PropTypes.bool.isRequired
+        })
+      )
+    })
+  ).isRequired,
+  remainingAccomplishments: PropTypes.arrayOf(
+    PropTypes.shape({
+      label: PropTypes.string.isRequired,
+      isComplete: PropTypes.bool.isRequired
+    })
+  ),
+  isGettingOnboardingStats: PropTypes.bool,
+  dockVisible: PropTypes.bool.isRequired,
+  dockExpanded: PropTypes.bool.isRequired,
+  searchText: PropTypes.string.isRequired,
+  showFeedback: PropTypes.bool.isRequired,
+  feedback: PropTypes.string.isRequired,
+  isSubmittingFeedback: PropTypes.bool,
+  feedbackSuccess: PropTypes.bool,
+  feedbackError: PropTypes.string,
+  showPerformanceScore: PropTypes.bool.isRequired,
+
+  // Redux Actions
+  updateAskSearchText: PropTypes.func.isRequired,
+  toggleAskFeedbackInput: PropTypes.func.isRequired,
+  updateAskFeedback: PropTypes.func.isRequired,
+  requestSubmitFeedback: PropTypes.func.isRequired,
+  togglePerformanceScore: PropTypes.func.isRequired,
+  toggleDockHeight: PropTypes.func.isRequired,
+  requestGetUserOnboardingStats: PropTypes.func.isRequired
 };
 
 export default MinimizedAsk;

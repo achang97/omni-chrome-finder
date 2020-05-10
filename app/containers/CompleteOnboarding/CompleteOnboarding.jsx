@@ -1,6 +1,8 @@
 import React, { useEffect } from 'react';
+import PropTypes from 'prop-types';
 import AuthView from 'components/auth/AuthView';
-import { URL, WEB_APP_ROUTES } from 'appConstants';
+import { Loader } from 'components/common';
+import { URL, WEB_APP_ROUTES, PROFILE } from 'appConstants';
 
 import { getStyleApplicationFn } from 'utils/style';
 
@@ -48,4 +50,20 @@ const CompleteOnboarding = ({
     />
   );
 };
+
+CompleteOnboarding.propTypes = {
+  dockVisible: PropTypes.bool.isRequired,
+  isGettingUser: PropTypes.bool,
+  onboardingSection: PropTypes.oneOf(Object.values(PROFILE.ONBOARDING_SECTION)).isRequired,
+  onboardingSubsection: PropTypes.number.isRequired,
+
+  // Redux Actions
+  logout: PropTypes.func.isRequired,
+  requestGetUser: PropTypes.func.isRequired
+};
+
+CompleteOnboarding.defaultProps = {
+  isGettingUser: false
+};
+
 export default CompleteOnboarding;

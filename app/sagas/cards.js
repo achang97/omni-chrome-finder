@@ -1,7 +1,7 @@
 import _ from 'lodash';
 import { take, call, fork, put, select } from 'redux-saga/effects';
 import { doGet, doPost, doPut, doDelete, getErrorMessage } from 'utils/request';
-import { getArrayIds, getArrayField } from 'utils/array';
+import { getArrayIds } from 'utils/array';
 import { getContentStateFromEditorState } from 'utils/editor';
 import { toggleUpvotes, hasValidEdits, isApprover } from 'utils/card';
 import { convertAttachmentsToBackendFormat } from 'utils/file';
@@ -163,7 +163,6 @@ function* convertCardToBackendFormat(isNewCard) {
       owners,
       subscribers,
       tags,
-      keywords,
       verificationInterval,
       permissions,
       permissionGroups,
@@ -207,7 +206,6 @@ function* convertCardToBackendFormat(isNewCard) {
     contentStateDescription,
     answer: answerText,
     contentStateAnswer,
-    keywords: getArrayField(keywords, 'value'),
     attachments: convertAttachmentsToBackendFormat(attachments),
     ...permissionsInfo,
     owners: cardOwners,

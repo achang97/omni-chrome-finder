@@ -10,13 +10,13 @@ const s = getStyleApplicationFn(style);
 
 const AuthHeader = ({ children, className }) => (
   <div className={s(`auth-header ${className}`)}>
-    <img src={logo} className={s('h-3xl mb-reg')} />
+    <img src={logo} className={s('h-3xl mb-reg')} alt="Omni Logo" />
     {children}
   </div>
 );
 
 AuthHeader.propTypes = {
-  children: PropTypes.node,
+  children: PropTypes.node.isRequired,
   className: PropTypes.string
 };
 

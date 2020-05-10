@@ -29,15 +29,16 @@ const CardVerificationInterval = ({ isEditable, verificationInterval, onChange }
 
 CardVerificationInterval.propTypes = {
   isEditable: PropTypes.bool,
-  onChange: PropTypes.func,
+  onChange: PropTypes.func.isRequired,
   verificationInterval: PropTypes.shape({
     label: PropTypes.string.isRequired,
     value: PropTypes.number.isRequired
-  }).isRequired
+  })
 };
 
 CardVerificationInterval.defaultProps = {
-  isEditable: false
+  isEditable: false,
+  verificationInterval: null
 };
 
 export default CardVerificationInterval;

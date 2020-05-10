@@ -10,7 +10,6 @@ import {
   removeCardSubscriber,
   updateCardTags,
   removeCardTag,
-  updateCardKeywords,
   updateCardVerificationInterval,
   updateCardPermissions,
   updateCardPermissionGroups,
@@ -20,11 +19,42 @@ import CardSideDock from './CardSideDock';
 
 const mapStateToProps = (state) => {
   const {
-    cards: { activeCard },
-    auth: { token }
+    cards: {
+      activeCard: {
+        isEditing,
+        status,
+        owners,
+        subscribers,
+        attachments,
+        tags,
+        permissions,
+        permissionGroups,
+        verificationInterval,
+        isDeletingCard,
+        createdAt,
+        updatedAt,
+        sideDockOpen,
+        edits
+      }
+    }
   } = state;
 
-  return { ...activeCard, token };
+  return {
+    isEditing,
+    status,
+    owners,
+    subscribers,
+    attachments,
+    tags,
+    permissions,
+    permissionGroups,
+    verificationInterval,
+    isDeletingCard,
+    createdAt,
+    updatedAt,
+    sideDockOpen,
+    edits
+  };
 };
 
 const mapDispatchToProps = {
@@ -38,7 +68,6 @@ const mapDispatchToProps = {
   updateCardAttachmentName,
   updateCardTags,
   removeCardTag,
-  updateCardKeywords,
   updateCardVerificationInterval,
   updateCardPermissions,
   updateCardPermissionGroups,

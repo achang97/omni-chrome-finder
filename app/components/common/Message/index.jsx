@@ -18,17 +18,7 @@ const getColorClassName = (type) => {
   }
 };
 
-const Message = ({
-  message,
-  type,
-  className,
-  animate,
-  show,
-  temporary,
-  showDuration,
-  onHide,
-  ...rest
-}) => {
+const Message = ({ message, type, className, animate, show, temporary, showDuration, onHide }) => {
   const [showState, setShowState] = useState(show);
 
   const protectedOnHide = () => {
@@ -51,9 +41,7 @@ const Message = ({
   }, [show]);
 
   const body = (
-    <div className={s(`${className} ${getColorClassName(type)} message`)} {...rest}>
-      {message}
-    </div>
+    <div className={s(`${className} ${getColorClassName(type)} message`)}>{message}</div>
   );
 
   const shouldShow = message && show && showState;
@@ -72,7 +60,7 @@ const Message = ({
 };
 
 Message.propTypes = {
-  message: PropTypes.any,
+  message: PropTypes.node,
   type: PropTypes.string,
   className: PropTypes.string,
   animate: PropTypes.bool,

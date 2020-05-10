@@ -3,9 +3,11 @@ import { updateTasksOpenSection, requestGetTasks, updateTasksTab, removeTask } f
 import Tasks from './Tasks';
 
 const mapStateToProps = (state) => {
-  const { tasks } = state;
+  const {
+    tasks: { tabIndex, tasks, openSection, isGettingTasks }
+  } = state;
 
-  return { ...tasks };
+  return { tabIndex, tasks, openSection, isGettingTasks };
 };
 
 const mapDispatchToProps = {

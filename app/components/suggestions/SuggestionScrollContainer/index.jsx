@@ -4,6 +4,7 @@ import PropTypes from 'prop-types';
 import { Loader, Triangle, ScrollContainer } from 'components/common';
 import { colors } from 'styles/colors';
 import { getStyleApplicationFn } from 'utils/style';
+
 import SuggestionCard from '../SuggestionCard';
 import SuggestionPreview from '../SuggestionPreview';
 
@@ -22,8 +23,8 @@ const SuggestionScrollContainer = ({
   showPlaceholder,
   footer,
   scrollContainerClassName,
-  triangleColor,
-  ...rest
+  className,
+  triangleColor
 }) => {
   const renderPlaceholder = () => {
     if (isSearchingCards) {
@@ -37,7 +38,10 @@ const SuggestionScrollContainer = ({
 
   const renderScrollElement = (card, i) => {
     const { _id, question, answer, lastEdited, createdAt, status } = card;
-    const { className = '', ...rest } = getCardProps ? getCardProps(card, i) : {};
+    const { className: cardClassName = '', ...restCardProps } = getCardProps
+      ? getCardProps(card, i)
+      : {};
+
     return (
       <SuggestionCard
         id={_id}
@@ -45,13 +49,14 @@ const SuggestionScrollContainer = ({
         answer={answer}
         updatedAt={lastEdited ? lastEdited.time : createdAt}
         status={status}
-        className={s(`suggestion-scroll-container-card ${className}`)}
-        {...rest}
+        className={s(`suggestion-scroll-container-card ${cardClassName}`)}
+        {...restCardProps}
       />
     );
   };
 
-  const renderOverflowElement = ({ _id, question, description, answer }, i, positions) => {
+  const renderOverflowElement = (card, i, positions) => {
+    const { _id, question, description, answer } = card;
     const { overflow, scroll } = positions;
 
     const overflowTop = overflow.top || 0;
@@ -96,15 +101,16 @@ const SuggestionScrollContainer = ({
 
   return (
     <ScrollContainer
+      className={className}
       scrollContainerClassName={s(`suggestion-scroll-container ${scrollContainerClassName}`)}
       list={cards}
+      getKey={(card) => card._id}
       placeholder={renderPlaceholder()}
       renderScrollElement={renderScrollElement}
       renderOverflowElement={renderOverflowElement}
       footer={renderFooter()}
       onBottom={handleOnBottom}
       bottomOffset={SEARCH_INFINITE_SCROLL_OFFSET}
-      {...rest}
     />
   );
 };
@@ -123,19 +129,23 @@ SuggestionScrollContainer.propTypes = {
   isSearchingCards: PropTypes.bool,
   onBottom: PropTypes.func.isRequired,
   showPlaceholder: PropTypes.bool,
-  footer: PropTypes.element,
+  footer: PropTypes.node,
   triangleColor: PropTypes.string,
   hasReachedLimit: PropTypes.bool,
-  scrollContainerClassName: PropTypes.string
+  scrollContainerClassName: PropTypes.string,
+  className: PropTypes.string
 };
 
 SuggestionScrollContainer.defaultProps = {
   cards: [],
+  getCardProps: null,
+  footer: null,
   isSearchingCards: false,
   hasReachedLimit: false,
   showPlaceholder: true,
   triangleColor: 'white',
-  scrollContainerClassName: ''
+  scrollContainerClassName: '',
+  className: ''
 };
 
 export default SuggestionScrollContainer;

@@ -83,7 +83,7 @@ export default function displayReducer(state = initialState, action) {
 
     // Changes to User
     case types.EDIT_USER: {
-      const { firstname, lastname, bio } = state.user;
+      const { firstname, lastname, bio = '' } = state.user;
       return { ...state, isEditingAbout: true, userEdits: { firstname, lastname, bio } };
     }
     case types.CHANGE_FIRSTNAME: {

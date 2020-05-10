@@ -3,7 +3,6 @@ import _ from 'lodash';
 
 import { URL, CARD, PROFILE } from 'appConstants';
 import { getEditorStateFromContentState, getContentStateFromEditorState } from './editor';
-import { createSelectOptions } from './select';
 import { getArrayIds } from './array';
 import { isAnyLoading } from './file';
 import { copyText } from './window';
@@ -12,7 +11,6 @@ export function convertCardToFrontendFormat(card) {
   const {
     contentStateDescription,
     contentStateAnswer,
-    keywords,
     updateInterval,
     userPermissions,
     permissionGroups,
@@ -49,7 +47,6 @@ export function convertCardToFrontendFormat(card) {
     answerEditorState: contentStateAnswer
       ? getEditorStateFromContentState(contentStateAnswer)
       : EditorState.createEmpty(),
-    keywords: createSelectOptions(keywords),
     verificationInterval,
     permissions,
     permissionGroups,
@@ -60,6 +57,7 @@ export function convertCardToFrontendFormat(card) {
       ...reply,
       selected: status !== CARD.STATUS.NOT_DOCUMENTED
     })),
+    status,
     ...rest
   };
 }

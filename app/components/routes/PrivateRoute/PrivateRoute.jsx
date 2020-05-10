@@ -1,4 +1,5 @@
 import React from 'react';
+import PropTypes from 'prop-types';
 import { Route, Redirect } from 'react-router-dom';
 import { ROUTES } from 'appConstants';
 
@@ -21,6 +22,12 @@ const PrivateRoute = ({ isLoggedIn, isVerified, hasCompletedOnboarding, ...given
     );
   }
   return <Redirect to={{ pathname: ROUTES.MAIN_AUTH, state: { from: givenProps.location } }} />;
+};
+
+PrivateRoute.propTypes = {
+  isLoggedIn: PropTypes.bool.isRequired,
+  isVerified: PropTypes.bool.isRequired,
+  hasCompletedOnboarding: PropTypes.bool.isRequired
 };
 
 export default PrivateRoute;

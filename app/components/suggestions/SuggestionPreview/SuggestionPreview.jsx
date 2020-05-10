@@ -1,9 +1,7 @@
-import React, { Component } from 'react';
+import React from 'react';
 import PropTypes from 'prop-types';
 
 import Button from 'components/common/Button';
-
-import { getContentStateHTMLFromString } from 'utils/editor';
 
 import { getStyleApplicationFn } from 'utils/style';
 import style from './suggestion-preview.css';
@@ -37,7 +35,14 @@ SuggestionPreview.propTypes = {
   id: PropTypes.string.isRequired,
   question: PropTypes.string.isRequired,
   questionDescription: PropTypes.string,
-  answer: PropTypes.string
+  answer: PropTypes.string.isRequired,
+
+  // Redux Actions
+  openCard: PropTypes.func.isRequired
+};
+
+SuggestionPreview.defaultProps = {
+  questionDescription: null
 };
 
 export default SuggestionPreview;

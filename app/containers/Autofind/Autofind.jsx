@@ -1,6 +1,5 @@
 import React from 'react';
-import { connect } from 'react-redux';
-
+import PropTypes from 'prop-types';
 import SuggestionScrollContainer from 'components/suggestions/SuggestionScrollContainer';
 import { SEARCH } from 'appConstants';
 
@@ -21,5 +20,19 @@ const Autofind = ({ isSearchingCards, cards, hasReachedLimit, requestSearchCards
     })}
   />
 );
+
+Autofind.propTypes = {
+  // Redux State
+  isSearchingCards: PropTypes.bool,
+  cards: PropTypes.arrayOf(PropTypes.object).isRequired,
+  hasReachedLimit: PropTypes.bool.isRequired,
+
+  // Redux Actions
+  requestSearchCards: PropTypes.func.isRequired
+};
+
+Autofind.defaultProps = {
+  isSearchingCards: false
+};
 
 export default Autofind;

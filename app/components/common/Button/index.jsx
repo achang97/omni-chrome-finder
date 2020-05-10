@@ -38,10 +38,7 @@ const Button = ({
   underlineColor,
   color,
   onClick,
-  imgSrc,
-  imgClassName,
-  disabled,
-  ...rest
+  disabled
 }) => {
   const { outerClassName = '', innerClassName = '' } = getClassNames(color, underline);
 
@@ -57,48 +54,47 @@ const Button = ({
         }`
       )}
       onClick={protectedOnClick}
-      {...rest}
     >
       {iconLeft && icon}
-      {iconLeft && imgSrc && <img className={s(`${imgClassName}`)} src={imgSrc} />}
-      <div
-        className={s(
-          `button-text ${
-            underline && underlineColor ? `underline-border border-${underlineColor}` : ''
-          } ${innerClassName} ${textClassName}`
-        )}
-      >
-        {text}
-      </div>
+      {text && (
+        <div
+          className={s(
+            `button-text ${
+              underline && underlineColor ? `underline-border border-${underlineColor}` : ''
+            } ${innerClassName} ${textClassName}`
+          )}
+        >
+          {text}
+        </div>
+      )}
       {!iconLeft && icon}
-      {!iconLeft && imgSrc && <img className={s(`${imgClassName}`)} src={imgSrc} />}
     </div>
   );
 };
 
 Button.propTypes = {
-  text: PropTypes.oneOfType([PropTypes.string, PropTypes.number]),
+  text: PropTypes.node,
   className: PropTypes.string,
   textClassName: PropTypes.string,
-  imgClassName: PropTypes.string,
   underline: PropTypes.bool,
   underlineColor: PropTypes.string,
   onClick: PropTypes.func,
-  icon: PropTypes.element,
+  icon: PropTypes.node,
   iconLeft: PropTypes.bool,
   color: PropTypes.oneOf(['primary', 'secondary', 'transparent', 'gold']),
   disabled: PropTypes.bool
 };
 
 Button.defaultProps = {
-  text: '',
+  text: null,
   className: '',
   textClassName: '',
-  imgClassName: '',
   underline: true,
+  underlineColor: null,
+  onClick: null,
   icon: null,
   iconLeft: true,
-  imgSrc: null,
+  color: null,
   disabled: false
 };
 

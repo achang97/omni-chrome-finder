@@ -1,4 +1,4 @@
-import React, { useRef, useState } from 'react';
+import React, { useRef } from 'react';
 import PropTypes from 'prop-types';
 import { Transition } from 'react-transition-group';
 import AnimateHeight from 'react-animate-height';
@@ -6,16 +6,7 @@ import moment from 'moment';
 import { MdClose, MdEdit } from 'react-icons/md';
 import { FaRegTrashAlt } from 'react-icons/fa';
 
-import {
-  CardSection,
-  CardUsers,
-  CardTags,
-  CardAttachments,
-  CardPermissions,
-  CardKeywords,
-  CardVerificationInterval
-} from 'components/cards';
-import { Button, Loader, HelpTooltip } from 'components/common';
+import { Button, HelpTooltip } from 'components/common';
 
 import { getBaseAnimationStyle } from 'utils/animate';
 import { isJustMe } from 'utils/card';
@@ -25,31 +16,62 @@ import { TRANSITIONS } from 'appConstants/animate';
 import { getStyleApplicationFn } from 'utils/style';
 import style from './card-side-dock.css';
 
+import CardSection from '../CardSection';
+import CardUsers from '../CardUsers';
+import CardTags from '../CardTags';
+import CardAttachments from '../CardAttachments';
+import CardPermissions from '../CardPermissions';
+import CardVerificationInterval from '../CardVerificationInterval';
+
 const s = getStyleApplicationFn(style);
 
 const DATE_FORMAT = 'MMM DD, YYYY';
 const SIDE_DOCK_TRANSITION_MS = 200;
 
-const CardSideDock = (props) => {
+const CardSideDock = ({
+  isEditing,
+  status,
+  owners,
+  subscribers,
+  attachments,
+  tags,
+  permissions,
+  permissionGroups,
+  verificationInterval,
+  isDeletingCard,
+  createdAt,
+  updatedAt,
+  sideDockOpen,
+  edits,
+  closeCardSideDock,
+  openCardModal,
+  addCardOwner,
+  removeCardOwner,
+  addCardSubscriber,
+  removeCardSubscriber,
+  removeCardAttachment,
+  updateCardAttachmentName,
+  updateCardTags,
+  removeCardTag,
+  updateCardVerificationInterval,
+  updateCardPermissions,
+  updateCardPermissionGroups,
+  editCard
+}) => {
   const permissionRef = useRef(null);
-
-  const getAttribute = (attribute) => {
-    const { isEditing, edits } = props;
-    return isEditing ? edits[attribute] : props[attribute];
+  const renderHeader = () => {
+    return (
+      <div className={s('flex justify-between text-purple-gray-50 mb-sm')}>
+        <div className={s('text-xs')}> Card Information </div>
+        <button onClick={closeCardSideDock} type="button">
+          <MdClose />
+        </button>
+      </div>
+    );
   };
 
-  const renderHeader = () => (
-    <div className={s('flex justify-between text-purple-gray-50 mb-sm')}>
-      <div className={s('text-xs')}> Card Information </div>
-      <button onClick={props.closeCardSideDock}>
-        <MdClose />
-      </button>
-    </div>
-  );
-
   const renderOwners = () => {
-    const { isEditing, addCardOwner, removeCardOwner } = props;
-    const currOwners = getAttribute('owners');
+    const currOwners = isEditing ? edits.owners : owners;
     return (
       <CardUsers
         isEditable={isEditing}
@@ -61,10 +83,9 @@ const CardSideDock = (props) => {
     );
   };
 
-  const renderSubscribers = (onlyShowPermissions) => {
-    const { isEditing, addCardSubscriber, removeCardSubscriber } = props;
-    const currSubscribers = getAttribute('subscribers');
-    const currOwners = getAttribute('owners');
+  const renderSubscribers = () => {
+    const currSubscribers = isEditing ? edits.subscribers : subscribers;
+    const currOwners = isEditing ? edits.owners : owners;
     return (
       <CardUsers
         isEditable={isEditing}
@@ -82,8 +103,7 @@ const CardSideDock = (props) => {
   };
 
   const renderAttachments = () => {
-    const { removeCardAttachment, updateCardAttachmentName, isEditing } = props;
-    const currAttachments = getAttribute('attachments');
+    const currAttachments = isEditing ? edits.attachments : attachments;
     return (
       <CardAttachments
         attachments={currAttachments}
@@ -94,9 +114,8 @@ const CardSideDock = (props) => {
     );
   };
 
-  const renderTags = (onlyShowPermissions) => {
-    const { isEditing, updateCardTags, removeCardTag } = props;
-    const currTags = getAttribute('tags');
+  const renderTags = () => {
+    const currTags = isEditing ? edits.tags : tags;
     return (
       <CardTags
         isEditable={isEditing}
@@ -115,16 +134,19 @@ const CardSideDock = (props) => {
   };
 
   const renderAdvanced = (justMe) => {
-    const {
-      isEditing,
-      permissions,
-      updateCardPermissions,
-      updateCardPermissionGroups,
-      updateCardVerificationInterval
-    } = props;
-    const currVerificationInterval = getAttribute('verificationInterval');
-    const currPermissions = getAttribute('permissions');
-    const currPermissionGroups = getAttribute('permissionGroups');
+    let currVerificationInterval;
+    let currPermissions;
+    let currPermissionGroups;
+
+    if (isEditing) {
+      currVerificationInterval = edits.verificationInterval;
+      currPermissions = edits.permissions;
+      currPermissionGroups = edits.permissionGroups;
+    } else {
+      currVerificationInterval = verificationInterval;
+      currPermissions = permissions;
+      currPermissionGroups = permissionGroups;
+    }
 
     return (
       <>
@@ -163,7 +185,6 @@ const CardSideDock = (props) => {
   };
 
   const renderFooter = () => {
-    const { isDeletingCard, openCardModal, createdAt, updatedAt } = props;
     return (
       <div className={s('pt-lg')}>
         <div className={s('text-sm font-medium')}>
@@ -191,8 +212,6 @@ const CardSideDock = (props) => {
   };
 
   const renderOverlay = () => {
-    const { sideDockOpen, closeCardSideDock } = props;
-
     const baseStyle = getBaseAnimationStyle(SIDE_DOCK_TRANSITION_MS);
     return (
       <Transition in={sideDockOpen} timeout={SIDE_DOCK_TRANSITION_MS} mountOnEnter unmountOnExit>
@@ -208,12 +227,14 @@ const CardSideDock = (props) => {
   };
 
   const renderEditButton = () => {
-    const { isEditing, editCard } = props;
-
     if (isEditing) return null;
 
     return (
-      <button onClick={editCard} className={s('flex items-center text-purple-gray-50')}>
+      <button
+        onClick={editCard}
+        className={s('flex items-center text-purple-gray-50')}
+        type="button"
+      >
         <span className={s('text-xs mr-xs')}> Edit </span>
         <MdEdit className={s('text-sm self-end')} />
       </button>
@@ -249,8 +270,6 @@ const CardSideDock = (props) => {
   ];
 
   const render = () => {
-    const { sideDockOpen, status, edits } = props;
-
     const baseStyle = getBaseAnimationStyle(SIDE_DOCK_TRANSITION_MS);
     const transitionStyles = {
       entering: { transform: 'translateX(100%)' },
@@ -260,7 +279,7 @@ const CardSideDock = (props) => {
     };
 
     const isNewCard = status === STATUS.NOT_DOCUMENTED;
-    const justMe = isJustMe(getAttribute('permissions'));
+    const justMe = isJustMe(isEditing ? edits.permissions : permissions);
 
     return (
       <div className={s('card-side-dock-container')}>
@@ -275,6 +294,7 @@ const CardSideDock = (props) => {
               {CARD_SECTIONS.map(
                 ({ title, hint, renderFn, showJustMe, showNewCard = false }, i) => (
                   <AnimateHeight
+                    key={title}
                     height={(!justMe || showJustMe) && (!isNewCard || showNewCard) ? 'auto' : 0}
                   >
                     <CardSection
@@ -297,6 +317,63 @@ const CardSideDock = (props) => {
   };
 
   return render();
+};
+
+CardSideDock.propTypes = {
+  isEditing: PropTypes.bool.isRequired,
+  status: PropTypes.oneOf(Object.values(STATUS)).isRequired,
+  owners: PropTypes.arrayOf(PropTypes.object).isRequired,
+  subscribers: PropTypes.arrayOf(PropTypes.object).isRequired,
+  attachments: PropTypes.arrayOf(PropTypes.object).isRequired,
+  tags: PropTypes.arrayOf(PropTypes.object).isRequired,
+  permissions: PropTypes.shape({
+    label: PropTypes.string.isRequired,
+    value: PropTypes.string.isRequired
+  }).isRequired,
+  permissionGroups: PropTypes.arrayOf(PropTypes.object).isRequired,
+  verificationInterval: PropTypes.shape({
+    label: PropTypes.string.isRequired,
+    value: PropTypes.number.isRequired
+  }).isRequired,
+  isDeletingCard: PropTypes.bool,
+  createdAt: PropTypes.string,
+  updatedAt: PropTypes.string,
+  sideDockOpen: PropTypes.bool.isRequired,
+  edits: PropTypes.shape({
+    owners: PropTypes.arrayOf(PropTypes.object),
+    subscribers: PropTypes.arrayOf(PropTypes.object),
+    attachments: PropTypes.arrayOf(PropTypes.object),
+    tags: PropTypes.arrayOf(PropTypes.object),
+    permissions: PropTypes.shape({
+      label: PropTypes.string.isRequired,
+      value: PropTypes.string.isRequired
+    }),
+    permissionGroups: PropTypes.arrayOf(PropTypes.object),
+    verificationInterval: PropTypes.shape({
+      label: PropTypes.string.isRequired,
+      value: PropTypes.number.isRequired
+    })
+  }).isRequired,
+
+  // Redux Actions
+  addCardOwner: PropTypes.func.isRequired,
+  removeCardOwner: PropTypes.func.isRequired,
+  addCardSubscriber: PropTypes.func.isRequired,
+  removeCardSubscriber: PropTypes.func.isRequired,
+  removeCardAttachment: PropTypes.func.isRequired,
+  updateCardAttachmentName: PropTypes.func.isRequired,
+  updateCardTags: PropTypes.func.isRequired,
+  removeCardTag: PropTypes.func.isRequired,
+  updateCardPermissions: PropTypes.func.isRequired,
+  updateCardPermissionGroups: PropTypes.func.isRequired,
+  updateCardVerificationInterval: PropTypes.func.isRequired,
+  openCardModal: PropTypes.func.isRequired,
+  closeCardSideDock: PropTypes.func.isRequired,
+  editCard: PropTypes.func.isRequired
+};
+
+CardSideDock.defaultProps = {
+  isDeletingCard: false,
 };
 
 export default CardSideDock;

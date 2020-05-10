@@ -11,14 +11,14 @@ const ToggleableInput = ({ value, isEditable, disabled, inputProps, className, p
   const isInputToggleable = isEditable && !disabled;
 
   if (isEditing && isEditable) {
-    const { className: inputClassName, ...rest } = inputProps;
+    const { className: inputClassName, ...restInputProps } = inputProps;
     return (
       <input
         autoFocus
         onBlur={() => toggleEdit(false)}
         value={value}
         className={s(`toggleable-input ${inputClassName}`)}
-        {...rest}
+        {...restInputProps}
       />
     );
   }
@@ -48,6 +48,8 @@ ToggleableInput.propTypes = {
 };
 
 ToggleableInput.defaultProps = {
+  value: null,
+  placeholder: null,
   isEditable: true,
   disabled: false,
   className: ''
