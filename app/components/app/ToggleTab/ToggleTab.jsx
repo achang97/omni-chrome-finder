@@ -59,4 +59,17 @@ const ToggleTab = ({
   );
 };
 
+ToggleTab.propTypes = {
+  // Redux State
+  dockVisible: PropTypes.bool.isRequired,
+  toggleTabShown: PropTypes.bool.isRequired,
+  autofindShown: PropTypes.bool.isRequired,
+  numCards: PropTypes.number.isRequired,
+
+  // Redux Actions
+  toggleAutofindTab: PropTypes.func.isRequired,
+  toggleDock: PropTypes.func.isRequired,
+  hideToggleTab: PropTypes.func.isRequired
+};
+
 export default ToggleTab;

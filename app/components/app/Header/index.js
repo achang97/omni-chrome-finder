@@ -21,4 +21,4 @@ const mapStateToProps = (state) => {
   };
 };
 
-export default connect(mapStateToProps, undefined)(withRouter(Header));
+export default connect(mapStateToProps)(withRouter(Header));

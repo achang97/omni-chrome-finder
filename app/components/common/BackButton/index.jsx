@@ -12,13 +12,14 @@ const BackButton = ({ onClick, className }) => (
       `bg-purple-light rounded-full w-2xl h-2xl flex justify-center items-center text-purple-reg ${className}`
     )}
     onClick={onClick}
+    type="button"
   >
-    <MdArrowBack className={s('')} />
+    <MdArrowBack />
   </button>
 );
 
 BackButton.propTypes = {
-  onClick: PropTypes.func,
+  onClick: PropTypes.func.isRequired,
   className: PropTypes.string
 };
 

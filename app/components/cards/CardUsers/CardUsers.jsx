@@ -35,6 +35,31 @@ const CardUsers = ({
     requestSearchUsers(inputValue);
   };
 
+  const renderUser = (user, i) => {
+    const {
+      _id,
+      name,
+      firstname,
+      lastname,
+      profilePicture,
+      isEditable: userIsEditable = true
+    } = user;
+
+    return (
+      <CardUser
+        key={_id}
+        size={size}
+        name={name || `${firstname} ${lastname}`}
+        showName={showNames}
+        img={profilePicture}
+        className={s('mr-sm mb-sm')}
+        onClick={onUserClick}
+        onRemoveClick={isEditable && userIsEditable ? () => onRemoveClick(i) : null}
+        showTooltip={showTooltips}
+      />
+    );
+  };
+
   const shouldShowSelect = (showSelect || showSelectState) && isEditable;
   return (
     <div className={s(`card-users-container ${className}`)}>
@@ -52,7 +77,7 @@ const CardUsers = ({
           placeholder="Add users..."
           getOptionLabel={(option) => option.name}
           getOptionValue={(option) => option._id}
-          formatOptionLabel={({ _id, name, profilePicture }) => (
+          formatOptionLabel={({ name, profilePicture }) => (
             <div className={s('flex items-center')}>
               <PlaceholderImg
                 src={profilePicture}
@@ -65,32 +90,14 @@ const CardUsers = ({
           noOptionsMessage={() => (isSearchingUsers ? 'Searching users...' : 'No options')}
         />
       )}
-      {users.map(
-        ({ _id, name, firstname, lastname, profilePicture, isEditable: userIsEditable }, i) => (
-          <CardUser
-            key={_id}
-            size={size}
-            name={name || `${firstname} ${lastname}`}
-            showName={showNames}
-            img={profilePicture}
-            className={s('mr-sm mb-sm')}
-            onClick={onUserClick}
-            onRemoveClick={
-              isEditable && (userIsEditable == undefined || userIsEditable === true)
-                ? () => onRemoveClick(i)
-                : null
-            }
-            showTooltip={showTooltips}
-          />
-        )
-      )}
+      {users.map(renderUser)}
       {!isEditable && users.length === 0 && (
         <div className={s('text-sm text-gray-light')}>No current users</div>
       )}
       {isEditable && onAdd && !shouldShowSelect && (
         <CircleButton
           content={<IoMdAdd size={30} />}
-          containerClassName={s('text-purple-reg')}
+          className={s('text-purple-reg')}
           buttonClassName={s('bg-purple-gray-10')}
           labelClassName={s('text-xs')}
           size={size}
@@ -121,7 +128,14 @@ CardUsers.propTypes = {
   showSelect: PropTypes.bool,
   showTooltips: PropTypes.bool,
   size: PropTypes.oneOfType([PropTypes.number, PropTypes.oneOf(['xs', 'sm', 'md', 'lg'])]),
-  showNames: PropTypes.bool
+  showNames: PropTypes.bool,
+
+  // Redux State
+  userOptions: PropTypes.arrayOf(PropTypes.object).isRequired,
+  isSearchingUsers: PropTypes.bool,
+
+  // Redux Actions
+  requestSearchUsers: PropTypes.func.isRequired
 };
 
 CardUsers.defaultProps = {
@@ -129,7 +143,12 @@ CardUsers.defaultProps = {
   size: 'md',
   showSelect: false,
   showTooltips: false,
-  showNames: true
+  showNames: true,
+  onRemoveClick: null,
+  onUserClick: null,
+  onAdd: null,
+
+  isSearchingUsers: false
 };
 
 export default CardUsers;

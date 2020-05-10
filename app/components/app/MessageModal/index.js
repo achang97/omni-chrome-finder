@@ -1,5 +1,5 @@
 import { connect } from 'react-redux';
-import { openModal, closeModal } from 'actions/display';
+import { closeModal } from 'actions/display';
 import MessageModal from './MessageModal';
 
 const mapStateToProps = (state) => {
@@ -11,7 +11,6 @@ const mapStateToProps = (state) => {
 };
 
 const mapDispatchToProps = {
-  openModal,
   closeModal
 };
 

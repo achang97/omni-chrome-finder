@@ -1,5 +1,20 @@
 import { connect } from 'react-redux';
-import * as cardActions from 'actions/cards';
+import {
+  updateOutOfDateReason,
+  updateCardSelectedThreadIndex,
+  toggleCardSelectedMessage,
+  openCardModal,
+  closeCardModal,
+  closeCard,
+  cancelEditCard,
+  cancelEditCardMessages,
+  updateCardStatus,
+  requestDeleteCard,
+  requestUpdateCard,
+  requestMarkUpToDate,
+  requestMarkOutOfDate,
+  requestApproveCard  
+} from 'actions/cards';
 import CardConfirmModals from './CardConfirmModals';
 
 const mapStateToProps = (state) => {
@@ -11,7 +26,20 @@ const mapStateToProps = (state) => {
 };
 
 const mapDispatchToProps = {
-  ...cardActions
+  updateOutOfDateReason,
+  updateCardSelectedThreadIndex,
+  toggleCardSelectedMessage,
+  openCardModal,
+  closeCardModal,
+  closeCard,
+  cancelEditCard,
+  cancelEditCardMessages,
+  updateCardStatus,
+  requestDeleteCard,
+  requestUpdateCard,
+  requestMarkUpToDate,
+  requestMarkOutOfDate,
+  requestApproveCard
 };
 
 export default connect(mapStateToProps, mapDispatchToProps)(CardConfirmModals);

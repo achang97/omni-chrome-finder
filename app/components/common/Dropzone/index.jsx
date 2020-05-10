@@ -1,6 +1,6 @@
 import React, { useMemo, useCallback } from 'react';
 import PropTypes from 'prop-types';
-import Dropzone, { useDropzone } from 'react-dropzone';
+import { useDropzone } from 'react-dropzone';
 
 import { colors } from 'styles/colors';
 
@@ -59,8 +59,9 @@ StyledDropzone.propTypes = {
   accept: PropTypes.string,
   onDrop: PropTypes.func.isRequired,
   className: PropTypes.string,
-  style: PropTypes.object,
-  useBaseStyle: PropTypes.bool
+  style: PropTypes.shape({}),
+  useBaseStyle: PropTypes.bool,
+  children: PropTypes.node.isRequired
 };
 
 StyledDropzone.defaultProps = {

@@ -6,14 +6,26 @@ import Navigate from './Navigate';
 
 const mapStateToProps = (state) => {
   const {
-    navigate,
+    navigate: { searchText, activeTab, filterTags, isDeletingCard, deleteError },
     search: {
-      cards: { [SEARCH.TYPE.NAVIGATE]: navigateCards }
+      cards: {
+        [SEARCH.TYPE.NAVIGATE]: { cards, isSearchingCards, hasReachedLimit }
+      }
     },
     profile: { user }
   } = state;
 
-  return { ...navigate, ...navigateCards, user };
+  return {
+    searchText,
+    activeTab,
+    filterTags,
+    isDeletingCard,
+    deleteError,
+    cards,
+    isSearchingCards,
+    hasReachedLimit,
+    user
+  };
 };
 
 const mapDispatchToProps = {

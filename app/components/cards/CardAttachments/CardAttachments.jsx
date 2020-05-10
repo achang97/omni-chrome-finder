@@ -3,11 +3,12 @@ import PropTypes from 'prop-types';
 import Lightbox from 'react-image-lightbox';
 import { MdClose } from 'react-icons/md';
 import { VideoPlayer, ToggleableInput } from 'components/common';
-import { CardAttachment } from 'components/cards';
 import { isVideo, isImage, isUploadedFile, getFileUrl } from 'utils/file';
 
 import { getStyleApplicationFn } from 'utils/style';
 import style from './card-attachments.css';
+
+import CardAttachment from '../CardAttachment';
 
 const s = getStyleApplicationFn(style);
 
@@ -15,7 +16,7 @@ const CardAttachments = ({ isEditable, attachments, onRemoveClick, onFileNameCha
   const [isLightboxOpen, setLightboxOpenState] = useState(false);
   const [lightboxIndex, setLightboxIndex] = useState(0);
 
-  const splitAttachments = (attachments) => {
+  const splitAttachments = () => {
     const files = [];
     const screenRecordings = [];
     const images = [];
@@ -44,7 +45,9 @@ const CardAttachments = ({ isEditable, attachments, onRemoveClick, onFileNameCha
     );
   };
 
-  const renderMediaToggleableInput = ({ name, key, url }) => {
+  const renderMediaToggleableInput = (attachment) => {
+    const { name, key, url } = attachment;
+
     return isEditable ? (
       <ToggleableInput
         isEditable={isEditable}
@@ -60,6 +63,7 @@ const CardAttachments = ({ isEditable, attachments, onRemoveClick, onFileNameCha
       <a
         href={url}
         target="_blank"
+        rel="noopener noreferrer"
         className={s('block truncate text-xs font-semibold text-center')}
       >
         {name || 'No file name'}
@@ -71,7 +75,8 @@ const CardAttachments = ({ isEditable, attachments, onRemoveClick, onFileNameCha
     return getFileUrl(key, token, mimetype);
   };
 
-  const renderImageAttachment = ({ name, key, mimetype, isLoading, error }, i) => {
+  const renderImageAttachment = (attachment, i) => {
+    const { name, key, mimetype } = attachment;
     const onClick = () => {
       setLightboxIndex(i);
       setLightboxOpenState(true);
@@ -81,13 +86,16 @@ const CardAttachments = ({ isEditable, attachments, onRemoveClick, onFileNameCha
     return (
       <div className={s('card-attachments-media-wrapper')} key={key}>
         {renderRemoveMediaButton(key)}
-        <img src={url} className={s('w-full mb-xs cursor-pointer')} onClick={onClick} />
+        <div className={s('w-full mb-xs cursor-pointer')} onClick={onClick}>
+          <img src={url} className={s('w-full')} alt={name} />
+        </div>
         {renderMediaToggleableInput({ name, key, url })}
       </div>
     );
   };
 
-  const renderVideoPlayer = ({ name, key, mimetype, isLoading, error }) => {
+  const renderVideoPlayer = (attachment) => {
+    const { name, key, mimetype } = attachment;
     const url = getAttachmentUrl({ key, mimetype });
     return (
       <div className={s('card-attachments-media-wrapper')} key={key}>
@@ -100,7 +108,7 @@ const CardAttachments = ({ isEditable, attachments, onRemoveClick, onFileNameCha
 
   const renderFiles = (files) => (
     <div className={s('flex flex-wrap')}>
-      {files.map(({ name, mimetype, key, isLoading, error }, i) => (
+      {files.map(({ name, mimetype, key, isLoading, error }) => (
         <CardAttachment
           key={key}
           fileKey={key}
@@ -111,7 +119,7 @@ const CardAttachments = ({ isEditable, attachments, onRemoveClick, onFileNameCha
           className={s('min-w-0')}
           textClassName={s('truncate')}
           isEditable={isEditable}
-          onFileNameChange={(name) => onFileNameChange({ key, name })}
+          onFileNameChange={(newName) => onFileNameChange({ key, name: newName })}
           onRemoveClick={() => onRemoveClick(key)}
         />
       ))}
@@ -154,7 +162,7 @@ const CardAttachments = ({ isEditable, attachments, onRemoveClick, onFileNameCha
   );
 
   const render = () => {
-    const { files, images, screenRecordings } = splitAttachments(attachments);
+    const { files, images, screenRecordings } = splitAttachments();
     return (
       <>
         {attachments.length === 0 && (

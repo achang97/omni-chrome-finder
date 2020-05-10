@@ -26,15 +26,14 @@ const CircleButton = ({
   onClick,
   content,
   label,
-  containerClassName,
+  className,
   buttonClassName,
-  labelClassName,
-  ...rest
+  labelClassName
 }) => (
-  <div className={s(`circle-button-container ${containerClassName}`)} {...rest}>
+  <div className={s(`circle-button-container ${className}`)}>
     <div
       className={s(`circle-button button-hover ${buttonClassName}`)}
-      onClick={onClick}
+      onClick={() => onClick && onClick()}
       style={getButtonStyle(size)}
     >
       {content}
@@ -48,14 +47,16 @@ CircleButton.propTypes = {
   content: PropTypes.node.isRequired,
   onClick: PropTypes.func,
   label: PropTypes.string,
-  containerClassName: PropTypes.string,
+  className: PropTypes.string,
   buttonClassName: PropTypes.string,
   labelClassName: PropTypes.string
 };
 
 CircleButton.defaultProps = {
   size: 'md',
-  containerClassName: '',
+  label: null,
+  onClick: null,
+  className: '',
   buttonClassName: '',
   labelClassName: ''
 };

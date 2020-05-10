@@ -10,9 +10,9 @@ import { DEBOUNCE } from 'appConstants/animate';
 import { getStyleApplicationFn } from 'utils/style';
 import Tab from '../Tab';
 
-import style from './tabs.css';
+import tabStyle from './tabs.css';
 
-const s = getStyleApplicationFn(style);
+const s = getStyleApplicationFn(tabStyle);
 
 const Tabs = ({
   tabOptions,
@@ -40,6 +40,27 @@ const Tabs = ({
   const prevChildren = usePrevious(children) || [];
   const prevTabOptions = usePrevious(tabOptions) || [];
 
+  const handleResize = _.debounce(() => {
+    if (tabsRef.current) {
+      const { scrollLeft, scrollWidth, clientWidth } = tabsRef.current;
+
+      // use 1 for the potential rounding error with browser zooms.
+      const showStartScroll = scrollLeft > 1;
+      const showEndScroll = scrollLeft < scrollWidth - clientWidth - 1;
+
+      if (showStartScroll !== displayScroll.start || showEndScroll !== displayScroll.end) {
+        setDisplayScroll({ start: showStartScroll, end: showEndScroll });
+      }
+    }
+  }, DEBOUNCE.MS_300);
+
+  const moveTabsScroll = (delta) => {
+    if (tabsRef.current) {
+      const scrollValue = tabsRef.current.scrollLeft + delta;
+      animate('scrollLeft', tabsRef.current, scrollValue);
+    }
+  };
+
   useEffect(() => {
     const numChildren = children ? children.length : 0;
     const numTabOptions = tabOptions ? tabOptions.length : 0;
@@ -56,30 +77,9 @@ const Tabs = ({
     }
   }, [children, tabOptions]);
 
-  const moveTabsScroll = (delta) => {
-    if (tabsRef.current) {
-      const scrollValue = tabsRef.current.scrollLeft + delta;
-      animate('scrollLeft', tabsRef.current, scrollValue);
-    }
-  };
-
   const handleScrollClick = (isStart) => {
     moveTabsScroll((isStart ? -1 : 1) * tabsRef.current.clientWidth);
   };
-
-  const handleResize = _.debounce(() => {
-    if (tabsRef.current) {
-      const { scrollLeft, scrollWidth, clientWidth } = tabsRef.current;
-
-      // use 1 for the potential rounding error with browser zooms.
-      const showStartScroll = scrollLeft > 1;
-      const showEndScroll = scrollLeft < scrollWidth - clientWidth - 1;
-
-      if (showStartScroll !== displayScroll.start || showEndScroll !== displayScroll.end) {
-        setDisplayScroll({ start: showStartScroll, end: showEndScroll });
-      }
-    }
-  }, DEBOUNCE.MS_300);
 
   const protectedOnTabClick = (value) => {
     if (onTabClick) {
@@ -108,7 +108,8 @@ const Tabs = ({
     };
   };
 
-  const renderTab = ({ label, value }, i) => {
+  const renderTab = (tab, i) => {
+    const { label, value } = tab;
     const baseTabProps = getBaseTabProps(value, i);
     return <Tab key={typeof label === 'string' ? label : i} label={label} {...baseTabProps} />;
   };
@@ -117,7 +118,7 @@ const Tabs = ({
     const mergedProps = baseProps;
 
     Object.entries(childProps).forEach(([propKey, childPropValue]) => {
-      if (childPropValue !== undefined && (childPropValue !== null) & (childPropValue !== '')) {
+      if (childPropValue !== undefined && childPropValue !== null && childPropValue !== '') {
         if (propKey.endsWith('ClassName')) {
           mergedProps[propKey] += ` ${childPropValue}`;
         } else {
@@ -149,7 +150,7 @@ const Tabs = ({
     const Icon = isStart ? MdChevronLeft : MdChevronRight;
 
     return (
-      <button disabled={isDisabled} className={s(isDisabled ? 'opacity-25' : '')}>
+      <button disabled={isDisabled} className={s(isDisabled ? 'opacity-25' : '')} type="button">
         <Icon onClick={() => handleScrollClick(isStart)} color={scrollButtonColor} />
       </button>
     );
@@ -175,14 +176,14 @@ Tabs.propTypes = {
   tabOptions: PropTypes.arrayOf(
     PropTypes.shape({
       label: PropTypes.node.isRequired,
-      value: PropTypes.node.isRequired
+      value: PropTypes.any.isRequired
     })
   ),
   activeValue: PropTypes.oneOfType([PropTypes.string, PropTypes.number, PropTypes.object])
     .isRequired,
   onTabClick: PropTypes.func.isRequired,
   clickOnMouseDown: PropTypes.bool,
-  style: PropTypes.object,
+  style: PropTypes.shape({}),
   className: PropTypes.string,
   allTabsContainerClassName: PropTypes.string,
   rippleClassName: PropTypes.string,
@@ -195,10 +196,11 @@ Tabs.propTypes = {
   showIndicator: PropTypes.bool,
   showRipple: PropTypes.bool,
   scrollButtonColor: PropTypes.string,
-  children: PropTypes.arrayOf(PropTypes.any)
+  children: PropTypes.node
 };
 
 Tabs.defaultProps = {
+  tabOptions: null,
   clickOnMouseDown: false,
   style: {},
   className: '',
@@ -209,7 +211,11 @@ Tabs.defaultProps = {
   activeTabClassName: '',
   inactiveTabClassName: '',
   showIndicator: true,
-  showRipple: true
+  showRipple: true,
+  color: null,
+  indicatorColor: null,
+  scrollButtonColor: null,
+  children: null
 };
 
 export default Tabs;

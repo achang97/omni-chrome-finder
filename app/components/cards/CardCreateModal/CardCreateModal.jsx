@@ -9,7 +9,6 @@ import {
   CardTags,
   CardAttachment,
   CardPermissions,
-  CardKeywords,
   CardVerificationInterval
 } from 'components/cards';
 import { Loader, Button, Modal, Separator, Message, HelpTooltip } from 'components/common';

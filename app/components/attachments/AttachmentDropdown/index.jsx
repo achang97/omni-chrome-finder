@@ -33,7 +33,7 @@ const AttachmentDropdown = ({ attachments, onFileNameChange, onRemoveClick, clas
     body={
       <div className={s('attachment-dropdown')}>
         {attachments.length === 0 && <div className={s('text-center')}>No current attachments</div>}
-        {attachments.map(({ name, key, mimetype, isLoading, error }, i) => (
+        {attachments.map(({ name, key, mimetype, isLoading, error }) => (
           <CardAttachment
             key={key}
             fileKey={key}
@@ -63,7 +63,7 @@ AttachmentDropdown.propTypes = {
       isLoading: PropTypes.bool,
       error: PropTypes.string
     })
-  ),
+  ).isRequired,
   onFileNameChange: PropTypes.func.isRequired,
   onRemoveClick: PropTypes.func.isRequired,
   className: PropTypes.string

@@ -5,7 +5,7 @@ import { MdCloudUpload } from 'react-icons/md';
 import { Button, Dropzone } from 'components/common';
 
 import { getStyleApplicationFn } from 'utils/style';
-import attachmentsStyle from '../styles/attachments.css';
+import attachmentsStyle from '../attachments.css';
 import attachmentDropzoneStyle from './attachment-dropzone.css';
 
 const s = getStyleApplicationFn(attachmentsStyle, attachmentDropzoneStyle);
@@ -23,7 +23,7 @@ const AttachmentDropzone = ({ onDrop, className, buttonClassName, showText }) =>
 );
 
 AttachmentDropzone.propTypes = {
-  onDrop: PropTypes.func,
+  onDrop: PropTypes.func.isRequired,
   className: PropTypes.string,
   buttonClassName: PropTypes.string,
   showText: PropTypes.bool

@@ -1,7 +1,6 @@
 import PropTypes from 'prop-types';
 import { PROFILE } from 'appConstants';
 
-// eslint-disable-next-line import/prefer-default-export
 export const UserPropTypes = PropTypes.shape({
   _id: PropTypes.string.isRequired,
   firstname: PropTypes.string.isRequired,
@@ -21,3 +20,7 @@ export const UserPropTypes = PropTypes.shape({
   autofindPermissions: PropTypes.object,
   onboarding: PropTypes.object
 });
+
+export default {
+  UserPropTypes
+};

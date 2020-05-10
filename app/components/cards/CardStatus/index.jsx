@@ -7,8 +7,6 @@ import { IoMdAlert } from 'react-icons/io';
 import { Dropdown, Timeago } from 'components/common';
 import { CARD, NOOP } from 'appConstants';
 
-import { colors } from 'styles/colors';
-
 import { getStyleApplicationFn } from 'utils/style';
 import style from './card-status.css';
 import CardUser from '../CardUser';
@@ -120,7 +118,10 @@ const CardStatus = ({
           className={s('ml-sm flex')}
           togglerClassName={s('flex')}
           toggler={
-            <button className={s('bg-red-200 p-sm text-red-500 rounded-lg text-xs font-bold')}>
+            <button
+              className={s('bg-red-200 p-sm text-red-500 rounded-lg text-xs font-bold')}
+              type="button"
+            >
               ?
             </button>
           }
@@ -153,13 +154,7 @@ const CardStatus = ({
 };
 
 CardStatus.propTypes = {
-  status: PropTypes.oneOf([
-    CARD.STATUS.UP_TO_DATE,
-    CARD.STATUS.OUT_OF_DATE,
-    CARD.STATUS.NEEDS_VERIFICATION,
-    CARD.STATUS.NEEDS_APPROVAL,
-    CARD.STATUS.NOT_DOCUMENTED
-  ]),
+  status: PropTypes.oneOf(Object.values(CARD.STATUS)).isRequired,
   isActionable: PropTypes.bool,
   className: PropTypes.string,
   onDropdownOptionClick: PropTypes.func,
@@ -173,7 +168,8 @@ CardStatus.propTypes = {
 CardStatus.defaultProps = {
   isActionable: false,
   className: '',
-  onDropdownOptionClick: NOOP
+  onDropdownOptionClick: NOOP,
+  outOfDateReason: null
 };
 
 export default CardStatus;

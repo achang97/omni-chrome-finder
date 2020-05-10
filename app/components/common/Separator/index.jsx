@@ -6,10 +6,9 @@ import style from './separator.css';
 
 const s = getStyleApplicationFn(style);
 
-const Separator = ({ horizontal, className, ...rest }) => (
+const Separator = ({ horizontal, className }) => (
   <div
     className={s(`${className} ${horizontal ? 'separator-horizontal' : 'separator-vertical'}`)}
-    {...rest}
   />
 );
 

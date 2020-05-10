@@ -6,11 +6,30 @@ import Create from './Create';
 
 const mapStateToProps = (state) => {
   const {
-    create,
+    create: {
+      question,
+      descriptionEditorState,
+      answerEditorState,
+      attachments,
+      isTemplateView,
+      isDescriptionEditorShown,
+      templates,
+      selectedTemplateCategory
+    },
     profile: { user }
   } = state;
 
-  return { ...create, user };
+  return {
+    question,
+    descriptionEditorState,
+    answerEditorState,
+    attachments,
+    isTemplateView,
+    isDescriptionEditorShown,
+    templates,
+    selectedTemplateCategory,
+    user
+  };
 };
 
 const mapDispatchToProps = {

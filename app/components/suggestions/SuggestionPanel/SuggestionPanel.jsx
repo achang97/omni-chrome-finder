@@ -98,9 +98,7 @@ const SuggestionPanel = ({
     return (
       <div key={type}>
         <div
-          className={s(
-            'flex items-center justify-between px-lg py-sm mb-xs cursor-pointer rounded-b-lg'
-          )}
+          className={s('flex items-center justify-between px-lg py-sm mb-xs cursor-pointer')}
           onClick={() => toggleIntegration(type)}
         >
           <div className={s('flex items-center text-md text-gray-dark')}>
@@ -145,7 +143,7 @@ const SuggestionPanel = ({
 
     return (
       <div
-        className={s('flex-col bg-purple-light justify-center items-center rounded-b-lg')}
+        className={s('flex-col bg-purple-light justify-center items-center')}
         ref={externalResultsRef}
       >
         {cards.length !== 0 && <Separator horizontal className={s('my-sm')} />}
@@ -197,7 +195,7 @@ const SuggestionPanel = ({
   return (
     <div className={s(`suggestion-panel ${!showMainPanel ? 'border-0' : ''}`)}>
       <AnimateHeight height={showMainPanel ? 'auto' : 0}>
-        <div className={s('pt-reg rounded-b-lg overflow-hidden')}>
+        <div className={s('pt-reg rounded-b-lg')}>
           <div className={s('flex justify-between mb-sm px-reg')}>
             <div className={s('text-purple-gray-50 text-sm')}>
               {cards.length} card{cards.length !== 1 && 's'}

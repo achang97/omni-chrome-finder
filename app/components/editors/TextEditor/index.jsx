@@ -85,6 +85,7 @@ export default class TextEditor extends Component {
 
     // Allow for either controlled or uncontrolled behavior
     const expanded = propsExpanded || stateExpanded;
+    const defaultEditorClassName = editorType === 'CARD' ? 'text-editor' : 'text-editor-extension';
 
     return (
       <>
@@ -100,7 +101,7 @@ export default class TextEditor extends Component {
             editorState={editorState}
             wrapperClassName={s(wrapperClassName)}
             editorClassName={s(`
-              ${editorClassName || editorType === 'CARD' ? 'text-editor' : 'text-editor-extension'}
+              ${editorClassName || defaultEditorClassName}
               ${hideToolbar ? 'rounded-lg' : ''}
             `)}
             toolbarClassName={s(toolbarClassName)}

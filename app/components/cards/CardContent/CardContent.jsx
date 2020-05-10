@@ -3,14 +3,11 @@ import PropTypes from 'prop-types';
 import _ from 'lodash';
 import {
   MdCheck,
-  MdArrowDropDown,
-  MdCloudUpload,
   MdMoreHoriz,
   MdModeEdit,
   MdThumbUp,
   MdBookmarkBorder,
   MdError,
-  MdPerson,
   MdAttachment,
   MdKeyboardArrowLeft,
   MdLock,
@@ -18,16 +15,12 @@ import {
 } from 'react-icons/md';
 import { IoIosShareAlt } from 'react-icons/io';
 import { FaSlack } from 'react-icons/fa';
-import { EditorState } from 'draft-js';
 import { Resizable } from 're-resizable';
 
 import TextEditor from 'components/editors/TextEditor';
 import {
   Button,
-  Dropzone,
   Timeago,
-  Modal,
-  CheckBox,
   Loader,
   Separator,
   Message,
@@ -40,7 +33,6 @@ import {
   CardSideDock,
   CardCreateModal,
   CardConfirmModals,
-  CardConfirmModal
 } from 'components/cards';
 
 import SlackIcon from 'assets/images/icons/Slack_Mark.svg';
@@ -54,7 +46,7 @@ import {
 } from 'utils/card';
 import { copyText } from 'utils/window';
 import { generateFileKey, isAnyLoading } from 'utils/file';
-import { CARD, REQUEST, PROFILE } from 'appConstants';
+import { CARD, REQUEST } from 'appConstants';
 
 import { getStyleApplicationFn } from 'utils/style';
 import style from './card-content.css';
@@ -75,7 +67,6 @@ const CardContent = (props) => {
       slackThreadConvoPairs,
       slackReplies,
       openCardModal,
-      adjustCardDescriptionSectionHeight
     } = props;
     if (
       hasLoaded &&
@@ -106,6 +97,16 @@ const CardContent = (props) => {
     return isEditing ? edits[attribute] : props[attribute];
   };
 
+  const getMaxDescriptionHeight = () => {
+    const footerHeight = footerRef.current ? footerRef.current.clientHeight : 0;
+    return (
+      props.cardsHeight -
+      CARD.DIMENSIONS.TABS_HEIGHT -
+      footerHeight -
+      CARD.DIMENSIONS.MIN_ANSWER_HEIGHT
+    );
+  };
+
   const enableDescriptionEditor = () => {
     const { disableCardEditor, enableCardEditor, adjustCardDescriptionSectionHeight } = props;
     disableCardEditor(CARD.EDITOR_TYPE.ANSWER);
@@ -125,16 +126,6 @@ const CardContent = (props) => {
     enableAnswerEditor();
   };
 
-  const getMaxDescriptionHeight = () => {
-    const footerHeight = footerRef.current ? footerRef.current.clientHeight : 0;
-    return (
-      props.cardsHeight -
-      CARD.DIMENSIONS.TABS_HEIGHT -
-      footerHeight -
-      CARD.DIMENSIONS.MIN_ANSWER_HEIGHT
-    );
-  };
-
   const cardStatusOnClick = (prevStatus) => {
     const { openCardModal } = props;
 
@@ -152,6 +143,8 @@ const CardContent = (props) => {
         openCardModal(CARD.MODAL_TYPE.CONFIRM_APPROVE);
         break;
       }
+      default:
+        break;
     }
   };
 
@@ -527,8 +520,7 @@ const CardContent = (props) => {
             onClick={() => props.openCardModal(CARD.MODAL_TYPE.THREAD)}
             className={s('view-thread-button p-sm absolute text-xs mb-lg mr-lg')}
             color="secondary"
-            imgSrc={SlackIcon}
-            imgClassName={s('slack-icon ml-sm')}
+            icon={<img className={s('slack-icon ml-sm')} src={SlackIcon} alt="Slack Logo" />}
             iconLeft={false}
             underline={false}
           />

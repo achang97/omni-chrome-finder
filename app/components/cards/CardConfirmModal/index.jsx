@@ -1,7 +1,7 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 
-import { Modal, Button, Message } from 'components/common';
+import { Modal, Message } from 'components/common';
 
 import { getStyleApplicationFn } from 'utils/style';
 import style from './card-confirm-modal.css';
@@ -20,10 +20,10 @@ const CardConfirmModal = ({
   showPrimary,
   showSecondary,
   bodyClassName,
-  overlayClassName,
-  ...rest
+  overlayClassName
 }) => {
   if (!secondaryButtonProps) {
+    // eslint-disable-next-line no-param-reassign
     secondaryButtonProps = { text: 'No', onClick: onRequestClose };
   }
 
@@ -37,7 +37,6 @@ const CardConfirmModal = ({
       important
       secondaryButtonProps={showSecondary ? secondaryButtonProps : null}
       primaryButtonProps={showPrimary ? primaryButtonProps : null}
-      {...rest}
     >
       <div className={s(`card-confirm-modal-body ${bodyClassName}`)}>
         {description && <div> {description} </div>}
@@ -54,13 +53,13 @@ CardConfirmModal.propTypes = {
   description: PropTypes.string,
   body: PropTypes.node,
   error: PropTypes.string,
-  onRequestClose: PropTypes.func,
+  onRequestClose: PropTypes.func.isRequired,
   primaryButtonProps: PropTypes.shape({
-    text: PropTypes.oneOfType([PropTypes.string, PropTypes.number]).isRequired,
+    text: PropTypes.node.isRequired,
     onClick: PropTypes.func.isRequired
   }).isRequired,
   secondaryButtonProps: PropTypes.shape({
-    text: PropTypes.oneOfType([PropTypes.string, PropTypes.number]).isRequired,
+    text: PropTypes.node.isRequired,
     onClick: PropTypes.func.isRequired
   }),
   showPrimary: PropTypes.bool,
@@ -72,6 +71,10 @@ CardConfirmModal.propTypes = {
 CardConfirmModal.defaultProps = {
   showPrimary: true,
   showSecondary: true,
+  secondaryButtonProps: null,
+  description: null,
+  body: null,
+  error: null,
   overlayClassName: '',
   bodyClassName: ''
 };

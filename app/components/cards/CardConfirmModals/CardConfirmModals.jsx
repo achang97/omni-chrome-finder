@@ -1,7 +1,7 @@
 import React from 'react';
 
-import { CheckBox, Loader } from 'components/common';
-import { MODAL_TYPE, STATUS } from 'appConstants/card';
+import { CheckBox } from 'components/common';
+import { MODAL_TYPE } from 'appConstants/card';
 
 import { getStyleApplicationFn } from 'utils/style';
 import style from './card-confirm-modals.css';
@@ -70,11 +70,11 @@ const CardConfirmModals = ({
                   className={s(
                     'message-photo-container rounded-lg flex-shrink-0 flex justify-center mr-reg shadow-md'
                   )}
+                  alt={senderName}
                 />
                 <div className={s('flex flex-col flex-grow')}>
                   <div className={s('flex items-end')}>
                     <div className={s('text-sm font-semibold mr-reg')}> {senderName} </div>
-                    {/* <div className={s("text-sm text-gray-dark")}> { time } </div> */}
                   </div>
                   <div className={s('mt-sm text-sm')}>{message}</div>
                 </div>
@@ -95,7 +95,7 @@ const CardConfirmModals = ({
   const renderSelectThreadBody = () => {
     return (
       <div className={s('message-manager-container')}>
-        {slackThreadConvoPairs.map(({ _id, threadId, channelId, channelName }, i) => {
+        {slackThreadConvoPairs.map(({ _id, channelId, channelName }, i) => {
           const isSelected = i === slackThreadIndex;
           return (
             <div

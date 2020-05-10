@@ -30,7 +30,7 @@ const Tooltip = ({ tooltip, tooltipProps, show, children }) => {
 };
 
 Tooltip.propTypes = {
-  tooltip: PropTypes.node.isRequired,
+  tooltip: PropTypes.node,
   tooltipProps: PropTypes.shape({
     className: PropTypes.string
   }),
@@ -39,6 +39,7 @@ Tooltip.propTypes = {
 };
 
 Tooltip.defaultProps = {
+  tooltip: null,
   tooltipProps: {
     className: ''
   },

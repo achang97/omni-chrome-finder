@@ -39,7 +39,6 @@ const BASE_CARD_STATE = {
   outOfDateReasonInput: '',
   status: STATUS.NOT_DOCUMENTED,
   tags: [],
-  keywords: [],
   verificationInterval: DEFAULT_VERIFICATION_INTERVAL,
   permissions: PERMISSION_OPTIONS[0],
   permissionGroups: [],
@@ -109,7 +108,6 @@ export default function cardsReducer(state = initialState, action) {
       subscribers,
       attachments,
       tags,
-      keywords,
       permissions,
       permissionGroups,
       verificationInterval,
@@ -127,7 +125,6 @@ export default function cardsReducer(state = initialState, action) {
         subscribers,
         attachments,
         tags,
-        keywords,
         permissions,
         permissionGroups,
         verificationInterval,
@@ -410,10 +407,6 @@ export default function cardsReducer(state = initialState, action) {
       return updateActiveCardEdits({ tags: removeIndex(edits.tags, index) });
     }
 
-    case types.UPDATE_CARD_KEYWORDS: {
-      const { keywords } = payload;
-      return updateActiveCardEdits({ keywords: keywords || [] });
-    }
     case types.UPDATE_CARD_VERIFICATION_INTERVAL: {
       const { verificationInterval } = payload;
       return updateActiveCardEdits({ verificationInterval });

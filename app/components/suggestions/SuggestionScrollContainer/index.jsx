@@ -23,8 +23,8 @@ const SuggestionScrollContainer = ({
   showPlaceholder,
   footer,
   scrollContainerClassName,
-  triangleColor,
-  ...rest
+  className,
+  triangleColor
 }) => {
   const renderPlaceholder = () => {
     if (isSearchingCards) {
@@ -38,7 +38,10 @@ const SuggestionScrollContainer = ({
 
   const renderScrollElement = (card, i) => {
     const { _id, question, answer, lastEdited, createdAt, status } = card;
-    const { className = '', ...restCardProps } = getCardProps ? getCardProps(card, i) : {};
+    const { className: cardClassName = '', ...restCardProps } = getCardProps
+      ? getCardProps(card, i)
+      : {};
+
     return (
       <SuggestionCard
         id={_id}
@@ -46,7 +49,7 @@ const SuggestionScrollContainer = ({
         answer={answer}
         updatedAt={lastEdited ? lastEdited.time : createdAt}
         status={status}
-        className={s(`suggestion-scroll-container-card ${className}`)}
+        className={s(`suggestion-scroll-container-card ${cardClassName}`)}
         {...restCardProps}
       />
     );
@@ -98,15 +101,16 @@ const SuggestionScrollContainer = ({
 
   return (
     <ScrollContainer
+      className={className}
       scrollContainerClassName={s(`suggestion-scroll-container ${scrollContainerClassName}`)}
       list={cards}
+      getKey={(card) => card._id}
       placeholder={renderPlaceholder()}
       renderScrollElement={renderScrollElement}
       renderOverflowElement={renderOverflowElement}
       footer={renderFooter()}
       onBottom={handleOnBottom}
       bottomOffset={SEARCH_INFINITE_SCROLL_OFFSET}
-      {...rest}
     />
   );
 };
@@ -128,7 +132,8 @@ SuggestionScrollContainer.propTypes = {
   footer: PropTypes.node,
   triangleColor: PropTypes.string,
   hasReachedLimit: PropTypes.bool,
-  scrollContainerClassName: PropTypes.string
+  scrollContainerClassName: PropTypes.string,
+  className: PropTypes.string
 };
 
 SuggestionScrollContainer.defaultProps = {
@@ -139,7 +144,8 @@ SuggestionScrollContainer.defaultProps = {
   hasReachedLimit: false,
   showPlaceholder: true,
   triangleColor: 'white',
-  scrollContainerClassName: ''
+  scrollContainerClassName: '',
+  className: ''
 };
 
 export default SuggestionScrollContainer;

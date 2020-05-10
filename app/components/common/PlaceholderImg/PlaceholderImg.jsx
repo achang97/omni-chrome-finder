@@ -9,6 +9,7 @@ const s = getStyleApplicationFn(style);
 
 const NUM_COLORS = 3;
 
+/* eslint-disable no-bitwise, no-param-reassign */
 const hashCode = (string) =>
   Math.abs(
     string.split('').reduce((a, b) => {
@@ -16,6 +17,7 @@ const hashCode = (string) =>
       return a & a;
     }, 0)
   );
+/* eslint-enable no-bitwise, no-param-reassign */
 
 const getPlaceholder = (name, className) => {
   if (!name) return null;
@@ -32,7 +34,7 @@ const getPlaceholder = (name, className) => {
   );
 };
 
-export const PlaceholderImg = ({ name, src, className, isUrl, token }) =>
+const PlaceholderImg = ({ name, src, className, isUrl, token }) =>
   src ? (
     <img src={isUrl ? src : getFileUrl(src, token)} className={className} alt={name} />
   ) : (

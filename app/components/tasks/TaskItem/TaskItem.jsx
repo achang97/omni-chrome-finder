@@ -28,12 +28,10 @@ const TaskItem = ({
   onHide,
   className,
   ownUserId,
-  isAdmin,
   requestMarkUpToDateFromTasks,
   requestDismissTask,
   requestApproveCardFromTasks,
-  openCard,
-  ...rest
+  openCard
 }) => {
   const getNotifierName = () => {
     if (!notifier) {
@@ -293,10 +291,7 @@ const TaskItem = ({
   const renderItem = (children) => {
     const containerClassName = getContainerClass();
     return (
-      <div
-        className={s(`flex flex-col p-lg rounded-lg ${containerClassName} ${className}`)}
-        {...rest}
-      >
+      <div className={s(`flex flex-col p-lg rounded-lg ${containerClassName} ${className}`)}>
         {children}
       </div>
     );
@@ -350,7 +345,6 @@ TaskItem.propTypes = {
 
   // Redux State
   ownUserId: PropTypes.string.isRequired,
-  isAdmin: PropTypes.bool.isRequired,
 
   // Redux Actions
   requestMarkUpToDateFromTasks: PropTypes.func.isRequired,

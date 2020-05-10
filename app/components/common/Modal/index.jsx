@@ -3,11 +3,13 @@ import PropTypes from 'prop-types';
 import { Transition } from 'react-transition-group';
 
 import { MdClose } from 'react-icons/md';
-import { TRANSITIONS } from 'appConstants/animate';
+import { ANIMATE, NOOP } from 'appConstants';
 import { getBaseAnimationStyle } from 'utils/animate';
-import { Button, Loader } from 'components/common';
-
 import { getStyleApplicationFn } from 'utils/style';
+
+import Button from '../Button';
+import Loader from '../Loader';
+
 import style from './modal.css';
 
 const s = getStyleApplicationFn(style);
@@ -49,8 +51,7 @@ const Modal = ({
   bodyClassName,
   title,
   children,
-  important,
-  ...rest
+  important
 }) => {
   const onOutsideClick = () => {
     if (shouldCloseOnOutsideClick && onRequestClose) onRequestClose();
@@ -59,7 +60,11 @@ const Modal = ({
   const baseStyle = getBaseAnimationStyle(transitionMs);
 
   return (
-    <div onClick={(e) => e.stopPropagation()} onMouseOver={(e) => e.stopPropagation()} {...rest}>
+    <div
+      onClick={(e) => e.stopPropagation()}
+      onMouseOver={(e) => e.stopPropagation()}
+      onFocus={NOOP}
+    >
       <Transition in={isOpen} timeout={transitionMs} mountOnEnter unmountOnExit>
         {(state) => (
           <div
@@ -70,7 +75,7 @@ const Modal = ({
               <div className={s(`modal-header ${headerClassName}`)}>
                 <div className={s('font-semibold')}> {title} </div>
                 {onRequestClose && (
-                  <button onClick={onRequestClose}>
+                  <button onClick={onRequestClose} type="button">
                     <MdClose className={s('text-purple-gray-50')} />
                   </button>
                 )}
@@ -106,7 +111,7 @@ const Modal = ({
       <Transition in={isOpen} timeout={transitionMs} mountOnEnter unmountOnExit>
         {(state) => (
           <div
-            style={{ ...baseStyle, ...TRANSITIONS.FADE_IN[state] }}
+            style={{ ...baseStyle, ...ANIMATE.TRANSITIONS.FADE_IN[state] }}
             className={s(
               `modal-overlay ${overlayClassName} ${important ? 'modal-overlay-important' : ''}`
             )}
@@ -126,23 +131,36 @@ Modal.propTypes = {
   headerClassName: PropTypes.string,
   bodyClassName: PropTypes.string,
   overlayClassName: PropTypes.string,
-  title: PropTypes.any,
+  title: PropTypes.node,
   showHeader: PropTypes.bool,
   transitionMs: PropTypes.number,
   important: PropTypes.bool,
-  primaryButtonProps: PropTypes.object,
-  secondaryButtonProps: PropTypes.object,
-  showPrimaryButton: PropTypes.bool
+  primaryButtonProps: PropTypes.shape({
+    disabled: PropTypes.bool,
+    isLoading: PropTypes.bool,
+    icon: PropTypes.string
+  }),
+  secondaryButtonProps: PropTypes.shape({
+    disabled: PropTypes.bool,
+    isLoading: PropTypes.bool,
+    icon: PropTypes.string,
+    onClick: PropTypes.func.isRequired
+  }),
+  showPrimaryButton: PropTypes.bool,
+  children: PropTypes.node.isRequired
 };
 
 Modal.defaultProps = {
   isOpen: false,
+  onRequestClose: null,
   shouldCloseOnOutsideClick: false,
   overlayClassName: '',
   headerClassName: '',
   bodyClassName: '',
   className: '',
-  overlayClassName: '',
+  title: null,
+  primaryButtonProps: null,
+  secondaryButtonProps: null,
   transitionMs: 100,
   important: false,
   showHeader: true,

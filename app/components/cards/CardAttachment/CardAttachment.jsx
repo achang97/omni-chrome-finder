@@ -1,6 +1,5 @@
 import React, { useState } from 'react';
 import PropTypes from 'prop-types';
-import { connect } from 'react-redux';
 import {
   FaFileImage,
   FaFileAudio,
@@ -13,10 +12,10 @@ import {
   FaFileCode,
   FaFileArchive
 } from 'react-icons/fa';
-import { MdClose, MdError, MdFileDownload, MdOpenInNew } from 'react-icons/md';
+import { MdClose, MdError, MdOpenInNew } from 'react-icons/md';
 
 import { Loader, ToggleableInput, Tooltip } from 'components/common';
-import { isVideo, isImage, isAudio, isPDF, isDoc, getFileUrl } from 'utils/file';
+import { isVideo, isImage, isAudio, getFileUrl } from 'utils/file';
 import { NOOP } from 'appConstants';
 
 import { getStyleApplicationFn } from 'utils/style';
@@ -78,7 +77,6 @@ function getAttachmentProps(type) {
     case 'application/gzip':
     case 'application/zip':
     case 'application/x-zip-compressed':
-    case 'application/zip':
     case 'application/octet-stream': {
       return { ...COLORS.ARCHIVE, Icon: FaFileArchive };
     }
@@ -103,8 +101,7 @@ const CardAttachment = ({
   onFileNameChange,
   isLoading,
   error,
-  token,
-  ...rest
+  token
 }) => {
   const [isHoveringIcon, setHoverIcon] = useState(false);
 
@@ -137,7 +134,6 @@ const CardAttachment = ({
       <div
         onClick={onClick}
         className={s(`card-attachment ${error ? 'text-red-500' : `text-${color}`} ${className}`)}
-        {...rest}
       >
         <div
           className={s(
@@ -147,7 +143,7 @@ const CardAttachment = ({
           onMouseLeave={() => setHoverIcon(false)}
         >
           {isDownloadable ? (
-            <a href={url} target="_blank">
+            <a href={url} target="_blank" rel="noopener noreferrer">
               {leftIcon}
             </a>
           ) : (
@@ -199,6 +195,9 @@ CardAttachment.defaultProps = {
   textClassName: '',
   removeIconClassName: '',
   typeIconClassName: '',
+  error: null,
+  onClick: NOOP,
+  onRemoveClick: null,
   isLoading: false,
   isEditable: false,
   onFileNameChange: NOOP

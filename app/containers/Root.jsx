@@ -14,8 +14,11 @@ const Root = ({ store }) => (
 );
 
 Root.propTypes = {
-  // eslint-disable-next-line react/forbid-prop-types
-  store: PropTypes.object.isRequired
+  store: PropTypes.shape({
+    dispatch: PropTypes.func.isRequired,
+    subscribe: PropTypes.func.isRequired,
+    getState: PropTypes.func.isRequired
+  }).isRequired
 };
 
 export default Root;

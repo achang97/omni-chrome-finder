@@ -3,7 +3,6 @@ import PropTypes from 'prop-types';
 import onClickOutside from 'react-onclickoutside';
 
 import { NOOP } from 'appConstants';
-
 import { getStyleApplicationFn } from 'utils/style';
 
 const s = getStyleApplicationFn();
@@ -48,20 +47,22 @@ class Dropdown extends Component {
     }
   };
 
-  onToggleClick = (e) => {
-    const { disabled, onToggle, isOpen } = this.props;
+  onToggleClick = () => {
+    const { disabled, onToggle, isOpen: propsIsOpen } = this.props;
+    const { isOpen: stateIsOpen } = this.state;
 
-    if (disabled) {
-      NOOP();
-    } else if (onToggle) {
-      onToggle(!isOpen);
-    } else {
-      this.setState({ isOpen: !this.state.isOpen });
+    if (!disabled) {
+      if (onToggle) {
+        onToggle(!propsIsOpen);
+      } else {
+        this.setState({ isOpen: !stateIsOpen });
+      }
     }
   };
 
   handleMouseBehavior = (e) => {
-    if (!this.props.disabled) {
+    const { disabled } = this.props;
+    if (!disabled) {
       e.stopPropagation();
     }
   };
@@ -75,10 +76,12 @@ class Dropdown extends Component {
       disabled,
       isTogglerRelative,
       className,
-      togglerClassName
+      togglerClassName,
+      isOpen: propsIsOpen
     } = this.props;
-    const isOpen = this.props.isOpen !== undefined ? this.props.isOpen : this.state.isOpen;
+    const { isOpen: stateIsOpen } = this.state;
 
+    const isOpen = propsIsOpen !== null ? propsIsOpen : stateIsOpen;
     const style = getPositionStyle(isDown, isLeft);
 
     return (
@@ -86,6 +89,7 @@ class Dropdown extends Component {
         className={s(`${isTogglerRelative ? 'relative' : ''} ${className}`)}
         onClick={this.handleMouseBehavior}
         onMouseOver={this.handleMouseBehavior}
+        onFocus={NOOP}
       >
         <div
           onClick={this.onToggleClick}
@@ -113,8 +117,11 @@ Dropdown.propTypes = {
 };
 
 Dropdown.defaultProps = {
+  isOpen: null,
+  onToggle: null,
   isDown: true,
   isLeft: true,
+  body: null,
   disabled: false,
   isTogglerRelative: true,
   className: '',

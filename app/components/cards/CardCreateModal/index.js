@@ -9,7 +9,6 @@ import {
   removeCardSubscriber,
   updateCardTags,
   removeCardTag,
-  updateCardKeywords,
   updateCardVerificationInterval,
   updateCardPermissions,
   updateCardPermissionGroups
@@ -34,7 +33,6 @@ const mapDispatchToProps = {
   removeCardSubscriber,
   updateCardTags,
   removeCardTag,
-  updateCardKeywords,
   updateCardVerificationInterval,
   updateCardPermissions,
   updateCardPermissionGroups
