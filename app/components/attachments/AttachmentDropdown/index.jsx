@@ -21,7 +21,7 @@ const AttachmentDropdown = ({ attachments, onFileNameChange, onRemoveClick, clas
           className={s('bg-white py-reg px-sm text-purple-reg')}
           icon={
             isAnyLoading(attachments) ? (
-              <Loader size="xs" className="attachment-dropdown-icon" />
+              <Loader size="xs" className={s('attachment-dropdown-icon')} />
             ) : (
               <MdAttachFile className={s('attachment-dropdown-icon')} />
             )

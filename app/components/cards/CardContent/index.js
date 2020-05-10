@@ -3,19 +3,13 @@ import {
   enableCardEditor,
   adjustCardDescriptionSectionHeight,
   openCardModal,
-  cancelEditCard,
   updateCardQuestion,
   updateCardDescriptionEditor,
   updateCardAnswerEditor,
   requestGetCard,
-  requestUpdateCard,
   openCardSideDock,
-  closeCardSideDock,
-  requestToggleUpvote,
-  requestAddBookmark,
-  requestRemoveBookmark
+  requestAddCardAttachment
 } from 'actions/cards';
-import { MODAL_TYPE } from 'appConstants/card';
 import CardContent from './CardContent';
 
 const mapStateToProps = (state) => {
@@ -23,76 +17,50 @@ const mapStateToProps = (state) => {
     profile: { user },
     cards: {
       activeCard: {
-        hasLoaded,
         _id,
         question,
-        editorEnabled,
         descriptionEditorState,
         answerEditorState,
-        answer,
-        attachments,
-        tags,
-        upvotes,
-        outOfDateReason,
         status,
+        tags,
+        attachments,
         slackThreadConvoPairs,
         slackReplies,
-        selectedMessages,
-        createdAt,
-        lastVerified,
-        lastEdited,
-        descriptionSectionHeight,
+        outOfDateReason,
         isEditing,
         edits,
+        editorEnabled,
+        descriptionSectionHeight,
+        hasLoaded,
         isGettingCard,
-        isUpdatingCard,
-        isTogglingUpvote,
-        isUpdatingBookmark,
-        getError,
-        sideDockOpen,
-        modalOpen: {
-          [MODAL_TYPE]: isConfirmCloseModalOpen
-        }
+        getError
       },
       cardsHeight,
       cardsWidth
-    },
-    screenRecording: { activeId: activeScreenRecordingId }
+    }
   } = state;
 
   return {
     user,
     cardsHeight,
     cardsWidth,
-    activeScreenRecordingId,
-    hasLoaded,
     _id,
     question,
-    editorEnabled,
     descriptionEditorState,
     answerEditorState,
-    answer,
-    attachments,
-    tags,
-    upvotes,
-    outOfDateReason,
     status,
+    tags,
+    attachments,
     slackThreadConvoPairs,
     slackReplies,
-    selectedMessages,
-    createdAt,
-    lastVerified,
-    lastEdited,
-    descriptionSectionHeight,
+    outOfDateReason,
     isEditing,
     edits,
+    editorEnabled,
+    descriptionSectionHeight,
+    hasLoaded,
     isGettingCard,
-    isUpdatingCard,
-    isTogglingUpvote,
-    isUpdatingBookmark,
-    getError,
-    sideDockOpen,
-    isConfirmCloseModalOpen
+    getError
   };
 };
 
@@ -100,17 +68,12 @@ const mapDispatchToProps = {
   enableCardEditor,
   adjustCardDescriptionSectionHeight,
   openCardModal,
-  cancelEditCard,
   updateCardQuestion,
   updateCardDescriptionEditor,
   updateCardAnswerEditor,
   requestGetCard,
-  requestUpdateCard,
   openCardSideDock,
-  closeCardSideDock,
-  requestToggleUpvote,
-  requestAddBookmark,
-  requestRemoveBookmark
+  requestAddCardAttachment
 };
 
 export default connect(mapStateToProps, mapDispatchToProps)(CardContent);

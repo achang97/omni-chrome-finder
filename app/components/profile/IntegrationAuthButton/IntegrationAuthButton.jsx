@@ -79,7 +79,7 @@ const IntegrationAuthButton = ({
               <Button
                 text="Sign Out"
                 icon={icon}
-                className="shadow-none text-purple-reg py-sm px-reg"
+                className={s('shadow-none text-purple-reg py-sm px-reg')}
                 onClick={onSignOut}
               />
             </div>

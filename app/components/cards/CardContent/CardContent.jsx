@@ -1,24 +1,15 @@
 import React, { useRef, useEffect, useState } from 'react';
 import PropTypes from 'prop-types';
-import _ from 'lodash';
-import {
-  MdError,
-  MdMoreHoriz,
-  MdAttachment,
-  MdKeyboardArrowLeft,
-  MdLock,
-  MdContentCopy
-} from 'react-icons/md';
-import { IoIosShareAlt } from 'react-icons/io';
+import { MdError, MdLock, MdAttachment } from 'react-icons/md';
 import { FaSlack } from 'react-icons/fa';
 import { Resizable } from 're-resizable';
+import { EditorState } from 'draft-js';
 
 import TextEditor from 'components/editors/TextEditor';
-import { Button, Timeago, Loader, Separator, Tooltip } from 'components/common';
+import { Button, Loader, Separator, Tooltip } from 'components/common';
 import { ScreenRecordButton, AttachmentDropzone } from 'components/attachments';
 
-import { copyCardUrl, isApprover } from 'utils/card';
-import { copyText } from 'utils/window';
+import { isApprover } from 'utils/card';
 import { generateFileKey, isAnyLoading } from 'utils/file';
 import { getStyleApplicationFn } from 'utils/style';
 import { CARD, REQUEST } from 'appConstants';
@@ -32,11 +23,42 @@ import CardTags from '../CardTags';
 import CardSideDock from '../CardSideDock';
 import CardCreateModal from '../CardCreateModal';
 import CardConfirmModals from '../CardConfirmModals';
+import CardHeader from '../CardHeader';
 import CardFooter from '../CardFooter';
 
 const s = getStyleApplicationFn(style);
 
-const CardContent = (props) => {
+const CardContent = ({
+  _id,
+  question,
+  descriptionEditorState,
+  answerEditorState,
+  status,
+  tags,
+  attachments,
+  slackThreadConvoPairs,
+  slackReplies,
+  outOfDateReason,
+  isEditing,
+  edits,
+  editorEnabled,
+  descriptionSectionHeight,
+  hasLoaded,
+  isGettingCard,
+  getError,
+  cardsHeight,
+  cardsWidth,
+  user,
+  enableCardEditor,
+  adjustCardDescriptionSectionHeight,
+  openCardModal,
+  updateCardQuestion,
+  updateCardDescriptionEditor,
+  updateCardAnswerEditor,
+  requestGetCard,
+  openCardSideDock,
+  requestAddCardAttachment
+}) => {
   const footerRef = useRef(null);
   const questionRef = useRef(null);
 
@@ -44,13 +66,6 @@ const CardContent = (props) => {
   const [toastMessage, setToastMessage] = useState(null);
 
   useEffect(() => {
-    const {
-      hasLoaded,
-      status,
-      slackThreadConvoPairs,
-      slackReplies,
-      openCardModal,
-    } = props;
     if (
       hasLoaded &&
       status === CARD.STATUS.NOT_DOCUMENTED &&
@@ -59,52 +74,39 @@ const CardContent = (props) => {
     ) {
       openCardModal(CARD.MODAL_TYPE.SELECT_THREAD);
     }
-  }, [props.hasLoaded]);
+  }, [hasLoaded]);
 
   useEffect(() => {
-    const { requestGetCard, hasLoaded, isGettingCard } = props;
     if (!hasLoaded && !isGettingCard) {
       requestGetCard();
     }
-  }, [props._id]);
+  }, [_id]);
 
   useEffect(() => {
     const questionElem = questionRef.current;
     if (questionElem) {
       setShowQuestionTooltip(questionElem.scrollHeight > questionElem.clientHeight);
     }
-  }, [props.question]);
-
-  const getAttribute = (attribute) => {
-    const { isEditing, edits } = props;
-    return isEditing ? edits[attribute] : props[attribute];
-  };
+  }, [question]);
 
   const getMaxDescriptionHeight = () => {
     const footerHeight = footerRef.current ? footerRef.current.clientHeight : 0;
     return (
-      props.cardsHeight -
-      CARD.DIMENSIONS.TABS_HEIGHT -
-      footerHeight -
-      CARD.DIMENSIONS.MIN_ANSWER_HEIGHT
+      cardsHeight - CARD.DIMENSIONS.TABS_HEIGHT - footerHeight - CARD.DIMENSIONS.MIN_ANSWER_HEIGHT
     );
   };
 
   const enableDescriptionEditor = () => {
-    const { enableCardEditor, adjustCardDescriptionSectionHeight } = props;
     enableCardEditor(CARD.EDITOR_TYPE.DESCRIPTION);
     adjustCardDescriptionSectionHeight(getMaxDescriptionHeight());
   };
 
   const enableAnswerEditor = () => {
-    const { enableCardEditor, adjustCardDescriptionSectionHeight } = props;
     enableCardEditor(CARD.EDITOR_TYPE.ANSWER);
     adjustCardDescriptionSectionHeight(CARD.DIMENSIONS.MIN_QUESTION_HEIGHT);
   };
 
   const cardStatusOnClick = (prevStatus) => {
-    const { openCardModal } = props;
-
     switch (prevStatus) {
       case CARD.STATUS.OUT_OF_DATE:
       case CARD.STATUS.NEEDS_VERIFICATION: {
@@ -125,16 +127,6 @@ const CardContent = (props) => {
   };
 
   const getTextEditorProps = (editorRole) => {
-    const {
-      isEditing,
-      editorEnabled,
-      descriptionEditorState,
-      edits,
-      answerEditorState,
-      updateCardDescriptionEditor,
-      updateCardAnswerEditor
-    } = props;
-
     const isDescription = editorRole === CARD.EDITOR_TYPE.DESCRIPTION;
 
     let defaultProps = {
@@ -199,82 +191,17 @@ const CardContent = (props) => {
   };
 
   const hasDescription = () => {
-    return props.descriptionEditorState.getCurrentContent().hasText();
+    return descriptionEditorState.getCurrentContent().hasText();
   };
 
   const addCardAttachments = (files, cardId) => {
-    const { requestAddCardAttachment, _id: currCardId } = props;
     files.forEach((file) => {
-      requestAddCardAttachment(cardId || currCardId, generateFileKey(), file);
+      requestAddCardAttachment(cardId || _id, generateFileKey(), file);
     });
   };
 
-  const renderHeaderButtons = () => {
-    const { openCardSideDock, answer, _id, isEditing } = props;
-
-    const headerButtons = [
-      {
-        Icon: MdContentCopy,
-        toast: 'Copied answer to clipboard!',
-        tooltip: 'Copy Answer',
-        onClick: () => copyText(answer)
-      },
-      {
-        Icon: IoIosShareAlt,
-        toast: 'Copied link to clipboard!',
-        tooltip: 'Share Card',
-        className: 'text-lg',
-        onClick: () => copyCardUrl(_id)
-      },
-      {
-        Icon: MdMoreHoriz,
-        label: 'More',
-        tooltip: 'Advanced Settings',
-        onClick: openCardSideDock,
-        showEdit: true
-      }
-    ];
-
-    const headerOnClick = (onClick, toast) => {
-      if (toast) setToastMessage(toast);
-      onClick();
-    };
-
-    return (
-      <div className={s('flex items-center')}>
-        {headerButtons.map(
-          ({ Icon, toast, label, tooltip, onClick, className, showEdit }, i) =>
-            (!isEditing || showEdit) && (
-              <Tooltip show={!!tooltip} tooltip={tooltip} tooltipProps={{ place: 'left' }}>
-                <button
-                  onClick={() => headerOnClick(onClick, toast)}
-                  className={s('flex items-center')}
-                >
-                  {label && <div className={s('text-xs mr-xs font-medium')}> {label} </div>}
-                  <Icon
-                    className={s(`${i < headerButtons.length - 1 ? 'mr-sm' : ''} ${className}`)}
-                  />
-                </button>
-              </Tooltip>
-            )
-        )}
-      </div>
-    );
-  };
-
   const renderAdvancedSettings = () => {
-    const {
-      attachments,
-      openCardSideDock,
-      outOfDateReason,
-      tags,
-      status,
-      isEditing,
-      cardsWidth,
-      _id: cardId,
-      user
-    } = props;
-    const currAttachments = getAttribute('attachments');
+    const currAttachments = isEditing ? edits.attachments : attachments;
     return isEditing ? (
       <div className={s('card-content-spacing flex justify-between')}>
         {currAttachments.length !== 0 && (
@@ -300,7 +227,7 @@ const CardContent = (props) => {
         )}
         <div className={s('flex ml-auto')}>
           <ScreenRecordButton
-            id={cardId}
+            id={_id}
             onSuccess={({ recording, activeId }) => addCardAttachments([recording], activeId)}
             abbrText
             className={s('py-0 px-sm mr-xs')}
@@ -343,29 +270,43 @@ const CardContent = (props) => {
     );
   };
 
-  const renderHeader = () => {
-    const {
-      isEditing,
-      createdAt,
-      cancelEditCard,
-      lastVerified,
-      lastEdited,
-      sideDockOpen,
-      openCardSideDock,
-      closeCardSideDock,
-      editorEnabled,
-      descriptionSectionHeight,
-      cardsWidth,
-      openCardModal,
-      status,
-      question,
-      edits,
-      updateCardQuestion,
-      user,
-      _id: cardId,
-      activeScreenRecordingId
-    } = props;
+  const renderQuestion = (showDescription) => (
+    <div className={s('card-content-spacing')}>
+      {isEditing ? (
+        <input
+          placeholder="Title or Question"
+          className={s('w-full')}
+          value={edits.question}
+          onChange={(e) => updateCardQuestion(e.target.value)}
+        />
+      ) : (
+        <Tooltip
+          tooltip={question}
+          show={showQuestionTooltip}
+          tooltipProps={{ className: s('card-question-tooltip') }}
+        >
+          <div
+            className={s(`text-2xl line-clamp-2 font-semibold ${!showDescription ? 'mb-lg' : ''}`)}
+            ref={questionRef}
+          >
+            {question}
+          </div>
+        </Tooltip>
+      )}
+    </div>
+  );
 
+  const renderDescription = (showDescription) => {
+    return (
+      showDescription && (
+        <div className={s('flex-grow min-h-0 flex flex-col min-h-0')}>
+          {renderTextEditor(CARD.EDITOR_TYPE.DESCRIPTION)}
+        </div>
+      )
+    );
+  };
+
+  const renderHeader = () => {
     const showDescription = hasDescription() || isEditing;
     const maxDescriptionHeight = getMaxDescriptionHeight();
 
@@ -376,7 +317,7 @@ const CardContent = (props) => {
         className={s('bg-purple-light py-sm min-h-0 flex-shrink-0 flex flex-col')}
         maxHeight={maxDescriptionHeight}
         onResizeStop={(e, direction, ref, d) => {
-          props.adjustCardDescriptionSectionHeight(descriptionSectionHeight + d.height);
+          adjustCardDescriptionSectionHeight(descriptionSectionHeight + d.height);
         }}
         enable={{
           top: false,
@@ -389,81 +330,15 @@ const CardContent = (props) => {
           topLeft: false
         }}
       >
-        <strong
-          className={s(
-            'card-content-spacing text-xs text-purple-reg pt-xs pb-sm flex items-center justify-between opacity-75'
-          )}
-        >
-          {/* Case 1: Card is documented and in edit */}
-          {isEditing && status !== CARD.STATUS.NOT_DOCUMENTED && (
-            <div
-              className={s('flex cursor-pointer')}
-              onClick={() => {
-                cancelEditCard();
-              }}
-            >
-              <MdKeyboardArrowLeft className={s('text-gray-dark')} />
-              <div className={s('underline text-purple-reg')}> Back to View </div>
-            </div>
-          )}
-          {/* Case 2: Card is not yet documented */}
-          {isEditing && status === CARD.STATUS.NOT_DOCUMENTED && <div> New Card </div>}
-
-          {/* Case 3: Card is documented and not in edit */}
-          {!isEditing && (
-            <div className={s('flex')}>
-              <Timeago date={lastEdited ? lastEdited.time : createdAt} live={false} />
-              {lastVerified && lastVerified.user && (
-                <div className={s('text-gray-light ml-sm font-medium italic')}>
-                  (Last verified by&nbsp;
-                  {lastVerified.user._id === user._id
-                    ? 'you'
-                    : `${lastVerified.user.firstname} ${lastVerified.user.lastname}`}
-                  &nbsp;
-                  <Timeago date={lastVerified.time} live={false} textTransform={_.lowerCase} />)
-                </div>
-              )}
-            </div>
-          )}
-          {renderHeaderButtons()}
-        </strong>
-        <div className={s('card-content-spacing')}>
-          {isEditing ? (
-            <input
-              placeholder="Title or Question"
-              className={s('w-full')}
-              value={edits.question}
-              onChange={(e) => updateCardQuestion(e.target.value)}
-            />
-          ) : (
-            <Tooltip
-              tooltip={question}
-              show={showQuestionTooltip}
-              tooltipProps={{ className: s('card-question-tooltip') }}
-            >
-              <div
-                className={s(
-                  `text-2xl line-clamp-2 font-semibold ${!showDescription ? 'mb-lg' : ''}`
-                )}
-                ref={questionRef}
-              >
-                {question}
-              </div>
-            </Tooltip>
-          )}
-        </div>
-        {showDescription && (
-          <div className={s('flex-grow min-h-0 flex flex-col min-h-0')}>
-            {renderTextEditor(CARD.EDITOR_TYPE.DESCRIPTION)}
-          </div>
-        )}
+        <CardHeader setToastMessage={setToastMessage} />
+        {renderQuestion(showDescription)}
+        {renderDescription(showDescription)}
         {renderAdvancedSettings()}
       </Resizable>
     );
   };
 
   const renderAnswer = () => {
-    const { isEditing, editorEnabled, selectedMessages, slackReplies, edits } = props;
     return (
       <div className={s('flex-grow min-h-0 flex flex-col min-h-0 relative')}>
         <div className={s('flex-grow min-h-0 flex flex-col min-h-0')}>
@@ -476,7 +351,7 @@ const CardContent = (props) => {
               color="transparent"
               className={s('flex justify-between shadow-none')}
               icon={<FaSlack />}
-              onClick={() => props.openCardModal(CARD.MODAL_TYPE.THREAD)}
+              onClick={() => openCardModal(CARD.MODAL_TYPE.THREAD)}
               iconLeft={false}
               underline
             />
@@ -485,7 +360,7 @@ const CardContent = (props) => {
         {!isEditing && slackReplies.length !== 0 && (
           <Button
             text="Thread"
-            onClick={() => props.openCardModal(CARD.MODAL_TYPE.THREAD)}
+            onClick={() => openCardModal(CARD.MODAL_TYPE.THREAD)}
             className={s('view-thread-button p-sm absolute text-xs mb-lg mr-lg')}
             color="secondary"
             icon={<img className={s('slack-icon ml-sm')} src={SlackIcon} alt="Slack Logo" />}
@@ -497,30 +372,32 @@ const CardContent = (props) => {
     );
   };
 
-  const render = () => {
-    const { hasLoaded, isGettingCard, getError, requestGetCard } = props;
+  const renderErrorView = () => {
+    const { message, status: errorStatus } = getError;
+    const isUnauthorized = errorStatus === REQUEST.HTTP_STATUS_CODE.UNAUTHORIZED;
 
-    if (!hasLoaded && getError) {
-      const { message, status } = getError;
-      const isUnauthorized = status === REQUEST.HTTP_STATUS_CODE.UNAUTHORIZED;
-
-      return (
-        <div className={s('flex flex-col h-full justify-center items-center bg-purple-light')}>
-          <div className={s('large-icon-container text-red-500')}>
-            {isUnauthorized ? (
-              <MdLock className={s('w-full h-full')} />
-            ) : (
-              <MdError className={s('w-full h-full')} />
-            )}
-          </div>
-          <div className={s('my-lg font-semibold')}>
-            {isUnauthorized ? "You don't have permissions to view this card." : message}
-          </div>
-          {!isUnauthorized && status !== REQUEST.HTTP_STATUS_CODE.NOT_FOUND && (
-            <Button color="primary" text="Reload Card" onClick={requestGetCard} />
+    return (
+      <div className={s('flex flex-col h-full justify-center items-center bg-purple-light')}>
+        <div className={s('large-icon-container text-red-500')}>
+          {isUnauthorized ? (
+            <MdLock className={s('w-full h-full')} />
+          ) : (
+            <MdError className={s('w-full h-full')} />
           )}
         </div>
-      );
+        <div className={s('my-lg font-semibold')}>
+          {isUnauthorized ? "You don't have permissions to view this card." : message}
+        </div>
+        {!isUnauthorized && errorStatus !== REQUEST.HTTP_STATUS_CODE.NOT_FOUND && (
+          <Button color="primary" text="Reload Card" onClick={requestGetCard} />
+        )}
+      </div>
+    );
+  };
+
+  const render = () => {
+    if (!hasLoaded && getError) {
+      return renderErrorView();
     }
 
     if (!hasLoaded || isGettingCard) {
@@ -553,25 +430,45 @@ const CardContent = (props) => {
 };
 
 CardContent.propTypes = {
+  // Redux State
+  _id: PropTypes.string.isRequired,
+  question: PropTypes.string.isRequired,
+  descriptionEditorState: PropTypes.instanceOf(EditorState).isRequired,
+  answerEditorState: PropTypes.instanceOf(EditorState).isRequired,
+  status: PropTypes.oneOf(Object.values(CARD.STATUS)).isRequired,
+  tags: PropTypes.arrayOf(PropTypes.object).isRequired,
+  attachments: PropTypes.arrayOf(PropTypes.object).isRequired,
+  slackThreadConvoPairs: PropTypes.arrayOf(PropTypes.object).isRequired,
+  slackReplies: PropTypes.arrayOf(PropTypes.object).isRequired,
+  outOfDateReason: PropTypes.shape({
+    reason: PropTypes.string.isRequired,
+    sender: PropTypes.object.isRequired,
+    time: PropTypes.string.isRequired
+  }),
+  isEditing: PropTypes.bool.isRequired,
+  edits: PropTypes.shape({
+    question: PropTypes.string,
+    answerEditorState: PropTypes.instanceOf(EditorState),
+    descriptionEditorState: PropTypes.instanceOf(EditorState),
+    attachments: PropTypes.arrayOf(PropTypes.object),
+    slackReplies: PropTypes.arrayOf(PropTypes.object)
+  }).isRequired,
+  editorEnabled: PropTypes.objectOf(PropTypes.bool).isRequired,
+  descriptionSectionHeight: PropTypes.number.isRequired,
+  hasLoaded: PropTypes.bool.isRequired,
+  isGettingCard: PropTypes.bool,
+  getError: PropTypes.string,
+
   // Redux Actions
   enableCardEditor: PropTypes.func.isRequired,
   adjustCardDescriptionSectionHeight: PropTypes.func.isRequired,
   openCardModal: PropTypes.func.isRequired,
-  cancelEditCard: PropTypes.func.isRequired,
   updateCardQuestion: PropTypes.func.isRequired,
   updateCardDescriptionEditor: PropTypes.func.isRequired,
   updateCardAnswerEditor: PropTypes.func.isRequired,
   requestGetCard: PropTypes.func.isRequired,
-  requestUpdateCard: PropTypes.func.isRequired,
   openCardSideDock: PropTypes.func.isRequired,
-  closeCardSideDock: PropTypes.func.isRequired,
-  requestToggleUpvote: PropTypes.func.isRequired,
-  requestAddBookmark: PropTypes.func.isRequired,
-  requestRemoveBookmark: PropTypes.func.isRequired
-};
-
-CardContent.defaultProps = {
-
+  requestAddCardAttachment: PropTypes.func.isRequired
 };
 
 export default CardContent;

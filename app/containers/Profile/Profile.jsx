@@ -290,7 +290,7 @@ const Profile = ({
       <div className={s('flex flex-col px-lg')}>
         {renderAboutSection()}
         {renderMetricsSection()}
-        <Separator horizontal className="my-reg" />
+        <Separator horizontal className={s('my-reg')} />
       </div>
       {renderIntegrationsSection()}
       <div className={s('flex justify-between pt-reg px-lg')}>

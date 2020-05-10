@@ -123,7 +123,7 @@ const SuggestionCard = ({
                   <Button
                     key={label}
                     text={label}
-                    className="shadow-none text-purple-reg"
+                    className={s('shadow-none text-purple-reg')}
                     onClick={() => protectedOnClick(onClick, buttonType)}
                   />
                   {i !== actions.length - 1 && <Separator horizontal className={s('my-0')} />}
