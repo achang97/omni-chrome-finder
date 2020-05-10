@@ -8,13 +8,13 @@
     "compress": "node scripts/compress",
     "compress-keygen": "crx keygen",
     "clean": "rimraf build/ dev/ *.zip *.crx",
-    "format": "prettier --write \"**/*.(js|jsx|json|css|md)\" --ignore-path .gitignore",
+    "format": "prettier --write \"(app|chrome|test|scripts|webpack)/**/*.(js|jsx|css)\"",
     "lint": "npm run lint:js && npm run lint:css",
     "lint:fix": "npm run lint:js:fix --fix && npm run lint:css:fix",
-    "lint:js": "eslint app chrome test scripts webpack/*.js --ext .js --ext .jsx",
-    "lint:js:fix": "eslint app chrome test scripts webpack/*.js --ext .js --ext .jsx --fix",
-    "lint:css": "stylelint \"**/*.css\"",
-    "lint:css:fix": "stylelint \"**/*.css\" --fix",
+    "lint:js": "eslint app chrome test scripts webpack --ext .js --ext jsx",
+    "lint:js:fix": "eslint app chrome test scripts webpack --ext .js --ext jsx --fix",
+    "lint:css": "stylelint \"app/**/*.css\"",
+    "lint:css:fix": "stylelint \"app/**/*.css\" --fix",
     "test-e2e": "cross-env NODE_ENV=test mocha -r ./test/setup-app test/e2e",
     "test": "cross-env NODE_ENV=test mocha -r ./test/setup-app test/app"
   },
@@ -24,14 +24,14 @@
     }
   },
   "lint-staged": {
-    "**/*.(js|jsx)": [
-      "eslint --ext .js --ext .jsx"
+    "(app|chrome|test|scripts|webpack)/**/*.(js|jsx)": [
+      "eslint"
     ],
-    "**/*.css": [
+    "app/**/*.css": [
       "stylelint"
     ],
-    "**/*.(js|jsx|json|scss|md)": [
-      "prettier  --ignore-path .gitignore"
+    "(app|chrome|test|scripts|webpack)/**/*.(js|jsx|css)": [
+      "prettier"
     ]
   },
   "repository": {
