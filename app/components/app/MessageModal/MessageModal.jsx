@@ -32,13 +32,13 @@ const MessageModal = ({
 
 MessageModal.propTypes = {
   // Redux State
+  modalOpen: PropTypes.bool.isRequired,
   modalProps: PropTypes.shape({
     title: PropTypes.node.isRequired,
     subtitle: PropTypes.node,
     buttonText: PropTypes.node,
     showHeader: PropTypes.bool
   }).isRequired,
-  modalOpen: PropTypes.bool.isRequired,
 
   // Redux Actions
   closeModal: PropTypes.func.isRequired

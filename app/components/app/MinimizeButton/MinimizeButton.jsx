@@ -20,6 +20,7 @@ const MinimizeButton = ({ minimizeDock }) => {
 };
 
 MinimizeButton.propTypes = {
+  // Redux Actions
   minimizeDock: PropTypes.func.isRequired
 };
 
