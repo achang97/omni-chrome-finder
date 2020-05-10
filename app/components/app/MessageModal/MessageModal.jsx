@@ -1,7 +1,6 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import Modal from 'components/common/Modal';
-import Button from 'components/common/Button';
 
 import { getStyleApplicationFn } from 'utils/style';
 
@@ -10,7 +9,6 @@ const s = getStyleApplicationFn();
 const MessageModal = ({
   modalOpen,
   modalProps: { title, subtitle, buttonText, showHeader = true },
-  openModal,
   closeModal
 }) => (
   <Modal
@@ -33,12 +31,17 @@ const MessageModal = ({
 );
 
 MessageModal.propTypes = {
+  // Redux State
+  modalOpen: PropTypes.bool.isRequired,
   modalProps: PropTypes.shape({
     title: PropTypes.any.isRequired,
     subtitle: PropTypes.any,
     buttonText: PropTypes.any,
     showHeader: PropTypes.bool
-  }).isRequired
+  }).isRequired,
+
+  // Redux Actions
+  closeModal: PropTypes.func.isRequired
 };
 
 export default MessageModal;

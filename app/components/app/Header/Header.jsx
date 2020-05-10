@@ -1,5 +1,6 @@
 import React from 'react';
-import { MdNotificationsActive, MdLightbulbOutline, MdClose } from 'react-icons/md';
+import PropTypes from 'prop-types';
+import { MdNotificationsActive, MdLightbulbOutline } from 'react-icons/md';
 
 import { Tabs, Tab, Badge, PlaceholderImg } from 'components/common';
 import { ROUTES } from 'appConstants';
@@ -9,7 +10,6 @@ import { segment } from 'utils';
 import { colors } from 'styles/colors';
 import { getStyleApplicationFn } from 'utils/style';
 import style from './header.css';
-import ToggleTab from '../ToggleTab';
 
 const s = getStyleApplicationFn(style);
 
@@ -75,6 +75,12 @@ const Header = ({ user, numAutofindCards, numTasks, history, location: { pathnam
       </Tabs>
     </div>
   );
+};
+
+Header.propTypes = {
+  user: PropTypes.object.isRequired,
+  numAutofindCards: PropTypes.number.isRequired,
+  numTasks: PropTypes.number.isRequired
 };
 
 export default Header;

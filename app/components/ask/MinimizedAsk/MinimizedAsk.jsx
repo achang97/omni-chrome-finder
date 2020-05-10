@@ -1,9 +1,7 @@
 import React, { useEffect, useState, useRef } from 'react';
-import _ from 'lodash';
 import AnimateHeight from 'react-animate-height';
 import {
   MdClose,
-  MdChevronRight,
   MdCheck,
   MdKeyboardArrowUp,
   MdPeople,
@@ -261,7 +259,7 @@ const MinimizedAsk = ({
             <MdKeyboardArrowLeft />
           </button>
           <div className={s('w-full rounded-lg minimized-search-accomplishment-img-container')}>
-            <img src={imgSrc} className={s('h-full w-full object-cover rounded-lg')} />
+            <img src={imgSrc} alt="Accomplishment Image" className={s('h-full w-full object-cover rounded-lg')} />
           </div>
           <button onClick={() => updateCarouselIndex(+1)} disabled={carouselDisabled}>
             <MdKeyboardArrowRight />
@@ -306,7 +304,7 @@ const MinimizedAsk = ({
     const { imgSrc, textClassName } = BADGE_PROPS[badge];
     return (
       <>
-        <img src={imgSrc} className={s('minimized-search-badge-container')} />
+        <img src={imgSrc} alt="Badge Image" className={s('minimized-search-badge-container')} />
         <div className={s(`${textClassName} text-xs font-semibold ml-sm`)}> {badge} </div>
       </>
     );

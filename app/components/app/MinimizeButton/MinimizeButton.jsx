@@ -1,4 +1,5 @@
 import React from 'react';
+import PropTypes from 'prop-types';
 import { MdClose } from 'react-icons/md';
 
 import { getStyleApplicationFn } from 'utils/style';
@@ -16,6 +17,11 @@ const MinimizeButton = ({ minimizeDock }) => {
       <MdClose className={s('text-purple-gray-50 text-sm hover:text-purple-reg')} />
     </button>
   );
+};
+
+MinimizeButton.propTypes = {
+  // Redux Actions
+  minimizeDock: PropTypes.func.isRequired
 };
 
 export default MinimizeButton;
