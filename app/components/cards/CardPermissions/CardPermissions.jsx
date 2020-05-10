@@ -143,7 +143,6 @@ CardPermissions.propTypes = {
 
 CardPermissions.defaultProps = {
   isDisabled: false,
-  isSearchingPermissionGroups: false,
   selectedPermission: null
 };
 

@@ -325,6 +325,7 @@ const SlackRepliesPropTypes = PropTypes.arrayOf(
 );
 
 CardConfirmModals.propTypes = {
+  // Redux State
   activeCardIndex: PropTypes.number.isRequired,
   isEditing: PropTypes.bool.isRequired,
   slackReplies: SlackRepliesPropTypes.isRequired,
@@ -364,17 +365,6 @@ CardConfirmModals.propTypes = {
   requestMarkUpToDate: PropTypes.func.isRequired,
   requestMarkOutOfDate: PropTypes.func.isRequired,
   requestApproveCard: PropTypes.func.isRequired
-};
-
-CardConfirmModals.defaultProps = {
-  getSlackThreadError: null,
-  deleteError: null,
-  isDeletingCard: false,
-  updateError: null,
-  isUpdatingCard: false,
-  isMarkingStatus: false,
-  markStatusError: null,
-  isGettingSlackThread: false
 };
 
 export default CardConfirmModals;

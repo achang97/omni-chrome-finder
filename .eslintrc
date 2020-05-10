@@ -41,7 +41,8 @@
     "radix": ["error", "as-needed"],
     "react/jsx-one-expression-per-line": 0,
     "react/jsx-props-no-spreading": 0,
-    "react/prop-types": ["error", { "ignore": ["history", "location", "match"] }]
+    "react/prop-types": ["error", { "ignore": ["history", "location", "match"] }],
+    "react/require-default-props": 0
   },
   "settings": {
     "import/resolver": {

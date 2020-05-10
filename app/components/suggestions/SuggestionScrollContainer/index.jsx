@@ -124,26 +124,24 @@ SuggestionScrollContainer.propTypes = {
       updatedAt: PropTypes.string.isRequired,
       status: PropTypes.number.isRequired
     })
-  ),
+  ).isRequired,
   getCardProps: PropTypes.func,
   isSearchingCards: PropTypes.bool,
   onBottom: PropTypes.func.isRequired,
   showPlaceholder: PropTypes.bool,
   footer: PropTypes.node,
   triangleColor: PropTypes.string,
-  hasReachedLimit: PropTypes.bool,
+  hasReachedLimit: PropTypes.bool.isRequired,
   scrollContainerClassName: PropTypes.string,
   className: PropTypes.string
 };
 
 SuggestionScrollContainer.defaultProps = {
-  cards: [],
-  getCardProps: null,
-  footer: null,
   isSearchingCards: false,
-  hasReachedLimit: false,
   showPlaceholder: true,
   triangleColor: 'white',
+  footer: null,
+  getCardProps: null,
   scrollContainerClassName: '',
   className: ''
 };

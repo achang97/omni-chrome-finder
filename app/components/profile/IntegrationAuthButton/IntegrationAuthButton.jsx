@@ -121,8 +121,7 @@ IntegrationAuthButton.propTypes = {
 IntegrationAuthButton.defaultProps = {
   showIntegration: true,
   onWindowOpen: null,
-  className: '',
-  isLoading: false
+  className: ''
 };
 
 export default IntegrationAuthButton;

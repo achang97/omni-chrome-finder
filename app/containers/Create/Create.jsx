@@ -252,8 +252,4 @@ Create.propTypes = {
   openCard: PropTypes.func.isRequired
 };
 
-Create.defaultProps = {
-  selectedTemplateCategory: null
-};
-
 export default Create;

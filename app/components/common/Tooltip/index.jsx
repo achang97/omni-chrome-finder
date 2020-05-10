@@ -40,9 +40,7 @@ Tooltip.propTypes = {
 
 Tooltip.defaultProps = {
   tooltip: null,
-  tooltipProps: {
-    className: ''
-  },
+  tooltipProps: {},
   show: true
 };
 

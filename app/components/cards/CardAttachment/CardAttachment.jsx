@@ -187,6 +187,8 @@ CardAttachment.propTypes = {
   isLoading: PropTypes.bool,
   isEditable: PropTypes.bool,
   onFileNameChange: PropTypes.func,
+
+  // Redux State
   token: PropTypes.string.isRequired
 };
 
@@ -198,9 +200,9 @@ CardAttachment.defaultProps = {
   error: null,
   onClick: NOOP,
   onRemoveClick: null,
+  onFileNameChange: NOOP,
   isLoading: false,
-  isEditable: false,
-  onFileNameChange: NOOP
+  isEditable: false
 };
 
 export default CardAttachment;

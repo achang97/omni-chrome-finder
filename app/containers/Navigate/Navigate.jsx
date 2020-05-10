@@ -185,10 +185,4 @@ Navigate.propTypes = {
   requestSearchCards: PropTypes.func.isRequired
 };
 
-Navigate.defaultProps = {
-  isSearchingCards: false,
-  isDeletingCard: false,
-  deleteError: null
-};
-
 export default Navigate;

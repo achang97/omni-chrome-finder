@@ -27,12 +27,13 @@ const initialState = {
 };
 
 const BASE_MODAL_OPEN_STATE = _.mapValues(MODAL_TYPE, () => false);
+const BASE_EDITOR_ENABLED_STATE = _.mapValues(EDITOR_TYPE, () => false);
 
 const BASE_CARD_STATE = {
   isEditing: false,
   sideDockOpen: false,
   modalOpen: BASE_MODAL_OPEN_STATE,
-  editorEnabled: { [EDITOR_TYPE.DESCRIPTION]: false, [EDITOR_TYPE.ANSWER]: false },
+  editorEnabled: BASE_EDITOR_ENABLED_STATE,
   descriptionSectionHeight: DIMENSIONS.MIN_QUESTION_HEIGHT,
   edits: {},
   hasLoaded: true,
@@ -289,16 +290,8 @@ export default function cardsReducer(state = initialState, action) {
 
     case types.ENABLE_CARD_EDITOR: {
       const { editorType } = payload;
-      const { activeCard } = state;
       return updateActiveCard({
-        editorEnabled: { ...activeCard.editorEnabled, [editorType]: true }
-      });
-    }
-    case types.DISABLE_CARD_EDITOR: {
-      const { editorType } = payload;
-      const { activeCard } = state;
-      return updateActiveCard({
-        editorEnabled: { ...activeCard.editorEnabled, [editorType]: false }
+        editorEnabled: { ...BASE_EDITOR_ENABLED_STATE, [editorType]: true }
       });
     }
 

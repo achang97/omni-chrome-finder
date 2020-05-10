@@ -57,10 +57,3 @@
 .card-content-spacing {
   @apply px-lg;
 }
-
-.card-content-toast {
-  @apply absolute rounded-full bg-gray-overlay text-white px-xl py-reg mx-lg;
-
-  left: 50%;
-  transform: translate(-50%, 50%);
-}

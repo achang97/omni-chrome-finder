@@ -148,9 +148,7 @@ CardUsers.defaultProps = {
   showNames: true,
   onRemoveClick: null,
   onUserClick: null,
-  onAdd: null,
-
-  isSearchingUsers: false
+  onAdd: null
 };
 
 export default CardUsers;

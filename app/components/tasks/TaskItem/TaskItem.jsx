@@ -355,9 +355,9 @@ TaskItem.propTypes = {
 
 TaskItem.defaultProps = {
   notifier: null,
+  error: null,
   onHide: NOOP,
   isLoading: false,
-  error: null,
   className: ''
 };
 

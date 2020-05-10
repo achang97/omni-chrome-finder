@@ -245,7 +245,6 @@ function* updateCard({ shouldCloseCard }) {
         activeCard.status === STATUS.NOT_DOCUMENTED
       );
       const card = yield call(doPut, `/cards/${cardId}`, newCardInfo);
-
       const user = yield select((state) => state.profile.user);
       yield put(handleUpdateCardSuccess(card, shouldCloseCard, isApprover(user, card.tags)));
     } else {

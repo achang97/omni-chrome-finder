@@ -25,6 +25,7 @@ const Message = ({ message, type, className, animate, show, temporary, showDurat
     if (onHide) onHide();
   };
 
+  // eslint-disable-next-line consistent-return
   useEffect(() => {
     if (show) {
       if (!showState) {
@@ -32,10 +33,15 @@ const Message = ({ message, type, className, animate, show, temporary, showDurat
       }
 
       if (temporary) {
-        setTimeout(() => {
+        const timeoutId = setTimeout(() => {
           setShowState(false);
           if (!animate) protectedOnHide();
         }, showDuration);
+
+        return () => {
+          clearTimeout(timeoutId);
+          protectedOnHide();
+        };
       }
     }
   }, [show]);
@@ -44,8 +50,7 @@ const Message = ({ message, type, className, animate, show, temporary, showDurat
     <div className={s(`${className} ${getColorClassName(type)} message`)}>{message}</div>
   );
 
-  const shouldShow = message && show && showState;
-
+  const shouldShow = !!message && show && showState;
   if (animate) {
     return (
       <AnimateHeight

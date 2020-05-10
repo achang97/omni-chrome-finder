@@ -224,9 +224,7 @@ CardTags.defaultProps = {
   maxWidth: null,
   onChange: null,
   onTagClick: null,
-  onRemoveClick: null,
-
-  isSearchingTags: false
+  onRemoveClick: null
 };
 
 export default CardTags;

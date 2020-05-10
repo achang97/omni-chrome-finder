@@ -58,10 +58,6 @@ export function enableCardEditor(editorType) {
   return { type: types.ENABLE_CARD_EDITOR, payload: { editorType } };
 }
 
-export function disableCardEditor(editorType) {
-  return { type: types.DISABLE_CARD_EDITOR, payload: { editorType } };
-}
-
 export function adjustCardDescriptionSectionHeight(newHeight) {
   return { type: types.ADJUST_CARD_DESCRIPTION_SECTION_HEIGHT, payload: { newHeight } };
 }

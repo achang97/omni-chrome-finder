@@ -72,10 +72,4 @@ ForgotPassword.propTypes = {
   requestSendRecoveryEmail: PropTypes.func.isRequired
 };
 
-ForgotPassword.defaultProps = {
-  isSendingRecoveryEmail: false,
-  recoverySuccess: null,
-  recoveryError: null
-};
-
 export default ForgotPassword;

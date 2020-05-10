@@ -79,10 +79,7 @@ AuthView.propTypes = {
 
 AuthView.defaultProps = {
   isLoading: false,
-  className: '',
-  subtitle: null,
-  error: null,
-  footer: null
+  className: ''
 };
 
 export default withRouter(AuthView);

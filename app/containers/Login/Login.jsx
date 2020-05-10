@@ -79,9 +79,4 @@ Login.propTypes = {
   updateLoginPassword: PropTypes.func.isRequired
 };
 
-Login.defaultProps = {
-  isLoggingIn: false,
-  loginError: null
-};
-
 export default Login;

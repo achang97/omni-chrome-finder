@@ -2,12 +2,8 @@ import React, { useRef, useEffect, useState } from 'react';
 import PropTypes from 'prop-types';
 import _ from 'lodash';
 import {
-  MdCheck,
-  MdMoreHoriz,
-  MdModeEdit,
-  MdThumbUp,
-  MdBookmarkBorder,
   MdError,
+  MdMoreHoriz,
   MdAttachment,
   MdKeyboardArrowLeft,
   MdLock,
@@ -18,16 +14,10 @@ import { FaSlack } from 'react-icons/fa';
 import { Resizable } from 're-resizable';
 
 import TextEditor from 'components/editors/TextEditor';
-import { Button, Timeago, Loader, Separator, Message, Tooltip } from 'components/common';
+import { Button, Timeago, Loader, Separator, Tooltip } from 'components/common';
 import { ScreenRecordButton, AttachmentDropzone } from 'components/attachments';
 
-import {
-  hasValidEdits,
-  toggleUpvotes,
-  cardStateChanged,
-  copyCardUrl,
-  isApprover
-} from 'utils/card';
+import { copyCardUrl, isApprover } from 'utils/card';
 import { copyText } from 'utils/window';
 import { generateFileKey, isAnyLoading } from 'utils/file';
 import { getStyleApplicationFn } from 'utils/style';
@@ -42,6 +32,7 @@ import CardTags from '../CardTags';
 import CardSideDock from '../CardSideDock';
 import CardCreateModal from '../CardCreateModal';
 import CardConfirmModals from '../CardConfirmModals';
+import CardFooter from '../CardFooter';
 
 const s = getStyleApplicationFn(style);
 
@@ -100,22 +91,15 @@ const CardContent = (props) => {
   };
 
   const enableDescriptionEditor = () => {
-    const { disableCardEditor, enableCardEditor, adjustCardDescriptionSectionHeight } = props;
-    disableCardEditor(CARD.EDITOR_TYPE.ANSWER);
+    const { enableCardEditor, adjustCardDescriptionSectionHeight } = props;
     enableCardEditor(CARD.EDITOR_TYPE.DESCRIPTION);
     adjustCardDescriptionSectionHeight(getMaxDescriptionHeight());
   };
 
   const enableAnswerEditor = () => {
-    const { disableCardEditor, enableCardEditor, adjustCardDescriptionSectionHeight } = props;
-    disableCardEditor(CARD.EDITOR_TYPE.DESCRIPTION);
+    const { enableCardEditor, adjustCardDescriptionSectionHeight } = props;
     enableCardEditor(CARD.EDITOR_TYPE.ANSWER);
     adjustCardDescriptionSectionHeight(CARD.DIMENSIONS.MIN_QUESTION_HEIGHT);
-  };
-
-  const editCard = () => {
-    props.editCard();
-    enableAnswerEditor();
   };
 
   const cardStatusOnClick = (prevStatus) => {
@@ -137,15 +121,6 @@ const CardContent = (props) => {
       }
       default:
         break;
-    }
-  };
-
-  const cancelEditCard = () => {
-    const { cancelEditCard, openCardModal } = props;
-    if (cardStateChanged(props)) {
-      openCardModal(CARD.MODAL_TYPE.CONFIRM_CLOSE_EDIT);
-    } else {
-      cancelEditCard();
     }
   };
 
@@ -372,6 +347,7 @@ const CardContent = (props) => {
     const {
       isEditing,
       createdAt,
+      cancelEditCard,
       lastVerified,
       lastEdited,
       sideDockOpen,
@@ -521,131 +497,6 @@ const CardContent = (props) => {
     );
   };
 
-  const updateCard = () => {
-    const { requestUpdateCard, cancelEditCard } = props;
-    if (cardStateChanged(props)) {
-      requestUpdateCard();
-    } else {
-      cancelEditCard();
-    }
-  };
-
-  const renderFooter = () => {
-    const {
-      isUpdatingCard,
-      isEditing,
-      _id,
-      status,
-      openCardModal,
-      question,
-      edits,
-      modalOpen,
-      upvotes,
-      user,
-      isTogglingUpvote,
-      requestToggleUpvote,
-      requestAddBookmark,
-      requestRemoveBookmark,
-      isUpdatingBookmark,
-      activeScreenRecordingId
-    } = props;
-
-    const hasUpvoted = upvotes.some((_id) => _id === user._id);
-    const hasBookmarked = user.bookmarkIds.some((bookmarkId) => bookmarkId === _id);
-    const bookmarkOnClick = hasBookmarked ? requestRemoveBookmark : requestAddBookmark;
-    const isRecording = activeScreenRecordingId === _id;
-
-    return (
-      <div className={s('flex-shrink-0 min-h-0 relative')} ref={footerRef}>
-        {!isEditing && toastMessage && (
-          <Message
-            className={s('card-content-toast')}
-            message={toastMessage}
-            animate
-            temporary
-            onHide={() => setToastMessage(null)}
-          />
-        )}
-        {isEditing ? (
-          status === CARD.STATUS.NOT_DOCUMENTED ? (
-            <Button
-              text="Add to Knowledge Base"
-              color="primary"
-              onClick={() => openCardModal(CARD.MODAL_TYPE.CREATE)}
-              className={s('rounded-t-none p-lg')}
-              disabled={
-                edits.question === '' ||
-                !edits.answerEditorState.getCurrentContent().hasText() ||
-                isAnyLoading(edits.attachments) ||
-                isRecording
-              }
-              underline
-            />
-          ) : (
-            <Button
-              text="Save Updates"
-              color="primary"
-              onClick={updateCard}
-              iconLeft={false}
-              icon={
-                isUpdatingCard && !modalOpen[CARD.MODAL_TYPE.CONFIRM_CLOSE] ? (
-                  <Loader className={s('ml-sm')} size="sm" color="white" />
-                ) : null
-              }
-              className={s('rounded-t-none p-lg')}
-              disabled={!hasValidEdits(edits) || isUpdatingCard || isRecording}
-              underline
-            />
-          )
-        ) : (
-          <div className={s('flex items-center justify-between bg-purple-light rounded-b-lg p-lg')}>
-            <div className={s('flex')}>
-              <Button
-                text="Edit Card"
-                color="primary"
-                icon={<MdModeEdit className={s('mr-sm')} />}
-                onClick={editCard}
-              />
-              {(props.status === CARD.STATUS.OUT_OF_DATE ||
-                props.status === CARD.STATUS.NEEDS_VERIFICATION) && (
-                <Button
-                  text="Mark as Up-to-Date"
-                  color="secondary"
-                  className={s('ml-reg text-green-reg')}
-                  underline={false}
-                  icon={<MdCheck className={s('mr-sm')} />}
-                  onClick={() => openCardModal(CARD.MODAL_TYPE.CONFIRM_UP_TO_DATE)}
-                />
-              )}
-            </div>
-            <div className={s('flex')}>
-              <Button
-                text={`Helpful${upvotes.length !== 0 ? ` (${upvotes.length})` : ''}`}
-                icon={<MdThumbUp className={s('mr-sm')} />}
-                className={s('mr-reg')}
-                color={hasUpvoted ? 'gold' : 'secondary'}
-                disabled={isTogglingUpvote}
-                onClick={() => requestToggleUpvote(toggleUpvotes(upvotes, user._id))}
-              />
-              <Tooltip
-                tooltip={hasBookmarked ? 'Remove Bookmark' : 'Add Bookmark'}
-                tooltipProps={{ place: 'left' }}
-              >
-                <Button
-                  icon={<MdBookmarkBorder />}
-                  color="secondary"
-                  color={hasBookmarked ? 'gold' : 'secondary'}
-                  disabled={isUpdatingBookmark}
-                  onClick={() => bookmarkOnClick(_id)}
-                />
-              </Tooltip>
-            </div>
-          </div>
-        )}
-      </div>
-    );
-  };
-
   const render = () => {
     const { hasLoaded, isGettingCard, getError, requestGetCard } = props;
 
@@ -686,7 +537,11 @@ const CardContent = (props) => {
           {renderHeader()}
           {renderAnswer()}
         </div>
-        {renderFooter()}
+        <CardFooter
+          toastMessage={toastMessage}
+          onToastHide={() => setToastMessage(null)}
+          ref={footerRef}
+        />
         <CardSideDock />
         <CardCreateModal />
         <CardConfirmModals />
@@ -698,9 +553,7 @@ const CardContent = (props) => {
 };
 
 CardContent.propTypes = {
-
   // Redux Actions
-  disableCardEditor: PropTypes.func.isRequired,
   enableCardEditor: PropTypes.func.isRequired,
   adjustCardDescriptionSectionHeight: PropTypes.func.isRequired,
   openCardModal: PropTypes.func.isRequired,

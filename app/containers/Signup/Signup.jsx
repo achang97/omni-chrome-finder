@@ -99,9 +99,4 @@ Signup.propTypes = {
   requestSignup: PropTypes.func.isRequired
 };
 
-Signup.defaultProps = {
-  isSigningUp: true,
-  signupError: null
-};
-
 export default Signup;

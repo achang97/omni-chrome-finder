@@ -1,5 +1,12 @@
 import * as types from 'actions/actionTypes';
-import { handleDeleteCardSuccess, updateCard, requestGetCard } from 'actions/cards';
+import {
+  handleDeleteCardSuccess,
+  updateCard,
+  requestGetCard,
+  enableCardEditor,
+  adjustCardDescriptionSectionHeight
+} from 'actions/cards';
+import { EDITOR_TYPE, DIMENSIONS } from 'appConstants/card';
 
 const cardsMiddleware = (store) => (next) => (action) => {
   const nextAction = next(action);
@@ -24,6 +31,11 @@ const cardsMiddleware = (store) => (next) => (action) => {
     // Handle actions from card itself
     case types.CANCEL_EDIT_CARD: {
       store.dispatch(requestGetCard());
+      break;
+    }
+    case types.EDIT_CARD: {
+      store.dispatch(enableCardEditor(EDITOR_TYPE.ANSWER));
+      store.dispatch(adjustCardDescriptionSectionHeight(DIMENSIONS.MIN_QUESTION_HEIGHT));
       break;
     }
 

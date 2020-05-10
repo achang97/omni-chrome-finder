@@ -1,6 +1,5 @@
 import { connect } from 'react-redux';
 import {
-  disableCardEditor,
   enableCardEditor,
   adjustCardDescriptionSectionHeight,
   openCardModal,
@@ -98,7 +97,6 @@ const mapStateToProps = (state) => {
 };
 
 const mapDispatchToProps = {
-  disableCardEditor,
   enableCardEditor,
   adjustCardDescriptionSectionHeight,
   openCardModal,

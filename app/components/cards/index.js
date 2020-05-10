@@ -4,6 +4,7 @@ export { default as CardConfirmModal } from './CardConfirmModal';
 export { default as CardConfirmModals } from './CardConfirmModals';
 export { default as CardContent } from './CardContent';
 export { default as CardCreateModal } from './CardCreateModal';
+export { default as CardFooter } from './CardFooter';
 export { default as CardPermissions } from './CardPermissions';
 export { default as CardSection } from './CardSection';
 export { default as CardSideDock } from './CardSideDock';

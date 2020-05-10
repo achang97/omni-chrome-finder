@@ -235,6 +235,7 @@ const CardCreateModal = ({
 };
 
 CardCreateModal.propTypes = {
+  // Redux State
   _id: PropTypes.string.isRequired,
   createError: PropTypes.string,
   isCreatingCard: PropTypes.bool,
@@ -263,12 +264,6 @@ CardCreateModal.propTypes = {
   updateCardVerificationInterval: PropTypes.func.isRequired,
   updateCardPermissions: PropTypes.func.isRequired,
   updateCardPermissionGroups: PropTypes.func.isRequired
-};
-
-CardCreateModal.defaultProps = {
-  createError: null,
-  isCreatingCard: false,
-  isUpdatingCard: false
 };
 
 export default CardCreateModal;

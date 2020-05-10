@@ -201,12 +201,7 @@ ScreenRecordButton.propTypes = {
 ScreenRecordButton.defaultProps = {
   className: '',
   showText: true,
-  abbrText: false,
-  activeId: null,
-  mediaRecorder: null,
-  localStream: null,
-  desktopStream: null,
-  voiceStream: null
+  abbrText: false
 };
 
 export default ScreenRecordButton;

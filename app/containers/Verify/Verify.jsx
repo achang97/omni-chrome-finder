@@ -110,11 +110,4 @@ Verify.propTypes = {
   logout: PropTypes.func.isRequired
 };
 
-Verify.defaultProps = {
-  isVerifying: false,
-  verifyError: null,
-  isGettingUser: false,
-  isResendingVerification: false
-};
-
 export default Verify;
