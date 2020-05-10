@@ -9,6 +9,7 @@ import { Tabs, Tab, Loader } from 'components/common';
 import TaskItem from 'components/tasks/TaskItem';
 
 import { TYPE, SECTION_TYPE, SECTIONS, TAB_OPTIONS } from 'appConstants/tasks';
+import { STATUS } from 'appConstants/card';
 
 import NoNotificationsImg from 'assets/images/general/noNotifications.svg';
 
@@ -209,7 +210,18 @@ const Tasks = ({
 Tasks.propTypes = {
   // Redux State
   tabIndex: PropTypes.number.isRequired,
-  tasks: PropTypes.arrayOf(PropTypes.object).isRequired,
+  tasks: PropTypes.arrayOf(
+    PropTypes.shape({
+      _id: PropTypes.string.isRequired,
+      createdAt: PropTypes.string.isRequired,
+      status: PropTypes.oneOf(Object.values(STATUS)),
+      card: PropTypes.object,
+      resolved: PropTypes.bool.isRequired,
+      notifier: PropTypes.object,
+      isLoading: PropTypes.bool,
+      error: PropTypes.string
+    })
+  ).isRequired,
   openSection: PropTypes.string.isRequired,
   isGettingTasks: PropTypes.bool,
 

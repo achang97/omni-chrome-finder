@@ -53,7 +53,7 @@ CardConfirmModal.propTypes = {
   description: PropTypes.string,
   body: PropTypes.node,
   error: PropTypes.string,
-  onRequestClose: PropTypes.func.isRequired,
+  onRequestClose: PropTypes.func,
   primaryButtonProps: PropTypes.shape({
     text: PropTypes.node.isRequired,
     onClick: PropTypes.func.isRequired
@@ -75,6 +75,7 @@ CardConfirmModal.defaultProps = {
   description: null,
   body: null,
   error: null,
+  onRequestClose: null,
   overlayClassName: '',
   bodyClassName: ''
 };

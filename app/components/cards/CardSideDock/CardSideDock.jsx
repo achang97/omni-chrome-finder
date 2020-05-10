@@ -373,7 +373,7 @@ CardSideDock.propTypes = {
 };
 
 CardSideDock.defaultProps = {
-  isDeletingCard: false,
+  isDeletingCard: false
 };
 
 export default CardSideDock;

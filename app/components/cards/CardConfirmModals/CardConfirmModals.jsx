@@ -1,4 +1,5 @@
 import React from 'react';
+import PropTypes from 'prop-types';
 
 import { CheckBox } from 'components/common';
 import { MODAL_TYPE } from 'appConstants/card';
@@ -15,15 +16,13 @@ const CardConfirmModals = ({
   slackReplies,
   edits,
   modalOpen,
-  slackThreadConvoPairs = [],
+  slackThreadConvoPairs,
   updateCardSelectedThreadIndex,
   slackThreadIndex,
-  openCardModal,
   closeCardModal,
   closeCard,
   cancelEditCard,
   cancelEditCardMessages,
-  updateCardStatus,
   requestDeleteCard,
   deleteError,
   isDeletingCard,
@@ -313,6 +312,69 @@ const CardConfirmModals = ({
       ))}
     </>
   );
+};
+
+const SlackRepliesPropTypes = PropTypes.arrayOf(
+  PropTypes.shape({
+    id: PropTypes.string.isRequired,
+    senderName: PropTypes.string.isRequired,
+    senderImageUrl: PropTypes.string.isRequired,
+    message: PropTypes.string.isRequired,
+    selected: PropTypes.bool.isRequired
+  })
+);
+
+CardConfirmModals.propTypes = {
+  activeCardIndex: PropTypes.number.isRequired,
+  isEditing: PropTypes.bool.isRequired,
+  slackReplies: SlackRepliesPropTypes.isRequired,
+  edits: PropTypes.shape({
+    slackReplies: SlackRepliesPropTypes
+  }).isRequired,
+  modalOpen: PropTypes.objectOf(PropTypes.bool).isRequired,
+  slackThreadConvoPairs: PropTypes.arrayOf(
+    PropTypes.shape({
+      _id: PropTypes.string.isRequired,
+      channelId: PropTypes.string.isRequired,
+      channelName: PropTypes.string.isRequired
+    })
+  ).isRequired,
+  slackThreadIndex: PropTypes.number.isRequired,
+  deleteError: PropTypes.string,
+  isDeletingCard: PropTypes.bool,
+  updateError: PropTypes.string,
+  isUpdatingCard: PropTypes.bool,
+  isMarkingStatus: PropTypes.bool,
+  markStatusError: PropTypes.string,
+  isGettingSlackThread: PropTypes.bool,
+  getSlackThreadError: PropTypes.string,
+  outOfDateReasonInput: PropTypes.string.isRequired,
+
+  // Redux Actions
+  requestGetSlackThread: PropTypes.func.isRequired,
+  updateOutOfDateReason: PropTypes.func.isRequired,
+  updateCardSelectedThreadIndex: PropTypes.func.isRequired,
+  toggleCardSelectedMessage: PropTypes.func.isRequired,
+  closeCardModal: PropTypes.func.isRequired,
+  closeCard: PropTypes.func.isRequired,
+  cancelEditCard: PropTypes.func.isRequired,
+  cancelEditCardMessages: PropTypes.func.isRequired,
+  requestDeleteCard: PropTypes.func.isRequired,
+  requestUpdateCard: PropTypes.func.isRequired,
+  requestMarkUpToDate: PropTypes.func.isRequired,
+  requestMarkOutOfDate: PropTypes.func.isRequired,
+  requestApproveCard: PropTypes.func.isRequired
+};
+
+CardConfirmModals.defaultProps = {
+  getSlackThreadError: null,
+  deleteError: null,
+  isDeletingCard: false,
+  updateError: null,
+  isUpdatingCard: false,
+  isMarkingStatus: false,
+  markStatusError: null,
+  isGettingSlackThread: false
 };
 
 export default CardConfirmModals;

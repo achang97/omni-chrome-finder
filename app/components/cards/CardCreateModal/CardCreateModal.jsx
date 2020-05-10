@@ -3,42 +3,63 @@ import PropTypes from 'prop-types';
 import AnimateHeight from 'react-animate-height';
 import { MdLock, MdAutorenew } from 'react-icons/md';
 
-import {
-  CardSection,
-  CardUsers,
-  CardTags,
-  CardAttachment,
-  CardPermissions,
-  CardVerificationInterval
-} from 'components/cards';
-import { Loader, Button, Modal, Separator, Message, HelpTooltip } from 'components/common';
+import { Modal, Separator, Message, HelpTooltip } from 'components/common';
 
-import { HINTS, PERMISSION_OPTION, MODAL_TYPE } from 'appConstants/card';
+import { HINTS, MODAL_TYPE } from 'appConstants/card';
 import { hasValidEdits, isExistingCard, isJustMe } from 'utils/card';
-
 import { getStyleApplicationFn } from 'utils/style';
+
+import CardSection from '../CardSection';
+import CardUsers from '../CardUsers';
+import CardTags from '../CardTags';
+import CardPermissions from '../CardPermissions';
+import CardVerificationInterval from '../CardVerificationInterval';
 
 const s = getStyleApplicationFn();
 
-const CardCreateModal = (props) => {
+const CardCreateModal = ({
+  _id,
+  createError,
+  isCreatingCard,
+  isUpdatingCard,
+  isEditing,
+  edits,
+  isOpen,
+  requestCreateCard,
+  requestUpdateCard,
+  closeCardModal,
+  addCardOwner,
+  removeCardOwner,
+  addCardSubscriber,
+  removeCardSubscriber,
+  updateCardTags,
+  removeCardTag,
+  updateCardVerificationInterval,
+  updateCardPermissions,
+  updateCardPermissionGroups
+}) => {
   const bottomRef = useRef(null);
-
-  useEffect(() => {
-    if (props.createError) {
-      scrollToBottom();
-    }
-  }, [props.createError]);
 
   const scrollToBottom = () => {
     bottomRef.current.scrollIntoView({ behavior: 'smooth', block: 'end' });
   };
 
+  useEffect(() => {
+    if (createError) {
+      scrollToBottom();
+    }
+  }, [createError]);
+
+  const {
+    owners = [],
+    subscribers = [],
+    tags = [],
+    verificationInterval,
+    permissions,
+    permissionGroups = []
+  } = edits;
+
   const renderOwners = () => {
-    const {
-      edits: { owners = [] },
-      addCardOwner,
-      removeCardOwner
-    } = props;
     return (
       <CardUsers
         isEditable
@@ -52,12 +73,6 @@ const CardCreateModal = (props) => {
   };
 
   const renderSubscribers = () => {
-    const {
-      edits: { subscribers = [], owners = [] },
-      isEditing,
-      addCardSubscriber,
-      removeCardSubscriber
-    } = props;
     return (
       <CardUsers
         isEditable={isEditing}
@@ -75,11 +90,6 @@ const CardCreateModal = (props) => {
   };
 
   const renderTags = () => {
-    const {
-      edits: { tags = [] },
-      updateCardTags,
-      removeCardTag
-    } = props;
     return (
       <CardTags
         isEditable
@@ -92,13 +102,7 @@ const CardCreateModal = (props) => {
     );
   };
 
-  const renderAdvanced = ({ isExisting, justMe }) => {
-    const {
-      edits: { verificationInterval = {}, permissions = {}, permissionGroups = [] },
-      updateCardVerificationInterval,
-      updateCardPermissions,
-      updateCardPermissionGroups
-    } = props;
+  const renderAdvanced = (isExisting, justMe) => {
     return (
       <>
         <AnimateHeight
@@ -138,36 +142,26 @@ const CardCreateModal = (props) => {
   };
 
   const renderAdvancedPreview = (justMe) => {
-    const {
-      edits: { verificationInterval = {}, permissions = {} }
-    } = props;
     return (
       <div className={s('text-xs text-purple-gray-50 flex')}>
-        {!justMe && (
+        {!justMe && verificationInterval && (
           <>
             <MdAutorenew />
             <span className={s('ml-xs')}> {verificationInterval.label} </span>
             <Separator className={s('mx-reg')} />
           </>
         )}
-        <MdLock />
-        <span className={s('ml-xs')}> {permissions.label} </span>
+        {permissions && (
+          <>
+            <MdLock />
+            <span className={s('ml-xs')}> {permissions.label} </span>
+          </>
+        )}
       </div>
     );
   };
 
   const render = () => {
-    const {
-      modalOpen,
-      requestCreateCard,
-      requestUpdateCard,
-      closeCardModal,
-      createError,
-      isCreatingCard,
-      isUpdatingCard,
-      edits,
-      _id
-    } = props;
     const isExisting = isExistingCard(_id);
     const isLoading = isExisting ? isUpdatingCard : isCreatingCard;
     const onClick = isExisting ? requestUpdateCard : requestCreateCard;
@@ -206,7 +200,7 @@ const CardCreateModal = (props) => {
 
     return (
       <Modal
-        isOpen={modalOpen[MODAL_TYPE.CREATE]}
+        isOpen={isOpen}
         onRequestClose={() => closeCardModal(MODAL_TYPE.CREATE)}
         title={edits.question}
         overlayClassName={s('rounded-b-lg')}
@@ -216,7 +210,7 @@ const CardCreateModal = (props) => {
         <div className={s('flex-grow overflow-auto p-lg')}>
           {CARD_SECTIONS.map(
             ({ title, hint, renderFn, showJustMe, startExpanded = true, preview }, i) => (
-              <AnimateHeight height={!justMe || showJustMe ? 'auto' : 0}>
+              <AnimateHeight height={!justMe || showJustMe ? 'auto' : 0} key={title}>
                 <CardSection
                   className={s(i < CARD_SECTIONS.length - 1 ? 'mb-lg' : '')}
                   title={title}
@@ -225,7 +219,7 @@ const CardCreateModal = (props) => {
                   preview={preview}
                   showSeparator={i < CARD_SECTIONS.length - 1}
                 >
-                  {renderFn({ isExisting, justMe })}
+                  {renderFn(isExisting, justMe)}
                 </CardSection>
               </AnimateHeight>
             )
@@ -238,6 +232,43 @@ const CardCreateModal = (props) => {
   };
 
   return render();
+};
+
+CardCreateModal.propTypes = {
+  _id: PropTypes.string.isRequired,
+  createError: PropTypes.string,
+  isCreatingCard: PropTypes.bool,
+  isUpdatingCard: PropTypes.bool,
+  isEditing: PropTypes.bool.isRequired,
+  isOpen: PropTypes.bool.isRequired,
+  edits: PropTypes.shape({
+    owners: PropTypes.arrayOf(PropTypes.object),
+    subscribers: PropTypes.arrayOf(PropTypes.object),
+    tags: PropTypes.arrayOf(PropTypes.object),
+    verificationInterval: PropTypes.object,
+    permissions: PropTypes.object,
+    permissionGroups: PropTypes.arrayOf(PropTypes.object)
+  }),
+
+  // Redux Actions
+  requestCreateCard: PropTypes.func.isRequired,
+  requestUpdateCard: PropTypes.func.isRequired,
+  closeCardModal: PropTypes.func.isRequired,
+  addCardOwner: PropTypes.func.isRequired,
+  removeCardOwner: PropTypes.func.isRequired,
+  addCardSubscriber: PropTypes.func.isRequired,
+  removeCardSubscriber: PropTypes.func.isRequired,
+  updateCardTags: PropTypes.func.isRequired,
+  removeCardTag: PropTypes.func.isRequired,
+  updateCardVerificationInterval: PropTypes.func.isRequired,
+  updateCardPermissions: PropTypes.func.isRequired,
+  updateCardPermissionGroups: PropTypes.func.isRequired
+};
+
+CardCreateModal.defaultProps = {
+  createError: null,
+  isCreatingCard: false,
+  isUpdatingCard: false
 };
 
 export default CardCreateModal;

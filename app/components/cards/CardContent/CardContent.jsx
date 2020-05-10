@@ -18,24 +18,8 @@ import { FaSlack } from 'react-icons/fa';
 import { Resizable } from 're-resizable';
 
 import TextEditor from 'components/editors/TextEditor';
-import {
-  Button,
-  Timeago,
-  Loader,
-  Separator,
-  Message,
-  Tooltip
-} from 'components/common';
+import { Button, Timeago, Loader, Separator, Message, Tooltip } from 'components/common';
 import { ScreenRecordButton, AttachmentDropzone } from 'components/attachments';
-import {
-  CardStatus,
-  CardTags,
-  CardSideDock,
-  CardCreateModal,
-  CardConfirmModals,
-} from 'components/cards';
-
-import SlackIcon from 'assets/images/icons/Slack_Mark.svg';
 
 import {
   hasValidEdits,
@@ -46,10 +30,18 @@ import {
 } from 'utils/card';
 import { copyText } from 'utils/window';
 import { generateFileKey, isAnyLoading } from 'utils/file';
+import { getStyleApplicationFn } from 'utils/style';
 import { CARD, REQUEST } from 'appConstants';
 
-import { getStyleApplicationFn } from 'utils/style';
+import SlackIcon from 'assets/images/icons/Slack_Mark.svg';
+
 import style from './card-content.css';
+
+import CardStatus from '../CardStatus';
+import CardTags from '../CardTags';
+import CardSideDock from '../CardSideDock';
+import CardCreateModal from '../CardCreateModal';
+import CardConfirmModals from '../CardConfirmModals';
 
 const s = getStyleApplicationFn(style);
 
@@ -703,6 +695,30 @@ const CardContent = (props) => {
   };
 
   return render();
+};
+
+CardContent.propTypes = {
+
+  // Redux Actions
+  disableCardEditor: PropTypes.func.isRequired,
+  enableCardEditor: PropTypes.func.isRequired,
+  adjustCardDescriptionSectionHeight: PropTypes.func.isRequired,
+  openCardModal: PropTypes.func.isRequired,
+  cancelEditCard: PropTypes.func.isRequired,
+  updateCardQuestion: PropTypes.func.isRequired,
+  updateCardDescriptionEditor: PropTypes.func.isRequired,
+  updateCardAnswerEditor: PropTypes.func.isRequired,
+  requestGetCard: PropTypes.func.isRequired,
+  requestUpdateCard: PropTypes.func.isRequired,
+  openCardSideDock: PropTypes.func.isRequired,
+  closeCardSideDock: PropTypes.func.isRequired,
+  requestToggleUpvote: PropTypes.func.isRequired,
+  requestAddBookmark: PropTypes.func.isRequired,
+  requestRemoveBookmark: PropTypes.func.isRequired
+};
+
+CardContent.defaultProps = {
+
 };
 
 export default CardContent;

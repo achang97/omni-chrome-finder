@@ -187,17 +187,19 @@ class CardTags extends Component {
   }
 }
 
+const TagPropTypes = PropTypes.arrayOf(
+  PropTypes.shape({
+    name: PropTypes.string.isRequired,
+    _id: PropTypes.string.isRequired,
+    locked: PropTypes.bool.isRequired,
+    className: PropTypes.string
+  })
+);
+
 CardTags.propTypes = {
   isEditable: PropTypes.bool.isRequired,
   className: PropTypes.string,
-  tags: PropTypes.arrayOf(
-    PropTypes.shape({
-      name: PropTypes.string.isRequired,
-      _id: PropTypes.string.isRequired,
-      locked: PropTypes.bool.isRequired,
-      className: PropTypes.string
-    })
-  ).isRequired,
+  tags: TagPropTypes.isRequired,
   maxWidth: PropTypes.number,
   onChange: PropTypes.func,
   onTagClick: PropTypes.func,
@@ -207,7 +209,7 @@ CardTags.propTypes = {
   hideSelectOnBlur: PropTypes.bool,
 
   // Redux State
-  tagOptions: PropTypes.arrayOf(PropTypes.object).isRequired,
+  tagOptions: TagPropTypes.isRequired,
   isSearchingTags: PropTypes.bool,
 
   // Redux Actions

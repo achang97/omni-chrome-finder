@@ -109,19 +109,21 @@ const CardUsers = ({
   );
 };
 
+const UserPropTypes = PropTypes.arrayOf(
+  PropTypes.shape({
+    _id: PropTypes.string.isRequired,
+    name: PropTypes.string,
+    firstname: PropTypes.string,
+    lastname: PropTypes.string,
+    img: PropTypes.string,
+    isEditable: PropTypes.bool
+  })
+);
+
 CardUsers.propTypes = {
   isEditable: PropTypes.bool.isRequired,
   className: PropTypes.string,
-  users: PropTypes.arrayOf(
-    PropTypes.shape({
-      _id: PropTypes.string.isRequired,
-      name: PropTypes.string,
-      firstname: PropTypes.string,
-      lastname: PropTypes.string,
-      img: PropTypes.string,
-      isEditable: PropTypes.bool
-    })
-  ).isRequired,
+  users: UserPropTypes.isRequired,
   onRemoveClick: PropTypes.func,
   onUserClick: PropTypes.func,
   onAdd: PropTypes.func,
@@ -131,7 +133,7 @@ CardUsers.propTypes = {
   showNames: PropTypes.bool,
 
   // Redux State
-  userOptions: PropTypes.arrayOf(PropTypes.object).isRequired,
+  userOptions: UserPropTypes.isRequired,
   isSearchingUsers: PropTypes.bool,
 
   // Redux Actions

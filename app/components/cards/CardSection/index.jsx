@@ -48,6 +48,7 @@ const CardSection = ({
             <button
               className={s('text-gray-light flex items-center ml-reg')}
               onClick={toggleSection}
+              type="button"
             >
               {isExpanded ? <MdExpandLess /> : <MdExpandMore />}
             </button>
@@ -70,13 +71,17 @@ CardSection.propTypes = {
   showSeparator: PropTypes.bool,
   className: PropTypes.string,
   preview: PropTypes.node,
-  headerEnd: PropTypes.node
+  headerEnd: PropTypes.node,
+  children: PropTypes.node.isRequired
 };
 
 CardSection.defaultProps = {
   isExpandable: true,
   startExpanded: true,
   showSeparator: true,
+  hint: null,
+  preview: null,
+  headerEnd: null,
   className: ''
 };
 

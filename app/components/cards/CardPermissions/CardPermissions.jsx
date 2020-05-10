@@ -1,10 +1,9 @@
-import React, { Component } from 'react';
+import React from 'react';
 import AnimateHeight from 'react-animate-height';
 import PropTypes from 'prop-types';
 import _ from 'lodash';
 
 import { Select, Tabs, Tab } from 'components/common';
-import { createSelectOptions } from 'utils/select';
 import { CARD, ANIMATE } from 'appConstants';
 
 import { getStyleApplicationFn } from 'utils/style';
@@ -116,17 +115,36 @@ const CardPermissions = ({
   );
 };
 
+const PermissionGroupPropTypes = PropTypes.arrayOf(
+  PropTypes.shape({
+    name: PropTypes.string.isRequired,
+    _id: PropTypes.string.isRequired
+  })
+);
+
 CardPermissions.propTypes = {
-  selectedPermission: PropTypes.oneOf([...CARD.PERMISSION_OPTIONS, {}]).isRequired,
+  selectedPermission: PropTypes.shape({
+    label: PropTypes.string.isRequired,
+    value: PropTypes.string.isRequired
+  }),
   onChangePermission: PropTypes.func.isRequired,
-  permissionGroups: PropTypes.array.isRequired,
+  permissionGroups: PermissionGroupPropTypes.isRequired,
   onChangePermissionGroups: PropTypes.func.isRequired,
   isDisabled: PropTypes.bool,
-  showJustMe: PropTypes.bool.isRequired
+  showJustMe: PropTypes.bool.isRequired,
+
+  // Redux State
+  isSearchingPermissionGroups: PropTypes.bool,
+  permissionGroupOptions: PermissionGroupPropTypes.isRequired,
+
+  // Redux Actions
+  requestSearchPermissionGroups: PropTypes.func.isRequired
 };
 
 CardPermissions.defaultProps = {
-  isDisabled: false
+  isDisabled: false,
+  isSearchingPermissionGroups: false,
+  selectedPermission: null
 };
 
 export default CardPermissions;

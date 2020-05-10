@@ -13,14 +13,33 @@ import {
   updateCardPermissions,
   updateCardPermissionGroups
 } from 'actions/cards';
+import { MODAL_TYPE } from 'appConstants/card';
 import CardCreateModal from './CardCreateModal';
 
 const mapStateToProps = (state) => {
   const {
-    cards: { activeCard }
+    cards: {
+      activeCard: {
+        _id,
+        createError,
+        isCreatingCard,
+        isUpdatingCard,
+        isEditing,
+        edits,
+        modalOpen: { [MODAL_TYPE.CREATE]: isOpen }
+      }
+    }
   } = state;
 
-  return { ...activeCard };
+  return {
+    _id,
+    createError,
+    isCreatingCard,
+    isUpdatingCard,
+    isEditing,
+    edits,
+    isOpen
+  };
 };
 
 const mapDispatchToProps = {
