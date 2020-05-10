@@ -5,7 +5,7 @@ export const DEBOUNCE = {
 };
 
 export const TIMEOUT = {
-  SEC_3: 3000,
+  SEC_3: 3000
 };
 
 export const TRANSITIONS = {
@@ -13,8 +13,8 @@ export const TRANSITIONS = {
     entering: { opacity: 1 },
     entered: { opacity: 1 },
     exiting: { opacity: 0 },
-    exited: { opacity: 0 },
+    exited: { opacity: 0 }
   }
-}
+};
 
 export default { DEBOUNCE, TIMEOUT, TRANSITIONS };

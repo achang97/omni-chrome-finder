@@ -14,16 +14,11 @@ function promisifier(method) {
 }
 
 function promisifyAll(obj, list) {
-  list.forEach(api => bluebird.promisifyAll(obj[api], { promisifier }));
+  list.forEach((api) => bluebird.promisifyAll(obj[api], { promisifier }));
 }
 
 // let chrome extension api support Promise
-promisifyAll(chrome, [
-  'tabs',
-  'windows',
-  'browserAction',
-  'contextMenus'
-]);
+promisifyAll(chrome, ['tabs', 'windows', 'browserAction', 'contextMenus']);
 
 require('./background/contextMenus');
 require('./background/inject');

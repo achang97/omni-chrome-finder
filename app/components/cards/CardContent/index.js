@@ -1,28 +1,79 @@
 import { connect } from 'react-redux';
-import * as cardActions from 'actions/cards';
+import {
+  enableCardEditor,
+  adjustCardDescriptionSectionHeight,
+  openCardModal,
+  updateCardQuestion,
+  updateCardDescriptionEditor,
+  updateCardAnswerEditor,
+  requestGetCard,
+  openCardSideDock,
+  requestAddCardAttachment
+} from 'actions/cards';
 import CardContent from './CardContent';
 
-const mapStateToProps = state =>{
+const mapStateToProps = (state) => {
   const {
-    profile: {
-      user
-    },
+    profile: { user },
     cards: {
-      activeCard,
+      activeCard: {
+        _id,
+        question,
+        descriptionEditorState,
+        answerEditorState,
+        status,
+        tags,
+        attachments,
+        slackThreadConvoPairs,
+        slackReplies,
+        outOfDateReason,
+        isEditing,
+        edits,
+        editorEnabled,
+        descriptionSectionHeight,
+        hasLoaded,
+        isGettingCard,
+        getError
+      },
       cardsHeight,
-      cardsWidth,
-      activeCardIndex
-    },
-    screenRecording: {
-      activeId: activeScreenRecordingId,
+      cardsWidth
     }
   } = state;
 
-  return { user, ...activeCard, cardsHeight, cardsWidth, activeCardIndex, activeScreenRecordingId };
-}
+  return {
+    user,
+    cardsHeight,
+    cardsWidth,
+    _id,
+    question,
+    descriptionEditorState,
+    answerEditorState,
+    status,
+    tags,
+    attachments,
+    slackThreadConvoPairs,
+    slackReplies,
+    outOfDateReason,
+    isEditing,
+    edits,
+    editorEnabled,
+    descriptionSectionHeight,
+    hasLoaded,
+    isGettingCard,
+    getError
+  };
+};
 
 const mapDispatchToProps = {
-  ...cardActions
-}
+  enableCardEditor,
+  adjustCardDescriptionSectionHeight,
+  openCardModal,
+  updateCardQuestion,
+  updateCardDescriptionEditor,
+  updateCardAnswerEditor,
+  requestGetCard,
+  openCardSideDock,
+  requestAddCardAttachment
+};
 
 export default connect(mapStateToProps, mapDispatchToProps)(CardContent);

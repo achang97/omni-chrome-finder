@@ -1,6 +1,6 @@
 .navigate-search-input-icon-container {
-  border: 1px solid rgba(0,2,95,0.10);
-    border-left: 0 !important;
+  border: 1px solid rgba(0, 2, 95, 0.1);
+  border-left: 0 !important;
 }
 
 .navigate-search-input {
@@ -8,5 +8,5 @@
 }
 
 .navigate-search-input:focus {
-  box-shadow: none !important; 
+  box-shadow: none !important;
 }

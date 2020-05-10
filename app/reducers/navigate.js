@@ -5,7 +5,7 @@ import { TAB_OPTION } from 'appConstants/navigate';
 const initialState = {
   activeTab: TAB_OPTION.ALL,
   searchText: '',
-  filterTags: [],
+  filterTags: []
 };
 
 export default function navigateReducer(state = initialState, action) {

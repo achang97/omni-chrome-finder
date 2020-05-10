@@ -1,12 +1,20 @@
 import { connect } from 'react-redux';
 import {
-  updateCardWindowPosition, updateCardTabOrder, closeCard, closeAllCards,
-  setActiveCardIndex, adjustCardsDimensions, openCardModal, openCardContainerModal,
-  closeCardContainerModal, toggleCards, openCard
+  updateCardWindowPosition,
+  updateCardTabOrder,
+  closeCard,
+  closeAllCards,
+  setActiveCardIndex,
+  adjustCardsDimensions,
+  openCardModal,
+  openCardContainerModal,
+  closeCardContainerModal,
+  toggleCards,
+  openCard
 } from 'actions/cards';
 import Cards from './Cards';
 
-const mapStateToProps = state => {
+const mapStateToProps = (state) => {
   const {
     cards: {
       cards,
@@ -18,13 +26,21 @@ const mapStateToProps = state => {
       windowPosition,
       showCloseModal
     },
-    profile: {
-      user
-    }
+    profile: { user }
   } = state;
 
-  return { user, cardsExpanded, cards, activeCardIndex, activeCard, cardsWidth, cardsHeight, windowPosition, showCloseModal };
-}
+  return {
+    user,
+    cardsExpanded,
+    cards,
+    activeCardIndex,
+    activeCard,
+    cardsWidth,
+    cardsHeight,
+    windowPosition,
+    showCloseModal
+  };
+};
 
 const mapDispatchToProps = {
   openCard,
@@ -37,7 +53,7 @@ const mapDispatchToProps = {
   updateCardTabOrder,
   openCardModal,
   openCardContainerModal,
-  closeCardContainerModal 
-}
+  closeCardContainerModal
+};
 
 export default connect(mapStateToProps, mapDispatchToProps)(Cards);

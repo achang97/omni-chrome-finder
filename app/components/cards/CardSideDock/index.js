@@ -2,28 +2,60 @@ import { connect } from 'react-redux';
 import {
   closeCardSideDock,
   openCardModal,
-  removeCardAttachment, updateCardAttachmentName,
-  addCardOwner, removeCardOwner,
-  addCardSubscriber, removeCardSubscriber,
-  updateCardTags, removeCardTag,
-  updateCardKeywords,
-  updateCardVerificationInterval, updateCardPermissions, updateCardPermissionGroups,
+  removeCardAttachment,
+  updateCardAttachmentName,
+  addCardOwner,
+  removeCardOwner,
+  addCardSubscriber,
+  removeCardSubscriber,
+  updateCardTags,
+  removeCardTag,
+  updateCardVerificationInterval,
+  updateCardPermissions,
+  updateCardPermissionGroups,
   editCard
 } from 'actions/cards';
 import CardSideDock from './CardSideDock';
 
-const mapStateToProps = state => {
+const mapStateToProps = (state) => {
   const {
     cards: {
-      activeCard
-    },
-    auth: {
-      token
+      activeCard: {
+        isEditing,
+        status,
+        owners,
+        subscribers,
+        attachments,
+        tags,
+        permissions,
+        permissionGroups,
+        verificationInterval,
+        isDeletingCard,
+        createdAt,
+        updatedAt,
+        sideDockOpen,
+        edits
+      }
     }
   } = state;
 
-  return { ...activeCard, token };
-}
+  return {
+    isEditing,
+    status,
+    owners,
+    subscribers,
+    attachments,
+    tags,
+    permissions,
+    permissionGroups,
+    verificationInterval,
+    isDeletingCard,
+    createdAt,
+    updatedAt,
+    sideDockOpen,
+    edits
+  };
+};
 
 const mapDispatchToProps = {
   closeCardSideDock,
@@ -36,11 +68,10 @@ const mapDispatchToProps = {
   updateCardAttachmentName,
   updateCardTags,
   removeCardTag,
-  updateCardKeywords,
   updateCardVerificationInterval,
   updateCardPermissions,
   updateCardPermissionGroups,
-  editCard,
-}
+  editCard
+};
 
 export default connect(mapStateToProps, mapDispatchToProps)(CardSideDock);

@@ -1,41 +1,37 @@
 import { connect } from 'react-redux';
-import { requestSearchCards } from 'actions/search';
 import {
   changeAskIntegration,
-  requestAddAskAttachment, requestRemoveAskAttachment, updateAskAttachmentName,
-  requestAskQuestion, updateAskQuestionTitle, updateAskQuestionDescription,
-  removeAskRecipient, updateAskRecipient, addAskRecipient,
-  requestGetSlackConversations, showAskDescriptionEditor
+  requestAddAskAttachment,
+  requestRemoveAskAttachment,
+  updateAskAttachmentName,
+  requestAskQuestion,
+  updateAskQuestionTitle,
+  updateAskQuestionDescription,
+  removeAskRecipient,
+  updateAskRecipient,
+  addAskRecipient,
+  requestGetSlackConversations,
+  showAskDescriptionEditor
 } from 'actions/ask';
 import { toggleDockHeight } from 'actions/display';
 
 import Ask from './Ask';
 
-const mapStateToProps = state => {
-  const { 
+const mapStateToProps = (state) => {
+  const {
     ask: {
       activeIntegration,
       attachments,
       isAskingQuestion,
-      askError, askSuccess,
-      questionTitle, 
+      questionTitle,
       questionDescription,
       recipients,
       slackConversations,
-      isGettingSlackConversations,
-      getSlackConversationsError,
       showPerformanceScore,
       isDescriptionEditorShown
     },
-    display: {
-      dockExpanded
-    },
-    profile: {
-      user
-    },
-    auth: {
-      token
-    }
+    display: { dockExpanded },
+    profile: { user }
   } = state;
 
   return {
@@ -43,19 +39,15 @@ const mapStateToProps = state => {
     isDescriptionEditorShown,
     attachments,
     isAskingQuestion,
-    askError, askSuccess,
-    questionTitle, 
+    questionTitle,
     questionDescription,
     recipients,
     slackConversations,
-    isGettingSlackConversations,
-    getSlackConversationsError,
     dockExpanded,
     showPerformanceScore,
-    user,
-    token
+    user
   };
-}
+};
 
 const mapDispatchToProps = {
   toggleDockHeight,
@@ -70,8 +62,7 @@ const mapDispatchToProps = {
   removeAskRecipient,
   updateAskRecipient,
   addAskRecipient,
-  requestGetSlackConversations,
-  requestSearchCards, 
-}
+  requestGetSlackConversations
+};
 
 export default connect(mapStateToProps, mapDispatchToProps)(Ask);

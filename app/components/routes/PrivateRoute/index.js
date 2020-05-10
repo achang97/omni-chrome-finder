@@ -3,13 +3,9 @@ import { hasCompletedOnboarding } from 'utils/auth';
 import PrivateRoute from './PrivateRoute';
 
 const mapStateToProps = (state) => {
-  const { 
-    auth: {
-      token
-    },
-    profile: {
-      user
-    }
+  const {
+    auth: { token },
+    profile: { user }
   } = state;
 
   return {
@@ -17,6 +13,6 @@ const mapStateToProps = (state) => {
     isVerified: user && user.isVerified,
     hasCompletedOnboarding: user && hasCompletedOnboarding(user.onboarding)
   };
-}
+};
 
 export default connect(mapStateToProps)(PrivateRoute);

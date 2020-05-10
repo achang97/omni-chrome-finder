@@ -3,8 +3,7 @@
   "name": "Omni Development",
   "manifest_version": 2,
   "description": "A lightweight Q&A tool that helps you document and find information faster.",
-  "browser_action": {
-  },
+  "browser_action": {},
   "icons": {
     "16": "img/icon-16.png",
     "48": "img/icon-48.png",
@@ -23,6 +22,13 @@
       "description": "Open Omni extension"
     }
   },
-  "permissions": ["activeTab", "storage", "contextMenus", "notifications", "https://app.addomni.com/*", "https://mail.google.com/*"],
+  "permissions": [
+    "activeTab",
+    "storage",
+    "contextMenus",
+    "notifications",
+    "https://app.addomni.com/*",
+    "https://mail.google.com/*"
+  ],
   "content_security_policy": "default-src 'self'; script-src 'self' http://localhost:3000 https://localhost:3000 'unsafe-eval'; connect-src http://localhost:3000 https://localhost:3000 ws://localhost:8000 wss://api-dev.addomni.com; style-src * 'unsafe-inline' 'self' blob:; img-src 'self' data:;"
 }

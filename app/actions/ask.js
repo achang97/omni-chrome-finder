@@ -5,11 +5,11 @@ export function updateAskSearchText(text) {
 }
 
 export function togglePerformanceScore() {
-  return { type: types.TOGGLE_PERFORMANCE_SCORE, payload: { } };
+  return { type: types.TOGGLE_PERFORMANCE_SCORE, payload: {} };
 }
 
 export function toggleAskFeedbackInput() {
-  return { type: types.TOGGLE_ASK_FEEDBACK_INPUT, payload: { } };
+  return { type: types.TOGGLE_ASK_FEEDBACK_INPUT, payload: {} };
 }
 
 export function updateAskFeedback(feedback) {
@@ -17,7 +17,7 @@ export function updateAskFeedback(feedback) {
 }
 
 export function showAskDescriptionEditor() {
-  return { type: types.SHOW_ASK_DESCRIPTION_EDITOR, payload: { } };
+  return { type: types.SHOW_ASK_DESCRIPTION_EDITOR, payload: {} };
 }
 
 export function changeAskIntegration(integration) {
@@ -56,7 +56,6 @@ export function handleAddAskAttachmentError(key, error) {
   return { type: types.ADD_ASK_ATTACHMENT_ERROR, payload: { key, error } };
 }
 
-
 export function requestRemoveAskAttachment(key) {
   return { type: types.REMOVE_ASK_ATTACHMENT_REQUEST, payload: { key } };
 }
@@ -73,7 +72,6 @@ export function updateAskAttachmentName(key, name) {
   return { type: types.UPDATE_ASK_ATTACHMENT_NAME, payload: { key, name } };
 }
 
-
 /* API Requests */
 export function requestGetSlackConversations() {
   return { type: types.GET_SLACK_CONVERSATIONS_REQUEST, payload: {} };
@@ -87,13 +85,12 @@ export function handleGetSlackConversationsError(error) {
   return { type: types.GET_SLACK_CONVERSATIONS_ERROR, payload: { error } };
 }
 
-
 export function requestAskQuestion() {
-  return { type: types.ASK_QUESTION_REQUEST, payload: { } };
+  return { type: types.ASK_QUESTION_REQUEST, payload: {} };
 }
 
 export function handleAskQuestionSuccess() {
-  return { type: types.ASK_QUESTION_SUCCESS, payload: { } };
+  return { type: types.ASK_QUESTION_SUCCESS, payload: {} };
 }
 
 export function handleAskQuestionError(error) {
@@ -101,16 +98,15 @@ export function handleAskQuestionError(error) {
 }
 
 export function clearAskQuestionInfo() {
-  return { type: types.CLEAR_ASK_QUESTION_INFO, payload: { } };
+  return { type: types.CLEAR_ASK_QUESTION_INFO, payload: {} };
 }
 
-
 export function requestSubmitFeedback() {
-  return { type: types.SUBMIT_FEEDBACK_REQUEST, payload: { } };
+  return { type: types.SUBMIT_FEEDBACK_REQUEST, payload: {} };
 }
 
 export function handleSubmitFeedbackSuccess() {
-  return { type: types.SUBMIT_FEEDBACK_SUCCESS, payload: { } };
+  return { type: types.SUBMIT_FEEDBACK_SUCCESS, payload: {} };
 }
 
 export function handleSubmitFeedbackError(error) {

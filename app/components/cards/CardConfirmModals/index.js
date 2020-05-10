@@ -1,20 +1,79 @@
 import { connect } from 'react-redux';
-import * as cardActions from 'actions/cards';
+import {
+  updateOutOfDateReason,
+  updateCardSelectedThreadIndex,
+  toggleCardSelectedMessage,
+  closeCardModal,
+  closeCard,
+  cancelEditCard,
+  cancelEditCardMessages,
+  requestDeleteCard,
+  requestUpdateCard,
+  requestMarkUpToDate,
+  requestMarkOutOfDate,
+  requestApproveCard,
+  requestGetSlackThread
+} from 'actions/cards';
 import CardConfirmModals from './CardConfirmModals';
 
-const mapStateToProps = state =>{
+const mapStateToProps = (state) => {
   const {
     cards: {
-      activeCard,
+      activeCard: {
+        isEditing,
+        slackReplies,
+        edits,
+        modalOpen,
+        slackThreadConvoPairs,
+        slackThreadIndex,
+        deleteError,
+        isDeletingCard,
+        updateError,
+        isUpdatingCard,
+        isMarkingStatus,
+        markStatusError,
+        isGettingSlackThread,
+        getSlackThreadError,
+        outOfDateReasonInput
+      },
       activeCardIndex
     }
   } = state;
 
-  return { ...activeCard, activeCardIndex };
-}
+  return {
+    isEditing,
+    slackReplies,
+    edits,
+    modalOpen,
+    slackThreadConvoPairs,
+    slackThreadIndex,
+    deleteError,
+    isDeletingCard,
+    updateError,
+    isUpdatingCard,
+    isMarkingStatus,
+    markStatusError,
+    isGettingSlackThread,
+    getSlackThreadError,
+    outOfDateReasonInput,
+    activeCardIndex
+  };
+};
 
 const mapDispatchToProps = {
-  ...cardActions
-}
+  updateOutOfDateReason,
+  updateCardSelectedThreadIndex,
+  toggleCardSelectedMessage,
+  closeCardModal,
+  closeCard,
+  cancelEditCard,
+  cancelEditCardMessages,
+  requestDeleteCard,
+  requestUpdateCard,
+  requestMarkUpToDate,
+  requestMarkOutOfDate,
+  requestApproveCard,
+  requestGetSlackThread
+};
 
 export default connect(mapStateToProps, mapDispatchToProps)(CardConfirmModals);

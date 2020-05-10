@@ -14,7 +14,7 @@ export const initialState = {
 
   recoveryEmail: '',
 
-  verificationCode: '',
+  verificationCode: ''
 };
 
 export default function authReducer(state = initialState, action) {
@@ -35,7 +35,14 @@ export default function authReducer(state = initialState, action) {
     }
     case types.LOGIN_SUCCESS: {
       const { token, refreshToken } = payload;
-      return { ...state, isLoggingIn: false, token, refreshToken, loginEmail: '', loginPassword: '' };
+      return {
+        ...state,
+        isLoggingIn: false,
+        token,
+        refreshToken,
+        loginEmail: '',
+        loginPassword: ''
+      };
     }
     case types.LOGIN_ERROR: {
       const { error } = payload;
@@ -97,15 +104,18 @@ export default function authReducer(state = initialState, action) {
     }
     case types.SEND_RECOVERY_EMAIL_ERROR: {
       const { error } = payload;
-      return { ...state, isSendingRecoveryEmail: false, recoverySuccess: false, recoveryError: error };
+      return {
+        ...state,
+        isSendingRecoveryEmail: false,
+        recoverySuccess: false,
+        recoveryError: error
+      };
     }
-
 
     case types.VERIFY_REQUEST: {
       return { ...state, isVerifying: true, verifyError: null };
     }
     case types.VERIFY_SUCCESS: {
-      const { token, refreshToken } = payload;
       return { ...state, isVerifying: false, verificationCode: '' };
     }
     case types.VERIFY_ERROR: {
@@ -114,15 +124,29 @@ export default function authReducer(state = initialState, action) {
     }
 
     case types.RESEND_VERIFICATION_EMAIL_REQUEST: {
-      return { ...state, isResendingVerification: true, resendVerificationSuccess: null, resendVerificationError: null };
+      return {
+        ...state,
+        isResendingVerification: true,
+        resendVerificationSuccess: null,
+        resendVerificationError: null
+      };
     }
     case types.RESEND_VERIFICATION_EMAIL_SUCCESS: {
-      const { token, refreshToken } = payload;
-      return { ...state, isResendingVerification: false, resendVerificationSuccess: true, resendVerificationError: '' };
+      return {
+        ...state,
+        isResendingVerification: false,
+        resendVerificationSuccess: true,
+        resendVerificationError: ''
+      };
     }
     case types.RESEND_VERIFICATION_EMAIL_ERROR: {
       const { error } = payload;
-      return { ...state, isResendingVerification: false, resendVerificationSuccess: false, resendVerificationError: error };
+      return {
+        ...state,
+        isResendingVerification: false,
+        resendVerificationSuccess: false,
+        resendVerificationError: error
+      };
     }
     case types.CLEAR_RESEND_VERIFICATION_INFO: {
       return { ...state, isResendingVerification: false, resendVerificationSuccess: null };

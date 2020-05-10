@@ -17,7 +17,7 @@ export const SECTION_TYPE = {
   NEEDS_VERIFICATION: 'NEEDS_VERIFICATION',
   OUT_OF_DATE: 'OUT_OF_DATE',
   NOT_DOCUMENTED: 'NOT_DOCUMENTED',
-  NEEDS_APPROVAL: 'NEEDS_APPROVAL',
+  NEEDS_APPROVAL: 'NEEDS_APPROVAL'
 };
 
 export const SECTIONS = [
@@ -40,7 +40,7 @@ export const SECTIONS = [
     type: SECTION_TYPE.NOT_DOCUMENTED,
     title: 'Undocumented Questions',
     taskTypes: [TYPE.NOT_DOCUMENTED]
-  },
+  }
 ];
 
 export default { TYPE, TAB_OPTIONS, SECTION_TYPE, SECTIONS };

@@ -1,15 +1,18 @@
-.toggle-tab { 
+.toggle-tab {
   top: 50px;
   z-index: 10000000000;
-  @apply flex fixed right-0; 
+
+  @apply flex fixed right-0;
 }
 
 .toggle-tab-button {
   max-width: 25px;
+
   @apply rounded-r-none px-0;
 }
 
 .toggle-close-button {
   font-size: 10px;
+
   @apply pt-0;
 }

@@ -1,24 +1,46 @@
 import { connect } from 'react-redux';
 import {
-  requestCreateCard, requestUpdateCard,
+  requestCreateCard,
+  requestUpdateCard,
   closeCardModal,
-  addCardOwner, removeCardOwner,
-  addCardSubscriber, removeCardSubscriber,
-  updateCardTags, removeCardTag,
-  updateCardKeywords,
-  updateCardVerificationInterval, updateCardPermissions, updateCardPermissionGroups,
+  addCardOwner,
+  removeCardOwner,
+  addCardSubscriber,
+  removeCardSubscriber,
+  updateCardTags,
+  removeCardTag,
+  updateCardVerificationInterval,
+  updateCardPermissions,
+  updateCardPermissionGroups
 } from 'actions/cards';
+import { MODAL_TYPE } from 'appConstants/card';
 import CardCreateModal from './CardCreateModal';
 
-const mapStateToProps = state => {
+const mapStateToProps = (state) => {
   const {
     cards: {
-      activeCard
+      activeCard: {
+        _id,
+        createError,
+        isCreatingCard,
+        isUpdatingCard,
+        isEditing,
+        edits,
+        modalOpen: { [MODAL_TYPE.CREATE]: isOpen }
+      }
     }
   } = state;
 
-  return { ...activeCard };
-}
+  return {
+    _id,
+    createError,
+    isCreatingCard,
+    isUpdatingCard,
+    isEditing,
+    edits,
+    isOpen
+  };
+};
 
 const mapDispatchToProps = {
   requestCreateCard,
@@ -30,10 +52,9 @@ const mapDispatchToProps = {
   removeCardSubscriber,
   updateCardTags,
   removeCardTag,
-  updateCardKeywords,
   updateCardVerificationInterval,
   updateCardPermissions,
-  updateCardPermissionGroups  
-}
+  updateCardPermissionGroups
+};
 
 export default connect(mapStateToProps, mapDispatchToProps)(CardCreateModal);

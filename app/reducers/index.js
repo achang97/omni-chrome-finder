@@ -1,4 +1,5 @@
 import { combineReducers } from 'redux';
+import { LOGOUT } from 'actions/actionTypes';
 import auth from './auth';
 import profile from './profile';
 import display from './display';
@@ -11,8 +12,6 @@ import search from './search';
 import screenRecording from './screenRecording';
 import auditLog from './auditLog';
 
-import { LOGOUT } from 'actions/actionTypes';
-
 const appReducer = combineReducers({
   auth,
   profile,
@@ -24,15 +23,16 @@ const appReducer = combineReducers({
   tasks,
   search,
   screenRecording,
-  auditLog,
+  auditLog
 });
 
 const rootReducer = (state, action) => {
+  let nextState = state;
   if (action.type === LOGOUT) {
-    state = undefined;
+    nextState = undefined;
   }
 
-  return appReducer(state, action);
+  return appReducer(nextState, action);
 };
 
 export default rootReducer;

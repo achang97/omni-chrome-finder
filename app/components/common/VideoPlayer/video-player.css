@@ -1,51 +1,54 @@
-.video-player-control-bar button, .video-player-control-bar button:hover, .video-player-control-bar button:active {
-    background: none !important;
-    border: none !important;
-    color: inherit !important;
-    display: inline-block !important;
-    overflow: visible !important;
-    font-size: inherit !important;
-    line-height: inherit !important;
-    text-transform: none !important;
-    text-decoration: none !important;
-    transition: none !important;
-    -webkit-appearance: none !important;
-    outline: none !important;
-    position: relative !important;
-    text-align: center !important;
-    margin: 0 !important;
-    padding: 0 !important;
-    height: 100% !important;
-    width: 4em !important;    
+.video-player-control-bar button,
+.video-player-control-bar button:hover,
+.video-player-control-bar button:active {
+  background: none !important;
+  border: none !important;
+  color: inherit !important;
+  display: inline-block !important;
+  overflow: visible !important;
+  font-size: inherit !important;
+  line-height: inherit !important;
+  text-transform: none !important;
+  text-decoration: none !important;
+  transition: none !important;
+  -webkit-appearance: none !important;
+  outline: none !important;
+  position: relative !important;
+  text-align: center !important;
+  margin: 0 !important;
+  padding: 0 !important;
+  height: 100% !important;
+  width: 4em !important;
 }
 
-button.video-player-big-play-button, button.video-player-big-play-button:hover, button.video-player-big-play-button:active {
-    top: 50% !important;
-    left: 50% !important;
-    margin-top: -0.75em !important;
-    margin-left: -1.5em !important;
-    font-size: 3em !important;
-    line-height: 1.5em !important;
-    height: 1.5em !important;
-    width: 3em !important;
-    display: block !important;
-    position: absolute !important;
-    padding: 0 !important;
-    cursor: pointer !important;
-    opacity: 1 !important;
-    border: 0.06666em solid #fff !important;
-    background-color: #2B333F !important;
-    background-color: rgba(43, 51, 63, 0.7) !important;
-    -webkit-border-radius: 0.3em !important;
-    -moz-border-radius: 0.3em !important;
-    border-radius: 0.3em !important;
-    -webkit-transition: all 0.4s !important;
-    -moz-transition: all 0.4s !important;
-    -o-transition: all 0.4s !important;
-    transition: all 0.4s !important;
+button.video-player-big-play-button,
+button.video-player-big-play-button:hover,
+button.video-player-big-play-button:active {
+  top: 50% !important;
+  left: 50% !important;
+  margin-top: -0.75em !important;
+  margin-left: -1.5em !important;
+  font-size: 3em !important;
+  line-height: 1.5em !important;
+  height: 1.5em !important;
+  width: 3em !important;
+  display: block !important;
+  position: absolute !important;
+  padding: 0 !important;
+  cursor: pointer !important;
+  opacity: 1 !important;
+  border: 0.06666em solid #fff !important;
+  background-color: #2b333f !important;
+  background-color: rgba(43, 51, 63, 0.7) !important;
+  -webkit-border-radius: 0.3em !important;
+  -moz-border-radius: 0.3em !important;
+  border-radius: 0.3em !important;
+  -webkit-transition: all 0.4s !important;
+  -moz-transition: all 0.4s !important;
+  -o-transition: all 0.4s !important;
+  transition: all 0.4s !important;
 }
 
 button.video-player-big-play-button-hide {
-    display: none !important;
+  display: none !important;
 }
-

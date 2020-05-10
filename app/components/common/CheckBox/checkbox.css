@@ -1,11 +1,13 @@
 .checkbox-container {
   height: 32px;
   width: 32px;
-  border: 1px solid #7A7BAA33;
+  border: 1px solid #7a7baa33;
+
   @apply rounded-full text-purple-reg flex flex-col items-center justify-center cursor-pointer;
 }
 
 .checkbox-container-selected {
-  background: #E0E0EB;
+  background: #e0e0eb;
+
   @apply border-0;
 }

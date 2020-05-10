@@ -1,3 +1,4 @@
+/* eslint-disable import/no-mutable-exports, global-require  */
 import { NODE_ENV } from 'appConstants';
 
 let createStore;

@@ -1,13 +1,16 @@
-.separator-horizontal, .separator-vertical {
+.separator-horizontal,
+.separator-vertical {
   @apply bg-gray-xlight;
 }
 
 .separator-horizontal {
   height: 1px;
+
   @apply my-xs min-w-full;
 }
 
 .separator-vertical {
   width: 1px;
+
   @apply mx-xs min-h-full;
 }

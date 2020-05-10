@@ -16,7 +16,6 @@ export function removeFilterTag(index) {
   return { type: types.REMOVE_FILTER_TAG, payload: { index } };
 }
 
-
 export function requestDeleteNavigateCard(cardId) {
   return { type: types.DELETE_NAVIGATE_CARD_REQUEST, payload: { cardId } };
 }

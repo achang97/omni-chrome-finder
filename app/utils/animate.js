@@ -5,7 +5,7 @@ function easeInOutSin(time) {
 export function animate(property, element, to, options = {}, cb = () => {}) {
   const {
     ease = easeInOutSin,
-    duration = 300, // standard
+    duration = 300 // standard
   } = options;
 
   let start = null;
@@ -48,7 +48,7 @@ export function animate(property, element, to, options = {}, cb = () => {}) {
   return cancel;
 }
 
-export const getBaseAnimationStyle = transitionMs => ({
+export const getBaseAnimationStyle = (transitionMs) => ({
   transition: `opacity ${transitionMs}ms ease-in-out, transform ${transitionMs}ms`
 });
 

@@ -4,26 +4,34 @@ import { requestSearchCards, clearSearchCards } from 'actions/search';
 import { SEARCH } from 'appConstants';
 import Navigate from './Navigate';
 
-const mapStateToProps = state => {
+const mapStateToProps = (state) => {
   const {
-    navigate,
+    navigate: { searchText, activeTab, filterTags, isDeletingCard, deleteError },
     search: {
       cards: {
-        [SEARCH.TYPE.NAVIGATE]: navigateCards
+        [SEARCH.TYPE.NAVIGATE]: { cards, isSearchingCards, hasReachedLimit }
       }
     },
-    profile: {
-      user
-    }
+    profile: { user }
   } = state;
 
-  return { ...navigate, ...navigateCards, user }
-}
+  return {
+    searchText,
+    activeTab,
+    filterTags,
+    isDeletingCard,
+    deleteError,
+    cards,
+    isSearchingCards,
+    hasReachedLimit,
+    user
+  };
+};
 
 const mapDispatchToProps = {
   ...navigateActions,
   requestSearchCards,
-  clearSearchCards,  
-}
+  clearSearchCards
+};
 
 export default connect(mapStateToProps, mapDispatchToProps)(Navigate);

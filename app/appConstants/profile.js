@@ -14,15 +14,27 @@ export const USER_BADGE = {
   BRONZE: 'Bronze',
   SILVER: 'Silver',
   GOLD: 'Gold',
-  PLATINUM: 'Platinum',
+  PLATINUM: 'Platinum'
 };
 
 export const AUDIT_TYPE = {
   CREATE_CARD_EXTENSION: 'createCardExtension',
   CONTEXT_MENU_SEARCH: 'contextMenuSearch',
   OPEN_EXTERNAL_DOC: 'openExternalDoc'
-}
+};
 
 export const ONBOARDING_COMPLETE = -1;
 
-export default { SETTING_SECTION_TYPE, USER_ROLE, USER_BADGE, AUDIT_TYPE, ONBOARDING_COMPLETE };
+export const ONBOARDING_SECTION = {
+  CREATE_CARDS: 'createCards',
+  INTEGRATIONS: 'integrations'
+};
+
+export default {
+  SETTING_SECTION_TYPE,
+  USER_ROLE,
+  USER_BADGE,
+  AUDIT_TYPE,
+  ONBOARDING_COMPLETE,
+  ONBOARDING_SECTION
+};

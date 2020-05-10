@@ -1,7 +1,7 @@
 export const TYPE = {
   POPOUT: 'POPOUT',
   NAVIGATE: 'NAVIGATE',
-  AUTOFIND: 'AUTOFIND',
+  AUTOFIND: 'AUTOFIND'
 };
 
 export default { TYPE };

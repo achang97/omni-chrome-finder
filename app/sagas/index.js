@@ -19,6 +19,6 @@ export default function* rootSaga() {
     watchProfileRequests(),
     watchTasksRequests(),
     watchNavigateRequests(),
-    watchAuditLogRequests(),
+    watchAuditLogRequests()
   ]);
 }
