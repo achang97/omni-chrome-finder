@@ -95,7 +95,7 @@ function* verify() {
     const verificationCode = yield select((state) => state.auth.verificationCode);
     const firstname = yield select((state) => state.profile.user.firstname);
 
-    yield call(doPost, '/users/verifyCheck', { code: verificationCode });
+    yield call(doPost, '/users/me/verifyCheck', { code: verificationCode });
     yield all([
       put(handleVerifySuccess()),
       put(
@@ -123,7 +123,7 @@ function* sendRecoveryEmail() {
 
 function* resendVerificationEmail() {
   try {
-    yield call(doPost, '/users/resendVerification');
+    yield call(doPost, '/users/me/resendVerification');
     yield put(handleResendVerificationEmailSuccess());
   } catch (error) {
     yield put(handleResendVerificationEmailError(getErrorMessage(error)));
