@@ -37,9 +37,6 @@ const Tabs = ({
   const [displayScroll, setDisplayScroll] = useState({ start: false, end: false });
   const tabsRef = useRef(null);
 
-  const prevChildren = usePrevious(children) || [];
-  const prevTabOptions = usePrevious(tabOptions) || [];
-
   const handleResize = _.debounce(() => {
     if (tabsRef.current) {
       const { scrollLeft, scrollWidth, clientWidth } = tabsRef.current;
@@ -61,10 +58,13 @@ const Tabs = ({
     }
   };
 
-  useEffect(() => {
-    const numChildren = children ? children.length : 0;
-    const numTabOptions = tabOptions ? tabOptions.length : 0;
+  const prevChildren = usePrevious(children) || [];
+  const prevTabOptions = usePrevious(tabOptions) || [];
 
+  const numChildren = children ? children.length : 0;
+  const numTabOptions = tabOptions ? tabOptions.length : 0;
+
+  useEffect(() => {
     if (prevChildren.length !== numChildren || prevTabOptions.length !== numTabOptions) {
       handleResize();
     }
@@ -75,7 +75,7 @@ const Tabs = ({
         moveTabsScroll(scrollWidth - scrollLeft);
       }
     }
-  }, [children, tabOptions]);
+  }, [numChildren, prevChildren.length, numTabOptions, prevTabOptions.length, handleResize]);
 
   const handleScrollClick = (isStart) => {
     moveTabsScroll((isStart ? -1 : 1) * tabsRef.current.clientWidth);
@@ -179,8 +179,7 @@ Tabs.propTypes = {
       value: PropTypes.any.isRequired
     })
   ),
-  activeValue: PropTypes.oneOfType([PropTypes.string, PropTypes.number, PropTypes.object])
-    .isRequired,
+  activeValue: PropTypes.any, // eslint-disable-line react/forbid-prop-types
   onTabClick: PropTypes.func.isRequired,
   clickOnMouseDown: PropTypes.bool,
   style: PropTypes.shape({}),

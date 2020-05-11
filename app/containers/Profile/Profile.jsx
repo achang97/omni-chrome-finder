@@ -92,7 +92,7 @@ const Profile = ({
 
   useEffect(() => {
     requestGetUser();
-  }, []);
+  }, [requestGetUser]);
 
   const renderAboutSection = () => {
     return (

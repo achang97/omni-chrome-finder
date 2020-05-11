@@ -23,7 +23,7 @@ const CardVerificationInterval = ({ isEditable, verificationInterval, onChange }
         'underline-border border-purple-gray-20 mb-sm text-purple-reg text-sm inline-block'
       )}
     >
-      {verificationInterval.label}
+      {verificationInterval ? verificationInterval.label : 'No Verification Interval Selected'}
     </div>
   );
 

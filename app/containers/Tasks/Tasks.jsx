@@ -34,11 +34,11 @@ const Tasks = ({
       updateTasksOpenSection(SECTION_TYPE.ALL);
       updateTasksTab(0);
     };
-  }, []);
+  }, [updateTasksOpenSection, updateTasksTab]);
 
   useEffect(() => {
     requestGetTasks();
-  }, [tabIndex]);
+  }, [tabIndex, requestGetTasks]);
 
   const getTasks = (index) => {
     const currTasks = tasks.filter(({ status }) => {

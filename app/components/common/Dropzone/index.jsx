@@ -29,7 +29,7 @@ const rejectStyle = {
 };
 
 const StyledDropzone = ({ onDrop, accept, style, className, children, useBaseStyle }) => {
-  const onDropCallback = useCallback((acceptedFiles) => onDrop(acceptedFiles), []);
+  const onDropCallback = useCallback((acceptedFiles) => onDrop(acceptedFiles), [onDrop]);
 
   const { getRootProps, getInputProps, isDragActive, isDragAccept, isDragReject } = useDropzone({
     accept,

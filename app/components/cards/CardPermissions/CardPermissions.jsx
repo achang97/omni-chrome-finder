@@ -33,16 +33,18 @@ const CardPermissions = ({
     );
   }
 
+  const { label: selectedLabel, value: selectedValue } = selectedPermission || {};
+
   return (
     <div>
       {isDisabled ? (
-        selectedPermission.value !== CARD.PERMISSION_OPTION.SPECIFIC_GROUPS && (
+        selectedValue !== CARD.PERMISSION_OPTION.SPECIFIC_GROUPS && (
           <div
             className={s(
               'underline-border border-purple-gray-20 mb-sm text-purple-reg text-sm inline-block'
             )}
           >
-            {selectedPermission.label}
+            {selectedLabel || 'No Permissions Selected'}
           </div>
         )
       ) : (
@@ -60,7 +62,7 @@ const CardPermissions = ({
               <div
                 className={s(
                   `${
-                    permissionOption.value !== selectedPermission.value
+                    permissionOption.value !== selectedValue
                       ? 'underline-border border-purple-gray-20'
                       : 'primary-underline'
                   } card-permissions-tab`
@@ -72,9 +74,7 @@ const CardPermissions = ({
           ))}
         </Tabs>
       )}
-      <AnimateHeight
-        height={selectedPermission.value === CARD.PERMISSION_OPTION.SPECIFIC_GROUPS ? 'auto' : 0}
-      >
+      <AnimateHeight height={selectedValue === CARD.PERMISSION_OPTION.SPECIFIC_GROUPS ? 'auto' : 0}>
         {!isDisabled ? (
           <Select
             value={permissionGroups}

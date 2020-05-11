@@ -47,7 +47,7 @@ const Create = ({
     if (isTemplateView) {
       requestGetTemplates();
     }
-  }, [isTemplateView]);
+  }, [isTemplateView, requestGetTemplates]);
 
   const openCardWithProps = (createModalOpen = false, edits = {}) => {
     // Open card with random ID and clear out Create panel

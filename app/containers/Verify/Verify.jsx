@@ -22,10 +22,10 @@ const Verify = ({
   logout
 }) => {
   useEffect(() => {
-    if (dockVisible && !isGettingUser) {
+    if (dockVisible) {
       requestGetUser();
     }
-  }, [dockVisible]);
+  }, [dockVisible, requestGetUser]);
 
   const renderFooter = () => (
     <>

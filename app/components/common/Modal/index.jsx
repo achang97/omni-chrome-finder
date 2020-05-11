@@ -138,12 +138,12 @@ Modal.propTypes = {
   primaryButtonProps: PropTypes.shape({
     disabled: PropTypes.bool,
     isLoading: PropTypes.bool,
-    icon: PropTypes.string
+    icon: PropTypes.node
   }),
   secondaryButtonProps: PropTypes.shape({
     disabled: PropTypes.bool,
     isLoading: PropTypes.bool,
-    icon: PropTypes.string,
+    icon: PropTypes.node,
     onClick: PropTypes.func.isRequired
   }),
   showPrimaryButton: PropTypes.bool,
