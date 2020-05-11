@@ -83,7 +83,7 @@ function* updatePermissions({ type, permission }) {
   const update = { [keyName]: { ...permissionsObj, [permission]: !permissionsObj[permission] } };
 
   try {
-    const { userJson } = yield call(doPut, '/users', { update });
+    const userJson = yield call(doPut, '/users/me', { update });
     yield put(handleUpdateUserPermissionsSuccess(type, userJson));
   } catch (error) {
     yield put(handleUpdateUserPermissionsError(type, getErrorMessage(error)));
@@ -92,8 +92,8 @@ function* updatePermissions({ type, permission }) {
 
 function* getUser() {
   try {
-    const [{ userJson }, integrations, analytics] = yield all([
-      call(doGet, '/users'),
+    const [userJson, integrations, analytics] = yield all([
+      call(doGet, '/users/me'),
       call(doGet, '/users/me/integrations'),
       call(doGet, '/analytics/my/cards')
     ]);
@@ -120,7 +120,7 @@ function* getUserOnboardingStats() {
 function* updateUser() {
   try {
     const { user, userEdits } = yield select((state) => state.profile);
-    const { userJson } = yield call(doPut, '/users', { update: userEdits });
+    const userJson = yield call(doPut, '/users/me', userEdits);
     yield put(handleSaveUserSuccess({ ...userJson, integrations: user.integrations }));
   } catch (error) {
     yield put(handleSaveUserError(getErrorMessage(error)));
@@ -135,7 +135,7 @@ function* updateProfilePicture({ file }) {
     formData.append('file', file);
 
     const { key } = yield call(doPost, '/files/upload', formData, { isForm: true });
-    const { userJson } = yield call(doPut, '/users', { update: { profilePicture: key } });
+    const userJson = yield call(doPut, '/users/me', { profilePicture: key });
     yield put(handleUpdateProfilePictureSuccess({ ...userJson, integrations }));
   } catch (error) {
     yield put(handleUpdateProfilePictureError(getErrorMessage(error)));
@@ -145,8 +145,8 @@ function* updateProfilePicture({ file }) {
 function* deleteProfilePicture() {
   try {
     const { integrations, profilePicture } = yield select((state) => state.profile.user);
-    const [{ userJson }] = yield all([
-      call(doPut, '/users', { update: { profilePicture: null } }),
+    const [userJson] = yield all([
+      call(doPut, '/users/me', { profilePicture: null }),
       call(doDelete, `/files/${profilePicture}`)
     ]);
     yield put(handleDeleteProfilePictureSuccess({ ...userJson, integrations }));

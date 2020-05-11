@@ -63,7 +63,7 @@ export default function* watchAuthRequests() {
 function* login() {
   try {
     const { loginEmail, loginPassword } = yield select((state) => state.auth);
-    const { userJson, token, refreshToken } = yield call(doPost, '/users/login', {
+    const { token, refreshToken, ...userJson } = yield call(doPost, '/users/login', {
       email: loginEmail,
       password: loginPassword
     });
@@ -78,7 +78,7 @@ function* signup() {
     const { signupFirstName, signupLastName, signupEmail, signupPassword } = yield select(
       (state) => state.auth
     );
-    const { userJson, token, refreshToken } = yield call(doPost, '/users/signup', {
+    const { token, refreshToken, ...userJson } = yield call(doPost, '/users/signup', {
       firstname: signupFirstName,
       lastname: signupLastName,
       email: signupEmail,

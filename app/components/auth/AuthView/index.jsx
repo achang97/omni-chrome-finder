@@ -71,7 +71,7 @@ AuthView.propTypes = {
   error: PropTypes.string,
   submitButtonProps: PropTypes.shape({
     onClick: PropTypes.func,
-    disabled: PropTypes.func
+    disabled: PropTypes.bool
   }).isRequired,
   footer: PropTypes.node,
   className: PropTypes.string

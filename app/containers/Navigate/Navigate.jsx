@@ -102,7 +102,7 @@ const Navigate = ({
         <div className={s('flex items-center my-sm')}>
           <input
             placeholder="Search all knowledge"
-            className={s('navigate-search-input flex-grow rounded-r-none border-r-none')}
+            className={s('navigate-search-input')}
             value={searchText}
             autoFocus
             onChange={updateSearchText}
