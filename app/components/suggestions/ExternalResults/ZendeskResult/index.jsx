@@ -16,9 +16,10 @@ const ZendeskResult = ({
   description,
   priority,
   status,
-  logo
+  logo,
+  onClick
 }) => (
-  <a target="_blank" rel="noopener noreferrer" href={agentUrl} key={id}>
+  <a target="_blank" rel="noopener noreferrer" href={agentUrl} key={id} onClick={onClick}>
     <div className={s('external-result flex-col')}>
       <div className={s('flex justify-between mb-sm')}>
         <div className={s('min-w-0')}>
@@ -54,7 +55,8 @@ ZendeskResult.propTypes = {
   description: PropTypes.string.isRequired,
   priority: PropTypes.string.isRequired,
   status: PropTypes.string.isRequired,
-  logo: PropTypes.string.isRequired
+  logo: PropTypes.string.isRequired,
+  onClick: PropTypes.func.isRequired
 };
 
 export default ZendeskResult;

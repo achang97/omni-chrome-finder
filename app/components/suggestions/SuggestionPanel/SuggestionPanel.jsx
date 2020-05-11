@@ -68,7 +68,7 @@ const SuggestionPanel = ({
       results
     } = externalSource;
 
-    const onClick = (result) => {
+    const logClick = (result) => {
       requestLogAudit(PROFILE.AUDIT_TYPE.OPEN_EXTERNAL_DOC, { type, ...result });
     };
 
@@ -116,7 +116,7 @@ const SuggestionPanel = ({
               <ResultComponent
                 key={ResultComponent.getKey(result)}
                 logo={logo}
-                onClick={() => onClick(result)}
+                onClick={() => logClick(result)}
                 {...result}
               />
             ))}

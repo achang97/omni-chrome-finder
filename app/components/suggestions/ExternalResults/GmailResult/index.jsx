@@ -8,8 +8,8 @@ import style from '../external-results.css';
 
 const s = getStyleApplicationFn(style);
 
-const GmailResult = ({ id, webLink, deliveredTo, date, from, subject, logo }) => (
-  <a target="_blank" rel="noopener noreferrer" href={webLink} key={id}>
+const GmailResult = ({ id, webLink, deliveredTo, date, from, subject, logo, onClick }) => (
+  <a target="_blank" rel="noopener noreferrer" href={webLink} key={id} onClick={onClick}>
     <div className={s('external-result flex-col')}>
       <div className={s('flex justify-between mb-xs')}>
         <div className={s('external-result-text font-semibold text-purple-reg mb-xs')}>
@@ -41,7 +41,8 @@ GmailResult.propTypes = {
   date: PropTypes.string.isRequired,
   from: PropTypes.string.isRequired,
   subject: PropTypes.string.isRequired,
-  logo: PropTypes.string.isRequired
+  logo: PropTypes.string.isRequired,
+  onClick: PropTypes.func.isRequired
 };
 
 export default GmailResult;
