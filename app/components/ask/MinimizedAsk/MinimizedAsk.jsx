@@ -69,7 +69,7 @@ const MinimizedAsk = ({
     if (refreshStats) {
       requestGetUserOnboardingStats();
     }
-  }, [showPerformanceScore]);
+  }, [showPerformanceScore, requestGetUserOnboardingStats]);
 
   useEffect(() => {
     inputRef.current.focus();

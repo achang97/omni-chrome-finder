@@ -17,10 +17,10 @@ const CompleteOnboarding = ({
   requestGetUser
 }) => {
   useEffect(() => {
-    if (dockVisible && !isGettingUser) {
+    if (dockVisible) {
       requestGetUser();
     }
-  }, [dockVisible]);
+  }, [dockVisible, requestGetUser]);
 
   const onboardingUrl = `${URL.WEB_APP}${WEB_APP_ROUTES.ONBOARDING}/${onboardingSection}/${onboardingSubsection}`;
   return (

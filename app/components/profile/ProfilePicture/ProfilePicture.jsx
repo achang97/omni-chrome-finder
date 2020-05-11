@@ -138,15 +138,17 @@ const ProfilePicture = ({
             isLoading: isUpdatingPicture
           }}
         >
-          <ReactCrop
-            src={uploadedImg}
-            onImageLoaded={onLoad}
-            crop={crop}
-            circularCrop
-            onChange={(c) => setCrop(c)}
-            onComplete={makeClientCrop}
-            imageStyle={{ maxHeight: 'none' }}
-          />
+          <div className={s('flex flex-col items-center')}>
+            <ReactCrop
+              src={uploadedImg}
+              onImageLoaded={onLoad}
+              crop={crop}
+              circularCrop
+              onChange={(c) => setCrop(c)}
+              onComplete={makeClientCrop}
+              imageStyle={{ maxHeight: 'none' }}
+            />
+          </div>
         </Modal>
       </>
     );

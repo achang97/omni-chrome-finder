@@ -1,12 +1,7 @@
 import React, { useState, useRef, useEffect } from 'react';
 import PropTypes from 'prop-types';
 import { useDebouncedCallback } from 'use-debounce';
-import {
-  MdClose,
-  MdKeyboardArrowDown,
-  MdKeyboardArrowUp,
-  MdKeyboardArrowLeft
-} from 'react-icons/md';
+import { MdClose, MdKeyboardArrowUp, MdKeyboardArrowLeft } from 'react-icons/md';
 import AnimateHeight from 'react-animate-height';
 
 import { Button, Triangle, Separator } from 'components/common';
@@ -22,6 +17,8 @@ import { SlackResult, GoogleResult, ZendeskResult, GmailResult } from '../Extern
 import SuggestionScrollContainer from '../SuggestionScrollContainer';
 
 const s = getStyleApplicationFn(mainStyle, externalIconStyle);
+
+const DEFAULT_NUM_EXT_RESULTS_SHOWN = 4;
 
 const SuggestionPanel = ({
   query,
@@ -68,7 +65,7 @@ const SuggestionPanel = ({
       results
     } = externalSource;
 
-    const onClick = (result) => {
+    const logClick = (result) => {
       requestLogAudit(PROFILE.AUDIT_TYPE.OPEN_EXTERNAL_DOC, { type, ...result });
     };
 
@@ -94,13 +91,19 @@ const SuggestionPanel = ({
         break;
     }
 
-    const isOpen = showIntegration[type];
+    const renderResult = (result) => (
+      <ResultComponent
+        key={ResultComponent.getKey(result)}
+        logo={logo}
+        onClick={() => logClick(result)}
+        {...result}
+      />
+    );
+
+    const isFullyExpanded = showIntegration[type];
     return (
       <div key={type}>
-        <div
-          className={s('flex items-center justify-between px-lg py-sm mb-xs cursor-pointer')}
-          onClick={() => toggleIntegration(type)}
-        >
+        <div className={s('flex items-center justify-between px-lg py-sm mb-xs')}>
           <div className={s('flex items-center text-md text-gray-dark')}>
             <div className={s('external-result-icon mr-sm')}>
               <img src={logo} alt={title} />
@@ -108,20 +111,31 @@ const SuggestionPanel = ({
             <span className={s('font-semibold mr-sm')}> {title} </span>
             <span> ({results.length}) </span>
           </div>
-          {isOpen ? <MdKeyboardArrowUp /> : <MdKeyboardArrowDown />}
+          {isFullyExpanded && (
+            <MdKeyboardArrowUp
+              className={s('cursor-pointer')}
+              onClick={() => toggleIntegration(type)}
+            />
+          )}
         </div>
-        <AnimateHeight height={isOpen ? 'auto' : 0}>
-          <div className={s('px-lg')}>
-            {results.map((result) => (
-              <ResultComponent
-                key={ResultComponent.getKey(result)}
-                logo={logo}
-                onClick={() => onClick(result)}
-                {...result}
-              />
-            ))}
-          </div>
-        </AnimateHeight>
+        <div className={s('px-lg')}>
+          {results.slice(0, DEFAULT_NUM_EXT_RESULTS_SHOWN).map(renderResult)}
+          {results.length > DEFAULT_NUM_EXT_RESULTS_SHOWN && (
+            <AnimateHeight height={isFullyExpanded ? 0 : 'auto'}>
+              <div
+                className={s(
+                  'cursor-pointer text-center p-sm my-sm text-xs bg-white shadow-md rounded-lg text-gray-dark'
+                )}
+                onClick={() => toggleIntegration(type)}
+              >
+                View More ({results.length - DEFAULT_NUM_EXT_RESULTS_SHOWN})
+              </div>
+            </AnimateHeight>
+          )}
+          <AnimateHeight height={isFullyExpanded ? 'auto' : 0}>
+            {results.slice(DEFAULT_NUM_EXT_RESULTS_SHOWN).map(renderResult)}
+          </AnimateHeight>
+        </div>
       </div>
     );
   };

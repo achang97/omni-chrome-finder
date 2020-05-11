@@ -63,7 +63,7 @@ export default function* watchAuthRequests() {
 function* login() {
   try {
     const { loginEmail, loginPassword } = yield select((state) => state.auth);
-    const { userJson, token, refreshToken } = yield call(doPost, '/users/login', {
+    const { token, refreshToken, ...userJson } = yield call(doPost, '/users/login', {
       email: loginEmail,
       password: loginPassword
     });
@@ -78,7 +78,7 @@ function* signup() {
     const { signupFirstName, signupLastName, signupEmail, signupPassword } = yield select(
       (state) => state.auth
     );
-    const { userJson, token, refreshToken } = yield call(doPost, '/users/signup', {
+    const { token, refreshToken, ...userJson } = yield call(doPost, '/users/signup', {
       firstname: signupFirstName,
       lastname: signupLastName,
       email: signupEmail,
@@ -95,7 +95,7 @@ function* verify() {
     const verificationCode = yield select((state) => state.auth.verificationCode);
     const firstname = yield select((state) => state.profile.user.firstname);
 
-    yield call(doPost, '/users/verifyCheck', { code: verificationCode });
+    yield call(doPost, '/users/me/verifyCheck', { code: verificationCode });
     yield all([
       put(handleVerifySuccess()),
       put(
@@ -123,7 +123,7 @@ function* sendRecoveryEmail() {
 
 function* resendVerificationEmail() {
   try {
-    yield call(doPost, '/users/resendVerification');
+    yield call(doPost, '/users/me/resendVerification');
     yield put(handleResendVerificationEmailSuccess());
   } catch (error) {
     yield put(handleResendVerificationEmailError(getErrorMessage(error)));

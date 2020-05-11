@@ -154,7 +154,7 @@ function* searchTags({ name }) {
   const cancelToken = cancelRequest(CANCEL_TYPE.TAGS);
 
   try {
-    const { tags } = yield call(doPost, '/tags/queryNames', { name }, { cancelToken });
+    const { tags } = yield call(doGet, '/tags/query', { q: name }, { cancelToken });
     yield put(handleSearchTagsSuccess(tags));
   } catch (error) {
     if (!isCancel(error)) {
@@ -167,7 +167,7 @@ function* searchUsers({ name }) {
   const cancelToken = cancelRequest(CANCEL_TYPE.USERS);
 
   try {
-    const { users } = yield call(doPost, '/users/queryNames', { name }, { cancelToken });
+    const users = yield call(doGet, '/users/queryByName', { q: name }, { cancelToken });
     yield put(handleSearchUsersSuccess(users));
   } catch (error) {
     if (!isCancel(error)) {

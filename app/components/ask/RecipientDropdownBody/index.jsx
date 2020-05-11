@@ -13,7 +13,11 @@ const RecipientDropdownBody = ({ mentionOptions, mentions, onAddMention }) => {
   const [selectedIndex, setSelectedIndex] = useState(0);
 
   const inputRef = useRef(null);
-  const mentionRefs = mentionOptions.map(() => useRef(null));
+  const mentionRefs = React.useRef([]);
+
+  React.useEffect(() => {
+    mentionRefs.current = new Array(mentionOptions.length);
+  }, [mentionOptions.length]);
 
   const handleChange = (e) => {
     setInputText(e.target.value);

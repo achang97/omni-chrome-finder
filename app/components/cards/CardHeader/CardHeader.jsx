@@ -154,7 +154,7 @@ CardHeader.propTypes = {
   // Redux State
   ownUserId: PropTypes.string.isRequired,
   _id: PropTypes.string.isRequired,
-  answer: PropTypes.string.isRequired,
+  answer: PropTypes.string,
   isEditing: PropTypes.bool.isRequired,
   status: PropTypes.oneOf(Object.values(STATUS)).isRequired,
   lastEdited: LastTimestampPropTypes,

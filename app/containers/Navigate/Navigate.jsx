@@ -1,7 +1,7 @@
-import React, { useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 import PropTypes from 'prop-types';
 import { useDebouncedCallback } from 'use-debounce';
-import { MdSearch } from 'react-icons/md';
+import { MdSearch, MdFilterList } from 'react-icons/md';
 import AnimateHeight from 'react-animate-height';
 
 import CardTags from 'components/cards/CardTags';
@@ -38,14 +38,13 @@ const Navigate = ({
   requestDeleteNavigateCard,
   requestSearchCards
 }) => {
+  const [isFilterShown, setFilterShown] = useState(false);
+
   useEffect(() => {
     return () => {
       updateNavigateTab(NAVIGATE.TAB_OPTION.ALL);
     };
-  }, []);
-
-  const prevTab = usePrevious(activeTab);
-  const prevTags = usePrevious(filterTags);
+  }, [updateNavigateTab]);
 
   const searchCards = (clearCards) => {
     const queryParams = { q: searchText };
@@ -79,6 +78,9 @@ const Navigate = ({
     searchCards(true);
   }, ANIMATE.DEBOUNCE.MS_300);
 
+  const prevTab = usePrevious(activeTab);
+  const prevTags = usePrevious(filterTags);
+
   useEffect(() => {
     if (prevTab !== activeTab || prevTags !== filterTags) {
       searchCards(true);
@@ -91,27 +93,33 @@ const Navigate = ({
     updateNavigateSearchText(e.target.value);
   };
 
+  const isOnAllCards = activeTab === NAVIGATE.TAB_OPTION.ALL;
+
   return (
     <div className={s('flex flex-col flex-grow min-h-0')}>
       <Separator horizontal className={s('m-0')} />
-      <div className={s('bg-purple-xlight p-lg flex flex-col')}>
-        <div className={s('flex')}>
+      <div className={s('bg-purple-xlight px-sm flex flex-col')}>
+        <div className={s('flex items-center my-sm')}>
           <input
             placeholder="Search all knowledge"
-            className={s('navigate-search-input flex-grow rounded-r-none border-r-none')}
+            className={s('navigate-search-input')}
             value={searchText}
             autoFocus
             onChange={updateSearchText}
           />
-          <div
-            className={s(
-              'navigate-search-input-icon-container bg-white flex flex-col items-center justify-center text-purple-reg rounded-r-lg pr-reg'
-            )}
-          >
+          <div className={s('navigate-search-input-icon-container')}>
             <MdSearch />
           </div>
+          <button
+            className={s('ml-xs text-gray-light')}
+            onClick={() => setFilterShown(!isFilterShown)}
+            disabled={!isOnAllCards}
+            type="button"
+          >
+            <MdFilterList />
+          </button>
         </div>
-        <AnimateHeight height={activeTab === NAVIGATE.TAB_OPTION.ALL ? 'auto' : 0}>
+        <AnimateHeight height={isOnAllCards && isFilterShown ? 'auto' : 0}>
           <div className={s('my-reg text-xs')}> Filter cards by tags </div>
           <CardTags
             isEditable

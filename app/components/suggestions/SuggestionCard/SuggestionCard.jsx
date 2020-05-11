@@ -40,14 +40,12 @@ const SuggestionCard = ({
     });
   };
 
-  if (deleteProps) {
-    const isDeleting = deleteProps.isLoading;
-    useEffect(() => {
-      if (!isDeleting && !deleteProps.error) {
-        toggleActiveButton(BUTTON_TYPE.DELETE, false);
-      }
-    }, [isDeleting]);
-  }
+  const { isLoading: isDeleting, error: deleteError } = deleteProps || {};
+  useEffect(() => {
+    if (!isDeleting && !deleteError) {
+      toggleActiveButton(BUTTON_TYPE.DELETE, false);
+    }
+  }, [isDeleting]);
 
   const getButtonProps = ({ isLoading, onClick }) => {
     return {

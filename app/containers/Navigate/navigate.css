@@ -1,10 +1,11 @@
 .navigate-search-input-icon-container {
   border: 1px solid rgba(0, 2, 95, 0.1);
-  border-left: 0 !important;
+
+  @apply bg-white flex flex-col items-center justify-center text-purple-reg rounded-r-lg pr-reg self-stretch border-l-0;
 }
 
 .navigate-search-input {
-  border-right: 0 !important;
+  @apply flex-grow rounded-r-none border-r-0 !important;
 }
 
 .navigate-search-input:focus {
