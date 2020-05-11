@@ -2,9 +2,10 @@ import React from 'react';
 import PropTypes from 'prop-types';
 
 import { getStyleApplicationFn } from 'utils/style';
-import style from '../external-results.css';
+import mainStyle from '../external-results.css';
+import googleStyle from './google-result.css';
 
-const s = getStyleApplicationFn(style);
+const s = getStyleApplicationFn(mainStyle, googleStyle);
 
 const GoogleResult = ({ name, id, webViewLink, iconLink, owners, onClick }) => {
   return (
@@ -17,7 +18,7 @@ const GoogleResult = ({ name, id, webViewLink, iconLink, owners, onClick }) => {
           </div>
         </div>
         {owners.length !== 0 && (
-          <div className={s('mt-xs text-xs text-gray-reg')}>
+          <div className={s('owners-container')}>
             {owners.map(({ displayName, permissionId, me }, i) => (
               <React.Fragment key={permissionId}>
                 <span>{me ? 'You' : displayName}</span>

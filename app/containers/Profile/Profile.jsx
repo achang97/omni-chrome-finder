@@ -3,7 +3,6 @@ import PropTypes from 'prop-types';
 import AnimateHeight from 'react-animate-height';
 import { CircularProgressbar, buildStyles } from 'react-circular-progressbar';
 import { MdKeyboardArrowDown, MdKeyboardArrowUp, MdEdit } from 'react-icons/md';
-import _ from 'lodash';
 import Toggle from 'react-toggle';
 
 import { Button, Message, Separator, Loader } from 'components/common';
@@ -29,15 +28,10 @@ const PROFILE_NOTIFICATIONS_OPTIONS = [
 
 const PROFILE_SETTING_SECTIONS = [
   {
-    type: PROFILE.SETTING_SECTION_TYPE.KNOWLEDGE_BASE,
-    title: 'Knowledge Base Integrations',
-    options: [INTEGRATIONS.GOOGLE, INTEGRATIONS.ZENDESK],
-    toggle: false
-  },
-  {
-    type: PROFILE.SETTING_SECTION_TYPE.COMMUNICATION,
-    title: 'Communication Integrations',
-    options: [INTEGRATIONS.GMAIL, INTEGRATIONS.SLACK],
+    type: PROFILE.SETTING_SECTION_TYPE.INTEGRATIONS,
+    title: 'Integrations',
+    options: [INTEGRATIONS.GOOGLE, INTEGRATIONS.ZENDESK, INTEGRATIONS.GMAIL, INTEGRATIONS.SLACK],
+    startOpen: true,
     toggle: false
   },
   {
@@ -51,12 +45,14 @@ const PROFILE_SETTING_SECTIONS = [
       { ...INTEGRATIONS.JIRA, disabled: true },
       { ...INTEGRATIONS.HELPSCOUT, disabled: true }
     ],
+    startOpen: false,
     toggle: true
   },
   {
     type: PROFILE.SETTING_SECTION_TYPE.NOTIFICATIONS,
     title: 'Notification Permissions',
     options: PROFILE_NOTIFICATIONS_OPTIONS,
+    startOpen: false,
     toggle: true
   }
 ];
@@ -86,9 +82,11 @@ const Profile = ({
   requestUpdateUserPermissions,
   logout
 }) => {
-  const [sectionOpen, setSectionOpen] = useState(
-    _.mapValues(PROFILE.SETTING_SECTION_TYPE, () => false)
-  );
+  const [sectionOpen, setSectionOpen] = useState({
+    [PROFILE.SETTING_SECTION_TYPE.INTEGRATIONS]: true,
+    [PROFILE.SETTING_SECTION_TYPE.AUTOFIND]: false,
+    [PROFILE.SETTING_SECTION_TYPE.NOTIFICATIONS]: false
+  });
 
   useEffect(() => {
     requestGetUser();

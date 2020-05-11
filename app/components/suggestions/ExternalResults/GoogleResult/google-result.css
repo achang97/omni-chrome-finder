@@ -1,0 +1,5 @@
+.owners-container {
+  @apply mt-xs text-xs text-gray-reg;
+
+  font-size: 11px;
+}
