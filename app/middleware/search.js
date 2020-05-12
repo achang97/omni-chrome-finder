@@ -1,4 +1,3 @@
-import { TAB_OPTION } from 'appConstants/navigate';
 import * as types from 'actions/actionTypes';
 import { addSearchCard, updateSearchCard, removeSearchCard } from 'actions/search';
 
@@ -6,7 +5,7 @@ const cardsMiddleware = (store) => (next) => (action) => {
   const nextAction = next(action);
   const { type, payload } = action;
 
-  const activeNavigateTab = store.getState().navigate.activeTab;
+  // const activeNavigateTab = store.getState().navigate.activeTab;
 
   switch (type) {
     // Update cards
@@ -21,29 +20,30 @@ const cardsMiddleware = (store) => (next) => (action) => {
       break;
     }
 
+    // TODO: Add this behavior for the finder window
     // Add cards
-    case types.CREATE_CARD_SUCCESS:
-    case types.ADD_BOOKMARK_SUCCESS: {
-      const { card } = payload;
-      if (
-        (type === types.CREATE_CARD_SUCCESS && activeNavigateTab === TAB_OPTION.MY_CARDS) ||
-        (type === types.ADD_BOOKMARK_SUCCESS && activeNavigateTab === TAB_OPTION.BOOKMARKED)
-      ) {
-        store.dispatch(addSearchCard(card));
-      }
-      break;
-    }
+    // case types.CREATE_CARD_SUCCESS:
+    // case types.ADD_BOOKMARK_SUCCESS: {
+    //   const { card } = payload;
+    //   if (
+    //     (type === types.CREATE_CARD_SUCCESS && activeNavigateTab === TAB_OPTION.MY_CARDS) ||
+    //     (type === types.ADD_BOOKMARK_SUCCESS && activeNavigateTab === TAB_OPTION.BOOKMARKED)
+    //   ) {
+    //     store.dispatch(addSearchCard(card));
+    //   }
+    //   break;
+    // }
 
     // Remove cards
-    case types.DELETE_CARD_SUCCESS:
-    case types.DELETE_NAVIGATE_CARD_SUCCESS:
-    case types.REMOVE_BOOKMARK_SUCCESS: {
-      const { cardId } = payload;
-      if (type !== types.REMOVE_BOOKMARK_SUCCESS || activeNavigateTab === TAB_OPTION.BOOKMARKED) {
-        store.dispatch(removeSearchCard(cardId));
-      }
-      break;
-    }
+    // TODO: handle finder card deletion
+    // case types.DELETE_CARD_SUCCESS:
+    // case types.REMOVE_BOOKMARK_SUCCESS: {
+    //   const { cardId } = payload;
+    //   if (type !== types.REMOVE_BOOKMARK_SUCCESS || activeNavigateTab === TAB_OPTION.BOOKMARKED) {
+    //     store.dispatch(removeSearchCard(cardId));
+    //   }
+    //   break;
+    // }
 
     default: {
       break;

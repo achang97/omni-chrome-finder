@@ -13,9 +13,13 @@ const getClassNames = (color, underline) => {
         innerClassName: underline ? 'primary-underline' : ''
       };
     case 'secondary':
-    case 'transparent':
       return {
         outerClassName: `button-${color}`,
+        innerClassName: underline ? `button-underline-${color}` : ''
+      };
+    case 'transparent':
+      return {
+        outerClassName: `light-gradient button-${color}`,
         innerClassName: underline ? `button-underline-${color}` : ''
       };
     case 'gold':

@@ -16,7 +16,7 @@ const initialState = {
   permissionGroups: []
 };
 
-export default function navigateReducer(state = initialState, action) {
+export default function searchReducer(state = initialState, action) {
   const { type, payload = {} } = action;
 
   const updateCardStateByType = (searchType, updateFn) => ({

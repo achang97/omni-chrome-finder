@@ -4,7 +4,16 @@
 }
 
 .card-tab {
-  @apply p-reg pr-0 outline-none rounded-t-lg rounded-b-none text-xs font-medium flex items-center justify-between bg-white;
+  @apply p-reg outline-none rounded-t-lg rounded-b-none text-xs font-medium flex items-center justify-between bg-white;
+  @apply border border-purple-gray-10 border-solid border-r-0;
+}
+
+.card-tab:last-child {
+  @apply border-r;
+}
+
+.card-inactive-tab {
+  @apply opacity-50;
 }
 
 .card-header-tab {
@@ -23,7 +32,7 @@
 }
 
 .card-tab-container {
-  @apply flex flex-shrink-0 min-h-0 items-center rounded-t-lg px-sm pt-reg;
+  @apply flex flex-shrink-0 min-h-0 items-center rounded-t-lg pt-reg;
 
   background: linear-gradient(0deg, #cfcfcfbf, #e5e5e4ad);
   box-sizing: border-box;

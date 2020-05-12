@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg width="55px" height="45px" viewBox="0 0 55 45" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+    <title>Group 100</title>
+    <defs>
+        <linearGradient x1="55.8168639%" y1="88.5630373%" x2="37.0495855%" y2="-7.07501437%" id="linearGradient-1">
+            <stop stop-color="#DBDFF2" offset="0%"></stop>
+            <stop stop-color="#F4F6FE" offset="100%"></stop>
+            <stop stop-color="#F5F7FE" offset="100%"></stop>
+        </linearGradient>
+        <linearGradient x1="129.333212%" y1="86.2022211%" x2="59.8337573%" y2="52.1226111%" id="linearGradient-2">
+            <stop stop-color="#DBDFF2" offset="0%"></stop>
+            <stop stop-color="#F4F6FE" offset="100%"></stop>
+            <stop stop-color="#F5F7FE" offset="100%"></stop>
+        </linearGradient>
+    </defs>
+    <g id="Design" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
+        <g id="Finder" transform="translate(-763.000000, -583.000000)">
+            <g id="Group-12" transform="translate(480.000000, 436.000000)">
+                <g id="Group-2">
+                    <g id="Group-7-Copy" transform="translate(283.000000, 147.000000)">
+                        <g id="Group-100">
+                            <g id="Group-19">
+                                <rect id="Rectangle" fill="url(#linearGradient-1)" x="0" y="0" width="55" height="45"></rect>
+                                <path d="M0,25 L55,25 L55,43 C55,44.1045695 54.1045695,45 53,45 L2,45 C0.8954305,45 1.3527075e-16,44.1045695 0,43 L0,25 L0,25 Z" id="Rectangle" fill="url(#linearGradient-2)"></path>
+                                <path d="M7,7 L24,7 C24.5522847,7 25,7.44771525 25,8 C25,8.55228475 24.5522847,9 24,9 L7,9 C6.44771525,9 6,8.55228475 6,8 C6,7.44771525 6.44771525,7 7,7 Z" id="Rectangle" fill="#777BAD" fill-rule="nonzero" opacity="0.5"></path>
+                                <path d="M7,13 L44,13 C44.5522847,13 45,13.4477153 45,14 C45,14.5522847 44.5522847,15 44,15 L7,15 C6.44771525,15 6,14.5522847 6,14 C6,13.4477153 6.44771525,13 7,13 Z" id="Rectangle-Copy" fill="#777BAD" fill-rule="nonzero" opacity="0.200000003"></path>
+                                <path d="M7,17 L26,17 C26.5522847,17 27,17.4477153 27,18 C27,18.5522847 26.5522847,19 26,19 L7,19 C6.44771525,19 6,18.5522847 6,18 C6,17.4477153 6.44771525,17 7,17 Z" id="Rectangle-Copy" fill="#777BAD" fill-rule="nonzero" opacity="0.200000003"></path>
+                                <path d="M7,29 L44,29 C44.5522847,29 45,29.4477153 45,30 C45,30.5522847 44.5522847,31 44,31 L7,31 C6.44771525,31 6,30.5522847 6,30 C6,29.4477153 6.44771525,29 7,29 Z" id="Rectangle-Copy" fill="#777BAD" fill-rule="nonzero" opacity="0.119999997"></path>
+                                <path d="M7,33 L48,33 C48.5522847,33 49,33.4477153 49,34 C49,34.5522847 48.5522847,35 48,35 L7,35 C6.44771525,35 6,34.5522847 6,34 C6,33.4477153 6.44771525,33 7,33 Z" id="Rectangle-Copy" fill="#777BAD" fill-rule="nonzero" opacity="0.119999997"></path>
+                                <path d="M7,37 L36,37 C36.5522847,37 37,37.4477153 37,38 C37,38.5522847 36.5522847,39 36,39 L7,39 C6.44771525,39 6,38.5522847 6,38 C6,37.4477153 6.44771525,37 7,37 Z" id="Rectangle-Copy" fill="#777BAD" fill-rule="nonzero" opacity="0.119999997"></path>
+                            </g>
+                        </g>
+                    </g>
+                </g>
+            </g>
+        </g>
+    </g>
+</svg>

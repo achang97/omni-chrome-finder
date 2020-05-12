@@ -1,0 +1,9 @@
+.finder-body-node {
+  @apply m-sm p-sm h-auto flex flex-col items-center cursor-pointer rounded-lg border-2 border-solid border-transparent;
+  width: 90px;
+}
+
+.finder-body-selected-node,
+.finder-body-node:focus {
+  @apply bg-purple-light border-purple-reg outline-none;
+};

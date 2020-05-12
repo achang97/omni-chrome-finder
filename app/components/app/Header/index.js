@@ -1,6 +1,7 @@
 import { connect } from 'react-redux';
 import { withRouter } from 'react-router-dom';
 import { SEARCH } from 'appConstants';
+import { openFinder } from 'actions/cards';
 import Header from './Header';
 
 const mapStateToProps = (state) => {
@@ -21,4 +22,8 @@ const mapStateToProps = (state) => {
   };
 };
 
-export default connect(mapStateToProps)(withRouter(Header));
+const mapDispatchToProps = {
+  openFinder
+};
+
+export default connect(mapStateToProps, mapDispatchToProps)(withRouter(Header));

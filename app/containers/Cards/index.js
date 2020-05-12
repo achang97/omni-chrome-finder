@@ -18,6 +18,7 @@ const mapStateToProps = (state) => {
   const {
     cards: {
       cards,
+      showCards,
       cardsExpanded,
       activeCardIndex,
       activeCard,
@@ -32,6 +33,7 @@ const mapStateToProps = (state) => {
   return {
     user,
     cardsExpanded,
+    showCards,
     cards,
     activeCardIndex,
     activeCard,

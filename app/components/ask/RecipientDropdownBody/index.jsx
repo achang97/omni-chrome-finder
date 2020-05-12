@@ -3,6 +3,7 @@ import PropTypes from 'prop-types';
 
 import Separator from 'components/common/Separator';
 
+import { KEY_CODES } from 'appConstants/window';
 import { getStyleApplicationFn } from 'utils/style';
 import style from './recipient-dropdown-body.css';
 
@@ -24,19 +25,18 @@ const RecipientDropdownBody = ({ mentionOptions, mentions, onAddMention }) => {
     setSelectedIndex(0);
   };
 
+  const setMentionIndex = (index) => {
+    setSelectedIndex(index);
+    if (mentionRefs.current[index]) {
+      mentionRefs.current[index].scrollIntoView();
+    }
+  };
+
   const addMention = (mention) => {
     onAddMention(mention);
     setInputText('');
-    setSelectedIndex(0);
+    setMentionIndex(0);
     inputRef.current.focus();
-  };
-
-  const handleKeyPress = (e) => {
-    if (e.key === 'Enter') {
-      if (selectedIndex < mentionOptions.length) {
-        addMention(mentionOptions[selectedIndex]);
-      }
-    }
   };
 
   const handleKeyDown = (e) => {
@@ -45,18 +45,26 @@ const RecipientDropdownBody = ({ mentionOptions, mentions, onAddMention }) => {
       newSelectedIndex = 0;
     }
 
-    if (e.keyCode === 38) {
-      // UP
-      newSelectedIndex = (newSelectedIndex + mentionOptions.length - 1) % mentionOptions.length;
-    } else if (e.keyCode === 40) {
-      // DOWN
-      newSelectedIndex = (newSelectedIndex + mentionOptions.length + 1) % mentionOptions.length;
+    switch (e.keyCode) {
+      case KEY_CODES.ENTER: {
+        if (selectedIndex < mentionOptions.length) {
+          addMention(mentionOptions[selectedIndex]);
+        }
+        return;
+      }
+      case KEY_CODES.UP: {
+        newSelectedIndex = (newSelectedIndex + mentionOptions.length - 1) % mentionOptions.length;
+        break;
+      }
+      case KEY_CODES.DOWN: {
+        newSelectedIndex = (newSelectedIndex + mentionOptions.length + 1) % mentionOptions.length;
+        break;
+      }
+      default:
+        break;
     }
 
-    setSelectedIndex(newSelectedIndex);
-    if (mentionRefs[newSelectedIndex].current) {
-      mentionRefs[newSelectedIndex].current.scrollIntoView();
-    }
+    setMentionIndex(newSelectedIndex);
   };
 
   const getMentionOptions = () => {
@@ -65,6 +73,10 @@ const RecipientDropdownBody = ({ mentionOptions, mentions, onAddMention }) => {
         !mentions.some((currMention) => currMention.id === mention.id) &&
         `@${mention.name.toLowerCase()}`.includes(mentionInputText.trim().toLowerCase())
     );
+  };
+
+  const setMentionRef = (el, index) => {
+    mentionRefs.current[index] = el;
   };
 
   const addMentionOptions = getMentionOptions();
@@ -78,7 +90,6 @@ const RecipientDropdownBody = ({ mentionOptions, mentions, onAddMention }) => {
           placeholder="@mention"
           onChange={(e) => handleChange(e)}
           value={mentionInputText}
-          onKeyPress={(e) => handleKeyPress(e, addMentionOptions)}
           onKeyDown={(e) => handleKeyDown(e, addMentionOptions)}
         />
         <Separator horizontal />
@@ -95,7 +106,7 @@ const RecipientDropdownBody = ({ mentionOptions, mentions, onAddMention }) => {
               )}
               onClick={() => addMention(mention)}
               onMouseEnter={() => setSelectedIndex(i)}
-              ref={mentionRefs[i]}
+              ref={(el) => setMentionRef(el, i)}
             >
               <div className={s('w-full truncate font-semibold')}> @{mention.name} </div>
             </div>

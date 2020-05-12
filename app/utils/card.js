@@ -173,6 +173,21 @@ export function copyCardUrl(cardId) {
   copyText(`${URL.EXTENSION}?cardId=${cardId}`);
 }
 
+export function getDraggableStyle(isDragging, draggableStyle, windowPosition) {
+  const { top, left, ...rest } = draggableStyle;
+
+  if (!top || !left) {
+    return rest;
+  }
+
+  return {
+    // styles we need to apply on draggables
+    top: top - windowPosition.y,
+    left: left - windowPosition.x,
+    ...rest
+  };
+}
+
 export default {
   convertCardToFrontendFormat,
   toggleUpvotes,
@@ -181,5 +196,6 @@ export default {
   isExistingCard,
   isJustMe,
   cardStateChanged,
-  copyCardUrl
+  copyCardUrl,
+  getDraggableStyle
 };

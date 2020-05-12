@@ -51,6 +51,10 @@
   background: linear-gradient(143deg, #777bad 0%, #a0a1cd 100%) !important;
 }
 
+.light-gradient {
+  background: linear-gradient(143deg, #777bad1a 0%, #a0a1cd1a 100%) !important;
+}
+
 .gold-gradient {
   background: linear-gradient(190deg, #ffe4b8 0%, #e3c295 100%) !important;
 }

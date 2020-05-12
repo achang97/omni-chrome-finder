@@ -1,0 +1,11 @@
+.finder-header-icon {
+  @apply text-purple-reg bg-purple-light font-semibold p-sm cursor-pointer rounded-full shadow-md;
+}
+
+.finder-header-icon > * {
+  @apply h-lg;
+}
+
+.finder-header-input-container {
+  @apply flex-1 flex items-center rounded-full border border-solid border-purple-gray-50 pl-sm;
+}

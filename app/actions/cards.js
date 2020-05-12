@@ -18,6 +18,10 @@ export function toggleCards() {
 }
 
 /* Card behavior */
+export function openFinder() {
+  return { type: types.OPEN_FINDER, payload: { } };
+}
+
 export function openCard(card, isNewCard = false, createModalOpen = false) {
   return { type: types.OPEN_CARD, payload: { card, isNewCard, createModalOpen } };
 }

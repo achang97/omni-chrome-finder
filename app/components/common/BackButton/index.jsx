@@ -3,27 +3,27 @@ import PropTypes from 'prop-types';
 import { MdArrowBack } from 'react-icons/md';
 
 import { getStyleApplicationFn } from 'utils/style';
+import style from './back-button.css';
 
-const s = getStyleApplicationFn();
+const s = getStyleApplicationFn(style);
 
-const BackButton = ({ onClick, className }) => (
-  <button
-    className={s(
-      `bg-purple-light rounded-full w-2xl h-2xl flex justify-center items-center text-purple-reg ${className}`
-    )}
-    onClick={onClick}
-    type="button"
+const BackButton = ({ onClick, disabled, className }) => (
+  <div
+    className={s(`back-button ${className} ${disabled ? 'back-button-disabled' : ''}`)}
+    onClick={() => !disabled && onClick()}
   >
     <MdArrowBack />
-  </button>
+  </div>
 );
 
 BackButton.propTypes = {
   onClick: PropTypes.func.isRequired,
+  disabled: PropTypes.bool,
   className: PropTypes.string
 };
 
 BackButton.defaultProps = {
+  disabled: false,
   className: ''
 };
 

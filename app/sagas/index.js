@@ -4,9 +4,9 @@ import watchSearchRequests from './search';
 import watchAskRequests from './ask';
 import watchCreateRequests from './create';
 import watchCardsRequests from './cards';
+import watchFinderRequests from './finder';
 import watchProfileRequests from './profile';
 import watchTasksRequests from './tasks';
-import watchNavigateRequests from './navigate';
 import watchAuditLogRequests from './auditLog';
 
 export default function* rootSaga() {
@@ -16,9 +16,9 @@ export default function* rootSaga() {
     watchAskRequests(),
     watchCreateRequests(),
     watchCardsRequests(),
+    watchFinderRequests(),
     watchProfileRequests(),
     watchTasksRequests(),
-    watchNavigateRequests(),
     watchAuditLogRequests()
   ]);
 }

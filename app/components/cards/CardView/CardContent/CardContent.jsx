@@ -15,17 +15,17 @@ import { CARD, REQUEST } from 'appConstants';
 
 import SlackIcon from 'assets/images/icons/Slack_Mark.svg';
 
-import style from './card-view.css';
+import style from './card-content.css';
 
-import CardSideDock from './CardSideDock';
-import CardCreateModal from './CardCreateModal';
-import CardConfirmModals from './CardConfirmModals';
-import CardHeader from './CardHeader';
-import CardFooter from './CardFooter';
+import CardSideDock from '../CardSideDock';
+import CardCreateModal from '../CardCreateModal';
+import CardConfirmModals from '../CardConfirmModals';
+import CardHeader from '../CardHeader';
+import CardFooter from '../CardFooter';
 
 const s = getStyleApplicationFn(style);
 
-const CardView = ({
+const CardContent = ({
   _id,
   question,
   descriptionEditorState,
@@ -136,7 +136,7 @@ const CardView = ({
 
     return {
       ...defaultProps,
-      wrapperClassName: 'card-text-editor-wrapper-inactive',
+      wrapperClassName: 'card-text-editor-wrapper-inactive light-gradient',
       editorClassName: 'card-text-editor-view',
       onClick: isDescription ? () => enableDescriptionEditor() : () => enableAnswerEditor()
     };
@@ -391,7 +391,7 @@ const CardView = ({
   return render();
 };
 
-CardView.propTypes = {
+CardContent.propTypes = {
   // Redux State
   _id: PropTypes.string.isRequired,
   question: PropTypes.string.isRequired,
@@ -428,4 +428,4 @@ CardView.propTypes = {
   requestAddCardAttachment: PropTypes.func.isRequired
 };
 
-export default CardView;
+export default CardContent;

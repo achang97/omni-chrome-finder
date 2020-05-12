@@ -1,6 +1,5 @@
 import * as types from 'actions/actionTypes';
 import {
-  handleDeleteCardSuccess,
   updateCard,
   requestGetCard,
   enableCardEditor,
@@ -21,12 +20,7 @@ const cardsMiddleware = (store) => (next) => (action) => {
       break;
     }
 
-    // Handle navigate actions
-    case types.DELETE_NAVIGATE_CARD_SUCCESS: {
-      const { cardId } = payload;
-      store.dispatch(handleDeleteCardSuccess(cardId));
-      break;
-    }
+    // TODO: Handle finder deletion actions
 
     // Handle actions from card itself
     case types.CANCEL_EDIT_CARD: {

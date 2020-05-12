@@ -68,7 +68,7 @@ const CardFooter = React.forwardRef(
         <Button
           text="Save Updates"
           color="primary"
-          onClick={() => (hasCardChanged ? requestUpdateCard() : cancelEditCard())}
+          onClick={hasCardChanged ? requestUpdateCard : cancelEditCard}
           iconLeft={false}
           icon={isUpdatingCard ? <Loader className={s('ml-sm')} size="sm" color="white" /> : null}
           className={s('rounded-t-none p-lg')}
