@@ -154,7 +154,7 @@ function* searchTags({ name }) {
   const cancelToken = cancelRequest(CANCEL_TYPE.TAGS);
 
   try {
-    const { tags } = yield call(doGet, '/tags/query', { q: name }, { cancelToken });
+    const tags = yield call(doGet, '/tags/query', { q: name }, { cancelToken });
     yield put(handleSearchTagsSuccess(tags));
   } catch (error) {
     if (!isCancel(error)) {
