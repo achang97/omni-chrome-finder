@@ -5,7 +5,7 @@ import { MdSearch } from 'react-icons/md';
 import AnimateHeight from 'react-animate-height';
 
 import CardTags from 'components/cards/CardTags';
-import { Tabs, Tab, Separator } from 'components/common';
+import { Tabs, Tab } from 'components/common';
 import SuggestionScrollContainer from 'components/suggestions/SuggestionScrollContainer';
 
 import { UserPropTypes } from 'utils/propTypes';
@@ -93,8 +93,7 @@ const Navigate = ({
 
   return (
     <div className={s('flex flex-col flex-grow min-h-0')}>
-      <Separator horizontal className={s('m-0')} />
-      <div className={s('bg-purple-xlight p-lg flex flex-col')}>
+      <div className={s('p-lg flex flex-col')}>
         <div className={s('flex')}>
           <input
             placeholder="Search all knowledge"
@@ -128,9 +127,9 @@ const Navigate = ({
           activeValue={activeTab}
           className={s('flex-1 flex')}
           tabClassName={s(
-            'bg-purple-xlight flex flex-col text-xs font-medium flex items-center justify-between opacity-100'
+            'flex flex-col text-xs font-medium flex items-center justify-between opacity-100'
           )}
-          activeTabClassName={s('bg-purple-xlight')}
+          activeTabClassName={s('')}
           onTabClick={updateNavigateTab}
           showRipple={false}
           color={colors.purple.reg}

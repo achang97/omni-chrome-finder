@@ -22,7 +22,7 @@ const Header = ({ user, numAutofindCards, numTasks, history, location: { pathnam
 
   const showAutofind = numAutofindCards !== 0;
   return (
-    <div className={s('bg-purple-xlight relative')}>
+    <div className={s('relative')}>
       <Tabs
         onTabClick={handleTabClick}
         activeValue={pathname}

@@ -178,9 +178,9 @@ const Tasks = ({
         activeValue={tabIndex}
         className={s('flex flex-shrink-0')}
         tabClassName={s(
-          'bg-purple-xlight navigate-tab flex flex-col text-xs font-medium flex items-center justify-between opacity-100'
+          'navigate-tab flex flex-col text-xs font-medium flex items-center justify-between opacity-100'
         )}
-        activeTabClassName={s('bg-purple-xlight font-semibold')}
+        activeTabClassName={s('font-semibold')}
         onTabClick={updateTasksTab}
         showRipple={false}
         color={colors.purple.reg}
