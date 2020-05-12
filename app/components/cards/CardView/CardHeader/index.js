@@ -11,7 +11,16 @@ const mapStateToProps = (state) => {
     }
   } = state;
 
-  const { answer, _id, isEditing, status, lastEdited, lastVerified, createdAt } = activeCard;
+  const {
+    answer,
+    attachments,
+    _id,
+    isEditing,
+    status,
+    lastEdited,
+    lastVerified,
+    createdAt
+  } = activeCard;
 
   return {
     ownUserId,
@@ -19,6 +28,7 @@ const mapStateToProps = (state) => {
     _id,
     isEditing,
     status,
+    attachments,
     lastEdited,
     lastVerified,
     createdAt,

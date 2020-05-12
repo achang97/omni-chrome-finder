@@ -46,6 +46,14 @@ export const STATUS = {
   NOT_DOCUMENTED: 5
 };
 
+export const STATUS_NAME = {
+  [STATUS.NEEDS_APPROVAL]: 'Needs Approval',
+  [STATUS.NOT_DOCUMENTED]: 'Not Documented',
+  [STATUS.NEEDS_VERIFICATION]: 'Needs Verification',
+  [STATUS.OUT_OF_DATE]: 'Out of Date',
+  [STATUS.UP_TO_DATE]: 'Up to Date'
+};
+
 export const VERIFICATION_INTERVAL_OPTION = {
   TWO_WEEKS: 1,
   ONE_MONTH: 2,
@@ -88,6 +96,7 @@ export default {
   MODAL_TYPE,
   EDITOR_TYPE,
   STATUS,
+  STATUS_NAME,
   VERIFICATION_INTERVAL_OPTION,
   VERIFICATION_INTERVAL_OPTIONS,
   PERMISSION_OPTION,

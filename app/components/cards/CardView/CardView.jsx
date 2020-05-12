@@ -6,39 +6,34 @@ import { Resizable } from 're-resizable';
 import { EditorState } from 'draft-js';
 
 import TextEditor from 'components/editors/TextEditor';
-import { Button, Loader, Separator, Tooltip } from 'components/common';
+import { Button, Loader, Tooltip } from 'components/common';
 import { ScreenRecordButton, AttachmentDropzone } from 'components/attachments';
 
-import { isApprover } from 'utils/card';
 import { generateFileKey, isAnyLoading } from 'utils/file';
 import { getStyleApplicationFn } from 'utils/style';
 import { CARD, REQUEST } from 'appConstants';
 
 import SlackIcon from 'assets/images/icons/Slack_Mark.svg';
 
-import style from './card-content.css';
+import style from './card-view.css';
 
-import CardStatus from '../CardStatus';
-import CardTags from '../CardTags';
-import CardSideDock from '../CardSideDock';
-import CardCreateModal from '../CardCreateModal';
-import CardConfirmModals from '../CardConfirmModals';
-import CardHeader from '../CardHeader';
-import CardFooter from '../CardFooter';
+import CardSideDock from './CardSideDock';
+import CardCreateModal from './CardCreateModal';
+import CardConfirmModals from './CardConfirmModals';
+import CardHeader from './CardHeader';
+import CardFooter from './CardFooter';
 
 const s = getStyleApplicationFn(style);
 
-const CardContent = ({
+const CardView = ({
   _id,
   question,
   descriptionEditorState,
   answerEditorState,
   status,
-  tags,
   attachments,
   slackThreadConvoPairs,
   slackReplies,
-  outOfDateReason,
   isEditing,
   edits,
   editorEnabled,
@@ -47,8 +42,6 @@ const CardContent = ({
   isGettingCard,
   getError,
   cardsHeight,
-  cardsWidth,
-  user,
   enableCardEditor,
   adjustCardDescriptionSectionHeight,
   openCardModal,
@@ -104,26 +97,6 @@ const CardContent = ({
   const enableAnswerEditor = () => {
     enableCardEditor(CARD.EDITOR_TYPE.ANSWER);
     adjustCardDescriptionSectionHeight(CARD.DIMENSIONS.MIN_QUESTION_HEIGHT);
-  };
-
-  const cardStatusOnClick = (prevStatus) => {
-    switch (prevStatus) {
-      case CARD.STATUS.OUT_OF_DATE:
-      case CARD.STATUS.NEEDS_VERIFICATION: {
-        openCardModal(CARD.MODAL_TYPE.CONFIRM_UP_TO_DATE);
-        break;
-      }
-      case CARD.STATUS.UP_TO_DATE: {
-        openCardModal(CARD.MODAL_TYPE.CONFIRM_OUT_OF_DATE);
-        break;
-      }
-      case CARD.STATUS.NEEDS_APPROVAL: {
-        openCardModal(CARD.MODAL_TYPE.CONFIRM_APPROVE);
-        break;
-      }
-      default:
-        break;
-    }
   };
 
   const getTextEditorProps = (editorRole) => {
@@ -201,29 +174,31 @@ const CardContent = ({
   };
 
   const renderAdvancedSettings = () => {
-    const currAttachments = isEditing ? edits.attachments : attachments;
+    if (!isEditing) {
+      return null;
+    }
+
+    const editAttachments = edits.attachments;
     return isEditing ? (
       <div className={s('card-content-spacing flex justify-between')}>
-        {currAttachments.length !== 0 && (
-          <Tooltip tooltip="View Attachments">
-            <div className={s('flex items-center')}>
-              <div
-                className={s(
-                  'flex text-purple-reg text-sm cursor-pointer underline-border border-purple-gray-20 items-center'
-                )}
-                onClick={openCardSideDock}
-              >
-                {isAnyLoading(currAttachments) ? (
-                  <Loader size="sm" className={s('mr-sm')} />
-                ) : (
-                  <MdAttachment className={s('mr-sm')} />
-                )}
-                <div>
-                  {currAttachments.length} Attachment{currAttachments.length !== 0 && 's'}
-                </div>
+        {editAttachments.length !== 0 && (
+          <div className={s('flex items-center')}>
+            <div
+              className={s(
+                'flex text-purple-reg text-sm cursor-pointer underline-border border-purple-gray-20 items-center'
+              )}
+              onClick={openCardSideDock}
+            >
+              {isAnyLoading(editAttachments) ? (
+                <Loader size="sm" className={s('mr-sm')} />
+              ) : (
+                <MdAttachment className={s('mr-sm')} />
+              )}
+              <div>
+                {editAttachments.length} Attachment{editAttachments.length !== 0 && 's'}
               </div>
             </div>
-          </Tooltip>
+          </div>
         )}
         <div className={s('flex ml-auto')}>
           <ScreenRecordButton
@@ -241,12 +216,6 @@ const CardContent = ({
       </div>
     ) : (
       <div className={s('card-content-spacing flex items-center justify-between')}>
-        <CardTags
-          tags={tags}
-          onTagClick={openCardSideDock}
-          maxWidth={cardsWidth * 0.5}
-          isEditable={false}
-        />
         <div className={s('flex flex-shrink-0 z-10 bg-purple-light ml-sm')}>
           <Tooltip tooltip="View Attachments">
             <Button
@@ -258,13 +227,6 @@ const CardContent = ({
               onClick={openCardSideDock}
             />
           </Tooltip>
-          <Separator />
-          <CardStatus
-            status={status}
-            isActionable={status !== CARD.STATUS.NEEDS_APPROVAL || isApprover(user, tags)}
-            outOfDateReason={outOfDateReason}
-            onDropdownOptionClick={cardStatusOnClick}
-          />
         </div>
       </div>
     );
@@ -429,22 +391,16 @@ const CardContent = ({
   return render();
 };
 
-CardContent.propTypes = {
+CardView.propTypes = {
   // Redux State
   _id: PropTypes.string.isRequired,
   question: PropTypes.string.isRequired,
   descriptionEditorState: PropTypes.instanceOf(EditorState).isRequired,
   answerEditorState: PropTypes.instanceOf(EditorState).isRequired,
   status: PropTypes.oneOf(Object.values(CARD.STATUS)).isRequired,
-  tags: PropTypes.arrayOf(PropTypes.object).isRequired,
   attachments: PropTypes.arrayOf(PropTypes.object).isRequired,
   slackThreadConvoPairs: PropTypes.arrayOf(PropTypes.object).isRequired,
   slackReplies: PropTypes.arrayOf(PropTypes.object).isRequired,
-  outOfDateReason: PropTypes.shape({
-    reason: PropTypes.string.isRequired,
-    sender: PropTypes.object.isRequired,
-    time: PropTypes.string.isRequired
-  }),
   isEditing: PropTypes.bool.isRequired,
   edits: PropTypes.shape({
     question: PropTypes.string,
@@ -458,6 +414,7 @@ CardContent.propTypes = {
   hasLoaded: PropTypes.bool.isRequired,
   isGettingCard: PropTypes.bool,
   getError: PropTypes.string,
+  cardsHeight: PropTypes.number.isRequired,
 
   // Redux Actions
   enableCardEditor: PropTypes.func.isRequired,
@@ -471,4 +428,4 @@ CardContent.propTypes = {
   requestAddCardAttachment: PropTypes.func.isRequired
 };
 
-export default CardContent;
+export default CardView;

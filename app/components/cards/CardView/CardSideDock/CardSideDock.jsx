@@ -16,12 +16,12 @@ import { TRANSITIONS } from 'appConstants/animate';
 import { getStyleApplicationFn } from 'utils/style';
 import style from './card-side-dock.css';
 
-import CardSection from '../CardSection';
-import CardUsers from '../CardUsers';
-import CardTags from '../CardTags';
-import CardAttachments from '../CardAttachments';
-import CardPermissions from '../CardPermissions';
-import CardVerificationInterval from '../CardVerificationInterval';
+import CardSection from '../../CardSection';
+import CardUsers from '../../CardUsers';
+import CardTags from '../../CardTags';
+import CardAttachments from '../../CardAttachments';
+import CardPermissions from '../../CardPermissions';
+import CardVerificationInterval from '../../CardVerificationInterval';
 
 const s = getStyleApplicationFn(style);
 
