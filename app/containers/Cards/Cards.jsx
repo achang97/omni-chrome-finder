@@ -8,7 +8,7 @@ import _ from 'lodash';
 import { MdClose } from 'react-icons/md';
 import { FiMinus, FiPlus } from 'react-icons/fi';
 
-import { CardContent, CardConfirmModal } from 'components/cards';
+import { CardView, CardConfirmModal } from 'components/cards';
 import { Tabs, Tab } from 'components/common';
 
 import { cardStateChanged, getNewCardBaseState } from 'utils/card';
@@ -284,7 +284,7 @@ const Cards = ({
                 }}
               >
                 {renderTabHeader()}
-                <CardContent />
+                <CardView />
                 {renderCloseModal()}
               </Resizable>
             </ReactDraggable>

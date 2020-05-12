@@ -4,9 +4,10 @@ import { MdCheck, MdRemoveCircle, MdArrowDropDown } from 'react-icons/md';
 import { FaPencilAlt, FaUserCheck } from 'react-icons/fa';
 import { IoMdAlert } from 'react-icons/io';
 
-import { Dropdown, Timeago } from 'components/common';
+import { Dropdown, Timeago, Triangle } from 'components/common';
 import { CARD, NOOP } from 'appConstants';
 
+import { colors } from 'styles/colors';
 import { getStyleApplicationFn } from 'utils/style';
 import style from './card-status.css';
 import CardUser from '../CardUser';
@@ -17,30 +18,30 @@ const getDisplayInfo = (status) => {
   switch (status) {
     case CARD.STATUS.UP_TO_DATE:
       return {
-        label: 'Up to date',
         Icon: MdCheck,
         bgColor: 'green-xlight',
         fontColor: 'green-reg'
       };
     case CARD.STATUS.OUT_OF_DATE:
-      return { label: 'Out of date', Icon: MdRemoveCircle, bgColor: 'red-500', fontColor: 'white' };
+      return {
+        Icon: MdRemoveCircle,
+        bgColor: 'red-500',
+        fontColor: 'white'
+      };
     case CARD.STATUS.NEEDS_VERIFICATION:
       return {
-        label: 'Needs Verification',
         Icon: IoMdAlert,
         bgColor: 'yellow-reg',
         fontColor: 'black'
       };
     case CARD.STATUS.NOT_DOCUMENTED:
       return {
-        label: 'Not Documented',
         Icon: FaPencilAlt,
         bgColor: 'blue-200',
         fontColor: 'blue-500'
       };
     case CARD.STATUS.NEEDS_APPROVAL:
       return {
-        label: 'Needs Approval',
         Icon: FaUserCheck,
         bgColor: 'orange-200',
         fontColor: 'orange-500'
@@ -71,7 +72,7 @@ const CardStatus = ({
   onDropdownOptionClick,
   outOfDateReason
 }) => {
-  const { label, Icon, bgColor, fontColor } = getDisplayInfo(status);
+  const { Icon, bgColor, fontColor } = getDisplayInfo(status);
   const {
     Icon: DropdownIcon,
     fontColor: dropdownFontColor,
@@ -99,7 +100,7 @@ const CardStatus = ({
         toggler={
           <div className={s(`flex p-sm text-${fontColor}`)}>
             <Icon />
-            <div className={s('ml-xs')}> {label} </div>
+            <div className={s('ml-xs')}> {CARD.STATUS_NAME[status]} </div>
             {!dropdownDisabled && <MdArrowDropDown />}
           </div>
         }
@@ -117,6 +118,7 @@ const CardStatus = ({
         <Dropdown
           className={s('ml-sm flex')}
           togglerClassName={s('flex')}
+          isDown={false}
           toggler={
             <button
               className={s('bg-red-200 p-sm text-red-500 rounded-lg text-xs font-bold')}
@@ -126,25 +128,35 @@ const CardStatus = ({
             </button>
           }
           body={
-            <div className={s('card-status-reason-dropdown')}>
-              <div
-                className={s(
-                  `mb-reg text-sm ${!outOfDateReason.reason ? 'italic text-gray-light' : ''}`
-                )}
-              >
-                {outOfDateReason.reason || 'No reason specified.'}
+            <div className={s('flex flex-col')}>
+              <div className={s('card-status-reason-dropdown')}>
+                <div
+                  className={s(
+                    `mb-reg text-sm ${!outOfDateReason.reason ? 'italic text-gray-light' : ''}`
+                  )}
+                >
+                  {outOfDateReason.reason || 'No reason specified.'}
+                </div>
+                <div className={s('flex items-center text-xs')}>
+                  <CardUser
+                    img={outOfDateReason.sender.profilePicture}
+                    name={`${outOfDateReason.sender.firstname} ${outOfDateReason.sender.lastname}`}
+                    showName={false}
+                    size="sm"
+                  />
+                  <div className={s('ml-sm')}> {outOfDateReason.sender.firstname} </div>
+                  <div className={s('mx-xs')}> &#8226; </div>
+                  <Timeago live={false} date={outOfDateReason.time} />
+                </div>
               </div>
-              <div className={s('flex items-center text-xs')}>
-                <CardUser
-                  img={outOfDateReason.sender.profilePicture}
-                  name={`${outOfDateReason.sender.firstname} ${outOfDateReason.sender.lastname}`}
-                  showName={false}
-                  size="sm"
-                />
-                <div className={s('ml-sm')}> {outOfDateReason.sender.firstname} </div>
-                <div className={s('mx-xs')}> &#8226; </div>
-                <Timeago live={false} date={outOfDateReason.time} />
-              </div>
+              <Triangle
+                direction="down"
+                color="white"
+                outlineColor={colors.gray.light}
+                outlineSize={1}
+                size={7}
+                className={s('self-end mb-xs mr-xs')}
+              />
             </div>
           }
         />

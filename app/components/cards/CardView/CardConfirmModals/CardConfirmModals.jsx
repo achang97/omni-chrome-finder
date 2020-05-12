@@ -6,7 +6,8 @@ import { MODAL_TYPE } from 'appConstants/card';
 
 import { getStyleApplicationFn } from 'utils/style';
 import style from './card-confirm-modals.css';
-import CardConfirmModal from '../CardConfirmModal';
+
+import CardConfirmModal from '../../CardConfirmModal';
 
 const s = getStyleApplicationFn(style);
 

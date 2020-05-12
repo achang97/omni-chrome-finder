@@ -9,11 +9,11 @@ import { HINTS, MODAL_TYPE } from 'appConstants/card';
 import { hasValidEdits, isExistingCard, isJustMe } from 'utils/card';
 import { getStyleApplicationFn } from 'utils/style';
 
-import CardSection from '../CardSection';
-import CardUsers from '../CardUsers';
-import CardTags from '../CardTags';
-import CardPermissions from '../CardPermissions';
-import CardVerificationInterval from '../CardVerificationInterval';
+import CardSection from '../../CardSection';
+import CardUsers from '../../CardUsers';
+import CardTags from '../../CardTags';
+import CardPermissions from '../../CardPermissions';
+import CardVerificationInterval from '../../CardVerificationInterval';
 
 const s = getStyleApplicationFn();
 

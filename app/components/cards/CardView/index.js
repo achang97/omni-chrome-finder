@@ -10,11 +10,10 @@ import {
   openCardSideDock,
   requestAddCardAttachment
 } from 'actions/cards';
-import CardContent from './CardContent';
+import CardView from './CardView';
 
 const mapStateToProps = (state) => {
   const {
-    profile: { user },
     cards: {
       activeCard: {
         _id,
@@ -22,11 +21,9 @@ const mapStateToProps = (state) => {
         descriptionEditorState,
         answerEditorState,
         status,
-        tags,
         attachments,
         slackThreadConvoPairs,
         slackReplies,
-        outOfDateReason,
         isEditing,
         edits,
         editorEnabled,
@@ -35,25 +32,20 @@ const mapStateToProps = (state) => {
         isGettingCard,
         getError
       },
-      cardsHeight,
-      cardsWidth
+      cardsHeight
     }
   } = state;
 
   return {
-    user,
     cardsHeight,
-    cardsWidth,
     _id,
     question,
     descriptionEditorState,
     answerEditorState,
     status,
-    tags,
     attachments,
     slackThreadConvoPairs,
     slackReplies,
-    outOfDateReason,
     isEditing,
     edits,
     editorEnabled,
@@ -76,4 +68,4 @@ const mapDispatchToProps = {
   requestAddCardAttachment
 };
 
-export default connect(mapStateToProps, mapDispatchToProps)(CardContent);
+export default connect(mapStateToProps, mapDispatchToProps)(CardView);

@@ -1,14 +1,14 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import _ from 'lodash';
-import { MdMoreHoriz, MdKeyboardArrowLeft, MdContentCopy } from 'react-icons/md';
+import { MdMoreHoriz, MdKeyboardArrowLeft, MdContentCopy, MdAttachFile } from 'react-icons/md';
 import { IoIosShareAlt } from 'react-icons/io';
-import { Timeago, Tooltip } from 'components/common';
+import { Timeago, Tooltip, Separator } from 'components/common';
 
 import { copyCardUrl } from 'utils/card';
 import { copyText } from 'utils/window';
 import { getStyleApplicationFn } from 'utils/style';
-import { MODAL_TYPE, STATUS } from 'appConstants/card';
+import { MODAL_TYPE, STATUS, STATUS_NAME } from 'appConstants/card';
 
 const s = getStyleApplicationFn();
 
@@ -19,6 +19,7 @@ const CardHeader = ({
   answer,
   isEditing,
   status,
+  attachments,
   lastEdited,
   lastVerified,
   createdAt,
@@ -37,6 +38,12 @@ const CardHeader = ({
 
   const renderHeaderButtons = () => {
     const headerButtons = [
+      {
+        Icon: MdAttachFile,
+        label: attachments.length,
+        tooltip: `View Attachments (${attachments.length})`,
+        onClick: openCardSideDock
+      },
       {
         Icon: MdContentCopy,
         toast: 'Copied answer to clipboard!',
@@ -64,30 +71,31 @@ const CardHeader = ({
       onClick();
     };
 
+    const filteredButtons = headerButtons.filter(({ showEdit }) => showEdit || !isEditing);
     return (
       <div className={s('flex items-center')}>
-        {headerButtons.map(
-          ({ Icon, toast, label, tooltip, onClick, className, showEdit }, i) =>
-            (!isEditing || showEdit) && (
-              <Tooltip
-                show={!!tooltip}
-                tooltip={tooltip}
-                tooltipProps={{ place: 'left' }}
-                key={tooltip}
+        {filteredButtons.map(({ Icon, toast, label, tooltip, onClick, className = '' }, i) => (
+          <>
+            <Tooltip
+              show={!!tooltip}
+              tooltip={tooltip}
+              tooltipProps={{ place: 'left' }}
+              key={tooltip}
+            >
+              <button
+                onClick={() => headerOnClick(onClick, toast)}
+                className={s('flex items-center')}
+                type="button"
               >
-                <button
-                  onClick={() => headerOnClick(onClick, toast)}
-                  className={s('flex items-center')}
-                  type="button"
-                >
-                  {label && <div className={s('text-xs mr-xs')}> {label} </div>}
-                  <Icon
-                    className={s(`${i < headerButtons.length - 1 ? 'mr-sm' : ''} ${className}`)}
-                  />
-                </button>
-              </Tooltip>
-            )
-        )}
+                {label && <div className={s('text-xs mr-xs')}> {label} </div>}
+                <Icon className={s(className)} />
+              </button>
+            </Tooltip>
+            {i !== filteredButtons.length - 1 && (
+              <Separator className={s('mx-xs self-stretch bg-purple-gray-10')} />
+            )}
+          </>
+        ))}
       </div>
     );
   };
@@ -125,6 +133,8 @@ const CardHeader = ({
                 <Timeago date={lastVerified.time} live={false} textTransform={_.lowerCase} />)
               </div>
             )}
+            <Separator className={s('bg-purple-gray-10 mx-sm')} />
+            <div className={s('font-bold')}> {STATUS_NAME[status]} </div>
           </div>
         )}
       </>
@@ -157,6 +167,7 @@ CardHeader.propTypes = {
   answer: PropTypes.string,
   isEditing: PropTypes.bool.isRequired,
   status: PropTypes.oneOf(Object.values(STATUS)).isRequired,
+  attachments: PropTypes.arrayOf(PropTypes.object).isRequired,
   lastEdited: LastTimestampPropTypes,
   lastVerified: LastTimestampPropTypes,
   createdAt: PropTypes.string,
