@@ -101,9 +101,7 @@ const CardFooter = React.forwardRef(
     };
 
     const renderReadView = () => (
-      <div
-        className={s('flex items-center justify-between bg-purple-light rounded-b-lg px-lg py-sm')}
-      >
+      <div className={s('flex items-center justify-between rounded-b-lg px-lg py-sm')}>
         <div className={s('flex')}>
           <Button
             text="Edit Card"

@@ -156,10 +156,7 @@ const SuggestionPanel = ({
     }
 
     return (
-      <div
-        className={s('flex-col bg-purple-light justify-center items-center')}
-        ref={externalResultsRef}
-      >
+      <div className={s('flex-col justify-center items-center')} ref={externalResultsRef}>
         {cards.length !== 0 && <Separator horizontal className={s('my-sm')} />}
         <div className={s('flex justify-between items-center p-lg')}>
           <div className={s('text-purple-reg font-semibold')}>
