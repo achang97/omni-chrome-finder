@@ -10,7 +10,7 @@ const s = getStyleApplicationFn(style);
 
 const SuggestionPreview = ({ id, question, questionDescription, answer, openCard }) => (
   <div className={s('suggestion-preview')}>
-    <div className={s('bg-purple-light py-xl px-lg rounded-t-lg')}>
+    <div className={s('bg-purple-xxlight py-xl px-lg rounded-t-lg')}>
       <div className={s('text-lg font-semibold')}>
         <span className={s('line-clamp-3 break-words')}> {question} </span>
       </div>
