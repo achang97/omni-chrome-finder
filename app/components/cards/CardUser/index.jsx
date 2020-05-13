@@ -52,7 +52,7 @@ CardUser.propTypes = {
   className: PropTypes.string,
   name: PropTypes.string.isRequired,
   img: PropTypes.string,
-  size: PropTypes.oneOfType([PropTypes.number, PropTypes.oneOf(['xs', 'sm', 'md', 'lg'])]),
+  size: PropTypes.oneOfType([PropTypes.number, PropTypes.oneOf(['2xs', 'xs', 'sm', 'md', 'lg'])]),
   onClick: PropTypes.func,
   onRemoveClick: PropTypes.func,
   showName: PropTypes.bool,

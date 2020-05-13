@@ -15,16 +15,7 @@ const mapStateToProps = (state) => {
     }
   } = state;
 
-  const {
-    answer,
-    attachments,
-    _id,
-    isEditing,
-    status,
-    lastEdited,
-    lastVerified,
-    createdAt
-  } = activeCard;
+  const { answer, attachments, _id, isEditing, status, lastVerified } = activeCard;
 
   return {
     user,
@@ -36,9 +27,7 @@ const mapStateToProps = (state) => {
     isEditing,
     status,
     attachments,
-    lastEdited,
     lastVerified,
-    createdAt,
     hasCardChanged: cardStateChanged(activeCard)
   };
 };

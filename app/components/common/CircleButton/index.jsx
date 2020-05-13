@@ -8,6 +8,8 @@ const s = getStyleApplicationFn(style);
 
 const getButtonStyle = (size) => {
   switch (size) {
+    case '2xs':
+      return { height: '20px', width: '20px' };
     case 'xs':
       return { height: '25px', width: '25px' };
     case 'sm':
@@ -43,7 +45,7 @@ const CircleButton = ({
 );
 
 CircleButton.propTypes = {
-  size: PropTypes.oneOfType([PropTypes.number, PropTypes.oneOf(['xs', 'sm', 'md', 'lg'])]),
+  size: PropTypes.oneOfType([PropTypes.number, PropTypes.oneOf(['2xs', 'xs', 'sm', 'md', 'lg'])]),
   content: PropTypes.node.isRequired,
   onClick: PropTypes.func,
   label: PropTypes.string,

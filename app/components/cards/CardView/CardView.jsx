@@ -233,7 +233,7 @@ const CardView = ({
   };
 
   const renderQuestion = (showDescription) => (
-    <div className={s('card-content-spacing')}>
+    <div className={s('card-content-spacing mt-xs')}>
       {isEditing ? (
         <input
           placeholder="Title or Question"

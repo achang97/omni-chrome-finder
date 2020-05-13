@@ -3,7 +3,7 @@ import PropTypes from 'prop-types';
 import _ from 'lodash';
 import { MdMoreHoriz, MdKeyboardArrowLeft, MdContentCopy, MdAttachFile } from 'react-icons/md';
 import { IoIosShareAlt } from 'react-icons/io';
-import { Timeago, Tooltip, Separator } from 'components/common';
+import { Timeago, Tooltip, Separator, PlaceholderImg } from 'components/common';
 
 import { copyCardUrl, isApprover } from 'utils/card';
 import { copyText } from 'utils/window';
@@ -26,9 +26,7 @@ const CardHeader = ({
   isEditing,
   status,
   attachments,
-  lastEdited,
   lastVerified,
-  createdAt,
   hasCardChanged,
   cancelEditCard,
   openCardModal,
@@ -144,19 +142,26 @@ const CardHeader = ({
         {/* Case 3: Card is documented and not in edit */}
         {!isEditing && (
           <div className={s('flex items-center')}>
-            <Timeago
-              date={lastEdited ? lastEdited.time : createdAt}
-              live={false}
-              className={s('font-bold opacity-75')}
-            />
             {lastVerified && lastVerified.user && (
-              <div className={s('text-gray-light ml-sm italic opacity-75')}>
-                (Last verified by&nbsp;
-                {lastVerified.user._id === ownUserId
-                  ? 'you'
-                  : `${lastVerified.user.firstname} ${lastVerified.user.lastname}`}
+              <div className={s('italic flex items-center text-gray-dark')}>
+                <Tooltip
+                  tooltip={`${lastVerified.user.firstname} ${lastVerified.user.lastname}`}
+                  show
+                >
+                  <div>
+                    <PlaceholderImg
+                      src={lastVerified.user.profilePicture}
+                      name={`${lastVerified.user.firstname} ${lastVerified.user.lastname}`}
+                      className={s('h-xl w-xl rounded-full mr-sm text-xs')}
+                    />
+                  </div>
+                </Tooltip>
+                <span className={s('opacity-75')}>Verified by&nbsp;</span>
+                <span className={s('opacity-75')}>
+                  {lastVerified.user._id === ownUserId ? 'you' : `${lastVerified.user.firstname}`}
+                </span>
                 &nbsp;
-                <Timeago date={lastVerified.time} live={false} textTransform={_.lowerCase} />)
+                <Timeago date={lastVerified.time} live={false} textTransform={_.lowerCase} />
               </div>
             )}
             <Separator className={s('bg-purple-gray-10 mx-sm opacity-75')} />
@@ -206,9 +211,7 @@ CardHeader.propTypes = {
   isEditing: PropTypes.bool.isRequired,
   status: PropTypes.oneOf(Object.values(STATUS)).isRequired,
   attachments: PropTypes.arrayOf(PropTypes.object).isRequired,
-  lastEdited: LastTimestampPropTypes,
   lastVerified: LastTimestampPropTypes,
-  createdAt: PropTypes.string,
   hasCardChanged: PropTypes.bool.isRequired,
 
   // Redux Actions
