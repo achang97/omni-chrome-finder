@@ -170,6 +170,7 @@ const CardHeader = ({
               isActionable={status !== STATUS.NEEDS_APPROVAL || isApprover(user, tags)}
               outOfDateReason={outOfDateReason}
               onDropdownOptionClick={cardStatusOnClick}
+              className={s('text-gray-dark')}
             />
           </div>
         )}
