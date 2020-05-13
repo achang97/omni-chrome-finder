@@ -25,7 +25,7 @@
 .card-tab-container {
   @apply flex flex-shrink-0 min-h-0 items-center rounded-t-lg px-sm pt-reg;
 
-  background: #f4f4f4;
+  background: linear-gradient(0deg, #cfcfcfbf, #e5e5e4ad);
   box-sizing: border-box;
   cursor: grab;
 }

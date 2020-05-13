@@ -5,8 +5,12 @@ import CardHeader from './CardHeader';
 
 const mapStateToProps = (state) => {
   const {
-    cards: { activeCard },
+    cards: {
+      activeCard,
+      activeCard: { tags, outOfDateReason }
+    },
     profile: {
+      user,
       user: { _id: ownUserId }
     }
   } = state;
@@ -23,6 +27,9 @@ const mapStateToProps = (state) => {
   } = activeCard;
 
   return {
+    user,
+    tags,
+    outOfDateReason,
     ownUserId,
     answer,
     _id,

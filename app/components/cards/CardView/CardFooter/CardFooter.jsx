@@ -4,15 +4,13 @@ import { MdModeEdit, MdThumbUp, MdBookmarkBorder } from 'react-icons/md';
 import { EditorState } from 'draft-js';
 
 import { Message, Button, Loader, Tooltip } from 'components/common';
-import { hasValidEdits, toggleUpvotes, isApprover } from 'utils/card';
+import { hasValidEdits, toggleUpvotes } from 'utils/card';
 import { getStyleApplicationFn } from 'utils/style';
 import { isAnyLoading } from 'utils/file';
 import { UserPropTypes } from 'utils/propTypes';
 
 import { STATUS, MODAL_TYPE } from 'appConstants/card';
 import style from './card-footer.css';
-
-import CardStatus from '../../CardStatus';
 
 const s = getStyleApplicationFn(style);
 
@@ -26,8 +24,6 @@ const CardFooter = React.forwardRef(
       _id,
       status,
       upvotes,
-      tags,
-      outOfDateReason,
       edits,
       isUpdatingBookmark,
       isUpdatingCard,
@@ -80,26 +76,6 @@ const CardFooter = React.forwardRef(
       );
     };
 
-    const cardStatusOnClick = (prevStatus) => {
-      switch (prevStatus) {
-        case STATUS.OUT_OF_DATE:
-        case STATUS.NEEDS_VERIFICATION: {
-          openCardModal(MODAL_TYPE.CONFIRM_UP_TO_DATE);
-          break;
-        }
-        case STATUS.UP_TO_DATE: {
-          openCardModal(MODAL_TYPE.CONFIRM_OUT_OF_DATE);
-          break;
-        }
-        case STATUS.NEEDS_APPROVAL: {
-          openCardModal(MODAL_TYPE.CONFIRM_APPROVE);
-          break;
-        }
-        default:
-          break;
-      }
-    };
-
     const renderReadView = () => (
       <div className={s('flex items-center justify-between rounded-b-lg px-lg py-sm')}>
         <div className={s('flex')}>
@@ -109,12 +85,6 @@ const CardFooter = React.forwardRef(
             icon={<MdModeEdit className={s('mr-sm')} />}
             onClick={editCard}
             className={s('mr-sm')}
-          />
-          <CardStatus
-            status={status}
-            isActionable={status !== STATUS.NEEDS_APPROVAL || isApprover(user, tags)}
-            outOfDateReason={outOfDateReason}
-            onDropdownOptionClick={cardStatusOnClick}
           />
         </div>
         <div className={s('flex')}>
@@ -172,12 +142,6 @@ CardFooter.propTypes = {
   _id: PropTypes.string.isRequired,
   status: PropTypes.oneOf(Object.values(STATUS)).isRequired,
   upvotes: PropTypes.arrayOf(PropTypes.string).isRequired,
-  tags: PropTypes.arrayOf(PropTypes.object).isRequired,
-  outOfDateReason: PropTypes.shape({
-    reason: PropTypes.string.isRequired,
-    sender: PropTypes.object.isRequired,
-    time: PropTypes.string.isRequired
-  }),
   edits: PropTypes.shape({
     question: PropTypes.string,
     answerEditorState: PropTypes.instanceOf(EditorState),

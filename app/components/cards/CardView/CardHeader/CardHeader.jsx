@@ -5,16 +5,22 @@ import { MdMoreHoriz, MdKeyboardArrowLeft, MdContentCopy, MdAttachFile } from 'r
 import { IoIosShareAlt } from 'react-icons/io';
 import { Timeago, Tooltip, Separator } from 'components/common';
 
-import { copyCardUrl } from 'utils/card';
+import { copyCardUrl, isApprover } from 'utils/card';
 import { copyText } from 'utils/window';
 import { getStyleApplicationFn } from 'utils/style';
-import { MODAL_TYPE, STATUS, STATUS_NAME } from 'appConstants/card';
+import { UserPropTypes } from 'utils/propTypes';
+import { MODAL_TYPE, STATUS } from 'appConstants/card';
+
+import CardStatus from '../../CardStatus';
 
 const s = getStyleApplicationFn();
 
 const CardHeader = ({
   setToastMessage,
   ownUserId,
+  user,
+  tags,
+  outOfDateReason,
   _id,
   answer,
   isEditing,
@@ -42,7 +48,10 @@ const CardHeader = ({
         Icon: MdAttachFile,
         label: attachments.length,
         tooltip: `View Attachments (${attachments.length})`,
-        onClick: openCardSideDock
+        onClick: openCardSideDock,
+        className: `py-xs px-sm rounded-full shadow-md ${
+          attachments.length > 0 ? 'gold-gradient' : 'bg-purple-light'
+        }`
       },
       {
         Icon: MdContentCopy,
@@ -54,7 +63,7 @@ const CardHeader = ({
         Icon: IoIosShareAlt,
         toast: 'Copied link to clipboard!',
         tooltip: 'Share Card',
-        className: 'text-lg',
+        iconClassName: 'text-lg',
         onClick: () => copyCardUrl(_id)
       },
       {
@@ -73,31 +82,53 @@ const CardHeader = ({
 
     const filteredButtons = headerButtons.filter(({ showEdit }) => showEdit || !isEditing);
     return (
-      <div className={s('flex items-center')}>
-        {filteredButtons.map(({ Icon, toast, label, tooltip, onClick, className = '' }, i) => (
-          <>
-            <Tooltip
-              show={!!tooltip}
-              tooltip={tooltip}
-              tooltipProps={{ place: 'left' }}
-              key={tooltip}
-            >
-              <button
-                onClick={() => headerOnClick(onClick, toast)}
-                className={s('flex items-center')}
-                type="button"
+      <div className={s('flex items-center opacity-75')}>
+        {filteredButtons.map(
+          ({ Icon, toast, label, tooltip, onClick, className = '', iconClassName = '' }, i) => (
+            <>
+              <Tooltip
+                show={!!tooltip}
+                tooltip={tooltip}
+                tooltipProps={{ place: 'left' }}
+                key={tooltip}
               >
-                {label && <div className={s('text-xs mr-xs')}> {label} </div>}
-                <Icon className={s(className)} />
-              </button>
-            </Tooltip>
-            {i !== filteredButtons.length - 1 && (
-              <Separator className={s('mx-xs self-stretch bg-purple-gray-10')} />
-            )}
-          </>
-        ))}
+                <button
+                  onClick={() => headerOnClick(onClick, toast)}
+                  className={s(`flex items-center ${className}`)}
+                  type="button"
+                >
+                  {label && <div className={s('text-xs mr-xs')}> {label} </div>}
+                  <Icon className={s(iconClassName)} />
+                </button>
+              </Tooltip>
+              {i !== filteredButtons.length - 1 && (
+                <Separator className={s('mx-xs self-stretch bg-purple-gray-10')} />
+              )}
+            </>
+          )
+        )}
       </div>
     );
+  };
+
+  const cardStatusOnClick = (prevStatus) => {
+    switch (prevStatus) {
+      case STATUS.OUT_OF_DATE:
+      case STATUS.NEEDS_VERIFICATION: {
+        openCardModal(MODAL_TYPE.CONFIRM_UP_TO_DATE);
+        break;
+      }
+      case STATUS.UP_TO_DATE: {
+        openCardModal(MODAL_TYPE.CONFIRM_OUT_OF_DATE);
+        break;
+      }
+      case STATUS.NEEDS_APPROVAL: {
+        openCardModal(MODAL_TYPE.CONFIRM_APPROVE);
+        break;
+      }
+      default:
+        break;
+    }
   };
 
   const renderHeaderLabels = () => {
@@ -105,26 +136,26 @@ const CardHeader = ({
       <>
         {/* Case 1: Card is documented and in edit */}
         {isEditing && status !== STATUS.NOT_DOCUMENTED && (
-          <div className={s('flex cursor-pointer font-bold')} onClick={goBackToView}>
+          <div className={s('flex cursor-pointer font-bold opacity-75')} onClick={goBackToView}>
             <MdKeyboardArrowLeft className={s('text-gray-dark')} />
             <div className={s('underline text-purple-reg')}> Back to View </div>
           </div>
         )}
         {/* Case 2: Card is not yet documented */}
         {isEditing && status === STATUS.NOT_DOCUMENTED && (
-          <div className={s('font-bold')}> New Card </div>
+          <div className={s('font-bold opacity-75')}> New Card </div>
         )}
 
         {/* Case 3: Card is documented and not in edit */}
         {!isEditing && (
-          <div className={s('flex')}>
+          <div className={s('flex items-center')}>
             <Timeago
               date={lastEdited ? lastEdited.time : createdAt}
               live={false}
-              className={s('font-bold')}
+              className={s('font-bold opacity-75')}
             />
             {lastVerified && lastVerified.user && (
-              <div className={s('text-gray-light ml-sm italic')}>
+              <div className={s('text-gray-light ml-sm italic opacity-75')}>
                 (Last verified by&nbsp;
                 {lastVerified.user._id === ownUserId
                   ? 'you'
@@ -133,8 +164,13 @@ const CardHeader = ({
                 <Timeago date={lastVerified.time} live={false} textTransform={_.lowerCase} />)
               </div>
             )}
-            <Separator className={s('bg-purple-gray-10 mx-sm')} />
-            <div className={s('font-bold')}> {STATUS_NAME[status]} </div>
+            <Separator className={s('bg-purple-gray-10 mx-sm opacity-75')} />
+            <CardStatus
+              status={status}
+              isActionable={status !== STATUS.NEEDS_APPROVAL || isApprover(user, tags)}
+              outOfDateReason={outOfDateReason}
+              onDropdownOptionClick={cardStatusOnClick}
+            />
           </div>
         )}
       </>
@@ -144,7 +180,7 @@ const CardHeader = ({
   return (
     <div
       className={s(
-        'card-content-spacing text-xs text-purple-reg pt-xs pb-sm flex items-center justify-between opacity-75'
+        'card-content-spacing text-xs text-purple-reg pt-xs pb-sm flex items-center justify-between'
       )}
     >
       {renderHeaderLabels()}
@@ -162,6 +198,13 @@ CardHeader.propTypes = {
   setToastMessage: PropTypes.func.isRequired,
 
   // Redux State
+  user: UserPropTypes.isRequired,
+  tags: PropTypes.arrayOf(PropTypes.object).isRequired,
+  outOfDateReason: PropTypes.shape({
+    reason: PropTypes.string.isRequired,
+    sender: PropTypes.object.isRequired,
+    time: PropTypes.string.isRequired
+  }),
   ownUserId: PropTypes.string.isRequired,
   _id: PropTypes.string.isRequired,
   answer: PropTypes.string,

@@ -276,7 +276,7 @@ const CardView = ({
       <Resizable
         minHeight={showDescription ? CARD.DIMENSIONS.MIN_QUESTION_HEIGHT : 'none'}
         size={{ height: showDescription ? descriptionSectionHeight : 'auto' }}
-        className={s('bg-purple-light py-sm min-h-0 flex-shrink-0 flex flex-col')}
+        className={s('card-header-container bg-white py-sm min-h-0 flex-shrink-0 flex flex-col')}
         maxHeight={maxDescriptionHeight}
         onResizeStop={(e, direction, ref, d) => {
           adjustCardDescriptionSectionHeight(descriptionSectionHeight + d.height);
@@ -339,7 +339,7 @@ const CardView = ({
     const isUnauthorized = errorStatus === REQUEST.HTTP_STATUS_CODE.UNAUTHORIZED;
 
     return (
-      <div className={s('flex flex-col h-full justify-center items-center bg-purple-light')}>
+      <div className={s('flex flex-col h-full justify-center items-center bg-purple-xxlight')}>
         <div className={s('large-icon-container text-red-500')}>
           {isUnauthorized ? (
             <MdLock className={s('w-full h-full')} />
@@ -364,7 +364,7 @@ const CardView = ({
 
     if (!hasLoaded || isGettingCard) {
       return (
-        <div className={s('flex flex-col h-full justify-center bg-purple-light')}>
+        <div className={s('flex flex-col h-full justify-center bg-purple-xxlight')}>
           <Loader />
         </div>
       );

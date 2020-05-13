@@ -98,7 +98,7 @@ const CardStatus = ({
           `card-status bg-${bgColor} ${shouldShowDropdown ? 'rounded-b-none' : ''} ${className}`
         )}
         toggler={
-          <div className={s(`flex p-sm text-${fontColor}`)}>
+          <div className={s(`flex py-xs px-sm text-${fontColor}`)}>
             <Icon />
             <div className={s('ml-xs')}> {CARD.STATUS_NAME[status]} </div>
             {!dropdownDisabled && <MdArrowDropDown />}
@@ -121,7 +121,7 @@ const CardStatus = ({
           isDown={false}
           toggler={
             <button
-              className={s('bg-red-200 p-sm text-red-500 rounded-lg text-xs font-bold')}
+              className={s('bg-red-200 py-xs px-sm text-red-500 rounded-lg text-xs font-bold')}
               type="button"
             >
               ?
