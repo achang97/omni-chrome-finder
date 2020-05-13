@@ -85,13 +85,8 @@ const CardHeader = ({
       <div className={s('flex items-center opacity-75')}>
         {filteredButtons.map(
           ({ Icon, toast, label, tooltip, onClick, className = '', iconClassName = '' }, i) => (
-            <>
-              <Tooltip
-                show={!!tooltip}
-                tooltip={tooltip}
-                tooltipProps={{ place: 'left' }}
-                key={tooltip}
-              >
+            <React.Fragment key={tooltip}>
+              <Tooltip show={!!tooltip} tooltip={tooltip} tooltipProps={{ place: 'left' }}>
                 <button
                   onClick={() => headerOnClick(onClick, toast)}
                   className={s(`flex items-center ${className}`)}
@@ -104,7 +99,7 @@ const CardHeader = ({
               {i !== filteredButtons.length - 1 && (
                 <Separator className={s('mx-xs self-stretch bg-purple-gray-10')} />
               )}
-            </>
+            </React.Fragment>
           )
         )}
       </div>

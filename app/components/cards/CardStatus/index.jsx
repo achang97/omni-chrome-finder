@@ -118,7 +118,6 @@ const CardStatus = ({
         <Dropdown
           className={s('ml-sm flex')}
           togglerClassName={s('flex')}
-          isDown={false}
           toggler={
             <button
               className={s('bg-red-200 py-xs px-sm text-red-500 rounded-lg text-xs font-bold')}
@@ -129,6 +128,14 @@ const CardStatus = ({
           }
           body={
             <div className={s('flex flex-col')}>
+              <Triangle
+                direction="up"
+                color="white"
+                outlineColor={colors.gray.light}
+                outlineSize={1}
+                size={7}
+                className={s('self-end mt-xs mr-xs')}
+              />
               <div className={s('card-status-reason-dropdown')}>
                 <div
                   className={s(
@@ -149,14 +156,6 @@ const CardStatus = ({
                   <Timeago live={false} date={outOfDateReason.time} />
                 </div>
               </div>
-              <Triangle
-                direction="down"
-                color="white"
-                outlineColor={colors.gray.light}
-                outlineSize={1}
-                size={7}
-                className={s('self-end mb-xs mr-xs')}
-              />
             </div>
           }
         />

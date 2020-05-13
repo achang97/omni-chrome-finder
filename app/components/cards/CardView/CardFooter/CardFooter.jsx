@@ -29,12 +29,14 @@ const CardFooter = React.forwardRef(
       isUpdatingCard,
       isEditing,
       isTogglingUpvote,
+      hasCardChanged,
       requestToggleUpvote,
       requestAddBookmark,
       requestRemoveBookmark,
       requestUpdateCard,
       editCard,
-      openCardModal
+      openCardModal,
+      cancelEditCard
     },
     ref
   ) => {
@@ -66,7 +68,7 @@ const CardFooter = React.forwardRef(
         <Button
           text="Save Updates"
           color="primary"
-          onClick={requestUpdateCard}
+          onClick={() => (hasCardChanged ? requestUpdateCard() : cancelEditCard())}
           iconLeft={false}
           icon={isUpdatingCard ? <Loader className={s('ml-sm')} size="sm" color="white" /> : null}
           className={s('rounded-t-none p-lg')}
@@ -151,6 +153,7 @@ CardFooter.propTypes = {
   isUpdatingCard: PropTypes.bool,
   isTogglingUpvote: PropTypes.bool,
   isEditing: PropTypes.bool.isRequired,
+  hasCardChanged: PropTypes.bool.isRequired,
 
   // Redux Actions
   requestToggleUpvote: PropTypes.func.isRequired,
@@ -158,7 +161,8 @@ CardFooter.propTypes = {
   requestRemoveBookmark: PropTypes.func.isRequired,
   openCardModal: PropTypes.func.isRequired,
   requestUpdateCard: PropTypes.func.isRequired,
-  editCard: PropTypes.func.isRequired
+  editCard: PropTypes.func.isRequired,
+  cancelEditCard: PropTypes.func.isRequired
 };
 
 CardFooter.defaultProps = {

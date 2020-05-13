@@ -25,23 +25,25 @@ const CardUser = ({
 
   return (
     <div className={s(`card-user ${className}`)}>
-      <div className={s('relative')}>
-        <Tooltip tooltip={name} show={showTooltip}>
-          <CircleButton
-            content={
-              <PlaceholderImg src={img} name={name} className={s('w-full h-full text-sm')} />
-            }
-            size={size}
-            onClick={protectedOnClick}
-          />
-        </Tooltip>
-        {onRemoveClick && (
-          <button onClick={onRemoveClick} className={s('card-user-remove')} type="button">
-            <MdClose />
-          </button>
-        )}
-      </div>
-      {showName && <div className={s('card-user-label')}> {name} </div>}
+      <Tooltip tooltip={name} show={showTooltip}>
+        <div>
+          <div className={s('relative')}>
+            <CircleButton
+              content={
+                <PlaceholderImg src={img} name={name} className={s('w-full h-full text-sm')} />
+              }
+              size={size}
+              onClick={protectedOnClick}
+            />
+            {onRemoveClick && (
+              <button onClick={onRemoveClick} className={s('card-user-remove')} type="button">
+                <MdClose />
+              </button>
+            )}
+          </div>
+          {showName && <div className={s('card-user-label')}> {name} </div>}
+        </div>
+      </Tooltip>
     </div>
   );
 };

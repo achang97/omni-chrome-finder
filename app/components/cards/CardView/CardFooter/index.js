@@ -5,29 +5,33 @@ import {
   requestRemoveBookmark,
   openCardModal,
   requestUpdateCard,
-  editCard
+  editCard,
+  cancelEditCard
 } from 'actions/cards';
+import { cardStateChanged } from 'utils/card';
 import CardFooter from './CardFooter';
 
 const mapStateToProps = (state) => {
   const {
     profile: { user },
     screenRecording: { activeId: activeScreenRecordingId },
-    cards: {
-      activeCard: {
-        _id,
-        status,
-        upvotes,
-        tags,
-        outOfDateReason,
-        edits,
-        isUpdatingBookmark,
-        isUpdatingCard,
-        isEditing,
-        isTogglingUpvote
-      }
-    }
+    cards: { activeCard }
   } = state;
+
+  const {
+    _id,
+    status,
+    upvotes,
+    tags,
+    outOfDateReason,
+    edits,
+    isUpdatingBookmark,
+    isUpdatingCard,
+    isEditing,
+    isTogglingUpvote
+  } = activeCard;
+
+  const hasCardChanged = cardStateChanged(activeCard);
 
   return {
     user,
@@ -41,7 +45,8 @@ const mapStateToProps = (state) => {
     isUpdatingBookmark,
     isUpdatingCard,
     isEditing,
-    isTogglingUpvote
+    isTogglingUpvote,
+    hasCardChanged
   };
 };
 
@@ -51,7 +56,8 @@ const mapDispatchToProps = {
   requestRemoveBookmark,
   openCardModal,
   requestUpdateCard,
-  editCard
+  editCard,
+  cancelEditCard
 };
 
 export default connect(mapStateToProps, mapDispatchToProps, null, { forwardRef: true })(CardFooter);

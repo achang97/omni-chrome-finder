@@ -25,10 +25,10 @@
   },
   "lint-staged": {
     "(app|chrome|test|scripts|webpack)/**/*.(js|jsx)": [
-      "eslint"
+      "eslint --fix"
     ],
     "app/**/*.css": [
-      "stylelint"
+      "stylelint --fix"
     ],
     "(app|chrome|test|scripts|webpack)/**/*.(js|jsx|css)": [
       "prettier"
