@@ -37,6 +37,10 @@
   -webkit-line-clamp: 4;
 }
 
+.wb-break-words {
+  word-break: break-word;
+}
+
 /* Borders  */
 .underline-border {
   @apply border-t-0 border-l-0 border-r-0 border-b-2 border-solid;

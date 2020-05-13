@@ -1,10 +1,11 @@
 import React, { useState, useEffect } from 'react';
 import PropTypes from 'prop-types';
 import _ from 'lodash';
-import { MdMoreVert } from 'react-icons/md';
+import { MdMoreHoriz } from 'react-icons/md';
+import { GoPrimitiveDot } from 'react-icons/go';
 
-import { CardStatus, CardConfirmModal } from 'components/cards';
-import { Button, Dropdown, Message, Loader, Timeago, Separator } from 'components/common';
+import { CardConfirmModal } from 'components/cards';
+import { Button, Dropdown, Message, Loader, Separator } from 'components/common';
 
 import { CARD } from 'appConstants';
 import { copyCardUrl } from 'utils/card';
@@ -23,7 +24,6 @@ const SuggestionCard = ({
   id,
   question,
   answer,
-  updatedAt,
   status,
   className,
   showMoreMenu,
@@ -54,6 +54,23 @@ const SuggestionCard = ({
       icon: isLoading ? <Loader className={s('ml-sm')} size="sm" color="white" /> : null,
       disabled: isLoading
     };
+  };
+
+  const getStatusColor = () => {
+    switch (status) {
+      case CARD.STATUS.UP_TO_DATE:
+        return 'text-green-reg';
+      case CARD.STATUS.OUT_OF_DATE:
+        return 'text-red-500';
+      case CARD.STATUS.NEEDS_VERIFICATION:
+        return 'text-yellow-reg';
+      case CARD.STATUS.NOT_DOCUMENTED:
+        return 'text-blue-500';
+      case CARD.STATUS.NEEDS_APPROVAL:
+        return 'text-orange-500';
+      default:
+        return {};
+    }
   };
 
   const shareCard = () => {
@@ -110,9 +127,8 @@ const SuggestionCard = ({
     return (
       <div className={s('flex-shrink-0 relative')}>
         <Dropdown
-          className={s('ml-xs')}
           isOpen={dropdownOpen}
-          toggler={<MdMoreVert />}
+          toggler={<MdMoreHoriz />}
           onToggle={setDropdownOpen}
           body={
             <div className={s('navigate-more-dropdown')}>
@@ -176,30 +192,30 @@ const SuggestionCard = ({
 
   return (
     <div
-      className={s(`${className} rounded-xl p-lg bg-white cursor-pointer`)}
+      className={s(
+        `${className} rounded-xl px-lg py-lg bg-white cursor-pointer flex justify-between`
+      )}
       onClick={() => openCard({ _id: id })}
     >
-      <div className={s('flex flex-col')}>
-        <div className={s('flex')}>
-          <span className={s('flex-grow text-lg text-left font-semibold break-words line-clamp-3')}>
+      <div className={s('flex flex-col w-full')}>
+        <div className={s('flex ')}>
+          <span className={s('flex-grow text-lg text-left font-semibold break-words line-clamp-2')}>
             {question}
           </span>
-          {renderDropdown()}
         </div>
         {answer && (
-          <span className={s('mt-sm text-xs text-gray-dark font-medium line-clamp-3 break-words')}>
+          <span
+            className={s(
+              'mt-sm text-xs text-gray-dark font-medium line-clamp-2 break-words wb-break-words'
+            )}
+          >
             {answer}
           </span>
         )}
       </div>
-      <div className={s('mt-reg pt-reg flex-col')}>
-        <Separator horizontal className={s('mb-sm')} />
-        <div className={s('flex items-center justify-between')}>
-          <span className={s('block text-center text-xs text-gray-light')}>
-            <Timeago date={updatedAt} live={false} />
-          </span>
-          <CardStatus status={status} />
-        </div>
+      <div className={s('flex flex-col justify-between flex-shrink-0 ml-xs')}>
+        {renderDropdown()}
+        <GoPrimitiveDot className={s(`${getStatusColor()}`)} />
       </div>
       {renderShareSuccess()}
       {renderModals()}
@@ -211,7 +227,6 @@ SuggestionCard.propTypes = {
   id: PropTypes.string.isRequired,
   question: PropTypes.string.isRequired,
   answer: PropTypes.string.isRequired,
-  updatedAt: PropTypes.string.isRequired,
   status: PropTypes.oneOf(Object.values(CARD.STATUS)).isRequired,
   className: PropTypes.string,
   showMoreMenu: PropTypes.bool,

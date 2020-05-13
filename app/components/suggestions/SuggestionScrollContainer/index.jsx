@@ -37,7 +37,7 @@ const SuggestionScrollContainer = ({
   };
 
   const renderScrollElement = (card, i) => {
-    const { _id, question, answer, lastEdited, createdAt, status } = card;
+    const { _id, question, answer, status } = card;
     const { className: cardClassName = '', ...restCardProps } = getCardProps
       ? getCardProps(card, i)
       : {};
@@ -47,7 +47,6 @@ const SuggestionScrollContainer = ({
         id={_id}
         question={question}
         answer={answer}
-        updatedAt={lastEdited ? lastEdited.time : createdAt}
         status={status}
         className={s(`suggestion-scroll-container-card ${cardClassName}`)}
         {...restCardProps}
