@@ -115,14 +115,14 @@ const Cards = ({
 
   const renderTabHeaderButtons = () => (
     <div
-      className={s('flex flex-shrink-0 text-purple-gray-50')}
+      className={s('flex flex-shrink-0 text-purple-gray-50 text-sm mr-reg')}
       onClick={(e) => e.stopPropagation()}
     >
-      <button onClick={toggleCards} className={s('mr-xs')} type="button">
-        {cardsExpanded ? <FiMinus /> : <FiPlus />}
-      </button>
-      <button onClick={handleCloseAllCards} type="button">
+      <button onClick={handleCloseAllCards} type="button" className={s('mr-xs')}>
         <MdClose />
+      </button>
+      <button onClick={toggleCards} type="button">
+        {cardsExpanded ? <FiMinus /> : <FiPlus />}
       </button>
     </div>
   );
@@ -169,7 +169,7 @@ const Cards = ({
               style={getItemStyle(snapshot.isDragging, provided.draggableProps.style)}
               className={s(
                 `card-tab card-header-tab ${!dragDisabled ? 'card-disable-window-drag' : ''} ${
-                  isActiveCard ? 'bg-purple-light' : ''
+                  isActiveCard ? 'bg-white' : ''
                 }`
               )}
             >
@@ -198,6 +198,7 @@ const Cards = ({
         className={s('card-tab-container')}
         style={{ height: CARD.DIMENSIONS.TABS_HEIGHT }}
       >
+        {renderTabHeaderButtons()}
         <DragDropContext onDragEnd={onDragEnd}>
           <Droppable droppableId="droppable" direction="horizontal">
             {(provided, snapshot) => (
@@ -230,7 +231,6 @@ const Cards = ({
             )}
           </Droppable>
         </DragDropContext>
-        {renderTabHeaderButtons()}
       </div>
     );
   };

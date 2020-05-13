@@ -9,5 +9,5 @@
 .card-side-dock {
   width: 300px;
 
-  @apply absolute top-0 bottom-0 right-0 bg-purple-light p-2xl pointer-events-auto rounded-l-lg shadow-lg;
+  @apply absolute top-0 bottom-0 right-0 bg-purple-xxlight p-2xl pointer-events-auto rounded-l-lg shadow-lg;
 }

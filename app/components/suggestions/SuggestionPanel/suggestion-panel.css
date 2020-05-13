@@ -4,7 +4,7 @@
   top: 0%;
   margin-right: 5%;
 
-  @apply w-full flex flex-col bg-white rounded-lg shadow-xl border-gray-200 border border-solid;
+  @apply w-full flex flex-col bg-purple-xxlight rounded-lg shadow-xl border-gray-200 border border-solid;
 }
 
 .suggestion-panel-card-container {

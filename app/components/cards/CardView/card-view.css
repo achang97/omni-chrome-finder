@@ -3,6 +3,10 @@
   right: 0;
 }
 
+.card-header-container {
+  box-shadow: 0 10px 10px -5px rgb(237, 237, 237);
+}
+
 .view-thread-button {
   bottom: 0;
   right: 0;
