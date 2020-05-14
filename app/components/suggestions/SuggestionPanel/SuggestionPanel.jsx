@@ -28,7 +28,8 @@ const SuggestionPanel = ({
   hasReachedLimit,
   requestSearchCards,
   clearSearchCards,
-  requestLogAudit
+  requestLogAudit,
+  trackEvent
 }) => {
   const [isVisible, setIsVisible] = useState(true);
   const [showExternalResults, setShowExternalResults] = useState(true);
@@ -66,6 +67,7 @@ const SuggestionPanel = ({
     } = externalSource;
 
     const logClick = (result) => {
+      trackEvent(`Open External Document - ${title}`, { Type: type, Title: title });
       requestLogAudit(PROFILE.AUDIT_TYPE.OPEN_EXTERNAL_DOC, { type, ...result });
     };
 
@@ -283,7 +285,8 @@ SuggestionPanel.propTypes = {
   // Redux Actions
   requestSearchCards: PropTypes.func.isRequired,
   clearSearchCards: PropTypes.func.isRequired,
-  requestLogAudit: PropTypes.func.isRequired
+  requestLogAudit: PropTypes.func.isRequired,
+  trackEvent: PropTypes.func.isRequired
 };
 
 SuggestionPanel.defaultProps = {

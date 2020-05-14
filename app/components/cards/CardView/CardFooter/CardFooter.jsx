@@ -22,6 +22,7 @@ const CardFooter = React.forwardRef(
       user,
       activeScreenRecordingId,
       _id,
+      question,
       status,
       upvotes,
       edits,
@@ -36,7 +37,8 @@ const CardFooter = React.forwardRef(
       requestUpdateCard,
       editCard,
       openCardModal,
-      cancelEditCard
+      cancelEditCard,
+      trackEvent
     },
     ref
   ) => {
@@ -78,6 +80,20 @@ const CardFooter = React.forwardRef(
       );
     };
 
+    const clickEditCard = () => {
+      trackEvent('Click Edit Card', { 'Card ID': _id, Question: question, Status: status });
+      editCard();
+    };
+
+    const clickUpvote = () => {
+      if (hasUpvoted) {
+        trackEvent('Unmark Card Helpful', { 'Card ID': _id, Question: question, Status: status });
+      } else {
+        trackEvent('Mark Card Helpful', { 'Card ID': _id, Question: question, Status: status });
+      }
+      requestToggleUpvote(toggleUpvotes(upvotes, user._id));
+    };
+
     const renderReadView = () => (
       <div className={s('flex items-center justify-between rounded-b-lg px-lg py-sm')}>
         <div className={s('flex')}>
@@ -85,7 +101,7 @@ const CardFooter = React.forwardRef(
             text="Edit Card"
             color="primary"
             icon={<MdModeEdit className={s('mr-sm')} />}
-            onClick={editCard}
+            onClick={clickEditCard}
             className={s('mr-sm')}
           />
         </div>
@@ -96,7 +112,7 @@ const CardFooter = React.forwardRef(
             className={s('mr-reg')}
             color={hasUpvoted ? 'gold' : 'secondary'}
             disabled={isTogglingUpvote}
-            onClick={() => requestToggleUpvote(toggleUpvotes(upvotes, user._id))}
+            onClick={clickUpvote}
           />
           <Tooltip
             tooltip={hasBookmarked ? 'Remove Bookmark' : 'Add Bookmark'}
@@ -142,6 +158,7 @@ CardFooter.propTypes = {
   user: UserPropTypes.isRequired,
   activeScreenRecordingId: PropTypes.string,
   _id: PropTypes.string.isRequired,
+  question: PropTypes.string.isRequired,
   status: PropTypes.oneOf(Object.values(STATUS)).isRequired,
   upvotes: PropTypes.arrayOf(PropTypes.string).isRequired,
   edits: PropTypes.shape({
@@ -162,7 +179,8 @@ CardFooter.propTypes = {
   openCardModal: PropTypes.func.isRequired,
   requestUpdateCard: PropTypes.func.isRequired,
   editCard: PropTypes.func.isRequired,
-  cancelEditCard: PropTypes.func.isRequired
+  cancelEditCard: PropTypes.func.isRequired,
+  trackEvent: PropTypes.func.isRequired
 };
 
 CardFooter.defaultProps = {

@@ -8,6 +8,7 @@ import {
   editCard,
   cancelEditCard
 } from 'actions/cards';
+import trackEvent from 'actions/analytics';
 import { cardStateChanged } from 'utils/card';
 import CardFooter from './CardFooter';
 
@@ -20,6 +21,7 @@ const mapStateToProps = (state) => {
 
   const {
     _id,
+    question,
     status,
     upvotes,
     tags,
@@ -37,6 +39,7 @@ const mapStateToProps = (state) => {
     user,
     activeScreenRecordingId,
     _id,
+    question,
     status,
     tags,
     upvotes,
@@ -57,7 +60,8 @@ const mapDispatchToProps = {
   openCardModal,
   requestUpdateCard,
   editCard,
-  cancelEditCard
+  cancelEditCard,
+  trackEvent
 };
 
 export default connect(mapStateToProps, mapDispatchToProps, null, { forwardRef: true })(CardFooter);
