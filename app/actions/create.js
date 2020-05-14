@@ -21,7 +21,6 @@ export function clearCreatePanel() {
   return { type: types.CLEAR_CREATE_PANEL, payload: {} };
 }
 
-
 export function toggleTemplateView() {
   return { type: types.TOGGLE_TEMPLATE_VIEW, payload: {} };
 }
@@ -31,7 +30,7 @@ export function updateSelectedTemplateCategory(category) {
 }
 
 export function requestGetTemplates() {
-  return { type: types.GET_TEMPLATES_REQUEST, payload: { } };
+  return { type: types.GET_TEMPLATES_REQUEST, payload: {} };
 }
 
 export function handleGetTemplatesSuccess(templates) {
@@ -41,7 +40,6 @@ export function handleGetTemplatesSuccess(templates) {
 export function handleGetTemplatesError(error) {
   return { type: types.GET_TEMPLATES_ERROR, payload: { error } };
 }
-
 
 export function requestAddCreateAttachment(key, file) {
   return { type: types.ADD_CREATE_ATTACHMENT_REQUEST, payload: { key, file } };
@@ -54,7 +52,6 @@ export function handleAddCreateAttachmentSuccess(key, attachment) {
 export function handleAddCreateAttachmentError(key, error) {
   return { type: types.ADD_CREATE_ATTACHMENT_ERROR, payload: { key, error } };
 }
-
 
 export function requestRemoveCreateAttachment(key) {
   return { type: types.REMOVE_CREATE_ATTACHMENT_REQUEST, payload: { key } };

@@ -1,14 +1,20 @@
-import { setStorage, getStorage } from 'utils/storage';
 import * as types from 'actions/actionTypes';
-import { handleDeleteCardSuccess, updateCard, requestGetCard } from 'actions/cards';
+import {
+  handleDeleteCardSuccess,
+  updateCard,
+  requestGetCard,
+  enableCardEditor,
+  adjustCardDescriptionSectionHeight
+} from 'actions/cards';
+import { EDITOR_TYPE, DIMENSIONS } from 'appConstants/card';
 
-const cardsMiddleware = store => next => (action) => {
+const cardsMiddleware = (store) => (next) => (action) => {
   const nextAction = next(action);
   const { type, payload } = action;
 
   switch (type) {
     // Handle tasks actions
-    case types.MARK_UP_TO_DATE_FROM_TASKS_SUCCESS: 
+    case types.MARK_UP_TO_DATE_FROM_TASKS_SUCCESS:
     case types.APPROVE_CARD_FROM_TASKS_SUCCESS: {
       const { card } = payload;
       store.dispatch(updateCard(card));
@@ -25,6 +31,11 @@ const cardsMiddleware = store => next => (action) => {
     // Handle actions from card itself
     case types.CANCEL_EDIT_CARD: {
       store.dispatch(requestGetCard());
+      break;
+    }
+    case types.EDIT_CARD: {
+      store.dispatch(enableCardEditor(EDITOR_TYPE.ANSWER));
+      store.dispatch(adjustCardDescriptionSectionHeight(DIMENSIONS.MIN_QUESTION_HEIGHT));
       break;
     }
 

@@ -2,19 +2,19 @@ import { connect } from 'react-redux';
 import { updateTasksOpenSection, requestGetTasks, updateTasksTab, removeTask } from 'actions/tasks';
 import Tasks from './Tasks';
 
-const mapStateToProps = state => {
+const mapStateToProps = (state) => {
   const {
-    tasks
+    tasks: { tabIndex, tasks, openSection, isGettingTasks }
   } = state;
 
-  return { ...tasks };
-}
+  return { tabIndex, tasks, openSection, isGettingTasks };
+};
 
 const mapDispatchToProps = {
   updateTasksOpenSection,
   requestGetTasks,
   updateTasksTab,
   removeTask
-}
+};
 
 export default connect(mapStateToProps, mapDispatchToProps)(Tasks);

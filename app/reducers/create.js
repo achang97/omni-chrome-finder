@@ -11,7 +11,7 @@ const initialState = {
   question: '',
   descriptionEditorState: EditorState.createEmpty(),
   answerEditorState: EditorState.createEmpty(),
-  attachments: [],
+  attachments: []
 };
 
 export default function createReducer(state = initialState, action) {
@@ -92,7 +92,7 @@ export default function createReducer(state = initialState, action) {
       const { key } = payload;
       return {
         ...state,
-        attachments: state.attachments.filter(attachment => attachment.key !== key)
+        attachments: state.attachments.filter((attachment) => attachment.key !== key)
       };
     }
     case types.REMOVE_CREATE_ATTACHMENT_ERROR: {

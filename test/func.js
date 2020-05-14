@@ -2,7 +2,7 @@ import chromedriver from 'chromedriver';
 import webdriver from 'selenium-webdriver';
 
 export function delay(time) {
-  return new Promise(resolve => setTimeout(resolve, time));
+  return new Promise((resolve) => setTimeout(resolve, time));
 }
 
 let crdvIsStarted = false;

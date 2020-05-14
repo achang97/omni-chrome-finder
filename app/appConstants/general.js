@@ -6,7 +6,6 @@ import JiraIcon from 'assets/images/icons/Jira_Icon.svg';
 import SalesforceIcon from 'assets/images/icons/Salesforce_Icon.svg';
 import HubspotIcon from 'assets/images/icons/Hubspot_Icon.svg';
 import HelpscoutIcon from 'assets/images/icons/Helpscout_Icon.svg';
-import GoogleChromeIcon from 'assets/images/icons/GoogleChrome_Icon.svg';
 
 export const ROUTES = {
   ASK: '/ask',
@@ -25,22 +24,22 @@ export const ROUTES = {
 
 export const NODE_ENV = {
   DEV: 'development',
-  PROD: 'production',
-}
+  PROD: 'production'
+};
 
 export const MAIN_CONTAINER_ID = 'omni-chrome-ext-main-container';
 
 export const WEB_APP_ROUTES = {
   EXTENSION: '/extension',
   SIGNUP: '/signup',
-  ONBOARDING: '/onboarding/extension',
+  ONBOARDING: '/onboarding/extension'
 };
 
 const PROD_WEB_APP_URL = 'https://app.addomni.com';
 export const URL = {
   WEB_APP: process.env.NODE_ENV === NODE_ENV.DEV ? 'http://localhost:5000' : PROD_WEB_APP_URL,
-  EXTENSION: `${PROD_WEB_APP_URL}/extension`, 
-}
+  EXTENSION: `${PROD_WEB_APP_URL}/extension`
+};
 
 export const INTEGRATIONS = {
   GOOGLE: { type: 'google', title: 'Google Drive', logo: GoogleDriveIcon },
@@ -49,8 +48,8 @@ export const INTEGRATIONS = {
   HELPSCOUT: { type: 'helpscout', title: 'Helpscout', logo: HelpscoutIcon },
   GMAIL: { type: 'gmail', title: 'Gmail', logo: GmailIcon },
   SALESFORCE: { type: 'salesforce', title: 'Salesforce', logo: SalesforceIcon },
-  JIRA: { type: 'jira', title: 'Jira', logo: SalesforceIcon },
-  HUBSPOT: { type: 'hubspot', title: 'Hubspot', logo: HubspotIcon },
+  JIRA: { type: 'jira', title: 'Jira', logo: JiraIcon },
+  HUBSPOT: { type: 'hubspot', title: 'Hubspot', logo: HubspotIcon }
 };
 
 export const NOOP = () => {};

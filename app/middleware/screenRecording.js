@@ -2,20 +2,24 @@ import * as types from 'actions/actionTypes';
 import { clearScreenRecording } from 'actions/screenRecording';
 import { toggleDock, toggleDockHeight } from 'actions/display';
 
-const cardsMiddleware = store => next => (action) => {
+const cardsMiddleware = (store) => (next) => (action) => {
   const nextAction = next(action);
-  const { type, payload } = action;
+  const { type } = action;
 
   switch (type) {
     case types.END_SCREEN_RECORDING: {
-      const { screenRecording: { recording, onSuccess, activeId } } = store.getState();
+      const {
+        screenRecording: { recording, onSuccess }
+      } = store.getState();
 
       onSuccess({ recording });
       store.dispatch(clearScreenRecording());
       break;
     }
     case types.CLEAR_SCREEN_RECORDING: {
-      const { display: { dockVisible, dockExpanded } } = store.getState();
+      const {
+        display: { dockVisible, dockExpanded }
+      } = store.getState();
 
       if (!dockVisible) {
         store.dispatch(toggleDock());

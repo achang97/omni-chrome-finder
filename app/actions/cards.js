@@ -58,10 +58,6 @@ export function enableCardEditor(editorType) {
   return { type: types.ENABLE_CARD_EDITOR, payload: { editorType } };
 }
 
-export function disableCardEditor(editorType) {
-  return { type: types.DISABLE_CARD_EDITOR, payload: { editorType } };
-}
-
 export function adjustCardDescriptionSectionHeight(newHeight) {
   return { type: types.ADJUST_CARD_DESCRIPTION_SECTION_HEIGHT, payload: { newHeight } };
 }
@@ -102,10 +98,6 @@ export function removeCardTag(index) {
   return { type: types.REMOVE_CARD_TAG, payload: { index } };
 }
 
-export function updateCardKeywords(keywords) {
-  return { type: types.UPDATE_CARD_KEYWORDS, payload: { keywords } };
-}
-
 export function updateCardVerificationInterval(verificationInterval) {
   return { type: types.UPDATE_CARD_VERIFICATION_INTERVAL, payload: { verificationInterval } };
 }
@@ -127,7 +119,7 @@ export function closeCardModal(modalType) {
 }
 
 export function editCard() {
-  return { type: types.EDIT_CARD, payload: { } };
+  return { type: types.EDIT_CARD, payload: {} };
 }
 
 export function cancelEditCard() {
@@ -135,11 +127,11 @@ export function cancelEditCard() {
 }
 
 export function openCardSideDock() {
-  return { type: types.OPEN_CARD_SIDE_DOCK, payload: { } };
+  return { type: types.OPEN_CARD_SIDE_DOCK, payload: {} };
 }
 
 export function closeCardSideDock() {
-  return { type: types.CLOSE_CARD_SIDE_DOCK, payload: { } };
+  return { type: types.CLOSE_CARD_SIDE_DOCK, payload: {} };
 }
 
 export function updateOutOfDateReason(reason) {
@@ -163,7 +155,6 @@ export function handleAddCardAttachmentError(cardId, key, error) {
   return { type: types.ADD_CARD_ATTACHMENT_ERROR, payload: { cardId, key, error } };
 }
 
-
 export function removeCardAttachment(key) {
   return { type: types.REMOVE_CARD_ATTACHMENT, payload: { key } };
 }
@@ -171,7 +162,6 @@ export function removeCardAttachment(key) {
 export function updateCardAttachmentName(key, name) {
   return { type: types.UPDATE_CARD_ATTACHMENT_NAME, payload: { key, name } };
 }
-
 
 export function requestGetCard() {
   return { type: types.GET_CARD_REQUEST, payload: {} };
@@ -185,7 +175,6 @@ export function handleGetCardError(cardId, error) {
   return { type: types.GET_CARD_ERROR, payload: { cardId, error } };
 }
 
-
 export function requestCreateCard() {
   return { type: types.CREATE_CARD_REQUEST, payload: {} };
 }
@@ -198,19 +187,17 @@ export function handleCreateCardError(cardId, error) {
   return { type: types.CREATE_CARD_ERROR, payload: { cardId, error } };
 }
 
-
-export function requestUpdateCard(closeCard=false) {
-  return { type: types.UPDATE_CARD_REQUEST, payload: { closeCard } };
+export function requestUpdateCard(shouldCloseCard = false) {
+  return { type: types.UPDATE_CARD_REQUEST, payload: { shouldCloseCard } };
 }
 
-export function handleUpdateCardSuccess(card, closeCard, isApprover) {
-  return { type: types.UPDATE_CARD_SUCCESS, payload: { closeCard, card, isApprover } };
+export function handleUpdateCardSuccess(card, shouldCloseCard, isApprover) {
+  return { type: types.UPDATE_CARD_SUCCESS, payload: { shouldCloseCard, card, isApprover } };
 }
 
-export function handleUpdateCardError(cardId, error, closeCard) {
-  return { type: types.UPDATE_CARD_ERROR, payload: { cardId, error, closeCard } };
+export function handleUpdateCardError(cardId, error, shouldCloseCard) {
+  return { type: types.UPDATE_CARD_ERROR, payload: { cardId, error, shouldCloseCard } };
 }
-
 
 export function requestDeleteCard() {
   return { type: types.DELETE_CARD_REQUEST, payload: {} };
@@ -224,7 +211,6 @@ export function handleDeleteCardError(cardId, error) {
   return { type: types.DELETE_CARD_ERROR, payload: { cardId, error } };
 }
 
-
 export function requestToggleUpvote(upvotes) {
   return { type: types.TOGGLE_UPVOTE_REQUEST, payload: { upvotes } };
 }
@@ -237,9 +223,8 @@ export function handleToggleUpvoteError(cardId, error, oldUpvotes) {
   return { type: types.TOGGLE_UPVOTE_ERROR, payload: { cardId, error, oldUpvotes } };
 }
 
-
 export function requestMarkUpToDate() {
-  return { type: types.MARK_UP_TO_DATE_REQUEST, payload: { } };
+  return { type: types.MARK_UP_TO_DATE_REQUEST, payload: {} };
 }
 
 export function handleMarkUpToDateSuccess(card) {
@@ -250,9 +235,8 @@ export function handleMarkUpToDateError(cardId, error) {
   return { type: types.MARK_UP_TO_DATE_ERROR, payload: { cardId, error } };
 }
 
-
 export function requestMarkOutOfDate() {
-  return { type: types.MARK_OUT_OF_DATE_REQUEST, payload: { } };
+  return { type: types.MARK_OUT_OF_DATE_REQUEST, payload: {} };
 }
 
 export function handleMarkOutOfDateSuccess(card) {
@@ -263,9 +247,8 @@ export function handleMarkOutOfDateError(cardId, error) {
   return { type: types.MARK_OUT_OF_DATE_ERROR, payload: { cardId, error } };
 }
 
-
 export function requestApproveCard() {
-  return { type: types.APPROVE_CARD_REQUEST, payload: { } };
+  return { type: types.APPROVE_CARD_REQUEST, payload: {} };
 }
 
 export function handleApproveCardSuccess(card) {
@@ -275,8 +258,6 @@ export function handleApproveCardSuccess(card) {
 export function handleApproveCardError(cardId, error) {
   return { type: types.APPROVE_CARD_ERROR, payload: { cardId, error } };
 }
-
-
 
 export function requestAddBookmark(cardId) {
   return { type: types.ADD_BOOKMARK_REQUEST, payload: { cardId } };
@@ -290,7 +271,6 @@ export function handleAddBookmarkError(cardId, error) {
   return { type: types.ADD_BOOKMARK_ERROR, payload: { cardId, error } };
 }
 
-
 export function requestRemoveBookmark(cardId) {
   return { type: types.REMOVE_BOOKMARK_REQUEST, payload: { cardId } };
 }
@@ -303,9 +283,8 @@ export function handleRemoveBookmarkError(cardId, error) {
   return { type: types.REMOVE_BOOKMARK_ERROR, payload: { cardId, error } };
 }
 
-
 export function requestGetSlackThread() {
-  return { type: types.GET_SLACK_THREAD_REQUEST, payload: { } };
+  return { type: types.GET_SLACK_THREAD_REQUEST, payload: {} };
 }
 
 export function handleGetSlackThreadSuccess(cardId, slackReplies) {
@@ -315,4 +294,3 @@ export function handleGetSlackThreadSuccess(cardId, slackReplies) {
 export function handleGetSlackThreadError(cardId, error) {
   return { type: types.GET_SLACK_THREAD_ERROR, payload: { cardId, error } };
 }
-

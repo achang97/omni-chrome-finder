@@ -4,17 +4,15 @@ import { requestLogAudit } from 'actions/auditLog';
 import { SEARCH } from 'appConstants';
 import SuggestionPanel from './SuggestionPanel';
 
-const mapStateToProps = state => {
+const mapStateToProps = (state) => {
   const {
     search: {
-      cards: {
-        [SEARCH.TYPE.POPOUT]: cards
-      }
+      cards: { [SEARCH.TYPE.POPOUT]: cards }
     }
   } = state;
 
   return { ...cards };
-}
+};
 
 const mapDispatchToProps = {
   requestSearchCards,

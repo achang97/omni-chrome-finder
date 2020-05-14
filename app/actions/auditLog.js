@@ -5,7 +5,7 @@ export function requestLogAudit(type, data) {
 }
 
 export function handleLogAuditSuccess() {
-  return { type: types.LOG_AUDIT_SUCCESS, payload: { } };
+  return { type: types.LOG_AUDIT_SUCCESS, payload: {} };
 }
 
 export function handleLogAuditError(error) {

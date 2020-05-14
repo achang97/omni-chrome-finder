@@ -1,7 +1,6 @@
 import { connect } from 'react-redux';
 import { withRouter } from 'react-router-dom';
 import { SEARCH } from 'appConstants';
-import { minimizeDock } from 'actions/display';
 import Header from './Header';
 
 const mapStateToProps = (state) => {
@@ -9,9 +8,7 @@ const mapStateToProps = (state) => {
     profile: { user },
     search: {
       cards: {
-        [SEARCH.TYPE.AUTOFIND]: {
-          cards
-        }
+        [SEARCH.TYPE.AUTOFIND]: { cards }
       }
     },
     tasks: { tasks }
@@ -22,7 +19,6 @@ const mapStateToProps = (state) => {
     numAutofindCards: cards.length,
     numTasks: tasks.filter(({ resolved }) => !resolved).length
   };
-}
+};
 
-export default connect(mapStateToProps, undefined)(withRouter(Header));
-
+export default connect(mapStateToProps)(withRouter(Header));

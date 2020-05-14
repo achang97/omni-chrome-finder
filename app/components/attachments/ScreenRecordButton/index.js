@@ -7,9 +7,7 @@ import ScreenRecordButton from './ScreenRecordButton';
 const mapStateToProps = (state, ownProps) => {
   const {
     screenRecording,
-    display: {
-      dockVisible,
-    }
+    display: { dockVisible }
   } = state;
 
   return { ...screenRecording, onSuccess: ownProps.onSuccess, dockVisible };

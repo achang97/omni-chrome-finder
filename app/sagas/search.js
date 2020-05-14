@@ -4,21 +4,27 @@ import { doGet, doPost, getErrorMessage } from 'utils/request';
 import { isLoggedIn } from 'utils/auth';
 import { SEARCH, INTEGRATIONS } from 'appConstants';
 import {
-  SEARCH_CARDS_REQUEST, SEARCH_TAGS_REQUEST, SEARCH_USERS_REQUEST,
+  SEARCH_CARDS_REQUEST,
+  SEARCH_TAGS_REQUEST,
+  SEARCH_USERS_REQUEST,
   SEARCH_PERMISSION_GROUPS_REQUEST
 } from 'actions/actionTypes';
 import {
-  handleSearchCardsSuccess, handleSearchCardsError,
-  handleSearchTagsSuccess, handleSearchTagsError,
-  handleSearchUsersSuccess, handleSearchUsersError,
-  handleSearchPermissionGroupsSuccess, handleSearchPermissionGroupsError,
+  handleSearchCardsSuccess,
+  handleSearchCardsError,
+  handleSearchTagsSuccess,
+  handleSearchTagsError,
+  handleSearchUsersSuccess,
+  handleSearchUsersError,
+  handleSearchPermissionGroupsSuccess,
+  handleSearchPermissionGroupsError
 } from 'actions/search';
 
 const CANCEL_TYPE = {
   CARDS: 'CARDS',
   TAGS: 'TAGS',
   USERS: 'USERS',
-  PERMISSION_GROUPS: 'PERMISSION_GROUPS',
+  PERMISSION_GROUPS: 'PERMISSION_GROUPS'
 };
 
 const CANCEL_SOURCE = {};
@@ -26,7 +32,7 @@ const CANCEL_SOURCE = {};
 const DOCUMENTATION_INTEGRATIONS = [
   {
     integration: INTEGRATIONS.GMAIL,
-    url: '/gmail/messages/query',
+    url: '/gmail/messages/query'
   },
   {
     integration: INTEGRATIONS.GOOGLE,
@@ -38,17 +44,19 @@ const DOCUMENTATION_INTEGRATIONS = [
   },
   {
     integration: INTEGRATIONS.ZENDESK,
-    url: '/zendesk/tickets/query',
+    url: '/zendesk/tickets/query'
   }
 ];
 
 export default function* watchSearchRequests() {
-  let action;
+  while (true) {
+    const action = yield take([
+      SEARCH_CARDS_REQUEST,
+      SEARCH_TAGS_REQUEST,
+      SEARCH_USERS_REQUEST,
+      SEARCH_PERMISSION_GROUPS_REQUEST
+    ]);
 
-  while (action = yield take([
-    SEARCH_CARDS_REQUEST, SEARCH_TAGS_REQUEST, SEARCH_USERS_REQUEST,
-    SEARCH_PERMISSION_GROUPS_REQUEST
-  ])) {
     const { type, payload } = action;
     switch (type) {
       case SEARCH_CARDS_REQUEST: {
@@ -87,12 +95,13 @@ function* searchCards({ type, query, clearCards }) {
   const cancelToken = cancelRequest(CANCEL_TYPE.CARDS);
 
   if (!query) {
-    query = yield select(state => state.search.cards[type].oldQuery);
+    // eslint-disable-next-line no-param-reassign
+    query = yield select((state) => state.search.cards[type].oldQuery);
   }
 
   try {
-    const page = yield select(state => state.search.cards[type].page);
-    const user = yield select(state => state.profile.user);
+    const page = yield select((state) => state.search.cards[type].page);
+    const user = yield select((state) => state.profile.user);
 
     let cards = [];
     const externalResults = [];
@@ -116,9 +125,11 @@ function* searchCards({ type, query, clearCards }) {
       });
     }
 
-    const results = yield all(allRequests.map(({ requestFn, url, body }) => (
-      call(requestFn || doGet, url, body, { cancelToken })
-    )));
+    const results = yield all(
+      allRequests.map(({ requestFn, url, body }) =>
+        call(requestFn || doGet, url, body, { cancelToken })
+      )
+    );
 
     if (results.length !== 0) {
       cards = results[0];
@@ -143,7 +154,7 @@ function* searchTags({ name }) {
   const cancelToken = cancelRequest(CANCEL_TYPE.TAGS);
 
   try {
-    const { tags } = yield call(doPost, '/tags/queryNames', { name }, { cancelToken });
+    const tags = yield call(doGet, '/tags/query', { q: name }, { cancelToken });
     yield put(handleSearchTagsSuccess(tags));
   } catch (error) {
     if (!isCancel(error)) {
@@ -156,7 +167,7 @@ function* searchUsers({ name }) {
   const cancelToken = cancelRequest(CANCEL_TYPE.USERS);
 
   try {
-    const { users } = yield call(doPost, '/users/queryNames', { name }, { cancelToken });
+    const users = yield call(doGet, '/users/queryByName', { q: name }, { cancelToken });
     yield put(handleSearchUsersSuccess(users));
   } catch (error) {
     if (!isCancel(error)) {
@@ -169,7 +180,12 @@ function* searchPermissionGroups({ name }) {
   const cancelToken = cancelRequest(CANCEL_TYPE.PERMISSION_GROUPS);
 
   try {
-    const permissionGroups = yield call(doGet, '/permissionGroups/query', { name }, { cancelToken });
+    const permissionGroups = yield call(
+      doGet,
+      '/permissionGroups/query',
+      { name },
+      { cancelToken }
+    );
     yield put(handleSearchPermissionGroupsSuccess(permissionGroups));
   } catch (error) {
     if (!isCancel(error)) {

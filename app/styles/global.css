@@ -1,12 +1,11 @@
 /* Colors, both background and font */
 @tailwind components;
-
 @tailwind utilities;
 
 /* Scroll bar */
 .hide-scrollbar::-webkit-scrollbar {
-  width: 0px !important; /* Remove scrollbar space */
-  height: 0px !important;
+  width: 0 !important; /* Remove scrollbar space */
+  height: 0 !important;
   background: transparent; /* Optional: just make scrollbar invisible */
 }
 
@@ -17,7 +16,9 @@
 }
 
 /* Handling text overflow */
-.line-clamp-2, .line-clamp-3, .line-clamp-4 {
+.line-clamp-2,
+.line-clamp-3,
+.line-clamp-4 {
   display: -webkit-box;
   -webkit-box-orient: vertical;
   overflow: hidden;
@@ -36,6 +37,10 @@
   -webkit-line-clamp: 4;
 }
 
+.wb-break-words {
+  word-break: break-word;
+}
+
 /* Borders  */
 .underline-border {
   @apply border-t-0 border-l-0 border-r-0 border-b-2 border-solid;
@@ -43,20 +48,20 @@
 
 /* Gradients + underlines */
 .primary-gradient {
-  background: linear-gradient(143deg, #777BAD 0%, #A0A1CD 100%) !important;
+  background: linear-gradient(143deg, #777bad 0%, #a0a1cd 100%) !important;
 }
 
 .gold-gradient {
-  background: linear-gradient(190deg, #FFE4B8 0%, #E3C295 100%) !important;
+  background: linear-gradient(190deg, #ffe4b8 0%, #e3c295 100%) !important;
 }
 
 .primary-underline {
-  border-bottom: 2px solid #FFFFFF33 !important;
+  border-bottom: 2px solid #fff3 !important;
 }
 
 /* Box shadow */
 .shadow-light {
-  box-shadow: 0 10px 30px 0 rgba(33,26,29,0.05) !important;
+  box-shadow: 0 10px 30px 0 rgba(33, 26, 29, 0.05) !important;
 }
 
 /* Z-index */
@@ -72,5 +77,6 @@
 .large-icon-container {
   height: 125px;
   width: 125px;
+
   @apply bg-white p-3xl rounded-full shadow-md border-2 border-solid border-purple-light;
 }

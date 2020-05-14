@@ -1,10 +1,16 @@
 import { connect } from 'react-redux';
-import { updateVerificationCode, requestVerify, requestResendVerificationEmail, clearResendVerificationInfo, logout } from 'actions/auth';
+import {
+  updateVerificationCode,
+  requestVerify,
+  requestResendVerificationEmail,
+  clearResendVerificationInfo,
+  logout
+} from 'actions/auth';
 import { requestGetUser } from 'actions/profile';
 import Verify from './Verify';
 
 const mapStateToProps = (state) => {
-  const { 
+  const {
     auth: {
       verificationCode,
       isVerifying,
@@ -14,13 +20,20 @@ const mapStateToProps = (state) => {
       resendVerificationError,
       isGettingUser
     },
-    display: {
-      dockVisible
-    }
+    display: { dockVisible }
   } = state;
 
-  return { dockVisible, verificationCode, isVerifying, verifyError, isResendingVerification, resendVerificationSuccess, resendVerificationError, isGettingUser };
-}
+  return {
+    dockVisible,
+    verificationCode,
+    isVerifying,
+    verifyError,
+    isResendingVerification,
+    resendVerificationSuccess,
+    resendVerificationError,
+    isGettingUser
+  };
+};
 
 const mapDispatchToProps = {
   updateVerificationCode,
@@ -29,8 +42,6 @@ const mapDispatchToProps = {
   clearResendVerificationInfo,
   requestGetUser,
   logout
-}
+};
 
 export default connect(mapStateToProps, mapDispatchToProps)(Verify);
-
-

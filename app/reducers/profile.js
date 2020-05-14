@@ -35,12 +35,12 @@ export const initialState = {
 export default function displayReducer(state = initialState, action) {
   const { type, payload = {} } = action;
 
-  const updateStateByType = (stateName, type, newInfo) => ({
+  const updateStateByType = (stateName, stateType, newInfo) => ({
     ...state,
     [stateName]: {
       ...state[stateName],
-      [type]: {
-        ...state[stateName][type],
+      [stateType]: {
+        ...state[stateName][stateType],
         ...newInfo
       }
     }
@@ -53,7 +53,7 @@ export default function displayReducer(state = initialState, action) {
       return { ...state, user };
     }
 
-    case types.VERIFY_SUCCESS: { 
+    case types.VERIFY_SUCCESS: {
       return { ...state, user: { ...state.user, isVerified: true } };
     }
 
@@ -83,7 +83,7 @@ export default function displayReducer(state = initialState, action) {
 
     // Changes to User
     case types.EDIT_USER: {
-      const { firstname, lastname, bio } = state.user;
+      const { firstname, lastname, bio = '' } = state.user;
       return { ...state, isEditingAbout: true, userEdits: { firstname, lastname, bio } };
     }
     case types.CHANGE_FIRSTNAME: {
@@ -127,16 +127,17 @@ export default function displayReducer(state = initialState, action) {
     }
 
     case types.UPDATE_USER_PERMISSIONS_REQUEST: {
-      const { type, permission } = payload;
-      return updateStateByType('permissionState', type, { isLoading: true, error: null });
+      const { type: permissionType } = payload;
+      return updateStateByType('permissionState', permissionType, { isLoading: true, error: null });
     }
     case types.UPDATE_USER_PERMISSIONS_SUCCESS: {
-      const { type, user } = payload;
-      return { ...updateStateByType('permissionState', type, { isLoading: false }), user };
+      const { type: permissionType, user } = payload;
+      const newState = updateStateByType('permissionState', permissionType, { isLoading: false });
+      return { ...newState, user };
     }
     case types.UPDATE_USER_PERMISSIONS_ERROR: {
-      const { type, error } = payload;
-      return updateStateByType('permissionState', type, { isLoading: false, error });
+      const { type: permissionType, error } = payload;
+      return updateStateByType('permissionState', permissionType, { isLoading: false, error });
     }
 
     case types.LOGOUT_USER_INTEGRATION_REQUEST: {

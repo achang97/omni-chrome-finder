@@ -5,7 +5,10 @@ function handleCommand(tabId, command) {
   switch (command) {
     case CHROME.COMMAND.OPEN_EXTENSION: {
       chrome.tabs.sendMessage(tabId, { type: CHROME.COMMAND.OPEN_EXTENSION });
+      break;
     }
+    default:
+      break;
   }
 }
 
@@ -30,4 +33,4 @@ chrome.commands.onCommand.addListener(async (command) => {
       window.open(URL.EXTENSION);
     }
   });
-})
+});

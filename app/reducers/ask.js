@@ -20,7 +20,7 @@ const initialState = {
   recipients: [],
 
   attachments: [],
-  slackConversations: [],
+  slackConversations: []
 };
 
 export default function askReducer(state = initialState, action) {
@@ -40,8 +40,8 @@ export default function askReducer(state = initialState, action) {
       const { showPerformanceScore } = state;
       return {
         ...state,
-        showPerformanceScore: !showPerformanceScore,
-      }
+        showPerformanceScore: !showPerformanceScore
+      };
     }
     case types.TOGGLE_ASK_FEEDBACK_INPUT: {
       const { showFeedback } = state;
@@ -56,9 +56,9 @@ export default function askReducer(state = initialState, action) {
       const { feedback } = payload;
       return { ...state, feedback };
     }
-    
+
     case types.SHOW_ASK_DESCRIPTION_EDITOR: {
-      return { ...state, isDescriptionEditorShown: true }
+      return { ...state, isDescriptionEditorShown: true };
     }
 
     case types.CHANGE_ASK_INTEGRATION: {
@@ -84,7 +84,8 @@ export default function askReducer(state = initialState, action) {
       let newRecipients;
       if (recipient.type === 'user') {
         newRecipients = [...recipients, recipient];
-      } else { //
+      } else {
+        //
         const newRecipient = {
           ...recipient,
           mentions: [],
@@ -136,7 +137,7 @@ export default function askReducer(state = initialState, action) {
       const { key } = payload;
       return {
         ...state,
-        attachments: state.attachments.filter(attachment => attachment.key !== key)
+        attachments: state.attachments.filter((attachment) => attachment.key !== key)
       };
     }
     case types.REMOVE_ASK_ATTACHMENT_ERROR: {
@@ -176,7 +177,7 @@ export default function askReducer(state = initialState, action) {
       return { ...state, isAskingQuestion: false, askSuccess: false, askError: error };
     }
     case types.CLEAR_ASK_QUESTION_INFO: {
-      return { ...state,  askError: null, askSuccess: null };
+      return { ...state, askError: null, askSuccess: null };
     }
 
     case types.SUBMIT_FEEDBACK_REQUEST: {
@@ -187,7 +188,12 @@ export default function askReducer(state = initialState, action) {
     }
     case types.SUBMIT_FEEDBACK_ERROR: {
       const { error } = payload;
-      return { ...state, isSubmittingFeedback: false, feedbackSuccess: false, feedbackError: error };
+      return {
+        ...state,
+        isSubmittingFeedback: false,
+        feedbackSuccess: false,
+        feedbackError: error
+      };
     }
 
     default:

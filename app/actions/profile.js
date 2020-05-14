@@ -1,7 +1,7 @@
 import * as types from './actionTypes';
 
 export function requestGetUser() {
-  return { type: types.GET_USER_REQUEST, payload: { } };
+  return { type: types.GET_USER_REQUEST, payload: {} };
 }
 
 export function handleGetUserSuccess(user, analytics) {
@@ -12,19 +12,20 @@ export function handleGetUserError(error) {
   return { type: types.GET_USER_ERROR, payload: { error } };
 }
 
-
 export function requestGetUserOnboardingStats() {
-  return { type: types.GET_USER_ONBOARDING_STATS_REQUEST, payload: { } };
+  return { type: types.GET_USER_ONBOARDING_STATS_REQUEST, payload: {} };
 }
 
 export function handleGetUserOnboardingStatsSuccess(badge, percentage, performance) {
-  return { type: types.GET_USER_ONBOARDING_STATS_SUCCESS, payload: { badge, percentage, performance } };
+  return {
+    type: types.GET_USER_ONBOARDING_STATS_SUCCESS,
+    payload: { badge, percentage, performance }
+  };
 }
 
 export function handleGetUserOnboardingStatsError(error) {
   return { type: types.GET_USER_ONBOARDING_STATS_ERROR, payload: { error } };
 }
-
 
 export function editUser() {
   return { type: types.EDIT_USER, payload: {} };
@@ -67,7 +68,7 @@ export function handleUpdateProfilePictureError(error) {
 }
 
 export function requestDeleteProfilePicture() {
-  return { type: types.DELETE_PROFILE_PICTURE_REQUEST, payload: { } };
+  return { type: types.DELETE_PROFILE_PICTURE_REQUEST, payload: {} };
 }
 
 export function handleDeleteProfilePictureSuccess(user) {
@@ -77,7 +78,6 @@ export function handleDeleteProfilePictureSuccess(user) {
 export function handleDeleteProfilePictureError(error) {
   return { type: types.DELETE_PROFILE_PICTURE_ERROR, payload: { error } };
 }
-
 
 export function requestUpdateUserPermissions(type, permission) {
   return { type: types.UPDATE_USER_PERMISSIONS_REQUEST, payload: { type, permission } };
@@ -102,4 +102,3 @@ export function handleLogoutUserIntegrationSuccess(integration, user) {
 export function handleLogoutUserIntegrationError(integration, error) {
   return { type: types.LOGOUT_USER_INTEGRATION_ERROR, payload: { integration, error } };
 }
-

@@ -1,4 +1,3 @@
-import _ from 'lodash';
 import * as types from 'actions/actionTypes';
 import { updateArrayOfObjects } from 'utils/array';
 import { TASKS } from 'appConstants';
@@ -10,7 +9,7 @@ export const initialState = {
 
   isGettingTasks: false,
   isUpdatingCard: false,
-  isDismissingTask: false,
+  isDismissingTask: false
 };
 
 export default function tasksReducer(state = initialState, action) {
@@ -21,12 +20,16 @@ export default function tasksReducer(state = initialState, action) {
       ...state,
       tasks: updateArrayOfObjects(state.tasks, { _id: taskId }, newInfo)
     };
-  }
+  };
 
   switch (type) {
     case types.UPDATE_TASKS_TAB: {
       const { tabIndex } = payload;
-      return { ...state, tabIndex, openSection: tabIndex === 0 ? TASKS.SECTION_TYPE.ALL : state.openSection };
+      return {
+        ...state,
+        tabIndex,
+        openSection: tabIndex === 0 ? TASKS.SECTION_TYPE.ALL : state.openSection
+      };
     }
     case types.UPDATE_TASKS_OPEN_SECTION: {
       const { section } = payload;

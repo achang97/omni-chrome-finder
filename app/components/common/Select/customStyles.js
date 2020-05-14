@@ -1,35 +1,35 @@
 import { colors } from 'styles/colors';
 
 const customStyles = {
-  container: (provided, state) => ({
+  container: (provided) => ({
     ...provided,
     color: 'black',
     fontSize: '14px',
     letterSpacing: '0.3px',
     lineHeight: '22px',
     boxSizing: 'border-box',
-    fontWeight: '400',
+    fontWeight: '400'
   }),
   control: (provided, state) => ({
     ...provided,
     background: state.isDisabled ? 'transparent' : provided.background,
-    border: '1px solid rgba(0,2,95,0.10) !important',
+    border: '1px solid rgba(0,2,95,0.10) !important'
   }),
   dropdownIndicator: (provided, state) => ({
     ...provided,
-    display: state.isDisabled ? 'none' : provided.display,
+    display: state.isDisabled ? 'none' : provided.display
   }),
-  valueContainer: (provided, state) => ({
+  valueContainer: (provided) => ({
     ...provided,
-    padding: '0px 8px',
+    padding: '0px 8px'
   }),
-  placeholder: (provided, state) => ({
+  placeholder: (provided) => ({
     ...provided,
-    color: colors.gray.dark,
+    color: colors.gray.dark
   }),
-  noOptionsMessage: (provided, state) => ({
+  noOptionsMessage: (provided) => ({
     ...provided,
-    color: colors.gray.dark,
+    color: colors.gray.dark
   }),
   option: (provided, state) => {
     let background = 'white';
@@ -39,27 +39,27 @@ const customStyles = {
     return {
       ...provided,
       background,
-      color: state.isSelected && !state.isFocused ? 'white' : 'black',
+      color: state.isSelected && !state.isFocused ? 'white' : 'black'
     };
   },
-  input: (provided, state) => ({
-    visibility: 'visible',
+  input: () => ({
+    visibility: 'visible'
   }),
-  singleValue: (provided, state) => ({
+  singleValue: (provided) => ({
     ...provided,
     color: colors.purple.reg,
     borderWidth: '0 0 2px 0',
     borderStyle: 'solid',
     borderColor: colors.purple['gray-10'],
-    fontWeight: 500,
+    fontWeight: 500
   }),
-  multiValue: (provided, state) => ({
+  multiValue: (provided) => ({
     ...provided,
     background: colors.purple.light,
     borderRadius: '16px',
-    fontWeight: 600,
+    fontWeight: 600
   }),
-  multiValueLabel: (provided, state) => ({
+  multiValueLabel: (provided) => ({
     ...provided,
     color: colors.purple.reg,
     textDecorationColor: `${colors.purple['gray-50']} !important`,
@@ -70,12 +70,12 @@ const customStyles = {
     color: colors.purple['gray-50'],
     background: 'transparent !important',
     cursor: 'pointer',
-    display: state.isDisabled ? 'none' : provided.display,
+    display: state.isDisabled ? 'none' : provided.display
   }),
-  menu: (provided, state) => ({
+  menu: (provided) => ({
     ...provided,
     overflow: 'hidden',
-    zIndex: 100000,
+    zIndex: 100000
   })
 };
 

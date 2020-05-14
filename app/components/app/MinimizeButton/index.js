@@ -4,7 +4,6 @@ import MinimizeButton from './MinimizeButton';
 
 const mapDispatchToProps = {
   minimizeDock
-}
+};
 
 export default connect(undefined, mapDispatchToProps)(MinimizeButton);
-

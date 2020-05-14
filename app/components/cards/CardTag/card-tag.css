@@ -1,4 +1,5 @@
 .card-tag {
   @apply flex items-center bg-purple-gray-10 text-purple-reg rounded-full font-semibold text-xs;
+
   padding: 6px;
 }

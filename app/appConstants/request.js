@@ -1,6 +1,7 @@
 import { NODE_ENV } from './general';
 
-let url, protocol;
+let url;
+let protocol;
 if (process.env.NODE_ENV === NODE_ENV.DEV) {
   url = 'localhost:8000';
   protocol = 'http://';
@@ -12,11 +13,11 @@ if (process.env.NODE_ENV === NODE_ENV.DEV) {
 export const URL = {
   BASE: `${url}/v1`,
   SERVER: `${protocol}${url}/v1`
-}
+};
 
 export const HTTP_STATUS_CODE = {
   UNAUTHORIZED: 401,
-  NOT_FOUND: 404,
-}
+  NOT_FOUND: 404
+};
 
 export default { URL, HTTP_STATUS_CODE };

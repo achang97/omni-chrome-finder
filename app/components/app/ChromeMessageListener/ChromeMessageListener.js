@@ -1,9 +1,9 @@
-import React, { Component } from 'react';
-import { withRouter } from 'react-router-dom';
+import { Component } from 'react';
+import PropTypes from 'prop-types';
 import queryString from 'query-string';
 import { EditorState, ContentState } from 'draft-js';
 
-import { CHROME, SEARCH, ROUTES, MAIN_CONTAINER_ID, INTEGRATIONS, URL, TASKS, PROFILE } from 'appConstants';
+import { CHROME, SEARCH, ROUTES, INTEGRATIONS, URL, TASKS, PROFILE } from 'appConstants';
 
 const URL_REGEXES = [
   {
@@ -19,8 +19,8 @@ class ChromeMessageListener extends Component {
     this.state = {
       hasLoaded: false,
       prevText: '',
-      prevUrl: null,
-    }
+      prevUrl: null
+    };
   }
 
   componentDidMount() {
@@ -31,14 +31,17 @@ class ChromeMessageListener extends Component {
   }
 
   componentDidUpdate(prevProps) {
-    if (this.state.hasLoaded && this.isValidUser()) {
+    const { hasLoaded } = this.state;
+    const { clearSearchCards } = this.props;
+
+    if (hasLoaded && this.isValidUser()) {
       const prevEnabled = this.isAutofindEnabled(prevProps.autofindPermissions);
       const currEnabled = this.isAutofindEnabled();
 
       if (!prevEnabled && currEnabled) {
         this.handlePageLoad();
       } else if (prevEnabled && !currEnabled) {
-        this.props.clearSearchCards(SEARCH.TYPE.AUTOFIND);
+        clearSearchCards(SEARCH.TYPE.AUTOFIND);
       }
     }
   }
@@ -53,7 +56,7 @@ class ChromeMessageListener extends Component {
   isValidUser = () => {
     const { isLoggedIn, isVerified, hasCompletedOnboarding } = this.props;
     return isLoggedIn && isVerified && hasCompletedOnboarding;
-  }
+  };
 
   hasUrlChanged = () => {
     const { prevUrl } = this.state;
@@ -66,14 +69,14 @@ class ChromeMessageListener extends Component {
     }
 
     return hasChanged;
-  }
+  };
 
   openDock = () => {
     const { toggleDock, dockVisible } = this.props;
     if (!dockVisible) {
       toggleDock();
     }
-  }
+  };
 
   openChromeExtension = () => {
     const { openCard } = this.props;
@@ -90,16 +93,16 @@ class ChromeMessageListener extends Component {
 
           if (cardId) {
             openCard({ _id: cardId, isEditing: edit === 'true' });
-          }        
+          }
         }
       }
     }
-  }
+  };
 
   openTask = (taskId) => {
     const { tasks, updateTasksTab, updateTasksOpenSection, history } = this.props;
     history.push(ROUTES.TASKS);
-    
+
     if (taskId) {
       const task = tasks.find(({ _id }) => _id === taskId);
       if (task) {
@@ -108,14 +111,14 @@ class ChromeMessageListener extends Component {
           updateTasksTab(1);
         } else {
           updateTasksTab(0);
-          const taskSectionType = TASKS.SECTIONS.find(({ taskTypes }) => (
-            taskTypes.length === 1 && taskTypes[0] === task.status
-          ));
+          const taskSectionType = TASKS.SECTIONS.find(
+            ({ taskTypes }) => taskTypes.length === 1 && taskTypes[0] === task.status
+          );
           updateTasksOpenSection(taskSectionType ? taskSectionType.type : TASKS.SECTION_TYPE.ALL);
-        }        
+        }
       }
     }
-  }
+  };
 
   disconnectMutatorObserver = () => {
     if (this.observer) {
@@ -123,33 +126,34 @@ class ChromeMessageListener extends Component {
       this.observer.disconnect();
       this.observer = null;
     }
-  }
+  };
 
-  createMutator(targetNode, config) {
-    const callback = (mutations) => {
+  createMutator = (targetNode, config) => {
+    const callback = () => {
       this.handlePageUpdate(false);
     };
 
     // Create an observer instance linked to the callback function
     this.observer = new MutationObserver(callback);
     this.observer.observe(targetNode, config);
-  }
+  };
 
   trimAlphanumeric = (text) => {
     return text.replace(/^[^a-z\d]+|[^a-z\d]+$/gi, '');
-  }
+  };
 
   removeAll = (nodes, transform) => {
-    nodes.forEach(node => {
+    nodes.forEach((node) => {
       if (transform) {
+        // eslint-disable-next-line no-param-reassign
         node = transform(node);
       }
 
       if (node) {
-        node.remove()
+        node.remove();
       }
     });
-  }
+  };
 
   getGoogleText = () => {
     let text = '';
@@ -178,14 +182,16 @@ class ChromeMessageListener extends Component {
 
             const removeShowContentToggle = [
               ...emailCopy.querySelectorAll('[aria-label="Show trimmed content"]'),
-              ...emailCopy.querySelectorAll('[aria-label="Hide expanded content"]'),
+              ...emailCopy.querySelectorAll('[aria-label="Hide expanded content"]')
             ];
-            this.removeAll(removeShowContentToggle, toggle => toggle.parentElement.nextSibling);
+            this.removeAll(removeShowContentToggle, (toggle) => toggle.parentElement.nextSibling);
 
             const removeTables = emailCopy.querySelectorAll('table');
             this.removeAll(removeTables);
 
-            const removeSignatures = emailCopy.querySelectorAll('[data-smartmail="gmail_signature"]');
+            const removeSignatures = emailCopy.querySelectorAll(
+              '[data-smartmail="gmail_signature"]'
+            );
             this.removeAll(removeSignatures);
 
             const textContent = this.trimAlphanumeric(emailCopy.textContent);
@@ -196,38 +202,41 @@ class ChromeMessageListener extends Component {
     }
 
     return text;
-  }
+  };
 
   getIntegration = () => {
     const urlRegex = URL_REGEXES.find(({ regex }) => regex.test(window.location.href));
-    
+
     if (urlRegex) {
       return urlRegex.integration;
-    } else {
-      return null;
     }
-  }
+    return null;
+  };
 
   isAutofindEnabled = (autofindPermissions) => {
-    const permissionsObj = autofindPermissions || this.props.autofindPermissions;
+    const { autofindPermissions: propsAutofindPermissions } = this.props;
+    const permissionsObj = autofindPermissions || propsAutofindPermissions;
     const integration = this.getIntegration();
     return integration && permissionsObj && permissionsObj[integration];
-  }
+  };
 
   getPageText = (integration) => {
     switch (integration) {
       case INTEGRATIONS.GMAIL.type: {
         return this.getGoogleText();
       }
+      default:
+        break;
     }
-    
+
     return '';
   };
 
   handlePageLoad = () => {
+    const { hasLoaded } = this.state;
     this.handlePageUpdate(true);
 
-    if (!this.state.hasLoaded) {
+    if (!hasLoaded) {
       this.setState({ hasLoaded: true });
     }
   };
@@ -249,24 +258,25 @@ class ChromeMessageListener extends Component {
           requestSearchCards(SEARCH.TYPE.AUTOFIND, { text: pageText });
         } else if (isNewPage) {
           clearSearchCards(SEARCH.TYPE.AUTOFIND);
-        }        
+        }
       }
     } else {
       if (prevText !== '') {
         this.setState({ prevText: '' });
       }
-      
+
       clearSearchCards(SEARCH.TYPE.AUTOFIND);
     }
   };
 
   handleContextMenuAction = (action, selectedText) => {
     const {
-      dockExpanded, history,
-      updateAskSearchText, updateAskQuestionTitle,
+      dockExpanded,
+      history,
+      updateAskSearchText,
+      updateAskQuestionTitle,
       updateCreateAnswerEditor,
-      updateNavigateSearchText,
-      requestLogAudit,
+      requestLogAudit
     } = this.props;
 
     this.openDock();
@@ -286,29 +296,32 @@ class ChromeMessageListener extends Component {
         }
         case CHROME.MESSAGE.CREATE: {
           url = ROUTES.CREATE;
-          updateCreateAnswerEditor(EditorState.createWithContent(ContentState.createFromText(selectedText)));
+          updateCreateAnswerEditor(
+            EditorState.createWithContent(ContentState.createFromText(selectedText))
+          );
           break;
         }
+        default:
+          break;
       }
 
       history.push(url);
     }
-  }
+  };
 
   handleNotificationOpened = ({ type, id }) => {
-    const {
-      openCard,
-      requestGetTasks,
-    } = this.props;
+    const { openCard, requestGetTasks } = this.props;
 
     this.openDock();
 
     if (this.isValidUser()) {
-      const { location: { pathname } } = this.props;
+      const {
+        location: { pathname }
+      } = this.props;
 
       switch (type) {
         case CHROME.NOTIFICATION_TYPE.TASK: {
-          if (location === ROUTES.TASKS) {
+          if (pathname === ROUTES.TASKS) {
             requestGetTasks();
           }
           this.openTask(id);
@@ -318,11 +331,13 @@ class ChromeMessageListener extends Component {
           openCard({ _id: id });
           break;
         }
+        default:
+          break;
       }
     }
-  }
+  };
 
-  handleSocketMessage = (type, payload) => {
+  handleSocketMessage = (type) => {
     const { requestGetUser } = this.props;
 
     switch (type) {
@@ -330,8 +345,10 @@ class ChromeMessageListener extends Component {
         requestGetUser();
         break;
       }
+      default:
+        break;
     }
-  }
+  };
 
   handleCommand = (command) => {
     const { dockVisible, toggleDock, minimizeDock } = this.props;
@@ -349,14 +366,15 @@ class ChromeMessageListener extends Component {
         break;
       }
     }
-  }
+  };
 
   listener = (msg) => {
+    const { toggleDock } = this.props;
     const { type, payload } = msg;
     switch (type) {
       // Messages
       case CHROME.MESSAGE.TOGGLE: {
-        this.props.toggleDock();
+        toggleDock();
         break;
       }
       case CHROME.MESSAGE.TAB_UPDATE: {
@@ -385,6 +403,9 @@ class ChromeMessageListener extends Component {
         this.handleCommand(type);
         break;
       }
+
+      default:
+        break;
     }
   };
 
@@ -392,5 +413,40 @@ class ChromeMessageListener extends Component {
     return null;
   }
 }
+
+ChromeMessageListener.propTypes = {
+  // Redux State
+  dockVisible: PropTypes.bool.isRequired,
+  dockExpanded: PropTypes.bool.isRequired,
+  autofindShown: PropTypes.bool.isRequired,
+  isLoggedIn: PropTypes.bool.isRequired,
+  isVerified: PropTypes.bool.isRequired,
+  autofindPermissions: PropTypes.shape({
+    gmail: PropTypes.bool,
+    zendesk: PropTypes.bool,
+    helpscout: PropTypes.bool,
+    salesforce: PropTypes.bool,
+    jira: PropTypes.bool,
+    hubspot: PropTypes.bool
+  }).isRequired,
+  hasCompletedOnboarding: PropTypes.bool.isRequired,
+  tasks: PropTypes.arrayOf(PropTypes.object).isRequired,
+
+  // Redux Actions
+  toggleDock: PropTypes.func.isRequired,
+  minimizeDock: PropTypes.func.isRequired,
+  toggleAutofindTab: PropTypes.func.isRequired,
+  requestGetUser: PropTypes.func.isRequired,
+  openCard: PropTypes.func.isRequired,
+  updateAskSearchText: PropTypes.func.isRequired,
+  updateAskQuestionTitle: PropTypes.func.isRequired,
+  updateCreateAnswerEditor: PropTypes.func.isRequired,
+  requestSearchCards: PropTypes.func.isRequired,
+  clearSearchCards: PropTypes.func.isRequired,
+  requestGetTasks: PropTypes.func.isRequired,
+  updateTasksTab: PropTypes.func.isRequired,
+  updateTasksOpenSection: PropTypes.func.isRequired,
+  requestLogAudit: PropTypes.func.isRequired
+};
 
 export default ChromeMessageListener;

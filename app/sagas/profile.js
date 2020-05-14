@@ -2,27 +2,44 @@ import { take, call, fork, put, all, select } from 'redux-saga/effects';
 import { doGet, doPut, doPost, doDelete, getErrorMessage } from 'utils/request';
 import { SETTING_SECTION_TYPE } from 'appConstants/profile';
 import {
-  GET_USER_REQUEST, GET_USER_ONBOARDING_STATS_REQUEST, SAVE_USER_REQUEST, UPDATE_USER_PERMISSIONS_REQUEST,
-  LOGOUT_USER_INTEGRATION_REQUEST, UPDATE_PROFILE_PICTURE_REQUEST, DELETE_PROFILE_PICTURE_REQUEST
+  GET_USER_REQUEST,
+  GET_USER_ONBOARDING_STATS_REQUEST,
+  SAVE_USER_REQUEST,
+  UPDATE_USER_PERMISSIONS_REQUEST,
+  LOGOUT_USER_INTEGRATION_REQUEST,
+  UPDATE_PROFILE_PICTURE_REQUEST,
+  DELETE_PROFILE_PICTURE_REQUEST
 } from 'actions/actionTypes';
 import {
-  handleGetUserSuccess, handleGetUserError,
-  handleGetUserOnboardingStatsSuccess, handleGetUserOnboardingStatsError,
-  handleSaveUserSuccess, handleSaveUserError,
-  handleUpdateProfilePictureSuccess, handleUpdateProfilePictureError,
-  handleDeleteProfilePictureSuccess, handleDeleteProfilePictureError,
-  handleUpdateUserPermissionsSuccess, handleUpdateUserPermissionsError,
-  handleLogoutUserIntegrationSuccess, handleLogoutUserIntegrationError,
+  handleGetUserSuccess,
+  handleGetUserError,
+  handleGetUserOnboardingStatsSuccess,
+  handleGetUserOnboardingStatsError,
+  handleSaveUserSuccess,
+  handleSaveUserError,
+  handleUpdateProfilePictureSuccess,
+  handleUpdateProfilePictureError,
+  handleDeleteProfilePictureSuccess,
+  handleDeleteProfilePictureError,
+  handleUpdateUserPermissionsSuccess,
+  handleUpdateUserPermissionsError,
+  handleLogoutUserIntegrationSuccess,
+  handleLogoutUserIntegrationError
 } from 'actions/profile';
 
 export default function* watchProfileRequests() {
-  let action;
+  while (true) {
+    const action = yield take([
+      GET_USER_REQUEST,
+      GET_USER_ONBOARDING_STATS_REQUEST,
+      SAVE_USER_REQUEST,
+      UPDATE_USER_PERMISSIONS_REQUEST,
+      LOGOUT_USER_INTEGRATION_REQUEST,
+      UPDATE_PROFILE_PICTURE_REQUEST,
+      DELETE_PROFILE_PICTURE_REQUEST
+    ]);
 
-  while (action = yield take([
-    GET_USER_REQUEST, GET_USER_ONBOARDING_STATS_REQUEST, SAVE_USER_REQUEST, UPDATE_USER_PERMISSIONS_REQUEST,
-    LOGOUT_USER_INTEGRATION_REQUEST, UPDATE_PROFILE_PICTURE_REQUEST, DELETE_PROFILE_PICTURE_REQUEST
-  ])) {
-    const { type, payload  } = action;
+    const { type, payload } = action;
     switch (type) {
       case GET_USER_REQUEST: {
         yield fork(getUser);
@@ -59,14 +76,14 @@ export default function* watchProfileRequests() {
   }
 }
 
-
 function* updatePermissions({ type, permission }) {
-  const keyName = type === SETTING_SECTION_TYPE.AUTOFIND ? 'autofindPermissions' : 'notificationPermissions';
-  const permissionsObj = yield select(state => state.profile.user[keyName]);
+  const keyName =
+    type === SETTING_SECTION_TYPE.AUTOFIND ? 'autofindPermissions' : 'notificationPermissions';
+  const permissionsObj = yield select((state) => state.profile.user[keyName]);
   const update = { [keyName]: { ...permissionsObj, [permission]: !permissionsObj[permission] } };
 
   try {
-    const { userJson } = yield call(doPut, '/users', { update });
+    const userJson = yield call(doPut, '/users/me', { update });
     yield put(handleUpdateUserPermissionsSuccess(type, userJson));
   } catch (error) {
     yield put(handleUpdateUserPermissionsError(type, getErrorMessage(error)));
@@ -75,10 +92,10 @@ function* updatePermissions({ type, permission }) {
 
 function* getUser() {
   try {
-    const [{ userJson }, integrations, analytics] = yield all([
-      call(doGet, '/users'),
+    const [userJson, integrations, analytics] = yield all([
+      call(doGet, '/users/me'),
       call(doGet, '/users/me/integrations'),
-      call(doGet, '/analytics/my/cards'),
+      call(doGet, '/analytics/my/cards')
     ]);
 
     const { user, ...userAnalytics } = analytics;
@@ -90,7 +107,10 @@ function* getUser() {
 
 function* getUserOnboardingStats() {
   try {
-    const { badge, percentage, performance } = yield call(doGet, '/users/me/onboarding/completeStats');
+    const { badge, percentage, performance } = yield call(
+      doGet,
+      '/users/me/onboarding/completeStats'
+    );
     yield put(handleGetUserOnboardingStatsSuccess(badge, percentage, performance));
   } catch (error) {
     yield put(handleGetUserOnboardingStatsError(getErrorMessage(error)));
@@ -99,8 +119,8 @@ function* getUserOnboardingStats() {
 
 function* updateUser() {
   try {
-    const { user, userEdits } = yield select(state => state.profile);
-    const { userJson } = yield call(doPut, '/users', { update: userEdits });
+    const { user, userEdits } = yield select((state) => state.profile);
+    const userJson = yield call(doPut, '/users/me', userEdits);
     yield put(handleSaveUserSuccess({ ...userJson, integrations: user.integrations }));
   } catch (error) {
     yield put(handleSaveUserError(getErrorMessage(error)));
@@ -109,13 +129,13 @@ function* updateUser() {
 
 function* updateProfilePicture({ file }) {
   try {
-    const integrations = yield select(state => state.profile.user.integrations);
+    const integrations = yield select((state) => state.profile.user.integrations);
 
     const formData = new FormData();
     formData.append('file', file);
 
     const { key } = yield call(doPost, '/files/upload', formData, { isForm: true });
-    const { userJson } = yield call(doPut, '/users', { update: { profilePicture: key } });
+    const userJson = yield call(doPut, '/users/me', { profilePicture: key });
     yield put(handleUpdateProfilePictureSuccess({ ...userJson, integrations }));
   } catch (error) {
     yield put(handleUpdateProfilePictureError(getErrorMessage(error)));
@@ -124,9 +144,9 @@ function* updateProfilePicture({ file }) {
 
 function* deleteProfilePicture() {
   try {
-    const { integrations, profilePicture } = yield select(state => state.profile.user);
-    const [{ userJson }] = yield all([
-      call(doPut, '/users', { update: { profilePicture: null } }),
+    const { integrations, profilePicture } = yield select((state) => state.profile.user);
+    const [userJson] = yield all([
+      call(doPut, '/users/me', { profilePicture: null }),
       call(doDelete, `/files/${profilePicture}`)
     ]);
     yield put(handleDeleteProfilePictureSuccess({ ...userJson, integrations }));
@@ -143,4 +163,3 @@ function* logoutUserIntegration({ integration }) {
     yield put(handleLogoutUserIntegrationError(integration, getErrorMessage(error)));
   }
 }
-

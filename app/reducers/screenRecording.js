@@ -6,11 +6,11 @@ const initialState = {
   isSharingDesktop: false,
   localStream: null,
   desktopStream: null,
-  voiceStream: null, 
+  voiceStream: null,
   mediaRecorder: null,
   recordedChunks: [],
   onSuccess: null,
-  recording: null,
+  recording: null
 };
 
 export default function screenRecordingReducer(state = initialState, action) {
@@ -25,7 +25,7 @@ export default function screenRecordingReducer(state = initialState, action) {
         isSharingDesktop: true,
         localStream: stream,
         desktopStream,
-        voiceStream, 
+        voiceStream,
         mediaRecorder,
         onSuccess
       };
@@ -35,19 +35,23 @@ export default function screenRecordingReducer(state = initialState, action) {
         const { recordingChunk } = payload;
         return { ...state, recordedChunks: [...state.recordedChunks, recordingChunk] };
       }
+
+      return state;
     }
     case types.END_SCREEN_RECORDING: {
-      const { recordedChunks, activeId } = state;
+      const { recordedChunks } = state;
 
       const now = moment().format('DD.MM.YYYY HH:mm:ss');
-      const recording = new File(recordedChunks, `Screen Recording ${now}.webm`, { type: 'video/webm' });
+      const recording = new File(recordedChunks, `Screen Recording ${now}.webm`, {
+        type: 'video/webm'
+      });
 
       return {
         ...state,
         isSharingDesktop: false,
         localStream: null,
-        desktopStream: null, 
-        voiceStream: null, 
+        desktopStream: null,
+        voiceStream: null,
         mediaRecorder: null,
         recordedChunks: [],
         recording

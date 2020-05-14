@@ -17,27 +17,26 @@
 /* SECONDARY BUTTON */
 .button-secondary {
   background: white;
+
   @apply text-purple-reg;
 }
 
 .button-underline-secondary {
-  border-bottom: 2px solid #777BAD33;
+  border-bottom: 2px solid #777bad33;
 }
-
 
 /* TRANSPARENT BUTTON */
 .button-transparent {
-  background-image: linear-gradient(143deg, #777BAD1A 0%, #A0A1CD1A 100%);
+  background-image: linear-gradient(143deg, #777bad1a 0%, #a0a1cd1a 100%);
+
   @apply text-purple-reg;
 }
 
 .button-underline-transparent {
-  border-bottom: 2px solid #777BAD33;
+  border-bottom: 2px solid #777bad33;
 }
-
 
 /* GOLD BUTTON */
 .button-underline-gold {
-  border-bottom: 2px solid #B18B5033;
+  border-bottom: 2px solid #b18b5033;
 }
-

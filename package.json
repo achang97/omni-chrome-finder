@@ -1,21 +1,42 @@
 {
-  "name": "react-chrome-extension-boilerplate",
-  "version": "0.9.0",
-  "description": "Boilerplate for Chrome extension React.js project",
+  "name": "omni-chrome",
+  "version": "1.0.0",
+  "description": "Chrome extension for Omni",
   "scripts": {
     "dev": "node scripts/dev",
     "build": "node scripts/build",
     "compress": "node scripts/compress",
     "compress-keygen": "crx keygen",
     "clean": "rimraf build/ dev/ *.zip *.crx",
-    "lint": "eslint app chrome test scripts webpack/*.js",
-    "lint:fix": "eslint app chrome test scripts webpack/*.js --fix",
+    "format": "prettier --write \"(app|chrome|test|scripts|webpack)/**/*.(js|jsx|css)\"",
+    "lint": "npm run lint:js && npm run lint:css",
+    "lint:fix": "npm run lint:js:fix --fix && npm run lint:css:fix",
+    "lint:js": "eslint app chrome test scripts webpack --ext .js --ext jsx",
+    "lint:js:fix": "eslint app chrome test scripts webpack --ext .js --ext jsx --fix",
+    "lint:css": "stylelint \"app/**/*.css\"",
+    "lint:css:fix": "stylelint \"app/**/*.css\" --fix",
     "test-e2e": "cross-env NODE_ENV=test mocha -r ./test/setup-app test/e2e",
     "test": "cross-env NODE_ENV=test mocha -r ./test/setup-app test/app"
   },
+  "husky": {
+    "hooks": {
+      "pre-commit": "lint-staged"
+    }
+  },
+  "lint-staged": {
+    "(app|chrome|test|scripts|webpack)/**/*.(js|jsx)": [
+      "eslint --fix"
+    ],
+    "app/**/*.css": [
+      "stylelint --fix"
+    ],
+    "(app|chrome|test|scripts|webpack)/**/*.(js|jsx|css)": [
+      "prettier"
+    ]
+  },
   "repository": {
     "type": "git",
-    "url": "https://github.com/jhen0409/react-chrome-extension-boilerplate.git"
+    "url": "git://github.com/AddOmni/omni-chrome.git"
   },
   "keywords": [
     "chrome",
@@ -26,7 +47,7 @@
     "webpack",
     "boilerplate"
   ],
-  "author": "Jhen <developer@jhen.me>",
+  "author": "Andrew Chang",
   "license": "MIT",
   "devDependencies": {
     "@babel/core": "^7.9.0",
@@ -44,14 +65,22 @@
     "crx": "^3.0.3",
     "css-loader": "^0.25.0",
     "css-modules-require-hook": "^4.0.5",
-    "eslint": "^3.9.1",
-    "eslint-config-airbnb": "^12.0.0",
-    "eslint-plugin-import": "^1.16.0",
-    "eslint-plugin-jsx-a11y": "^2.2.3",
-    "eslint-plugin-react": "^6.5.0",
+    "eslint": "^6.8.0",
+    "eslint-config-airbnb": "^18.1.0",
+    "eslint-config-airbnb-base": "^14.1.0",
+    "eslint-config-prettier": "^6.11.0",
+    "eslint-plugin-import": "^2.20.2",
+    "eslint-plugin-jsx-a11y": "^6.2.3",
+    "eslint-plugin-prettier": "^3.1.3",
+    "eslint-plugin-react": "^7.19.0",
+    "eslint-plugin-react-hooks": "^4.0.1",
+    "eslint-plugin-redux-saga": "^1.1.3",
+    "husky": "^4.2.5",
     "jsdom": "^9.2.1",
+    "lint-staged": "^10.2.2",
     "minimist": "^1.2.0",
     "mocha": "^3.1.2",
+    "prettier": "^2.0.5",
     "pug-cli": "^1.0.0-alpha6",
     "react-addons-test-utils": "^15.0.2",
     "react-hot-loader": "^4.12.20",
@@ -60,6 +89,10 @@
     "shelljs": "^0.7.0",
     "sinon": "^1.17.1",
     "style-loader": "^0.13.1",
+    "stylelint": "^13.3.3",
+    "stylelint-config-prettier": "^8.0.1",
+    "stylelint-config-standard": "^20.0.0",
+    "stylelint-prettier": "^1.1.2",
     "terser-webpack-plugin": "^2.3.5",
     "webpack": "^4.42.1",
     "webpack-cli": "^3.3.11",
@@ -104,7 +137,7 @@
     "react-image-lightbox": "^5.1.1",
     "react-modal": "^3.11.1",
     "react-onclickoutside": "^6.9.0",
-    "react-redux": "^4.3.0",
+    "react-redux": "^7.2.0",
     "react-render-html": "^0.6.0",
     "react-resizable": "^1.10.1",
     "react-resize-detector": "^4.2.1",
@@ -117,6 +150,7 @@
     "react-timeago": "^4.4.0",
     "react-toggle": "^4.1.1",
     "react-tooltip": "^4.0.3",
+    "react-transition-group": "^4.4.1",
     "redux": "^3.2.1",
     "redux-saga": "^1.1.3",
     "redux-thunk": "^2.0.1",

@@ -1,5 +1,6 @@
 .modal {
   @apply absolute bg-white flex flex-col rounded-lg overflow-hidden bg-purple-light;
+
   top: 50%;
   left: 10%;
   right: 10%;
@@ -9,6 +10,7 @@
 
 .modal-overlay {
   @apply absolute top-0 left-0 right-0 bottom-0 bg-gray-overlay;
+
   z-index: 100;
 }
 

@@ -1,4 +1,5 @@
 .suggestion-preview {
   width: 350px;
+
   @apply flex flex-col rounded-lg shadow-xl border-gray-200 border border-solid;
 }
