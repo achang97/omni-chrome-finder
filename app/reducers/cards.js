@@ -3,6 +3,7 @@ import { EditorState } from 'draft-js';
 import * as types from 'actions/actionTypes';
 import { removeIndex, updateIndex, updateArrayOfObjects } from 'utils/array';
 import { convertCardToFrontendFormat, generateCardId } from 'utils/card';
+import trackEvent from 'actions/analytics';
 import {
   STATUS,
   EDITOR_TYPE,
@@ -415,6 +416,7 @@ export default function cardsReducer(state = initialState, action) {
     }
 
     case types.EDIT_CARD: {
+      trackEvent('Click Edit Card', {});
       const { activeCard } = state;
       return { ...state, activeCard: createCardEdits(activeCard) };
     }

@@ -1,21 +1,29 @@
 import { connect } from 'react-redux';
 import { cancelEditCard, openCardModal, openCardSideDock } from 'actions/cards';
+import trackEvent from 'actions/analytics';
 import { cardStateChanged } from 'utils/card';
 import CardHeader from './CardHeader';
 
 const mapStateToProps = (state) => {
   const {
-    cards: {
-      activeCard,
-      activeCard: { tags, outOfDateReason }
-    },
+    cards: { activeCard },
     profile: {
       user,
       user: { _id: ownUserId }
     }
   } = state;
 
-  const { answer, attachments, _id, isEditing, status, lastVerified } = activeCard;
+  const {
+    answer,
+    question,
+    tags,
+    outOfDateReason,
+    attachments,
+    _id,
+    isEditing,
+    status,
+    lastVerified
+  } = activeCard;
 
   return {
     user,
@@ -24,6 +32,7 @@ const mapStateToProps = (state) => {
     ownUserId,
     answer,
     _id,
+    question,
     isEditing,
     status,
     attachments,
@@ -35,7 +44,8 @@ const mapStateToProps = (state) => {
 const mapDispatchToProps = {
   cancelEditCard,
   openCardModal,
-  openCardSideDock
+  openCardSideDock,
+  trackEvent
 };
 
 export default connect(mapStateToProps, mapDispatchToProps)(CardHeader);
