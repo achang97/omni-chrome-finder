@@ -1,162 +1,16 @@
 import _ from 'lodash';
 import * as types from 'actions/actionTypes';
+import { ROOT, PATH_TYPE } from 'appConstants/finder';
 
-// TODO: delete this once we get real data
-const MOCK_DIRECTORY_LOOKUP = {
-  root: {
-    id: 'root',
-    name: 'Home',
-    children: ['product', 'company'],
-    parent: null,
-    card: null
-  },
-  product: {
-    id: 'product',
-    name: 'Product But IT Is a Really Long Title Hahahahaa',
-    children: [
-      'product-card-1',
-      'product-card-2',
-      'product-card-3',
-      'product-card-4',
-      'product-card-5',
-      'product-card-6',
-      'product-card-7',
-      'product-card-8',
-      'product-card-9',
-      'misc'
-    ],
-    parent: 'root',
-    card: null
-  },
-  company: {
-    id: 'company',
-    name: 'Company',
-    children: ['company-card-1'],
-    parent: 'root',
-    card: null
-  },
-  misc: {
-    id: 'misc',
-    name: 'Misc',
-    children: [],
-    parent: 'product',
-    card: null
-  },
-  'product-card-1': {
-    id: 'product-card-1',
-    name: null,
-    children: null,
-    parent: 'product',
-    card: {
-      _id: 'asdofj3333',
-      question: '1'
-    }
-  },
-  'product-card-2': {
-    id: 'product-card-2',
-    name: null,
-    children: null,
-    parent: 'product',
-    card: {
-      _id: 'asdo113333',
-      question: '2'
-    }
-  },
-  'product-card-3': {
-    id: 'product-card-3',
-    name: null,
-    children: null,
-    parent: 'product',
-    card: {
-      _id: 'asdo113333',
-      question: '3'
-    }
-  },
-  'product-card-4': {
-    id: 'product-card-4',
-    name: null,
-    children: null,
-    parent: 'product',
-    card: {
-      _id: 'asdo113333',
-      question: '4?'
-    }
-  },
-  'product-card-5': {
-    id: 'product-card-5',
-    name: null,
-    children: null,
-    parent: 'product',
-    card: {
-      _id: 'asdo113333',
-      question: '5 How is Guru doing?'
-    }
-  },
-  'product-card-6': {
-    id: 'product-card-6',
-    name: null,
-    children: null,
-    parent: 'product',
-    card: {
-      _id: 'asdo113333',
-      question: '6 How is Guru doing?'
-    }
-  },
-  'product-card-7': {
-    id: 'product-card-7',
-    name: null,
-    children: null,
-    parent: 'product',
-    card: {
-      _id: 'asdo113333',
-      question: '7 How is Guru doing?'
-    }
-  },
-  'product-card-8': {
-    id: 'product-card-8',
-    name: null,
-    children: null,
-    parent: 'product',
-    card: {
-      _id: 'asdo113333',
-      question: '8 How is Guru doing?'
-    }
-  },
-  'product-card-9': {
-    id: 'product-card-9',
-    name: null,
-    children: null,
-    parent: 'product',
-    card: {
-      _id: 'asdo113333',
-      question: '9 How is Guru doing?'
-    }
-  },
-  'company-card-1': {
-    id: 'company-card-1',
-    name: null,
-    children: null,
-    parent: 'product',
-    card: {
-      _id: 'asdo113333',
-      question: 'How is Guru doing?'
-    }
-  }
+const BASE_ACTIVE_NODE = {
+  parent: null,
+  name: null,
+  children: []
 };
 
-// "Autopopulate"
-Object.values(MOCK_DIRECTORY_LOOKUP).forEach((node) => {
-  if (node.parent) {
-    node.parent = MOCK_DIRECTORY_LOOKUP[node.parent];
-  }
-
-  if (node.children) {
-    node.children = node.children.map((child) => MOCK_DIRECTORY_LOOKUP[child]);
-  }
-});
-
 const initialState = {
-  history: [MOCK_DIRECTORY_LOOKUP.root],
+  history: [{ _id: ROOT, type: PATH_TYPE.NODE }],
+  activeNode: BASE_ACTIVE_NODE,
   searchText: '',
   selectedIndices: []
 };
@@ -164,18 +18,41 @@ const initialState = {
 export default function finderReducer(state = initialState, action) {
   const { type, payload = {} } = action;
 
+  const pushToHistory = (pathType, pathId, pathState={}) => {
+    const { history } = state;
+    const prevPath = _.last(history);
+
+    if (pathType === prevPath.type && pathId === prevPath._id) {
+      return state;
+    }
+
+    return {
+      ...state,
+      history: [...state.history, { _id: pathId, type: pathType, state: pathState }],
+      selectedIndices: []
+    };
+  };
+
   switch (type) {
     case types.GO_BACK_FINDER: {
-      const { history } = state;
-      return { ...state, history: history.slice(0, history.length - 1), selectedIndices: [] };
+      const { history, activeNode } = state;
+      const newHistory = history.slice(0, history.length - 1);
+
+      let newActiveNode =  activeNode;
+      if (newHistory.length !== 0 && _.last(newHistory).type === PATH_TYPE.SEGMENT) {
+        newActiveNode = BASE_ACTIVE_NODE;
+      }
+
+      return { ...state, history: newHistory, activeNode: newActiveNode, selectedIndices: [] };
     }
-    case types.PUSH_FINDER_PATH: {
-      const { path } = payload;
-      return {
-        ...state,
-        history: [...state.history, path || MOCK_DIRECTORY_LOOKUP.root],
-        selectedIndices: []
-      };
+    case types.PUSH_FINDER_NODE: {
+      const { nodeId } = payload;
+      return pushToHistory(PATH_TYPE.NODE, nodeId);
+    }
+    case types.PUSH_FINDER_SEGMENT: {
+      const { segmentId, segmentName } = payload;
+      const newState = pushToHistory(PATH_TYPE.SEGMENT, segmentId, { name: segmentName });
+      return { ...newState, activeNode: BASE_ACTIVE_NODE };
     }
 
     case types.SELECT_FINDER_NODE_INDEX: {
@@ -199,6 +76,19 @@ export default function finderReducer(state = initialState, action) {
       const { text } = payload;
       return { ...state, searchText: text };
     }
+
+    case types.GET_FINDER_NODE_REQUEST: {
+      return { ...state, isGettingNode: true, getNodeError: null };
+    }
+    case types.GET_FINDER_NODE_SUCCESS: {
+      const { node } = payload;
+      return { ...state, isGettingNode: false, activeNode: node };
+    }
+    case types.GET_FINDER_NODE_ERROR: {
+      const { error } = payload;
+      return { ...state, isGettingNode: false, getNodeError: error };
+    }
+
     default:
       return state;
   }

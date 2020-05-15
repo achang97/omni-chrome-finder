@@ -38,6 +38,7 @@ const Cards = ({
   windowPosition,
   showCloseModal,
   openCard,
+  openFinder,
   closeCard,
   closeAllCards,
   setActiveCardIndex,
@@ -208,7 +209,7 @@ const Cards = ({
     return (
       <div
         className={s(`card-tab button-hover ${!isActiveTab ? 'card-inactive-tab' : ''}`)}
-        onClick={() => updateTab(FINDER.TAB_INDEX)}
+        onClick={openFinder}
       >
         <img src={FinderFolder} className={s('h-reg mr-xs')} alt="Finder" />
         <div> Finder </div>
@@ -364,7 +365,7 @@ Cards.propTypes = {
     question: PropTypes.string,
     edits: PropTypes.object,
     isEditing: PropTypes.bool
-  }).isRequired,
+  }),
   cardsWidth: PropTypes.number.isRequired,
   cardsHeight: PropTypes.number.isRequired,
   windowPosition: PropTypes.shape({
@@ -375,6 +376,7 @@ Cards.propTypes = {
 
   // Redux Actions
   openCard: PropTypes.func.isRequired,
+  openFinder: PropTypes.func.isRequired,
   closeCard: PropTypes.func.isRequired,
   closeAllCards: PropTypes.func.isRequired,
   setActiveCardIndex: PropTypes.func.isRequired,

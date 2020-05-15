@@ -2,9 +2,8 @@ import React, { useState, useEffect } from 'react';
 import PropTypes from 'prop-types';
 import _ from 'lodash';
 import { MdMoreHoriz } from 'react-icons/md';
-import { GoPrimitiveDot } from 'react-icons/go';
 
-import { CardConfirmModal } from 'components/cards';
+import { CardConfirmModal, CardStatusIndicator } from 'components/cards';
 import { Button, Dropdown, Message, Loader, Separator } from 'components/common';
 
 import { CARD } from 'appConstants';
@@ -54,23 +53,6 @@ const SuggestionCard = ({
       icon: isLoading ? <Loader className={s('ml-sm')} size="sm" color="white" /> : null,
       disabled: isLoading
     };
-  };
-
-  const getStatusColor = () => {
-    switch (status) {
-      case CARD.STATUS.UP_TO_DATE:
-        return 'text-green-reg';
-      case CARD.STATUS.OUT_OF_DATE:
-        return 'text-red-500';
-      case CARD.STATUS.NEEDS_VERIFICATION:
-        return 'text-yellow-reg';
-      case CARD.STATUS.NOT_DOCUMENTED:
-        return 'text-blue-500';
-      case CARD.STATUS.NEEDS_APPROVAL:
-        return 'text-orange-500';
-      default:
-        return {};
-    }
   };
 
   const shareCard = () => {
@@ -215,7 +197,7 @@ const SuggestionCard = ({
       </div>
       <div className={s('flex flex-col justify-between flex-shrink-0 ml-xs')}>
         {renderDropdown()}
-        <GoPrimitiveDot className={s(`${getStatusColor()}`)} />
+        <CardStatusIndicator status={status} />
       </div>
       {renderShareSuccess()}
       {renderModals()}

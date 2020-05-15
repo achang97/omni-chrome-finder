@@ -12,6 +12,7 @@ import {
   toggleCards,
   openCard
 } from 'actions/cards';
+import { openFinder } from 'actions/finder';
 import Cards from './Cards';
 
 const mapStateToProps = (state) => {
@@ -46,6 +47,7 @@ const mapStateToProps = (state) => {
 
 const mapDispatchToProps = {
   openCard,
+  openFinder,
   closeCard,
   closeAllCards,
   toggleCards,

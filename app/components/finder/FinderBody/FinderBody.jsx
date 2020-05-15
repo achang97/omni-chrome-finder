@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import PropTypes from 'prop-types';
-import { Tooltip } from 'components/common';
+import { Tooltip, Loader } from 'components/common';
+import { CardStatusIndicator } from 'components/cards';
 import { ReactSortable, Sortable, MultiDrag } from 'react-sortablejs';
 
 import { getStyleApplicationFn } from 'utils/style';
@@ -15,12 +16,14 @@ const s = getStyleApplicationFn(style);
 Sortable.mount(new MultiDrag());
 
 const FinderBody = ({
-  activePath: { children },
+  nodes,
+  isLoading,
   searchText,
   selectedIndices,
-  pushFinderPath,
+  pushFinderNode,
   selectFinderNodeIndex,
-  toggleSelectedFinderNodeIndex
+  toggleSelectedFinderNodeIndex,
+  openCard
 }) => {
   const [isDragging, setIsDragging] = useState(false);
 
@@ -28,10 +31,10 @@ const FinderBody = ({
     return card ? card.question : name;
   };
 
-  const filteredChildren = children.filter((childNode) => {
-    const label = getNodeLabel(childNode).toLowerCase().trim();
-    return label.includes(searchText.toLowerCase().trim());
-  });
+  // const filteredNodes = nodes.filter((childNode) => {
+  //   const label = getNodeLabel(childNode).toLowerCase().trim();
+  //   return label.includes(searchText.toLowerCase().trim());
+  // });
 
   useEffect(() => {
     const onWindowKeyDown = (e) => {
@@ -64,28 +67,34 @@ const FinderBody = ({
     };
   }, []);
 
-  const openNode = (childNode) => {
-    if (childNode.card) {
-      // Open Card
-      console.log('Opening Card!');
+  const openNode = ({ card, _id }) => {
+    if (card) {
+      openCard({ _id: card._id });
     } else {
-      // Descend into directory
-      pushFinderPath(childNode);
+      pushFinderNode(_id);
     }
   };
 
   const renderChildNode = (childNode, i) => {
-    const { card, id } = childNode;
+    const { card, _id } = childNode;
     const label = getNodeLabel(childNode);
     return (
       <div
-        key={id}
+        key={_id || card._id}
         className={s(`finder-body-node`)}
         onDoubleClick={() => openNode(childNode)}
         tabIndex="0"
         role="button"
       >
-        <img src={card ? FinderCard : FinderFolder} alt={label} />
+        <div className={s('relative')}>
+          <img src={card ? FinderCard : FinderFolder} alt={label} />
+          {card && (
+            <CardStatusIndicator
+              status={card.status}
+              className={s('finder-body-node-status-indicator')}
+            />
+          )}
+        </div>
         {/* TODO: onClick allow them to change folder name */}
         <Tooltip tooltip={label} show={!isDragging}>
           <div className={s('line-clamp-2 mt-sm w-full text-xs text-center')}>{label}</div>
@@ -108,36 +117,57 @@ const FinderBody = ({
     return isUsingWindows ? 'CTRL' : 'META';
   };
 
-  return (
-    <ReactSortable
-      list={filteredChildren}
-      setList={() => console.log('testing')}
-      className={s('flex flex-wrap items-start content-start overflow-auto')}
-      onStart={() => setIsDragging(true)}
-      onEnd={() => setIsDragging(false)}
-      multiDrag
-      multiDragKey={getMultiDragKey()}
-      selectedClass={s('finder-body-selected-node')}
-      onSelect={onItemSelect}
-      onDeselect={onItemDeselect}
-    >
-      {filteredChildren.map(renderChildNode)}
-    </ReactSortable>
-  );
+  const render = () => {
+    if (isLoading) {
+      return <Loader className={s('w-full')} />;
+    }
+
+    if (nodes.length === 0) {
+      return (
+        <div className={s('flex items-center justify-center w-full h-full text-gray-dark')}>
+          Nothing to display
+        </div>
+      );
+    }
+
+    return (
+      <ReactSortable
+        list={nodes}
+        setList={() => console.log('testing')}
+        className={s('flex flex-wrap items-start content-start overflow-auto')}
+        onStart={() => setIsDragging(true)}
+        onEnd={() => setIsDragging(false)}
+        multiDrag
+        multiDragKey={getMultiDragKey()}
+        selectedClass={s('finder-body-selected-node')}
+        onSelect={onItemSelect}
+        onDeselect={onItemDeselect}
+      >
+        {nodes.map(renderChildNode)}
+      </ReactSortable>
+    );
+  };
+
+  return render();
 };
 
 FinderBody.propTypes = {
-  activePath: PropTypes.shape({
-    name: PropTypes.string.isRequired,
-    children: PropTypes.arrayOf(PropTypes.object).isRequired,
-    parent: PropTypes.object
-  }).isRequired,
+  // Redux State
+  nodes: PropTypes.arrayOf(
+    PropTypes.shape({
+      _id: PropTypes.string,
+      card: PropTypes.object
+    })
+  ).isRequired,
+  isLoading: PropTypes.bool.isRequired,
   searchText: PropTypes.string.isRequired,
   selectedIndices: PropTypes.arrayOf(PropTypes.number).isRequired,
 
-  pushFinderPath: PropTypes.func.isRequired,
+  // Redux Actions
+  pushFinderNode: PropTypes.func.isRequired,
   selectFinderNodeIndex: PropTypes.func.isRequired,
-  toggleSelectedFinderNodeIndex: PropTypes.func.isRequired
+  toggleSelectedFinderNodeIndex: PropTypes.func.isRequired,
+  openCard: PropTypes.func.isRequired
 };
 
 export default FinderBody;

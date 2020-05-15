@@ -1,7 +1,7 @@
 import { connect } from 'react-redux';
 import { withRouter } from 'react-router-dom';
 import { SEARCH } from 'appConstants';
-import { openFinder } from 'actions/cards';
+import { openFinder } from 'actions/finder';
 import Header from './Header';
 
 const mapStateToProps = (state) => {

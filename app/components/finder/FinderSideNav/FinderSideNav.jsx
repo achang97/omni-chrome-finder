@@ -3,6 +3,7 @@ import PropTypes from 'prop-types';
 import { Separator } from 'components/common';
 
 import { getStyleApplicationFn } from 'utils/style';
+import { ROOT, SEGMENT_TYPE } from 'appConstants/finder';
 
 import Home from 'assets/images/finder/home.svg';
 import MyCards from 'assets/images/finder/card.svg';
@@ -13,34 +14,45 @@ import finderStyle from '../finder.css';
 
 const s = getStyleApplicationFn(finderStyle, sideNavStyle);
 
-const FinderSideNav = ({ pushFinderPath }) => {
-  const SEGMENTS = [
-    {
-      label: 'My Cards',
-      imgSrc: MyCards,
-      onClick: () => console.log('Go to My Cards')
-    },
-    {
-      label: 'Bookmarked',
-      imgSrc: Bookmarked,
-      onClick: () => console.log('Go to Bookmarked')
-    }
-  ];
+const NODES = [
+  {
+    name: 'Home',
+    imgSrc: Home,
+    nodeId: ROOT
+  }
+];
+
+const SEGMENTS = [
+  {
+    name: 'My Cards',
+    imgSrc: MyCards,
+    _id: SEGMENT_TYPE.MY_CARDS
+  },
+  {
+    name: 'Bookmarked',
+    imgSrc: Bookmarked,
+    _id: SEGMENT_TYPE.BOOKMARKED
+  }
+];
+
+const FinderSideNav = ({ pushFinderNode, pushFinderSegment }) => {
+  const renderSection = (name, imgSrc, onClick) => (
+    <div className={s('finder-side-nav-section')} onClick={onClick}>
+      <img src={imgSrc} alt={name} />
+      <span> {name} </span>
+    </div>
+  );
 
   return (
-    <div className={s('flex flex-col py-sm border-r finder-border')}>
-      <div className={s('finder-side-nav-section')} onClick={() => pushFinderPath(null)}>
-        <img src={Home} alt="Home" />
-        <span> Home </span>
-      </div>
+    <div className={s('flex flex-col flex-shrink-0 py-sm border-r finder-border')}>
+      {NODES.map(({ name, imgSrc, nodeId }) =>
+        renderSection(name, imgSrc, () => pushFinderNode(nodeId))
+      )}
       <Separator horizontal className={s('my-sm')} />
       <div className={s('flex-1')}>
-        {SEGMENTS.map(({ label, imgSrc, onClick }) => (
-          <div className={s('finder-side-nav-section')} onClick={onClick}>
-            <img src={imgSrc} alt={label} />
-            <span> {label} </span>
-          </div>
-        ))}
+        {SEGMENTS.map(({ name, imgSrc, _id }) =>
+          renderSection(name, imgSrc, () => pushFinderSegment(_id, name))
+        )}
       </div>
     </div>
   );

@@ -1,19 +1,21 @@
 import { connect } from 'react-redux';
-import { goBackFinder, pushFinderPath, updateFinderSearchText } from 'actions/finder';
+import _ from 'lodash';
+import { goBackFinder, pushFinderNode, updateFinderSearchText } from 'actions/finder';
 import { openCard } from 'actions/cards';
 import FinderHeader from './FinderHeader';
 
 const mapStateToProps = (state) => {
   const {
-    finder: { history: finderHistory, searchText }
+    finder: { history: finderHistory, activeNode, searchText }
   } = state;
 
-  return { finderHistory, searchText };
+  const activePath = _.last(finderHistory);
+  return { isBackDisabled: finderHistory.length <= 1, activePath, activeNode, searchText };
 };
 
 const mapDispatchToProps = {
   goBackFinder,
-  pushFinderPath,
+  pushFinderNode,
   updateFinderSearchText,
   openCard
 };

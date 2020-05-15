@@ -1,5 +1,5 @@
 import { connect } from 'react-redux';
-import { pushFinderPath } from 'actions/finder';
+import { pushFinderNode, pushFinderSegment } from 'actions/finder';
 import FinderSideNav from './FinderSideNav';
 
 const mapStateToProps = (state) => {
@@ -9,7 +9,8 @@ const mapStateToProps = (state) => {
 };
 
 const mapDispatchToProps = {
-  pushFinderPath
+  pushFinderNode,
+  pushFinderSegment
 };
 
 export default connect(mapStateToProps, mapDispatchToProps)(FinderSideNav);

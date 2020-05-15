@@ -72,7 +72,7 @@ export default function searchReducer(state = initialState, action) {
 
     case types.ADD_SEARCH_CARD: {
       const { card } = payload;
-      return updateCardStateByType(SEARCH.TYPE.NAVIGATE, (cardState) => ({
+      return updateCardStateByType(SEARCH.TYPE.FINDER, (cardState) => ({
         cards: _.unionBy(cardState.cards, [card], '_id')
       }));
     }

@@ -5,6 +5,7 @@ import { FiPlus } from 'react-icons/fi';
 
 import { BackButton, Dropdown } from 'components/common';
 import { getStyleApplicationFn } from 'utils/style';
+import { PATH_TYPE } from 'appConstants/finder';
 
 import MoveFolder from 'assets/images/finder/move-folder.svg';
 
@@ -14,81 +15,50 @@ import headerStyle from './finder-header.css';
 const s = getStyleApplicationFn(finderStyle, headerStyle);
 
 const FinderHeader = ({
-  finderHistory,
+  isBackDisabled,
+  activePath,
+  activeNode,
   searchText,
   goBackFinder,
-  pushFinderPath,
+  pushFinderNode,
   updateFinderSearchText
 }) => {
-//   useEffect(() => {
-//     return () => {
-//       updateNavigateTab(NAVIGATE.TAB_OPTION.ALL);
-//     };
-//   }, [updateNavigateTab]);
-// 
-//   const searchCards = (clearCards) => {
-//     const queryParams = { q: searchText };
-//     switch (activeTab) {
-//       case NAVIGATE.TAB_OPTION.ALL: {
-//         queryParams.tags = getArrayIds(filterTags).join(',');
-//         break;
-//       }
-//       case NAVIGATE.TAB_OPTION.MY_CARDS: {
-//         queryParams.statuses = Object.values(CARD.STATUS).join(',');
-//         queryParams.owners = user._id;
-//         break;
-//       }
-//       case NAVIGATE.TAB_OPTION.BOOKMARKED: {
-//         if (user.bookmarkIds.length === 0) {
-//           clearSearchCards(SEARCH.TYPE.NAVIGATE);
-//           return;
-//         }
-//         queryParams.statuses = Object.values(CARD.STATUS).join(',');
-//         queryParams.ids = user.bookmarkIds.join(',');
-//         break;
-//       }
-//       default:
-//         break;
-//     }
-// 
-//     requestSearchCards(SEARCH.TYPE.NAVIGATE, queryParams, clearCards);
-//   };
-// 
-//   const [debouncedRequestSearch] = useDebouncedCallback(() => {
-//     searchCards(true);
-//   }, ANIMATE.DEBOUNCE.MS_300);
-// 
-//   const prevTab = usePrevious(activeTab);
-//   const prevTags = usePrevious(filterTags);
-// 
-//   useEffect(() => {
-//     if (prevTab !== activeTab || prevTags !== filterTags) {
-//       searchCards(true);
-//     } else {
-//       debouncedRequestSearch();
-//     }
-//   }, [activeTab, filterTags, searchText]);
-  
   const renderNavigationSection = () => {
-    const activePath = finderHistory.length === 0 ? null : finderHistory[finderHistory.length - 1];
+    let mainSectionName;
+    switch (activePath.type) {
+      case PATH_TYPE.NODE: {
+        mainSectionName = activeNode.name;
+        break;
+      }
+      case PATH_TYPE.SEGMENT: {
+        mainSectionName = activePath.state.name;
+        break;
+      }
+      default:
+        break;
+    }
+
     return (
       <div className={s('flex-1 flex items-center min-w-0')}>
         <BackButton
           className={s('finder-header-icon w-auto h-auto')}
           onClick={goBackFinder}
-          disabled={finderHistory.length <= 1}
+          disabled={isBackDisabled}
         />
-        {activePath && (
+        {mainSectionName && (
           <div className={s('finder-header-icon min-w-0 flex items-center ml-reg text-sm')}>
-            {activePath.parent && (
+            {activeNode.parent && (
               <>
-                <div onClick={() => pushFinderPath(activePath.parent)}>
-                  {activePath.parent.name}
+                <div
+                  className={s('truncate')}
+                  onClick={() => pushFinderNode(activeNode.parent._id)}
+                >
+                  {activeNode.parent.name}
                 </div>
                 <MdChevronRight className={s('mx-xs')} />
               </>
             )}
-            <div className={s('truncate')}> {activePath.name} </div>
+            <div className={s('truncate')}> {mainSectionName} </div>
           </div>
         )}
       </div>
@@ -139,17 +109,22 @@ const FinderHeader = ({
 
 FinderHeader.propTypes = {
   // Redux State
-  // To be updated with more specific structure
-  finderHistory: PropTypes.arrayOf(
-    PropTypes.shape({
-      name: PropTypes.string.isRequired
-    })
-  ).isRequired,
+  isBackDisabled: PropTypes.bool.isRequired,
+  activePath: PropTypes.shape({
+    _id: PropTypes.string.isRequired,
+    type: PropTypes.oneOf(Object.values(PATH_TYPE)).isRequired,
+    state: PropTypes.object
+  }).isRequired,
+  activeNode: PropTypes.shape({
+    _id: PropTypes.string.isRequired,
+    name: PropTypes.string.isRequired,
+    parent: PropTypes.object.isRequired
+  }).isRequired,
   searchText: PropTypes.string.isRequired,
 
   // Redux Actions
   goBackFinder: PropTypes.func.isRequired,
-  pushFinderPath: PropTypes.func.isRequired,
+  pushFinderNode: PropTypes.func.isRequired,
   updateFinderSearchText: PropTypes.func.isRequired
 };
 

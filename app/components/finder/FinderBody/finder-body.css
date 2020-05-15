@@ -1,9 +1,14 @@
 .finder-body-node {
   @apply m-sm p-sm h-auto flex flex-col items-center cursor-pointer rounded-lg border-2 border-solid border-transparent;
-  width: 90px;
+  width: 110px;
 }
 
 .finder-body-selected-node,
 .finder-body-node:focus {
   @apply bg-purple-light border-purple-reg outline-none;
-};
+}
+
+.finder-body-node-status-indicator {
+  @apply absolute bottom-0 right-0 text-xl;
+  transform: translate(40%, 40%);
+}

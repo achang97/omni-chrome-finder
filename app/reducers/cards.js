@@ -231,10 +231,7 @@ export default function cardsReducer(state = initialState, action) {
     }
 
     case types.OPEN_FINDER: {
-      let newState = state;
-      if (state.showCards) {
-        newState = setActiveCardIndex(FINDER.TAB_INDEX);
-      }
+      const newState = state.showCards ? setActiveCardIndex(FINDER.TAB_INDEX) : state;
       return { ...newState, showCards: true, cardsExpanded: true };
     }
     case types.OPEN_CARD: {
