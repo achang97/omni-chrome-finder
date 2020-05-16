@@ -45,7 +45,10 @@ const CircleButton = ({
 );
 
 CircleButton.propTypes = {
-  size: PropTypes.oneOfType([PropTypes.number, PropTypes.oneOf(['2xs', 'xs', 'sm', 'md', 'lg'])]),
+  size: PropTypes.oneOfType([
+    PropTypes.number,
+    PropTypes.oneOf(['2xs', 'xs', 'sm', 'md', 'lg', 'auto'])
+  ]),
   content: PropTypes.node.isRequired,
   onClick: PropTypes.func,
   label: PropTypes.string,

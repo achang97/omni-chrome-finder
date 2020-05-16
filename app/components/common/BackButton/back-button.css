@@ -1,7 +1,3 @@
 .back-button {
-  @apply bg-purple-light rounded-full w-2xl h-2xl flex justify-center items-center text-purple-reg cursor-pointer;
-}
-
-.back-button-disabled {
-  @apply cursor-not-allowed opacity-50 !important;
+  @apply bg-purple-light text-purple-reg;
 }

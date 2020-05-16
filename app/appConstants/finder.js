@@ -14,6 +14,12 @@ export const SEGMENT_TYPE = {
   BOOKMARKED: 'BOOKMARKED'
 };
 
+export const MODAL_TYPE = {
+  CREATE_FOLDER: 'CREATE_FOLDER',
+  EDIT_FOLDER: 'EDIT_FOLDER',
+  CONFIRM_DELETE: 'CONFIRM_DELETE'
+};
+
 // TODO: delete this once we get real data
 export const MOCK_DIRECTORY_LOOKUP = {
   root: {
@@ -183,5 +189,6 @@ export default {
   ROOT,
   PATH_TYPE,
   SEGMENT_TYPE,
+  MODAL_TYPE,
   MOCK_DIRECTORY_LOOKUP
 };

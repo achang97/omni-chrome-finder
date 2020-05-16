@@ -130,8 +130,8 @@ const CardCreateModal = ({
         <div>
           <div className={s('text-gray-reg text-xs mb-sm')}> Permissions </div>
           <CardPermissions
-            selectedPermission={permissions}
-            onChangePermission={updateCardPermissions}
+            selectedPermissions={permissions}
+            onChangePermissions={updateCardPermissions}
             permissionGroups={permissionGroups}
             onChangePermissionGroups={updateCardPermissionGroups}
             showJustMe={!isExisting}

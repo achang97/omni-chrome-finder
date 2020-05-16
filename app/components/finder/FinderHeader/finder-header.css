@@ -1,5 +1,7 @@
 .finder-header-icon {
-  @apply text-purple-reg bg-purple-light font-semibold p-sm cursor-pointer rounded-full shadow-md;
+  @apply text-purple-reg bg-purple-light p-sm font-semibold cursor-pointer rounded-full shadow-md;
+  @apply flex items-center justify-center;
+  height: 35px;
 }
 
 .finder-header-icon > * {
@@ -8,4 +10,9 @@
 
 .finder-header-input-container {
   @apply flex-1 flex items-center rounded-full border border-solid border-purple-gray-50 pl-sm;
+}
+
+.finder-header-new-dropdown {
+  @apply text-purple-reg font-bold;
+  min-width: 120px;
 }

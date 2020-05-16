@@ -20,16 +20,32 @@ export function updateFinderSearchText(text) {
   return { type: types.UPDATE_FINDER_SEARCH_TEXT, payload: { text } };
 }
 
-export function selectFinderNodeIndex(index) {
-  return { type: types.SELECT_FINDER_NODE_INDEX, payload: { index } };
+export function openFinderModal(modalType) {
+  return { type: types.OPEN_FINDER_MODAL, payload: { modalType } };
 }
 
-export function toggleSelectedFinderNodeIndex(index) {
-  return { type: types.TOGGLE_SELECTED_FINDER_NODE_INDEX, payload: { index } };
+export function closeFinderModal(modalType) {
+  return { type: types.CLOSE_FINDER_MODAL, payload: { modalType } };
 }
 
-export function requestGetFinderNode(nodeId) {
-  return { type: types.GET_FINDER_NODE_REQUEST, payload: { nodeId } };
+export function updateFinderFolderName(name) {
+  return { type: types.UPDATE_FINDER_FOLDER_NAME, payload: { name } };
+}
+
+export function updateFinderFolderPermissions(permissions) {
+  return { type: types.UPDATE_FINDER_FOLDER_PERMISSIONS, payload: { permissions } };
+}
+
+export function updateFinderFolderPermissionGroups(permissionGroups) {
+  return { type: types.UPDATE_FINDER_FOLDER_PERMISSION_GROUPS, payload: { permissionGroups } };
+}
+
+export function updateSelectedFinderIndices(indices) {
+  return { type: types.UPDATE_SELECTED_FINDER_INDICES, payload: { indices } };
+}
+
+export function requestGetFinderNode() {
+  return { type: types.GET_FINDER_NODE_REQUEST, payload: {} };
 }
 
 export function handleGetFinderNodeSuccess(node) {
@@ -49,7 +65,31 @@ export function handleCreateFinderFolderSuccess() {
 }
 
 export function handleCreateFinderFolderError(error) {
-  return { type: types.GET_TEMPLATES_ERROR, payload: { error } };
+  return { type: types.CREATE_FINDER_FOLDER_ERROR, payload: { error } };
+}
+
+export function requestUpdateFinderFolder() {
+  return { type: types.UPDATE_FINDER_FOLDER_REQUEST, payload: {} };
+}
+
+export function handleUpdateFinderFolderSuccess() {
+  return { type: types.UPDATE_FINDER_FOLDER_SUCCESS, payload: {} };
+}
+
+export function handleUpdateFinderFolderError(error) {
+  return { type: types.UPDATE_FINDER_FOLDER_ERROR, payload: { error } };
+}
+
+export function requestDeleteFinderNodes() {
+  return { type: types.DELETE_FINDER_NODES_REQUEST, payload: {} };
+}
+
+export function handleDeleteFinderNodesSuccess() {
+  return { type: types.DELETE_FINDER_NODES_SUCCESS, payload: {} };
+}
+
+export function handleDeleteFinderNodesError(error) {
+  return { type: types.DELETE_FINDER_NODES_ERROR, payload: { error } };
 }
 
 export function requestMoveFinderNode() {

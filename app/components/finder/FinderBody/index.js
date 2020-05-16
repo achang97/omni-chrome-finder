@@ -1,20 +1,16 @@
 import { connect } from 'react-redux';
 import _ from 'lodash';
-import {
-  pushFinderNode,
-  selectFinderNodeIndex,
-  toggleSelectedFinderNodeIndex
-} from 'actions/finder';
+import { pushFinderNode, updateSelectedFinderIndices, openFinderModal } from 'actions/finder';
 import { openCard } from 'actions/cards';
 import { SEARCH, FINDER } from 'appConstants';
 import FinderBody from './FinderBody';
 
 const mapStateToProps = (state) => {
   const {
-    finder: { history: finderHistory, isGettingNode, activeNode, searchText, selectedIndices },
+    finder: { history: finderHistory, isGettingNode, activeNode, selectedIndices },
     search: {
       cards: {
-        [SEARCH.TYPE.FINDER]: { isSearchingCards, cards }
+        [SEARCH.TYPE.FINDER]: { isSearchingCards: isSearchingSegment, page: segmentPage, cards }
       }
     }
   } = state;
@@ -34,14 +30,20 @@ const mapStateToProps = (state) => {
       break;
   }
 
-  const isLoading = !!(isGettingNode || isSearchingCards);
-  return { isLoading, nodes, searchText, selectedIndices };
+  return {
+    isGettingNode,
+    isSearchingSegment,
+    segmentPage,
+    nodes,
+    searchText: activePath.state.searchText,
+    selectedIndices
+  };
 };
 
 const mapDispatchToProps = {
   pushFinderNode,
-  selectFinderNodeIndex,
-  toggleSelectedFinderNodeIndex,
+  updateSelectedFinderIndices,
+  openFinderModal,
   openCard
 };
 

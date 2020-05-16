@@ -35,9 +35,14 @@ const SEGMENTS = [
   }
 ];
 
-const FinderSideNav = ({ pushFinderNode, pushFinderSegment }) => {
-  const renderSection = (name, imgSrc, onClick) => (
-    <div className={s('finder-side-nav-section')} onClick={onClick}>
+const FinderSideNav = ({ activePathId, pushFinderNode, pushFinderSegment }) => {
+  const renderSection = (name, imgSrc, id, onClick) => (
+    <div
+      className={s(
+        `finder-side-nav-section ${activePathId === id ? 'finder-side-nav-selected' : ''}`
+      )}
+      onClick={onClick}
+    >
       <img src={imgSrc} alt={name} />
       <span> {name} </span>
     </div>
@@ -46,18 +51,25 @@ const FinderSideNav = ({ pushFinderNode, pushFinderSegment }) => {
   return (
     <div className={s('flex flex-col flex-shrink-0 py-sm border-r finder-border')}>
       {NODES.map(({ name, imgSrc, nodeId }) =>
-        renderSection(name, imgSrc, () => pushFinderNode(nodeId))
+        renderSection(name, imgSrc, nodeId, () => pushFinderNode(nodeId))
       )}
       <Separator horizontal className={s('my-sm')} />
       <div className={s('flex-1')}>
         {SEGMENTS.map(({ name, imgSrc, _id }) =>
-          renderSection(name, imgSrc, () => pushFinderSegment(_id, name))
+          renderSection(name, imgSrc, _id, () => pushFinderSegment(_id, name))
         )}
       </div>
     </div>
   );
 };
 
-FinderSideNav.propTypes = {};
+FinderSideNav.propTypes = {
+  // Redux State
+  activePathId: PropTypes.string.isRequired,
+
+  // Redux Actions
+  pushFinderNode: PropTypes.func.isRequired,
+  pushFinderSegment: PropTypes.func.isRequired
+};
 
 export default FinderSideNav;

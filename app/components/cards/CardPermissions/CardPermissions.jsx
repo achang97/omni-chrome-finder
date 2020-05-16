@@ -14,8 +14,8 @@ const s = getStyleApplicationFn(style);
 const CardPermissions = ({
   isDisabled,
   showJustMe,
-  selectedPermission,
-  onChangePermission,
+  selectedPermissions,
+  onChangePermissions,
   permissionGroups,
   onChangePermissionGroups,
   isSearchingPermissionGroups,
@@ -33,7 +33,7 @@ const CardPermissions = ({
     );
   }
 
-  const { label: selectedLabel, value: selectedValue } = selectedPermission || {};
+  const { label: selectedLabel, value: selectedValue } = selectedPermissions || {};
 
   return (
     <div>
@@ -49,12 +49,12 @@ const CardPermissions = ({
         )
       ) : (
         <Tabs
-          activeValue={selectedPermission}
+          activeValue={selectedPermissions}
           className={s('mb-sm')}
           tabClassName={s('text-sm font-normal rounded-full p-sm text-center')}
           inactiveTabClassName={s('text-purple-reg')}
           activeTabClassName={s('primary-gradient text-white font-semibold')}
-          onTabClick={onChangePermission}
+          onTabClick={onChangePermissions}
           showRipple={false}
         >
           {permissionOptions.map((permissionOption) => (
@@ -123,11 +123,11 @@ const PermissionGroupPropTypes = PropTypes.arrayOf(
 );
 
 CardPermissions.propTypes = {
-  selectedPermission: PropTypes.shape({
+  selectedPermissions: PropTypes.shape({
     label: PropTypes.string.isRequired,
     value: PropTypes.string.isRequired
   }),
-  onChangePermission: PropTypes.func.isRequired,
+  onChangePermissions: PropTypes.func.isRequired,
   permissionGroups: PermissionGroupPropTypes.isRequired,
   onChangePermissionGroups: PropTypes.func.isRequired,
   isDisabled: PropTypes.bool,
@@ -143,7 +143,7 @@ CardPermissions.propTypes = {
 
 CardPermissions.defaultProps = {
   isDisabled: false,
-  selectedPermission: null
+  selectedPermissions: null
 };
 
 export default CardPermissions;

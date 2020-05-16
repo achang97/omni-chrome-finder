@@ -172,8 +172,8 @@ const CardSideDock = ({
         <div ref={permissionRef}>
           <div className={s('text-gray-reg text-xs mb-sm')}>Permissions</div>
           <CardPermissions
-            selectedPermission={currPermissions}
-            onChangePermission={updateCardPermissions}
+            selectedPermissions={currPermissions}
+            onChangePermissions={updateCardPermissions}
             permissionGroups={currPermissionGroups}
             onChangePermissionGroups={updateCardPermissionGroups}
             isDisabled={!isEditing}

@@ -3,8 +3,8 @@ import PropTypes from 'prop-types';
 import _ from 'lodash';
 import { MdMoreHoriz } from 'react-icons/md';
 
-import { CardConfirmModal, CardStatusIndicator } from 'components/cards';
-import { Button, Dropdown, Message, Loader, Separator } from 'components/common';
+import { CardStatusIndicator } from 'components/cards';
+import { Button, Dropdown, Message, Loader, Separator, ConfirmModal } from 'components/common';
 
 import { CARD } from 'appConstants';
 import { copyCardUrl } from 'utils/card';
@@ -161,7 +161,7 @@ const SuggestionCard = ({
           .filter(({ modalProps }) => !!modalProps)
           .map(({ modalProps, buttonType }) => (
             <div key={buttonType}>
-              <CardConfirmModal
+              <ConfirmModal
                 isOpen={buttonActive[buttonType]}
                 onRequestClose={() => toggleActiveButton(buttonType)}
                 {...modalProps}

@@ -7,9 +7,9 @@ import { DragDropContext, Droppable, Draggable } from 'react-beautiful-dnd';
 import { MdClose } from 'react-icons/md';
 import { FiMinus, FiPlus } from 'react-icons/fi';
 
-import { CardView, CardConfirmModal } from 'components/cards';
+import { CardView } from 'components/cards';
 import { FinderView } from 'components/finder';
-import { Tabs, Tab } from 'components/common';
+import { Tabs, Tab, ConfirmModal } from 'components/common';
 
 import { cardStateChanged, getNewCardBaseState, getDraggableStyle } from 'utils/card';
 import { getBaseAnimationStyle } from 'utils/animate';
@@ -103,7 +103,7 @@ const Cards = ({
 
   const renderCloseModal = () => {
     return (
-      <CardConfirmModal
+      <ConfirmModal
         isOpen={showCloseModal}
         onRequestClose={closeCardContainerModal}
         title="Close Cards"

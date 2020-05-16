@@ -1,6 +1,8 @@
 import _ from 'lodash';
 import * as types from 'actions/actionTypes';
-import { ROOT, PATH_TYPE } from 'appConstants/finder';
+import { updateIndex } from 'utils/array';
+import { ROOT, PATH_TYPE, MODAL_TYPE } from 'appConstants/finder';
+import { PERMISSION_OPTIONS } from 'appConstants/card';
 
 const BASE_ACTIVE_NODE = {
   parent: null,
@@ -8,17 +10,28 @@ const BASE_ACTIVE_NODE = {
   children: []
 };
 
+const BASE_FOLDER_STATE = {
+  name: '',
+  permissions: PERMISSION_OPTIONS[0],
+  permissionGroups: []
+};
+
+const BASE_MODAL_OPEN_STATE = _.mapValues(MODAL_TYPE, () => false);
+
 const initialState = {
-  history: [{ _id: ROOT, type: PATH_TYPE.NODE }],
+  history: [{ _id: ROOT, type: PATH_TYPE.NODE, state: { searchText: '' } }],
   activeNode: BASE_ACTIVE_NODE,
-  searchText: '',
+  modalOpen: BASE_MODAL_OPEN_STATE,
+  edits: {
+    folder: BASE_FOLDER_STATE
+  },
   selectedIndices: []
 };
 
 export default function finderReducer(state = initialState, action) {
   const { type, payload = {} } = action;
 
-  const pushToHistory = (pathType, pathId, pathState={}) => {
+  const pushToHistory = (pathType, pathId, pathState = {}) => {
     const { history } = state;
     const prevPath = _.last(history);
 
@@ -26,9 +39,10 @@ export default function finderReducer(state = initialState, action) {
       return state;
     }
 
+    const newPath = { _id: pathId, type: pathType, state: { searchText: '', ...pathState } };
     return {
       ...state,
-      history: [...state.history, { _id: pathId, type: pathType, state: pathState }],
+      history: [...state.history, newPath],
       selectedIndices: []
     };
   };
@@ -38,7 +52,7 @@ export default function finderReducer(state = initialState, action) {
       const { history, activeNode } = state;
       const newHistory = history.slice(0, history.length - 1);
 
-      let newActiveNode =  activeNode;
+      let newActiveNode = activeNode;
       if (newHistory.length !== 0 && _.last(newHistory).type === PATH_TYPE.SEGMENT) {
         newActiveNode = BASE_ACTIVE_NODE;
       }
@@ -55,26 +69,52 @@ export default function finderReducer(state = initialState, action) {
       return { ...newState, activeNode: BASE_ACTIVE_NODE };
     }
 
-    case types.SELECT_FINDER_NODE_INDEX: {
-      const { index } = payload;
-      return { ...state, selectedIndices: [index] };
-    }
-    case types.TOGGLE_SELECTED_FINDER_NODE_INDEX: {
-      const { index } = payload;
-      let { selectedIndices } = state;
-      if (selectedIndices.some((selectedIndex) => selectedIndex === index)) {
-        // Remove node
-        selectedIndices = _.difference(selectedIndices, [index]);
-      } else {
-        // Add node
-        selectedIndices = _.union(selectedIndices, index);
-      }
-      return { ...state, selectedIndices };
+    case types.UPDATE_SELECTED_FINDER_INDICES: {
+      const { indices } = payload;
+      return { ...state, selectedIndices: indices };
     }
 
     case types.UPDATE_FINDER_SEARCH_TEXT: {
       const { text } = payload;
-      return { ...state, searchText: text };
+      const { history } = state;
+
+      const activePath = _.last(history);
+      const newPath = { ...activePath, state: { ...activePath.state, searchText: text } };
+      const newHistory = updateIndex(history, history.length - 1, newPath);
+      return { ...state, history: newHistory, selectedIndices: [] };
+    }
+
+    case types.UPDATE_FINDER_FOLDER_NAME: {
+      const { name } = payload;
+      return { ...state, edits: { folder: { ...state.edits.folder, name } } };
+    }
+    case types.UPDATE_FINDER_FOLDER_PERMISSIONS: {
+      const { permissions } = payload;
+      return { ...state, edits: { folder: { ...state.edits.folder, permissions } } };
+    }
+    case types.UPDATE_FINDER_FOLDER_PERMISSION_GROUPS: {
+      const { permissionGroups } = payload;
+      return { ...state, edits: { folder: { ...state.edits.folder, permissionGroups } } };
+    }
+
+    case types.OPEN_FINDER_MODAL: {
+      const { modalType } = payload;
+
+      const newState = { ...state, modalOpen: { ...state.modalOpen, [modalType]: true } };
+      switch (modalType) {
+        case MODAL_TYPE.CREATE_FOLDER: {
+          newState.edits = { ...newState.edits, folder: BASE_FOLDER_STATE };
+          break;
+        }
+        default:
+          break;
+      }
+
+      return newState;
+    }
+    case types.CLOSE_FINDER_MODAL: {
+      const { modalType } = payload;
+      return { ...state, modalOpen: { ...state.modalOpen, [modalType]: false } };
     }
 
     case types.GET_FINDER_NODE_REQUEST: {
@@ -87,6 +127,21 @@ export default function finderReducer(state = initialState, action) {
     case types.GET_FINDER_NODE_ERROR: {
       const { error } = payload;
       return { ...state, isGettingNode: false, getNodeError: error };
+    }
+
+    case types.CREATE_FINDER_FOLDER_REQUEST: {
+      return { ...state, isCreatingFolder: true, createFolderError: null };
+    }
+    case types.CREATE_FINDER_FOLDER_SUCCESS: {
+      return {
+        ...state,
+        isCreatingFolder: false,
+        modalOpen: { ...state.modalOpen, [MODAL_TYPE.CREATE_FOLDER]: false }
+      };
+    }
+    case types.CREATE_FINDER_FOLDER_ERROR: {
+      const { error } = payload;
+      return { ...state, isCreatingFolder: false, createFolderError: error };
     }
 
     default:

@@ -1,0 +1,11 @@
+.context-menu {
+  @apply bg-white rounded-lg shadow-md relative text-sm;
+}
+
+.context-menu-option {
+  @apply flex items-center justify-between p-sm;
+}
+
+.context-menu-option:hover {
+  @apply bg-purple-xlight;
+}

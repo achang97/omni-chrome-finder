@@ -1,14 +1,15 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 
-import { Modal, Message } from 'components/common';
-
 import { getStyleApplicationFn } from 'utils/style';
-import style from './card-confirm-modal.css';
+import style from './confirm-modal.css';
+
+import Modal from '../Modal';
+import Message from '../Message';
 
 const s = getStyleApplicationFn(style);
 
-const CardConfirmModal = ({
+const ConfirmModal = ({
   isOpen,
   title,
   description,
@@ -31,14 +32,14 @@ const CardConfirmModal = ({
     <Modal
       isOpen={isOpen}
       onRequestClose={onRequestClose}
-      headerClassName={s('bg-purple-light')}
+      bodyClassName={s('overflow-visible')}
       overlayClassName={s(`rounded-b-lg ${overlayClassName}`)}
       title={title}
       important
       secondaryButtonProps={showSecondary ? secondaryButtonProps : null}
       primaryButtonProps={showPrimary ? primaryButtonProps : null}
     >
-      <div className={s(`card-confirm-modal-body ${bodyClassName}`)}>
+      <div className={s(`confirm-modal-body ${bodyClassName}`)}>
         {description && <div> {description} </div>}
         {body}
         <Message className={s('mt-xs')} message={error} type="error" />
@@ -47,7 +48,7 @@ const CardConfirmModal = ({
   );
 };
 
-CardConfirmModal.propTypes = {
+ConfirmModal.propTypes = {
   isOpen: PropTypes.bool.isRequired,
   title: PropTypes.string.isRequired,
   description: PropTypes.string,
@@ -68,7 +69,7 @@ CardConfirmModal.propTypes = {
   bodyClassName: PropTypes.string
 };
 
-CardConfirmModal.defaultProps = {
+ConfirmModal.defaultProps = {
   showPrimary: true,
   showSecondary: true,
   secondaryButtonProps: null,
@@ -80,4 +81,4 @@ CardConfirmModal.defaultProps = {
   bodyClassName: ''
 };
 
-export default CardConfirmModal;
+export default ConfirmModal;

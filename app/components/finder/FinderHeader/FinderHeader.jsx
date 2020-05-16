@@ -1,11 +1,12 @@
-import React from 'react';
+import React, { useState } from 'react';
 import PropTypes from 'prop-types';
-import { MdChevronRight, MdSearch } from 'react-icons/md';
+import { MdChevronRight, MdChevronLeft, MdSearch } from 'react-icons/md';
+import { IoMdCloseCircle } from 'react-icons/io';
 import { FiPlus } from 'react-icons/fi';
 
-import { BackButton, Dropdown } from 'components/common';
+import { Dropdown, ContextMenu, CircleButton } from 'components/common';
 import { getStyleApplicationFn } from 'utils/style';
-import { PATH_TYPE } from 'appConstants/finder';
+import { FINDER, ROUTES } from 'appConstants';
 
 import MoveFolder from 'assets/images/finder/move-folder.svg';
 
@@ -18,19 +19,26 @@ const FinderHeader = ({
   isBackDisabled,
   activePath,
   activeNode,
-  searchText,
+  isTemplateView,
   goBackFinder,
   pushFinderNode,
-  updateFinderSearchText
+  updateFinderSearchText,
+  openFinderModal,
+  openCard,
+  toggleCards,
+  toggleTemplateView,
+  history
 }) => {
+  const [isNewDropdownOpen, setNewDropdownOpen] = useState(false);
+
   const renderNavigationSection = () => {
     let mainSectionName;
     switch (activePath.type) {
-      case PATH_TYPE.NODE: {
+      case FINDER.PATH_TYPE.NODE: {
         mainSectionName = activeNode.name;
         break;
       }
-      case PATH_TYPE.SEGMENT: {
+      case FINDER.PATH_TYPE.SEGMENT: {
         mainSectionName = activePath.state.name;
         break;
       }
@@ -40,10 +48,12 @@ const FinderHeader = ({
 
     return (
       <div className={s('flex-1 flex items-center min-w-0')}>
-        <BackButton
-          className={s('finder-header-icon w-auto h-auto')}
+        <CircleButton
+          buttonClassName={s('finder-header-icon')}
+          content={<MdChevronLeft />}
           onClick={goBackFinder}
           disabled={isBackDisabled}
+          size="auto"
         />
         {mainSectionName && (
           <div className={s('finder-header-icon min-w-0 flex items-center ml-reg text-sm')}>
@@ -65,35 +75,77 @@ const FinderHeader = ({
     );
   };
 
-  const renderNewCardDropdown = () => null;
-
   const renderActionSection = () => {
+    const onClickWrapper = (onClick) => {
+      return () => {
+        onClick();
+        setNewDropdownOpen(false);
+      };
+    };
+
+    const onTemplateClick = () => {
+      history.push(ROUTES.CREATE);
+      toggleCards();
+      if (!isTemplateView) {
+        toggleTemplateView();
+      }
+    };
+
+    // TODO: account for current "path" and pass that to template and new blank card
+    const NEW_BUTTON_OPTIONS = [
+      {
+        label: 'New Card',
+        options: [
+          { label: 'Blank Card', onClick: onClickWrapper(() => openCard({}, true)) },
+          { label: 'From Template', onClick: onClickWrapper(onTemplateClick) }
+        ]
+      },
+      {
+        label: 'New Folder',
+        onClick: onClickWrapper(() => openFinderModal(FINDER.MODAL_TYPE.CREATE_FOLDER))
+      }
+    ];
+
     return (
       <div className={s('flex-1 flex items-center ml-sm')}>
         <Dropdown
+          isOpen={isNewDropdownOpen}
+          onToggle={setNewDropdownOpen}
+          isLeft={false}
           toggler={
-            <div className={s('finder-header-icon mr-sm')}>
-              <FiPlus />
-            </div>
+            <CircleButton
+              size="auto"
+              buttonClassName={s('finder-header-icon mr-sm')}
+              content={<FiPlus />}
+            />
           }
           body={
-            <div>
-              {renderNewCardDropdown()}
-              <div> New Folder </div>
-            </div>
+            <ContextMenu
+              options={NEW_BUTTON_OPTIONS}
+              outerClassName={s('mt-sm')}
+              className={s('finder-header-new-dropdown')}
+            />
           }
         />
-        <div className={s('finder-header-icon mr-sm')}>
-          <img src={MoveFolder} alt="Move Folder" />
-        </div>
+        <CircleButton
+          size="auto"
+          buttonClassName={s('finder-header-icon mr-sm')}
+          content={<img src={MoveFolder} alt="Move Folder" />}
+        />
         <div className={s('finder-header-input-container')}>
           <MdSearch />
           <input
             placeholder="Search"
             className={s('border-0 shadow-none')}
-            value={searchText}
+            value={activePath.state.searchText}
             onChange={(e) => updateFinderSearchText(e.target.value)}
           />
+          {activePath.state.searchText && (
+            <IoMdCloseCircle
+              onClick={() => updateFinderSearchText('')}
+              className={s('ml-xs cursor-pointer text-purple-gray-50')}
+            />
+          )}
         </div>
       </div>
     );
@@ -112,7 +164,7 @@ FinderHeader.propTypes = {
   isBackDisabled: PropTypes.bool.isRequired,
   activePath: PropTypes.shape({
     _id: PropTypes.string.isRequired,
-    type: PropTypes.oneOf(Object.values(PATH_TYPE)).isRequired,
+    type: PropTypes.oneOf(Object.values(FINDER.PATH_TYPE)).isRequired,
     state: PropTypes.object
   }).isRequired,
   activeNode: PropTypes.shape({
@@ -120,12 +172,16 @@ FinderHeader.propTypes = {
     name: PropTypes.string.isRequired,
     parent: PropTypes.object.isRequired
   }).isRequired,
-  searchText: PropTypes.string.isRequired,
+  isTemplateView: PropTypes.bool.isRequired,
 
   // Redux Actions
   goBackFinder: PropTypes.func.isRequired,
   pushFinderNode: PropTypes.func.isRequired,
-  updateFinderSearchText: PropTypes.func.isRequired
+  updateFinderSearchText: PropTypes.func.isRequired,
+  openFinderModal: PropTypes.func.isRequired,
+  openCard: PropTypes.func.isRequired,
+  toggleCards: PropTypes.func.isRequired,
+  toggleTemplateView: PropTypes.func.isRequired
 };
 
 export default FinderHeader;

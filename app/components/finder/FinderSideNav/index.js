@@ -1,11 +1,15 @@
 import { connect } from 'react-redux';
+import _ from 'lodash';
 import { pushFinderNode, pushFinderSegment } from 'actions/finder';
 import FinderSideNav from './FinderSideNav';
 
 const mapStateToProps = (state) => {
-  const {} = state;
+  const {
+    finder: { history: finderHistory }
+  } = state;
 
-  return {};
+  const activePath = _.last(finderHistory);
+  return { activePathId: activePath._id };
 };
 
 const mapDispatchToProps = {
