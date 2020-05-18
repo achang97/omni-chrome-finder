@@ -16,37 +16,21 @@ const mapStateToProps = (state) => {
     finder: {
       history: finderHistory,
       isGettingNode,
-      activeNode,
       selectedNodeIds,
       moveNodeIds
     },
     search: {
       cards: {
-        [SEARCH.TYPE.FINDER]: { isSearchingCards: isSearchingSegment, page: segmentPage, cards }
+        [SEARCH.TYPE.FINDER]: { isSearchingCards: isSearchingSegment, page: segmentPage }
       }
     }
   } = state;
 
   const activePath = _.last(finderHistory);
-  let nodes = [];
-  switch (activePath.type) {
-    case FINDER.PATH_TYPE.NODE: {
-      nodes = activeNode.children;
-      break;
-    }
-    case FINDER.PATH_TYPE.SEGMENT: {
-      nodes = cards.map((card) => ({ _id: card._id, card }));
-      break;
-    }
-    default:
-      break;
-  }
-
   return {
     isGettingNode,
     isSearchingSegment,
     segmentPage,
-    nodes,
     activePath,
     selectedNodeIds,
     moveNodeIds

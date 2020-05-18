@@ -120,7 +120,7 @@ const UserPropTypes = PropTypes.arrayOf(
 );
 
 CardUsers.propTypes = {
-  isEditable: PropTypes.bool.isRequired,
+  isEditable: PropTypes.bool,
   className: PropTypes.string,
   users: UserPropTypes.isRequired,
   onRemoveClick: PropTypes.func,
@@ -141,6 +141,7 @@ CardUsers.propTypes = {
 
 CardUsers.defaultProps = {
   className: '',
+  isEditable: false,
   size: 'md',
   showSelect: false,
   showTooltips: false,

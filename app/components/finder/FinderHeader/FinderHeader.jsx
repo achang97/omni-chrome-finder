@@ -5,6 +5,7 @@ import { IoMdCloseCircle } from 'react-icons/io';
 import { FiPlus } from 'react-icons/fi';
 
 import { Dropdown, ContextMenu, CircleButton } from 'components/common';
+import { getNewCardBaseState } from 'utils/card';
 import { getStyleApplicationFn } from 'utils/style';
 import { FINDER, ROUTES } from 'appConstants';
 
@@ -22,14 +23,16 @@ const FinderHeader = ({
   selectedNodeIds,
   moveNodeIds,
   isTemplateView,
+  user,
   goBackFinder,
   pushFinderNode,
   updateFinderSearchText,
   openFinderModal,
+  startMoveFinderNodes,
   openCard,
   toggleCards,
   toggleTemplateView,
-  startMoveFinderNodes,
+  updateCreatePath,
   history
 }) => {
   const [isNewDropdownOpen, setNewDropdownOpen] = useState(false);
@@ -78,7 +81,23 @@ const FinderHeader = ({
     );
   };
 
+  const getFullPath = () => {
+    // TODO: this will probably need to be changed when we get data
+    const fullPath = [];
+    let currNode = activeNode;
+    while (currNode && currNode._id !== FINDER.ROOT) {
+      const { name, _id } = currNode;
+      fullPath.unshift({ name, _id });
+      currNode = currNode.parent;
+    }
+    return fullPath;
+  };
+
   const renderActionSection = () => {
+    const isSegment = activePath.type === FINDER.PATH_TYPE.SEGMENT;
+    const fullPath = isSegment ? [] : getFullPath();
+    const isMoving = moveNodeIds.length !== 0;
+
     const onClickWrapper = (onClick) => {
       return () => {
         onClick();
@@ -89,6 +108,7 @@ const FinderHeader = ({
     const onTemplateClick = () => {
       history.push(ROUTES.CREATE);
       toggleCards();
+      updateCreatePath(fullPath);
       if (!isTemplateView) {
         toggleTemplateView();
       }
@@ -99,32 +119,37 @@ const FinderHeader = ({
       {
         label: 'New Card',
         options: [
-          { label: 'Blank Card', onClick: onClickWrapper(() => openCard({}, true)) },
-          { label: 'From Template', onClick: onClickWrapper(onTemplateClick) }
+          {
+            label: 'Blank Card',
+            onClick: onClickWrapper(() => {
+              const newCard = { ...getNewCardBaseState(user), path: fullPath };
+              openCard(newCard, true);
+            })
+          },
+          {
+            label: 'From Template',
+            onClick: onClickWrapper(onTemplateClick)
+          }
         ]
       },
       {
         label: 'New Folder',
-        onClick: onClickWrapper(() => openFinderModal(FINDER.MODAL_TYPE.CREATE_FOLDER))
+        onClick: onClickWrapper(() => openFinderModal(FINDER.MODAL_TYPE.CREATE_FOLDER)),
+        disabled: isSegment
       }
     ];
-
-    const isSegment = activePath.type === FINDER.PATH_TYPE.SEGMENT;
-    const isMoving = moveNodeIds.length !== 0;
 
     return (
       <div className={s('flex-1 flex items-center ml-sm')}>
         <Dropdown
           isOpen={isNewDropdownOpen}
           onToggle={setNewDropdownOpen}
-          disabled={isSegment}
           isLeft={false}
           toggler={
             <CircleButton
               size="auto"
               buttonClassName={s('finder-header-icon mr-sm')}
               content={<FiPlus />}
-              disabled={isSegment}
             />
           }
           body={

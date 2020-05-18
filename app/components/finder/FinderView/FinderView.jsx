@@ -17,6 +17,7 @@ const s = getStyleApplicationFn();
 
 const FinderView = ({
   activePath,
+  nodes,
   selectedNodeIds,
   hasReachedSegmentLimit,
   isSearchingSegment,
@@ -134,12 +135,10 @@ const FinderView = ({
 
   const onDragEnd = ({ source, destination, reason, ...rest }) => {
     // nothing to do
-    // if (!destination || reason === 'CANCEL') {
-    //   updateDraggingFinderNode(null);
-    //   return;
-    // }
-
-    console.log(source, destination, reason, rest);
+    if (!destination || reason === 'CANCEL') {
+      updateDraggingFinderNode(null);
+      return;
+    }
 
     // TODO: handle move
     updateDraggingFinderNode(null);
@@ -167,9 +166,9 @@ const FinderView = ({
         <FinderHeader />
         <div className={s('min-h-0 flex-1 flex')}>
           <FinderSideNav />
-          <FinderBody onBottom={onBottom} />
+          <FinderBody nodes={nodes} onBottom={onBottom} />
         </div>
-        <FinderFooter />
+        <FinderFooter nodes={nodes} />
         <FinderConfirmModals />
       </div>      
     </DragDropContext>

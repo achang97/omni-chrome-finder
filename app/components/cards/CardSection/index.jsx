@@ -14,6 +14,7 @@ const CardSection = ({
   title,
   hint,
   startExpanded,
+  isVertical,
   isExpandable,
   showSeparator,
   className,
@@ -25,40 +26,55 @@ const CardSection = ({
   const toggleSection = () => setExpanded(!isExpanded);
 
   return (
-    <div className={className}>
-      <div className={s('flex mb-lg items-center justify-between')}>
-        <div className={s('flex items-center')}>
-          <div
-            className={s('font-semibold text-sm text-black button-hover')}
-            onClick={toggleSection}
-          >
-            {title}
-          </div>
-          {hint && (
-            <HelpTooltip
-              className={s('ml-sm')}
-              tooltip={hint}
-              tooltipProps={{
-                place: 'right',
-                className: s('card-section-tooltip')
-              }}
-            />
+    <div className={s(className)}>
+      <div className={`flex items-start ${isVertical ? 'flex-col' : ''}`}>
+        <div
+          className={s(
+            `flex mb-lg items-center justify-between ${
+              !isVertical ? 'card-section-horizontal-header' : 'self-stretch'
+            }`
           )}
-          {isExpandable && (
-            <button
-              className={s('text-gray-light flex items-center ml-reg')}
+        >
+          <div className={s('flex items-center')}>
+            <div
+              className={s('font-semibold text-sm text-black button-hover')}
               onClick={toggleSection}
-              type="button"
             >
-              {isExpanded ? <MdExpandLess /> : <MdExpandMore />}
-            </button>
-          )}
+              {title}
+            </div>
+            {hint && (
+              <HelpTooltip
+                className={s('ml-sm')}
+                tooltip={hint}
+                tooltipProps={{
+                  place: 'right',
+                  className: s('card-section-tooltip')
+                }}
+              />
+            )}
+            {isExpandable && (
+              <button
+                className={s('text-gray-light flex items-center ml-sm')}
+                onClick={toggleSection}
+                type="button"
+              >
+                {isExpanded ? <MdExpandLess /> : <MdExpandMore />}
+              </button>
+            )}
+          </div>
+          {!isExpanded && isVertical && preview}
+          {headerEnd}
         </div>
-        {!isExpanded && preview}
-        {headerEnd}
+        <div className={s('flex-1')}>
+          <AnimateHeight height={isExpandable && !isExpanded && !isVertical ? 'auto' : 0}>
+            {preview}
+          </AnimateHeight>
+          <AnimateHeight height={!isExpandable || isExpanded ? 'auto' : 0}>
+            {children}
+          </AnimateHeight>
+        </div>
       </div>
-      <AnimateHeight height={isExpandable && isExpanded ? 'auto' : 0}>{children}</AnimateHeight>
-      {showSeparator && <Separator horizontal className={s('mt-lg')} />}
+      {showSeparator && <Separator horizontal className={s('mt-sm')} />}
     </div>
   );
 };
@@ -67,6 +83,7 @@ CardSection.propTypes = {
   title: PropTypes.string.isRequired,
   hint: PropTypes.string,
   isExpandable: PropTypes.bool,
+  isVertical: PropTypes.bool,
   startExpanded: PropTypes.bool,
   showSeparator: PropTypes.bool,
   className: PropTypes.string,
@@ -78,6 +95,7 @@ CardSection.propTypes = {
 CardSection.defaultProps = {
   isExpandable: true,
   startExpanded: true,
+  isVertical: true,
   showSeparator: true,
   hint: null,
   preview: null,

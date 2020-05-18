@@ -9,7 +9,7 @@ import {
   startMoveFinderNodes
 } from 'actions/finder';
 import { openCard, toggleCards } from 'actions/cards';
-import { toggleTemplateView } from 'actions/create';
+import { toggleTemplateView, updateCreatePath } from 'actions/create';
 import FinderHeader from './FinderHeader';
 
 const mapStateToProps = (state) => {
@@ -20,7 +20,8 @@ const mapStateToProps = (state) => {
       selectedNodeIds,
       moveNodeIds
     },
-    create: { isTemplateView }
+    create: { isTemplateView },
+    profile: { user }
   } = state;
 
   const activePath = _.last(finderHistory);
@@ -30,7 +31,8 @@ const mapStateToProps = (state) => {
     activeNode,
     selectedNodeIds,
     moveNodeIds,
-    isTemplateView
+    isTemplateView,
+    user
   };
 };
 
@@ -39,10 +41,11 @@ const mapDispatchToProps = {
   pushFinderNode,
   updateFinderSearchText,
   openFinderModal,
+  startMoveFinderNodes,
   openCard,
   toggleCards,
   toggleTemplateView,
-  startMoveFinderNodes
+  updateCreatePath
 };
 
 export default connect(mapStateToProps, mapDispatchToProps)(withRouter(FinderHeader));

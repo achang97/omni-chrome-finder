@@ -46,7 +46,8 @@ const BASE_CARD_STATE = {
   subscribers: [],
   question: '',
   answerEditorState: EditorState.createEmpty(),
-  descriptionEditorState: EditorState.createEmpty()
+  descriptionEditorState: EditorState.createEmpty(),
+  path: []
 };
 
 export default function cardsReducer(state = initialState, action) {
@@ -110,6 +111,7 @@ export default function cardsReducer(state = initialState, action) {
       question,
       answerEditorState,
       descriptionEditorState,
+      path,
       slackReplies,
       edits
     } = card;
@@ -127,6 +129,7 @@ export default function cardsReducer(state = initialState, action) {
         question,
         answerEditorState,
         descriptionEditorState,
+        path,
         slackReplies,
         ...edits
       }

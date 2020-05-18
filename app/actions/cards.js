@@ -74,6 +74,10 @@ export function cancelEditCardMessages() {
   return { type: types.CANCEL_EDIT_CARD_MESSAGES, payload: {} };
 }
 
+export function updateCardPath(path) {
+  return { type: types.UPDATE_CARD_PATH, payload: { path } };
+}
+
 export function addCardOwner(owner) {
   return { type: types.ADD_CARD_OWNER, payload: { owner } };
 }

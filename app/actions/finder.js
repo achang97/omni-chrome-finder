@@ -116,8 +116,8 @@ export function handleBulkDeleteFinderCardsError(error) {
   return { type: types.BULK_DELETE_FINDER_CARDS_ERROR, payload: { error } };
 }
 
-export function requestMoveFinderNodes() {
-  return { type: types.MOVE_FINDER_NODES_REQUEST, payload: {} };
+export function requestMoveFinderNodes(destinationId) {
+  return { type: types.MOVE_FINDER_NODES_REQUEST, payload: { destinationId } };
 }
 
 export function handleMoveFinderNodesSuccess() {

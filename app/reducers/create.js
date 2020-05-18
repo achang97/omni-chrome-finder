@@ -1,5 +1,6 @@
 import { EditorState } from 'draft-js';
 import { updateArrayOfObjects } from 'utils/array';
+import { FINDER } from 'appConstants';
 import * as types from 'actions/actionTypes';
 
 const initialState = {
@@ -37,6 +38,10 @@ export default function createReducer(state = initialState, action) {
     case types.UPDATE_CREATE_DESCRIPTION_EDITOR: {
       const { editorState } = payload;
       return { ...state, descriptionEditorState: editorState };
+    }
+    case types.UPDATE_CREATE_PATH: {
+      const { path } = payload;
+      return { ...state, path };
     }
     case types.CLEAR_CREATE_PANEL: {
       return initialState;

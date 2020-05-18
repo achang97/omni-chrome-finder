@@ -28,7 +28,7 @@ const initialState = {
   selectedNodeIds: [],
   draggingNodeId: null,
   moveNodeIds: [],
-  moveSource: null,
+  moveSource: null
 };
 
 export default function finderReducer(state = initialState, action) {

@@ -1,4 +1,5 @@
 import React from 'react';
+import PropTypes from 'prop-types';
 import { Draggable } from 'react-beautiful-dnd';
 
 import { Badge } from 'components/common';
@@ -18,8 +19,6 @@ const FinderDraggable = ({
   id,
   index,
   children,
-  isSelected,
-  isGhosting,
   disabled,
   nodeIds,
 
@@ -42,15 +41,15 @@ const FinderDraggable = ({
   };
 
   const toggleSelectionInGroup = () => {
-    const index = selectedNodeIds.indexOf(id);
+    const selectedIndex = selectedNodeIds.indexOf(id);
 
-    if (index === -1) {
+    if (selectedIndex === -1) {
       // if not selected - add it to the selected items
       updateSelectedFinderNodes([...selectedNodeIds, id]);
     } else {
       // it was previously selected and now needs to be removed from the group
       const shallow = [...selectedNodeIds];
-      shallow.splice(index, 1);
+      shallow.splice(selectedIndex, 1);
       updateSelectedFinderNodes(shallow);
     }
   };
@@ -135,10 +134,10 @@ const FinderDraggable = ({
     }
   };
 
-  const getStyle = (style, snapshot) => {
+  const getStyle = (itemStyle, snapshot) => {
     if (!snapshot.isDragging) return {};
 
-    const draggableStyle = getDraggableStyle(true, style, windowPosition);
+    const draggableStyle = getDraggableStyle(true, itemStyle, windowPosition);
     if (!snapshot.isDropAnimating) {
       return draggableStyle;
     }
@@ -148,7 +147,7 @@ const FinderDraggable = ({
       // cannot be 0, but make it super tiny
       transitionDuration: `0.001s`
     };
-  }
+  };
 
   const render = () => {
     const selectionCount = selectedNodeIds.length;
@@ -159,7 +158,6 @@ const FinderDraggable = ({
       <Draggable draggableId={id} index={index} isDragDisabled={disabled}>
         {(provided, snapshot) => {
           const shouldShowSelection = snapshot.isDragging && selectionCount > 1;
-          console.log(snapshot.combineWith, snapshot.draggingOver)
           return (
             <div
               ref={provided.innerRef}
@@ -172,7 +170,7 @@ const FinderDraggable = ({
                 finder-draggable
                 ${isSelected ? 'finder-draggable-selected' : ''}
                 ${snapshot.isDragging ? 'opacity-75' : ''}
-                ${isHidden ? 'invisible': ''}
+                ${isHidden ? 'invisible' : ''}
               `)}
               style={getStyle(provided.draggableProps.style, snapshot)}
             >
@@ -188,6 +186,6 @@ const FinderDraggable = ({
   };
 
   return render();
-}
+};
 
 export default FinderDraggable;

@@ -39,6 +39,7 @@ const FinderConfirmModals = ({
       <div className={s('text-gray-reg text-xs mb-sm')}> Permissions </div>
       <CardPermissions
         showJustMe
+        isEditable
         selectedPermissions={folderEdits.permissions}
         onChangePermissions={updateFinderFolderPermissions}
         permissionGroups={folderEdits.permissionGroups}

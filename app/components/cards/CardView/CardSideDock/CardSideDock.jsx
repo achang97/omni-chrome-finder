@@ -176,7 +176,7 @@ const CardSideDock = ({
             onChangePermissions={updateCardPermissions}
             permissionGroups={currPermissionGroups}
             onChangePermissionGroups={updateCardPermissionGroups}
-            isDisabled={!isEditing}
+            isEditable={isEditing}
             showJustMe={permissions.value === PERMISSION_OPTION.JUST_ME}
           />
         </div>

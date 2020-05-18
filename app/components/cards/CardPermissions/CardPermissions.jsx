@@ -12,7 +12,7 @@ import style from './card-permissions.css';
 const s = getStyleApplicationFn(style);
 
 const CardPermissions = ({
-  isDisabled,
+  isEditable,
   showJustMe,
   selectedPermissions,
   onChangePermissions,
@@ -37,7 +37,7 @@ const CardPermissions = ({
 
   return (
     <div>
-      {isDisabled ? (
+      {!isEditable ? (
         selectedValue !== CARD.PERMISSION_OPTION.SPECIFIC_GROUPS && (
           <div
             className={s(
@@ -75,7 +75,7 @@ const CardPermissions = ({
         </Tabs>
       )}
       <AnimateHeight height={selectedValue === CARD.PERMISSION_OPTION.SPECIFIC_GROUPS ? 'auto' : 0}>
-        {!isDisabled ? (
+        {isEditable ? (
           <Select
             value={permissionGroups}
             onChange={onChangePermissionGroups}
@@ -85,7 +85,6 @@ const CardPermissions = ({
             options={permissionGroupOptions}
             isMulti
             isSearchable
-            isDisabled={isDisabled}
             isClearable={false}
             menuShouldScrollIntoView
             getOptionLabel={(option) => option.name}
@@ -130,7 +129,7 @@ CardPermissions.propTypes = {
   onChangePermissions: PropTypes.func.isRequired,
   permissionGroups: PermissionGroupPropTypes.isRequired,
   onChangePermissionGroups: PropTypes.func.isRequired,
-  isDisabled: PropTypes.bool,
+  isEditable: PropTypes.bool.isRequired,
   showJustMe: PropTypes.bool.isRequired,
 
   // Redux State
@@ -142,7 +141,6 @@ CardPermissions.propTypes = {
 };
 
 CardPermissions.defaultProps = {
-  isDisabled: false,
   selectedPermissions: null
 };
 

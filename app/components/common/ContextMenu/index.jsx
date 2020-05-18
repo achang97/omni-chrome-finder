@@ -19,7 +19,7 @@ const ContextMenu = ({ options, outerClassName, className, optionClassName, styl
           <div
             className={s(
               `context-menu-option ${optionClassName} ${
-                disabled ? 'cursor-not-allowed' : 'cursor-pointer'
+                disabled ? 'cursor-not-allowed opacity-50' : 'cursor-pointer'
               }`
             )}
             onClick={() => onClick && !disabled && onClick()}

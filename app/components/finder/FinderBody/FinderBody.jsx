@@ -61,8 +61,8 @@ const FinderBody = ({
   const renderChildNode = (childNode, i) => {
     const { card, _id } = childNode;
     const label = getNodeLabel(childNode);
-    const nodeIds = nodes.map(({ _id }) => _id);
     const isMoving = isMovingNode(_id);
+    const nodeIds = nodes.map(({ _id }) => _id);
     const isDraggable = activePath.type === PATH_TYPE.NODE;
 
     const childView = (
@@ -170,7 +170,7 @@ const FinderBody = ({
                 Results for &quot;{activePath.state.searchText}&quot;
               </div>
             )}
-            <Droppable droppableId={activePath._id} direction="horizontal" isCombineEnabled>
+            <Droppable droppableId={activePath._id} direction="horizontal">
               {({ innerRef, placeholder, droppableProps }) => (
                 <div
                   ref={innerRef}
@@ -194,13 +194,14 @@ const FinderBody = ({
 };
 
 FinderBody.propTypes = {
-  // Redux State
   nodes: PropTypes.arrayOf(
     PropTypes.shape({
       _id: PropTypes.string,
       card: PropTypes.object
     })
   ).isRequired,
+
+  // Redux State
   activePath: PropTypes.shape({
     _id: PropTypes.string.isRequired,
     type: PropTypes.oneOf(Object.values(PATH_TYPE)).isRequired,

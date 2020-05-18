@@ -10,12 +10,13 @@ const mapStateToProps = (state) => {
       activeNode,
       moveSource,
       moveNodeIds,
+      selectedNodeIds,
       isMovingNodes
     }
   } = state;
 
   const activePath = _.last(finderHistory);
-  return { activePath, activeNode, moveNodeIds, moveSource, isMovingNodes };
+  return { activePath, activeNode, moveNodeIds, moveSource, selectedNodeIds, isMovingNodes };
 }
 
 const mapDispatchToProps = {

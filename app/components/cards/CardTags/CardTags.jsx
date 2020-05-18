@@ -197,7 +197,7 @@ const TagPropTypes = PropTypes.arrayOf(
 );
 
 CardTags.propTypes = {
-  isEditable: PropTypes.bool.isRequired,
+  isEditable: PropTypes.bool,
   className: PropTypes.string,
   tags: TagPropTypes.isRequired,
   maxWidth: PropTypes.number,
@@ -218,6 +218,7 @@ CardTags.propTypes = {
 
 CardTags.defaultProps = {
   className: '',
+  isEditable: false,
   showPlaceholder: false,
   showSelect: false,
   hideSelectOnBlur: false,

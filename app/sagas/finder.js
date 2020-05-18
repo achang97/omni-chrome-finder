@@ -60,7 +60,7 @@ export default function* watchFinderRequests() {
         break;
       }
       case MOVE_FINDER_NODES_REQUEST: {
-        yield fork(moveNode);
+        yield fork(moveNode, payload);
         break;
       }
       default: {
@@ -172,11 +172,10 @@ function* bulkDeleteCards() {
   }
 }
 
-function* moveNode() {
+function* moveNode({ destinationId }) {
   try {
     const moveNodeIds = yield select((state) => state.finder.moveNodeIds);
-    const parentNodeId = yield call(getParentNodeId);
-    
+
     // TODO: make a request to move nodes
     // TODO: have better checks on history when moving to "drop" node
     yield delay(1000);
@@ -186,9 +185,9 @@ function* moveNode() {
         parent.children = parent.children.filter(({ _id }) => _id !== nodeId);
       }
 
-      MOCK_DIRECTORY_LOOKUP[nodeId].parent = MOCK_DIRECTORY_LOOKUP[parentNodeId];
-      MOCK_DIRECTORY_LOOKUP[parentNodeId].children.push(MOCK_DIRECTORY_LOOKUP[nodeId]);
-    })
+      MOCK_DIRECTORY_LOOKUP[nodeId].parent = MOCK_DIRECTORY_LOOKUP[destinationId];
+      MOCK_DIRECTORY_LOOKUP[destinationId].children.push(MOCK_DIRECTORY_LOOKUP[nodeId]);
+    });
 
     yield put(requestGetFinderNode());
     yield put(handleMoveFinderNodesSuccess());
