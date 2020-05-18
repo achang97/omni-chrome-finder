@@ -19,16 +19,12 @@ export function clearSearchCards(type) {
   return { type: types.CLEAR_SEARCH_CARDS, payload: { type } };
 }
 
-export function addSearchCard(card) {
-  return { type: types.ADD_SEARCH_CARD, payload: { card } };
-}
-
 export function updateSearchCard(card) {
   return { type: types.UPDATE_SEARCH_CARD, payload: { card } };
 }
 
-export function removeSearchCard(cardId) {
-  return { type: types.REMOVE_SEARCH_CARD, payload: { cardId } };
+export function removeSearchCards(cardIds) {
+  return { type: types.REMOVE_SEARCH_CARDS, payload: { cardIds } };
 }
 
 export function requestSearchTags(name) {

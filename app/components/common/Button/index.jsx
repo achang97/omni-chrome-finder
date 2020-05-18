@@ -54,7 +54,7 @@ const Button = ({
     <div
       className={s(
         `button-container ${className} ${outerClassName} ${
-          disabled ? 'cursor-not-allowed opacity-75' : 'button-hover'
+          disabled ? 'button-disabled' : 'button-hover'
         }`
       )}
       onClick={protectedOnClick}

@@ -1,5 +1,5 @@
 .finder-header-icon {
-  @apply text-purple-reg bg-purple-light p-sm font-semibold cursor-pointer rounded-full shadow-md;
+  @apply text-purple-reg bg-purple-light p-sm font-semibold rounded-full shadow-md;
   @apply flex items-center justify-center;
   height: 35px;
 }

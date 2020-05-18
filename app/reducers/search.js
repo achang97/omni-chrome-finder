@@ -35,8 +35,6 @@ export default function searchReducer(state = initialState, action) {
     }))
   });
 
-  const removeCard = (cards, cardId) => cards.filter(({ _id }) => _id !== cardId);
-
   switch (type) {
     case types.SEARCH_CARDS_REQUEST: {
       const { type: searchType, query, clearCards } = payload;
@@ -70,21 +68,15 @@ export default function searchReducer(state = initialState, action) {
       return updateCardStateByType(searchType, () => BASE_CARDS_STATE);
     }
 
-    case types.ADD_SEARCH_CARD: {
-      const { card } = payload;
-      return updateCardStateByType(SEARCH.TYPE.FINDER, (cardState) => ({
-        cards: _.unionBy(cardState.cards, [card], '_id')
-      }));
-    }
     case types.UPDATE_SEARCH_CARD: {
       const { card } = payload;
       return updateAllCards((cards) =>
         cards.map((currCard) => (currCard._id === card._id ? card : currCard))
       );
     }
-    case types.REMOVE_SEARCH_CARD: {
-      const { cardId } = payload;
-      return updateAllCards((cards) => removeCard(cards, cardId));
+    case types.REMOVE_SEARCH_CARDS: {
+      const { cardIds } = payload;
+      return updateAllCards((cards) => cards.filter(({ _id }) => !cardIds.includes(_id)));
     }
 
     case types.SEARCH_TAGS_REQUEST: {

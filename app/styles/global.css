@@ -10,8 +10,12 @@
 }
 
 /* Buttons */
+.button-disabled {
+  @apply cursor-not-allowed opacity-50;
+}
+
 .button-hover:hover {
-  cursor: pointer !important;
+  @apply cursor-pointer;
   opacity: 0.8;
 }
 

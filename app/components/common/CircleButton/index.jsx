@@ -28,14 +28,15 @@ const CircleButton = ({
   onClick,
   content,
   label,
+  disabled,
   className,
   buttonClassName,
   labelClassName
 }) => (
   <div className={s(`circle-button-container ${className}`)}>
     <div
-      className={s(`circle-button button-hover ${buttonClassName}`)}
-      onClick={() => onClick && onClick()}
+      className={s(`circle-button ${disabled ? 'button-disabled' : 'button-hover'} ${buttonClassName}`)}
+      onClick={() => onClick && !disabled && onClick()}
       style={getButtonStyle(size)}
     >
       {content}
@@ -50,6 +51,7 @@ CircleButton.propTypes = {
     PropTypes.oneOf(['2xs', 'xs', 'sm', 'md', 'lg', 'auto'])
   ]),
   content: PropTypes.node.isRequired,
+  disabled: PropTypes.bool,
   onClick: PropTypes.func,
   label: PropTypes.string,
   className: PropTypes.string,
@@ -60,6 +62,7 @@ CircleButton.propTypes = {
 CircleButton.defaultProps = {
   size: 'md',
   label: null,
+  disabled: false,
   onClick: null,
   className: '',
   buttonClassName: '',

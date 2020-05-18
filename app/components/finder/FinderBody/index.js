@@ -1,13 +1,25 @@
 import { connect } from 'react-redux';
 import _ from 'lodash';
-import { pushFinderNode, updateSelectedFinderIndices, openFinderModal } from 'actions/finder';
+import {
+  pushFinderNode,
+  openFinderModal,
+  updateFinderFolderName,
+  updateFinderFolderPermissions,
+  updateFinderFolderPermissionGroups
+} from 'actions/finder';
 import { openCard } from 'actions/cards';
 import { SEARCH, FINDER } from 'appConstants';
 import FinderBody from './FinderBody';
 
 const mapStateToProps = (state) => {
   const {
-    finder: { history: finderHistory, isGettingNode, activeNode, selectedIndices },
+    finder: {
+      history: finderHistory,
+      isGettingNode,
+      activeNode,
+      selectedNodeIds,
+      moveNodeIds
+    },
     search: {
       cards: {
         [SEARCH.TYPE.FINDER]: { isSearchingCards: isSearchingSegment, page: segmentPage, cards }
@@ -23,7 +35,7 @@ const mapStateToProps = (state) => {
       break;
     }
     case FINDER.PATH_TYPE.SEGMENT: {
-      nodes = cards.map((card) => ({ card }));
+      nodes = cards.map((card) => ({ _id: card._id, card }));
       break;
     }
     default:
@@ -35,16 +47,19 @@ const mapStateToProps = (state) => {
     isSearchingSegment,
     segmentPage,
     nodes,
-    searchText: activePath.state.searchText,
-    selectedIndices
+    activePath,
+    selectedNodeIds,
+    moveNodeIds
   };
 };
 
 const mapDispatchToProps = {
   pushFinderNode,
-  updateSelectedFinderIndices,
   openFinderModal,
-  openCard
+  openCard,
+  updateFinderFolderName,
+  updateFinderFolderPermissions,
+  updateFinderFolderPermissionGroups
 };
 
 export default connect(mapStateToProps, mapDispatchToProps)(FinderBody);

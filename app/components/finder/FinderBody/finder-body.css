@@ -1,11 +1,11 @@
 .finder-body-node {
-  @apply m-sm p-sm h-auto flex flex-col items-center cursor-pointer rounded-lg border-2 border-solid border-transparent;
+  @apply p-sm h-auto flex flex-col items-center cursor-pointer;
   width: 110px;
 }
 
-.finder-body-selected-node,
-.finder-body-node:focus {
-  @apply bg-purple-light border-purple-reg outline-none;
+.finder-body-node-move-indicator {
+  @apply absolute top-0 left-0 bg-purple-light rounded-full w-xl h-xl p-xs shadow-md;
+  transform: translate(-40%, -40%);
 }
 
 .finder-body-node-status-indicator {

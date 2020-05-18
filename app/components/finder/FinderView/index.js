@@ -1,13 +1,13 @@
 import { connect } from 'react-redux';
 import _ from 'lodash';
-import { requestGetFinderNode } from 'actions/finder';
+import { requestGetFinderNode, updateSelectedFinderNodes, updateDraggingFinderNode } from 'actions/finder';
 import { requestSearchCards, clearSearchCards } from 'actions/search';
 import { SEARCH } from 'appConstants';
 import FinderView from './FinderView';
 
 const mapStateToProps = (state) => {
   const {
-    finder: { history: finderHistory },
+    finder: { history: finderHistory, selectedNodeIds },
     profile: {
       user: { _id, bookmarkIds }
     },
@@ -23,6 +23,7 @@ const mapStateToProps = (state) => {
   const activePath = _.last(finderHistory);
   return {
     activePath,
+    selectedNodeIds,
     hasReachedSegmentLimit,
     isSearchingSegment,
     ownUserId: _id,
@@ -33,7 +34,9 @@ const mapStateToProps = (state) => {
 const mapDispatchToProps = {
   requestGetFinderNode,
   clearSearchCards,
-  requestSearchCards
+  requestSearchCards,
+  updateSelectedFinderNodes,
+  updateDraggingFinderNode
 };
 
 export default connect(mapStateToProps, mapDispatchToProps)(FinderView);

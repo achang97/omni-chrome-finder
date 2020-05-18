@@ -146,7 +146,6 @@
     "react-router-dom": "^5.1.2",
     "react-router-redux": "^4.0.8",
     "react-select": "^3.0.8",
-    "react-sortablejs": "^2.0.11",
     "react-spinners": "^0.8.0",
     "react-timeago": "^4.4.0",
     "react-toggle": "^4.1.1",

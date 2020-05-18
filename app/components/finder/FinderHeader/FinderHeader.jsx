@@ -19,6 +19,8 @@ const FinderHeader = ({
   isBackDisabled,
   activePath,
   activeNode,
+  selectedNodeIds,
+  moveNodeIds,
   isTemplateView,
   goBackFinder,
   pushFinderNode,
@@ -27,6 +29,7 @@ const FinderHeader = ({
   openCard,
   toggleCards,
   toggleTemplateView,
+  startMoveFinderNodes,
   history
 }) => {
   const [isNewDropdownOpen, setNewDropdownOpen] = useState(false);
@@ -60,7 +63,7 @@ const FinderHeader = ({
             {activeNode.parent && (
               <>
                 <div
-                  className={s('truncate')}
+                  className={s('truncate cursor-pointer')}
                   onClick={() => pushFinderNode(activeNode.parent._id)}
                 >
                   {activeNode.parent.name}
@@ -106,17 +109,22 @@ const FinderHeader = ({
       }
     ];
 
+    const isSegment = activePath.type === FINDER.PATH_TYPE.SEGMENT;
+    const isMoving = moveNodeIds.length !== 0;
+
     return (
       <div className={s('flex-1 flex items-center ml-sm')}>
         <Dropdown
           isOpen={isNewDropdownOpen}
           onToggle={setNewDropdownOpen}
+          disabled={isSegment}
           isLeft={false}
           toggler={
             <CircleButton
               size="auto"
               buttonClassName={s('finder-header-icon mr-sm')}
               content={<FiPlus />}
+              disabled={isSegment}
             />
           }
           body={
@@ -131,6 +139,8 @@ const FinderHeader = ({
           size="auto"
           buttonClassName={s('finder-header-icon mr-sm')}
           content={<img src={MoveFolder} alt="Move Folder" />}
+          disabled={isSegment || selectedNodeIds.length === 0 || isMoving}
+          onClick={startMoveFinderNodes}
         />
         <div className={s('finder-header-input-container')}>
           <MdSearch />
@@ -152,7 +162,11 @@ const FinderHeader = ({
   };
 
   return (
-    <div className={s('px-lg py-reg rounded-t-lg border-b finder-border flex items-center')}>
+    <div
+      className={s('px-lg py-reg rounded-t-lg border-b finder-border flex items-center')}
+      onTouchEnd={(e) => e.stopPropagation()}
+      onClick={(e) => e.stopPropagation()}
+    >
       {renderNavigationSection()}
       {renderActionSection()}
     </div>
@@ -172,6 +186,7 @@ FinderHeader.propTypes = {
     name: PropTypes.string.isRequired,
     parent: PropTypes.object.isRequired
   }).isRequired,
+  selectedNodeIds: PropTypes.arrayOf(PropTypes.string).isRequired,
   isTemplateView: PropTypes.bool.isRequired,
 
   // Redux Actions
@@ -181,7 +196,8 @@ FinderHeader.propTypes = {
   openFinderModal: PropTypes.func.isRequired,
   openCard: PropTypes.func.isRequired,
   toggleCards: PropTypes.func.isRequired,
-  toggleTemplateView: PropTypes.func.isRequired
+  toggleTemplateView: PropTypes.func.isRequired,
+  startMoveFinderNodes: PropTypes.func.isRequired
 };
 
 export default FinderHeader;

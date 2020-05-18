@@ -1,10 +1,11 @@
 import React, { useEffect, useCallback } from 'react';
 import PropTypes from 'prop-types';
 import { useDebouncedCallback } from 'use-debounce';
+import { DragDropContext } from 'react-beautiful-dnd';
 
 import { usePrevious } from 'utils/react';
 import { getStyleApplicationFn } from 'utils/style';
-import { FINDER, SEARCH, CARD, ANIMATE } from 'appConstants';
+import { FINDER, SEARCH, CARD, ANIMATE, WINDOW } from 'appConstants';
 
 import FinderHeader from '../FinderHeader';
 import FinderSideNav from '../FinderSideNav';
@@ -16,13 +17,16 @@ const s = getStyleApplicationFn();
 
 const FinderView = ({
   activePath,
+  selectedNodeIds,
   hasReachedSegmentLimit,
   isSearchingSegment,
   ownUserId,
   bookmarkIds,
   requestGetFinderNode,
   clearSearchCards,
-  requestSearchCards
+  requestSearchCards,
+  updateSelectedFinderNodes,
+  updateDraggingFinderNode
 }) => {
   const querySegment = useCallback(
     (clearCards) => {
@@ -82,6 +86,65 @@ const FinderView = ({
     }
   }, [activePath, loadFinderContent, debouncedLoadFinderContent]);
 
+  const unselectAll = () => {
+    updateSelectedFinderNodes([]);
+  };
+
+  useEffect(() => {
+    const onWindowKeyDown = (event) => {
+      if (!event.defaultPrevented && event.keyCode === WINDOW.KEY_CODES.ESCAPE) {
+        unselectAll();
+      }
+    };
+
+    const onWindowClick = (event) => {
+      if (!event.defaultPrevented) {
+        unselectAll();
+      }
+    };
+
+    const onWindowTouchEnd = (event) => {
+      if (!event.defaultPrevented) {
+        unselectAll();
+      }
+    };
+
+    window.addEventListener('click', onWindowClick);
+    window.addEventListener('keydown', onWindowKeyDown);
+    window.addEventListener('touchend', onWindowTouchEnd);
+
+    return () => {
+      window.removeEventListener('click', onWindowClick);
+      window.removeEventListener('keydown', onWindowKeyDown);
+      window.removeEventListener('touchend', onWindowTouchEnd);      
+    }
+  }, []);
+
+  const onDragStart = ({ draggableId }) => {
+    const id = draggableId;
+    const selected = selectedNodeIds.find(id => id === draggableId);
+
+    // if dragging an item that is not selected - unselect all items
+    if (!selected) {
+      updateSelectedFinderNodes([id]);
+    }
+    
+    updateDraggingFinderNode(draggableId);
+  };
+
+  const onDragEnd = ({ source, destination, reason, ...rest }) => {
+    // nothing to do
+    // if (!destination || reason === 'CANCEL') {
+    //   updateDraggingFinderNode(null);
+    //   return;
+    // }
+
+    console.log(source, destination, reason, rest);
+
+    // TODO: handle move
+    updateDraggingFinderNode(null);
+  };
+
   const onBottom = () => {
     switch (activePath.type) {
       case FINDER.PATH_TYPE.SEGMENT: {
@@ -96,15 +159,20 @@ const FinderView = ({
   };
 
   return (
-    <div className={s('relative min-h-0 flex-1 flex flex-col')}>
-      <FinderHeader />
-      <div className={s('min-h-0 flex-1 flex')}>
-        <FinderSideNav />
-        <FinderBody onBottom={onBottom} />
-      </div>
-      {/* <FinderFooter /> */}
-      <FinderConfirmModals />
-    </div>
+    <DragDropContext
+      onDragStart={onDragStart}
+      onDragEnd={onDragEnd}
+    >
+      <div className={s('relative min-h-0 flex-1 flex flex-col')}>
+        <FinderHeader />
+        <div className={s('min-h-0 flex-1 flex')}>
+          <FinderSideNav />
+          <FinderBody onBottom={onBottom} />
+        </div>
+        <FinderFooter />
+        <FinderConfirmModals />
+      </div>      
+    </DragDropContext>
   );
 };
 

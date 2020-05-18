@@ -5,7 +5,8 @@ import {
   goBackFinder,
   pushFinderNode,
   updateFinderSearchText,
-  openFinderModal
+  openFinderModal,
+  startMoveFinderNodes
 } from 'actions/finder';
 import { openCard, toggleCards } from 'actions/cards';
 import { toggleTemplateView } from 'actions/create';
@@ -13,12 +14,24 @@ import FinderHeader from './FinderHeader';
 
 const mapStateToProps = (state) => {
   const {
-    finder: { history: finderHistory, activeNode },
+    finder: {
+      history: finderHistory,
+      activeNode,
+      selectedNodeIds,
+      moveNodeIds
+    },
     create: { isTemplateView }
   } = state;
 
   const activePath = _.last(finderHistory);
-  return { isBackDisabled: finderHistory.length <= 1, activePath, activeNode, isTemplateView };
+  return {
+    isBackDisabled: finderHistory.length <= 1,
+    activePath,
+    activeNode,
+    selectedNodeIds,
+    moveNodeIds,
+    isTemplateView
+  };
 };
 
 const mapDispatchToProps = {
@@ -28,7 +41,8 @@ const mapDispatchToProps = {
   openFinderModal,
   openCard,
   toggleCards,
-  toggleTemplateView
+  toggleTemplateView,
+  startMoveFinderNodes
 };
 
 export default connect(mapStateToProps, mapDispatchToProps)(withRouter(FinderHeader));

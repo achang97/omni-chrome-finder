@@ -25,7 +25,10 @@ const initialState = {
   edits: {
     folder: BASE_FOLDER_STATE
   },
-  selectedIndices: []
+  selectedNodeIds: [],
+  draggingNodeId: null,
+  moveNodeIds: [],
+  moveSource: null,
 };
 
 export default function finderReducer(state = initialState, action) {
@@ -43,7 +46,7 @@ export default function finderReducer(state = initialState, action) {
     return {
       ...state,
       history: [...state.history, newPath],
-      selectedIndices: []
+      selectedNodeIds: []
     };
   };
 
@@ -57,7 +60,7 @@ export default function finderReducer(state = initialState, action) {
         newActiveNode = BASE_ACTIVE_NODE;
       }
 
-      return { ...state, history: newHistory, activeNode: newActiveNode, selectedIndices: [] };
+      return { ...state, history: newHistory, activeNode: newActiveNode, selectedNodeIds: [] };
     }
     case types.PUSH_FINDER_NODE: {
       const { nodeId } = payload;
@@ -69,9 +72,13 @@ export default function finderReducer(state = initialState, action) {
       return { ...newState, activeNode: BASE_ACTIVE_NODE };
     }
 
-    case types.UPDATE_SELECTED_FINDER_INDICES: {
-      const { indices } = payload;
-      return { ...state, selectedIndices: indices };
+    case types.UPDATE_SELECTED_FINDER_NODES: {
+      const { nodeIds } = payload;
+      return { ...state, selectedNodeIds: nodeIds };
+    }
+    case types.UPDATE_DRAGGING_FINDER_NODE: {
+      const { nodeId } = payload;
+      return{ ...state, draggingNodeId: nodeId };
     }
 
     case types.UPDATE_FINDER_SEARCH_TEXT: {
@@ -81,7 +88,7 @@ export default function finderReducer(state = initialState, action) {
       const activePath = _.last(history);
       const newPath = { ...activePath, state: { ...activePath.state, searchText: text } };
       const newHistory = updateIndex(history, history.length - 1, newPath);
-      return { ...state, history: newHistory, selectedIndices: [] };
+      return { ...state, history: newHistory, selectedNodeIds: [] };
     }
 
     case types.UPDATE_FINDER_FOLDER_NAME: {
@@ -117,6 +124,17 @@ export default function finderReducer(state = initialState, action) {
       return { ...state, modalOpen: { ...state.modalOpen, [modalType]: false } };
     }
 
+    case types.START_MOVE_FINDER_NODES: {
+      return { ...state, moveNodeIds: state.selectedNodeIds, moveSource: state.activeNode, selectedNodeIds: [] };
+    }
+    case types.CANCEL_MOVE_FINDER_NODES: {
+      const { selectedNodeIds, activeNode: { children } } = state;
+      const newSelectedNodeIds = selectedNodeIds.filter((id) => (
+        children.some(({ _id: childId }) => childId === id)
+      ));
+      return { ...state, moveNodeIds: [], moveSource: null, selectedNodeIds: newSelectedNodeIds }; 
+    }
+
     case types.GET_FINDER_NODE_REQUEST: {
       return { ...state, isGettingNode: true, getNodeError: null };
     }
@@ -142,6 +160,50 @@ export default function finderReducer(state = initialState, action) {
     case types.CREATE_FINDER_FOLDER_ERROR: {
       const { error } = payload;
       return { ...state, isCreatingFolder: false, createFolderError: error };
+    }
+
+    case types.UPDATE_FINDER_FOLDER_REQUEST: {
+      return { ...state, isUpdatingFolder: true, updateFolderError: null };
+    }
+    case types.UPDATE_FINDER_FOLDER_SUCCESS: {
+      return {
+        ...state,
+        isUpdatingFolder: false,
+        modalOpen: { ...state.modalOpen, [MODAL_TYPE.EDIT_FOLDER]: false }
+      };
+    }
+    case types.UPDATE_FINDER_FOLDER_ERROR: {
+      const { error } = payload;
+      return { ...state, isUpdatingFolder: false, updateFolderError: error }
+    }
+
+    case types.MOVE_FINDER_NODES_REQUEST: {
+      return { ...state, isMovingNodes: true, moveNodesError: null };
+    }
+    case types.MOVE_FINDER_NODES_SUCCESS: {
+      return { ...state, isMovingNodes: false, moveNodeIds: [], moveSource: null };
+    }
+    case types.MOVE_FINDER_NODES_ERROR: {
+      const { error } = payload;
+      return { ...state, isMovingNodes: false, moveNodesError: error }
+    }
+
+    case types.DELETE_FINDER_NODES_REQUEST:
+    case types.BULK_DELETE_FINDER_CARDS_REQUEST: {
+      return { ...state, isDeletingNodes: true, deleteNodesError: null };
+    }
+    case types.DELETE_FINDER_NODES_SUCCESS:
+    case types.BULK_DELETE_FINDER_CARDS_SUCCESS: {
+      return {
+        ...state,
+        isDeletingNodes: false,
+        modalOpen: { ...state.modalOpen, [MODAL_TYPE.CONFIRM_DELETE]: false }
+      };
+    }
+    case types.DELETE_FINDER_NODES_ERROR:
+    case types.BULK_DELETE_FINDER_CARDS_ERROR: {
+      const { error } = payload;
+      return { ...state, isDeletingNodes: false, deleteNodesError: error };
     }
 
     default:

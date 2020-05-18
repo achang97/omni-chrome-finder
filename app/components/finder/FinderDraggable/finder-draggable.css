@@ -1,0 +1,11 @@
+.finder-draggable {
+  @apply border-2 border-solid border-transparent rounded-lg m-sm;
+}
+
+.finder-draggable-selected {
+  @apply bg-purple-light border-purple-reg;
+}
+
+.finder-draggable:focus {
+  @apply outline-none;
+}

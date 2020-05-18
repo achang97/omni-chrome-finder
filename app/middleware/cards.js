@@ -1,6 +1,7 @@
 import * as types from 'actions/actionTypes';
 import {
   updateCard,
+  handleDeleteCardSuccess,
   requestGetCard,
   enableCardEditor,
   adjustCardDescriptionSectionHeight
@@ -20,7 +21,14 @@ const cardsMiddleware = (store) => (next) => (action) => {
       break;
     }
 
-    // TODO: Handle finder deletion actions
+    // Handle finder deletion actions
+    case types.BULK_DELETE_FINDER_CARDS_SUCCESS: {
+      const { cardIds } = payload;
+      cardIds.forEach((cardId) => {
+        store.dispatch(handleDeleteCardSuccess(cardId));
+      })
+      break;
+    }
 
     // Handle actions from card itself
     case types.CANCEL_EDIT_CARD: {

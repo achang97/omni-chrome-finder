@@ -1,11 +1,9 @@
 import * as types from 'actions/actionTypes';
-import { addSearchCard, updateSearchCard, removeSearchCard } from 'actions/search';
+import { updateSearchCard, removeSearchCards } from 'actions/search';
 
 const cardsMiddleware = (store) => (next) => (action) => {
   const nextAction = next(action);
   const { type, payload } = action;
-
-  // const activeNavigateTab = store.getState().navigate.activeTab;
 
   switch (type) {
     // Update cards
@@ -20,30 +18,17 @@ const cardsMiddleware = (store) => (next) => (action) => {
       break;
     }
 
-    // TODO: Add this behavior for the finder window
-    // Add cards
-    // case types.CREATE_CARD_SUCCESS:
-    // case types.ADD_BOOKMARK_SUCCESS: {
-    //   const { card } = payload;
-    //   if (
-    //     (type === types.CREATE_CARD_SUCCESS && activeNavigateTab === TAB_OPTION.MY_CARDS) ||
-    //     (type === types.ADD_BOOKMARK_SUCCESS && activeNavigateTab === TAB_OPTION.BOOKMARKED)
-    //   ) {
-    //     store.dispatch(addSearchCard(card));
-    //   }
-    //   break;
-    // }
-
     // Remove cards
-    // TODO: handle finder card deletion
-    // case types.DELETE_CARD_SUCCESS:
-    // case types.REMOVE_BOOKMARK_SUCCESS: {
-    //   const { cardId } = payload;
-    //   if (type !== types.REMOVE_BOOKMARK_SUCCESS || activeNavigateTab === TAB_OPTION.BOOKMARKED) {
-    //     store.dispatch(removeSearchCard(cardId));
-    //   }
-    //   break;
-    // }
+    case types.DELETE_CARD_SUCCESS: {
+      const { cardId } = payload;
+      store.dispatch(removeSearchCards([cardId]));
+      break;
+    }
+    case types.BULK_DELETE_FINDER_CARDS_SUCCESS: {
+      const { cardIds } = payload;
+      store.dispatch(removeSearchCards(cardIds));
+      break;
+    }
 
     default: {
       break;
