@@ -19,6 +19,7 @@ import style from './card-content.css';
 
 import CardSideDock from '../CardSideDock';
 import CardCreateModal from '../CardCreateModal';
+import CardFinderModal from '../CardFinderModal';
 import CardConfirmModals from '../CardConfirmModals';
 import CardHeader from '../CardHeader';
 import CardFooter from '../CardFooter';
@@ -382,6 +383,7 @@ const CardContent = ({
           ref={footerRef}
         />
         <CardSideDock />
+        <CardFinderModal />
         <CardCreateModal />
         <CardConfirmModals />
       </div>

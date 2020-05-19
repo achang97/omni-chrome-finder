@@ -5,11 +5,13 @@ import { ConfirmModal } from 'components/common';
 import { CardPermissions } from 'components/cards';
 import { MODAL_TYPE, PATH_TYPE } from 'appConstants/finder';
 
+import { hasValidPermissions } from 'utils/card';
 import { getStyleApplicationFn } from 'utils/style';
 
 const s = getStyleApplicationFn();
 
 const FinderConfirmModals = ({
+  finderId,
   activePath,
   modalOpen,
   folderEdits,
@@ -33,7 +35,7 @@ const FinderConfirmModals = ({
       <input
         placeholder="Folder Name"
         value={folderEdits.name}
-        onChange={(e) => updateFinderFolderName(e.target.value)}
+        onChange={(e) => updateFinderFolderName(finderId, e.target.value)}
         className={s('mb-reg w-full')}
       />
       <div className={s('text-gray-reg text-xs mb-sm')}> Permissions </div>
@@ -41,12 +43,18 @@ const FinderConfirmModals = ({
         showJustMe
         isEditable
         selectedPermissions={folderEdits.permissions}
-        onChangePermissions={updateFinderFolderPermissions}
+        onChangePermissions={(permissions) => updateFinderFolderPermissions(finderId, permissions)}
         permissionGroups={folderEdits.permissionGroups}
-        onChangePermissionGroups={updateFinderFolderPermissionGroups}
+        onChangePermissionGroups={(permissionGroups) =>
+          updateFinderFolderPermissionGroups(finderId, permissionGroups)
+        }
       />
     </div>
   );
+
+  const isFolderValid = () => {
+    return !hasValidPermissions(folderEdits.permissions, folderEdits.permissionGroups);
+  };
 
   const MODALS = [
     {
@@ -57,8 +65,9 @@ const FinderConfirmModals = ({
       body: renderCreateFolderBody(),
       primaryButtonProps: {
         text: 'Create Folder',
-        onClick: requestCreateFinderFolder,
-        isLoading: isCreatingFolder
+        onClick: () => requestCreateFinderFolder(finderId),
+        isLoading: isCreatingFolder,
+        disabled: isFolderValid()
       },
       error: createFolderError
     },
@@ -70,8 +79,9 @@ const FinderConfirmModals = ({
       body: renderCreateFolderBody(),
       primaryButtonProps: {
         text: 'Save Updates',
-        onClick: requestUpdateFinderFolder,
-        isLoading: isUpdatingFolder
+        onClick: () => requestUpdateFinderFolder(finderId),
+        isLoading: isUpdatingFolder,
+        disabled: isFolderValid()
       },
       error: updateFolderError
     },
@@ -85,11 +95,11 @@ const FinderConfirmModals = ({
         onClick: () => {
           switch (activePath.type) {
             case PATH_TYPE.NODE: {
-              requestDeleteFinderNodes();
+              requestDeleteFinderNodes(finderId);
               break;
             }
             case PATH_TYPE.SEGMENT: {
-              requestBulkDeleteFinderCards();
+              requestBulkDeleteFinderCards(finderId);
               break;
             }
             default:
@@ -108,7 +118,7 @@ const FinderConfirmModals = ({
         <ConfirmModal
           key={modalType}
           isOpen={modalOpen[modalType]}
-          onRequestClose={() => closeFinderModal(modalType)}
+          onRequestClose={() => closeFinderModal(finderId, modalType)}
           {...rest}
         />
       ))}
@@ -117,6 +127,8 @@ const FinderConfirmModals = ({
 };
 
 FinderConfirmModals.propTypes = {
+  finderId: PropTypes.string.isRequired,
+
   // Redux State
   activePath: PropTypes.shape({
     _id: PropTypes.string.isRequired,
@@ -129,6 +141,12 @@ FinderConfirmModals.propTypes = {
     permissions: PropTypes.object,
     permissionGroups: PropTypes.arrayOf(PropTypes.object)
   }).isRequired,
+  isCreatingFolder: PropTypes.bool,
+  createFolderError: PropTypes.string,
+  isUpdatingFolder: PropTypes.bool,
+  updateFolderError: PropTypes.string,
+  isDeletingNodes: PropTypes.bool,
+  deleteNodesError: PropTypes.string,
 
   // Redux Actions
   closeFinderModal: PropTypes.func.isRequired,
@@ -136,6 +154,7 @@ FinderConfirmModals.propTypes = {
   updateFinderFolderPermissions: PropTypes.func.isRequired,
   updateFinderFolderPermissionGroups: PropTypes.func.isRequired,
   requestCreateFinderFolder: PropTypes.func.isRequired,
+  requestUpdateFinderFolder: PropTypes.func.isRequired,
   requestDeleteFinderNodes: PropTypes.func.isRequired,
   requestBulkDeleteFinderCards: PropTypes.func.isRequired
 };

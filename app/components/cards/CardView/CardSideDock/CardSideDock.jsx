@@ -22,6 +22,7 @@ import CardTags from '../../CardTags';
 import CardAttachments from '../../CardAttachments';
 import CardPermissions from '../../CardPermissions';
 import CardVerificationInterval from '../../CardVerificationInterval';
+import CardLocation from '../../CardLocation';
 
 const s = getStyleApplicationFn(style);
 
@@ -31,6 +32,7 @@ const SIDE_DOCK_TRANSITION_MS = 200;
 const CardSideDock = ({
   isEditing,
   status,
+  path,
   owners,
   subscribers,
   attachments,
@@ -68,6 +70,11 @@ const CardSideDock = ({
         </button>
       </div>
     );
+  };
+
+  const renderLocation = () => {
+    const currPath = isEditing ? edits.path : path;
+    return <CardLocation path={currPath} isEditable={isEditing} />;
   };
 
   const renderOwners = () => {
@@ -243,6 +250,10 @@ const CardSideDock = ({
 
   const CARD_SECTIONS = [
     {
+      title: 'Location',
+      renderFn: renderLocation
+    },
+    {
       title: 'Owner(s)',
       hint: HINTS.OWNERS,
       renderFn: renderOwners
@@ -322,6 +333,7 @@ const CardSideDock = ({
 CardSideDock.propTypes = {
   isEditing: PropTypes.bool.isRequired,
   status: PropTypes.oneOf(Object.values(STATUS)).isRequired,
+  path: PropTypes.arrayOf(PropTypes.object),
   owners: PropTypes.arrayOf(PropTypes.object).isRequired,
   subscribers: PropTypes.arrayOf(PropTypes.object).isRequired,
   attachments: PropTypes.arrayOf(PropTypes.object).isRequired,
@@ -340,6 +352,7 @@ CardSideDock.propTypes = {
   updatedAt: PropTypes.string,
   sideDockOpen: PropTypes.bool.isRequired,
   edits: PropTypes.shape({
+    path: PropTypes.arrayOf(PropTypes.object),
     owners: PropTypes.arrayOf(PropTypes.object),
     subscribers: PropTypes.arrayOf(PropTypes.object),
     attachments: PropTypes.arrayOf(PropTypes.object),

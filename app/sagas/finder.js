@@ -1,4 +1,4 @@
-import { take, call, all, fork, put, select, delay } from 'redux-saga/effects';
+import { take, call, fork, put, select, delay } from 'redux-saga/effects';
 import _ from 'lodash';
 import { doGet, doPost, doDelete, getErrorMessage } from 'utils/request';
 import {
@@ -7,7 +7,7 @@ import {
   UPDATE_FINDER_FOLDER_REQUEST,
   DELETE_FINDER_NODES_REQUEST,
   BULK_DELETE_FINDER_CARDS_REQUEST,
-  MOVE_FINDER_NODES_REQUEST,
+  MOVE_FINDER_NODES_REQUEST
 } from 'actions/actionTypes';
 import {
   requestGetFinderNode,
@@ -40,23 +40,23 @@ export default function* watchFinderRequests() {
     const { type, payload } = action;
     switch (type) {
       case GET_FINDER_NODE_REQUEST: {
-        yield fork(getNode);
+        yield fork(getNode, payload);
         break;
       }
       case CREATE_FINDER_FOLDER_REQUEST: {
-        yield fork(createFolder);
+        yield fork(createFolder, payload);
         break;
       }
       case UPDATE_FINDER_FOLDER_REQUEST: {
-        yield fork(updateFolder);
+        yield fork(updateFolder, payload);
         break;
       }
       case DELETE_FINDER_NODES_REQUEST: {
-        yield fork(deleteNodes);
+        yield fork(deleteNodes, payload);
         break;
       }
       case BULK_DELETE_FINDER_CARDS_REQUEST: {
-        yield fork(bulkDeleteCards);
+        yield fork(bulkDeleteCards, payload);
         break;
       }
       case MOVE_FINDER_NODES_REQUEST: {
@@ -70,31 +70,31 @@ export default function* watchFinderRequests() {
   }
 }
 
-function* getParentNodeId() {
-  const finderHistory = yield select((state) => state.finder.history);
+function* getParentNodeId(finderId) {
+  const finderHistory = yield select((state) => state.finder[finderId].history);
   const parentNode = _.last(finderHistory);
   return parentNode._id;
 }
 
-function* getNode() {
+function* getNode({ finderId }) {
   try {
-    const nodeId = yield call(getParentNodeId);
+    const nodeId = yield call(getParentNodeId, finderId);
     // TODO: make a request to get this information
     const node = MOCK_DIRECTORY_LOOKUP[nodeId];
     yield delay(1000);
-    yield put(handleGetFinderNodeSuccess(node));
+    yield put(handleGetFinderNodeSuccess(finderId, node));
   } catch (error) {
-    yield put(handleGetFinderNodeError(getErrorMessage(error)));
+    yield put(handleGetFinderNodeError(finderId, getErrorMessage(error)));
   }
 }
 
-function* createFolder() {
+function* createFolder({ finderId }) {
   try {
-    const { name, permissions, permissionGroups } = yield select((state) => state.finder.edits.folder);
+    const { name, permissions, permissionGroups } = yield select((state) => state.finder[finderId].edits.folder);
 
     // TODO: make a request to create folder
     yield delay(1000);
-    const parentNodeId = yield call(getParentNodeId);
+    const parentNodeId = yield call(getParentNodeId, finderId);
     const newFolder = {
       _id: 'some new folder',
       name,
@@ -105,21 +105,21 @@ function* createFolder() {
     MOCK_DIRECTORY_LOOKUP[parentNodeId].children.push(newFolder);
     MOCK_DIRECTORY_LOOKUP[newFolder._id] = newFolder;
 
-    yield put(requestGetFinderNode());
-    yield put(handleCreateFinderFolderSuccess());
+    yield put(requestGetFinderNode(finderId));
+    yield put(handleCreateFinderFolderSuccess(finderId));
   } catch (error) {
-    yield put(handleCreateFinderFolderError(getErrorMessage(error)));
+    yield put(handleCreateFinderFolderError(finderId, getErrorMessage(error)));
   }
 }
 
-function* updateFolder() {
+function* updateFolder({ finderId }) {
   try {
     const {
       selectedNodeIds,
       edits: {
         folder: { name, permissions, permissionGroups }
       }
-    } = yield select((state) => state.finder);
+    } = yield select((state) => state.finder[finderId]);
 
     // TODO: make a request to create folder
     yield delay(1000);
@@ -127,20 +127,20 @@ function* updateFolder() {
 
     MOCK_DIRECTORY_LOOKUP[selectedNodeId].name = name;
 
-    yield put(requestGetFinderNode());
-    yield put(handleUpdateFinderFolderSuccess());
+    yield put(requestGetFinderNode(finderId));
+    yield put(handleUpdateFinderFolderSuccess(finderId));
   } catch (error) {
-    yield put(handleUpdateFinderFolderError(getErrorMessage(error)));
+    yield put(handleUpdateFinderFolderError(finderId, getErrorMessage(error)));
   }
 }
 
-function* deleteNodes() {
+function* deleteNodes({ finderId }) {
   try {
-    const selectedNodeIds = yield select((state) => state.finder.selectedNodeIds);
+    const selectedNodeIds = yield select((state) => state.finder[finderId].selectedNodeIds);
 
     // TODO: make a request to delete folder
     yield delay(1000);
-    selectedNodeIds.forEach(nodeId => {
+    selectedNodeIds.forEach((nodeId) => {
       const { parent, children } = MOCK_DIRECTORY_LOOKUP[nodeId];
       if (parent) {
         parent.children = parent.children.filter(({ _id }) => _id !== nodeId);
@@ -149,37 +149,37 @@ function* deleteNodes() {
       if (children) {
         children.forEach(({ _id }) => {
           delete MOCK_DIRECTORY_LOOKUP[_id];
-        })
+        });
       }
 
       delete MOCK_DIRECTORY_LOOKUP[nodeId];
-    })
-    
-    yield put(requestGetFinderNode());
-    yield put(handleDeleteFinderNodesSuccess());
+    });
+
+    yield put(requestGetFinderNode(finderId));
+    yield put(handleDeleteFinderNodesSuccess(finderId));
   } catch (error) {
-    yield put(handleDeleteFinderNodesError(getErrorMessage(error)));
+    yield put(handleDeleteFinderNodesError(finderId, getErrorMessage(error)));
   }
 }
 
-function* bulkDeleteCards() {
+function* bulkDeleteCards({ finderId }) {
   try {
-    const { selectedNodeIds } = yield select((state) => state.finder);
+    const selectedNodeIds = yield select((state) => state.finder[finderId].selectedNodeIds);
     yield call(doDelete, '/cards/bulk', selectedNodeIds);
-    yield put(handleBulkDeleteFinderCardsSuccess(selectedNodeIds));
+    yield put(handleBulkDeleteFinderCardsSuccess(finderId, selectedNodeIds));
   } catch (error) {
-    yield put(handleBulkDeleteFinderCardsError(getErrorMessage(error)));
+    yield put(handleBulkDeleteFinderCardsError(finderId, getErrorMessage(error)));
   }
 }
 
-function* moveNode({ destinationId }) {
+function* moveNode({ finderId, destinationId }) {
   try {
-    const moveNodeIds = yield select((state) => state.finder.moveNodeIds);
+    const moveNodeIds = yield select((state) => state.finder[finderId].moveNodeIds);
 
     // TODO: make a request to move nodes
     // TODO: have better checks on history when moving to "drop" node
     yield delay(1000);
-    moveNodeIds.forEach(nodeId => {
+    moveNodeIds.forEach((nodeId) => {
       const { parent } = MOCK_DIRECTORY_LOOKUP[nodeId];
       if (parent) {
         parent.children = parent.children.filter(({ _id }) => _id !== nodeId);
@@ -189,9 +189,9 @@ function* moveNode({ destinationId }) {
       MOCK_DIRECTORY_LOOKUP[destinationId].children.push(MOCK_DIRECTORY_LOOKUP[nodeId]);
     });
 
-    yield put(requestGetFinderNode());
-    yield put(handleMoveFinderNodesSuccess());
+    yield put(requestGetFinderNode(finderId));
+    yield put(handleMoveFinderNodesSuccess(finderId));
   } catch (error) {
-    yield put(handleMoveFinderNodesError(getErrorMessage(error)));
+    yield put(handleMoveFinderNodesError(finderId, getErrorMessage(error)));
   }
 }

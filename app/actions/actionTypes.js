@@ -195,6 +195,9 @@ export const GET_SLACK_THREAD_ERROR = 'GET_SLACK_THREAD_ERROR';
 
 // Finder
 export const OPEN_FINDER = 'OPEN_FINDER';
+export const INIT_FINDER = 'INIT_FINDER';
+export const CLOSE_FINDER = 'CLOSE_FINDER';
+
 export const GO_BACK_FINDER = 'GO_BACK_FINDER';
 export const PUSH_FINDER_NODE = 'PUSH_FINDER_NODE';
 export const PUSH_FINDER_SEGMENT = 'PUSH_FINDER_SEGMENT';

@@ -6,6 +6,7 @@ import { FiPlus } from 'react-icons/fi';
 
 import { Dropdown, ContextMenu, CircleButton } from 'components/common';
 import { getNewCardBaseState } from 'utils/card';
+import { UserPropTypes } from 'utils/propTypes';
 import { getStyleApplicationFn } from 'utils/style';
 import { FINDER, ROUTES } from 'appConstants';
 
@@ -17,6 +18,8 @@ import headerStyle from './finder-header.css';
 const s = getStyleApplicationFn(finderStyle, headerStyle);
 
 const FinderHeader = ({
+  finderId,
+  isModal,
   isBackDisabled,
   activePath,
   activeNode,
@@ -53,11 +56,11 @@ const FinderHeader = ({
     }
 
     return (
-      <div className={s('flex-1 flex items-center min-w-0')}>
+      <div className={s('w-1/2 flex items-center min-w-0')}>
         <CircleButton
           buttonClassName={s('finder-header-icon')}
           content={<MdChevronLeft />}
-          onClick={goBackFinder}
+          onClick={() => goBackFinder(finderId)}
           disabled={isBackDisabled}
           size="auto"
         />
@@ -67,7 +70,7 @@ const FinderHeader = ({
               <>
                 <div
                   className={s('truncate cursor-pointer')}
-                  onClick={() => pushFinderNode(activeNode.parent._id)}
+                  onClick={() => pushFinderNode(finderId, activeNode.parent._id)}
                 >
                   {activeNode.parent.name}
                 </div>
@@ -82,7 +85,7 @@ const FinderHeader = ({
   };
 
   const getFullPath = () => {
-    // TODO: this will probably need to be changed when we get data
+    // TODO: this will probably be simplified when we get data
     const fullPath = [];
     let currNode = activeNode;
     while (currNode && currNode._id !== FINDER.ROOT) {
@@ -115,7 +118,7 @@ const FinderHeader = ({
     };
 
     // TODO: account for current "path" and pass that to template and new blank card
-    const NEW_BUTTON_OPTIONS = [
+    const CONTEXT_MENU_OPTIONS = [
       {
         label: 'New Card',
         options: [
@@ -130,17 +133,23 @@ const FinderHeader = ({
             label: 'From Template',
             onClick: onClickWrapper(onTemplateClick)
           }
-        ]
+        ],
+        showModal: false
       },
       {
         label: 'New Folder',
-        onClick: onClickWrapper(() => openFinderModal(FINDER.MODAL_TYPE.CREATE_FOLDER)),
-        disabled: isSegment
+        onClick: onClickWrapper(() => openFinderModal(finderId, FINDER.MODAL_TYPE.CREATE_FOLDER)),
+        disabled: isSegment,
+        showModal: true
       }
     ];
 
+    const filteredContextMenuOptions = CONTEXT_MENU_OPTIONS.filter(
+      ({ showModal }) => !isModal || showModal
+    );
+
     return (
-      <div className={s('flex-1 flex items-center ml-sm')}>
+      <div className={s('w-1/2 flex items-center ml-sm')}>
         <Dropdown
           isOpen={isNewDropdownOpen}
           onToggle={setNewDropdownOpen}
@@ -154,31 +163,33 @@ const FinderHeader = ({
           }
           body={
             <ContextMenu
-              options={NEW_BUTTON_OPTIONS}
+              options={filteredContextMenuOptions}
               outerClassName={s('mt-sm')}
               className={s('finder-header-new-dropdown')}
             />
           }
         />
-        <CircleButton
-          size="auto"
-          buttonClassName={s('finder-header-icon mr-sm')}
-          content={<img src={MoveFolder} alt="Move Folder" />}
-          disabled={isSegment || selectedNodeIds.length === 0 || isMoving}
-          onClick={startMoveFinderNodes}
-        />
+        {!isModal && (
+          <CircleButton
+            size="auto"
+            buttonClassName={s('finder-header-icon mr-sm')}
+            content={<img src={MoveFolder} alt="Move Folder" />}
+            disabled={isSegment || selectedNodeIds.length === 0 || isMoving}
+            onClick={() => startMoveFinderNodes(finderId)}
+          />
+        )}
         <div className={s('finder-header-input-container')}>
-          <MdSearch />
+          <MdSearch className={s('flex-shrink-0')} />
           <input
             placeholder="Search"
-            className={s('border-0 shadow-none')}
+            className={s('border-0 shadow-none min-w-0 flex-shrink')}
             value={activePath.state.searchText}
-            onChange={(e) => updateFinderSearchText(e.target.value)}
+            onChange={(e) => updateFinderSearchText(finderId, e.target.value)}
           />
           {activePath.state.searchText && (
             <IoMdCloseCircle
-              onClick={() => updateFinderSearchText('')}
-              className={s('ml-xs cursor-pointer text-purple-gray-50')}
+              onClick={() => updateFinderSearchText(finderId, '')}
+              className={s('flex-shrink-0 m-xs cursor-pointer text-purple-gray-50')}
             />
           )}
         </div>
@@ -199,6 +210,9 @@ const FinderHeader = ({
 };
 
 FinderHeader.propTypes = {
+  finderId: PropTypes.string.isRequired,
+  isModal: PropTypes.bool.isRequired,
+
   // Redux State
   isBackDisabled: PropTypes.bool.isRequired,
   activePath: PropTypes.shape({
@@ -212,17 +226,20 @@ FinderHeader.propTypes = {
     parent: PropTypes.object.isRequired
   }).isRequired,
   selectedNodeIds: PropTypes.arrayOf(PropTypes.string).isRequired,
+  moveNodeIds: PropTypes.arrayOf(PropTypes.string).isRequired,
   isTemplateView: PropTypes.bool.isRequired,
+  user: UserPropTypes.isRequired,
 
   // Redux Actions
   goBackFinder: PropTypes.func.isRequired,
   pushFinderNode: PropTypes.func.isRequired,
   updateFinderSearchText: PropTypes.func.isRequired,
   openFinderModal: PropTypes.func.isRequired,
+  startMoveFinderNodes: PropTypes.func.isRequired,
   openCard: PropTypes.func.isRequired,
   toggleCards: PropTypes.func.isRequired,
   toggleTemplateView: PropTypes.func.isRequired,
-  startMoveFinderNodes: PropTypes.func.isRequired
+  updateCreatePath: PropTypes.func.isRequired
 };
 
 export default FinderHeader;

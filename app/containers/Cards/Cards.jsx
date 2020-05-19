@@ -311,7 +311,7 @@ const Cards = ({
                 }}
               >
                 {renderTabHeader()}
-                {isFinderShown() ? <FinderView /> : <CardView />}
+                {isFinderShown() ? <FinderView finderId={FINDER.MAIN_STATE_ID} /> : <CardView />}
                 {renderCloseModal()}
               </Resizable>
             </ReactDraggable>

@@ -12,24 +12,25 @@ import {
 } from 'actions/finder';
 import FinderConfirmModals from './FinderConfirmModals';
 
-const mapStateToProps = (state) => {
+const mapStateToProps = (state, ownProps) => {
+  const { finderId } = ownProps;
   const {
     finder: {
-      history: finderHistory,
-      modalOpen,
-      edits: {
-        folder: folderEdits
-      },
-      isCreatingFolder,
-      createFolderError,
-      isUpdatingFolder,
-      updateFolderError,
-      isDeletingNodes,
-      deleteNodesError
+      [finderId]: {
+        history: finderHistory,
+        modalOpen,
+        edits: { folder: folderEdits },
+        isCreatingFolder,
+        createFolderError,
+        isUpdatingFolder,
+        updateFolderError,
+        isDeletingNodes,
+        deleteNodesError
+      }
     }
   } = state;
 
-  const activePath = _.last(finderHistory); 
+  const activePath = _.last(finderHistory);
   return {
     activePath,
     modalOpen,

@@ -9,7 +9,7 @@
 }
 
 .finder-header-input-container {
-  @apply flex-1 flex items-center rounded-full border border-solid border-purple-gray-50 pl-sm;
+  @apply flex-1 flex items-center rounded-full overflow-hidden min-w-0 border border-solid border-purple-gray-50 pl-sm;
 }
 
 .finder-header-new-dropdown {

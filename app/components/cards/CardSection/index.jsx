@@ -66,9 +66,11 @@ const CardSection = ({
           {headerEnd}
         </div>
         <div className={s('flex-1')}>
-          <AnimateHeight height={isExpandable && !isExpanded && !isVertical ? 'auto' : 0}>
-            {preview}
-          </AnimateHeight>
+          {preview && (
+            <AnimateHeight height={isExpandable && !isExpanded && !isVertical ? 'auto' : 0}>
+              {preview}
+            </AnimateHeight>
+          )}
           <AnimateHeight height={!isExpandable || isExpanded ? 'auto' : 0}>
             {children}
           </AnimateHeight>

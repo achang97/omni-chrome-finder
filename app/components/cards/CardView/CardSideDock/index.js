@@ -23,6 +23,7 @@ const mapStateToProps = (state) => {
       activeCard: {
         isEditing,
         status,
+        path,
         owners,
         subscribers,
         attachments,

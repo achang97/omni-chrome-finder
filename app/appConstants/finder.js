@@ -1,5 +1,6 @@
 import { STATUS } from './card';
 
+export const MAIN_STATE_ID = 'MAIN';
 export const TAB_INDEX = -1;
 export const TAB = null;
 export const ROOT = 'root';
@@ -184,6 +185,7 @@ Object.values(MOCK_DIRECTORY_LOOKUP).forEach((node) => {
 });
 
 export default {
+  MAIN_STATE_ID,
   TAB_INDEX,
   TAB,
   ROOT,

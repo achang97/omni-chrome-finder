@@ -12,13 +12,11 @@ import { openCard, toggleCards } from 'actions/cards';
 import { toggleTemplateView, updateCreatePath } from 'actions/create';
 import FinderHeader from './FinderHeader';
 
-const mapStateToProps = (state) => {
+const mapStateToProps = (state, ownProps) => {
+  const { finderId } = ownProps;
   const {
     finder: {
-      history: finderHistory,
-      activeNode,
-      selectedNodeIds,
-      moveNodeIds
+      [finderId]: { history: finderHistory, activeNode, selectedNodeIds, moveNodeIds }
     },
     create: { isTemplateView },
     profile: { user }

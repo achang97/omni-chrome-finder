@@ -3,6 +3,8 @@ import PropTypes from 'prop-types';
 import { useDebouncedCallback } from 'use-debounce';
 import { DragDropContext } from 'react-beautiful-dnd';
 
+import { Loader } from 'components/common';
+
 import { usePrevious } from 'utils/react';
 import { getStyleApplicationFn } from 'utils/style';
 import { FINDER, SEARCH, CARD, ANIMATE, WINDOW } from 'appConstants';
@@ -16,6 +18,12 @@ import FinderConfirmModals from '../FinderConfirmModals';
 const s = getStyleApplicationFn();
 
 const FinderView = ({
+  finderId,
+  startNodeId,
+  isModal,
+  onPrimaryClick,
+  onSecondaryClick,
+
   activePath,
   nodes,
   selectedNodeIds,
@@ -23,12 +31,18 @@ const FinderView = ({
   isSearchingSegment,
   ownUserId,
   bookmarkIds,
+
+  initFinder,
   requestGetFinderNode,
   clearSearchCards,
   requestSearchCards,
   updateSelectedFinderNodes,
   updateDraggingFinderNode
 }) => {
+  useEffect(() => {
+    initFinder(finderId, startNodeId);
+  }, [finderId, startNodeId, initFinder]);
+
   const querySegment = useCallback(
     (clearCards) => {
       const queryParams = { q: activePath.state.searchText };
@@ -59,7 +73,7 @@ const FinderView = ({
   const loadFinderContent = useCallback(() => {
     switch (activePath.type) {
       case FINDER.PATH_TYPE.NODE: {
-        requestGetFinderNode();
+        requestGetFinderNode(finderId);
         break;
       }
       case FINDER.PATH_TYPE.SEGMENT: {
@@ -69,7 +83,7 @@ const FinderView = ({
       default:
         break;
     }
-  }, [activePath, requestGetFinderNode, querySegment]);
+  }, [finderId, activePath, requestGetFinderNode, querySegment]);
 
   const [debouncedLoadFinderContent] = useDebouncedCallback(() => {
     loadFinderContent();
@@ -77,18 +91,26 @@ const FinderView = ({
 
   const prevPath = usePrevious(activePath);
   useEffect(() => {
-    const prevPathId = prevPath && prevPath._id;
-    if (prevPathId !== activePath._id) {
-      // Changed "page" in the history
-      loadFinderContent();
-    } else {
-      // Some other change, including search text, filters, etc.
-      debouncedLoadFinderContent();
+    if (activePath) {
+      const prevPathId = prevPath && prevPath._id;
+      if (prevPathId !== activePath._id) {
+        // Changed "page" in the history
+        loadFinderContent();
+      } else {
+        // Some other change, including search text, filters, etc.
+        debouncedLoadFinderContent();
+      }
     }
   }, [activePath, loadFinderContent, debouncedLoadFinderContent]);
 
-  const unselectAll = () => {
-    updateSelectedFinderNodes([]);
+  const unselectAll = useCallback(() => {
+    updateSelectedFinderNodes(finderId, []);
+  }, [finderId, updateSelectedFinderNodes]);
+
+  const onUnselect = (event) => {
+    if (!event.defaultPrevented) {
+      unselectAll();
+    }
   };
 
   useEffect(() => {
@@ -98,50 +120,32 @@ const FinderView = ({
       }
     };
 
-    const onWindowClick = (event) => {
-      if (!event.defaultPrevented) {
-        unselectAll();
-      }
-    };
-
-    const onWindowTouchEnd = (event) => {
-      if (!event.defaultPrevented) {
-        unselectAll();
-      }
-    };
-
-    window.addEventListener('click', onWindowClick);
     window.addEventListener('keydown', onWindowKeyDown);
-    window.addEventListener('touchend', onWindowTouchEnd);
-
     return () => {
-      window.removeEventListener('click', onWindowClick);
       window.removeEventListener('keydown', onWindowKeyDown);
-      window.removeEventListener('touchend', onWindowTouchEnd);      
-    }
-  }, []);
+    };
+  }, [unselectAll]);
 
   const onDragStart = ({ draggableId }) => {
-    const id = draggableId;
-    const selected = selectedNodeIds.find(id => id === draggableId);
+    const selected = selectedNodeIds.find((nodeId) => nodeId === draggableId);
 
     // if dragging an item that is not selected - unselect all items
     if (!selected) {
-      updateSelectedFinderNodes([id]);
+      updateSelectedFinderNodes(finderId, [draggableId]);
     }
-    
-    updateDraggingFinderNode(draggableId);
+
+    updateDraggingFinderNode(finderId, draggableId);
   };
 
-  const onDragEnd = ({ source, destination, reason, ...rest }) => {
+  const onDragEnd = ({ source, destination, reason }) => {
     // nothing to do
     if (!destination || reason === 'CANCEL') {
-      updateDraggingFinderNode(null);
+      updateDraggingFinderNode(finderId, null);
       return;
     }
 
     // TODO: handle move
-    updateDraggingFinderNode(null);
+    updateDraggingFinderNode(finderId, null);
   };
 
   const onBottom = () => {
@@ -157,40 +161,76 @@ const FinderView = ({
     }
   };
 
-  return (
-    <DragDropContext
-      onDragStart={onDragStart}
-      onDragEnd={onDragEnd}
-    >
-      <div className={s('relative min-h-0 flex-1 flex flex-col')}>
-        <FinderHeader />
-        <div className={s('min-h-0 flex-1 flex')}>
-          <FinderSideNav />
-          <FinderBody nodes={nodes} onBottom={onBottom} />
+  const render = () => {
+    return (
+      <DragDropContext onDragStart={onDragStart} onDragEnd={onDragEnd}>
+        <div
+          className={s('relative min-h-0 flex-1 flex flex-col')}
+          onClick={onUnselect}
+          onTouchEnd={onUnselect}
+        >
+          {activePath ? (
+            <>
+              <FinderHeader finderId={finderId} isModal={isModal} />
+              <div className={s('min-h-0 flex-1 flex')}>
+                <FinderSideNav finderId={finderId} isModal={isModal} />
+                <FinderBody
+                  finderId={finderId}
+                  isModal={isModal}
+                  nodes={nodes}
+                  onBottom={onBottom}
+                />
+              </div>
+              <FinderFooter
+                finderId={finderId}
+                onPrimaryClick={onPrimaryClick}
+                onSecondaryClick={onSecondaryClick}
+                nodes={nodes}
+              />
+              <FinderConfirmModals finderId={finderId} />
+            </>
+          ) : (
+            <Loader />
+          )}
         </div>
-        <FinderFooter nodes={nodes} />
-        <FinderConfirmModals />
-      </div>      
-    </DragDropContext>
-  );
+      </DragDropContext>
+    );
+  };
+
+  return render();
 };
 
 FinderView.propTypes = {
+  finderId: PropTypes.string.isRequired,
+  isModal: PropTypes.bool,
+  startNodeId: PropTypes.string,
+  onPrimaryClick: PropTypes.func,
+  onSecondaryClick: PropTypes.func,
+
   // Redux State
   activePath: PropTypes.shape({
     _id: PropTypes.string.isRequired,
     type: PropTypes.oneOf(Object.values(FINDER.PATH_TYPE)).isRequired,
     state: PropTypes.object
-  }).isRequired,
+  }),
+  selectedNodeIds: PropTypes.arrayOf(PropTypes.string).isRequired,
   ownUserId: PropTypes.string.isRequired,
   bookmarkIds: PropTypes.arrayOf(PropTypes.string).isRequired,
   hasReachedSegmentLimit: PropTypes.bool.isRequired,
-  isSearchingSegment: PropTypes.bool.isRequired,
+  isSearchingSegment: PropTypes.bool,
 
   // Redux Actions
+  initFinder: PropTypes.func.isRequired,
   requestGetFinderNode: PropTypes.func.isRequired,
   clearSearchCards: PropTypes.func.isRequired,
-  requestSearchCards: PropTypes.func.isRequired
+  requestSearchCards: PropTypes.func.isRequired,
+  updateSelectedFinderNodes: PropTypes.func.isRequired,
+  updateDraggingFinderNode: PropTypes.func.isRequired
+};
+
+FinderView.defaultProps = {
+  startNodeId: FINDER.ROOT,
+  isModal: false
 };
 
 export default FinderView;

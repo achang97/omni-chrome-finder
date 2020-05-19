@@ -3,9 +3,12 @@ import _ from 'lodash';
 import { pushFinderNode, pushFinderSegment } from 'actions/finder';
 import FinderSideNav from './FinderSideNav';
 
-const mapStateToProps = (state) => {
+const mapStateToProps = (state, ownProps) => {
+  const { finderId } = ownProps;
   const {
-    finder: { history: finderHistory }
+    finder: {
+      [finderId]: { history: finderHistory }
+    }
   } = state;
 
   const activePath = _.last(finderHistory);

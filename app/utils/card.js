@@ -75,6 +75,13 @@ export function toggleUpvotes(upvoteIds, userId) {
   return newUpvotes;
 }
 
+export function hasValidPermissions(permissions, permissionGroups) {
+  return (
+    !!permissions &&
+    (permissions.value !== CARD.PERMISSION_OPTION.SPECIFIC_GROUPS || permissionGroups.length !== 0)
+  );
+}
+
 export function hasValidEdits(edits) {
   const {
     question,
@@ -91,12 +98,9 @@ export function hasValidEdits(edits) {
     question !== '' &&
     !!answerEditorState &&
     answerEditorState.getCurrentContent().hasText() &&
-    !!permissions &&
-    (permissions.value === CARD.PERMISSION_OPTION.JUST_ME ||
-      ((permissions.value !== CARD.PERMISSION_OPTION.SPECIFIC_GROUPS ||
-        permissionGroups.length !== 0) &&
-        owners.length !== 0 &&
-        !!verificationInterval)) &&
+    hasValidPermissions(permissions, permissionGroups) &&
+    owners.length !== 0 &&
+    !!verificationInterval &&
     !isAnyLoading(attachments)
   );
 }
@@ -191,6 +195,7 @@ export function getDraggableStyle(isDragging, draggableStyle, windowPosition) {
 export default {
   convertCardToFrontendFormat,
   toggleUpvotes,
+  hasValidPermissions,
   hasValidEdits,
   generateCardId,
   isExistingCard,

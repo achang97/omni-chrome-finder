@@ -19,13 +19,13 @@ const FinderDraggable = ({
   id,
   index,
   children,
-  disabled,
+  isDragDisabled,
+  isMultiSelectDisabled,
   nodeIds,
-
   selectedNodeIds,
   draggingNodeId,
-  windowPosition,
-  updateSelectedFinderNodes
+  onSelectFinderNodes,
+  windowPosition
 }) => {
   // Determines if the platform specific toggle selection in group key was used
   const wasToggleInSelectionGroupKeyUsed = (event) => {
@@ -37,7 +37,7 @@ const FinderDraggable = ({
   const wasMultiSelectKeyUsed = (event) => event.shiftKey;
 
   const toggleSelection = () => {
-    updateSelectedFinderNodes([id]);
+    onSelectFinderNodes([id]);
   };
 
   const toggleSelectionInGroup = () => {
@@ -45,12 +45,12 @@ const FinderDraggable = ({
 
     if (selectedIndex === -1) {
       // if not selected - add it to the selected items
-      updateSelectedFinderNodes([...selectedNodeIds, id]);
+      onSelectFinderNodes([...selectedNodeIds, id]);
     } else {
       // it was previously selected and now needs to be removed from the group
       const shallow = [...selectedNodeIds];
       shallow.splice(selectedIndex, 1);
-      updateSelectedFinderNodes(shallow);
+      onSelectFinderNodes(shallow);
     }
   };
 
@@ -92,12 +92,17 @@ const FinderDraggable = ({
   const multiSelectTo = () => {
     const updated = multiSelect();
     if (updated) {
-      updateSelectedFinderNodes(updated);
+      onSelectFinderNodes(updated);
     }
   };
 
   const performAction = (event) => {
-    if (wasToggleInSelectionGroupKeyUsed(event)) {
+    event.preventDefault();
+    event.stopPropagation();
+
+    if (isMultiSelectDisabled) {
+      toggleSelection();
+    } else if (wasToggleInSelectionGroupKeyUsed(event)) {
       toggleSelectionInGroup();
     } else if (wasMultiSelectKeyUsed(event)) {
       multiSelectTo();
@@ -155,7 +160,7 @@ const FinderDraggable = ({
     const isHidden = draggingNodeId && isSelected && id !== draggingNodeId;
 
     return (
-      <Draggable draggableId={id} index={index} isDragDisabled={disabled}>
+      <Draggable draggableId={id} index={index} isDragDisabled={isDragDisabled}>
         {(provided, snapshot) => {
           const shouldShowSelection = snapshot.isDragging && selectionCount > 1;
           return (
@@ -186,6 +191,13 @@ const FinderDraggable = ({
   };
 
   return render();
+};
+
+FinderDraggable.propTypes = {
+  windowPosition: PropTypes.shape({
+    x: PropTypes.number.isRequired,
+    y: PropTypes.number.isRequired
+  })
 };
 
 export default FinderDraggable;

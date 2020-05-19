@@ -360,6 +360,11 @@ export default function cardsReducer(state = initialState, action) {
       return updateActiveCardEdits({ slackReplies: activeCard.slackReplies });
     }
 
+    case types.UPDATE_CARD_PATH: {
+      const { path } = payload;
+      return updateActiveCardEdits({ path });
+    }
+
     case types.ADD_CARD_OWNER: {
       const { owner } = payload;
       const {
