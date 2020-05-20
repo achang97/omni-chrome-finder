@@ -1,3 +1,7 @@
 .card-section-tooltip {
   max-width: 50%;
 }
+
+.card-section-horizontal-header {
+  width: 140px;
+}

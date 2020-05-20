@@ -5,6 +5,7 @@ import { isLoggedIn } from 'utils/auth';
 import { SEARCH, INTEGRATIONS } from 'appConstants';
 import {
   SEARCH_CARDS_REQUEST,
+  SEARCH_NODES_REQUEST,
   SEARCH_TAGS_REQUEST,
   SEARCH_USERS_REQUEST,
   SEARCH_PERMISSION_GROUPS_REQUEST
@@ -12,6 +13,8 @@ import {
 import {
   handleSearchCardsSuccess,
   handleSearchCardsError,
+  handleSearchNodesSuccess,
+  handleSearchNodesError,
   handleSearchTagsSuccess,
   handleSearchTagsError,
   handleSearchUsersSuccess,
@@ -22,6 +25,7 @@ import {
 
 const CANCEL_TYPE = {
   CARDS: 'CARDS',
+  NODES: 'NODES',
   TAGS: 'TAGS',
   USERS: 'USERS',
   PERMISSION_GROUPS: 'PERMISSION_GROUPS'
@@ -52,6 +56,7 @@ export default function* watchSearchRequests() {
   while (true) {
     const action = yield take([
       SEARCH_CARDS_REQUEST,
+      SEARCH_NODES_REQUEST,
       SEARCH_TAGS_REQUEST,
       SEARCH_USERS_REQUEST,
       SEARCH_PERMISSION_GROUPS_REQUEST
@@ -61,6 +66,10 @@ export default function* watchSearchRequests() {
     switch (type) {
       case SEARCH_CARDS_REQUEST: {
         yield fork(searchCards, payload);
+        break;
+      }
+      case SEARCH_NODES_REQUEST: {
+        yield fork(searchNodes, payload);
         break;
       }
       case SEARCH_TAGS_REQUEST: {
@@ -146,6 +155,19 @@ function* searchCards({ type, query, clearCards }) {
   } catch (error) {
     if (!isCancel(error)) {
       yield put(handleSearchCardsError(type, getErrorMessage(error)));
+    }
+  }
+}
+
+function* searchNodes({ query }) {
+  const cancelToken = cancelRequest(CANCEL_TYPE.NODES);
+
+  try {
+    const nodes = yield call(doGet, '/finder/node/query', { q: query }, { cancelToken });
+    yield put(handleSearchNodesSuccess(nodes));
+  } catch (error) {
+    if (!isCancel(error)) {
+      yield put(handleSearchNodesError(getErrorMessage(error)));
     }
   }
 }

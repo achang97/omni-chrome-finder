@@ -1,6 +1,6 @@
 export const TYPE = {
   POPOUT: 'POPOUT',
-  NAVIGATE: 'NAVIGATE',
+  FINDER: 'FINDER',
   AUTOFIND: 'AUTOFIND'
 };
 

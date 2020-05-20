@@ -60,16 +60,15 @@ const Modal = ({
   const baseStyle = getBaseAnimationStyle(transitionMs);
 
   return (
-    <div
-      onClick={(e) => e.stopPropagation()}
-      onMouseOver={(e) => e.stopPropagation()}
-      onFocus={NOOP}
-    >
+    <div>
       <Transition in={isOpen} timeout={transitionMs} mountOnEnter unmountOnExit>
         {(state) => (
           <div
             style={{ ...baseStyle, ...MODAL_TRANSITION_STYLES[state] }}
             className={s(`modal ${className} ${important ? 'modal-important' : ''}`)}
+            onClick={(e) => e.stopPropagation()}
+            onMouseOver={(e) => e.stopPropagation()}
+            onFocus={NOOP}
           >
             {showHeader && (
               <div className={s(`modal-header ${headerClassName}`)}>

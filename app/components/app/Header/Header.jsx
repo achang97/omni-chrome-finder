@@ -1,6 +1,7 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import { MdNotificationsActive, MdLightbulbOutline } from 'react-icons/md';
+import { IoIosFolder } from 'react-icons/io';
 
 import { Tabs, Tab, Badge, PlaceholderImg } from 'components/common';
 import { ROUTES } from 'appConstants';
@@ -14,7 +15,14 @@ import style from './header.css';
 
 const s = getStyleApplicationFn(style);
 
-const Header = ({ user, numAutofindCards, numTasks, history, location: { pathname } }) => {
+const Header = ({
+  user,
+  numAutofindCards,
+  numTasks,
+  openFinder,
+  history,
+  location: { pathname }
+}) => {
   const handleTabClick = (activeLink) => {
     segment.track({ name: `Open ${activeLink[1].toUpperCase() + activeLink.substr(2)} Tab` });
     history.push(activeLink);
@@ -38,12 +46,6 @@ const Header = ({ user, numAutofindCards, numTasks, history, location: { pathnam
           value={ROUTES.CREATE}
           tabContainerClassName={s('mx-reg')}
         />
-        <Tab
-          label="Cards"
-          key="cards"
-          value={ROUTES.NAVIGATE}
-          tabContainerClassName={s('mx-reg')}
-        />
         {showAutofind && (
           <Tab
             key="suggest"
@@ -57,10 +59,15 @@ const Header = ({ user, numAutofindCards, numTasks, history, location: { pathnam
           </Tab>
         )}
         <Tab
-          key="tasks"
-          value={ROUTES.TASKS}
+          key="cards"
+          onTabClick={openFinder}
           tabContainerClassName={s(`header-small-tab ${!showAutofind ? 'ml-auto' : ''}`)}
         >
+          <div className={s('header-badge-container bg-gray-xlight')}>
+            <IoIosFolder />
+          </div>
+        </Tab>
+        <Tab key="tasks" value={ROUTES.TASKS} tabContainerClassName={s('header-small-tab')}>
           <div className={s('header-badge-container bg-gray-xlight')}>
             <MdNotificationsActive />
             <Badge count={numTasks} size="sm" className={s('bg-red-500')} />
@@ -79,9 +86,13 @@ const Header = ({ user, numAutofindCards, numTasks, history, location: { pathnam
 };
 
 Header.propTypes = {
+  // Redux State
   user: UserPropTypes.isRequired,
   numAutofindCards: PropTypes.number.isRequired,
-  numTasks: PropTypes.number.isRequired
+  numTasks: PropTypes.number.isRequired,
+
+  // Redux Actions
+  openFinder: PropTypes.func.isRequired
 };
 
 export default Header;

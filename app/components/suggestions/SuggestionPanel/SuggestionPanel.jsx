@@ -22,12 +22,16 @@ const DEFAULT_NUM_EXT_RESULTS_SHOWN = 4;
 
 const SuggestionPanel = ({
   query,
+  shouldSearchNodes,
   cards,
   externalResults,
   isSearchingCards,
   hasReachedLimit,
+  nodes,
+  isSearchingNodes,
   requestSearchCards,
   clearSearchCards,
+  requestSearchNodes,
   requestLogAudit,
   trackEvent
 }) => {
@@ -39,6 +43,9 @@ const SuggestionPanel = ({
 
   const searchCards = (clearCards) => {
     requestSearchCards(SEARCH.TYPE.POPOUT, { q: query }, clearCards);
+    if (shouldSearchNodes && clearCards) {
+      requestSearchNodes(query);
+    }
   };
 
   const [debouncedRequestSearch] = useDebouncedCallback(() => {
@@ -220,7 +227,8 @@ const SuggestionPanel = ({
               showExternalResults ? 'suggestion-panel-card-container-lg' : ''
             }`}
             cards={cards}
-            isSearchingCards={isSearchingCards}
+            nodes={shouldSearchNodes ? nodes : []}
+            isSearching={isSearchingCards || (shouldSearchNodes && isSearchingNodes)}
             showPlaceholder={!showExternalResults || numExternalResults === 0}
             triangleColor={colors.purple.light}
             onBottom={() => searchCards(false)}
@@ -266,6 +274,7 @@ const SuggestionPanel = ({
 
 SuggestionPanel.propTypes = {
   query: PropTypes.string.isRequired,
+  shouldSearchNodes: PropTypes.bool,
 
   // Redux State
   cards: PropTypes.arrayOf(PropTypes.object).isRequired,
@@ -281,15 +290,19 @@ SuggestionPanel.propTypes = {
   ).isRequired,
   isSearchingCards: PropTypes.bool,
   hasReachedLimit: PropTypes.bool.isRequired,
+  nodes: PropTypes.arrayOf(PropTypes.object).isRequired,
+  isSearchingNodes: PropTypes.bool,
 
   // Redux Actions
   requestSearchCards: PropTypes.func.isRequired,
   clearSearchCards: PropTypes.func.isRequired,
+  requestSearchNodes: PropTypes.func.isRequired,
   requestLogAudit: PropTypes.func.isRequired,
   trackEvent: PropTypes.func.isRequired
 };
 
 SuggestionPanel.defaultProps = {
+  shouldSearchNodes: false,
   isSearchingCards: false
 };
 

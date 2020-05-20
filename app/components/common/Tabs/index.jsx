@@ -88,7 +88,7 @@ const Tabs = ({
   };
 
   const getBaseTabProps = (value, i) => {
-    const actualValue = value || i;
+    const actualValue = value === null || value === undefined ? i : value;
     const isActive = activeValue === actualValue;
 
     return {

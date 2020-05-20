@@ -2,18 +2,18 @@ import React, { useState, useEffect } from 'react';
 import PropTypes from 'prop-types';
 import _ from 'lodash';
 import { MdMoreHoriz } from 'react-icons/md';
-import { GoPrimitiveDot } from 'react-icons/go';
 
-import { CardConfirmModal } from 'components/cards';
-import { Button, Dropdown, Message, Loader, Separator } from 'components/common';
+import { CardStatusIndicator } from 'components/cards';
+import { Button, Dropdown, Message, Loader, Separator, ConfirmModal } from 'components/common';
 
 import { CARD } from 'appConstants';
 import { copyCardUrl } from 'utils/card';
 
 import { getStyleApplicationFn } from 'utils/style';
-import style from './suggestion-card.css';
+import cardStyle from './suggestion-card.css';
+import mainStyle from '../suggestion.css';
 
-const s = getStyleApplicationFn(style);
+const s = getStyleApplicationFn(mainStyle, cardStyle);
 
 const BUTTON_TYPE = {
   SHARE: 'SHARE',
@@ -55,23 +55,6 @@ const SuggestionCard = ({
       icon: isLoading ? <Loader className={s('ml-sm')} size="sm" color="white" /> : null,
       disabled: isLoading
     };
-  };
-
-  const getStatusColor = () => {
-    switch (status) {
-      case CARD.STATUS.UP_TO_DATE:
-        return 'text-green-reg';
-      case CARD.STATUS.OUT_OF_DATE:
-        return 'text-red-500';
-      case CARD.STATUS.NEEDS_VERIFICATION:
-        return 'text-yellow-reg';
-      case CARD.STATUS.NOT_DOCUMENTED:
-        return 'text-blue-500';
-      case CARD.STATUS.NEEDS_APPROVAL:
-        return 'text-orange-500';
-      default:
-        return {};
-    }
   };
 
   const shareCard = () => {
@@ -180,7 +163,7 @@ const SuggestionCard = ({
           .filter(({ modalProps }) => !!modalProps)
           .map(({ modalProps, buttonType }) => (
             <div key={buttonType}>
-              <CardConfirmModal
+              <ConfirmModal
                 isOpen={buttonActive[buttonType]}
                 onRequestClose={() => toggleActiveButton(buttonType)}
                 {...modalProps}
@@ -197,18 +180,9 @@ const SuggestionCard = ({
   };
 
   return (
-    <div
-      className={s(
-        `${className} rounded-xl px-lg py-lg bg-white cursor-pointer flex justify-between`
-      )}
-      onClick={clickOpenCard}
-    >
+    <div className={s(`${className} suggestion-elem`)} onClick={clickOpenCard}>
       <div className={s('flex flex-col w-full')}>
-        <div className={s('flex ')}>
-          <span className={s('flex-grow text-lg text-left font-semibold break-words line-clamp-2')}>
-            {question}
-          </span>
-        </div>
+        <span className={s('suggestion-elem-title break-words line-clamp-2')}> {question} </span>
         {answer && (
           <span
             className={s(
@@ -221,7 +195,7 @@ const SuggestionCard = ({
       </div>
       <div className={s('flex flex-col justify-between flex-shrink-0 ml-xs')}>
         {renderDropdown()}
-        <GoPrimitiveDot className={s(`${getStatusColor()}`)} />
+        <CardStatusIndicator status={status} />
       </div>
       {renderShareSuccess()}
       {renderModals()}

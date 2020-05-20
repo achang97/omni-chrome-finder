@@ -3,46 +3,39 @@ import { EditorState } from 'draft-js';
 import * as types from 'actions/actionTypes';
 import { removeIndex, updateIndex, updateArrayOfObjects } from 'utils/array';
 import { convertCardToFrontendFormat, generateCardId } from 'utils/card';
-import trackEvent from 'actions/analytics';
-import {
-  STATUS,
-  EDITOR_TYPE,
-  DIMENSIONS,
-  MODAL_TYPE,
-  DEFAULT_VERIFICATION_INTERVAL,
-  PERMISSION_OPTIONS
-} from 'appConstants/card';
+import { CARD, FINDER } from 'appConstants';
 
 const initialState = {
+  showCards: false,
   cards: [],
-  cardsWidth: DIMENSIONS.DEFAULT_CARDS_WIDTH,
-  cardsHeight: DIMENSIONS.DEFAULT_CARDS_HEIGHT,
-  activeCardIndex: -1,
-  activeCard: {},
+  cardsWidth: CARD.DIMENSIONS.DEFAULT_CARDS_WIDTH,
+  cardsHeight: CARD.DIMENSIONS.DEFAULT_CARDS_HEIGHT,
+  activeCardIndex: FINDER.TAB_INDEX,
+  activeCard: FINDER.TAB,
   cardsExpanded: true,
   windowPosition: {
-    x: window.innerWidth / 2 - DIMENSIONS.DEFAULT_CARDS_WIDTH / 2,
-    y: window.innerHeight / 2 - DIMENSIONS.DEFAULT_CARDS_HEIGHT / 2
+    x: window.innerWidth / 2 - CARD.DIMENSIONS.DEFAULT_CARDS_WIDTH / 2,
+    y: window.innerHeight / 2 - CARD.DIMENSIONS.DEFAULT_CARDS_HEIGHT / 2
   },
   showCloseModal: false
 };
 
-const BASE_MODAL_OPEN_STATE = _.mapValues(MODAL_TYPE, () => false);
-const BASE_EDITOR_ENABLED_STATE = _.mapValues(EDITOR_TYPE, () => false);
+const BASE_MODAL_OPEN_STATE = _.mapValues(CARD.MODAL_TYPE, () => false);
+const BASE_EDITOR_ENABLED_STATE = _.mapValues(CARD.EDITOR_TYPE, () => false);
 
 const BASE_CARD_STATE = {
   isEditing: false,
   sideDockOpen: false,
   modalOpen: BASE_MODAL_OPEN_STATE,
   editorEnabled: BASE_EDITOR_ENABLED_STATE,
-  descriptionSectionHeight: DIMENSIONS.MIN_QUESTION_HEIGHT,
+  descriptionSectionHeight: CARD.DIMENSIONS.MIN_QUESTION_HEIGHT,
   edits: {},
   hasLoaded: true,
   outOfDateReasonInput: '',
-  status: STATUS.NOT_DOCUMENTED,
+  status: CARD.STATUS.NOT_DOCUMENTED,
   tags: [],
-  verificationInterval: DEFAULT_VERIFICATION_INTERVAL,
-  permissions: PERMISSION_OPTIONS[0],
+  verificationInterval: CARD.DEFAULT_VERIFICATION_INTERVAL,
+  permissions: CARD.PERMISSION_OPTIONS[0],
   permissionGroups: [],
   upvotes: [],
   slackThreadIndex: 0,
@@ -117,6 +110,7 @@ export default function cardsReducer(state = initialState, action) {
       question,
       answerEditorState,
       descriptionEditorState,
+      finderNode,
       slackReplies,
       edits
     } = card;
@@ -134,6 +128,7 @@ export default function cardsReducer(state = initialState, action) {
         question,
         answerEditorState,
         descriptionEditorState,
+        finderNode,
         slackReplies,
         ...edits
       }
@@ -168,7 +163,13 @@ export default function cardsReducer(state = initialState, action) {
     const newCards = removeIndex(cards, index);
 
     if (newCards.length === 0) {
-      return initialState;
+      // Return to finder view
+      return {
+        ...state,
+        cards: newCards,
+        activeCardIndex: FINDER.TAB_INDEX,
+        activeCard: FINDER.TAB
+      };
     }
 
     const isClosingActiveCard = index === activeCardIndex;
@@ -204,7 +205,8 @@ export default function cardsReducer(state = initialState, action) {
       return state;
     }
 
-    return { ...state, activeCardIndex: index, activeCard: cards[index], cards: getUpdatedCards() };
+    const activeCard = index === FINDER.TAB_INDEX ? FINDER.TAB : cards[index];
+    return { ...state, activeCardIndex: index, activeCard, cards: getUpdatedCards() };
   };
 
   switch (type) {
@@ -230,9 +232,12 @@ export default function cardsReducer(state = initialState, action) {
       return { ...state, cardsExpanded: !state.cardsExpanded };
     }
 
+    case types.OPEN_FINDER: {
+      const newState = state.showCards ? setActiveCardIndex(FINDER.TAB_INDEX) : state;
+      return { ...newState, showCards: true, cardsExpanded: true };
+    }
     case types.OPEN_CARD: {
       const { card, isNewCard, createModalOpen } = payload;
-      const { activeCardIndex } = state;
 
       if (!isNewCard) {
         const currIndex = getIndexById(card._id);
@@ -247,19 +252,18 @@ export default function cardsReducer(state = initialState, action) {
         cardInfo = createCardEdits({
           ...cardInfo,
           _id: generateCardId(),
-          modalOpen: { ...cardInfo.modalOpen, [MODAL_TYPE.CREATE]: createModalOpen },
-          editorEnabled: { ...cardInfo.editorEnabled, [EDITOR_TYPE.ANSWER]: true }
+          modalOpen: { ...cardInfo.modalOpen, [CARD.MODAL_TYPE.CREATE]: createModalOpen },
+          editorEnabled: { ...cardInfo.editorEnabled, [CARD.EDITOR_TYPE.ANSWER]: true }
         });
       } else {
         // Will have to update this section in the future
         cardInfo = { ...cardInfo, hasLoaded: false };
       }
 
-      let newCards = activeCardIndex === -1 ? [] : getUpdatedCards();
-      newCards = [...newCards, cardInfo];
-
+      const newCards = [...getUpdatedCards(), cardInfo];
       return {
         ...state,
+        showCards: true,
         cards: newCards,
         activeCard: cardInfo,
         activeCardIndex: newCards.length - 1,
@@ -355,6 +359,11 @@ export default function cardsReducer(state = initialState, action) {
       return updateActiveCardEdits({ slackReplies: activeCard.slackReplies });
     }
 
+    case types.UPDATE_CARD_FINDER_NODE: {
+      const { finderNode } = payload;
+      return updateActiveCardEdits({ finderNode });
+    }
+
     case types.ADD_CARD_OWNER: {
       const { owner } = payload;
       const {
@@ -416,7 +425,6 @@ export default function cardsReducer(state = initialState, action) {
     }
 
     case types.EDIT_CARD: {
-      trackEvent('Click Edit Card', {});
       const { activeCard } = state;
       return { ...state, activeCard: createCardEdits(activeCard) };
     }
@@ -486,7 +494,8 @@ export default function cardsReducer(state = initialState, action) {
       const { cardId, card } = payload;
 
       const currCard = getCardById(cardId);
-      const isEditing = (currCard && currCard.isEditing) || card.status === STATUS.NOT_DOCUMENTED;
+      const isEditing =
+        (currCard && currCard.isEditing) || card.status === CARD.STATUS.NOT_DOCUMENTED;
 
       let newCardInfo = convertCardToFrontendFormat(card);
       if (isEditing) {
@@ -525,7 +534,7 @@ export default function cardsReducer(state = initialState, action) {
       const { shouldCloseCard, card, isApprover } = payload;
 
       const cardStatus = card.status;
-      const isOutdated = cardStatus !== STATUS.UP_TO_DATE;
+      const isOutdated = cardStatus !== CARD.STATUS.UP_TO_DATE;
 
       // Remove card
       if (shouldCloseCard && !isOutdated) {
@@ -545,21 +554,27 @@ export default function cardsReducer(state = initialState, action) {
 
       // Open corresponding modals
       if (isOutdated && isApprover) {
-        newInfo.modalOpen = { ...currCard.modalOpen, [MODAL_TYPE.CONFIRM_UP_TO_DATE_SAVE]: true };
+        newInfo.modalOpen = {
+          ...currCard.modalOpen,
+          [CARD.MODAL_TYPE.CONFIRM_UP_TO_DATE_SAVE]: true
+        };
       } else if (shouldCloseCard) {
-        newInfo.modalOpen = { ...currCard.modalOpen, [MODAL_TYPE.CONFIRM_CLOSE]: false };
+        newInfo.modalOpen = { ...currCard.modalOpen, [CARD.MODAL_TYPE.CONFIRM_CLOSE]: false };
       }
 
       return updateCardById(card._id, newInfo, true);
     }
     case types.UPDATE_CARD_ERROR: {
       const { cardId, error, shouldCloseCard } = payload;
+      const modalType = shouldCloseCard
+        ? CARD.MODAL_TYPE.ERROR_UPDATE_CLOSE
+        : CARD.MODAL_TYPE.ERROR_UPDATE;
       const newInfo = {
         isUpdatingCard: false,
         updateError: error,
         modalOpen: {
           ...BASE_MODAL_OPEN_STATE,
-          [shouldCloseCard ? MODAL_TYPE.ERROR_UPDATE_CLOSE : MODAL_TYPE.ERROR_UPDATE]: true
+          [modalType]: true
         }
       };
       return updateCardById(cardId, newInfo);
@@ -595,7 +610,7 @@ export default function cardsReducer(state = initialState, action) {
       const newInfo = {
         isDeletingCard: false,
         deleteError: error,
-        modalOpen: { ...BASE_MODAL_OPEN_STATE, [MODAL_TYPE.ERROR_DELETE]: true }
+        modalOpen: { ...BASE_MODAL_OPEN_STATE, [CARD.MODAL_TYPE.ERROR_DELETE]: true }
       };
       return updateCardById(cardId, newInfo);
     }

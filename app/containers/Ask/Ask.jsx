@@ -25,7 +25,6 @@ import { colors } from 'styles/colors';
 import { generateFileKey, isAnyLoading } from 'utils/file';
 import { UserPropTypes } from 'utils/propTypes';
 import { isLoggedIn } from 'utils/auth';
-import { getArrayWithout } from 'utils/array';
 import { ROUTES, INTEGRATIONS, ASK } from 'appConstants';
 
 import { getStyleApplicationFn } from 'utils/style';
@@ -254,7 +253,7 @@ const Ask = ({
           value={null}
           onChange={addAskRecipient}
           placeholder="Enter name"
-          options={getArrayWithout(slackConversations, recipients, 'id')}
+          options={_.differenceBy(slackConversations, recipients, 'id')}
           getOptionLabel={(option) =>
             `${option.type === ASK.SLACK_RECIPIENT_TYPE.CHANNEL ? '#' : '@'}${option.name}`
           }

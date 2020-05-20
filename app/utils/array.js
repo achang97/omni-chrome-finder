@@ -46,23 +46,10 @@ export function getArrayField(array, field) {
   return array.map((elem) => elem[field]);
 }
 
-/*
- * Gets array minus the elements in a specified withoutArray and by a specified field.
- */
-export function getArrayWithout(array, withoutArray, field) {
-  return array.filter(
-    (elem) =>
-      !withoutArray.some((withoutElem) =>
-        field ? elem[field] === withoutElem[field] : elem === withoutElem
-      )
-  );
-}
-
 export default {
   removeIndex,
   updateIndex,
   updateArrayOfObjects,
   getArrayIds,
-  getArrayField,
-  getArrayWithout
+  getArrayField
 };

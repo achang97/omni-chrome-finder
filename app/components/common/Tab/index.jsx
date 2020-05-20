@@ -34,7 +34,7 @@ const Tab = ({
 
   const renderButton = () => (
     <div
-      onClick={() => onTabClick(value)}
+      onClick={() => !clickOnMouseDown && onTabClick(value)}
       onMouseDown={() => clickOnMouseDown && onTabClick(value)}
       style={{ color }}
       className={s(`

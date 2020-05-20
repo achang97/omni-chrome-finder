@@ -1,13 +1,11 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 
-import { CheckBox } from 'components/common';
+import { CheckBox, ConfirmModal } from 'components/common';
 import { MODAL_TYPE } from 'appConstants/card';
 
 import { getStyleApplicationFn } from 'utils/style';
 import style from './card-confirm-modals.css';
-
-import CardConfirmModal from '../../CardConfirmModal';
 
 const s = getStyleApplicationFn(style);
 
@@ -304,7 +302,7 @@ const CardConfirmModals = ({
   return (
     <>
       {MODALS.map(({ modalType, canClose = true, ...rest }) => (
-        <CardConfirmModal
+        <ConfirmModal
           key={modalType}
           isOpen={modalOpen[modalType]}
           onRequestClose={canClose ? () => closeCardModal(modalType) : null}

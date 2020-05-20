@@ -1,5 +1,5 @@
 .modal {
-  @apply absolute bg-white flex flex-col rounded-lg overflow-hidden bg-purple-light;
+  @apply absolute bg-purple-xxlight flex flex-col rounded-lg overflow-hidden;
 
   top: 50%;
   left: 10%;
@@ -15,7 +15,7 @@
 }
 
 .modal-header {
-  @apply flex items-center justify-between p-lg bg-purple-gray-10;
+  @apply flex items-center justify-between p-lg bg-purple-light;
 }
 
 .modal-body {

@@ -4,8 +4,10 @@ import PropTypes from 'prop-types';
 import { Loader, Triangle, ScrollContainer } from 'components/common';
 import { colors } from 'styles/colors';
 import { getStyleApplicationFn } from 'utils/style';
+import { NODE_TYPE } from 'appConstants/finder';
 
 import SuggestionCard from '../SuggestionCard';
+import SuggestionNode from '../SuggestionNode';
 import SuggestionPreview from '../SuggestionPreview';
 
 import style from './suggestion-scroll-container.css';
@@ -16,8 +18,9 @@ const SEARCH_INFINITE_SCROLL_OFFSET = 150;
 
 const SuggestionScrollContainer = ({
   cards,
+  nodes,
   getCardProps,
-  isSearchingCards,
+  isSearching,
   hasReachedLimit,
   onBottom,
   showPlaceholder,
@@ -26,8 +29,10 @@ const SuggestionScrollContainer = ({
   className,
   triangleColor
 }) => {
+  const combinedList = [...nodes, ...cards];
+
   const renderPlaceholder = () => {
-    if (isSearchingCards) {
+    if (isSearching) {
       return <Loader size="md" className={s('my-reg')} />;
     }
     if (showPlaceholder) {
@@ -36,10 +41,17 @@ const SuggestionScrollContainer = ({
     return null;
   };
 
-  const renderScrollElement = (card, i) => {
-    const { _id, question, answer, status } = card;
+  const renderScrollElement = (elem, i) => {
+    if (elem.type === NODE_TYPE.FOLDER) {
+      const { _id, name } = elem;
+      return (
+        <SuggestionNode id={_id} name={name} className={s('suggestion-scroll-container-card')} />
+      );
+    }
+
+    const { _id, question, answer, status } = elem;
     const { className: cardClassName = '', ...restCardProps } = getCardProps
-      ? getCardProps(card, i)
+      ? getCardProps(elem, i)
       : {};
 
     return (
@@ -54,8 +66,12 @@ const SuggestionScrollContainer = ({
     );
   };
 
-  const renderOverflowElement = (card, i, positions) => {
-    const { _id, question, description, answer } = card;
+  const renderOverflowElement = (elem, i, positions) => {
+    if (elem.type === NODE_TYPE.FOLDER) {
+      return null;
+    }
+
+    const { _id, question, description, answer } = elem;
     const { overflow, scroll } = positions;
 
     const overflowTop = overflow.top || 0;
@@ -86,14 +102,14 @@ const SuggestionScrollContainer = ({
   const renderFooter = () => {
     return (
       <>
-        {isSearchingCards && cards.length !== 0 && <Loader size="sm" className={s('my-sm')} />}
+        {isSearching && combinedList.length !== 0 && <Loader size="sm" className={s('my-sm')} />}
         {footer}
       </>
     );
   };
 
   const handleOnBottom = () => {
-    if (!hasReachedLimit && !isSearchingCards && cards.length !== 0) {
+    if (!hasReachedLimit && !isSearching && combinedList.length !== 0) {
       onBottom();
     }
   };
@@ -102,8 +118,8 @@ const SuggestionScrollContainer = ({
     <ScrollContainer
       className={className}
       scrollContainerClassName={s(`suggestion-scroll-container ${scrollContainerClassName}`)}
-      list={cards}
-      getKey={(card) => card._id}
+      list={combinedList}
+      getKey={(elem) => elem._id}
       placeholder={renderPlaceholder()}
       renderScrollElement={renderScrollElement}
       renderOverflowElement={renderOverflowElement}
@@ -124,8 +140,15 @@ SuggestionScrollContainer.propTypes = {
       status: PropTypes.number.isRequired
     })
   ).isRequired,
+  nodes: PropTypes.arrayOf(
+    PropTypes.shape({
+      _id: PropTypes.string.isRequired,
+      name: PropTypes.string.isRequired,
+      path: PropTypes.arrayOf(PropTypes.object)
+    })
+  ),
   getCardProps: PropTypes.func,
-  isSearchingCards: PropTypes.bool,
+  isSearching: PropTypes.bool,
   onBottom: PropTypes.func.isRequired,
   showPlaceholder: PropTypes.bool,
   footer: PropTypes.node,
@@ -136,7 +159,8 @@ SuggestionScrollContainer.propTypes = {
 };
 
 SuggestionScrollContainer.defaultProps = {
-  isSearchingCards: false,
+  nodes: [],
+  isSearching: false,
   showPlaceholder: true,
   triangleColor: 'white',
   footer: null,

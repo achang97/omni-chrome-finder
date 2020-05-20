@@ -1,0 +1,19 @@
+.finder-side-nav-section {
+  @apply text-purple-reg flex items-center cursor-pointer px-reg py-sm text-sm;
+}
+
+.finder-side-nav-selected {
+  @apply bg-purple-gray-10;
+}
+
+.finder-side-nav-section > img {
+  @apply h-lg w-lg;
+}
+
+.finder-side-nav-section > span {
+  @apply ml-sm;
+}
+
+.finder-side-nav-section:hover {
+  @apply bg-purple-xlight;
+}

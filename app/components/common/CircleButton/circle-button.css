@@ -1,5 +1,5 @@
 .circle-button-container {
-  @apply flex flex-col items-center;
+  @apply flex flex-col items-center flex-shrink-0;
 }
 
 .circle-button {

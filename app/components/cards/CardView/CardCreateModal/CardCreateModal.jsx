@@ -14,6 +14,7 @@ import CardUsers from '../../CardUsers';
 import CardTags from '../../CardTags';
 import CardPermissions from '../../CardPermissions';
 import CardVerificationInterval from '../../CardVerificationInterval';
+import CardLocation from '../../CardLocation';
 
 const s = getStyleApplicationFn();
 
@@ -56,8 +57,13 @@ const CardCreateModal = ({
     tags = [],
     verificationInterval,
     permissions,
-    permissionGroups = []
+    permissionGroups = [],
+    finderNode = {}
   } = edits;
+
+  const renderLocation = () => {
+    return <CardLocation finderNode={finderNode} isEditable />;
+  };
 
   const renderOwners = () => {
     return (
@@ -66,7 +72,6 @@ const CardCreateModal = ({
         users={owners}
         onAdd={addCardOwner}
         onRemoveClick={removeCardOwner}
-        showSelect
         showTooltips
       />
     );
@@ -97,7 +102,6 @@ const CardCreateModal = ({
         onChange={updateCardTags}
         onRemoveClick={removeCardTag}
         showPlaceholder
-        showSelect
       />
     );
   };
@@ -130,8 +134,9 @@ const CardCreateModal = ({
         <div>
           <div className={s('text-gray-reg text-xs mb-sm')}> Permissions </div>
           <CardPermissions
-            selectedPermission={permissions}
-            onChangePermission={updateCardPermissions}
+            isEditable
+            selectedPermissions={permissions}
+            onChangePermissions={updateCardPermissions}
             permissionGroups={permissionGroups}
             onChangePermissionGroups={updateCardPermissionGroups}
             showJustMe={!isExisting}
@@ -169,22 +174,36 @@ const CardCreateModal = ({
     const justMe = isJustMe(edits.permissions);
     const CARD_SECTIONS = [
       {
+        title: 'Location',
+        startExpanded: true,
+        isExpandable: false,
+        renderFn: renderLocation,
+        showJustMe: true
+      },
+      {
         title: 'Owner(s)',
+        startExpanded: true,
+        isExpandable: false,
         hint: HINTS.OWNERS,
         renderFn: renderOwners
       },
       {
         title: 'Subscriber(s)',
+        startExpanded: true,
+        isExpandable: false,
         hint: HINTS.SUBSCRIBERS,
         renderFn: renderSubscribers
       },
       {
         title: 'Tags',
+        startExpanded: true,
+        isExpandable: false,
         renderFn: renderTags
       },
       {
         title: 'Advanced',
         startExpanded: false,
+        isExpandable: true,
         preview: renderAdvancedPreview(justMe),
         renderFn: renderAdvanced,
         showJustMe: true
@@ -209,13 +228,15 @@ const CardCreateModal = ({
       >
         <div className={s('flex-grow overflow-auto p-lg')}>
           {CARD_SECTIONS.map(
-            ({ title, hint, renderFn, showJustMe, startExpanded = true, preview }, i) => (
+            ({ title, hint, renderFn, showJustMe, startExpanded, isExpandable, preview }, i) => (
               <AnimateHeight height={!justMe || showJustMe ? 'auto' : 0} key={title}>
                 <CardSection
                   className={s(i < CARD_SECTIONS.length - 1 ? 'mb-lg' : '')}
                   title={title}
                   hint={hint}
+                  isVertical={false}
                   startExpanded={startExpanded}
+                  isExpandable={isExpandable}
                   preview={preview}
                   showSeparator={i < CARD_SECTIONS.length - 1}
                 >
@@ -248,7 +269,8 @@ CardCreateModal.propTypes = {
     tags: PropTypes.arrayOf(PropTypes.object),
     verificationInterval: PropTypes.object,
     permissions: PropTypes.object,
-    permissionGroups: PropTypes.arrayOf(PropTypes.object)
+    permissionGroups: PropTypes.arrayOf(PropTypes.object),
+    finderNode: PropTypes.object
   }),
 
   // Redux Actions

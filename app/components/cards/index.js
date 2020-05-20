@@ -1,9 +1,9 @@
 export { default as CardAttachment } from './CardAttachment';
 export { default as CardAttachments } from './CardAttachments';
-export { default as CardConfirmModal } from './CardConfirmModal';
 export { default as CardPermissions } from './CardPermissions';
 export { default as CardSection } from './CardSection';
 export { default as CardStatus } from './CardStatus';
+export { default as CardStatusIndicator } from './CardStatusIndicator';
 export { default as CardTag } from './CardTag';
 export { default as CardTags } from './CardTags';
 export { default as CardUser } from './CardUser';

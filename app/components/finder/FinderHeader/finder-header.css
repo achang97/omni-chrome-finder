@@ -1,0 +1,20 @@
+.finder-header-icon {
+  @apply text-purple-reg bg-purple-light p-sm font-semibold rounded-full shadow-md;
+  @apply flex items-center justify-center;
+
+  height: 35px;
+}
+
+.finder-header-icon > * {
+  @apply h-lg;
+}
+
+.finder-header-input-container {
+  @apply flex-1 flex items-center rounded-full overflow-hidden min-w-0 border border-solid border-purple-gray-50 pl-sm;
+}
+
+.finder-header-new-dropdown {
+  @apply text-purple-reg font-bold;
+
+  min-width: 120px;
+}

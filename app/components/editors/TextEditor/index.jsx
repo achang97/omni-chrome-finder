@@ -114,7 +114,7 @@ export default class TextEditor extends Component {
           />
           {!readOnly && (
             <div
-              className={s('text-editor-toggle-rte-button button-hover')}
+              className={s('text-editor-toggle-rte-button primary-gradient button-hover')}
               onClick={() => this.toggleToolbar()}
             >
               {hideToolbar ? (
@@ -135,7 +135,7 @@ export default class TextEditor extends Component {
             text={minimizedPlaceholder || placeholder}
             onClick={this.onExpandEditor}
             color="secondary"
-            className={s('text-editor-minimized-button justify-start shadow-none')}
+            className={s('light-gradient justify-start shadow-none')}
             icon={<MdAdd className={s('mr-reg')} />}
             underline={false}
           />

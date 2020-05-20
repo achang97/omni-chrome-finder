@@ -10,8 +10,13 @@
 }
 
 /* Buttons */
+.button-disabled {
+  @apply cursor-not-allowed opacity-50;
+}
+
 .button-hover:hover {
-  cursor: pointer !important;
+  @apply cursor-pointer;
+
   opacity: 0.8;
 }
 
@@ -49,6 +54,10 @@
 /* Gradients + underlines */
 .primary-gradient {
   background: linear-gradient(143deg, #777bad 0%, #a0a1cd 100%) !important;
+}
+
+.light-gradient {
+  background: linear-gradient(143deg, #777bad1a 0%, #a0a1cd1a 100%) !important;
 }
 
 .gold-gradient {

@@ -4,9 +4,9 @@ import auth from './auth';
 import profile from './profile';
 import display from './display';
 import cards from './cards';
+import finder from './finder';
 import ask from './ask';
 import create from './create';
-import navigate from './navigate';
 import tasks from './tasks';
 import search from './search';
 import screenRecording from './screenRecording';
@@ -17,9 +17,9 @@ const appReducer = combineReducers({
   profile,
   display,
   cards,
+  finder,
   ask,
   create,
-  navigate,
   tasks,
   search,
   screenRecording,

@@ -10,7 +10,6 @@ import HelpscoutIcon from 'assets/images/icons/Helpscout_Icon.svg';
 export const ROUTES = {
   ASK: '/ask',
   CREATE: '/create',
-  NAVIGATE: '/navigate',
   TASKS: '/tasks',
   PROFILE: '/profile',
   VERIFY: '/verify',

@@ -12,12 +12,14 @@ import {
   toggleCards,
   openCard
 } from 'actions/cards';
+import { openFinder } from 'actions/finder';
 import Cards from './Cards';
 
 const mapStateToProps = (state) => {
   const {
     cards: {
       cards,
+      showCards,
       cardsExpanded,
       activeCardIndex,
       activeCard,
@@ -32,6 +34,7 @@ const mapStateToProps = (state) => {
   return {
     user,
     cardsExpanded,
+    showCards,
     cards,
     activeCardIndex,
     activeCard,
@@ -44,6 +47,7 @@ const mapStateToProps = (state) => {
 
 const mapDispatchToProps = {
   openCard,
+  openFinder,
   closeCard,
   closeAllCards,
   toggleCards,

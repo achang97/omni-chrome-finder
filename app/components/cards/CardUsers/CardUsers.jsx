@@ -5,7 +5,6 @@ import _ from 'lodash';
 
 import { CircleButton, PlaceholderImg, Select } from 'components/common';
 
-import { getArrayWithout } from 'utils/array';
 import { DEBOUNCE } from 'appConstants/animate';
 
 import { getStyleApplicationFn } from 'utils/style';
@@ -67,7 +66,7 @@ const CardUsers = ({
         <Select
           className={s('w-full mb-sm')}
           value={null}
-          options={getArrayWithout(userOptions, users, '_id')}
+          options={_.differenceBy(userOptions, users, '_id')}
           onChange={(option) => onAdd(option)}
           onInputChange={_.debounce(loadOptions, DEBOUNCE.MS_300)}
           onFocus={() => loadOptions('')}
@@ -121,7 +120,7 @@ const UserPropTypes = PropTypes.arrayOf(
 );
 
 CardUsers.propTypes = {
-  isEditable: PropTypes.bool.isRequired,
+  isEditable: PropTypes.bool,
   className: PropTypes.string,
   users: UserPropTypes.isRequired,
   onRemoveClick: PropTypes.func,
@@ -142,6 +141,7 @@ CardUsers.propTypes = {
 
 CardUsers.defaultProps = {
   className: '',
+  isEditable: false,
   size: 'md',
   showSelect: false,
   showTooltips: false,

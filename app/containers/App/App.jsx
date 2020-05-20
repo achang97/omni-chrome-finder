@@ -19,7 +19,6 @@ import { PublicRoute, PrivateRoute } from 'components/routes';
 import { getStyleApplicationFn } from 'utils/style';
 import Ask from '../Ask';
 import Create from '../Create';
-import Navigate from '../Navigate';
 import Tasks from '../Tasks';
 import Cards from '../Cards';
 import Autofind from '../Autofind';
@@ -107,7 +106,6 @@ const App = ({
           <Switch>
             <PrivateRoute path={ROUTES.ASK} component={Ask} />
             <PrivateRoute path={ROUTES.CREATE} component={Create} />
-            <PrivateRoute path={ROUTES.NAVIGATE} component={Navigate} />
             <PrivateRoute path={ROUTES.TASKS} component={Tasks} />
             <PrivateRoute path={ROUTES.PROFILE} component={Profile} />
             {!completedOnboarding && (

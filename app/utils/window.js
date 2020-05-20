@@ -26,4 +26,9 @@ export function copyText(text) {
   document.body.removeChild(el);
 }
 
-export default { addScript, copyText };
+export const wasCommandKeyUsed = (event) => {
+  const isUsingWindows = navigator.platform.indexOf('Win') >= 0;
+  return isUsingWindows ? event.ctrlKey : event.metaKey;
+};
+
+export default { addScript, copyText, wasCommandKeyUsed };

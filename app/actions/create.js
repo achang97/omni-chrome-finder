@@ -17,6 +17,10 @@ export function updateCreateDescriptionEditor(editorState) {
   return { type: types.UPDATE_CREATE_DESCRIPTION_EDITOR, payload: { editorState } };
 }
 
+export function updateCreateFinderNode(finderNode) {
+  return { type: types.UPDATE_CREATE_FINDER_NODE, payload: { finderNode } };
+}
+
 export function clearCreatePanel() {
   return { type: types.CLEAR_CREATE_PANEL, payload: {} };
 }
