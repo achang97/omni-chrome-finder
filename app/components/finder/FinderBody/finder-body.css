@@ -4,10 +4,12 @@
 
 .finder-body-node-move-indicator {
   @apply absolute top-0 left-0 bg-purple-light rounded-full w-xl h-xl p-xs shadow-md;
+
   transform: translate(-40%, -40%);
 }
 
 .finder-body-node-status-indicator {
   @apply absolute bottom-0 right-0 text-xl;
+
   transform: translate(40%, 40%);
 }

@@ -16,6 +16,7 @@
 
 .button-hover:hover {
   @apply cursor-pointer;
+
   opacity: 0.8;
 }
 

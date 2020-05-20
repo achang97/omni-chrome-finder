@@ -108,6 +108,8 @@ function* getGroupedSelectedNodeIds(finderId) {
 function* getNode({ finderId }) {
   try {
     const nodeId = yield call(getParentNodeId, finderId);
+    const finderHistory = yield select((state) => state.finder[finderId].history);
+    const query = _.last(finderHistory).state.searchText;
 
     let node;
     if (nodeId === ROOT.ID) {
@@ -115,7 +117,7 @@ function* getNode({ finderId }) {
     } else {
       node = yield call(doGet, `/finder/node/${nodeId}`);
     }
-    const nodeChildren = yield call(doGet, `/finder/node/${nodeId}/content`);
+    const nodeChildren = yield call(doGet, `/finder/node/${nodeId}/content`, { q: query });
     yield put(handleGetFinderNodeSuccess(finderId, { ...node, children: nodeChildren }));
   } catch (error) {
     yield put(handleGetFinderNodeError(finderId, getErrorMessage(error)));

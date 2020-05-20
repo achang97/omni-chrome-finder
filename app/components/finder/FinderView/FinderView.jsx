@@ -6,7 +6,6 @@ import { DragDropContext } from 'react-beautiful-dnd';
 import { Loader } from 'components/common';
 
 import { usePrevious } from 'utils/react';
-import { wasCommandKeyUsed } from 'utils/window';
 import { getStyleApplicationFn } from 'utils/style';
 import { FINDER, SEARCH, CARD, ANIMATE, WINDOW } from 'appConstants';
 
@@ -146,7 +145,7 @@ const FinderView = ({
     updateDraggingFinderNode(finderId, node);
   };
 
-  const onDragEnd = ({ source, destination, reason }) => {
+  const onDragEnd = ({ destination, reason }) => {
     // nothing to do
     if (!destination || reason === 'CANCEL') {
       updateDraggingFinderNode(finderId, null);

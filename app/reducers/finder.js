@@ -82,6 +82,10 @@ export default function finderReducer(state = initialState, action) {
     case types.GO_BACK_FINDER: {
       const { finderId } = payload;
       return updateStateById(finderId, ({ history, activeNode }) => {
+        if (history.length <= 1) {
+          return null;
+        }
+
         const newHistory = history.slice(0, history.length - 1);
 
         let newActiveNode = activeNode;

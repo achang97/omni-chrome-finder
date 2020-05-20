@@ -13,6 +13,7 @@
   border-radius: 8px 0 0 8px;
   height: 36px;
   z-index: 10;
+
   @apply absolute top-0 right-0 text-white flex justify-center items-center text-lg shadow-md flex;
 }
 

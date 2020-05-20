@@ -96,9 +96,7 @@ export default function searchReducer(state = initialState, action) {
       const { node } = payload;
       return {
         ...state,
-        nodes: state.nodes.map((currNode) => (
-          currNode._id === node._id ? node : currNode
-        ))
+        nodes: state.nodes.map((currNode) => (currNode._id === node._id ? node : currNode))
       };
     }
     case types.REMOVE_SEARCH_NODES: {

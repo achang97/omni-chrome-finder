@@ -3,7 +3,12 @@ import { take, call, fork, put, select } from 'redux-saga/effects';
 import { doGet, doPost, doPut, doDelete, getErrorMessage } from 'utils/request';
 import { getArrayIds } from 'utils/array';
 import { getContentStateFromEditorState } from 'utils/editor';
-import { toggleUpvotes, convertPermissionsToBackendFormat, hasValidEdits, isApprover } from 'utils/card';
+import {
+  toggleUpvotes,
+  convertPermissionsToBackendFormat,
+  hasValidEdits,
+  isApprover
+} from 'utils/card';
 import { convertAttachmentsToBackendFormat } from 'utils/file';
 import { STATUS, PERMISSION_OPTION, VERIFICATION_INTERVAL_OPTION } from 'appConstants/card';
 import { ROOT } from 'appConstants/finder';

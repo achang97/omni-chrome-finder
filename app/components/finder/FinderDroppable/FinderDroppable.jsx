@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React from 'react';
 import PropTypes from 'prop-types';
 
 const FinderDroppable = ({
@@ -10,11 +10,10 @@ const FinderDroppable = ({
   requestMoveFinderNodes,
   updateDraggingFinderNode
 }) => {
-  const [isOverDroppable, setOverDroppable] = useState(false);
+  // const [isOverDroppable, setOverDroppable] = useState(false);
 
   const onDrop = () => {
     if (isDragging) {
-      console.log('here!')
       requestMoveFinderNodes(finderId, selectedNodes, id);
       updateDraggingFinderNode(finderId, null);
     }
@@ -22,8 +21,8 @@ const FinderDroppable = ({
 
   return (
     <div
-      onMouseEnter={() => setOverDroppable(true)}
-      onMouseLeave={() => setOverDroppable(false)}
+      // onMouseEnter={() => setOverDroppable(true)}
+      // onMouseLeave={() => setOverDroppable(false)}
       onMouseUp={onDrop}
       onTouchEnd={onDrop}
     >

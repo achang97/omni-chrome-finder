@@ -42,7 +42,7 @@ const SuggestionPanel = ({
 
   const searchCards = (clearCards) => {
     requestSearchCards(SEARCH.TYPE.POPOUT, { q: query }, clearCards);
-    if (shouldSearchNodes && clearCards) { 
+    if (shouldSearchNodes && clearCards) {
       requestSearchNodes(query);
     }
   };

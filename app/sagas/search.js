@@ -167,7 +167,7 @@ function* searchNodes({ query }) {
     yield put(handleSearchNodesSuccess(nodes));
   } catch (error) {
     if (!isCancel(error)) {
-      yield put(handleSearchNodessError(getErrorMessage(error)));
+      yield put(handleSearchNodesError(getErrorMessage(error)));
     }
   }
 }
