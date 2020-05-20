@@ -1,6 +1,7 @@
 import { connect } from 'react-redux';
 import { requestSearchCards, clearSearchCards, requestSearchNodes } from 'actions/search';
 import { requestLogAudit } from 'actions/auditLog';
+import trackEvent from 'actions/analytics';
 import { SEARCH } from 'appConstants';
 import SuggestionPanel from './SuggestionPanel';
 
@@ -20,7 +21,8 @@ const mapDispatchToProps = {
   requestSearchCards,
   clearSearchCards,
   requestSearchNodes,
-  requestLogAudit
+  requestLogAudit,
+  trackEvent
 };
 
 export default connect(mapStateToProps, mapDispatchToProps)(SuggestionPanel);

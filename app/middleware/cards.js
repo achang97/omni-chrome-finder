@@ -7,6 +7,7 @@ import {
   adjustCardDescriptionSectionHeight
 } from 'actions/cards';
 import { closeFinder } from 'actions/finder';
+import trackEvent from 'actions/analytics';
 import { EDITOR_TYPE, DIMENSIONS } from 'appConstants/card';
 import { MAIN_STATE_ID } from 'appConstants/finder';
 
@@ -54,8 +55,12 @@ const cardsMiddleware = (store) => (next) => (action) => {
       break;
     }
     case types.EDIT_CARD: {
+      const {
+        cards: { activeCard }
+      } = store.getState();
       store.dispatch(enableCardEditor(EDITOR_TYPE.ANSWER));
       store.dispatch(adjustCardDescriptionSectionHeight(DIMENSIONS.MIN_QUESTION_HEIGHT));
+      store.dispatch(trackEvent('Click Edit Card', { 'Card ID': activeCard._id }));
       break;
     }
 

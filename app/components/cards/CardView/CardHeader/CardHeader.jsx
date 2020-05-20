@@ -23,6 +23,7 @@ const CardHeader = ({
   outOfDateReason,
   _id,
   answer,
+  question,
   isEditing,
   status,
   attachments,
@@ -30,7 +31,8 @@ const CardHeader = ({
   hasCardChanged,
   cancelEditCard,
   openCardModal,
-  openCardSideDock
+  openCardSideDock,
+  trackEvent
 }) => {
   const goBackToView = () => {
     if (hasCardChanged) {
@@ -40,13 +42,33 @@ const CardHeader = ({
     }
   };
 
+  const clickViewAttachments = () => {
+    trackEvent('Click View Attachments', { 'Card ID': _id, Question: question, Status: status });
+    openCardSideDock();
+  };
+
+  const clickCopyAnswer = () => {
+    trackEvent('Copy Card Body', { 'Card ID': _id, Question: question, Status: status });
+    copyText(answer);
+  };
+
+  const clickCopyUrl = () => {
+    trackEvent('Share Card', { 'Card ID': _id, Question: question, Status: status });
+    copyCardUrl(_id);
+  };
+
+  const clickMoreMenu = () => {
+    trackEvent('Click Card More Menu', { 'Card ID': _id, Question: question, Status: status });
+    openCardSideDock();
+  };
+
   const renderHeaderButtons = () => {
     const headerButtons = [
       {
         Icon: MdAttachFile,
         label: attachments.length,
         tooltip: `View Attachments (${attachments.length})`,
-        onClick: openCardSideDock,
+        onClick: clickViewAttachments,
         className: `py-xs px-sm rounded-full shadow-md ${
           attachments.length > 0 ? 'gold-gradient' : 'bg-purple-light'
         }`
@@ -55,20 +77,20 @@ const CardHeader = ({
         Icon: MdContentCopy,
         toast: 'Copied answer to clipboard!',
         tooltip: 'Copy Answer',
-        onClick: () => copyText(answer)
+        onClick: clickCopyAnswer
       },
       {
         Icon: IoIosShareAlt,
         toast: 'Copied link to clipboard!',
         tooltip: 'Share Card',
         iconClassName: 'text-lg',
-        onClick: () => copyCardUrl(_id)
+        onClick: clickCopyUrl
       },
       {
         Icon: MdMoreHoriz,
         label: 'More',
         tooltip: 'Advanced Settings',
-        onClick: openCardSideDock,
+        onClick: clickMoreMenu,
         showEdit: true
       }
     ];
@@ -209,6 +231,7 @@ CardHeader.propTypes = {
   ownUserId: PropTypes.string.isRequired,
   _id: PropTypes.string.isRequired,
   answer: PropTypes.string,
+  question: PropTypes.string,
   isEditing: PropTypes.bool.isRequired,
   status: PropTypes.oneOf(Object.values(STATUS)).isRequired,
   attachments: PropTypes.arrayOf(PropTypes.object).isRequired,
@@ -218,7 +241,8 @@ CardHeader.propTypes = {
   // Redux Actions
   cancelEditCard: PropTypes.func.isRequired,
   openCardModal: PropTypes.func.isRequired,
-  openCardSideDock: PropTypes.func.isRequired
+  openCardSideDock: PropTypes.func.isRequired,
+  trackEvent: PropTypes.func.isRequired
 };
 
 export default CardHeader;

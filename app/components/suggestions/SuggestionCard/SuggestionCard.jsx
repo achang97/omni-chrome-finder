@@ -28,7 +28,8 @@ const SuggestionCard = ({
   className,
   showMoreMenu,
   deleteProps,
-  openCard
+  openCard,
+  trackEvent
 }) => {
   const [dropdownOpen, setDropdownOpen] = useState(false);
   const [buttonActive, setButtonActive] = useState(_.mapValues(BUTTON_TYPE, () => false));
@@ -173,8 +174,13 @@ const SuggestionCard = ({
     );
   };
 
+  const clickOpenCard = () => {
+    trackEvent('Open Card from Search', { 'Card ID': id, Question: question, Status: status });
+    openCard({ _id: id });
+  };
+
   return (
-    <div className={s(`${className} suggestion-elem`)} onClick={() => openCard({ _id: id })}>
+    <div className={s(`${className} suggestion-elem`)} onClick={clickOpenCard}>
       <div className={s('flex flex-col w-full')}>
         <span className={s('suggestion-elem-title break-words line-clamp-2')}> {question} </span>
         {answer && (
@@ -211,7 +217,8 @@ SuggestionCard.propTypes = {
   }),
 
   // Redux Actions
-  openCard: PropTypes.func.isRequired
+  openCard: PropTypes.func.isRequired,
+  trackEvent: PropTypes.func.isRequired
 };
 
 SuggestionCard.defaultProps = {
