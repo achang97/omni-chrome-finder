@@ -51,16 +51,16 @@ export function updateFinderFolderPermissionGroups(finderId, permissionGroups) {
   };
 }
 
-export function updateSelectedFinderNodes(finderId, nodeIds) {
-  return { type: types.UPDATE_SELECTED_FINDER_NODES, payload: { finderId, nodeIds } };
+export function updateSelectedFinderNodes(finderId, nodes) {
+  return { type: types.UPDATE_SELECTED_FINDER_NODES, payload: { finderId, nodes } };
 }
 
-export function updateDraggingFinderNode(finderId, nodeId) {
-  return { type: types.UPDATE_DRAGGING_FINDER_NODE, payload: { finderId, nodeId } };
+export function updateDraggingFinderNode(finderId, node) {
+  return { type: types.UPDATE_DRAGGING_FINDER_NODE, payload: { finderId, node } };
 }
 
 export function startMoveFinderNodes(finderId) {
-  return { type: types.START_MOVE_FINDER_NODES, payload: { finderId} };
+  return { type: types.START_MOVE_FINDER_NODES, payload: { finderId } };
 }
 
 export function cancelMoveFinderNodes(finderId) {
@@ -92,11 +92,11 @@ export function handleCreateFinderFolderError(finderId, error) {
 }
 
 export function requestUpdateFinderFolder(finderId) {
-  return { type: types.UPDATE_FINDER_FOLDER_REQUEST, payload: { finderId} };
+  return { type: types.UPDATE_FINDER_FOLDER_REQUEST, payload: { finderId } };
 }
 
-export function handleUpdateFinderFolderSuccess(finderId) {
-  return { type: types.UPDATE_FINDER_FOLDER_SUCCESS, payload: { finderId } };
+export function handleUpdateFinderFolderSuccess(finderId, folder) {
+  return { type: types.UPDATE_FINDER_FOLDER_SUCCESS, payload: { finderId, folder } };
 }
 
 export function handleUpdateFinderFolderError(finderId, error) {
@@ -107,28 +107,16 @@ export function requestDeleteFinderNodes(finderId) {
   return { type: types.DELETE_FINDER_NODES_REQUEST, payload: { finderId } };
 }
 
-export function handleDeleteFinderNodesSuccess(finderId) {
-  return { type: types.DELETE_FINDER_NODES_SUCCESS, payload: { finderId } };
+export function handleDeleteFinderNodesSuccess(finderId, nodeIds, cardIds) {
+  return { type: types.DELETE_FINDER_NODES_SUCCESS, payload: { finderId, nodeIds, cardIds } };
 }
 
 export function handleDeleteFinderNodesError(finderId, error) {
   return { type: types.DELETE_FINDER_NODES_ERROR, payload: { finderId, error } };
 }
 
-export function requestBulkDeleteFinderCards(finderId) {
-  return { type: types.BULK_DELETE_FINDER_CARDS_REQUEST, payload: { finderId } };
-}
-
-export function handleBulkDeleteFinderCardsSuccess(finderId, cardIds) {
-  return { type: types.BULK_DELETE_FINDER_CARDS_SUCCESS, payload: { finderId, cardIds } };
-}
-
-export function handleBulkDeleteFinderCardsError(finderId, error) {
-  return { type: types.BULK_DELETE_FINDER_CARDS_ERROR, payload: { finderId, error } };
-}
-
-export function requestMoveFinderNodes(finderId, destinationId) {
-  return { type: types.MOVE_FINDER_NODES_REQUEST, payload: { finderId, destinationId } };
+export function requestMoveFinderNodes(finderId, nodes, destinationId) {
+  return { type: types.MOVE_FINDER_NODES_REQUEST, payload: { finderId, nodes, destinationId } };
 }
 
 export function handleMoveFinderNodesSuccess(finderId) {

@@ -11,20 +11,20 @@ const mapStateToProps = (state, ownProps) => {
         history: finderHistory,
         activeNode,
         moveSource,
-        moveNodeIds,
-        selectedNodeIds,
+        moveNodes,
+        selectedNodes,
         isMovingNodes
       }
     }
   } = state;
 
   const activePath = _.last(finderHistory);
-  return { activePath, activeNode, moveNodeIds, moveSource, selectedNodeIds, isMovingNodes };
+  return { activePath, activeNode, moveNodes, moveSource, selectedNodes, isMovingNodes };
 };
 
 const mapDispatchToProps = {
   cancelMoveFinderNodes,
-  requestMoveFinderNodes,
+  requestMoveFinderNodes
 };
 
 export default connect(mapStateToProps, mapDispatchToProps)(FinderFooter);

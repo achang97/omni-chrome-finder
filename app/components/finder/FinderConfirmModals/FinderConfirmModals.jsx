@@ -3,7 +3,7 @@ import PropTypes from 'prop-types';
 
 import { ConfirmModal } from 'components/common';
 import { CardPermissions } from 'components/cards';
-import { MODAL_TYPE, PATH_TYPE } from 'appConstants/finder';
+import { MODAL_TYPE } from 'appConstants/finder';
 
 import { hasValidPermissions } from 'utils/card';
 import { getStyleApplicationFn } from 'utils/style';
@@ -12,14 +12,15 @@ const s = getStyleApplicationFn();
 
 const FinderConfirmModals = ({
   finderId,
-  activePath,
   modalOpen,
   folderEdits,
+  getNodeError,
   isCreatingFolder,
   createFolderError,
   isUpdatingFolder,
   updateFolderError,
   isDeletingNodes,
+  moveNodesError,
   deleteNodesError,
   closeFinderModal,
   updateFinderFolderName,
@@ -27,8 +28,7 @@ const FinderConfirmModals = ({
   updateFinderFolderPermissionGroups,
   requestCreateFinderFolder,
   requestUpdateFinderFolder,
-  requestDeleteFinderNodes,
-  requestBulkDeleteFinderCards
+  requestDeleteFinderNodes
 }) => {
   const renderCreateFolderBody = () => (
     <div>
@@ -92,23 +92,24 @@ const FinderConfirmModals = ({
       shouldCloseOnOutsideClick: true,
       primaryButtonProps: {
         text: 'Delete',
-        onClick: () => {
-          switch (activePath.type) {
-            case PATH_TYPE.NODE: {
-              requestDeleteFinderNodes(finderId);
-              break;
-            }
-            case PATH_TYPE.SEGMENT: {
-              requestBulkDeleteFinderCards(finderId);
-              break;
-            }
-            default:
-              break;
-          }
-        },
+        onClick: () => requestDeleteFinderNodes(finderId),
         isLoading: isDeletingNodes
       },
       error: deleteNodesError
+    },
+    {
+      modalType: MODAL_TYPE.ERROR_MOVE,
+      title: 'Failed to Move Content',
+      description: moveNodesError,
+      shouldCloseOnOutsideClick: true,
+      showSecondary: false
+    },
+    {
+      modalType: MODAL_TYPE.ERROR_GET,
+      title: 'Folder Not Found',
+      description: getNodeError,
+      shouldCloseOnOutsideClick: true,
+      showSecondary: false
     }
   ];
 
@@ -130,23 +131,20 @@ FinderConfirmModals.propTypes = {
   finderId: PropTypes.string.isRequired,
 
   // Redux State
-  activePath: PropTypes.shape({
-    _id: PropTypes.string.isRequired,
-    type: PropTypes.oneOf(Object.values(PATH_TYPE)).isRequired,
-    state: PropTypes.object
-  }).isRequired,
   modalOpen: PropTypes.objectOf(PropTypes.bool),
   folderEdits: PropTypes.shape({
     name: PropTypes.string.isRequired,
     permissions: PropTypes.object,
     permissionGroups: PropTypes.arrayOf(PropTypes.object)
   }).isRequired,
+  getNodeError: PropTypes.string,
   isCreatingFolder: PropTypes.bool,
   createFolderError: PropTypes.string,
   isUpdatingFolder: PropTypes.bool,
   updateFolderError: PropTypes.string,
   isDeletingNodes: PropTypes.bool,
   deleteNodesError: PropTypes.string,
+  moveNodesError: PropTypes.string,
 
   // Redux Actions
   closeFinderModal: PropTypes.func.isRequired,
@@ -155,8 +153,7 @@ FinderConfirmModals.propTypes = {
   updateFinderFolderPermissionGroups: PropTypes.func.isRequired,
   requestCreateFinderFolder: PropTypes.func.isRequired,
   requestUpdateFinderFolder: PropTypes.func.isRequired,
-  requestDeleteFinderNodes: PropTypes.func.isRequired,
-  requestBulkDeleteFinderCards: PropTypes.func.isRequired
+  requestDeleteFinderNodes: PropTypes.func.isRequired
 };
 
 export default FinderConfirmModals;

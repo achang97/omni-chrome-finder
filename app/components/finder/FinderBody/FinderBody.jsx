@@ -8,7 +8,8 @@ import { Droppable } from 'react-beautiful-dnd';
 import { Tooltip, Loader } from 'components/common';
 import { CardStatusIndicator } from 'components/cards';
 
-import { MODAL_TYPE, PATH_TYPE } from 'appConstants/finder';
+import { FINDER_TYPE, MODAL_TYPE, PATH_TYPE } from 'appConstants/finder';
+import { getArrayIds } from 'utils/array';
 import { getStyleApplicationFn } from 'utils/style';
 
 import FinderFolder from 'assets/images/finder/folder.svg';
@@ -20,6 +21,8 @@ import style from './finder-body.css';
 import FinderDraggable from '../FinderDraggable';
 import FinderDroppable from '../FinderDroppable';
 
+const DRAGGABLE_WIDTH = 110;
+
 const s = getStyleApplicationFn(style);
 
 const INFINITE_SCROLL_OFFSET = 300;
@@ -30,100 +33,113 @@ const FinderBody = ({
   nodes,
   activePath,
   isGettingNode,
+  isMovingNodes,
   isSearchingSegment,
   segmentPage,
-  selectedNodeIds,
-  moveNodeIds,
-  draggingNodeId,
+  selectedNodes,
+  moveNodes,
   pushFinderNode,
   openFinderModal,
-  updateSelectedFinderNodes,
   openCard,
   updateFinderFolderName,
   updateFinderFolderPermissions,
   updateFinderFolderPermissionGroups,
   onBottom
 }) => {
-  const getNodeLabel = ({ card, name }) => {
-    return card ? card.question : name;
+  const isCardNode = (finderType) => {
+    return finderType === FINDER_TYPE.CARD;
+  };
+
+  const getNodeLabel = ({ finderType, name, question }) => {
+    return isCardNode(finderType) ? question : name;
   };
 
   const isMovingNode = (nodeId) => {
-    return moveNodeIds.includes(nodeId);
+    return getArrayIds(moveNodes).includes(nodeId);
   };
 
-  const openNode = ({ card, _id }) => {
-    if (card) {
-      openCard({ _id: card._id });
+  const openNode = ({ finderType, _id }) => {
+    if (isCardNode(finderType)) {
+      openCard({ _id });
     } else if (!isMovingNode(_id)) {
       pushFinderNode(finderId, _id);
     }
   };
 
   const renderChildNode = (childNode, i) => {
-    const { card, _id } = childNode;
+    const { finderType, _id, status } = childNode;
+    const isCard = isCardNode(finderType);
     const label = getNodeLabel(childNode);
     const isMoving = isMovingNode(_id);
-    const nodeIds = nodes.map(({ _id: nodeId }) => nodeId);
     const isDraggable = activePath.type === PATH_TYPE.NODE;
+
+    const childView = (
+      <div className={s(`finder-body-node`)} onDoubleClick={() => openNode(childNode)}>
+        <div className={s('relative')}>
+          <img src={isCard ? FinderCard : FinderFolder} alt={label} />
+          {isMoving && (
+            <div className={s('finder-body-node-move-indicator')}>
+              <img src={MoveFolder} alt="Move Node" className={s('h-full w-full')} />
+            </div>
+          )}
+          {isCard && (
+            <CardStatusIndicator
+              status={status}
+              className={s('finder-body-node-status-indicator')}
+            />
+          )}
+        </div>
+        <Tooltip tooltip={label}>
+          <div className={s('line-clamp-2 mt-sm w-full text-xs text-center')}>{label}</div>
+        </Tooltip>
+      </div>
+    );
 
     return (
       <FinderDraggable
         key={_id}
-        id={_id}
+        finderId={finderId}
+        node={childNode}
         index={i}
         isDragDisabled={!isDraggable}
-        isMultiSelectDisabled={isModal || moveNodeIds.length !== 0}
-        draggingNodeId={draggingNodeId}
-        nodeIds={nodeIds}
-        selectedNodeIds={selectedNodeIds}
-        onSelectFinderNodes={(selectedIds) => updateSelectedFinderNodes(finderId, selectedIds)}
+        isMultiSelectDisabled={isModal || moveNodes.length !== 0}
+        width={DRAGGABLE_WIDTH}
+        className={s('m-sm')}
+        nodes={nodes}
       >
-        <div className={s(`finder-body-node`)} onDoubleClick={() => openNode(childNode)}>
-          <div className={s('relative')}>
-            <img src={card ? FinderCard : FinderFolder} alt={label} />
-            {isMoving && (
-              <div className={s('finder-body-node-move-indicator')}>
-                <img src={MoveFolder} alt="Move Node" className={s('h-full w-full')} />
-              </div>
-            )}
-            {card && (
-              <CardStatusIndicator
-                status={card.status}
-                className={s('finder-body-node-status-indicator')}
-              />
-            )}
-          </div>
-          <Tooltip tooltip={label}>
-            <div className={s('line-clamp-2 mt-sm w-full text-xs text-center')}>{label}</div>
-          </Tooltip>
-        </div>
+        {isCard ? (
+          childView
+        ) : (
+          <FinderDroppable id={_id} finderId={finderId}>
+            {childView}
+          </FinderDroppable>
+        )}
       </FinderDraggable>
     );
   };
 
   const renderActionIcons = () => {
-    if (moveNodeIds.length !== 0) {
+    if (moveNodes.length !== 0) {
       return null;
     }
 
-    const selectedNode = nodes.find(({ _id }) => _id === selectedNodeIds[0]);
     const ICONS = [
       {
         label: 'Edit',
         Icon: MdSettings,
-        show: selectedNodeIds.length === 1 && selectedNode && !selectedNode.card,
+        show: selectedNodes.length === 1 && !isCardNode(selectedNodes[0].finderType),
         onClick: () => {
-          updateFinderFolderName(finderId, selectedNode.name);
+          const { name, permissions, permissionGroups } = selectedNodes[0];
+          updateFinderFolderName(finderId, name);
           openFinderModal(finderId, MODAL_TYPE.EDIT_FOLDER);
-          // updateFinderFolderPermissions(finderId);
-          // updateFinderFolderPermissionGroups(finderId, []);
+          updateFinderFolderPermissions(finderId, permissions);
+          updateFinderFolderPermissionGroups(finderId, permissionGroups);
         }
       },
       {
         label: 'Delete',
         Icon: FaRegTrashAlt,
-        show: selectedNodeIds.length !== 0,
+        show: selectedNodes.length !== 0,
         onClick: () => openFinderModal(finderId, MODAL_TYPE.CONFIRM_DELETE)
       }
     ];
@@ -153,7 +169,7 @@ const FinderBody = ({
   };
 
   const render = () => {
-    if (isGettingNode || (isSearchingSegment && segmentPage === 0)) {
+    if (isGettingNode || isMovingNodes || (isSearchingSegment && segmentPage === 0)) {
       return <Loader className={s('w-full')} />;
     }
 
@@ -175,7 +191,7 @@ const FinderBody = ({
         <BottomScrollListener onBottom={onBottom} bottomOffset={INFINITE_SCROLL_OFFSET}>
           {(scrollRef) => (
             <div ref={scrollRef} className={s('flex-1 overflow-auto flex flex-col')}>
-              <Droppable droppableId={activePath._id} direction="horizontal">
+              <Droppable droppableId={activePath._id}>
                 {({ innerRef, placeholder, droppableProps }) => (
                   <div
                     ref={innerRef}
@@ -215,11 +231,10 @@ FinderBody.propTypes = {
     state: PropTypes.object
   }).isRequired,
   isGettingNode: PropTypes.bool,
+  isMovingNodes: PropTypes.bool,
   isSearchingSegment: PropTypes.bool,
   segmentPage: PropTypes.number.isRequired,
-  isLoading: PropTypes.bool.isRequired,
-  selectedNodeIds: PropTypes.arrayOf(PropTypes.string).isRequired,
-  draggingNodeId: PropTypes.string,
+  selectedNodes: PropTypes.arrayOf(PropTypes.object).isRequired,
 
   // Redux Actions
   pushFinderNode: PropTypes.func.isRequired,

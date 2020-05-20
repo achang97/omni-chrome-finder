@@ -1,0 +1,7 @@
+.suggestion-elem {
+  @apply rounded-xl px-lg py-lg bg-white cursor-pointer flex justify-between;
+}
+
+.suggestion-elem-title {
+  @apply flex-grow text-lg text-left font-semibold;
+}

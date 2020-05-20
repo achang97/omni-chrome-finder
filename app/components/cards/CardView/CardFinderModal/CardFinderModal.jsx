@@ -9,7 +9,16 @@ import { getStyleApplicationFn } from 'utils/style';
 
 const s = getStyleApplicationFn();
 
-const CardFinderModal = ({ _id, status, startNodeId, isOpen, openCardModal, closeCardModal, updateCardPath, closeFinder }) => {
+const CardFinderModal = ({
+  _id,
+  status,
+  startNodeId,
+  isOpen,
+  openCardModal,
+  closeCardModal,
+  updateCardFinderNode,
+  closeFinder
+}) => {
   const onClose = () => {
     closeCardModal(MODAL_TYPE.FINDER);
     closeFinder(_id);
@@ -33,13 +42,27 @@ const CardFinderModal = ({ _id, status, startNodeId, isOpen, openCardModal, clos
         startNodeId={startNodeId}
         isModal
         onSecondaryClick={onClose}
-        onPrimaryClick={(path) => {
+        onPrimaryClick={(finderNode) => {
           onClose();
-          updateCardPath(path);
+          updateCardFinderNode(finderNode);
         }}
       />
     </Modal>
   );
+};
+
+CardFinderModal.propTypes = {
+  // Redux State
+  _id: PropTypes.string.isRequired,
+  status: PropTypes.oneOf(Object.values(STATUS)).isRequired,
+  startNodeId: PropTypes.string,
+  isOpen: PropTypes.bool.isRequired,
+
+  // Redux Actions
+  openCardModal: PropTypes.func.isRequired,
+  closeCardModal: PropTypes.func.isRequired,
+  updateCardFinderNode: PropTypes.func.isRequired,
+  closeFinder: PropTypes.func.isRequired
 };
 
 export default CardFinderModal;

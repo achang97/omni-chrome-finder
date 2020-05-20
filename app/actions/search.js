@@ -27,6 +27,26 @@ export function removeSearchCards(cardIds) {
   return { type: types.REMOVE_SEARCH_CARDS, payload: { cardIds } };
 }
 
+export function requestSearchNodes(query) {
+  return { type: types.SEARCH_NODES_REQUEST, payload: { query } };
+}
+
+export function handleSearchNodesSuccess(nodes) {
+  return { type: types.SEARCH_NODES_SUCCESS, payload: { nodes } };
+}
+
+export function handleSearchNodesError(error) {
+  return { type: types.SEARCH_NODES_ERROR, payload: { error } };
+}
+
+export function updateSearchNode(node) {
+  return { type: types.UPDATE_SEARCH_NODE, payload: { node } };
+}
+
+export function removeSearchNodes(nodeIds) {
+  return { type: types.REMOVE_SEARCH_NODES, payload: { nodeIds } };
+}
+
 export function requestSearchTags(name) {
   return { type: types.SEARCH_TAGS_REQUEST, payload: { name } };
 }
@@ -36,7 +56,7 @@ export function handleSearchTagsSuccess(tags) {
 }
 
 export function handleSearchTagsError(error) {
-  return { type: types.SEARCH_CARDS_ERROR, payload: { error } };
+  return { type: types.SEARCH_TAGS_ERROR, payload: { error } };
 }
 
 export function requestSearchUsers(name) {

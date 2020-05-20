@@ -1,12 +1,21 @@
 import { connect } from 'react-redux';
+import { updateSelectedFinderNodes } from 'actions/finder';
 import FinderDraggable from './FinderDraggable';
 
-const mapStateToProps = (state) => {
+const mapStateToProps = (state, ownProps) => {
+  const { finderId } = ownProps;
   const {
+    finder: {
+      [finderId]: { draggingNode, selectedNodes }
+    },
     cards: { windowPosition }
   } = state;
 
-  return { windowPosition };
+  return { draggingNode, selectedNodes, windowPosition };
 };
 
-export default connect(mapStateToProps)(FinderDraggable);
+const mapDispatchToProps = {
+  updateSelectedFinderNodes
+};
+
+export default connect(mapStateToProps, mapDispatchToProps)(FinderDraggable);

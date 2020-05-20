@@ -11,6 +11,7 @@ const BASE_CARDS_STATE = {
 
 const initialState = {
   cards: _.mapValues(SEARCH.TYPE, () => BASE_CARDS_STATE),
+  nodes: [], // TODO: make this take a type
   tags: [],
   users: [],
   permissionGroups: []
@@ -77,6 +78,32 @@ export default function searchReducer(state = initialState, action) {
     case types.REMOVE_SEARCH_CARDS: {
       const { cardIds } = payload;
       return updateAllCards((cards) => cards.filter(({ _id }) => !cardIds.includes(_id)));
+    }
+
+    case types.SEARCH_NODES_REQUEST: {
+      return { ...state, isSearchingNodes: true, searchNodesError: null };
+    }
+    case types.SEARCH_NODES_SUCCESS: {
+      const { nodes } = payload;
+      return { ...state, isSearchingNodes: false, nodes };
+    }
+    case types.SEARCH_NODES_ERROR: {
+      const { error } = payload;
+      return { ...state, isSearchingNodes: false, searchNodesError: error };
+    }
+
+    case types.UPDATE_SEARCH_NODE: {
+      const { node } = payload;
+      return {
+        ...state,
+        nodes: state.nodes.map((currNode) => (
+          currNode._id === node._id ? node : currNode
+        ))
+      };
+    }
+    case types.REMOVE_SEARCH_NODES: {
+      const { nodeIds } = payload;
+      return { ...state, nodes: state.nodes.filter(({ _id }) => !nodeIds.includes(_id)) };
     }
 
     case types.SEARCH_TAGS_REQUEST: {

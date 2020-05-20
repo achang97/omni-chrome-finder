@@ -1,6 +1,5 @@
 .finder-body-node {
   @apply p-sm h-auto flex flex-col items-center cursor-pointer;
-  width: 110px;
 }
 
 .finder-body-node-move-indicator {

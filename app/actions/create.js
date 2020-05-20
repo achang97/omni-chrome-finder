@@ -17,8 +17,8 @@ export function updateCreateDescriptionEditor(editorState) {
   return { type: types.UPDATE_CREATE_DESCRIPTION_EDITOR, payload: { editorState } };
 }
 
-export function updateCreatePath(path) {
-  return { type: types.UPDATE_CREATE_PATH, payload: { path } };
+export function updateCreateFinderNode(finderNode) {
+  return { type: types.UPDATE_CREATE_FINDER_NODE, payload: { finderNode } };
 }
 
 export function clearCreatePanel() {

@@ -388,7 +388,7 @@ const MinimizedAsk = ({
           {renderPerformanceScoreSection()}
           {renderFeedbackSection()}
         </div>
-        <SuggestionPanel query={searchText} />
+        <SuggestionPanel query={searchText} shouldSearchNodes />
       </div>
     );
   };

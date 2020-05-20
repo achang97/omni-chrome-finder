@@ -1,5 +1,10 @@
 import * as types from 'actions/actionTypes';
-import { updateSearchCard, removeSearchCards } from 'actions/search';
+import {
+  updateSearchCard,
+  removeSearchCards,
+  removeSearchNodes,
+  updateSearchNode
+} from 'actions/search';
 
 const cardsMiddleware = (store) => (next) => (action) => {
   const nextAction = next(action);
@@ -18,15 +23,22 @@ const cardsMiddleware = (store) => (next) => (action) => {
       break;
     }
 
+    case types.UPDATE_FINDER_FOLDER_SUCCESS: {
+      const { folder } = payload;
+      store.dispatch(updateSearchNode(folder));
+      break;
+    }
+
     // Remove cards
     case types.DELETE_CARD_SUCCESS: {
       const { cardId } = payload;
       store.dispatch(removeSearchCards([cardId]));
       break;
     }
-    case types.BULK_DELETE_FINDER_CARDS_SUCCESS: {
-      const { cardIds } = payload;
+    case types.DELETE_FINDER_NODES_SUCCESS: {
+      const { cardIds, nodeIds } = payload;
       store.dispatch(removeSearchCards(cardIds));
+      store.dispatch(removeSearchNodes(nodeIds));
       break;
     }
 

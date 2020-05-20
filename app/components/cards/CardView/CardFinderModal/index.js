@@ -1,6 +1,6 @@
 import { connect } from 'react-redux';
 import _ from 'lodash';
-import { openCardModal, closeCardModal, updateCardPath } from 'actions/cards';
+import { openCardModal, closeCardModal, updateCardFinderNode } from 'actions/cards';
 import { closeFinder } from 'actions/finder';
 import { MODAL_TYPE } from 'appConstants/card';
 import CardFinderModal from './CardFinderModal';
@@ -25,7 +25,7 @@ const mapStateToProps = (state) => {
 const mapDispatchToProps = {
   openCardModal,
   closeCardModal,
-  updateCardPath,
+  updateCardFinderNode,
   closeFinder
 };
 

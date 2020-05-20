@@ -46,8 +46,7 @@ const BASE_CARD_STATE = {
   subscribers: [],
   question: '',
   answerEditorState: EditorState.createEmpty(),
-  descriptionEditorState: EditorState.createEmpty(),
-  path: []
+  descriptionEditorState: EditorState.createEmpty()
 };
 
 export default function cardsReducer(state = initialState, action) {
@@ -111,7 +110,7 @@ export default function cardsReducer(state = initialState, action) {
       question,
       answerEditorState,
       descriptionEditorState,
-      path,
+      finderNode,
       slackReplies,
       edits
     } = card;
@@ -129,7 +128,7 @@ export default function cardsReducer(state = initialState, action) {
         question,
         answerEditorState,
         descriptionEditorState,
-        path,
+        finderNode,
         slackReplies,
         ...edits
       }
@@ -360,9 +359,9 @@ export default function cardsReducer(state = initialState, action) {
       return updateActiveCardEdits({ slackReplies: activeCard.slackReplies });
     }
 
-    case types.UPDATE_CARD_PATH: {
-      const { path } = payload;
-      return updateActiveCardEdits({ path });
+    case types.UPDATE_CARD_FINDER_NODE: {
+      const { finderNode } = payload;
+      return updateActiveCardEdits({ finderNode });
     }
 
     case types.ADD_CARD_OWNER: {

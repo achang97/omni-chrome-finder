@@ -35,7 +35,9 @@ const CircleButton = ({
 }) => (
   <div className={s(`circle-button-container ${className}`)}>
     <div
-      className={s(`circle-button ${disabled ? 'button-disabled' : 'button-hover'} ${buttonClassName}`)}
+      className={s(
+        `circle-button ${disabled ? 'button-disabled' : 'button-hover'} ${buttonClassName}`
+      )}
       onClick={() => onClick && !disabled && onClick()}
       style={getButtonStyle(size)}
     >

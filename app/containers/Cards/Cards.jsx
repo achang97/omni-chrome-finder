@@ -194,7 +194,11 @@ const Cards = ({
               <div className={s('truncate flex-1')}>
                 {(!isEditing ? question : edits.question) || 'Untitled'}
               </div>
-              <div onClick={(e) => handleCloseClick(e, i)} className={s('cursor-pointer')}>
+              <div
+                onClick={(e) => handleCloseClick(e, i)}
+                onMouseDown={(e) => e.stopPropagation()}
+                className={s('cursor-pointer')}
+              >
                 <MdClose color={colors.purple['gray-50']} />
               </div>
             </div>

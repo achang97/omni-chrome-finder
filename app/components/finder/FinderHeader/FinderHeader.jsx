@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import PropTypes from 'prop-types';
+import _ from 'lodash';
 import { MdChevronRight, MdChevronLeft, MdSearch } from 'react-icons/md';
 import { IoMdCloseCircle } from 'react-icons/io';
 import { FiPlus } from 'react-icons/fi';
@@ -23,8 +24,8 @@ const FinderHeader = ({
   isBackDisabled,
   activePath,
   activeNode,
-  selectedNodeIds,
-  moveNodeIds,
+  selectedNodes,
+  moveNodes,
   isTemplateView,
   user,
   goBackFinder,
@@ -35,10 +36,22 @@ const FinderHeader = ({
   openCard,
   toggleCards,
   toggleTemplateView,
-  updateCreatePath,
+  updateCreateFinderNode,
   history
 }) => {
   const [isNewDropdownOpen, setNewDropdownOpen] = useState(false);
+
+  const getParent = () => {
+    if (!activeNode.path) {
+      return null;
+    }
+
+    if (activeNode.path.length === 0) {
+      return { _id: FINDER.ROOT.ID, name: FINDER.ROOT.NAME };
+    }
+
+    return _.last(activeNode.path);
+  };
 
   const renderNavigationSection = () => {
     let mainSectionName;
@@ -55,6 +68,7 @@ const FinderHeader = ({
         break;
     }
 
+    const parent = getParent();
     return (
       <div className={s('w-1/2 flex items-center min-w-0')}>
         <CircleButton
@@ -66,13 +80,13 @@ const FinderHeader = ({
         />
         {mainSectionName && (
           <div className={s('finder-header-icon min-w-0 flex items-center ml-reg text-sm')}>
-            {activeNode.parent && (
+            {parent && (
               <>
                 <div
                   className={s('truncate cursor-pointer')}
-                  onClick={() => pushFinderNode(finderId, activeNode.parent._id)}
+                  onClick={() => pushFinderNode(finderId, parent._id)}
                 >
-                  {activeNode.parent.name}
+                  {parent.name}
                 </div>
                 <MdChevronRight className={s('mx-xs')} />
               </>
@@ -84,22 +98,10 @@ const FinderHeader = ({
     );
   };
 
-  const getFullPath = () => {
-    // TODO: this will probably be simplified when we get data
-    const fullPath = [];
-    let currNode = activeNode;
-    while (currNode && currNode._id !== FINDER.ROOT) {
-      const { name, _id } = currNode;
-      fullPath.unshift({ name, _id });
-      currNode = currNode.parent;
-    }
-    return fullPath;
-  };
-
   const renderActionSection = () => {
     const isSegment = activePath.type === FINDER.PATH_TYPE.SEGMENT;
-    const fullPath = isSegment ? [] : getFullPath();
-    const isMoving = moveNodeIds.length !== 0;
+    const finderNode = isSegment ? null : activeNode;
+    const isMoving = moveNodes.length !== 0;
 
     const onClickWrapper = (onClick) => {
       return () => {
@@ -111,13 +113,12 @@ const FinderHeader = ({
     const onTemplateClick = () => {
       history.push(ROUTES.CREATE);
       toggleCards();
-      updateCreatePath(fullPath);
+      updateCreateFinderNode(finderNode);
       if (!isTemplateView) {
         toggleTemplateView();
       }
     };
 
-    // TODO: account for current "path" and pass that to template and new blank card
     const CONTEXT_MENU_OPTIONS = [
       {
         label: 'New Card',
@@ -125,7 +126,7 @@ const FinderHeader = ({
           {
             label: 'Blank Card',
             onClick: onClickWrapper(() => {
-              const newCard = { ...getNewCardBaseState(user), path: fullPath };
+              const newCard = { ...getNewCardBaseState(user), finderNode };
               openCard(newCard, true);
             })
           },
@@ -174,7 +175,7 @@ const FinderHeader = ({
             size="auto"
             buttonClassName={s('finder-header-icon mr-sm')}
             content={<img src={MoveFolder} alt="Move Folder" />}
-            disabled={isSegment || selectedNodeIds.length === 0 || isMoving}
+            disabled={isSegment || selectedNodes.length === 0 || isMoving}
             onClick={() => startMoveFinderNodes(finderId)}
           />
         )}
@@ -221,12 +222,12 @@ FinderHeader.propTypes = {
     state: PropTypes.object
   }).isRequired,
   activeNode: PropTypes.shape({
-    _id: PropTypes.string.isRequired,
-    name: PropTypes.string.isRequired,
-    parent: PropTypes.object.isRequired
+    _id: PropTypes.string,
+    name: PropTypes.string,
+    path: PropTypes.arrayOf(PropTypes.object)
   }).isRequired,
-  selectedNodeIds: PropTypes.arrayOf(PropTypes.string).isRequired,
-  moveNodeIds: PropTypes.arrayOf(PropTypes.string).isRequired,
+  selectedNodes: PropTypes.arrayOf(PropTypes.object).isRequired,
+  moveNodes: PropTypes.arrayOf(PropTypes.object).isRequired,
   isTemplateView: PropTypes.bool.isRequired,
   user: UserPropTypes.isRequired,
 
@@ -239,7 +240,7 @@ FinderHeader.propTypes = {
   openCard: PropTypes.func.isRequired,
   toggleCards: PropTypes.func.isRequired,
   toggleTemplateView: PropTypes.func.isRequired,
-  updateCreatePath: PropTypes.func.isRequired
+  updateCreateFinderNode: PropTypes.func.isRequired
 };
 
 export default FinderHeader;

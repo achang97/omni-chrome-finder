@@ -6,6 +6,7 @@ import { DragDropContext } from 'react-beautiful-dnd';
 import { Loader } from 'components/common';
 
 import { usePrevious } from 'utils/react';
+import { wasCommandKeyUsed } from 'utils/window';
 import { getStyleApplicationFn } from 'utils/style';
 import { FINDER, SEARCH, CARD, ANIMATE, WINDOW } from 'appConstants';
 
@@ -23,15 +24,13 @@ const FinderView = ({
   isModal,
   onPrimaryClick,
   onSecondaryClick,
-
   activePath,
   nodes,
-  selectedNodeIds,
+  selectedNodes,
   hasReachedSegmentLimit,
   isSearchingSegment,
   ownUserId,
   bookmarkIds,
-
   initFinder,
   requestGetFinderNode,
   clearSearchCards,
@@ -73,6 +72,7 @@ const FinderView = ({
   const loadFinderContent = useCallback(() => {
     switch (activePath.type) {
       case FINDER.PATH_TYPE.NODE: {
+        // TODO: utilize search text in state
         requestGetFinderNode(finderId);
         break;
       }
@@ -115,8 +115,16 @@ const FinderView = ({
 
   useEffect(() => {
     const onWindowKeyDown = (event) => {
-      if (!event.defaultPrevented && event.keyCode === WINDOW.KEY_CODES.ESCAPE) {
-        unselectAll();
+      if (!event.defaultPrevented) {
+        switch (event.keyCode) {
+          case WINDOW.KEY_CODES.ESCAPE: {
+            unselectAll();
+            break;
+          }
+          default: {
+            break;
+          }
+        }
       }
     };
 
@@ -127,14 +135,15 @@ const FinderView = ({
   }, [unselectAll]);
 
   const onDragStart = ({ draggableId }) => {
-    const selected = selectedNodeIds.find((nodeId) => nodeId === draggableId);
+    const selected = selectedNodes.find(({ _id }) => _id === draggableId);
+    const node = nodes.find(({ _id }) => _id === draggableId);
 
     // if dragging an item that is not selected - unselect all items
     if (!selected) {
-      updateSelectedFinderNodes(finderId, [draggableId]);
+      updateSelectedFinderNodes(finderId, [node]);
     }
 
-    updateDraggingFinderNode(finderId, draggableId);
+    updateDraggingFinderNode(finderId, node);
   };
 
   const onDragEnd = ({ source, destination, reason }) => {
@@ -185,7 +194,6 @@ const FinderView = ({
                 finderId={finderId}
                 onPrimaryClick={onPrimaryClick}
                 onSecondaryClick={onSecondaryClick}
-                nodes={nodes}
               />
               <FinderConfirmModals finderId={finderId} />
             </>
@@ -213,7 +221,7 @@ FinderView.propTypes = {
     type: PropTypes.oneOf(Object.values(FINDER.PATH_TYPE)).isRequired,
     state: PropTypes.object
   }),
-  selectedNodeIds: PropTypes.arrayOf(PropTypes.string).isRequired,
+  selectedNodes: PropTypes.arrayOf(PropTypes.object).isRequired,
   ownUserId: PropTypes.string.isRequired,
   bookmarkIds: PropTypes.arrayOf(PropTypes.string).isRequired,
   hasReachedSegmentLimit: PropTypes.bool.isRequired,
@@ -229,7 +237,7 @@ FinderView.propTypes = {
 };
 
 FinderView.defaultProps = {
-  startNodeId: FINDER.ROOT,
+  startNodeId: FINDER.ROOT.ID,
   isModal: false
 };
 

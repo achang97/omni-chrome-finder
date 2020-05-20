@@ -58,11 +58,11 @@ const CardCreateModal = ({
     verificationInterval,
     permissions,
     permissionGroups = [],
-    path = []
+    finderNode = {}
   } = edits;
 
   const renderLocation = () => {
-    return <CardLocation path={path} isEditable />;
+    return <CardLocation finderNode={finderNode} isEditable />;
   };
 
   const renderOwners = () => {
@@ -270,7 +270,7 @@ CardCreateModal.propTypes = {
     verificationInterval: PropTypes.object,
     permissions: PropTypes.object,
     permissionGroups: PropTypes.arrayOf(PropTypes.object),
-    path: PropTypes.arrayOf(PropTypes.object)
+    finderNode: PropTypes.object
   }),
 
   // Redux Actions

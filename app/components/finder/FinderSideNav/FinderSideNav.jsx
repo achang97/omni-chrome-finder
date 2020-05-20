@@ -12,13 +12,15 @@ import Bookmarked from 'assets/images/finder/bookmark.svg';
 import sideNavStyle from './finder-side-nav.css';
 import finderStyle from '../finder.css';
 
+import FinderDroppable from '../FinderDroppable';
+
 const s = getStyleApplicationFn(finderStyle, sideNavStyle);
 
 const NODES = [
   {
-    name: 'Home',
+    name: ROOT.NAME,
     imgSrc: Home,
-    nodeId: ROOT
+    nodeId: ROOT.ID
   }
 ];
 
@@ -42,6 +44,7 @@ const FinderSideNav = ({ finderId, isModal, activePathId, pushFinderNode, pushFi
         `finder-side-nav-section ${activePathId === id ? 'finder-side-nav-selected' : ''}`
       )}
       onClick={onClick}
+      key={id}
     >
       <img src={imgSrc} alt={name} />
       <span> {name} </span>
@@ -50,9 +53,11 @@ const FinderSideNav = ({ finderId, isModal, activePathId, pushFinderNode, pushFi
 
   return (
     <div className={s('flex flex-col flex-shrink-0 py-sm border-r finder-border')}>
-      {NODES.map(({ name, imgSrc, nodeId }) =>
-        renderSection(name, imgSrc, nodeId, () => pushFinderNode(finderId, nodeId))
-      )}
+      {NODES.map(({ name, imgSrc, nodeId }) => (
+        <FinderDroppable id={nodeId} finderId={finderId} key={nodeId}>
+          {renderSection(name, imgSrc, nodeId, () => pushFinderNode(finderId, nodeId))}
+        </FinderDroppable>
+      ))}
       {!isModal && (
         <>
           <Separator horizontal className={s('my-sm')} />

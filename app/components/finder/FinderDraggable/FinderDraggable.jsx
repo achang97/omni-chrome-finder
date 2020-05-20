@@ -5,6 +5,7 @@ import { Draggable } from 'react-beautiful-dnd';
 import { Badge } from 'components/common';
 
 import { KEY_CODES } from 'appConstants/window';
+import { wasCommandKeyUsed } from 'utils/window';
 import { getDraggableStyle } from 'utils/card';
 import { getStyleApplicationFn } from 'utils/style';
 
@@ -16,52 +17,49 @@ const s = getStyleApplicationFn(style);
 const primaryButton = 0;
 
 const FinderDraggable = ({
-  id,
+  node,
+  finderId,
   index,
   children,
   isDragDisabled,
   isMultiSelectDisabled,
-  nodeIds,
-  selectedNodeIds,
-  draggingNodeId,
-  onSelectFinderNodes,
+  width,
+  nodes,
+  selectedNodes,
+  draggingNode,
+  updateSelectedFinderNodes,
+  className,
   windowPosition
 }) => {
-  // Determines if the platform specific toggle selection in group key was used
-  const wasToggleInSelectionGroupKeyUsed = (event) => {
-    const isUsingWindows = navigator.platform.indexOf('Win') >= 0;
-    return isUsingWindows ? event.ctrlKey : event.metaKey;
-  };
-
   // Determines if the multiSelect key was used
   const wasMultiSelectKeyUsed = (event) => event.shiftKey;
 
   const toggleSelection = () => {
-    onSelectFinderNodes([id]);
+    updateSelectedFinderNodes(finderId, [node]);
   };
 
   const toggleSelectionInGroup = () => {
-    const selectedIndex = selectedNodeIds.indexOf(id);
+    const selectedIndex = selectedNodes.findIndex(({ _id }) => _id === node._id);
 
     if (selectedIndex === -1) {
       // if not selected - add it to the selected items
-      onSelectFinderNodes([...selectedNodeIds, id]);
+      updateSelectedFinderNodes(finderId, [...selectedNodes, node]);
     } else {
       // it was previously selected and now needs to be removed from the group
-      const shallow = [...selectedNodeIds];
+      const shallow = [...selectedNodes];
       shallow.splice(selectedIndex, 1);
-      onSelectFinderNodes(shallow);
+      updateSelectedFinderNodes(finderId, shallow);
     }
   };
 
   const multiSelect = () => {
     // Nothing already selected
-    if (!selectedNodeIds.length) {
-      return [id];
+    if (!selectedNodes.length) {
+      return [node];
     }
 
-    const lastSelectedId = selectedNodeIds[selectedNodeIds.length - 1];
-    const lastSelectedIndex = nodeIds.findIndex((nodeId) => nodeId === lastSelectedId);
+    const lastSelectedId = selectedNodes[selectedNodes.length - 1]._id;
+    const lastSelectedIndex = nodes.findIndex(({ _id }) => _id === lastSelectedId);
 
     // nothing to do here
     if (index === lastSelectedIndex) {
@@ -72,18 +70,18 @@ const FinderDraggable = ({
     const start = isSelectingForwards ? lastSelectedIndex : index;
     const end = isSelectingForwards ? index : lastSelectedIndex;
 
-    const inBetween = nodeIds.slice(start, end + 1);
+    const inBetween = nodes.slice(start, end + 1);
 
     // everything inbetween needs to have it's selection toggled.
     // with the exception of the start and end values which will always be selected
 
-    const toAdd = inBetween.filter((taskId) => {
+    const toAdd = inBetween.filter(({ _id: nodeId }) => {
       // if already selected: then no need to select it again
-      return !selectedNodeIds.includes(taskId);
+      return !selectedNodes.some(({ _id }) => _id === nodeId);
     });
 
     const sorted = isSelectingForwards ? toAdd : [...toAdd].reverse();
-    const combined = [...selectedNodeIds, ...sorted];
+    const combined = [...selectedNodes, ...sorted];
 
     return combined;
   };
@@ -92,7 +90,7 @@ const FinderDraggable = ({
   const multiSelectTo = () => {
     const updated = multiSelect();
     if (updated) {
-      onSelectFinderNodes(updated);
+      updateSelectedFinderNodes(finderId, updated);
     }
   };
 
@@ -102,7 +100,7 @@ const FinderDraggable = ({
 
     if (isMultiSelectDisabled) {
       toggleSelection();
-    } else if (wasToggleInSelectionGroupKeyUsed(event)) {
+    } else if (wasCommandKeyUsed(event)) {
       toggleSelectionInGroup();
     } else if (wasMultiSelectKeyUsed(event)) {
       multiSelectTo();
@@ -140,9 +138,13 @@ const FinderDraggable = ({
   };
 
   const getStyle = (itemStyle, snapshot) => {
-    if (!snapshot.isDragging) return {};
+    if (!snapshot.isDragging) return { width };
 
-    const draggableStyle = getDraggableStyle(true, itemStyle, windowPosition);
+    const draggableStyle = {
+      ...getDraggableStyle(true, itemStyle, windowPosition),
+      width
+    };
+
     if (!snapshot.isDropAnimating) {
       return draggableStyle;
     }
@@ -155,35 +157,41 @@ const FinderDraggable = ({
   };
 
   const render = () => {
-    const selectionCount = selectedNodeIds.length;
-    const isSelected = selectedNodeIds.includes(id);
-    const isHidden = draggingNodeId && isSelected && id !== draggingNodeId;
+    const selectionCount = selectedNodes.length;
+    const isSelected = selectedNodes.some(({ _id }) => _id === node._id);
+    const isHidden = draggingNode && isSelected && node._id !== draggingNode._id;
 
     return (
-      <Draggable draggableId={id} index={index} isDragDisabled={isDragDisabled}>
+      <Draggable draggableId={node._id} index={index} isDragDisabled={isDragDisabled}>
         {(provided, snapshot) => {
           const shouldShowSelection = snapshot.isDragging && selectionCount > 1;
           return (
-            <div
-              ref={provided.innerRef}
-              {...provided.draggableProps}
-              {...provided.dragHandleProps}
-              onClick={onClick}
-              onTouchEnd={onTouchEnd}
-              onKeyDown={(event) => onKeyDown(event, provided, snapshot)}
-              className={s(`
-                finder-draggable
-                ${isSelected ? 'finder-draggable-selected' : ''}
-                ${snapshot.isDragging ? 'opacity-75' : ''}
-                ${isHidden ? 'invisible' : ''}
-              `)}
-              style={getStyle(provided.draggableProps.style, snapshot)}
-            >
-              {children}
-              {shouldShowSelection && (
-                <Badge count={selectionCount} className={s('bg-purple-reg')} />
+            <>
+              {snapshot.isDragging && (
+                <div style={{ width }} className={s(`${className} invisible`)} />
               )}
-            </div>
+              <div
+                ref={provided.innerRef}
+                {...provided.draggableProps}
+                {...provided.dragHandleProps}
+                onClick={onClick}
+                onTouchEnd={onTouchEnd}
+                onKeyDown={(event) => onKeyDown(event, provided, snapshot)}
+                className={s(`
+                  finder-draggable
+                  ${className}
+                  ${isSelected && !snapshot.isDragging ? 'finder-draggable-selected' : ''}
+                  ${snapshot.isDragging ? 'finder-draggable-dragging' : ''}
+                  ${isHidden ? 'invisible' : ''}
+                `)}
+                style={getStyle(provided.draggableProps.style, snapshot)}
+              >
+                {children}
+                {shouldShowSelection && (
+                  <Badge count={selectionCount} className={s('bg-purple-reg')} />
+                )}
+              </div>
+            </>
           );
         }}
       </Draggable>
@@ -194,10 +202,33 @@ const FinderDraggable = ({
 };
 
 FinderDraggable.propTypes = {
+  node: PropTypes.shape({ _id: PropTypes.string.isRequired }),
+  finderId: PropTypes.string.isRequired,
+  index: PropTypes.number.isRequired,
+  className: PropTypes.string,
+  children: PropTypes.node.isRequired,
+  isDragDisabled: PropTypes.bool,
+  isMultiSelectDisabled: PropTypes.bool,
+  width: PropTypes.number.isRequired,
+  nodes: PropTypes.arrayOf(PropTypes.shape({ _id: PropTypes.string.isRequired })).isRequired,
+
+  // Redux State
+  selectedNodes: PropTypes.arrayOf(PropTypes.shape({ _id: PropTypes.string.isRequired }))
+    .isRequired,
+  draggingNode: PropTypes.shape({ _id: PropTypes.string.isRequired }),
   windowPosition: PropTypes.shape({
     x: PropTypes.number.isRequired,
     y: PropTypes.number.isRequired
-  })
+  }),
+
+  // Redux Actions
+  updateSelectedFinderNodes: PropTypes.func.isRequired
+};
+
+FinderDraggable.defaultProps = {
+  className: '',
+  isDragDisabled: false,
+  isMultiSelectDisabled: false
 };
 
 export default FinderDraggable;

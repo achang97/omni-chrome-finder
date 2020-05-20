@@ -1,18 +1,13 @@
 import { connect } from 'react-redux';
 import { openCardModal, closeCardModal } from 'actions/cards';
+import { openFinder, pushFinderNode } from 'actions/finder';
 import CardLocation from './CardLocation';
-
-const mapStateToProps = (state) => {
-  const {
-
-  } = state;
-
-  return { };
-};
 
 const mapDispatchToProps = {
   openCardModal,
-  closeCardModal
+  closeCardModal,
+  openFinder,
+  pushFinderNode
 };
 
-export default connect(mapStateToProps, mapDispatchToProps)(CardLocation);
+export default connect(undefined, mapDispatchToProps)(CardLocation);

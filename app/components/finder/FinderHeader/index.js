@@ -9,14 +9,14 @@ import {
   startMoveFinderNodes
 } from 'actions/finder';
 import { openCard, toggleCards } from 'actions/cards';
-import { toggleTemplateView, updateCreatePath } from 'actions/create';
+import { toggleTemplateView, updateCreateFinderNode } from 'actions/create';
 import FinderHeader from './FinderHeader';
 
 const mapStateToProps = (state, ownProps) => {
   const { finderId } = ownProps;
   const {
     finder: {
-      [finderId]: { history: finderHistory, activeNode, selectedNodeIds, moveNodeIds }
+      [finderId]: { history: finderHistory, activeNode, selectedNodes, moveNodes }
     },
     create: { isTemplateView },
     profile: { user }
@@ -27,8 +27,8 @@ const mapStateToProps = (state, ownProps) => {
     isBackDisabled: finderHistory.length <= 1,
     activePath,
     activeNode,
-    selectedNodeIds,
-    moveNodeIds,
+    selectedNodes,
+    moveNodes,
     isTemplateView,
     user
   };
@@ -43,7 +43,7 @@ const mapDispatchToProps = {
   openCard,
   toggleCards,
   toggleTemplateView,
-  updateCreatePath
+  updateCreateFinderNode
 };
 
 export default connect(mapStateToProps, mapDispatchToProps)(withRouter(FinderHeader));

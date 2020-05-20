@@ -3,7 +3,6 @@ import _ from 'lodash';
 import {
   pushFinderNode,
   openFinderModal,
-  updateSelectedFinderNodes,
   updateFinderFolderName,
   updateFinderFolderPermissions,
   updateFinderFolderPermissionGroups
@@ -16,13 +15,7 @@ const mapStateToProps = (state, ownProps) => {
   const { finderId } = ownProps;
   const {
     finder: {
-      [finderId]: {
-        history: finderHistory,
-        isGettingNode,
-        selectedNodeIds,
-        moveNodeIds,
-        draggingNodeId
-      }
+      [finderId]: { history: finderHistory, isGettingNode, isMovingNodes, selectedNodes, moveNodes }
     },
     search: {
       cards: {
@@ -34,19 +27,18 @@ const mapStateToProps = (state, ownProps) => {
   const activePath = _.last(finderHistory);
   return {
     isGettingNode,
+    isMovingNodes,
     isSearchingSegment,
     segmentPage,
     activePath,
-    selectedNodeIds,
-    moveNodeIds,
-    draggingNodeId
+    selectedNodes,
+    moveNodes
   };
 };
 
 const mapDispatchToProps = {
   pushFinderNode,
   openFinderModal,
-  updateSelectedFinderNodes,
   openCard,
   updateFinderFolderName,
   updateFinderFolderPermissions,

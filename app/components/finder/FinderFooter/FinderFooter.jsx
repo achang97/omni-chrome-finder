@@ -1,8 +1,11 @@
 import React from 'react';
+import PropTypes from 'prop-types';
 import { Button, Loader } from 'components/common';
-import { getStyleApplicationFn } from 'utils/style';
 
-import { CARD, FINDER } from 'appConstants';
+import { getArrayIds } from 'utils/array';
+import { getFullPath } from 'utils/finder';
+import { getStyleApplicationFn } from 'utils/style';
+import { PATH_TYPE, FINDER_TYPE } from 'appConstants/finder';
 
 import finderStyle from '../finder.css';
 
@@ -12,23 +15,22 @@ const FinderFooter = ({
   finderId,
   onSecondaryClick,
   onPrimaryClick,
-  nodes,
   activePath,
   activeNode,
-  moveNodeIds,
+  moveNodes,
   moveSource,
-  selectedNodeIds,
+  selectedNodes,
   isMovingNodes,
   cancelMoveFinderNodes,
   requestMoveFinderNodes
 }) => {
   const getDestinationNode = () => {
-    if (selectedNodeIds.length === 0 || selectedNodeIds.length > 1) {
+    if (selectedNodes.length === 0 || selectedNodes.length > 1) {
       return activeNode;
     }
 
-    const selectedNode = nodes.find(({ _id }) => _id === selectedNodeIds[0]);
-    if (selectedNode && !selectedNode.card) {
+    const selectedNode = selectedNodes[0];
+    if (selectedNode && selectedNode.finderType === FINDER_TYPE.NODE) {
       return selectedNode;
     }
 
@@ -36,44 +38,22 @@ const FinderFooter = ({
   };
 
   const isValidMove = () => {
-    if (activePath.type === FINDER.PATH_TYPE.SEGMENT) {
+    if (activePath.type === PATH_TYPE.SEGMENT) {
       return false;
     }
 
-    const destination = getDestinationNode();
-
-    // TODO: change this when we get real data
-    let currNode = destination;
-    while (currNode) {
-      if (moveNodeIds.includes(currNode._id)) {
-        return false;
-      }
-      currNode = currNode.parent;
-    }
-
-    return true;
-  };
-
-  const getFullPath = (destination) => {
-    // TODO: this will probably be simplified when we get data
-    const fullPath = [];
-    let currNode = destination;
-    while (currNode && currNode._id !== FINDER.ROOT) {
-      const { name, _id } = currNode;
-      fullPath.unshift({ name, _id });
-      currNode = currNode.parent;
-    }
-    return fullPath;
+    const destinationPath = getFullPath(getDestinationNode());
+    const moveNodeIds = getArrayIds(moveNodes);
+    return !destinationPath || destinationPath.every(({ _id }) => !moveNodeIds.includes(_id));
   };
 
   const getFooterProps = () => {
     const destination = getDestinationNode();
-    const fullPath = getFullPath(destination);
 
     if (onSecondaryClick || onPrimaryClick) {
       return {
         onSecondaryButtonClick: onSecondaryClick,
-        onPrimaryButtonClick: () => onPrimaryClick(fullPath),
+        onPrimaryButtonClick: () => onPrimaryClick(destination),
         label: (
           <>
             <span> Selected Folder: </span>
@@ -83,14 +63,14 @@ const FinderFooter = ({
       };
     }
 
-    if (moveNodeIds.length !== 0) {
+    if (moveNodes.length !== 0) {
       return {
         isLoading: isMovingNodes,
         onSecondaryButtonClick: () => cancelMoveFinderNodes(finderId),
-        onPrimaryButtonClick: () => requestMoveFinderNodes(finderId, destination._id),
+        onPrimaryButtonClick: () => requestMoveFinderNodes(finderId, moveNodes, destination._id),
         label: (
           <>
-            <span> Moving {moveNodeIds.length} item(s) from </span>
+            <span> Moving {moveNodes.length} item(s) from </span>
             <b> {moveSource.name} </b>
             <span> to </span>
             <b> {destination.name} </b>
@@ -143,6 +123,34 @@ const FinderFooter = ({
   };
 
   return render();
+};
+
+FinderFooter.propTypes = {
+  finderId: PropTypes.string.isRequired,
+  onSecondaryClick: PropTypes.func,
+  onPrimaryClick: PropTypes.func,
+  activePath: PropTypes.shape({
+    _id: PropTypes.string.isRequired,
+    type: PropTypes.oneOf(Object.values(PATH_TYPE)).isRequired,
+    state: PropTypes.object
+  }).isRequired,
+  activeNode: PropTypes.shape({
+    _id: PropTypes.string,
+    name: PropTypes.string,
+    path: PropTypes.arrayOf(PropTypes.object)
+  }).isRequired,
+  moveNodes: PropTypes.arrayOf(PropTypes.shape({ _id: PropTypes.string.isRequired })).isRequired,
+  moveSource: PropTypes.shape({ name: PropTypes.string }),
+  selectedNodes: PropTypes.arrayOf(
+    PropTypes.shape({
+      finderType: PropTypes.oneOf(Object.values(FINDER_TYPE))
+    })
+  ).isRequired,
+  isMovingNodes: PropTypes.bool,
+
+  // Redux Actions
+  cancelMoveFinderNodes: PropTypes.func.isRequired,
+  requestMoveFinderNodes: PropTypes.func.isRequired
 };
 
 export default FinderFooter;

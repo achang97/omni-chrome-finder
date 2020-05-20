@@ -33,6 +33,12 @@ const tasksMiddleware = (store) => (next) => (action) => {
       setStorage(CHROME.STORAGE.TASKS, tasks);
       break;
     }
+
+    case types.DELETE_FINDER_NODES_SUCCESS: {
+      const { cardIds } = payload;
+      cardIds.forEach((cardId) => removeTask(cardId));
+      break;
+    }
     case types.DELETE_CARD_SUCCESS: {
       const { cardId } = payload;
       removeTask(cardId);

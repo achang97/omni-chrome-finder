@@ -1,6 +1,7 @@
 import _ from 'lodash';
 import * as types from 'actions/actionTypes';
 import { updateIndex } from 'utils/array';
+import { convertPermissionsToFrontendFormat } from 'utils/card';
 import { MAIN_STATE_ID, ROOT, PATH_TYPE, MODAL_TYPE } from 'appConstants/finder';
 import { PERMISSION_OPTIONS } from 'appConstants/card';
 
@@ -23,15 +24,15 @@ const BASE_FOLDER_STATE = {
 const BASE_MODAL_OPEN_STATE = _.mapValues(MODAL_TYPE, () => false);
 
 const BASE_FINDER_STATE = {
-  history: [createBasePath(ROOT)],
+  history: [createBasePath(ROOT.ID)],
   activeNode: BASE_ACTIVE_NODE,
   modalOpen: BASE_MODAL_OPEN_STATE,
   edits: {
     folder: BASE_FOLDER_STATE
   },
-  selectedNodeIds: [],
-  draggingNodeId: null,
-  moveNodeIds: [],
+  selectedNodes: [],
+  draggingNode: null,
+  moveNodes: [],
   moveSource: null
 };
 
@@ -55,10 +56,15 @@ export default function finderReducer(state = initialState, action) {
     }
 
     const newPath = { _id: pathId, type: pathType, state: { searchText: '', ...pathState } };
-    return { history: [...history, newPath], selectedNodeIds: [] };
+    return { history: [...history, newPath], selectedNodes: [] };
   };
 
   switch (type) {
+    // Handle Card Closing Tabs
+    case types.CLOSE_ALL_CARDS: {
+      return initialState;
+    }
+
     case types.INIT_FINDER: {
       const { finderId, nodeId } = payload;
       if (state[finderId]) {
@@ -83,7 +89,7 @@ export default function finderReducer(state = initialState, action) {
           newActiveNode = BASE_ACTIVE_NODE;
         }
 
-        return { history: newHistory, activeNode: newActiveNode, selectedNodeIds: [] };
+        return { history: newHistory, activeNode: newActiveNode, selectedNodes: [] };
       });
     }
     case types.PUSH_FINDER_NODE: {
@@ -102,12 +108,12 @@ export default function finderReducer(state = initialState, action) {
     }
 
     case types.UPDATE_SELECTED_FINDER_NODES: {
-      const { finderId, nodeIds } = payload;
-      return updateStateById(finderId, () => ({ selectedNodeIds: nodeIds }));
+      const { finderId, nodes } = payload;
+      return updateStateById(finderId, () => ({ selectedNodes: nodes }));
     }
     case types.UPDATE_DRAGGING_FINDER_NODE: {
-      const { finderId, nodeId } = payload;
-      return updateStateById(finderId, () => ({ draggingNodeId: nodeId }));
+      const { finderId, node } = payload;
+      return updateStateById(finderId, () => ({ draggingNode: node }));
     }
 
     case types.UPDATE_FINDER_SEARCH_TEXT: {
@@ -119,7 +125,7 @@ export default function finderReducer(state = initialState, action) {
         const newPath = { ...activePath, state: { ...activePath.state, searchText: text } };
         const newHistory = updateIndex(history, history.length - 1, newPath);
 
-        return { history: newHistory, selectedNodeIds: [] };
+        return { history: newHistory, selectedNodes: [] };
       });
     }
 
@@ -167,19 +173,19 @@ export default function finderReducer(state = initialState, action) {
 
     case types.START_MOVE_FINDER_NODES: {
       const { finderId } = payload;
-      return updateStateById(finderId, ({ selectedNodeIds, activeNode }) => ({
-        moveNodeIds: selectedNodeIds,
+      return updateStateById(finderId, ({ selectedNodes, activeNode }) => ({
+        moveNodes: selectedNodes,
         moveSource: activeNode,
-        selectedNodeIds: []
+        selectedNodes: []
       }));
     }
     case types.CANCEL_MOVE_FINDER_NODES: {
       const { finderId } = payload;
-      return updateStateById(finderId, ({ selectedNodeIds, activeNode: { children } }) => {
-        const newSelectedNodeIds = selectedNodeIds.filter((id) =>
-          children.some(({ _id: childId }) => childId === id)
+      return updateStateById(finderId, ({ selectedNodes, activeNode: { children } }) => {
+        const newSelectedNodes = selectedNodes.filter(({ _id }) =>
+          children.some(({ _id: childId }) => childId === _id)
         );
-        return { ...state, moveNodeIds: [], moveSource: null, selectedNodeIds: newSelectedNodeIds };
+        return { ...state, moveNodes: [], moveSource: null, selectedNodes: newSelectedNodes };
       });
     }
 
@@ -189,11 +195,19 @@ export default function finderReducer(state = initialState, action) {
     }
     case types.GET_FINDER_NODE_SUCCESS: {
       const { finderId, node } = payload;
+      node.children = node.children.map(({ userPermissions, permissionGroups, ...rest }) => {
+        const permissions = convertPermissionsToFrontendFormat(userPermissions, permissionGroups);
+        return { ...rest, permissions, permissionGroups };
+      });
       return updateStateById(finderId, () => ({ isGettingNode: false, activeNode: node }));
     }
     case types.GET_FINDER_NODE_ERROR: {
       const { finderId, error } = payload;
-      return updateStateById(finderId, () => ({ isGettingNode: false, getNodeError: error }));
+      return updateStateById(finderId, ({ modalOpen }) => ({
+        isGettingNode: false,
+        getNodeError: error,
+        modalOpen: { ...modalOpen, [MODAL_TYPE.ERROR_GET]: true }
+      }));
     }
 
     case types.CREATE_FINDER_FOLDER_REQUEST: {
@@ -242,30 +256,31 @@ export default function finderReducer(state = initialState, action) {
       const { finderId } = payload;
       return updateStateById(finderId, () => ({
         isMovingNodes: false,
-        moveNodeIds: [],
+        moveNodes: [],
         moveSource: null
       }));
     }
     case types.MOVE_FINDER_NODES_ERROR: {
       const { finderId, error } = payload;
-      return updateStateById(finderId, () => ({ isMovingNodes: false, moveNodesError: error }));
+      return updateStateById(finderId, ({ modalOpen }) => ({
+        isMovingNodes: false,
+        moveNodesError: error,
+        modalOpen: { ...modalOpen, [MODAL_TYPE.ERROR_MOVE]: true }
+      }));
     }
 
-    case types.DELETE_FINDER_NODES_REQUEST:
-    case types.BULK_DELETE_FINDER_CARDS_REQUEST: {
+    case types.DELETE_FINDER_NODES_REQUEST: {
       const { finderId } = payload;
       return updateStateById(finderId, () => ({ isDeletingNodes: true, deleteNodesError: null }));
     }
-    case types.DELETE_FINDER_NODES_SUCCESS:
-    case types.BULK_DELETE_FINDER_CARDS_SUCCESS: {
+    case types.DELETE_FINDER_NODES_SUCCESS: {
       const { finderId } = payload;
       return updateStateById(finderId, ({ modalOpen }) => ({
         isDeletingNodes: false,
         modalOpen: { ...modalOpen, [MODAL_TYPE.CONFIRM_DELETE]: false }
       }));
     }
-    case types.DELETE_FINDER_NODES_ERROR:
-    case types.BULK_DELETE_FINDER_CARDS_ERROR: {
+    case types.DELETE_FINDER_NODES_ERROR: {
       const { finderId, error } = payload;
       return updateStateById(finderId, () => ({ isDeletingNodes: false, deleteNodesError: error }));
     }

@@ -25,7 +25,7 @@ const Create = ({
   descriptionEditorState,
   answerEditorState,
   attachments,
-  path,
+  finderNode,
   user,
   isTemplateView,
   showCreateDescriptionEditor,
@@ -52,7 +52,7 @@ const Create = ({
 
   const openCardWithProps = (createModalOpen = false, edits = {}) => {
     // Open card with random ID and clear out Create panel
-    const newCardInfo = { ...getNewCardBaseState(user), path };
+    const newCardInfo = { ...getNewCardBaseState(user), finderNode };
     newCardInfo.edits = {
       ...newCardInfo.edits,
       question,
@@ -229,7 +229,9 @@ Create.propTypes = {
   descriptionEditorState: PropTypes.instanceOf(EditorState).isRequired,
   answerEditorState: PropTypes.instanceOf(EditorState).isRequired,
   attachments: PropTypes.arrayOf(PropTypes.object).isRequired,
-  path: PropTypes.arrayOf(PropTypes.object),
+  finderNode: PropTypes.shape({
+    path: PropTypes.arrayOf(PropTypes.object)
+  }),
   user: UserPropTypes.isRequired,
   isTemplateView: PropTypes.bool.isRequired,
   isDescriptionEditorShown: PropTypes.bool.isRequired,

@@ -10,9 +10,10 @@ import { CARD } from 'appConstants';
 import { copyCardUrl } from 'utils/card';
 
 import { getStyleApplicationFn } from 'utils/style';
-import style from './suggestion-card.css';
+import cardStyle from './suggestion-card.css';
+import mainStyle from '../suggestion.css';
 
-const s = getStyleApplicationFn(style);
+const s = getStyleApplicationFn(mainStyle, cardStyle);
 
 const BUTTON_TYPE = {
   SHARE: 'SHARE',
@@ -173,18 +174,9 @@ const SuggestionCard = ({
   };
 
   return (
-    <div
-      className={s(
-        `${className} rounded-xl px-lg py-lg bg-white cursor-pointer flex justify-between`
-      )}
-      onClick={() => openCard({ _id: id })}
-    >
+    <div className={s(`${className} suggestion-elem`)} onClick={() => openCard({ _id: id })}>
       <div className={s('flex flex-col w-full')}>
-        <div className={s('flex ')}>
-          <span className={s('flex-grow text-lg text-left font-semibold break-words line-clamp-2')}>
-            {question}
-          </span>
-        </div>
+        <span className={s('suggestion-elem-title break-words line-clamp-2')}> {question} </span>
         {answer && (
           <span
             className={s(

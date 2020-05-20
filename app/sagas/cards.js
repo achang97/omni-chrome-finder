@@ -3,9 +3,10 @@ import { take, call, fork, put, select } from 'redux-saga/effects';
 import { doGet, doPost, doPut, doDelete, getErrorMessage } from 'utils/request';
 import { getArrayIds } from 'utils/array';
 import { getContentStateFromEditorState } from 'utils/editor';
-import { toggleUpvotes, hasValidEdits, isApprover } from 'utils/card';
+import { toggleUpvotes, convertPermissionsToBackendFormat, hasValidEdits, isApprover } from 'utils/card';
 import { convertAttachmentsToBackendFormat } from 'utils/file';
 import { STATUS, PERMISSION_OPTION, VERIFICATION_INTERVAL_OPTION } from 'appConstants/card';
+import { ROOT } from 'appConstants/finder';
 import {
   GET_CARD_REQUEST,
   CREATE_CARD_REQUEST,
@@ -167,7 +168,8 @@ function* convertCardToBackendFormat(isNewCard) {
       permissions,
       permissionGroups,
       slackReplies,
-      attachments
+      attachments,
+      finderNode
     }
   } = yield select((state) => state.cards.activeCard);
   const _id = yield call(getUserId);
@@ -180,11 +182,7 @@ function* convertCardToBackendFormat(isNewCard) {
     answerEditorState
   );
 
-  const permissionsInfo = {
-    userPermissions: permissions.value === PERMISSION_OPTION.JUST_ME ? [_id] : [],
-    permissionGroups:
-      permissions.value === PERMISSION_OPTION.SPECIFIC_GROUPS ? permissionGroups : []
-  };
+  const permissionsInfo = convertPermissionsToBackendFormat(_id, permissions, permissionGroups);
 
   let cardOwners = getArrayIds(owners);
   let cardSubscribers = _.union(cardOwners, getArrayIds(subscribers));
@@ -200,6 +198,11 @@ function* convertCardToBackendFormat(isNewCard) {
     cardUpdateInterval = VERIFICATION_INTERVAL_OPTION.NEVER;
   }
 
+  let finderNodeId = null;
+  if (finderNode && finderNode._id !== ROOT.ID) {
+    finderNodeId = finderNode._id;
+  }
+
   return {
     question,
     description: descriptionText,
@@ -213,7 +216,8 @@ function* convertCardToBackendFormat(isNewCard) {
     tags: cardTags,
     slackReplies: cardSlackReplies,
     updateInterval: cardUpdateInterval,
-    status: isNewCard ? STATUS.UP_TO_DATE : status
+    status: isNewCard ? STATUS.UP_TO_DATE : status,
+    finderNode: finderNodeId
   };
 }
 

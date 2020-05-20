@@ -65,7 +65,7 @@ const CardSection = ({
           {!isExpanded && isVertical && preview}
           {headerEnd}
         </div>
-        <div className={s('flex-1')}>
+        <div className={s('flex-1 self-stretch')}>
           {preview && (
             <AnimateHeight height={isExpandable && !isExpanded && !isVertical ? 'auto' : 0}>
               {preview}

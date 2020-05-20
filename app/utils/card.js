@@ -29,16 +29,7 @@ export function convertCardToFrontendFormat(card) {
     verificationInterval = CARD.VERIFICATION_INTERVAL_OPTIONS[0];
   }
 
-  let permissionsValue;
-  if (userPermissions && userPermissions.length !== 0) {
-    permissionsValue = CARD.PERMISSION_OPTION.JUST_ME;
-  } else if (permissionGroups && permissionGroups.length !== 0) {
-    permissionsValue = CARD.PERMISSION_OPTION.SPECIFIC_GROUPS;
-  } else {
-    permissionsValue = CARD.PERMISSION_OPTION.ANYONE;
-  }
-
-  const permissions = CARD.PERMISSION_OPTIONS.find((option) => option.value === permissionsValue);
+  const permissions = convertPermissionsToFrontendFormat(userPermissions, permissionGroups);
 
   return {
     descriptionEditorState: contentStateDescription
@@ -73,6 +64,28 @@ export function toggleUpvotes(upvoteIds, userId) {
   }
 
   return newUpvotes;
+}
+
+export function convertPermissionsToBackendFormat(userId, permissions, permissionGroups) {
+  const permissionsInfo = {
+    userPermissions: permissions.value === CARD.PERMISSION_OPTION.JUST_ME ? [userId] : [],
+    permissionGroups:
+      permissions.value === CARD.PERMISSION_OPTION.SPECIFIC_GROUPS ? permissionGroups : []
+  };
+  return permissionsInfo;
+}
+
+export function convertPermissionsToFrontendFormat(userPermissions, permissionGroups) {
+  let permissionsValue;
+  if (userPermissions && userPermissions.length !== 0) {
+    permissionsValue = CARD.PERMISSION_OPTION.JUST_ME;
+  } else if (permissionGroups && permissionGroups.length !== 0) {
+    permissionsValue = CARD.PERMISSION_OPTION.SPECIFIC_GROUPS;
+  } else {
+    permissionsValue = CARD.PERMISSION_OPTION.ANYONE;
+  }
+
+  return CARD.PERMISSION_OPTIONS.find((option) => option.value === permissionsValue);
 }
 
 export function hasValidPermissions(permissions, permissionGroups) {
@@ -195,6 +208,8 @@ export function getDraggableStyle(isDragging, draggableStyle, windowPosition) {
 export default {
   convertCardToFrontendFormat,
   toggleUpvotes,
+  convertPermissionsToFrontendFormat,
+  convertPermissionsToBackendFormat,
   hasValidPermissions,
   hasValidEdits,
   generateCardId,

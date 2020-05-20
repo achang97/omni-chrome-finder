@@ -58,7 +58,7 @@ ConfirmModal.propTypes = {
   primaryButtonProps: PropTypes.shape({
     text: PropTypes.node.isRequired,
     onClick: PropTypes.func.isRequired
-  }).isRequired,
+  }),
   secondaryButtonProps: PropTypes.shape({
     text: PropTypes.node.isRequired,
     onClick: PropTypes.func.isRequired

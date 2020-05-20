@@ -23,7 +23,7 @@ const mapStateToProps = (state) => {
       activeCard: {
         isEditing,
         status,
-        path,
+        finderNode,
         owners,
         subscribers,
         attachments,
@@ -43,6 +43,7 @@ const mapStateToProps = (state) => {
   return {
     isEditing,
     status,
+    finderNode,
     owners,
     subscribers,
     attachments,

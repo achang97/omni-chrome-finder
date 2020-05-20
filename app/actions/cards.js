@@ -74,8 +74,8 @@ export function cancelEditCardMessages() {
   return { type: types.CANCEL_EDIT_CARD_MESSAGES, payload: {} };
 }
 
-export function updateCardPath(path) {
-  return { type: types.UPDATE_CARD_PATH, payload: { path } };
+export function updateCardFinderNode(finderNode) {
+  return { type: types.UPDATE_CARD_FINDER_NODE, payload: { finderNode } };
 }
 
 export function addCardOwner(owner) {

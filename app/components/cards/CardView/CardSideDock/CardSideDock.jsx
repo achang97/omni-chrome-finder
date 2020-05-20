@@ -32,7 +32,7 @@ const SIDE_DOCK_TRANSITION_MS = 200;
 const CardSideDock = ({
   isEditing,
   status,
-  path,
+  finderNode,
   owners,
   subscribers,
   attachments,
@@ -73,8 +73,8 @@ const CardSideDock = ({
   };
 
   const renderLocation = () => {
-    const currPath = isEditing ? edits.path : path;
-    return <CardLocation path={currPath} isEditable={isEditing} />;
+    const currFinderNode = isEditing ? edits.finderNode : finderNode;
+    return <CardLocation finderNode={currFinderNode} isEditable={isEditing} />;
   };
 
   const renderOwners = () => {

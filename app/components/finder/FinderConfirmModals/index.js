@@ -1,5 +1,4 @@
 import { connect } from 'react-redux';
-import _ from 'lodash';
 import {
   closeFinderModal,
   updateFinderFolderName,
@@ -7,8 +6,7 @@ import {
   updateFinderFolderPermissionGroups,
   requestCreateFinderFolder,
   requestUpdateFinderFolder,
-  requestDeleteFinderNodes,
-  requestBulkDeleteFinderCards
+  requestDeleteFinderNodes
 } from 'actions/finder';
 import FinderConfirmModals from './FinderConfirmModals';
 
@@ -17,30 +15,31 @@ const mapStateToProps = (state, ownProps) => {
   const {
     finder: {
       [finderId]: {
-        history: finderHistory,
         modalOpen,
         edits: { folder: folderEdits },
+        getNodeError,
         isCreatingFolder,
         createFolderError,
         isUpdatingFolder,
         updateFolderError,
         isDeletingNodes,
-        deleteNodesError
+        deleteNodesError,
+        moveNodesError
       }
     }
   } = state;
 
-  const activePath = _.last(finderHistory);
   return {
-    activePath,
     modalOpen,
     folderEdits,
+    getNodeError,
     isCreatingFolder,
     createFolderError,
     isUpdatingFolder,
     updateFolderError,
     isDeletingNodes,
-    deleteNodesError
+    deleteNodesError,
+    moveNodesError
   };
 };
 
@@ -51,8 +50,7 @@ const mapDispatchToProps = {
   updateFinderFolderPermissionGroups,
   requestCreateFinderFolder,
   requestUpdateFinderFolder,
-  requestDeleteFinderNodes,
-  requestBulkDeleteFinderCards
+  requestDeleteFinderNodes
 };
 
 export default connect(mapStateToProps, mapDispatchToProps)(FinderConfirmModals);

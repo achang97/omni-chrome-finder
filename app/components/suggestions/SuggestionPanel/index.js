@@ -1,5 +1,5 @@
 import { connect } from 'react-redux';
-import { requestSearchCards, clearSearchCards } from 'actions/search';
+import { requestSearchCards, clearSearchCards, requestSearchNodes } from 'actions/search';
 import { requestLogAudit } from 'actions/auditLog';
 import { SEARCH } from 'appConstants';
 import SuggestionPanel from './SuggestionPanel';
@@ -7,16 +7,19 @@ import SuggestionPanel from './SuggestionPanel';
 const mapStateToProps = (state) => {
   const {
     search: {
-      cards: { [SEARCH.TYPE.POPOUT]: cards }
+      cards: { [SEARCH.TYPE.POPOUT]: cards },
+      nodes,
+      isSearchingNodes
     }
   } = state;
 
-  return { ...cards };
+  return { ...cards, nodes, isSearchingNodes };
 };
 
 const mapDispatchToProps = {
   requestSearchCards,
   clearSearchCards,
+  requestSearchNodes,
   requestLogAudit
 };
 

@@ -28,7 +28,7 @@ const mapStateToProps = (state, ownProps) => {
     }
   } = state;
 
-  const { history: finderHistory = [], selectedNodeIds = [], activeNode } = finderState;
+  const { history: finderHistory = [], selectedNodes = [], activeNode } = finderState;
   const activePath = _.last(finderHistory);
 
   let nodes = [];
@@ -39,7 +39,7 @@ const mapStateToProps = (state, ownProps) => {
         break;
       }
       case FINDER.PATH_TYPE.SEGMENT: {
-        nodes = cards.map((card) => ({ _id: card._id, card }));
+        nodes = cards.map((card) => ({ finderType: FINDER.FINDER_TYPE.CARD, ...card }));
         break;
       }
       default:
@@ -49,7 +49,7 @@ const mapStateToProps = (state, ownProps) => {
 
   return {
     activePath,
-    selectedNodeIds,
+    selectedNodes,
     nodes,
     hasReachedSegmentLimit,
     isSearchingSegment,

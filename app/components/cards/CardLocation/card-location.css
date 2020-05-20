@@ -1,0 +1,3 @@
+.card-location-node-name {
+  @apply font-bold cursor-pointer;
+}
