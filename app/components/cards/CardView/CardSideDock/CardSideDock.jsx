@@ -6,7 +6,7 @@ import moment from 'moment';
 import { MdClose, MdEdit } from 'react-icons/md';
 import { FaRegTrashAlt } from 'react-icons/fa';
 
-import { Button, HelpTooltip } from 'components/common';
+import { Button } from 'components/common';
 
 import { getBaseAnimationStyle } from 'utils/animate';
 import { isJustMe } from 'utils/card';
@@ -85,7 +85,19 @@ const CardSideDock = ({
         users={currOwners}
         onAdd={addCardOwner}
         onRemoveClick={removeCardOwner}
+        size="sm"
         showTooltips
+      />
+    );
+  };
+
+  const renderVerificationInterval = () => {
+    const currVerificationInterval = isEditing ? edits.verificationInterval : verificationInterval;
+    return (
+      <CardVerificationInterval
+        verificationInterval={currVerificationInterval}
+        onChange={updateCardVerificationInterval}
+        isEditable={isEditing}
       />
     );
   };
@@ -121,19 +133,6 @@ const CardSideDock = ({
     );
   };
 
-  const renderTags = () => {
-    const currTags = isEditing ? edits.tags : tags;
-    return (
-      <CardTags
-        isEditable={isEditing}
-        tags={currTags}
-        onChange={updateCardTags}
-        onRemoveClick={removeCardTag}
-        showPlaceholder
-      />
-    );
-  };
-
   const handleHideSections = ({ newHeight }) => {
     if (newHeight !== 0) {
       permissionRef.current.scrollIntoView({ behavior: 'smooth', block: 'end' });
@@ -141,16 +140,16 @@ const CardSideDock = ({
   };
 
   const renderAdvanced = (justMe) => {
-    let currVerificationInterval;
+    let currTags;
     let currPermissions;
     let currPermissionGroups;
 
     if (isEditing) {
-      currVerificationInterval = edits.verificationInterval;
+      currTags = edits.tags;
       currPermissions = edits.permissions;
       currPermissionGroups = edits.permissionGroups;
     } else {
-      currVerificationInterval = verificationInterval;
+      currTags = tags;
       currPermissions = permissions;
       currPermissionGroups = permissionGroups;
     }
@@ -158,21 +157,14 @@ const CardSideDock = ({
     return (
       <>
         <AnimateHeight height={justMe ? 0 : 'auto'} onAnimationEnd={handleHideSections}>
-          <div className={s('mb-sm')}>
-            <div className={s('flex items-center text-gray-reg text-xs mb-sm')}>
-              <span> Verification Interval </span>
-              <HelpTooltip
-                className={s('ml-sm')}
-                tooltip={HINTS.VERIFICATION_INTERVAL}
-                tooltipProps={{
-                  place: 'right'
-                }}
-              />
-            </div>
-            <CardVerificationInterval
-              verificationInterval={currVerificationInterval}
-              onChange={updateCardVerificationInterval}
+          <div className={s('mb-reg')}>
+            <div className={s('text-gray-reg text-xs mb-sm')}> Tags </div>
+            <CardTags
               isEditable={isEditing}
+              tags={currTags}
+              onChange={updateCardTags}
+              onRemoveClick={removeCardTag}
+              showPlaceholder
             />
           </div>
         </AnimateHeight>
@@ -259,6 +251,11 @@ const CardSideDock = ({
       renderFn: renderOwners
     },
     {
+      title: 'Verification Interval',
+      hint: HINTS.VERIFICATION_INTERVAL,
+      renderFn: renderVerificationInterval
+    },
+    {
       title: 'Subscriber(s)',
       hint: HINTS.SUBSCRIBERS,
       renderFn: renderSubscribers
@@ -268,10 +265,6 @@ const CardSideDock = ({
       renderFn: renderAttachments,
       showJustMe: true,
       showNewCard: true
-    },
-    {
-      title: 'Tags',
-      renderFn: renderTags
     },
     {
       title: 'Advanced',

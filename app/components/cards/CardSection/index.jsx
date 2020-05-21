@@ -30,14 +30,14 @@ const CardSection = ({
       <div className={`flex items-start ${isVertical ? 'flex-col' : ''}`}>
         <div
           className={s(
-            `flex mb-lg items-center justify-between ${
+            `flex mb-reg items-center justify-between ${
               !isVertical ? 'card-section-horizontal-header' : 'self-stretch'
             }`
           )}
         >
           <div className={s('flex items-center')}>
             <div
-              className={s('font-semibold text-sm text-black button-hover')}
+              className={s('font-semibold text-xs text-black button-hover')}
               onClick={toggleSection}
             >
               {title}

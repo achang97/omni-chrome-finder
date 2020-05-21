@@ -2,6 +2,10 @@
   @apply p-sm h-auto flex flex-col items-center cursor-pointer;
 }
 
+.finder-body-node-icon {
+  width: 55px;
+}
+
 .finder-body-node-move-indicator {
   @apply absolute top-0 left-0 bg-purple-light rounded-full w-xl h-xl p-xs shadow-md;
 

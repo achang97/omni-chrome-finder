@@ -1,9 +1,9 @@
 import React, { useRef, useEffect } from 'react';
 import PropTypes from 'prop-types';
 import AnimateHeight from 'react-animate-height';
-import { MdLock, MdAutorenew } from 'react-icons/md';
+import { MdLock } from 'react-icons/md';
 
-import { Modal, Separator, Message, HelpTooltip } from 'components/common';
+import { Modal, Message } from 'components/common';
 
 import { HINTS, MODAL_TYPE } from 'appConstants/card';
 import { hasValidEdits, isExistingCard, isJustMe } from 'utils/card';
@@ -73,6 +73,18 @@ const CardCreateModal = ({
         onAdd={addCardOwner}
         onRemoveClick={removeCardOwner}
         showTooltips
+        size="xs"
+        showNames={false}
+      />
+    );
+  };
+
+  const renderVerificationInterval = () => {
+    return (
+      <CardVerificationInterval
+        verificationInterval={verificationInterval}
+        onChange={updateCardVerificationInterval}
+        isEditable
       />
     );
   };
@@ -94,18 +106,6 @@ const CardCreateModal = ({
     );
   };
 
-  const renderTags = () => {
-    return (
-      <CardTags
-        isEditable
-        tags={tags}
-        onChange={updateCardTags}
-        onRemoveClick={removeCardTag}
-        showPlaceholder
-      />
-    );
-  };
-
   const renderAdvanced = (isExisting, justMe) => {
     return (
       <>
@@ -114,20 +114,13 @@ const CardCreateModal = ({
           onAnimationEnd={({ newHeight }) => newHeight !== 0 && scrollToBottom()}
         >
           <div className={s('mb-sm')}>
-            <div className={s('flex items-center text-gray-reg text-xs mb-xs')}>
-              <span> Verification Interval </span>
-              <HelpTooltip
-                className={s('ml-sm')}
-                tooltip={HINTS.VERIFICATION_INTERVAL}
-                tooltipProps={{
-                  place: 'right'
-                }}
-              />
-            </div>
-            <CardVerificationInterval
-              verificationInterval={verificationInterval}
-              onChange={updateCardVerificationInterval}
+            <div className={s('text-gray-reg text-xs mb-sm')}> Tags </div>
+            <CardTags
               isEditable
+              tags={tags}
+              onChange={updateCardTags}
+              onRemoveClick={removeCardTag}
+              showPlaceholder
             />
           </div>
         </AnimateHeight>
@@ -146,22 +139,15 @@ const CardCreateModal = ({
     );
   };
 
-  const renderAdvancedPreview = (justMe) => {
+  const renderAdvancedPreview = () => {
+    if (!permissions) {
+      return null;
+    }
+
     return (
       <div className={s('text-xs text-purple-gray-50 flex')}>
-        {!justMe && verificationInterval && (
-          <>
-            <MdAutorenew />
-            <span className={s('ml-xs')}> {verificationInterval.label} </span>
-            <Separator className={s('mx-reg')} />
-          </>
-        )}
-        {permissions && (
-          <>
-            <MdLock />
-            <span className={s('ml-xs')}> {permissions.label} </span>
-          </>
-        )}
+        <MdLock />
+        <span className={s('ml-xs')}> {permissions.label} </span>
       </div>
     );
   };
@@ -188,6 +174,13 @@ const CardCreateModal = ({
         renderFn: renderOwners
       },
       {
+        title: 'Verification Interval',
+        startExpanded: true,
+        isExpandable: false,
+        hint: HINTS.VERIFICATION_INTERVAL,
+        renderFn: renderVerificationInterval
+      },
+      {
         title: 'Subscriber(s)',
         startExpanded: true,
         isExpandable: false,
@@ -195,16 +188,10 @@ const CardCreateModal = ({
         renderFn: renderSubscribers
       },
       {
-        title: 'Tags',
-        startExpanded: true,
-        isExpandable: false,
-        renderFn: renderTags
-      },
-      {
         title: 'Advanced',
         startExpanded: false,
         isExpandable: true,
-        preview: renderAdvancedPreview(justMe),
+        preview: renderAdvancedPreview(),
         renderFn: renderAdvanced,
         showJustMe: true
       }
@@ -226,7 +213,7 @@ const CardCreateModal = ({
         bodyClassName={s('rounded-b-lg flex flex-col')}
         primaryButtonProps={primaryButtonProps}
       >
-        <div className={s('flex-grow overflow-auto p-lg')}>
+        <div className={s('flex-grow overflow-auto px-lg py-reg')}>
           {CARD_SECTIONS.map(
             ({ title, hint, renderFn, showJustMe, startExpanded, isExpandable, preview }, i) => (
               <AnimateHeight height={!justMe || showJustMe ? 'auto' : 0} key={title}>

@@ -16,27 +16,24 @@ const SuggestionPreview = ({ id, question, questionDescription, answer, openCard
 
   return (
     <div className={s('suggestion-preview')}>
-      <div className={s('bg-purple-xxlight py-xl px-lg rounded-t-lg')}>
-        <div className={s('text-lg font-semibold')}>
-          <span className={s('line-clamp-3 break-words')}> {question} </span>
-        </div>
+      <div className={s('bg-purple-xxlight p-reg rounded-t-lg')}>
+        <div className={s('suggestion-elem-title line-clamp-3 break-words')}>{question}</div>
         {questionDescription && (
-          <div className={s('mt-reg text-xs text-gray-dark font-medium')}>
-            <span className={s('line-clamp-2 break-words')}> {questionDescription} </span>
+          <div className={s('mt-reg text-xs text-gray-dark font-medium line-clamp-2 break-words')}>
+            {questionDescription}
           </div>
         )}
       </div>
       {answer && (
-        <div className={s('bg-white py-xl px-lg text-sm')}>
-          <span className={s('line-clamp-3 break-words')}>{answer}</span>
-        </div>
+        <div className={s('bg-white p-reg text-sm line-clamp-3 break-words')}>{answer}</div>
       )}
       <div className={s('bg-white rounded-b-lg')} onClick={clickOpenCard}>
         <Button
           text="View full card"
           underline
           color="transparent"
-          className={s('rounded-t-none')}
+          className={s('rounded-t-none py-sm')}
+          textClassName={s('text-sm')}
         />
       </div>
     </div>

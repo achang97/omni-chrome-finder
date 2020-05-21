@@ -19,7 +19,6 @@ import MoveFolder from 'assets/images/finder/move-folder.svg';
 import style from './finder-body.css';
 
 import FinderDraggable from '../FinderDraggable';
-import FinderDroppable from '../FinderDroppable';
 
 const DRAGGABLE_WIDTH = 110;
 
@@ -71,29 +70,7 @@ const FinderBody = ({
     const isCard = isCardNode(finderType);
     const label = getNodeLabel(childNode);
     const isMoving = isMovingNode(_id);
-    const isDraggable = activePath.type === PATH_TYPE.NODE;
-
-    const childView = (
-      <div className={s(`finder-body-node`)} onDoubleClick={() => openNode(childNode)}>
-        <div className={s('relative')}>
-          <img src={isCard ? FinderCard : FinderFolder} alt={label} />
-          {isMoving && (
-            <div className={s('finder-body-node-move-indicator')}>
-              <img src={MoveFolder} alt="Move Node" className={s('h-full w-full')} />
-            </div>
-          )}
-          {isCard && (
-            <CardStatusIndicator
-              status={status}
-              className={s('finder-body-node-status-indicator')}
-            />
-          )}
-        </div>
-        <Tooltip tooltip={label}>
-          <div className={s('line-clamp-2 mt-sm w-full text-xs text-center')}>{label}</div>
-        </Tooltip>
-      </div>
-    );
+    // const isDraggable = activePath.type === PATH_TYPE.NODE;
 
     return (
       <FinderDraggable
@@ -101,19 +78,35 @@ const FinderBody = ({
         finderId={finderId}
         node={childNode}
         index={i}
-        isDragDisabled={!isDraggable}
+        isDragDisabled
         isMultiSelectDisabled={isModal || moveNodes.length !== 0}
         width={DRAGGABLE_WIDTH}
         className={s('m-sm')}
         nodes={nodes}
       >
-        {isCard ? (
-          childView
-        ) : (
-          <FinderDroppable id={_id} finderId={finderId}>
-            {childView}
-          </FinderDroppable>
-        )}
+        <div className={s(`finder-body-node`)} onDoubleClick={() => openNode(childNode)}>
+          <div className={s('relative')}>
+            <img
+              src={isCard ? FinderCard : FinderFolder}
+              alt={label}
+              className={s('finder-body-node-icon')}
+            />
+            {isMoving && (
+              <div className={s('finder-body-node-move-indicator')}>
+                <img src={MoveFolder} alt="Move Node" className={s('h-full w-full')} />
+              </div>
+            )}
+            {isCard && (
+              <CardStatusIndicator
+                status={status}
+                className={s('finder-body-node-status-indicator')}
+              />
+            )}
+          </div>
+          <Tooltip tooltip={label}>
+            <div className={s('line-clamp-2 mt-sm w-full text-xs text-center')}>{label}</div>
+          </Tooltip>
+        </div>
       </FinderDraggable>
     );
   };

@@ -7,10 +7,8 @@ import { removeIndex, updateIndex, updateArrayOfObjects } from 'utils/array';
 const initialState = {
   /* Minified Page */
   searchText: '',
-  showFeedback: false,
-  feedback: '',
-
   showPerformanceScore: false,
+  recentCards: [],
 
   /* Expanded Page */
   isDescriptionEditorShown: false,
@@ -43,20 +41,6 @@ export default function askReducer(state = initialState, action) {
         showPerformanceScore: !showPerformanceScore
       };
     }
-    case types.TOGGLE_ASK_FEEDBACK_INPUT: {
-      const { showFeedback } = state;
-      return {
-        ...state,
-        showFeedback: !showFeedback,
-        feedback: '',
-        ...(!showFeedback ? { feedbackSuccess: null, feedbackError: null } : {})
-      };
-    }
-    case types.UPDATE_ASK_FEEDBACK: {
-      const { feedback } = payload;
-      return { ...state, feedback };
-    }
-
     case types.SHOW_ASK_DESCRIPTION_EDITOR: {
       return { ...state, isDescriptionEditorShown: true };
     }
@@ -165,6 +149,18 @@ export default function askReducer(state = initialState, action) {
       return { ...state, isGettingSlackConversations: false, getSlackConversationsError: error };
     }
 
+    case types.GET_RECENT_CARDS_REQUEST: {
+      return { ...state, isGettingRecentCards: true, getRecentError: null };
+    }
+    case types.GET_RECENT_CARDS_SUCCESS: {
+      const { cards } = payload;
+      return { ...state, isGettingRecentCards: false, recentCards: cards };
+    }
+    case types.GET_RECENT_CARDS_ERROR: {
+      const { error } = payload;
+      return { ...state, isGettingRecentCards: false, getRecentError: error };
+    }
+
     case types.ASK_QUESTION_REQUEST: {
       return { ...state, isAskingQuestion: true, askError: null, askSuccess: null };
     }
@@ -178,22 +174,6 @@ export default function askReducer(state = initialState, action) {
     }
     case types.CLEAR_ASK_QUESTION_INFO: {
       return { ...state, askError: null, askSuccess: null };
-    }
-
-    case types.SUBMIT_FEEDBACK_REQUEST: {
-      return { ...state, isSubmittingFeedback: true, feedbackSuccess: null, feedbackError: null };
-    }
-    case types.SUBMIT_FEEDBACK_SUCCESS: {
-      return { ...state, isSubmittingFeedback: false, feedbackSuccess: true };
-    }
-    case types.SUBMIT_FEEDBACK_ERROR: {
-      const { error } = payload;
-      return {
-        ...state,
-        isSubmittingFeedback: false,
-        feedbackSuccess: false,
-        feedbackError: error
-      };
     }
 
     default:

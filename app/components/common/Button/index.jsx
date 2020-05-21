@@ -42,7 +42,8 @@ const Button = ({
   underlineColor,
   color,
   onClick,
-  disabled
+  disabled,
+  ...rest
 }) => {
   const { outerClassName = '', innerClassName = '' } = getClassNames(color, underline);
 
@@ -58,6 +59,7 @@ const Button = ({
         }`
       )}
       onClick={protectedOnClick}
+      {...rest}
     >
       {iconLeft && icon}
       {text && (
