@@ -16,7 +16,7 @@ const SuggestionPreview = ({ id, question, questionDescription, answer, openCard
 
   return (
     <div className={s('suggestion-preview')}>
-      <div className={s('bg-purple-xxlight p-reg rounded-t-lg')}>
+      <div className={s('bg-purple-2xlight p-reg rounded-t-lg')}>
         <div className={s('suggestion-elem-title line-clamp-3 break-words')}>{question}</div>
         {questionDescription && (
           <div className={s('mt-reg text-xs text-gray-dark font-medium line-clamp-2 break-words')}>

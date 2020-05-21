@@ -2,6 +2,8 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 
+import { NodePropTypes } from 'utils/propTypes';
+
 const FinderDroppable = ({
   finderId,
   id,
@@ -32,7 +34,7 @@ FinderDroppable.propTypes = {
 
   // Redux State
   isDragging: PropTypes.bool.isRequired,
-  selectedNodes: PropTypes.arrayOf(PropTypes.object).isRequired,
+  selectedNodes: PropTypes.arrayOf(NodePropTypes).isRequired,
 
   // Redux Actions
   requestMoveFinderNodes: PropTypes.func.isRequired,

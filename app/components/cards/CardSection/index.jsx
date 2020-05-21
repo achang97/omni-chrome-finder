@@ -27,7 +27,7 @@ const CardSection = ({
 
   return (
     <div className={s(className)}>
-      <div className={`flex items-start ${isVertical ? 'flex-col' : ''}`}>
+      <div className={s(`flex items-start ${isVertical ? 'flex-col' : ''}`)}>
         <div
           className={s(
             `flex mb-reg items-center justify-between ${

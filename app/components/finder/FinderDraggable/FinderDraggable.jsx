@@ -8,6 +8,7 @@ import { KEY_CODES } from 'appConstants/window';
 import { wasCommandKeyUsed } from 'utils/window';
 import { getDraggableStyle } from 'utils/card';
 import { getStyleApplicationFn } from 'utils/style';
+import { NodePropTypes } from 'utils/propTypes';
 
 import style from './finder-draggable.css';
 
@@ -202,7 +203,7 @@ const FinderDraggable = ({
 };
 
 FinderDraggable.propTypes = {
-  node: PropTypes.shape({ _id: PropTypes.string.isRequired }),
+  node: NodePropTypes.isRequired,
   finderId: PropTypes.string.isRequired,
   index: PropTypes.number.isRequired,
   className: PropTypes.string,
@@ -210,12 +211,11 @@ FinderDraggable.propTypes = {
   isDragDisabled: PropTypes.bool,
   isMultiSelectDisabled: PropTypes.bool,
   width: PropTypes.number.isRequired,
-  nodes: PropTypes.arrayOf(PropTypes.shape({ _id: PropTypes.string.isRequired })).isRequired,
+  nodes: PropTypes.arrayOf(NodePropTypes).isRequired,
 
   // Redux State
-  selectedNodes: PropTypes.arrayOf(PropTypes.shape({ _id: PropTypes.string.isRequired }))
-    .isRequired,
-  draggingNode: PropTypes.shape({ _id: PropTypes.string.isRequired }),
+  selectedNodes: PropTypes.arrayOf(NodePropTypes).isRequired,
+  draggingNode: NodePropTypes,
   windowPosition: PropTypes.shape({
     x: PropTypes.number.isRequired,
     y: PropTypes.number.isRequired

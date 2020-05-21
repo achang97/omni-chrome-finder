@@ -7,6 +7,7 @@ import { Loader } from 'components/common';
 
 import { usePrevious } from 'utils/react';
 import { getStyleApplicationFn } from 'utils/style';
+import { NodePropTypes } from 'utils/propTypes';
 import { FINDER, SEARCH, CARD, ANIMATE, WINDOW } from 'appConstants';
 
 import FinderHeader from '../FinderHeader';
@@ -230,7 +231,7 @@ FinderView.propTypes = {
     type: PropTypes.oneOf(Object.values(FINDER.PATH_TYPE)).isRequired,
     state: PropTypes.object
   }),
-  selectedNodes: PropTypes.arrayOf(PropTypes.object).isRequired,
+  selectedNodes: PropTypes.arrayOf(NodePropTypes).isRequired,
   ownUserId: PropTypes.string.isRequired,
   bookmarkIds: PropTypes.arrayOf(PropTypes.string).isRequired,
   hasReachedSegmentLimit: PropTypes.bool.isRequired,

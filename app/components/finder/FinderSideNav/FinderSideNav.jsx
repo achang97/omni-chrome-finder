@@ -50,7 +50,7 @@ const FinderSideNav = ({ finderId, isModal, activePathId, pushFinderNode, pushFi
   );
 
   return (
-    <div className={s('flex flex-col flex-shrink-0 py-sm border-r finder-border')}>
+    <div className={s('flex flex-col flex-shrink-0 py-sm border-0 border-r finder-border')}>
       {NODES.map(({ name, imgSrc, nodeId }) =>
         renderSection(name, imgSrc, nodeId, () => pushFinderNode(finderId, nodeId))
       )}

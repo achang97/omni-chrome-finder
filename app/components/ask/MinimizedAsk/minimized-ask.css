@@ -69,3 +69,7 @@
   width: max-content;
   transition: opacity 1s ease;
 }
+
+.recent-card {
+  @apply text-sm px-sm py-xs my-xs rounded-lg border border-solid border-gray-xlight;
+}

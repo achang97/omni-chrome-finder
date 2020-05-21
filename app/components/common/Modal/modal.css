@@ -1,5 +1,5 @@
 .modal {
-  @apply absolute bg-purple-xxlight flex flex-col rounded-lg overflow-hidden;
+  @apply absolute bg-purple-2xlight flex flex-col rounded-lg overflow-hidden;
 
   top: 50%;
   left: 10%;

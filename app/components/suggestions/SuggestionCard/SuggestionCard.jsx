@@ -3,11 +3,12 @@ import PropTypes from 'prop-types';
 import _ from 'lodash';
 import { MdMoreHoriz } from 'react-icons/md';
 
-import { CardStatusIndicator } from 'components/cards';
+import { CardStatusIndicator, CardLocation } from 'components/cards';
 import { Button, Dropdown, Message, Loader, Separator, ConfirmModal } from 'components/common';
 
 import { CARD } from 'appConstants';
 import { copyCardUrl } from 'utils/card';
+import { NodePropTypes } from 'utils/propTypes';
 
 import { getStyleApplicationFn } from 'utils/style';
 import cardStyle from './suggestion-card.css';
@@ -25,6 +26,7 @@ const SuggestionCard = ({
   question,
   answer,
   status,
+  finderNode,
   className,
   showMoreMenu,
   deleteProps,
@@ -181,8 +183,18 @@ const SuggestionCard = ({
 
   return (
     <div className={s(`${className} suggestion-elem`)} onClick={clickOpenCard}>
+      <div className={s('flex justify-between')}>
+        <CardLocation
+          finderNode={finderNode}
+          className={s('min-w-0')}
+          pathClassName={s('suggestion-elem-path')}
+          maxPathLength={3}
+        />
+        <CardStatusIndicator status={status} className={s('self-end')} />
+        {renderDropdown()}
+      </div>
       <div className={s('flex flex-col w-full')}>
-        <span className={s('suggestion-elem-title break-words line-clamp-2')}> {question} </span>
+        <span className={s('suggestion-elem-title break-words line-clamp-2')}>{question}</span>
         {answer && (
           <span
             className={s(
@@ -193,10 +205,6 @@ const SuggestionCard = ({
           </span>
         )}
       </div>
-      <div className={s('flex flex-col justify-between flex-shrink-0 ml-xs')}>
-        {renderDropdown()}
-        <CardStatusIndicator status={status} />
-      </div>
       {renderShareSuccess()}
       {renderModals()}
     </div>
@@ -206,8 +214,9 @@ const SuggestionCard = ({
 SuggestionCard.propTypes = {
   id: PropTypes.string.isRequired,
   question: PropTypes.string.isRequired,
-  answer: PropTypes.string.isRequired,
+  answer: PropTypes.string,
   status: PropTypes.oneOf(Object.values(CARD.STATUS)).isRequired,
+  finderNode: NodePropTypes,
   className: PropTypes.string,
   showMoreMenu: PropTypes.bool,
   deleteProps: PropTypes.shape({

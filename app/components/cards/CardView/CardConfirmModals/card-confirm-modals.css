@@ -1,7 +1,7 @@
 .message-manager-container {
   border: 1px solid #7a7baa33;
 
-  @apply bg-purple-xxlight mx-lg mb-lg rounded-lg flex-grow overflow-auto;
+  @apply bg-purple-2xlight mx-lg mb-lg rounded-lg flex-grow overflow-auto;
 }
 
 .message-photo-container {

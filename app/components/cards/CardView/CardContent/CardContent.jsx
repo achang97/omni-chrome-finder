@@ -340,7 +340,7 @@ const CardContent = ({
     const isUnauthorized = errorStatus === REQUEST.HTTP_STATUS_CODE.UNAUTHORIZED;
 
     return (
-      <div className={s('flex flex-col h-full justify-center items-center bg-purple-xxlight')}>
+      <div className={s('flex flex-col h-full justify-center items-center bg-purple-2xlight')}>
         <div className={s('large-icon-container text-red-500')}>
           {isUnauthorized ? (
             <MdLock className={s('w-full h-full')} />
@@ -365,7 +365,7 @@ const CardContent = ({
 
     if (!hasLoaded || isGettingCard) {
       return (
-        <div className={s('flex flex-col h-full justify-center bg-purple-xxlight')}>
+        <div className={s('flex flex-col h-full justify-center bg-purple-2xlight')}>
           <Loader />
         </div>
       );

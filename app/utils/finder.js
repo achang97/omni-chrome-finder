@@ -1,6 +1,6 @@
 export function getFullPath(node) {
   if (!node || !node.path) {
-    return null;
+    return [];
   }
 
   const { path } = node;

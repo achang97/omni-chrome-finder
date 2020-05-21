@@ -3,6 +3,7 @@ import PropTypes from 'prop-types';
 import { Button } from 'components/common';
 
 import { getStyleApplicationFn } from 'utils/style';
+import { NodePropTypes } from 'utils/propTypes';
 import { FINDER_TYPE } from 'appConstants/finder';
 import { NOOP } from 'appConstants';
 
@@ -41,7 +42,7 @@ const FinderFooter = ({
 
     return (
       <div
-        className={s('px-lg py-sm flex items-center justify-end border-t finder-border')}
+        className={s('px-lg py-sm flex items-center justify-end border-0 border-t finder-border')}
         onTouchEnd={(e) => e.stopPropagation()}
         onClick={(e) => e.stopPropagation()}
       >
@@ -72,16 +73,8 @@ FinderFooter.propTypes = {
   isPrimaryDisabled: PropTypes.func,
 
   // Redux State
-  activeNode: PropTypes.shape({
-    _id: PropTypes.string,
-    name: PropTypes.string,
-    path: PropTypes.arrayOf(PropTypes.object)
-  }).isRequired,
-  selectedNodes: PropTypes.arrayOf(
-    PropTypes.shape({
-      finderType: PropTypes.oneOf(Object.values(FINDER_TYPE))
-    })
-  ).isRequired
+  activeNode: NodePropTypes.isRequired,
+  selectedNodes: PropTypes.arrayOf(NodePropTypes).isRequired
 };
 
 FinderFooter.defaultProps = {

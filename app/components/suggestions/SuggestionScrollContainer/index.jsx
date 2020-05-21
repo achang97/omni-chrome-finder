@@ -1,9 +1,11 @@
 import React from 'react';
 import PropTypes from 'prop-types';
+import _ from 'lodash';
 
 import { Loader, Triangle, ScrollContainer } from 'components/common';
 import { colors } from 'styles/colors';
 import { getStyleApplicationFn } from 'utils/style';
+import { NodePropTypes } from 'utils/propTypes';
 import { NODE_TYPE } from 'appConstants/finder';
 
 import SuggestionCard from '../SuggestionCard';
@@ -43,13 +45,18 @@ const SuggestionScrollContainer = ({
 
   const renderScrollElement = (elem, i) => {
     if (elem.type === NODE_TYPE.FOLDER) {
-      const { _id, name } = elem;
+      const { _id, name, path } = elem;
       return (
-        <SuggestionNode id={_id} name={name} className={s('suggestion-scroll-container-card')} />
+        <SuggestionNode
+          id={_id}
+          name={name}
+          className={s('suggestion-scroll-container-card')}
+          finderNode={path && _.last(path)}
+        />
       );
     }
 
-    const { _id, question, answer, status } = elem;
+    const { _id, question, answer, status, finderNode } = elem;
     const { className: cardClassName = '', ...restCardProps } = getCardProps
       ? getCardProps(elem, i)
       : {};
@@ -61,6 +68,7 @@ const SuggestionScrollContainer = ({
         answer={answer}
         status={status}
         className={s(`suggestion-scroll-container-card ${cardClassName}`)}
+        finderNode={finderNode}
         {...restCardProps}
       />
     );
@@ -140,13 +148,7 @@ SuggestionScrollContainer.propTypes = {
       status: PropTypes.number.isRequired
     })
   ).isRequired,
-  nodes: PropTypes.arrayOf(
-    PropTypes.shape({
-      _id: PropTypes.string.isRequired,
-      name: PropTypes.string.isRequired,
-      path: PropTypes.arrayOf(PropTypes.object)
-    })
-  ),
+  nodes: PropTypes.arrayOf(NodePropTypes),
   getCardProps: PropTypes.func,
   isSearching: PropTypes.bool,
   onBottom: PropTypes.func.isRequired,
