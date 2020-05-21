@@ -185,8 +185,8 @@ export default function finderReducer(state = initialState, action) {
     }
     case types.CANCEL_MOVE_FINDER_NODES: {
       const { finderId } = payload;
-      return updateStateById(finderId, ({ selectedNodes, activeNode: { children } }) => {
-        const newSelectedNodes = selectedNodes.filter(({ _id }) =>
+      return updateStateById(finderId, ({ moveNodes, activeNode: { children } }) => {
+        const newSelectedNodes = moveNodes.filter(({ _id }) =>
           children.some(({ _id: childId }) => childId === _id)
         );
         return { ...state, moveNodes: [], moveSource: null, selectedNodes: newSelectedNodes };

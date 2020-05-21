@@ -112,8 +112,8 @@ const SuggestionPanel = ({
     const isFullyExpanded = showIntegration[type];
     return (
       <div key={type}>
-        <div className={s('flex items-center justify-between px-lg py-sm mb-xs')}>
-          <div className={s('flex items-center text-md text-gray-dark')}>
+        <div className={s('flex items-center justify-between px-reg pt-xs pb-sm mb-xs')}>
+          <div className={s('flex items-center text-sm text-gray-dark')}>
             <div className={s('external-result-icon mr-sm')}>
               <img src={logo} alt={title} />
             </div>
@@ -166,9 +166,9 @@ const SuggestionPanel = ({
 
     return (
       <div className={s('flex-col justify-center items-center')} ref={externalResultsRef}>
-        {cards.length !== 0 && <Separator horizontal className={s('my-sm')} />}
-        <div className={s('flex justify-between items-center p-lg')}>
-          <div className={s('text-purple-reg font-semibold')}>
+        {cards.length !== 0 && <Separator horizontal className={s('my-xs')} />}
+        <div className={s('flex justify-between items-center p-sm px-lg')}>
+          <div className={s('text-purple-reg font-semibold text-sm')}>
             Found in your documentation ({numExternalResults})
           </div>
           <MdClose
@@ -190,9 +190,7 @@ const SuggestionPanel = ({
     }
 
     return (
-      <div
-        className={s('suggestion-panel-footer flex-col bg-white justify-center items-center mt-sm')}
-      >
+      <div className={s('suggestion-panel-footer')}>
         <Button
           text={`Found in your documentation ${
             numExternalResults !== 0 ? `(${numExternalResults})` : ''
@@ -200,7 +198,8 @@ const SuggestionPanel = ({
           underline
           onClick={() => setShowExternalResults(true)}
           color="transparent"
-          className={s('self-stretch rounded-none shadow-none py-lg')}
+          textClassName={s('text-sm')}
+          className={s('self-stretch rounded-none shadow-none py-sm')}
         />
       </div>
     );

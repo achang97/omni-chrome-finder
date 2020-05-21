@@ -30,7 +30,6 @@ const CardFinderModal = ({
   return (
     <Modal
       isOpen={isOpen}
-      onRequestClose={() => closeCardModal(MODAL_TYPE.FINDER)}
       showHeader={false}
       overlayClassName={s('rounded-b-lg')}
       className={s('h-full')}
