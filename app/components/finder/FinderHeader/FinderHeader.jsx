@@ -79,7 +79,11 @@ const FinderHeader = ({
           size="auto"
         />
         {mainSectionName && (
-          <div className={s('finder-header-icon min-w-0 flex items-center ml-reg text-sm')}>
+          <div
+            className={s(
+              'min-w-0 flex items-center ml-reg text-xs text-purple-reg flex items-center justify-center font-semibold'
+            )}
+          >
             {parent && (
               <>
                 <div

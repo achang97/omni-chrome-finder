@@ -21,6 +21,7 @@
 }
 
 /* Handling text overflow */
+.line-clamp-1,
 .line-clamp-2,
 .line-clamp-3,
 .line-clamp-4 {
@@ -28,6 +29,10 @@
   -webkit-box-orient: vertical;
   overflow: hidden;
   text-overflow: ellipsis;
+}
+
+.line-clamp-1 {
+  -webkit-line-clamp: 1;
 }
 
 .line-clamp-2 {
