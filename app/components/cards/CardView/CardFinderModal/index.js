@@ -1,5 +1,4 @@
 import { connect } from 'react-redux';
-import _ from 'lodash';
 import { openCardModal, closeCardModal, updateCardFinderNode } from 'actions/cards';
 import { closeFinder } from 'actions/finder';
 import { MODAL_TYPE } from 'appConstants/card';
@@ -12,13 +11,12 @@ const mapStateToProps = (state) => {
         _id,
         status,
         modalOpen: { [MODAL_TYPE.FINDER]: isOpen },
-        edits: { path }
+        edits: { finderNode }
       }
     }
   } = state;
 
-  const startNode = _.last(path);
-  const startNodeId = startNode && startNode._id;
+  const startNodeId = finderNode && finderNode._id;
   return { isOpen, status, startNodeId, _id };
 };
 

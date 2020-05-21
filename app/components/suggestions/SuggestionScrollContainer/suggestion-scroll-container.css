@@ -3,5 +3,5 @@
 }
 
 .suggestion-scroll-container-card {
-  @apply mx-sm mb-reg;
+  @apply mx-sm mb-sm;
 }

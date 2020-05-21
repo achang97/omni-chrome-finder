@@ -15,11 +15,13 @@
 }
 
 .suggestion-panel-card-container-lg {
-  max-height: 550px;
+  max-height: 534px;
 }
 
 .suggestion-panel-footer {
-  height: 50px;
+  height: 34px;
+
+  @apply rounded-b-lg flex-col bg-white justify-center items-center;
 }
 
 .suggestion-panel-arrow-container {

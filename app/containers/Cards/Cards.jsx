@@ -8,7 +8,7 @@ import { MdClose } from 'react-icons/md';
 import { FiMinus, FiPlus } from 'react-icons/fi';
 
 import { CardView } from 'components/cards';
-import { FinderView } from 'components/finder';
+import { FinderContainer } from 'components/finder';
 import { Tabs, Tab, ConfirmModal } from 'components/common';
 
 import { cardStateChanged, getNewCardBaseState, getDraggableStyle } from 'utils/card';
@@ -315,7 +315,7 @@ const Cards = ({
                 }}
               >
                 {renderTabHeader()}
-                {isFinderShown() ? <FinderView finderId={FINDER.MAIN_STATE_ID} /> : <CardView />}
+                {isFinderShown() ? <FinderContainer /> : <CardView />}
                 {renderCloseModal()}
               </Resizable>
             </ReactDraggable>

@@ -23,6 +23,8 @@ const FinderView = ({
   isModal,
   onPrimaryClick,
   onSecondaryClick,
+  isPrimaryDisabled,
+  isLoading,
   activePath,
   nodes,
   selectedNodes,
@@ -170,6 +172,10 @@ const FinderView = ({
   };
 
   const render = () => {
+    if (isLoading) {
+      return <Loader className={s('flex-1')} />;
+    }
+
     return (
       <DragDropContext onDragStart={onDragStart} onDragEnd={onDragEnd}>
         <div
@@ -191,8 +197,10 @@ const FinderView = ({
               </div>
               <FinderFooter
                 finderId={finderId}
+                isModal={isModal}
                 onPrimaryClick={onPrimaryClick}
                 onSecondaryClick={onSecondaryClick}
+                isPrimaryDisabled={isPrimaryDisabled}
               />
               <FinderConfirmModals finderId={finderId} />
             </>
@@ -213,6 +221,8 @@ FinderView.propTypes = {
   startNodeId: PropTypes.string,
   onPrimaryClick: PropTypes.func,
   onSecondaryClick: PropTypes.func,
+  isPrimaryDisabled: PropTypes.func,
+  isLoading: PropTypes.bool,
 
   // Redux State
   activePath: PropTypes.shape({
