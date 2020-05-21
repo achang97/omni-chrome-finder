@@ -30,7 +30,7 @@ const CardSection = ({
       <div className={`flex items-start ${isVertical ? 'flex-col' : ''}`}>
         <div
           className={s(
-            `flex mb-lg items-center justify-between ${
+            `flex mb-reg items-center justify-between ${
               !isVertical ? 'card-section-horizontal-header' : 'self-stretch'
             }`
           )}

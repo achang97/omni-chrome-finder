@@ -1,5 +1,7 @@
 .suggestion-elem {
   @apply rounded-xl px-lg py-lg bg-white cursor-pointer flex justify-between;
+
+  box-shadow: 0 10px 30px 0 rgba(33, 26, 29, 0.05);
 }
 
 .suggestion-elem-title {

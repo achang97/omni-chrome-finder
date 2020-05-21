@@ -213,7 +213,7 @@ const CardCreateModal = ({
         bodyClassName={s('rounded-b-lg flex flex-col')}
         primaryButtonProps={primaryButtonProps}
       >
-        <div className={s('flex-grow overflow-auto p-lg')}>
+        <div className={s('flex-grow overflow-auto px-lg py-reg')}>
           {CARD_SECTIONS.map(
             ({ title, hint, renderFn, showJustMe, startExpanded, isExpandable, preview }, i) => (
               <AnimateHeight height={!justMe || showJustMe ? 'auto' : 0} key={title}>

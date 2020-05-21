@@ -2,7 +2,6 @@ import React, { useEffect, useState, useRef } from 'react';
 import PropTypes from 'prop-types';
 import AnimateHeight from 'react-animate-height';
 import {
-  MdClose,
   MdCheck,
   MdKeyboardArrowUp,
   MdPeople,
@@ -11,8 +10,8 @@ import {
 } from 'react-icons/md';
 import { CircularProgressbar, buildStyles } from 'react-circular-progressbar';
 
-import { Button, Message, Separator, Loader } from 'components/common';
-import SuggestionPanel from 'components/suggestions/SuggestionPanel';
+import { Loader, Separator } from 'components/common';
+import { SuggestionPanel, SuggestionCard } from 'components/suggestions';
 
 import { colors } from 'styles/colors';
 import { getStyleApplicationFn } from 'utils/style';
@@ -39,19 +38,14 @@ const MinimizedAsk = ({
   dockVisible,
   dockExpanded,
   searchText,
-  updateAskSearchText,
-  toggleAskFeedbackInput,
-  showFeedback,
-  feedback,
-  updateAskFeedback,
-  requestSubmitFeedback,
-  isSubmittingFeedback,
-  feedbackSuccess,
-  feedbackError,
-  togglePerformanceScore,
   showPerformanceScore,
+  recentCards,
+  isGettingRecentCards,
+  updateAskSearchText,
+  togglePerformanceScore,
   toggleDockHeight,
-  requestGetUserOnboardingStats
+  requestGetUserOnboardingStats,
+  requestGetRecentCards
 }) => {
   const isMounted = useRef(null);
   const inputRef = useRef(null);
@@ -66,10 +60,14 @@ const MinimizedAsk = ({
       refreshStats = true;
     }
 
+    if (!showPerformanceScore) {
+      requestGetRecentCards();
+    }
+
     if (refreshStats) {
       requestGetUserOnboardingStats();
     }
-  }, [showPerformanceScore, requestGetUserOnboardingStats]);
+  }, [showPerformanceScore, requestGetUserOnboardingStats, requestGetRecentCards]);
 
   useEffect(() => {
     inputRef.current.focus();
@@ -91,11 +89,6 @@ const MinimizedAsk = ({
   };
 
   const showFullDock = () => {
-    if (showFeedback) {
-      toggleAskFeedbackInput();
-      updateAskFeedback('');
-    }
-
     if (showPerformanceScore) {
       togglePerformanceScore();
     }
@@ -208,6 +201,27 @@ const MinimizedAsk = ({
     );
   };
 
+  const renderRecentCardsSection = () => {
+    const showSection = (isGettingRecentCards || recentCards.length !== 0) && !showPerformanceScore;
+    return (
+      <AnimateHeight height={showSection ? 'auto' : 0}>
+        <div className={s('px-lg py-reg')}>
+          <div className={s('text-gray-reg text-xs mb-reg')}> Recently Viewed Cards </div>
+          {recentCards.map(({ _id, question, status }) => (
+            <SuggestionCard
+              className={s('text-sm p-sm my-xs rounded-lg border border-solid border-gray-xlight')}
+              key={_id}
+              id={_id}
+              question={question}
+              status={status}
+            />
+          ))}
+          {isGettingRecentCards && <Loader size="sm" />}
+        </div>
+      </AnimateHeight>
+    );
+  };
+
   const renderPerformanceScoreSection = () => {
     return (
       <AnimateHeight
@@ -217,16 +231,12 @@ const MinimizedAsk = ({
         }}
       >
         <div className={s('minimized-ask-accomplishment-section-container p-lg')}>
-          <div
-            className={s(
-              'flex justify-between mb-xs text-gray-dark items-center mb-reg cursor-pointer'
-            )}
-            onClick={togglePerformance}
-          >
-            <div className={s('flex items-center')}>{getPerformanceScoreOrBadge()}</div>
-            <MdKeyboardArrowUp className={s('cursor-pointer')} />
+          <div className={s('flex justify-between')}>
+            <div className={s('text-xs font-semibold text-gray-reg flex-1')}>
+              {getPerformanceMessage()}
+            </div>
+            <MdKeyboardArrowUp className={s('cursor-pointer')} onClick={togglePerformance} />
           </div>
-          <div className={s('text-xs font-semibold text-gray-reg')}>{getPerformanceMessage()}</div>
           {renderAccomplishmentCarousel()}
         </div>
         {!dockExpanded ? (
@@ -274,66 +284,11 @@ const MinimizedAsk = ({
     );
   };
 
-  const renderFeedbackSection = () => (
-    <AnimateHeight height={showFeedback ? 'auto' : 0}>
-      <div className={s('p-lg')}>
-        {feedbackSuccess ? (
-          <Message
-            message={
-              <span>
-                <span role="img" aria-label="Party">
-                  🎉
-                </span>
-                <span className={s('mx-sm')}> Thanks for your feedback! </span>
-                <span role="img" aria-label="Party">
-                  🎉
-                </span>
-              </span>
-            }
-            className={s('text-md text-center text-green-reg')}
-            animate
-            temporary
-            show={feedbackSuccess}
-            onHide={toggleAskFeedbackInput}
-            type="success"
-          />
-        ) : (
-          <div>
-            <div className={s('flex justify-between mb-xs text-gray-dark')}>
-              <div className={s('text-xs')}> Enter your feedback: </div>
-              <MdClose className={s('cursor-pointer')} onClick={toggleAskFeedbackInput} />
-            </div>
-            <textarea
-              className={s('w-full resize')}
-              value={feedback}
-              onChange={(e) => updateAskFeedback(e.target.value)}
-            />
-            <Message className={s('my-sm')} message={feedbackError} type="error" />
-            <Button
-              text="Submit Feedback"
-              color="transparent"
-              className={s('p-xs')}
-              iconLeft={false}
-              icon={
-                isSubmittingFeedback ? (
-                  <Loader size="xs" className={s('ml-sm')} color="white" />
-                ) : null
-              }
-              disabled={feedback.length === 0}
-              onClick={requestSubmitFeedback}
-            />
-          </div>
-        )}
-      </div>
-    </AnimateHeight>
-  );
-
   const render = () => {
     const showRobot =
       !isGettingOnboardingStats &&
       performance.length !== 0 &&
       percentage < GET_STARTED_PERFORMANCE_CUTOFF;
-    const showFooter = showFeedback || showPerformanceScore;
 
     return (
       <div className={s('pt-lg flex flex-col min-h-0')}>
@@ -346,7 +301,26 @@ const MinimizedAsk = ({
             ref={inputRef}
             autoFocus
           />
-          <div className={s('mt-lg flex flex-row justify-end items-center pb-lg')}>
+          <div className={s('mt-lg flex flex-row justify-between items-center pb-lg')}>
+            <div className={s('flex flex-col justify-center items-center relative')}>
+              <div
+                className={s('flex items-center cursor-pointer')}
+                onClick={togglePerformanceScore}
+              >
+                {isGettingOnboardingStats ? <Loader size="sm" /> : getPerformanceScoreOrBadge()}
+              </div>
+              <div
+                onClick={togglePerformance}
+                className={s(`robot-img ${!showRobot ? 'pointer-events-none' : ''}`)}
+              >
+                <img
+                  src={robotGetStarted}
+                  style={{ opacity: showRobot ? 1 : 0 }}
+                  alt="Omni Robot"
+                  className={s('h-full')}
+                />
+              </div>
+            </div>
             <div
               className={s(
                 'text-purple-reg font-semibold cursor-pointer flex items-center ask-teammate-container'
@@ -357,36 +331,11 @@ const MinimizedAsk = ({
               <MdPeople className={s('text-md ml-sm')} />
             </div>
           </div>
-          <Separator horizontal className={s(showFooter ? 'mb-0' : '')} />
+          <Separator className={s('my-0')} horizontal />
         </div>
-        <AnimateHeight height={showFooter ? 0 : 'auto'}>
-          <div className={s('flex justify-between items-center mt-reg px-lg pb-lg ')}>
-            <div className={s('flex flex-col justify-center items-center relative')}>
-              <div
-                className={s('flex items-center cursor-pointer')}
-                onClick={togglePerformanceScore}
-              >
-                {isGettingOnboardingStats ? <Loader size="sm" /> : getPerformanceScoreOrBadge()}
-              </div>
-              <div onClick={togglePerformance} className={s('robot-img')}>
-                <img
-                  src={robotGetStarted}
-                  style={{ opacity: showRobot ? 1 : 0 }}
-                  alt="Omni Robot"
-                  className={s('h-full')}
-                />
-              </div>
-            </div>
-            <div className={s('flex justify-end text-gray-dark text-xs font-medium')}>
-              <div className={s('cursor-pointer')} onClick={toggleAskFeedbackInput}>
-                Have Feedback?
-              </div>
-            </div>
-          </div>
-        </AnimateHeight>
         <div className={s('min-h-0')}>
+          {renderRecentCardsSection()}
           {renderPerformanceScoreSection()}
-          {renderFeedbackSection()}
         </div>
         <SuggestionPanel query={searchText} shouldSearchNodes />
       </div>
@@ -420,18 +369,12 @@ MinimizedAsk.propTypes = {
   dockVisible: PropTypes.bool.isRequired,
   dockExpanded: PropTypes.bool.isRequired,
   searchText: PropTypes.string.isRequired,
-  showFeedback: PropTypes.bool.isRequired,
-  feedback: PropTypes.string.isRequired,
-  isSubmittingFeedback: PropTypes.bool,
-  feedbackSuccess: PropTypes.bool,
-  feedbackError: PropTypes.string,
+  recentCards: PropTypes.arrayOf(PropTypes.object).isRequired,
+  isGettingRecentCards: PropTypes.bool,
   showPerformanceScore: PropTypes.bool.isRequired,
 
   // Redux Actions
   updateAskSearchText: PropTypes.func.isRequired,
-  toggleAskFeedbackInput: PropTypes.func.isRequired,
-  updateAskFeedback: PropTypes.func.isRequired,
-  requestSubmitFeedback: PropTypes.func.isRequired,
   togglePerformanceScore: PropTypes.func.isRequired,
   toggleDockHeight: PropTypes.func.isRequired,
   requestGetUserOnboardingStats: PropTypes.func.isRequired

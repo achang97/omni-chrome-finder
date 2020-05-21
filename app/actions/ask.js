@@ -8,14 +8,6 @@ export function togglePerformanceScore() {
   return { type: types.TOGGLE_PERFORMANCE_SCORE, payload: {} };
 }
 
-export function toggleAskFeedbackInput() {
-  return { type: types.TOGGLE_ASK_FEEDBACK_INPUT, payload: {} };
-}
-
-export function updateAskFeedback(feedback) {
-  return { type: types.UPDATE_ASK_FEEDBACK, payload: { feedback } };
-}
-
 export function showAskDescriptionEditor() {
   return { type: types.SHOW_ASK_DESCRIPTION_EDITOR, payload: {} };
 }
@@ -85,6 +77,18 @@ export function handleGetSlackConversationsError(error) {
   return { type: types.GET_SLACK_CONVERSATIONS_ERROR, payload: { error } };
 }
 
+export function requestGetRecentCards() {
+  return { type: types.GET_RECENT_CARDS_REQUEST, payload: {} };
+}
+
+export function handleGetRecentCardsSuccess(cards) {
+  return { type: types.GET_RECENT_CARDS_SUCCESS, payload: { cards } };
+}
+
+export function handleGetRecentCardsError(error) {
+  return { type: types.GET_RECENT_CARDS_ERROR, payload: { error } };
+}
+
 export function requestAskQuestion() {
   return { type: types.ASK_QUESTION_REQUEST, payload: {} };
 }
@@ -99,16 +103,4 @@ export function handleAskQuestionError(error) {
 
 export function clearAskQuestionInfo() {
   return { type: types.CLEAR_ASK_QUESTION_INFO, payload: {} };
-}
-
-export function requestSubmitFeedback() {
-  return { type: types.SUBMIT_FEEDBACK_REQUEST, payload: {} };
-}
-
-export function handleSubmitFeedbackSuccess() {
-  return { type: types.SUBMIT_FEEDBACK_SUCCESS, payload: {} };
-}
-
-export function handleSubmitFeedbackError(error) {
-  return { type: types.SUBMIT_FEEDBACK_ERROR, payload: { error } };
 }

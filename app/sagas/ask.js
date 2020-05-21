@@ -9,7 +9,7 @@ import {
   GET_SLACK_CONVERSATIONS_REQUEST,
   ADD_ASK_ATTACHMENT_REQUEST,
   REMOVE_ASK_ATTACHMENT_REQUEST,
-  SUBMIT_FEEDBACK_REQUEST
+  GET_RECENT_CARDS_REQUEST
 } from 'actions/actionTypes';
 import {
   handleAskQuestionSuccess,
@@ -20,8 +20,8 @@ import {
   handleAddAskAttachmentError,
   handleRemoveAskAttachmentSuccess,
   handleRemoveAskAttachmentError,
-  handleSubmitFeedbackSuccess,
-  handleSubmitFeedbackError
+  handleGetRecentCardsSuccess,
+  handleGetRecentCardsError
 } from 'actions/ask';
 import { openModal } from 'actions/display';
 
@@ -32,7 +32,7 @@ export default function* watchAskRequests() {
       GET_SLACK_CONVERSATIONS_REQUEST,
       ADD_ASK_ATTACHMENT_REQUEST,
       REMOVE_ASK_ATTACHMENT_REQUEST,
-      SUBMIT_FEEDBACK_REQUEST
+      GET_RECENT_CARDS_REQUEST
     ]);
 
     const { type, payload } = action;
@@ -53,8 +53,8 @@ export default function* watchAskRequests() {
         yield fork(removeAttachment, payload);
         break;
       }
-      case SUBMIT_FEEDBACK_REQUEST: {
-        yield fork(submitFeedback);
+      case GET_RECENT_CARDS_REQUEST: {
+        yield fork(getRecentCards);
         break;
       }
       default: {
@@ -108,6 +108,15 @@ function* getSlackConversations() {
   }
 }
 
+function* getRecentCards() {
+  try {
+    const cards = yield call(doGet, '/cards/recent');
+    yield put(handleGetRecentCardsSuccess(cards));
+  } catch (error) {
+    yield put(handleGetRecentCardsError(getErrorMessage(error)));
+  }
+}
+
 function* addAttachment({ key, file }) {
   try {
     const formData = new FormData();
@@ -133,15 +142,5 @@ function* removeAttachment({ key }) {
     yield put(handleRemoveAskAttachmentSuccess(key));
   } catch (error) {
     yield put(handleRemoveAskAttachmentError(key, getErrorMessage(error)));
-  }
-}
-
-function* submitFeedback() {
-  try {
-    const feedback = yield select((state) => state.ask.feedback);
-    yield call(doPost, '/feedback', { feedback });
-    yield put(handleSubmitFeedbackSuccess());
-  } catch (error) {
-    yield put(handleSubmitFeedbackError(getErrorMessage(error)));
   }
 }
