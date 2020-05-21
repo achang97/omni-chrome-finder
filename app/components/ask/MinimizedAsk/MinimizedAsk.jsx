@@ -206,10 +206,10 @@ const MinimizedAsk = ({
     return (
       <AnimateHeight height={showSection ? 'auto' : 0}>
         <div className={s('px-lg py-reg')}>
-          <div className={s('text-gray-reg text-xs mb-reg')}> Recently Viewed Cards </div>
+          <div className={s('text-gray-reg text-xs mb-reg')}> Recent</div>
           {recentCards.map(({ _id, question, status }) => (
             <SuggestionCard
-              className={s('text-sm p-sm my-xs rounded-lg border border-solid border-gray-xlight')}
+              className={s('text-sm p-reg my-sm rounded-lg')}
               key={_id}
               id={_id}
               question={question}
@@ -287,6 +287,7 @@ const MinimizedAsk = ({
   const render = () => {
     const showRobot =
       !isGettingOnboardingStats &&
+      !showPerformanceScore &&
       performance.length !== 0 &&
       percentage < GET_STARTED_PERFORMANCE_CUTOFF;
 
@@ -301,7 +302,7 @@ const MinimizedAsk = ({
             ref={inputRef}
             autoFocus
           />
-          <div className={s('mt-lg flex flex-row justify-between items-center pb-lg')}>
+          <div className={s('mt-xl flex flex-row justify-between items-center pb-lg')}>
             <div className={s('flex flex-col justify-center items-center relative')}>
               <div
                 className={s('flex items-center cursor-pointer')}
