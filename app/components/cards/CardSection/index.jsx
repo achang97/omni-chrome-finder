@@ -37,7 +37,7 @@ const CardSection = ({
         >
           <div className={s('flex items-center')}>
             <div
-              className={s('font-semibold text-sm text-black button-hover')}
+              className={s('font-semibold text-xs text-black button-hover')}
               onClick={toggleSection}
             >
               {title}
