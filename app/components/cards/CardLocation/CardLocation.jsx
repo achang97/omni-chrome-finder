@@ -5,16 +5,21 @@ import { MdChevronRight } from 'react-icons/md';
 import { FINDER, CARD } from 'appConstants';
 import { getFullPath } from 'utils/finder';
 import { getStyleApplicationFn } from 'utils/style';
+import { NodePropTypes } from 'utils/propTypes';
 import MoveFolder from 'assets/images/finder/move-folder.svg';
 
 import style from './card-location.css';
 
 const s = getStyleApplicationFn(style);
 
+const HOME_NODE = { _id: FINDER.ROOT.ID, name: FINDER.ROOT.NAME };
+
 const CardLocation = ({
   finderNode,
   isEditable,
+  maxPathLength,
   className,
+  pathClassName,
   openCardModal,
   closeCardModal,
   openFinder,
@@ -30,26 +35,37 @@ const CardLocation = ({
     pushFinderNode(FINDER.MAIN_STATE_ID, nodeId);
   };
 
-  const fullPath = getFullPath(finderNode);
+  const fullPath = [HOME_NODE, ...getFullPath(finderNode)];
+  if (!maxPathLength) {
+    // eslint-disable-next-line no-param-reassign
+    maxPathLength = fullPath.length;
+  }
 
   return (
-    <div className={s(`flex items-start text-purple-reg ${className}`)}>
-      <div className={s('flex-1 flex flex-wrap items-center text-sm')}>
-        <span className={s('card-location-node-name')} onClick={() => onNodeClick(FINDER.ROOT.ID)}>
-          {FINDER.ROOT.NAME}
-        </span>
-        {fullPath &&
-          fullPath.map(({ _id, name }) => (
-            <React.Fragment key={_id}>
-              <MdChevronRight className={s('m-xs')} />
-              <span className={s('card-location-node-name')} onClick={() => onNodeClick(_id)}>
-                {name}
-              </span>
-            </React.Fragment>
-          ))}
+    <div className={s(`flex items-start ${className}`)}>
+      <div className={s(`card-location-path ${pathClassName}`)}>
+        {fullPath && (
+          <>
+            {fullPath.slice(fullPath.length - maxPathLength).map(({ _id, name }, i) => (
+              <React.Fragment key={_id}>
+                {i !== 0 && (
+                  <span>
+                    <MdChevronRight />
+                  </span>
+                )}
+                <span className={s('cursor-pointer')} onClick={() => onNodeClick(_id)}>
+                  {name}
+                </span>
+              </React.Fragment>
+            ))}
+          </>
+        )}
       </div>
       {isEditable && (
-        <div className={s('flex items-center cursor-pointer text-xs')} onClick={onChangeClick}>
+        <div
+          className={s('flex items-center cursor-pointer text-xs text-purple-reg')}
+          onClick={onChangeClick}
+        >
           <span>Change</span>
           <img src={MoveFolder} className={s('h-lg w-lg ml-xs')} alt="Move Location" />
         </div>
@@ -60,17 +76,10 @@ const CardLocation = ({
 
 CardLocation.propTypes = {
   isEditable: PropTypes.bool,
-  finderNode: PropTypes.shape({
-    path: PropTypes.arrayOf(
-      PropTypes.shape({
-        _id: PropTypes.string.isRequired,
-        name: PropTypes.string.isRequired
-      })
-    ),
-    _id: PropTypes.string,
-    name: PropTypes.string
-  }),
+  finderNode: NodePropTypes,
   className: PropTypes.string,
+  pathClassName: PropTypes.string,
+  maxPathLength: PropTypes.number,
 
   // Redux Actions
   openCardModal: PropTypes.func.isRequired,
@@ -81,7 +90,8 @@ CardLocation.propTypes = {
 
 CardLocation.defaultProps = {
   isEditable: false,
-  className: ''
+  className: '',
+  pathClassName: ''
 };
 
 export default CardLocation;

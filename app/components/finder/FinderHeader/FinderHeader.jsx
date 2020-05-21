@@ -7,7 +7,7 @@ import { FiPlus } from 'react-icons/fi';
 
 import { Dropdown, ContextMenu, CircleButton, Tooltip } from 'components/common';
 import { getNewCardBaseState } from 'utils/card';
-import { UserPropTypes } from 'utils/propTypes';
+import { UserPropTypes, NodePropTypes } from 'utils/propTypes';
 import { getStyleApplicationFn } from 'utils/style';
 import { FINDER, ROUTES } from 'appConstants';
 
@@ -206,7 +206,7 @@ const FinderHeader = ({
 
   return (
     <div
-      className={s('px-lg py-reg rounded-t-lg border-b finder-border flex items-center')}
+      className={s('px-lg py-reg rounded-t-lg border-0 border-b finder-border flex items-center')}
       onTouchEnd={(e) => e.stopPropagation()}
       onClick={(e) => e.stopPropagation()}
     >
@@ -227,13 +227,9 @@ FinderHeader.propTypes = {
     type: PropTypes.oneOf(Object.values(FINDER.PATH_TYPE)).isRequired,
     state: PropTypes.object
   }).isRequired,
-  activeNode: PropTypes.shape({
-    _id: PropTypes.string,
-    name: PropTypes.string,
-    path: PropTypes.arrayOf(PropTypes.object)
-  }).isRequired,
-  selectedNodes: PropTypes.arrayOf(PropTypes.object).isRequired,
-  moveNodes: PropTypes.arrayOf(PropTypes.object).isRequired,
+  activeNode: NodePropTypes.isRequired,
+  selectedNodes: PropTypes.arrayOf(NodePropTypes).isRequired,
+  moveNodes: PropTypes.arrayOf(NodePropTypes).isRequired,
   isTemplateView: PropTypes.bool.isRequired,
   user: UserPropTypes.isRequired,
 

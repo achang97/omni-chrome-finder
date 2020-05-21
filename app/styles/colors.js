@@ -1,6 +1,6 @@
 exports.colors = {
   purple: {
-    xxlight: '#FCFCFE',
+    '2xlight': '#FCFCFE',
     xlight: '#bcc9f826',
     light: '#F5F7FE',
     reg: '#7a7daf',

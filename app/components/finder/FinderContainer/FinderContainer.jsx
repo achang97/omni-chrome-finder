@@ -6,6 +6,7 @@ import { MAIN_STATE_ID } from 'appConstants/finder';
 import { getFullPath } from 'utils/finder';
 import { getArrayIds } from 'utils/array';
 import { getStyleApplicationFn } from 'utils/style';
+import { NodePropTypes } from 'utils/propTypes';
 
 import FinderView from '../FinderView';
 
@@ -30,7 +31,7 @@ const FinderContainer = ({
   const isValidMove = (destinationNode) => {
     const destinationPath = getFullPath(destinationNode);
     const moveNodeIds = getArrayIds(moveNodes);
-    return !destinationPath || destinationPath.every(({ _id }) => !moveNodeIds.includes(_id));
+    return destinationPath.every(({ _id }) => !moveNodeIds.includes(_id));
   };
 
   return (
@@ -61,12 +62,8 @@ const FinderContainer = ({
 };
 
 FinderContainer.propTypes = {
-  moveNodes: PropTypes.arrayOf(
-    PropTypes.shape({
-      _id: PropTypes.string.isRequired
-    })
-  ).isRequired,
-  moveSource: PropTypes.shape({ _id: PropTypes.string }),
+  moveNodes: PropTypes.arrayOf(NodePropTypes).isRequired,
+  moveSource: NodePropTypes,
   isMovingNodes: PropTypes.bool,
 
   // Redux Actions

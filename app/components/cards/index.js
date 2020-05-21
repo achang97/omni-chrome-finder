@@ -1,5 +1,6 @@
 export { default as CardAttachment } from './CardAttachment';
 export { default as CardAttachments } from './CardAttachments';
+export { default as CardLocation } from './CardLocation';
 export { default as CardPermissions } from './CardPermissions';
 export { default as CardSection } from './CardSection';
 export { default as CardStatus } from './CardStatus';

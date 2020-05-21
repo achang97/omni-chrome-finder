@@ -11,6 +11,7 @@ import { CardStatusIndicator } from 'components/cards';
 import { FINDER_TYPE, MODAL_TYPE, PATH_TYPE } from 'appConstants/finder';
 import { getArrayIds } from 'utils/array';
 import { getStyleApplicationFn } from 'utils/style';
+import { NodePropTypes } from 'utils/propTypes';
 
 import FinderFolder from 'assets/images/finder/folder.svg';
 import FinderCard from 'assets/images/finder/card.svg';
@@ -210,12 +211,7 @@ const FinderBody = ({
 
 FinderBody.propTypes = {
   isModal: PropTypes.bool.isRequired,
-  nodes: PropTypes.arrayOf(
-    PropTypes.shape({
-      _id: PropTypes.string,
-      card: PropTypes.object
-    })
-  ).isRequired,
+  nodes: PropTypes.arrayOf(NodePropTypes).isRequired,
 
   // Redux State
   activePath: PropTypes.shape({
@@ -227,7 +223,7 @@ FinderBody.propTypes = {
   isMovingNodes: PropTypes.bool,
   isSearchingSegment: PropTypes.bool,
   segmentPage: PropTypes.number.isRequired,
-  selectedNodes: PropTypes.arrayOf(PropTypes.object).isRequired,
+  selectedNodes: PropTypes.arrayOf(NodePropTypes).isRequired,
 
   // Redux Actions
   pushFinderNode: PropTypes.func.isRequired,

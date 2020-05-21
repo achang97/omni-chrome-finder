@@ -10,6 +10,7 @@ import { colors } from 'styles/colors';
 import { SEARCH, INTEGRATIONS, ANIMATE, PROFILE } from 'appConstants';
 
 import { getStyleApplicationFn } from 'utils/style';
+import { NodePropTypes } from 'utils/propTypes';
 import mainStyle from './suggestion-panel.css';
 import externalIconStyle from '../ExternalResults/external-results.css';
 
@@ -222,9 +223,11 @@ const SuggestionPanel = ({
             <MdClose className={s('button-hover text-gray-light')} onClick={toggleVisibility} />
           </div>
           <SuggestionScrollContainer
-            scrollContainerClassName={`suggestion-panel-card-container ${
-              showExternalResults ? 'suggestion-panel-card-container-lg' : ''
-            }`}
+            scrollContainerClassName={s(
+              `suggestion-panel-card-container ${
+                showExternalResults ? 'suggestion-panel-card-container-lg' : ''
+              }`
+            )}
             cards={cards}
             nodes={shouldSearchNodes ? nodes : []}
             isSearching={isSearchingCards || (shouldSearchNodes && isSearchingNodes)}
@@ -289,7 +292,7 @@ SuggestionPanel.propTypes = {
   ).isRequired,
   isSearchingCards: PropTypes.bool,
   hasReachedLimit: PropTypes.bool.isRequired,
-  nodes: PropTypes.arrayOf(PropTypes.object).isRequired,
+  nodes: PropTypes.arrayOf(NodePropTypes).isRequired,
   isSearchingNodes: PropTypes.bool,
 
   // Redux Actions

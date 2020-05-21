@@ -13,7 +13,7 @@ import { generateFileKey, isAnyLoading } from 'utils/file';
 import { getNewCardBaseState } from 'utils/card';
 import { createSelectOptions, createSelectOption } from 'utils/select';
 import { getEditorStateFromContentState } from 'utils/editor';
-import { UserPropTypes } from 'utils/propTypes';
+import { UserPropTypes, NodePropTypes } from 'utils/propTypes';
 
 import { getStyleApplicationFn } from 'utils/style';
 import style from './create.css';
@@ -229,9 +229,7 @@ Create.propTypes = {
   descriptionEditorState: PropTypes.instanceOf(EditorState).isRequired,
   answerEditorState: PropTypes.instanceOf(EditorState).isRequired,
   attachments: PropTypes.arrayOf(PropTypes.object).isRequired,
-  finderNode: PropTypes.shape({
-    path: PropTypes.arrayOf(PropTypes.object)
-  }),
+  finderNode: NodePropTypes,
   user: UserPropTypes.isRequired,
   isTemplateView: PropTypes.bool.isRequired,
   isDescriptionEditorShown: PropTypes.bool.isRequired,

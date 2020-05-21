@@ -1,5 +1,5 @@
 import PropTypes from 'prop-types';
-import { PROFILE } from 'appConstants';
+import { PROFILE, FINDER } from 'appConstants';
 
 export const UserPropTypes = PropTypes.shape({
   _id: PropTypes.string.isRequired,
@@ -21,6 +21,19 @@ export const UserPropTypes = PropTypes.shape({
   onboarding: PropTypes.object
 });
 
+export const NodePropTypes = PropTypes.shape({
+  _id: PropTypes.string,
+  name: PropTypes.string,
+  path: PropTypes.arrayOf(
+    PropTypes.shape({
+      _id: PropTypes.string.isRequired,
+      name: PropTypes.string.isRequired
+    })
+  ),
+  finderType: PropTypes.oneOf(Object.values(FINDER.FINDER_TYPE))
+});
+
 export default {
-  UserPropTypes
+  UserPropTypes,
+  NodePropTypes
 };

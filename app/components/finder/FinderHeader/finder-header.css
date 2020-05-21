@@ -3,6 +3,7 @@
   @apply flex items-center justify-center;
 
   height: 35px;
+  box-sizing: border-box;
 }
 
 .finder-header-icon > * {

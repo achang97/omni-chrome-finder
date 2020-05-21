@@ -207,13 +207,14 @@ const MinimizedAsk = ({
       <AnimateHeight height={showSection ? 'auto' : 0}>
         <div className={s('px-lg py-reg')}>
           <div className={s('text-gray-reg text-xs mb-reg')}> Recent</div>
-          {recentCards.map(({ _id, question, status }) => (
+          {recentCards.map(({ _id, question, status, finderNode }) => (
             <SuggestionCard
-              className={s('text-sm p-reg my-sm rounded-lg')}
+              className={s('text-sm px-reg py-xs my-sm rounded-lg')}
               key={_id}
               id={_id}
               question={question}
               status={status}
+              finderNode={finderNode}
             />
           ))}
           {isGettingRecentCards && <Loader size="sm" />}
