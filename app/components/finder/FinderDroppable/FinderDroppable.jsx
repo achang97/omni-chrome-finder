@@ -1,3 +1,4 @@
+/* TODO: Incorporate this into drag & drop behavior for finder. */
 import React from 'react';
 import PropTypes from 'prop-types';
 
@@ -10,8 +11,6 @@ const FinderDroppable = ({
   requestMoveFinderNodes,
   updateDraggingFinderNode
 }) => {
-  // const [isOverDroppable, setOverDroppable] = useState(false);
-
   const onDrop = () => {
     if (isDragging) {
       requestMoveFinderNodes(finderId, selectedNodes, id);
@@ -20,12 +19,7 @@ const FinderDroppable = ({
   };
 
   return (
-    <div
-      // onMouseEnter={() => setOverDroppable(true)}
-      // onMouseLeave={() => setOverDroppable(false)}
-      onMouseUp={onDrop}
-      onTouchEnd={onDrop}
-    >
+    <div onMouseUp={onDrop} onTouchEnd={onDrop}>
       {children}
     </div>
   );

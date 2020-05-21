@@ -31,9 +31,10 @@ const CircleButton = ({
   disabled,
   className,
   buttonClassName,
-  labelClassName
+  labelClassName,
+  ...rest
 }) => (
-  <div className={s(`circle-button-container ${className}`)}>
+  <div className={s(`circle-button-container ${className}`)} {...rest}>
     <div
       className={s(
         `circle-button ${disabled ? 'button-disabled' : 'button-hover'} ${buttonClassName}`

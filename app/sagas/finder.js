@@ -54,7 +54,7 @@ export default function* watchFinderRequests() {
         break;
       }
       case MOVE_FINDER_NODES_REQUEST: {
-        yield fork(moveNode, payload);
+        yield fork(moveNodes, payload);
         break;
       }
       default: {
@@ -88,7 +88,7 @@ function* getFolderEdits(finderId) {
   return { ...permissionsInfo, name };
 }
 
-function groupNodes(selectedNodes) {
+function groupNodeIds(selectedNodes) {
   const groupedNodes = _.groupBy(selectedNodes, 'finderType');
 
   const groupedNodeIds = {};
@@ -102,7 +102,7 @@ function groupNodes(selectedNodes) {
 
 function* getGroupedSelectedNodeIds(finderId) {
   const selectedNodes = yield select((state) => state.finder[finderId].selectedNodes);
-  return groupNodes(selectedNodes);
+  return groupNodeIds(selectedNodes);
 }
 
 function* getNode({ finderId }) {
@@ -170,9 +170,9 @@ function* deleteNodes({ finderId }) {
   }
 }
 
-function* moveNode({ finderId, nodes, destinationId }) {
+function* moveNodes({ finderId, nodes, destinationId }) {
   try {
-    const groupedNodeIds = groupNodes(nodes);
+    const groupedNodeIds = groupNodeIds(nodes);
     yield all([
       ...groupedNodeIds[FINDER_TYPE.NODE].map((nodeId) =>
         call(doPost, `/finder/node/${nodeId}/move`, { destinationFinderNodeId: destinationId })

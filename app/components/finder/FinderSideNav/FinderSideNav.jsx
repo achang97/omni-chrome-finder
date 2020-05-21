@@ -12,8 +12,6 @@ import Bookmarked from 'assets/images/finder/bookmark.svg';
 import sideNavStyle from './finder-side-nav.css';
 import finderStyle from '../finder.css';
 
-import FinderDroppable from '../FinderDroppable';
-
 const s = getStyleApplicationFn(finderStyle, sideNavStyle);
 
 const NODES = [
@@ -53,11 +51,9 @@ const FinderSideNav = ({ finderId, isModal, activePathId, pushFinderNode, pushFi
 
   return (
     <div className={s('flex flex-col flex-shrink-0 py-sm border-r finder-border')}>
-      {NODES.map(({ name, imgSrc, nodeId }) => (
-        <FinderDroppable id={nodeId} finderId={finderId} key={nodeId}>
-          {renderSection(name, imgSrc, nodeId, () => pushFinderNode(finderId, nodeId))}
-        </FinderDroppable>
-      ))}
+      {NODES.map(({ name, imgSrc, nodeId }) =>
+        renderSection(name, imgSrc, nodeId, () => pushFinderNode(finderId, nodeId))
+      )}
       {!isModal && (
         <>
           <Separator horizontal className={s('my-sm')} />

@@ -62,6 +62,7 @@ const Header = ({
           key="cards"
           onTabClick={openFinder}
           tabContainerClassName={s(`header-small-tab ${!showAutofind ? 'ml-auto' : ''}`)}
+          tabClassName={s('opacity-100')}
         >
           <div className={s('header-badge-container bg-gray-xlight')}>
             <IoIosFolder />

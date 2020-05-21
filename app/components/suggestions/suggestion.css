@@ -3,5 +3,5 @@
 }
 
 .suggestion-elem-title {
-  @apply flex-grow text-lg text-left font-semibold;
+  @apply flex-grow text-left font-semibold;
 }

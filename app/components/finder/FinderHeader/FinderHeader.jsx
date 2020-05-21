@@ -5,7 +5,7 @@ import { MdChevronRight, MdChevronLeft, MdSearch } from 'react-icons/md';
 import { IoMdCloseCircle } from 'react-icons/io';
 import { FiPlus } from 'react-icons/fi';
 
-import { Dropdown, ContextMenu, CircleButton } from 'components/common';
+import { Dropdown, ContextMenu, CircleButton, Tooltip } from 'components/common';
 import { getNewCardBaseState } from 'utils/card';
 import { UserPropTypes } from 'utils/propTypes';
 import { getStyleApplicationFn } from 'utils/style';
@@ -171,13 +171,15 @@ const FinderHeader = ({
           }
         />
         {!isModal && (
-          <CircleButton
-            size="auto"
-            buttonClassName={s('finder-header-icon mr-sm')}
-            content={<img src={MoveFolder} alt="Move Folder" />}
-            disabled={isSegment || selectedNodes.length === 0 || isMoving}
-            onClick={() => startMoveFinderNodes(finderId)}
-          />
+          <Tooltip tooltip="Move Content">
+            <CircleButton
+              size="auto"
+              buttonClassName={s('finder-header-icon mr-sm')}
+              content={<img src={MoveFolder} alt="Move Folder" />}
+              disabled={isSegment || selectedNodes.length === 0 || isMoving}
+              onClick={() => startMoveFinderNodes(finderId)}
+            />
+          </Tooltip>
         )}
         <div className={s('finder-header-input-container')}>
           <MdSearch className={s('flex-shrink-0')} />
