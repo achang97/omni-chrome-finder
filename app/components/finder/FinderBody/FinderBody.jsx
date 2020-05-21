@@ -112,7 +112,7 @@ const FinderBody = ({
   };
 
   const renderActionIcons = () => {
-    if (moveNodes.length !== 0) {
+    if (moveNodes.length !== 0 || isModal) {
       return null;
     }
 

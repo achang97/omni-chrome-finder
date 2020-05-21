@@ -45,12 +45,10 @@ const FinderFooter = ({
         onTouchEnd={(e) => e.stopPropagation()}
         onClick={(e) => e.stopPropagation()}
       >
-        {!disabled && (
-          <div className={s('flex-1 text-sm text-gray-dark truncate')}>
-            <span> Selected Folder: </span>
-            <b> {destination.name} </b>
-          </div>
-        )}
+        <div className={s('flex-1 text-sm text-gray-dark truncate')}>
+          <span> {disabled ? 'Cannot move selected item(s) to: ' : 'Move to:'} </span>
+          <b> {destination.name} </b>
+        </div>
         <Button text="Cancel" color="secondary" className={s('mr-sm')} onClick={onSecondaryClick} />
         <Button
           text="Choose"
