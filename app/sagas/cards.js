@@ -7,7 +7,8 @@ import {
   toggleUpvotes,
   convertPermissionsToBackendFormat,
   hasValidEdits,
-  isApprover
+  isApprover,
+  isExternalCard
 } from 'utils/card';
 import { convertAttachmentsToBackendFormat } from 'utils/file';
 import { STATUS, PERMISSION_OPTION, VERIFICATION_INTERVAL_OPTION } from 'appConstants/card';
@@ -165,7 +166,6 @@ function* convertCardToBackendFormat(isNewCard) {
     edits: {
       question,
       answerEditorState,
-      descriptionEditorState,
       owners,
       subscribers,
       tags,
@@ -179,10 +179,6 @@ function* convertCardToBackendFormat(isNewCard) {
   } = yield select((state) => state.cards.activeCard);
   const _id = yield call(getUserId);
 
-  const {
-    contentState: contentStateDescription,
-    text: descriptionText
-  } = getContentStateFromEditorState(descriptionEditorState);
   const { contentState: contentStateAnswer, text: answerText } = getContentStateFromEditorState(
     answerEditorState
   );
@@ -210,8 +206,6 @@ function* convertCardToBackendFormat(isNewCard) {
 
   return {
     question,
-    description: descriptionText,
-    contentStateDescription,
     answer: answerText,
     contentStateAnswer,
     attachments: convertAttachmentsToBackendFormat(attachments),
@@ -246,9 +240,10 @@ function* createCard() {
 function* updateCard({ shouldCloseCard }) {
   const activeCard = yield call(getActiveCard);
   const cardId = activeCard._id;
+  const isExternal = isExternalCard(activeCard);
 
   try {
-    if (hasValidEdits(activeCard.edits)) {
+    if (hasValidEdits(activeCard.edits, isExternal)) {
       const newCardInfo = yield call(
         convertCardToBackendFormat,
         activeCard.status === STATUS.NOT_DOCUMENTED

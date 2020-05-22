@@ -9,7 +9,7 @@ import {
   cancelEditCard
 } from 'actions/cards';
 import trackEvent from 'actions/analytics';
-import { cardStateChanged } from 'utils/card';
+import { cardStateChanged, isExternalCard } from 'utils/card';
 import CardFooter from './CardFooter';
 
 const mapStateToProps = (state) => {
@@ -40,6 +40,7 @@ const mapStateToProps = (state) => {
     activeScreenRecordingId,
     _id,
     question,
+    isExternal: isExternalCard(activeCard),
     status,
     tags,
     upvotes,
@@ -64,4 +65,4 @@ const mapDispatchToProps = {
   trackEvent
 };
 
-export default connect(mapStateToProps, mapDispatchToProps, null, { forwardRef: true })(CardFooter);
+export default connect(mapStateToProps, mapDispatchToProps)(CardFooter);

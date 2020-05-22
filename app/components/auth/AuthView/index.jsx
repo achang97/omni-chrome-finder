@@ -64,7 +64,7 @@ const AuthView = ({
 };
 
 AuthView.propTypes = {
-  title: PropTypes.string.isRequired,
+  title: PropTypes.string,
   subtitle: PropTypes.string,
   isLoading: PropTypes.bool,
   inputBody: PropTypes.node.isRequired,

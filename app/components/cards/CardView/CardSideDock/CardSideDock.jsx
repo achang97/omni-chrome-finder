@@ -84,7 +84,7 @@ const CardSideDock = ({
         isEditable={isEditing}
         users={currOwners}
         onAdd={addCardOwner}
-        onRemoveClick={removeCardOwner}
+        onRemoveClick={({ index }) => removeCardOwner(index)}
         size="sm"
         showTooltips
       />
@@ -115,7 +115,7 @@ const CardSideDock = ({
         size="xs"
         showNames={false}
         onAdd={addCardSubscriber}
-        onRemoveClick={removeCardSubscriber}
+        onRemoveClick={({ index }) => removeCardSubscriber(index)}
         showTooltips
       />
     );
@@ -163,7 +163,7 @@ const CardSideDock = ({
               isEditable={isEditing}
               tags={currTags}
               onChange={updateCardTags}
-              onRemoveClick={removeCardTag}
+              onRemoveClick={({ index }) => removeCardTag(index)}
               showPlaceholder
             />
           </div>

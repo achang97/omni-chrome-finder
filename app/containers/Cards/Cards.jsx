@@ -223,11 +223,7 @@ const Cards = ({
 
   const renderTabHeader = () => {
     return (
-      <div
-        id="card-tab-container"
-        className={s('card-tab-container')}
-        style={{ height: CARD.DIMENSIONS.TABS_HEIGHT }}
-      >
+      <div id="card-tab-container" className={s('card-tab-container')}>
         {renderTabHeaderButtons()}
         {renderFinderTab()}
         <DragDropContext onDragEnd={onDragEnd}>

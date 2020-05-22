@@ -48,11 +48,7 @@ const CardLocation = ({
           <>
             {fullPath.slice(fullPath.length - maxPathLength).map(({ _id, name }, i) => (
               <React.Fragment key={_id}>
-                {i !== 0 && (
-                  <span>
-                    <MdChevronRight />
-                  </span>
-                )}
+                {i !== 0 && <MdChevronRight className={s('flex-shrink-0')} />}
                 <span className={s('cursor-pointer')} onClick={() => onNodeClick(_id)}>
                   {name}
                 </span>

@@ -11,10 +11,8 @@ const initialState = {
   recentCards: [],
 
   /* Expanded Page */
-  isDescriptionEditorShown: false,
   activeIntegration: ASK.INTEGRATIONS[0],
   questionTitle: '',
-  questionDescription: EditorState.createEmpty(),
   recipients: [],
 
   attachments: [],
@@ -41,9 +39,6 @@ export default function askReducer(state = initialState, action) {
         showPerformanceScore: !showPerformanceScore
       };
     }
-    case types.SHOW_ASK_DESCRIPTION_EDITOR: {
-      return { ...state, isDescriptionEditorShown: true };
-    }
 
     case types.CHANGE_ASK_INTEGRATION: {
       const { integration } = payload;
@@ -53,10 +48,6 @@ export default function askReducer(state = initialState, action) {
     case types.UPDATE_ASK_QUESTION_TITLE: {
       const { text } = payload;
       return { ...state, questionTitle: text };
-    }
-    case types.UPDATE_ASK_QUESTION_DESCRIPTION: {
-      const { description } = payload;
-      return { ...state, questionDescription: description };
     }
 
     case types.ADD_ASK_RECIPIENT: {

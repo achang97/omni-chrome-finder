@@ -1,7 +1,6 @@
 import queryString from 'query-string';
 import { take, call, all, fork, put, select } from 'redux-saga/effects';
 import { doGet, doPost, doDelete, getErrorMessage } from 'utils/request';
-import { getContentStateFromEditorState } from 'utils/editor';
 import { ASK, REQUEST } from 'appConstants';
 import { convertAttachmentsToBackendFormat, isUploadedFile } from 'utils/file';
 import {
@@ -66,13 +65,7 @@ export default function* watchAskRequests() {
 
 function* askQuestion() {
   try {
-    const { questionTitle, questionDescription, recipients, attachments } = yield select(
-      (state) => state.ask
-    );
-    const {
-      contentState: contentStateDescription,
-      text: descriptionText
-    } = getContentStateFromEditorState(questionDescription);
+    const { questionTitle, recipients, attachments } = yield select((state) => state.ask);
 
     yield call(doPost, '/slack/sendUserMessage', {
       channels: recipients.map(({ id, name, type, mentions }) => ({
@@ -82,8 +75,6 @@ function* askQuestion() {
           type === ASK.SLACK_RECIPIENT_TYPE.CHANNEL ? mentions.map((mention) => mention.id) : null
       })),
       question: questionTitle,
-      description: descriptionText,
-      contentStateDescription,
       attachments: convertAttachmentsToBackendFormat(attachments)
     });
     yield all([

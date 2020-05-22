@@ -9,6 +9,7 @@ import watchProfileRequests from './profile';
 import watchTasksRequests from './tasks';
 import watchAuditLogRequests from './auditLog';
 import watchAnalyticsRequests from './analytics';
+import watchExternalVerificationRequests from './externalVerification';
 
 export default function* rootSaga() {
   yield all([
@@ -21,6 +22,7 @@ export default function* rootSaga() {
     watchProfileRequests(),
     watchTasksRequests(),
     watchAuditLogRequests(),
-    watchAnalyticsRequests()
+    watchAnalyticsRequests(),
+    watchExternalVerificationRequests()
   ]);
 }

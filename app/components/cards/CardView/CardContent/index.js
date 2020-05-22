@@ -1,10 +1,7 @@
 import { connect } from 'react-redux';
 import {
-  enableCardEditor,
-  adjustCardDescriptionSectionHeight,
   openCardModal,
   updateCardQuestion,
-  updateCardDescriptionEditor,
   updateCardAnswerEditor,
   requestGetCard,
   openCardSideDock,
@@ -18,38 +15,32 @@ const mapStateToProps = (state) => {
       activeCard: {
         _id,
         question,
-        descriptionEditorState,
         answerEditorState,
         status,
         attachments,
         slackThreadConvoPairs,
         slackReplies,
+        externalLinkAnswer,
         isEditing,
         edits,
-        editorEnabled,
-        descriptionSectionHeight,
         hasLoaded,
         isGettingCard,
         getError
-      },
-      cardsHeight
+      }
     }
   } = state;
 
   return {
-    cardsHeight,
     _id,
     question,
-    descriptionEditorState,
     answerEditorState,
     status,
     attachments,
     slackThreadConvoPairs,
     slackReplies,
+    externalLinkAnswer,
     isEditing,
     edits,
-    editorEnabled,
-    descriptionSectionHeight,
     hasLoaded,
     isGettingCard,
     getError
@@ -57,11 +48,8 @@ const mapStateToProps = (state) => {
 };
 
 const mapDispatchToProps = {
-  enableCardEditor,
-  adjustCardDescriptionSectionHeight,
   openCardModal,
   updateCardQuestion,
-  updateCardDescriptionEditor,
   updateCardAnswerEditor,
   requestGetCard,
   openCardSideDock,

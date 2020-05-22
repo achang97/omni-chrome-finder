@@ -50,18 +50,6 @@ export function updateCardAnswerEditor(editorState) {
   return { type: types.UPDATE_CARD_ANSWER_EDITOR, payload: { editorState } };
 }
 
-export function updateCardDescriptionEditor(editorState) {
-  return { type: types.UPDATE_CARD_DESCRIPTION_EDITOR, payload: { editorState } };
-}
-
-export function enableCardEditor(editorType) {
-  return { type: types.ENABLE_CARD_EDITOR, payload: { editorType } };
-}
-
-export function adjustCardDescriptionSectionHeight(newHeight) {
-  return { type: types.ADJUST_CARD_DESCRIPTION_SECTION_HEIGHT, payload: { newHeight } };
-}
-
 export function updateCardSelectedThreadIndex(index) {
   return { type: types.UPDATE_CARD_SELECTED_THREAD, payload: { index } };
 }

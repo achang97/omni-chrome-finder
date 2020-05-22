@@ -166,7 +166,7 @@ const TaskItem = ({
   };
 
   const renderTaskPreview = () => {
-    const { answer, tags, outOfDateReason } = card;
+    const { answer, externalLinkAnswer, tags, outOfDateReason } = card;
 
     // Autopopulate depth doesn't populate approvers, so they're IDs by default
     const lockedTags = tags.filter(
@@ -181,7 +181,7 @@ const TaskItem = ({
               'text-xs text-gray-dark mt-reg vertical-ellipsis-2 break-words line-clamp-4'
             )}
           >
-            {answer}
+            {externalLinkAnswer ? externalLinkAnswer.link : answer}
           </div>
         );
       case TASKS.TYPE.OUT_OF_DATE:
@@ -333,6 +333,9 @@ TaskItem.propTypes = {
     _id: PropTypes.string.isRequired,
     question: PropTypes.string.isRequired,
     answer: PropTypes.string.isRequired,
+    externalLinkAnswer: PropTypes.shape({
+      link: PropTypes.string.isRequired
+    }),
     tags: PropTypes.array,
     outOfDateReason: PropTypes.object
   }).isRequired,

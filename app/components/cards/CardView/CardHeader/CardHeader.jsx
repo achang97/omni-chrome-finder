@@ -23,6 +23,7 @@ const CardHeader = ({
   outOfDateReason,
   _id,
   answer,
+  externalLink,
   question,
   isEditing,
   status,
@@ -49,7 +50,7 @@ const CardHeader = ({
 
   const clickCopyAnswer = () => {
     trackEvent('Copy Card Body', { 'Card ID': _id, Question: question, Status: status });
-    copyText(answer);
+    copyText(answer || externalLink);
   };
 
   const clickCopyUrl = () => {
@@ -231,6 +232,7 @@ CardHeader.propTypes = {
   ownUserId: PropTypes.string.isRequired,
   _id: PropTypes.string.isRequired,
   answer: PropTypes.string,
+  externalLink: PropTypes.string,
   question: PropTypes.string,
   isEditing: PropTypes.bool.isRequired,
   status: PropTypes.oneOf(Object.values(STATUS)).isRequired,

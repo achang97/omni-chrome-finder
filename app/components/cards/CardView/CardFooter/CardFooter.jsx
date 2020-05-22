@@ -14,139 +14,135 @@ import style from './card-footer.css';
 
 const s = getStyleApplicationFn(style);
 
-const CardFooter = React.forwardRef(
-  (
-    {
-      toastMessage,
-      onToastHide,
-      user,
-      activeScreenRecordingId,
-      _id,
-      question,
-      status,
-      upvotes,
-      edits,
-      isUpdatingBookmark,
-      isUpdatingCard,
-      isEditing,
-      isTogglingUpvote,
-      hasCardChanged,
-      requestToggleUpvote,
-      requestAddBookmark,
-      requestRemoveBookmark,
-      requestUpdateCard,
-      editCard,
-      openCardModal,
-      cancelEditCard,
-      trackEvent
-    },
-    ref
-  ) => {
-    const hasUpvoted = upvotes.some((upvoteId) => upvoteId === user._id);
-    const hasBookmarked = user.bookmarkIds.some((bookmarkId) => bookmarkId === _id);
-    const bookmarkOnClick = hasBookmarked ? requestRemoveBookmark : requestAddBookmark;
-    const isRecording = activeScreenRecordingId === _id;
+const CardFooter = ({
+  toastMessage,
+  onToastHide,
+  user,
+  activeScreenRecordingId,
+  _id,
+  question,
+  isExternal,
+  status,
+  upvotes,
+  edits,
+  isUpdatingBookmark,
+  isUpdatingCard,
+  isEditing,
+  isTogglingUpvote,
+  hasCardChanged,
+  requestToggleUpvote,
+  requestAddBookmark,
+  requestRemoveBookmark,
+  requestUpdateCard,
+  editCard,
+  openCardModal,
+  cancelEditCard,
+  trackEvent
+}) => {
+  const hasUpvoted = upvotes.some((upvoteId) => upvoteId === user._id);
+  const hasBookmarked = user.bookmarkIds.some((bookmarkId) => bookmarkId === _id);
+  const bookmarkOnClick = hasBookmarked ? requestRemoveBookmark : requestAddBookmark;
+  const isRecording = activeScreenRecordingId === _id;
 
-    const renderEditView = () => {
-      if (status === STATUS.NOT_DOCUMENTED) {
-        return (
-          <Button
-            text="Add to Knowledge Base"
-            color="primary"
-            onClick={() => openCardModal(MODAL_TYPE.CREATE)}
-            className={s('rounded-t-none p-lg')}
-            disabled={
-              edits.question === '' ||
-              !edits.answerEditorState.getCurrentContent().hasText() ||
-              isAnyLoading(edits.attachments) ||
-              isRecording
-            }
-            underline
-          />
-        );
-      }
-
+  const renderEditView = () => {
+    if (status === STATUS.NOT_DOCUMENTED) {
       return (
         <Button
-          text="Save Updates"
+          text="Add to Knowledge Base"
           color="primary"
-          onClick={hasCardChanged ? requestUpdateCard : cancelEditCard}
-          iconLeft={false}
-          icon={isUpdatingCard ? <Loader className={s('ml-sm')} size="sm" color="white" /> : null}
+          onClick={() => openCardModal(MODAL_TYPE.CREATE)}
           className={s('rounded-t-none p-lg')}
-          disabled={!hasValidEdits(edits) || isUpdatingCard || isRecording}
+          disabled={
+            edits.question === '' ||
+            !edits.answerEditorState.getCurrentContent().hasText() ||
+            isAnyLoading(edits.attachments) ||
+            isRecording
+          }
           underline
         />
       );
-    };
-
-    const clickEditCard = () => {
-      trackEvent('Click Edit Card', { 'Card ID': _id, Question: question, Status: status });
-      editCard();
-    };
-
-    const clickUpvote = () => {
-      if (hasUpvoted) {
-        trackEvent('Unmark Card Helpful', { 'Card ID': _id, Question: question, Status: status });
-      } else {
-        trackEvent('Mark Card Helpful', { 'Card ID': _id, Question: question, Status: status });
-      }
-      requestToggleUpvote(toggleUpvotes(upvotes, user._id));
-    };
-
-    const renderReadView = () => (
-      <div className={s('flex items-center justify-between rounded-b-lg px-lg py-sm')}>
-        <div className={s('flex')}>
-          <Button
-            text="Edit Card"
-            color="primary"
-            icon={<MdModeEdit className={s('mr-sm')} />}
-            onClick={clickEditCard}
-            className={s('mr-sm')}
-          />
-        </div>
-        <div className={s('flex')}>
-          <Button
-            text={`Helpful${upvotes.length !== 0 ? ` (${upvotes.length})` : ''}`}
-            icon={<MdThumbUp className={s('mr-sm')} />}
-            className={s('mr-reg')}
-            color={hasUpvoted ? 'gold' : 'secondary'}
-            disabled={isTogglingUpvote}
-            onClick={clickUpvote}
-          />
-          <Tooltip
-            tooltip={hasBookmarked ? 'Remove Bookmark' : 'Add Bookmark'}
-            tooltipProps={{ place: 'left' }}
-          >
-            <Button
-              icon={<MdBookmarkBorder />}
-              color={hasBookmarked ? 'gold' : 'secondary'}
-              disabled={isUpdatingBookmark}
-              onClick={() => bookmarkOnClick(_id)}
-            />
-          </Tooltip>
-        </div>
-      </div>
-    );
+    }
 
     return (
-      <div className={s('flex-shrink-0 min-h-0 relative')} ref={ref}>
-        {
-          // Avoid using show prop due to absolute positioning
-          !isEditing && !!toastMessage && (
-            <Message
-              className={s('card-footer-toast')}
-              message={toastMessage}
-              temporary
-              onHide={() => onToastHide()}
-            />
-          )
-        }
-        {isEditing ? renderEditView() : renderReadView()}
-      </div>
+      <Button
+        text="Save Updates"
+        color="primary"
+        onClick={hasCardChanged ? requestUpdateCard : cancelEditCard}
+        iconLeft={false}
+        icon={isUpdatingCard ? <Loader className={s('ml-sm')} size="sm" color="white" /> : null}
+        className={s('rounded-t-none p-lg')}
+        disabled={!hasValidEdits(edits, isExternal) || isUpdatingCard || isRecording}
+        underline
+      />
     );
-  }
-);
+  };
+
+  const clickEditCard = () => {
+    trackEvent('Click Edit Card', { 'Card ID': _id, Question: question, Status: status });
+    editCard();
+  };
+
+  const clickUpvote = () => {
+    if (hasUpvoted) {
+      trackEvent('Unmark Card Helpful', { 'Card ID': _id, Question: question, Status: status });
+    } else {
+      trackEvent('Mark Card Helpful', { 'Card ID': _id, Question: question, Status: status });
+    }
+    requestToggleUpvote(toggleUpvotes(upvotes, user._id));
+  };
+
+  const renderReadView = () => (
+    <div className={s('flex items-center justify-between rounded-b-lg px-lg py-sm')}>
+      <div className={s('flex')}>
+        <Button
+          text="Edit Card"
+          color="primary"
+          icon={<MdModeEdit className={s('mr-sm')} />}
+          onClick={clickEditCard}
+          className={s('mr-sm')}
+        />
+      </div>
+      <div className={s('flex')}>
+        <Button
+          text={`Helpful${upvotes.length !== 0 ? ` (${upvotes.length})` : ''}`}
+          icon={<MdThumbUp className={s('mr-sm')} />}
+          className={s('mr-reg')}
+          color={hasUpvoted ? 'gold' : 'secondary'}
+          disabled={isTogglingUpvote}
+          onClick={clickUpvote}
+        />
+        <Tooltip
+          tooltip={hasBookmarked ? 'Remove Bookmark' : 'Add Bookmark'}
+          tooltipProps={{ place: 'left' }}
+        >
+          <Button
+            icon={<MdBookmarkBorder />}
+            color={hasBookmarked ? 'gold' : 'secondary'}
+            disabled={isUpdatingBookmark}
+            onClick={() => bookmarkOnClick(_id)}
+          />
+        </Tooltip>
+      </div>
+    </div>
+  );
+
+  return (
+    <div className={s('flex-shrink-0 min-h-0 relative')}>
+      {
+        // Avoid using show prop due to absolute positioning
+        !isEditing && !!toastMessage && (
+          <Message
+            className={s('card-footer-toast')}
+            message={toastMessage}
+            temporary
+            onHide={() => onToastHide()}
+          />
+        )
+      }
+      {isEditing ? renderEditView() : renderReadView()}
+    </div>
+  );
+};
 
 CardFooter.displayName = 'CardFooter';
 
@@ -159,6 +155,7 @@ CardFooter.propTypes = {
   activeScreenRecordingId: PropTypes.string,
   _id: PropTypes.string.isRequired,
   question: PropTypes.string.isRequired,
+  isExternal: PropTypes.bool.isRequired,
   status: PropTypes.oneOf(Object.values(STATUS)).isRequired,
   upvotes: PropTypes.arrayOf(PropTypes.string).isRequired,
   edits: PropTypes.shape({

@@ -21,14 +21,11 @@ const initialState = {
 };
 
 const BASE_MODAL_OPEN_STATE = _.mapValues(CARD.MODAL_TYPE, () => false);
-const BASE_EDITOR_ENABLED_STATE = _.mapValues(CARD.EDITOR_TYPE, () => false);
 
 const BASE_CARD_STATE = {
   isEditing: false,
   sideDockOpen: false,
   modalOpen: BASE_MODAL_OPEN_STATE,
-  editorEnabled: BASE_EDITOR_ENABLED_STATE,
-  descriptionSectionHeight: CARD.DIMENSIONS.MIN_QUESTION_HEIGHT,
   edits: {},
   hasLoaded: true,
   outOfDateReasonInput: '',
@@ -46,7 +43,6 @@ const BASE_CARD_STATE = {
   subscribers: [],
   question: '',
   answerEditorState: EditorState.createEmpty(),
-  descriptionEditorState: EditorState.createEmpty()
 };
 
 export default function cardsReducer(state = initialState, action) {
@@ -109,7 +105,6 @@ export default function cardsReducer(state = initialState, action) {
       verificationInterval,
       question,
       answerEditorState,
-      descriptionEditorState,
       finderNode,
       slackReplies,
       edits
@@ -127,7 +122,6 @@ export default function cardsReducer(state = initialState, action) {
         verificationInterval,
         question,
         answerEditorState,
-        descriptionEditorState,
         finderNode,
         slackReplies,
         ...edits
@@ -252,8 +246,7 @@ export default function cardsReducer(state = initialState, action) {
         cardInfo = createCardEdits({
           ...cardInfo,
           _id: generateCardId(),
-          modalOpen: { ...cardInfo.modalOpen, [CARD.MODAL_TYPE.CREATE]: createModalOpen },
-          editorEnabled: { ...cardInfo.editorEnabled, [CARD.EDITOR_TYPE.ANSWER]: true }
+          modalOpen: { ...cardInfo.modalOpen, [CARD.MODAL_TYPE.CREATE]: createModalOpen }
         });
       } else {
         // Will have to update this section in the future
@@ -293,13 +286,6 @@ export default function cardsReducer(state = initialState, action) {
       return updateActiveCard({ sideDockOpen: false });
     }
 
-    case types.ENABLE_CARD_EDITOR: {
-      const { editorType } = payload;
-      return updateActiveCard({
-        editorEnabled: { ...BASE_EDITOR_ENABLED_STATE, [editorType]: true }
-      });
-    }
-
     case types.OPEN_CARD_MODAL: {
       const { modalType } = payload;
       const { activeCard } = state;
@@ -317,11 +303,6 @@ export default function cardsReducer(state = initialState, action) {
       return updateActiveCard(newInfo);
     }
 
-    case types.ADJUST_CARD_DESCRIPTION_SECTION_HEIGHT: {
-      const { newHeight } = payload;
-      return updateActiveCard({ descriptionSectionHeight: newHeight });
-    }
-
     case types.UPDATE_CARD_QUESTION: {
       const { question } = payload;
       return updateActiveCardEdits({ question });
@@ -329,10 +310,6 @@ export default function cardsReducer(state = initialState, action) {
     case types.UPDATE_CARD_ANSWER_EDITOR: {
       const { editorState } = payload;
       return updateActiveCardEdits({ answerEditorState: editorState });
-    }
-    case types.UPDATE_CARD_DESCRIPTION_EDITOR: {
-      const { editorState } = payload;
-      return updateActiveCardEdits({ descriptionEditorState: editorState });
     }
 
     case types.UPDATE_CARD_SELECTED_THREAD: {

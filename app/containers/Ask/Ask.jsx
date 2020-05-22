@@ -36,7 +36,6 @@ const Ask = ({
   user,
   changeAskIntegration,
   activeIntegration,
-  isDescriptionEditorShown,
   requestAddAskAttachment,
   requestRemoveAskAttachment,
   attachments,
@@ -45,8 +44,6 @@ const Ask = ({
   isAskingQuestion,
   questionTitle,
   updateAskQuestionTitle,
-  questionDescription,
-  updateAskQuestionDescription,
   recipients,
   removeAskRecipient,
   updateAskRecipient,
@@ -56,7 +53,6 @@ const Ask = ({
   dockExpanded,
   toggleDockHeight,
   showPerformanceScore,
-  showAskDescriptionEditor,
   history
 }) => {
   const [authWindow, setAuthWindow] = useState(null);
@@ -122,21 +118,12 @@ const Ask = ({
     return (
       <div>
         <div className={s('flex-col relative')}>
-          <input
+          <textarea
             placeholder="Question"
             onChange={(e) => updateAskQuestionTitle(e.target.value)}
             value={questionTitle}
             autoFocus
             className={s('w-full mb-reg')}
-          />
-          <TextEditor
-            onEditorStateChange={updateAskQuestionDescription}
-            editorState={questionDescription}
-            editorType="EXTENSION"
-            placeholder="Add a description here"
-            minimizedPlaceholder="Add Description"
-            onExpandEditor={showAskDescriptionEditor}
-            expanded={isDescriptionEditorShown}
           />
         </div>
         <div className={s('flex px-xs pt-reg')}>
@@ -357,11 +344,9 @@ const Ask = ({
 
 Ask.propTypes = {
   activeIntegration: PropTypes.oneOf(ASK.INTEGRATIONS).isRequired,
-  isDescriptionEditorShown: PropTypes.bool.isRequired,
   attachments: PropTypes.arrayOf(PropTypes.object).isRequired,
   isAskingQuestion: PropTypes.bool,
   questionTitle: PropTypes.string.isRequired,
-  questionDescription: PropTypes.instanceOf(EditorState).isRequired,
   recipients: PropTypes.arrayOf(PropTypes.object).isRequired,
   slackConversations: PropTypes.arrayOf(PropTypes.object).isRequired,
   dockExpanded: PropTypes.bool.isRequired,
@@ -371,13 +356,11 @@ Ask.propTypes = {
   // Redux Actions
   toggleDockHeight: PropTypes.func.isRequired,
   changeAskIntegration: PropTypes.func.isRequired,
-  showAskDescriptionEditor: PropTypes.func.isRequired,
   requestAddAskAttachment: PropTypes.func.isRequired,
   requestRemoveAskAttachment: PropTypes.func.isRequired,
   updateAskAttachmentName: PropTypes.func.isRequired,
   requestAskQuestion: PropTypes.func.isRequired,
   updateAskQuestionTitle: PropTypes.func.isRequired,
-  updateAskQuestionDescription: PropTypes.func.isRequired,
   removeAskRecipient: PropTypes.func.isRequired,
   updateAskRecipient: PropTypes.func.isRequired,
   addAskRecipient: PropTypes.func.isRequired,

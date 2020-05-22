@@ -4,6 +4,8 @@
 }
 
 .card-header-container {
+  @apply z-10;
+
   box-shadow: 0 10px 10px -5px rgb(237, 237, 237);
 }
 
@@ -43,14 +45,16 @@
   max-width: 100%;
 }
 
+.card-answer-iframe-loader {
+  @apply absolute top-0 left-0 right-0 bottom-0;
+
+  z-index: -1;
+}
+
 .card-text-editor-view {
   justify-content: space-between !important;
   border: 0 !important;
   border-radius: 0 !important;
-}
-
-.card-text-editor-edit-spacing {
-  @apply mx-lg my-sm;
 }
 
 .card-text-editor-view-spacing {

@@ -22,21 +22,17 @@ const s = getStyleApplicationFn(style);
 
 const Create = ({
   question,
-  descriptionEditorState,
   answerEditorState,
   attachments,
   finderNode,
   user,
   isTemplateView,
-  showCreateDescriptionEditor,
-  isDescriptionEditorShown,
   templates,
   selectedTemplateCategory,
   updateSelectedTemplateCategory,
   toggleTemplateView,
   requestGetTemplates,
   updateCreateQuestion,
-  updateCreateDescriptionEditor,
   updateCreateAnswerEditor,
   clearCreatePanel,
   requestAddCreateAttachment,
@@ -56,7 +52,6 @@ const Create = ({
     newCardInfo.edits = {
       ...newCardInfo.edits,
       question,
-      descriptionEditorState,
       answerEditorState,
       attachments,
       ...edits
@@ -73,21 +68,12 @@ const Create = ({
 
   const renderInputSection = () => (
     <div>
-      <input
+      <textarea
         placeholder="Title or Question"
-        className={s('w-full my-reg')}
+        className={s('w-full')}
         value={question}
         onChange={(e) => updateCreateQuestion(e.target.value)}
         autoFocus
-      />
-      <TextEditor
-        onEditorStateChange={updateCreateDescriptionEditor}
-        editorState={descriptionEditorState}
-        editorType="EXTENSION"
-        placeholder="Add a description here"
-        minimizedPlaceholder="Add Description"
-        expanded={isDescriptionEditorShown}
-        onExpandEditor={showCreateDescriptionEditor}
       />
       <Separator horizontal className={s('my-reg')} />
       <TextEditor
@@ -226,13 +212,11 @@ const Create = ({
 
 Create.propTypes = {
   question: PropTypes.string.isRequired,
-  descriptionEditorState: PropTypes.instanceOf(EditorState).isRequired,
   answerEditorState: PropTypes.instanceOf(EditorState).isRequired,
   attachments: PropTypes.arrayOf(PropTypes.object).isRequired,
   finderNode: NodePropTypes,
   user: UserPropTypes.isRequired,
   isTemplateView: PropTypes.bool.isRequired,
-  isDescriptionEditorShown: PropTypes.bool.isRequired,
   templates: PropTypes.objectOf(PropTypes.arrayOf(PropTypes.object)).isRequired,
   selectedTemplateCategory: PropTypes.shape({
     label: PropTypes.string.isRequired,
@@ -240,12 +224,10 @@ Create.propTypes = {
   }),
 
   // Redux Actions
-  showCreateDescriptionEditor: PropTypes.func.isRequired,
   updateSelectedTemplateCategory: PropTypes.func.isRequired,
   toggleTemplateView: PropTypes.func.isRequired,
   requestGetTemplates: PropTypes.func.isRequired,
   updateCreateQuestion: PropTypes.func.isRequired,
-  updateCreateDescriptionEditor: PropTypes.func.isRequired,
   updateCreateAnswerEditor: PropTypes.func.isRequired,
   clearCreatePanel: PropTypes.func.isRequired,
   requestAddCreateAttachment: PropTypes.func.isRequired,

@@ -7,9 +7,7 @@ const initialState = {
   templates: {},
   selectedTemplateCategory: null,
 
-  isDescriptionEditorShown: false,
   question: '',
-  descriptionEditorState: EditorState.createEmpty(),
   answerEditorState: EditorState.createEmpty(),
   attachments: []
 };
@@ -23,9 +21,6 @@ export default function createReducer(state = initialState, action) {
   });
 
   switch (type) {
-    case types.SHOW_CREATE_DESCRIPTION_EDITOR: {
-      return { ...state, isDescriptionEditorShown: true };
-    }
     case types.UPDATE_CREATE_QUESTION: {
       const { newValue } = payload;
       return { ...state, question: newValue };
@@ -33,10 +28,6 @@ export default function createReducer(state = initialState, action) {
     case types.UPDATE_CREATE_ANSWER_EDITOR: {
       const { editorState } = payload;
       return { ...state, answerEditorState: editorState };
-    }
-    case types.UPDATE_CREATE_DESCRIPTION_EDITOR: {
-      const { editorState } = payload;
-      return { ...state, descriptionEditorState: editorState };
     }
     case types.UPDATE_CREATE_FINDER_NODE: {
       const { finderNode } = payload;

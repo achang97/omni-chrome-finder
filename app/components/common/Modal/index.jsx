@@ -15,9 +15,9 @@ import style from './modal.css';
 const s = getStyleApplicationFn(style);
 
 const MODAL_TRANSITION_STYLES = {
-  entering: { opacity: 0, transform: 'translate(0, -50%) scale(0.5)' },
-  entered: { opacity: 1, transform: 'translate(0, -50%)', visibility: 'visible' },
-  exiting: { opacity: 1, transform: 'translate(0, -50%) scale(0.5)' },
+  entering: { opacity: 0, transform: 'translate(-50%, -50%) scale(0.5)' },
+  entered: { opacity: 1, transform: 'translate(-50%, -50%)', visibility: 'visible' },
+  exiting: { opacity: 1, transform: 'translate(-50%, -50%) scale(0.5)' },
   exited: { opacity: 0, visibility: 'hidden' }
 };
 

@@ -71,7 +71,7 @@ const CardCreateModal = ({
         isEditable
         users={owners}
         onAdd={addCardOwner}
-        onRemoveClick={removeCardOwner}
+        onRemoveClick={({ index }) => removeCardOwner(index)}
         showTooltips
         size="xs"
         showNames={false}
@@ -100,7 +100,7 @@ const CardCreateModal = ({
         size="xs"
         showNames={false}
         onAdd={addCardSubscriber}
-        onRemoveClick={removeCardSubscriber}
+        onRemoveClick={({ index }) => removeCardSubscriber(index)}
         showTooltips
       />
     );
@@ -119,7 +119,7 @@ const CardCreateModal = ({
               isEditable
               tags={tags}
               onChange={updateCardTags}
-              onRemoveClick={removeCardTag}
+              onRemoveClick={({ index }) => removeCardTag(index)}
               showPlaceholder
             />
           </div>

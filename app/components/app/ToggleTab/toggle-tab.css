@@ -1,8 +1,14 @@
 .toggle-tab {
-  top: 50px;
   z-index: 10000000000;
 
-  @apply flex fixed right-0;
+  @apply flex flex-col fixed right-0;
+}
+
+.toggle-drag-handle {
+  @apply rounded-l-lg text-white flex items-center justify-center text-sm;
+
+  cursor: grab;
+  width: 10px;
 }
 
 .toggle-tab-button {
@@ -12,7 +18,9 @@
 }
 
 .toggle-close-button {
-  font-size: 10px;
-
-  @apply pt-0;
+  @apply absolute top-0 left-0;
+  @apply bg-white rounded-full text-purple-reg text-xs shadow-md cursor-pointer h-reg w-reg;
+  
+  z-index: 10000000001;
+  transform: translate(-40%, -40%);
 }

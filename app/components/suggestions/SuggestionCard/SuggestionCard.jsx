@@ -6,7 +6,7 @@ import { MdMoreHoriz } from 'react-icons/md';
 import { CardStatusIndicator, CardLocation } from 'components/cards';
 import { Button, Dropdown, Message, Loader, Separator, ConfirmModal } from 'components/common';
 
-import { CARD } from 'appConstants';
+import { CARD, INTEGRATIONS } from 'appConstants';
 import { copyCardUrl } from 'utils/card';
 import { NodePropTypes } from 'utils/propTypes';
 
@@ -25,6 +25,7 @@ const SuggestionCard = ({
   id,
   question,
   answer,
+  externalLinkAnswer,
   status,
   finderNode,
   className,
@@ -176,6 +177,20 @@ const SuggestionCard = ({
     );
   };
 
+  const renderExternalLogo = () => {
+    const integration = Object.values(INTEGRATIONS).find(
+      ({ type }) => type === externalLinkAnswer.type
+    );
+
+    if (!integration) {
+      return null;
+    }
+
+    return (
+      <img src={integration.logo} alt={integration.title} className={s('mt-xs w-reg h-reg')} />
+    );
+  };
+
   const clickOpenCard = () => {
     trackEvent('Open Card from Search', { 'Card ID': id, Question: question, Status: status });
     openCard({ _id: id });
@@ -194,14 +209,17 @@ const SuggestionCard = ({
         {renderDropdown()}
       </div>
       <div className={s('flex flex-col w-full')}>
-        <span className={s('suggestion-elem-title break-words line-clamp-2')}>{question}</span>
-        {answer && (
+        <div className={s('flex')}>
+          <span className={s('suggestion-elem-title break-words line-clamp-2')}>{question}</span>
+          {externalLinkAnswer && renderExternalLogo()}
+        </div>
+        {(answer || externalLinkAnswer) && (
           <span
             className={s(
               'mt-sm text-xs text-gray-dark font-medium line-clamp-2 break-words wb-break-words'
             )}
           >
-            {answer}
+            {externalLinkAnswer ? externalLinkAnswer.link : answer}
           </span>
         )}
       </div>
@@ -215,6 +233,10 @@ SuggestionCard.propTypes = {
   id: PropTypes.string.isRequired,
   question: PropTypes.string.isRequired,
   answer: PropTypes.string,
+  externalLinkAnswer: PropTypes.shape({
+    link: PropTypes.string.isRequired,
+    type: PropTypes.string.isRequired
+  }),
   status: PropTypes.oneOf(Object.values(CARD.STATUS)).isRequired,
   finderNode: NodePropTypes,
   className: PropTypes.string,

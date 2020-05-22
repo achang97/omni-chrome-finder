@@ -9,6 +9,7 @@ import { UserPropTypes } from 'utils/propTypes';
 
 import {
   Header,
+  AutofindListener,
   ChromeMessageListener,
   ToggleTab,
   MessageModal,
@@ -85,9 +86,6 @@ const App = ({
 
   return (
     <div className={s('app-container')}>
-      <ChromeMessageListener />
-      <ToggleTab />
-      {isLoggedIn && isVerified && dockVisible && <Cards />}
       <Dock
         position="right"
         fluid={false}
@@ -124,6 +122,10 @@ const App = ({
           </Switch>
         </div>
       </Dock>
+      <AutofindListener />
+      <ChromeMessageListener />
+      <ToggleTab />
+      {isLoggedIn && isVerified && dockVisible && <Cards />}
     </div>
   );
 };

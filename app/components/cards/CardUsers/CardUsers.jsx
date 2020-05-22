@@ -34,7 +34,7 @@ const CardUsers = ({
     requestSearchUsers(inputValue);
   };
 
-  const renderUser = (user, i) => {
+  const renderUser = (user, index) => {
     const {
       _id,
       name,
@@ -53,7 +53,7 @@ const CardUsers = ({
         img={profilePicture}
         className={s('mr-sm mb-sm')}
         onClick={onUserClick}
-        onRemoveClick={isEditable && userIsEditable ? () => onRemoveClick(i) : null}
+        onRemoveClick={isEditable && userIsEditable ? () => onRemoveClick({ user, index }) : null}
         showTooltip={showTooltips}
       />
     );

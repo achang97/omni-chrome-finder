@@ -13,7 +13,6 @@ const mapStateToProps = (state) => {
       attachments,
       finderNode,
       isTemplateView,
-      isDescriptionEditorShown,
       templates,
       selectedTemplateCategory
     },
@@ -27,7 +26,6 @@ const mapStateToProps = (state) => {
     attachments,
     finderNode,
     isTemplateView,
-    isDescriptionEditorShown,
     templates,
     selectedTemplateCategory,
     user
