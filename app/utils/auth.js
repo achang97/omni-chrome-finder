@@ -8,6 +8,10 @@ export function hasCompletedOnboarding(onboarding) {
   );
 }
 
+export function isValidUser(token, user) {
+  return !!token && user.isVerified && hasCompletedOnboarding(user.onboarding);
+}
+
 export function isLoggedIn(user, integration) {
   // use new userIntegrations here.
   return (
@@ -37,4 +41,4 @@ export function getIntegrationAuthLink(userId, token, integration) {
   }
 }
 
-export default { hasCompletedOnboarding, isLoggedIn, getIntegrationAuthLink };
+export default { hasCompletedOnboarding, isValidUser, isLoggedIn, getIntegrationAuthLink };

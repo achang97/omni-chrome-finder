@@ -8,7 +8,7 @@ import { updateCreateAnswerEditor } from 'actions/create';
 import { requestGetUser } from 'actions/profile';
 import { requestLogAudit } from 'actions/auditLog';
 import { requestGetTasks, updateTasksOpenSection, updateTasksTab } from 'actions/tasks';
-import { hasCompletedOnboarding } from 'utils/auth';
+import { isValidUser } from 'utils/auth';
 import ChromeMessageListener from './ChromeMessageListener';
 
 const mapStateToProps = (state) => {
@@ -19,16 +19,11 @@ const mapStateToProps = (state) => {
     tasks: { tasks }
   } = state;
 
-  const { isVerified, autofindPermissions = {}, onboarding } = user;
-
   return {
     dockVisible,
     dockExpanded,
     autofindShown,
-    isLoggedIn: !!token,
-    isVerified,
-    autofindPermissions,
-    hasCompletedOnboarding: hasCompletedOnboarding(onboarding),
+    isValidUser: isValidUser(token, user),
     tasks
   };
 };

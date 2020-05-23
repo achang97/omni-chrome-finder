@@ -1,21 +1,21 @@
 .modal {
-  @apply absolute bg-purple-2xlight flex flex-col rounded-lg overflow-hidden;
+  @apply absolute bg-purple-2xlight flex flex-col rounded-lg;
 
   top: 50%;
-  left: 10%;
-  right: 10%;
+  left: 50%;
+  width: 90%;
   max-height: 90%;
-  z-index: 101;
+  z-index: 100000001;
 }
 
 .modal-overlay {
   @apply absolute top-0 left-0 right-0 bottom-0 bg-gray-overlay;
 
-  z-index: 100;
+  z-index: 100000000;
 }
 
 .modal-header {
-  @apply flex items-center justify-between p-lg bg-purple-light;
+  @apply flex items-center justify-between p-lg bg-purple-light rounded-t-lg;
 }
 
 .modal-body {
@@ -23,9 +23,9 @@
 }
 
 .modal-overlay-important {
-  z-index: 200 !important;
+  z-index: 100000002 !important;
 }
 
 .modal-important {
-  z-index: 201 !important;
+  z-index: 100000003 !important;
 }

@@ -5,6 +5,7 @@ const initialState = {
   dockExpanded: false,
   toggleTabShown: false,
   autofindShown: true,
+  toggleTabY: 50,
 
   modalOpen: false,
   modalProps: {
@@ -43,6 +44,11 @@ export default function displayReducer(state = initialState, action) {
     }
     case types.CLOSE_MODAL: {
       return { ...state, modalOpen: false, modalProps: {} };
+    }
+
+    case types.UPDATE_TOGGLE_TAB_POSITION: {
+      const { newY } = payload;
+      return { ...state, toggleTabY: newY };
     }
 
     default:

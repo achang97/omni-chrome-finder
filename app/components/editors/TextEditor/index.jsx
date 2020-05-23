@@ -101,10 +101,11 @@ export default class TextEditor extends Component {
             editorState={editorState}
             wrapperClassName={s(wrapperClassName)}
             editorClassName={s(`
-              ${editorClassName || defaultEditorClassName}
+              ${defaultEditorClassName}
+              ${editorClassName}
               ${hideToolbar ? 'rounded-lg' : ''}
             `)}
-            toolbarClassName={s(toolbarClassName)}
+            toolbarClassName={s(`text-editor-toolbar ${toolbarClassName}`)}
             onEditorStateChange={onEditorStateChange}
             toolbar={editorType === 'CARD' ? CARD_TOOLBAR_PROPS : EXTENSION_TOOLBAR_PROPS}
             toolbarHidden={hideToolbar}

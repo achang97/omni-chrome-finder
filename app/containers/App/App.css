@@ -24,7 +24,7 @@
   overflow: initial !important;
 }
 
-.app-container > div:last-child > div > div:first-child {
+.app-container > div:first-child > div > div:first-child {
   @apply hidden !important;
 }
 

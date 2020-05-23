@@ -1,13 +1,6 @@
 import * as types from 'actions/actionTypes';
-import {
-  updateCard,
-  handleDeleteCardSuccess,
-  requestGetCard,
-  enableCardEditor,
-  adjustCardDescriptionSectionHeight
-} from 'actions/cards';
+import { updateCard, handleDeleteCardSuccess, requestGetCard } from 'actions/cards';
 import { closeFinder } from 'actions/finder';
-import { EDITOR_TYPE, DIMENSIONS } from 'appConstants/card';
 import { MAIN_STATE_ID } from 'appConstants/finder';
 
 const cardsMiddleware = (store) => (next) => (action) => {
@@ -51,11 +44,6 @@ const cardsMiddleware = (store) => (next) => (action) => {
     }
     case types.CANCEL_EDIT_CARD: {
       store.dispatch(requestGetCard());
-      break;
-    }
-    case types.EDIT_CARD: {
-      store.dispatch(enableCardEditor(EDITOR_TYPE.ANSWER));
-      store.dispatch(adjustCardDescriptionSectionHeight(DIMENSIONS.MIN_QUESTION_HEIGHT));
       break;
     }
 

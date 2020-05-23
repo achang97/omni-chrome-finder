@@ -2,6 +2,7 @@ import { connect } from 'react-redux';
 import {
   requestCreateCard,
   requestUpdateCard,
+  openCardModal,
   closeCardModal,
   addCardOwner,
   removeCardOwner,
@@ -45,6 +46,7 @@ const mapStateToProps = (state) => {
 const mapDispatchToProps = {
   requestCreateCard,
   requestUpdateCard,
+  openCardModal,
   closeCardModal,
   addCardOwner,
   removeCardOwner,

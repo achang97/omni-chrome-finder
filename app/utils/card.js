@@ -9,7 +9,6 @@ import { copyText } from './window';
 
 export function convertCardToFrontendFormat(card) {
   const {
-    contentStateDescription,
     contentStateAnswer,
     updateInterval,
     userPermissions,
@@ -32,9 +31,6 @@ export function convertCardToFrontendFormat(card) {
   const permissions = convertPermissionsToFrontendFormat(userPermissions, permissionGroups);
 
   return {
-    descriptionEditorState: contentStateDescription
-      ? getEditorStateFromContentState(contentStateDescription)
-      : EditorState.createEmpty(),
     answerEditorState: contentStateAnswer
       ? getEditorStateFromContentState(contentStateAnswer)
       : EditorState.createEmpty(),
@@ -95,7 +91,7 @@ export function hasValidPermissions(permissions, permissionGroups) {
   );
 }
 
-export function hasValidEdits(edits) {
+export function hasValidEdits(edits, isExternal = false) {
   const {
     question,
     answerEditorState,
@@ -109,8 +105,7 @@ export function hasValidEdits(edits) {
   return (
     !!question &&
     question !== '' &&
-    !!answerEditorState &&
-    answerEditorState.getCurrentContent().hasText() &&
+    (isExternal || (!!answerEditorState && answerEditorState.getCurrentContent().hasText())) &&
     hasValidPermissions(permissions, permissionGroups) &&
     owners.length !== 0 &&
     !!verificationInterval &&
@@ -137,9 +132,13 @@ export function isApprover(user, tags) {
   );
 }
 
-export function getNewCardBaseState(user) {
+export function convertUserToSearchFormat(user) {
   const { _id, firstname, lastname, profilePicture } = user;
-  const ownUser = [{ _id, name: `${firstname} ${lastname}`, profilePicture }];
+  return { _id, name: `${firstname} ${lastname}`, profilePicture };
+}
+
+export function getNewCardBaseState(user) {
+  const ownUser = [convertUserToSearchFormat(user)];
   return {
     owners: ownUser,
     subscribers: ownUser,
@@ -160,8 +159,7 @@ export function cardStateChanged(card) {
     const [editAttribute, editValue] = editAttributes[i];
 
     switch (editAttribute) {
-      case 'answerEditorState':
-      case 'descriptionEditorState': {
+      case 'answerEditorState': {
         const cardValue = getContentStateFromEditorState(card[editAttribute]).contentState;
         const cardEditValue = getContentStateFromEditorState(editValue).contentState;
 
@@ -190,6 +188,10 @@ export function copyCardUrl(cardId) {
   copyText(`${URL.EXTENSION}?cardId=${cardId}`);
 }
 
+export function isExternalCard(card) {
+  return !!card.externalLinkAnswer;
+}
+
 export function getDraggableStyle(isDragging, draggableStyle, windowPosition) {
   const { top, left, ...rest } = draggableStyle;
 
@@ -215,7 +217,11 @@ export default {
   generateCardId,
   isExistingCard,
   isJustMe,
+  isApprover,
+  convertUserToSearchFormat,
+  getNewCardBaseState,
   cardStateChanged,
+  isExternalCard,
   copyCardUrl,
   getDraggableStyle
 };

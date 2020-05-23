@@ -6,12 +6,10 @@ import {
   updateAskAttachmentName,
   requestAskQuestion,
   updateAskQuestionTitle,
-  updateAskQuestionDescription,
   removeAskRecipient,
   updateAskRecipient,
   addAskRecipient,
-  requestGetSlackConversations,
-  showAskDescriptionEditor
+  requestGetSlackConversations
 } from 'actions/ask';
 import { toggleDockHeight } from 'actions/display';
 
@@ -24,11 +22,9 @@ const mapStateToProps = (state) => {
       attachments,
       isAskingQuestion,
       questionTitle,
-      questionDescription,
       recipients,
       slackConversations,
-      showPerformanceScore,
-      isDescriptionEditorShown
+      showPerformanceScore
     },
     display: { dockExpanded },
     profile: { user }
@@ -36,11 +32,9 @@ const mapStateToProps = (state) => {
 
   return {
     activeIntegration,
-    isDescriptionEditorShown,
     attachments,
     isAskingQuestion,
     questionTitle,
-    questionDescription,
     recipients,
     slackConversations,
     dockExpanded,
@@ -52,13 +46,11 @@ const mapStateToProps = (state) => {
 const mapDispatchToProps = {
   toggleDockHeight,
   changeAskIntegration,
-  showAskDescriptionEditor,
   requestAddAskAttachment,
   requestRemoveAskAttachment,
   updateAskAttachmentName,
   requestAskQuestion,
   updateAskQuestionTitle,
-  updateAskQuestionDescription,
   removeAskRecipient,
   updateAskRecipient,
   addAskRecipient,

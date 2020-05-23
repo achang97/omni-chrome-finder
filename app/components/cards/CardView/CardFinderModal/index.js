@@ -1,6 +1,5 @@
 import { connect } from 'react-redux';
 import { openCardModal, closeCardModal, updateCardFinderNode } from 'actions/cards';
-import { closeFinder } from 'actions/finder';
 import { MODAL_TYPE } from 'appConstants/card';
 import CardFinderModal from './CardFinderModal';
 
@@ -23,8 +22,7 @@ const mapStateToProps = (state) => {
 const mapDispatchToProps = {
   openCardModal,
   closeCardModal,
-  updateCardFinderNode,
-  closeFinder
+  updateCardFinderNode
 };
 
 export default connect(mapStateToProps, mapDispatchToProps)(CardFinderModal);

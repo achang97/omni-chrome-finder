@@ -212,6 +212,7 @@ const SuggestionPanel = ({
 
   const numExternalResults = countExternalResults();
   const showMainPanel = isVisible && query.length !== 0;
+
   return (
     <div className={s(`suggestion-panel ${!showMainPanel ? 'border-0' : ''}`)}>
       <AnimateHeight height={showMainPanel ? 'auto' : 0}>

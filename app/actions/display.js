@@ -28,3 +28,7 @@ export function openModal(modalProps) {
 export function closeModal() {
   return { type: types.CLOSE_MODAL, payload: {} };
 }
+
+export function updateToggleTabPosition(newY) {
+  return { type: types.UPDATE_TOGGLE_TAB_POSITION, payload: { newY } };
+}

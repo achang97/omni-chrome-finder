@@ -11,6 +11,7 @@ import tasks from './tasks';
 import search from './search';
 import screenRecording from './screenRecording';
 import auditLog from './auditLog';
+import externalVerification from './externalVerification';
 
 const appReducer = combineReducers({
   auth,
@@ -23,7 +24,8 @@ const appReducer = combineReducers({
   tasks,
   search,
   screenRecording,
-  auditLog
+  auditLog,
+  externalVerification
 });
 
 const rootReducer = (state, action) => {

@@ -8,20 +8,12 @@ export function togglePerformanceScore() {
   return { type: types.TOGGLE_PERFORMANCE_SCORE, payload: {} };
 }
 
-export function showAskDescriptionEditor() {
-  return { type: types.SHOW_ASK_DESCRIPTION_EDITOR, payload: {} };
-}
-
 export function changeAskIntegration(integration) {
   return { type: types.CHANGE_ASK_INTEGRATION, payload: { integration } };
 }
 
 export function updateAskQuestionTitle(text) {
   return { type: types.UPDATE_ASK_QUESTION_TITLE, payload: { text } };
-}
-
-export function updateAskQuestionDescription(description) {
-  return { type: types.UPDATE_ASK_QUESTION_DESCRIPTION, payload: { description } };
 }
 
 export function addAskRecipient(recipient) {
