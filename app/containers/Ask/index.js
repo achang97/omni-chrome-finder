@@ -9,7 +9,7 @@ import {
   removeAskRecipient,
   updateAskRecipient,
   addAskRecipient,
-  requestGetSlackConversations,
+  requestGetSlackConversations
 } from 'actions/ask';
 import { toggleDockHeight } from 'actions/display';
 

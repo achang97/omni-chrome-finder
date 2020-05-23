@@ -2,20 +2,19 @@ import PropTypes from 'prop-types';
 import { PROFILE, FINDER } from 'appConstants';
 
 export const UserPropTypes = PropTypes.shape({
-  _id: PropTypes.string.isRequired,
-  firstname: PropTypes.string.isRequired,
-  lastname: PropTypes.string.isRequired,
+  _id: PropTypes.string,
+  firstname: PropTypes.string,
+  lastname: PropTypes.string,
   bio: PropTypes.string,
-  email: PropTypes.string.isRequired,
+  email: PropTypes.string,
   profilePicture: PropTypes.string,
-  isVerified: PropTypes.bool.isRequired,
-  role: PropTypes.oneOf(Object.values(PROFILE.USER_ROLE)).isRequired,
+  isVerified: PropTypes.bool,
+  role: PropTypes.oneOf(Object.values(PROFILE.USER_ROLE)),
   team: PropTypes.string,
-  companyName: PropTypes.string.isRequired,
-  company: PropTypes.oneOfType([PropTypes.object, PropTypes.string]).isRequired,
-  permissionGroups: PropTypes.arrayOf(PropTypes.oneOfType([PropTypes.object, PropTypes.string]))
-    .isRequired,
-  bookmarkIds: PropTypes.arrayOf(PropTypes.string).isRequired,
+  companyName: PropTypes.string,
+  company: PropTypes.oneOfType([PropTypes.object, PropTypes.string]),
+  permissionGroups: PropTypes.arrayOf(PropTypes.oneOfType([PropTypes.object, PropTypes.string])),
+  bookmarkIds: PropTypes.arrayOf(PropTypes.string),
   notificationPermissions: PropTypes.object,
   autofindPermissions: PropTypes.object,
   onboarding: PropTypes.object

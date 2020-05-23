@@ -228,10 +228,11 @@ class ChromeMessageListener extends Component {
   };
 
   render() {
+    const { prevUrl } = this.state;
     return (
       <>
-        <ExternalVerification url={this.state.prevUrl} />
-      </>  
+        <ExternalVerification url={prevUrl} />
+      </>
     );
   }
 }

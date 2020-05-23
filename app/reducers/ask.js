@@ -1,5 +1,3 @@
-import { EditorState } from 'draft-js';
-
 import * as types from 'actions/actionTypes';
 import { ASK } from 'appConstants';
 import { removeIndex, updateIndex, updateArrayOfObjects } from 'utils/array';
@@ -47,7 +45,7 @@ export default function askReducer(state = initialState, action) {
 
     case types.UPDATE_ASK_QUESTION_TITLE: {
       const { text } = payload;
-      return { ...state, questionTitle: text };
+      return { ...state, questionTitle: text.replace('\n', '') };
     }
 
     case types.ADD_ASK_RECIPIENT: {

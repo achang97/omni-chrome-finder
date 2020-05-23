@@ -23,7 +23,7 @@ export default function createReducer(state = initialState, action) {
   switch (type) {
     case types.UPDATE_CREATE_QUESTION: {
       const { newValue } = payload;
-      return { ...state, question: newValue };
+      return { ...state, question: newValue.replace('\n', '') };
     }
     case types.UPDATE_CREATE_ANSWER_EDITOR: {
       const { editorState } = payload;

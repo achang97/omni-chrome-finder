@@ -10,8 +10,8 @@ const mapStateToProps = (state) => {
 
   return {
     isLoggedIn: !!token,
-    isVerified: user && user.isVerified,
-    hasCompletedOnboarding: user && hasCompletedOnboarding(user.onboarding)
+    isVerified: !!(user && user.isVerified),
+    hasCompletedOnboarding: !!(user && hasCompletedOnboarding(user.onboarding))
   };
 };
 

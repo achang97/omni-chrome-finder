@@ -42,7 +42,7 @@ const BASE_CARD_STATE = {
   owners: [],
   subscribers: [],
   question: '',
-  answerEditorState: EditorState.createEmpty(),
+  answerEditorState: EditorState.createEmpty()
 };
 
 export default function cardsReducer(state = initialState, action) {

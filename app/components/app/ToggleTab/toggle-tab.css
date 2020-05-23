@@ -20,7 +20,7 @@
 .toggle-close-button {
   @apply absolute top-0 left-0;
   @apply bg-white rounded-full text-purple-reg text-xs shadow-md cursor-pointer h-reg w-reg;
-  
+
   z-index: 10000000001;
   transform: translate(-40%, -40%);
 }

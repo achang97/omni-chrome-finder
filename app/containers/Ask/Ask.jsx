@@ -1,7 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import PropTypes from 'prop-types';
 import _ from 'lodash';
-import { EditorState } from 'draft-js';
 import { MdClose } from 'react-icons/md';
 import { IoMdAdd } from 'react-icons/io';
 import { FaPaperPlane } from 'react-icons/fa';
@@ -17,7 +16,6 @@ import {
   BackButton
 } from 'components/common';
 import { ScreenRecordButton, AttachmentDropdown, AttachmentDropzone } from 'components/attachments';
-import TextEditor from 'components/editors/TextEditor';
 import { RecipientDropdownBody, MinimizedAsk } from 'components/ask';
 import IntegrationAuthButton from 'components/profile/IntegrationAuthButton';
 

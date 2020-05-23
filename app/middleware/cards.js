@@ -1,12 +1,6 @@
 import * as types from 'actions/actionTypes';
-import {
-  updateCard,
-  handleDeleteCardSuccess,
-  requestGetCard,
-  enableCardEditor
-} from 'actions/cards';
+import { updateCard, handleDeleteCardSuccess, requestGetCard } from 'actions/cards';
 import { closeFinder } from 'actions/finder';
-import { DIMENSIONS } from 'appConstants/card';
 import { MAIN_STATE_ID } from 'appConstants/finder';
 
 const cardsMiddleware = (store) => (next) => (action) => {
