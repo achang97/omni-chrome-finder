@@ -1,0 +1,7 @@
+.finder-modal {
+  @apply h-full;
+}
+
+.finder-modal-overlay {
+  @apply rounded-b-lg;
+}

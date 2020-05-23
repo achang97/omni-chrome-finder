@@ -4,9 +4,11 @@ import PropTypes from 'prop-types';
 import { Modal } from 'components/common';
 import { getStyleApplicationFn } from 'utils/style';
 
+import style from './finder-modal.css';
+
 import FinderView from '../FinderView';
 
-const s = getStyleApplicationFn();
+const s = getStyleApplicationFn(style);
 
 const FinderModal = ({
   isOpen,
@@ -17,6 +19,7 @@ const FinderModal = ({
   onPrimaryClick,
   isPrimaryDisabled,
   isLoading,
+  className,
   overlayClassName,
   closeFinder
 }) => {
@@ -34,8 +37,8 @@ const FinderModal = ({
     <Modal
       isOpen={isOpen}
       showHeader={false}
-      overlayClassName={s(`rounded-b-lg ${overlayClassName}`)}
-      className={s('h-full')}
+      overlayClassName={s(`finder-modal-overlay ${overlayClassName}`)}
+      className={s(`finder-modal ${className}`)}
       bodyClassName={s('rounded-b-lg flex flex-col h-full')}
       showPrimaryButton={false}
     >
@@ -61,6 +64,7 @@ FinderModal.propTypes = {
   onPrimaryClick: PropTypes.func.isRequired,
   isPrimaryDisabled: PropTypes.func,
   isLoading: PropTypes.bool,
+  className: PropTypes.string,
   overlayClassName: PropTypes.string,
 
   // Redux Actions
@@ -68,6 +72,7 @@ FinderModal.propTypes = {
 };
 
 FinderModal.defaultProps = {
+  className: '',
   overlayClassName: ''
 };
 

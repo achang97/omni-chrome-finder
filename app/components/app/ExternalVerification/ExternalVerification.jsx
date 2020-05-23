@@ -205,16 +205,6 @@ const ExternalVerification = ({
             {children}
           </CardSection>
         ))}
-        <FinderModal
-          isOpen={isFinderModalOpen}
-          finderId="external-verification"
-          onSecondaryClick={toggleExternalFinderModal}
-          onPrimaryClick={(destination) => {
-            toggleExternalFinderModal();
-            updateExternalFinderNode(destination);
-          }}
-          overlayClassName={s('rounded-lg')}
-        />
         <Message type="error" message={createCardError} className={s('my-sm')} />
       </Modal>
     );
@@ -238,6 +228,17 @@ const ExternalVerification = ({
           </div>
         </ReactDraggable>
         {renderCreateModal()}
+        <FinderModal
+          isOpen={isFinderModalOpen}
+          finderId="external-verification"
+          onSecondaryClick={toggleExternalFinderModal}
+          onPrimaryClick={(destination) => {
+            toggleExternalFinderModal();
+            updateExternalFinderNode(destination);
+          }}
+          className={s('external-finder-modal')}
+          overlayClassName={s('rounded-lg')}
+        />
       </>
     );
   };
