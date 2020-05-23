@@ -47,6 +47,7 @@ const CardSideDock = ({
   edits,
   closeCardSideDock,
   openCardModal,
+  closeCardModal,
   addCardOwner,
   removeCardOwner,
   addCardSubscriber,
@@ -74,7 +75,19 @@ const CardSideDock = ({
 
   const renderLocation = () => {
     const currFinderNode = isEditing ? edits.finderNode : finderNode;
-    return <CardLocation finderNode={currFinderNode} isEditable={isEditing} />;
+    const onChangeClick = () => {
+      closeCardModal(MODAL_TYPE.CREATE);
+      openCardModal(MODAL_TYPE.FINDER);
+    };
+
+    return (
+      <CardLocation
+        finderNode={currFinderNode}
+        isEditable={isEditing}
+        isPathClickable
+        onChangeClick={onChangeClick}
+      />
+    );
   };
 
   const renderOwners = () => {
@@ -374,6 +387,7 @@ CardSideDock.propTypes = {
   updateCardPermissionGroups: PropTypes.func.isRequired,
   updateCardVerificationInterval: PropTypes.func.isRequired,
   openCardModal: PropTypes.func.isRequired,
+  closeCardModal: PropTypes.func.isRequired,
   closeCardSideDock: PropTypes.func.isRequired,
   editCard: PropTypes.func.isRequired
 };

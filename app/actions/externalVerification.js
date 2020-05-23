@@ -16,12 +16,16 @@ export function removeExternalOwner(owner) {
   return { type: types.REMOVE_EXTERNAL_OWNER, payload: { owner } };
 }
 
+export function toggleExternalFinderModal() {
+  return { type: types.TOGGLE_EXTERNAL_FINDER_MODAL, payload: {} };
+}
+
 export function updateExternalFinderNode(finderNode) {
   return { type: types.UPDATE_EXTERNAL_FINDER_NODE, payload: { finderNode } };
 }
 
-export function toggleExternalModal() {
-  return { type: types.TOGGLE_EXTERNAL_MODAL, payload: {} };
+export function toggleExternalCreateModal() {
+  return { type: types.TOGGLE_EXTERNAL_CREATE_MODAL, payload: {} };
 }
 
 export function toggleExternalDisplay() {

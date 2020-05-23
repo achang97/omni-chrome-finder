@@ -28,6 +28,7 @@ const CardCreateModal = ({
   isOpen,
   requestCreateCard,
   requestUpdateCard,
+  openCardModal,
   closeCardModal,
   addCardOwner,
   removeCardOwner,
@@ -62,7 +63,19 @@ const CardCreateModal = ({
   } = edits;
 
   const renderLocation = () => {
-    return <CardLocation finderNode={finderNode} isEditable />;
+    const onChangeClick = () => {
+      closeCardModal(MODAL_TYPE.CREATE);
+      openCardModal(MODAL_TYPE.FINDER);
+    };
+
+    return (
+      <CardLocation
+        finderNode={finderNode}
+        isEditable
+        isPathClickable
+        onChangeClick={onChangeClick}
+      />
+    );
   };
 
   const renderOwners = () => {
@@ -263,6 +276,7 @@ CardCreateModal.propTypes = {
   // Redux Actions
   requestCreateCard: PropTypes.func.isRequired,
   requestUpdateCard: PropTypes.func.isRequired,
+  openCardModal: PropTypes.func.isRequired,
   closeCardModal: PropTypes.func.isRequired,
   addCardOwner: PropTypes.func.isRequired,
   removeCardOwner: PropTypes.func.isRequired,

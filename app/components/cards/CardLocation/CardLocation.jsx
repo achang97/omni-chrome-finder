@@ -2,7 +2,7 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import { MdChevronRight } from 'react-icons/md';
 
-import { FINDER, CARD } from 'appConstants';
+import { FINDER } from 'appConstants';
 import { getFullPath } from 'utils/finder';
 import { getStyleApplicationFn } from 'utils/style';
 import { NodePropTypes } from 'utils/propTypes';
@@ -16,20 +16,15 @@ const HOME_NODE = { _id: FINDER.ROOT.ID, name: FINDER.ROOT.NAME };
 
 const CardLocation = ({
   finderNode,
+  onChangeClick,
   isEditable,
+  isPathClickable,
   maxPathLength,
   className,
   pathClassName,
-  openCardModal,
-  closeCardModal,
   openFinder,
   pushFinderNode
 }) => {
-  const onChangeClick = () => {
-    closeCardModal(CARD.MODAL_TYPE.CREATE);
-    openCardModal(CARD.MODAL_TYPE.FINDER);
-  };
-
   const onNodeClick = (nodeId) => {
     openFinder();
     pushFinderNode(FINDER.MAIN_STATE_ID, nodeId);
@@ -49,7 +44,10 @@ const CardLocation = ({
             {fullPath.slice(fullPath.length - maxPathLength).map(({ _id, name }, i) => (
               <React.Fragment key={_id}>
                 {i !== 0 && <MdChevronRight className={s('flex-shrink-0')} />}
-                <span className={s('cursor-pointer')} onClick={() => onNodeClick(_id)}>
+                <span
+                  className={s(isPathClickable ? 'cursor-pointer' : '')}
+                  onClick={() => isPathClickable && onNodeClick(_id)}
+                >
                   {name}
                 </span>
               </React.Fragment>
@@ -72,20 +70,21 @@ const CardLocation = ({
 
 CardLocation.propTypes = {
   isEditable: PropTypes.bool,
+  isPathClickable: PropTypes.bool,
+  onChangeClick: PropTypes.func,
   finderNode: NodePropTypes,
   className: PropTypes.string,
   pathClassName: PropTypes.string,
   maxPathLength: PropTypes.number,
 
   // Redux Actions
-  openCardModal: PropTypes.func.isRequired,
-  closeCardModal: PropTypes.func.isRequired,
   openFinder: PropTypes.func.isRequired,
   pushFinderNode: PropTypes.func.isRequired
 };
 
 CardLocation.defaultProps = {
   isEditable: false,
+  isPathClickable: false,
   className: '',
   pathClassName: ''
 };

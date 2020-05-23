@@ -1,11 +1,11 @@
 .external-verification-container {
   @apply fixed px-sm pb-sm cursor-move flex flex-col items-center bg-white rounded-lg shadow-md;
-  
+
   z-index: 1000000;
   bottom: 15px;
   right: 15px;
 }
 
 .external-verification-modal {
-  width: 500px;
+  width: 600px;
 }

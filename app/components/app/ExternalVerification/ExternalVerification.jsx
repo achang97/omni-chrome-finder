@@ -11,6 +11,7 @@ import {
   CardUsers,
   CardVerificationInterval
 } from 'components/cards';
+import { FinderModal } from 'components/finder';
 import { Button, Modal, Message, Loader } from 'components/common';
 
 import { getStyleApplicationFn } from 'utils/style';
@@ -38,7 +39,8 @@ const ExternalVerification = ({
   url,
   isDisplayed,
   activeIntegration,
-  isModalOpen,
+  isCreateModalOpen,
+  isFinderModalOpen,
   owners,
   verificationInterval,
   finderNode,
@@ -52,7 +54,8 @@ const ExternalVerification = ({
   updateExternalVerificationInterval,
   addExternalOwner,
   removeExternalOwner,
-  toggleExternalModal,
+  toggleExternalCreateModal,
+  toggleExternalFinderModal,
   toggleExternalDisplay,
   updateExternalIntegration,
   updateExternalFinderNode,
@@ -108,7 +111,7 @@ const ExternalVerification = ({
           text="Verify with Omni"
           className={s('py-sm')}
           color="transparent"
-          onClick={toggleExternalModal}
+          onClick={toggleExternalCreateModal}
         />
       </>
     );
@@ -147,7 +150,7 @@ const ExternalVerification = ({
           <CardLocation
             finderNode={finderNode}
             isEditable
-            onChangeClick={updateExternalFinderNode}
+            onChangeClick={toggleExternalFinderModal}
           />
         )
       },
@@ -177,8 +180,8 @@ const ExternalVerification = ({
 
     return (
       <Modal
-        isOpen={isModalOpen}
-        onRequestClose={toggleExternalModal}
+        isOpen={isCreateModalOpen}
+        onRequestClose={toggleExternalCreateModal}
         title={title}
         shouldCloseOnOutsideClick
         className={s('external-verification-modal overflow-visible')}
@@ -202,6 +205,16 @@ const ExternalVerification = ({
             {children}
           </CardSection>
         ))}
+        <FinderModal
+          isOpen={isFinderModalOpen}
+          finderId="external-verification"
+          onSecondaryClick={toggleExternalFinderModal}
+          onPrimaryClick={(destination) => {
+            toggleExternalFinderModal();
+            updateExternalFinderNode(destination);
+          }}
+          overlayClassName={s('rounded-lg')}
+        />
         <Message type="error" message={createCardError} className={s('my-sm')} />
       </Modal>
     );
@@ -233,7 +246,7 @@ const ExternalVerification = ({
 };
 
 ExternalVerification.propTypes = {
-  url: PropTypes.string.isRequired,
+  url: PropTypes.string,
 
   // Redux State
   isDisplayed: PropTypes.bool.isRequired,
@@ -245,11 +258,12 @@ ExternalVerification.propTypes = {
       previewLink: PropTypes.string.isRequired
     })
   }),
-  isModalOpen: PropTypes.bool.isRequired,
+  isCreateModalOpen: PropTypes.bool.isRequired,
+  isFinderModalOpen: PropTypes.bool.isRequired,
   owners: PropTypes.arrayOf(PropTypes.object),
   verificationInterval: PropTypes.shape({
     label: PropTypes.string.isRequired,
-    value: PropTypes.string.isRequired
+    value: PropTypes.number.isRequired
   }),
   externalCard: PropTypes.shape({
     _id: PropTypes.string.isRequired,
@@ -267,7 +281,8 @@ ExternalVerification.propTypes = {
   updateExternalVerificationInterval: PropTypes.func.isRequired,
   addExternalOwner: PropTypes.func.isRequired,
   removeExternalOwner: PropTypes.func.isRequired,
-  toggleExternalModal: PropTypes.func.isRequired,
+  toggleExternalCreateModal: PropTypes.func.isRequired,
+  toggleExternalFinderModal: PropTypes.func.isRequired,
   toggleExternalDisplay: PropTypes.func.isRequired,
   updateExternalIntegration: PropTypes.func.isRequired,
   updateExternalFinderNode: PropTypes.func.isRequired,

@@ -1,5 +1,5 @@
 import { connect } from 'react-redux';
-import { cancelMoveFinderNodes, requestMoveFinderNodes, closeFinder } from 'actions/finder';
+import { cancelMoveFinderNodes, requestMoveFinderNodes } from 'actions/finder';
 import { MAIN_STATE_ID } from 'appConstants/finder';
 import FinderContainer from './FinderContainer';
 
@@ -15,8 +15,7 @@ const mapStateToProps = (state) => {
 
 const mapDispatchToProps = {
   cancelMoveFinderNodes,
-  requestMoveFinderNodes,
-  closeFinder
+  requestMoveFinderNodes
 };
 
 export default connect(mapStateToProps, mapDispatchToProps)(FinderContainer);

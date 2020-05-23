@@ -1,7 +1,6 @@
-import React, { useEffect } from 'react';
+import React from 'react';
 import PropTypes from 'prop-types';
 
-import { Modal } from 'components/common';
 import { MAIN_STATE_ID } from 'appConstants/finder';
 import { getFullPath } from 'utils/finder';
 import { getArrayIds } from 'utils/array';
@@ -9,6 +8,7 @@ import { getStyleApplicationFn } from 'utils/style';
 import { NodePropTypes } from 'utils/propTypes';
 
 import FinderView from '../FinderView';
+import FinderModal from '../FinderModal';
 
 const s = getStyleApplicationFn();
 
@@ -19,15 +19,8 @@ const FinderContainer = ({
   moveSource,
   isMovingNodes,
   cancelMoveFinderNodes,
-  requestMoveFinderNodes,
-  closeFinder
+  requestMoveFinderNodes
 }) => {
-  useEffect(() => {
-    if (moveNodes.length === 0) {
-      closeFinder(MODAL_ID);
-    }
-  }, [moveNodes, closeFinder]);
-
   const isValidMove = (destinationNode) => {
     const destinationPath = getFullPath(destinationNode);
     const moveNodeIds = getArrayIds(moveNodes);
@@ -37,26 +30,17 @@ const FinderContainer = ({
   return (
     <div className={s('flex-1 flex flex-col relative')}>
       <FinderView finderId={MAIN_STATE_ID} />
-      <Modal
+      <FinderModal
         isOpen={moveNodes.length !== 0}
-        showHeader={false}
-        overlayClassName={s('rounded-b-lg')}
-        className={s('h-full')}
-        bodyClassName={s('rounded-b-lg flex flex-col h-full')}
-        showPrimaryButton={false}
-      >
-        <FinderView
-          finderId={MODAL_ID}
-          isModal
-          startNodeId={moveSource && moveSource._id}
-          onSecondaryClick={() => cancelMoveFinderNodes(MAIN_STATE_ID)}
-          onPrimaryClick={(finderNode) =>
-            requestMoveFinderNodes(MAIN_STATE_ID, moveNodes, finderNode._id)
-          }
-          isPrimaryDisabled={(finderNode) => !isValidMove(finderNode)}
-          isLoading={isMovingNodes}
-        />
-      </Modal>
+        finderId={MODAL_ID}
+        startNodeId={moveSource && moveSource._id}
+        onSecondaryClick={() => cancelMoveFinderNodes(MAIN_STATE_ID)}
+        onPrimaryClick={(finderNode) =>
+          requestMoveFinderNodes(MAIN_STATE_ID, moveNodes, finderNode._id)
+        }
+        isPrimaryDisabled={(finderNode) => !isValidMove(finderNode)}
+        isLoading={isMovingNodes}
+      />
     </div>
   );
 };
@@ -68,8 +52,7 @@ FinderContainer.propTypes = {
 
   // Redux Actions
   cancelMoveFinderNodes: PropTypes.func.isRequired,
-  requestMoveFinderNodes: PropTypes.func.isRequired,
-  closeFinder: PropTypes.func.isRequired
+  requestMoveFinderNodes: PropTypes.func.isRequired
 };
 
 export default FinderContainer;

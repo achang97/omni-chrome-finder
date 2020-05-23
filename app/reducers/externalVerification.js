@@ -5,7 +5,8 @@ import { DEFAULT_VERIFICATION_INTERVAL } from 'appConstants/card';
 const initialState = {
   isDisplayed: true,
   activeIntegration: null,
-  isModalOpen: false,
+  isFinderModalOpen: false,
+  isCreateModalOpen: false,
   owners: [],
   verificationInterval: DEFAULT_VERIFICATION_INTERVAL,
   finderNode: null,
@@ -31,13 +32,17 @@ export default function externalVerificationReducer(state = initialState, action
       const { owner } = payload;
       return { ...state, owners: _.differencyBy(state.owners, [owner], '_id') };
     }
+
+    case types.TOGGLE_EXTERNAL_FINDER_MODAL: {
+      return { ...state, isFinderModalOpen: !state.isFinderModalOpen };
+    }
     case types.UPDATE_EXTERNAL_FINDER_NODE: {
       const { finderNode } = payload;
       return { ...state, finderNode };
     }
 
-    case types.TOGGLE_EXTERNAL_MODAL: {
-      return { ...state, isModalOpen: !state.isModalOpen };
+    case types.TOGGLE_EXTERNAL_CREATE_MODAL: {
+      return { ...state, isCreateModalOpen: !state.isCreateModalOpen };
     }
     case types.TOGGLE_EXTERNAL_DISPLAY: {
       return { ...state, isDisplayed: !state.isDisplayed };
@@ -64,7 +69,7 @@ export default function externalVerificationReducer(state = initialState, action
     }
     case types.CREATE_EXTERNAL_CARD_SUCCESS: {
       const { card } = payload;
-      return { ...state, isCreatingCard: false, externalCard: card, isModalOpen: false };
+      return { ...state, isCreatingCard: false, externalCard: card, isCreateModalOpen: false };
     }
     case types.CREATE_EXTERNAL_CARD_ERROR: {
       const { error } = payload;
