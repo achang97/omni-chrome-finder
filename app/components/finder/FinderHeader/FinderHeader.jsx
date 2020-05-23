@@ -189,7 +189,7 @@ const FinderHeader = ({
           <MdSearch className={s('flex-shrink-0')} />
           <input
             placeholder="Search"
-            className={s('border-0 shadow-none min-w-0 flex-shrink')}
+            className={s('border-0 shadow-none min-w-0 flex-shrink flex-grow')}
             value={activePath.state.searchText}
             onChange={(e) => updateFinderSearchText(finderId, e.target.value)}
           />

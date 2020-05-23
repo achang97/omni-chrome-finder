@@ -105,7 +105,7 @@ const FinderBody = ({
             )}
           </div>
           <Tooltip tooltip={label}>
-            <div className={s('line-clamp-2 mt-sm w-full text-xs text-center')}>{label}</div>
+            <div className={s('line-clamp-3 mt-sm w-full text-xs text-center')}>{label}</div>
           </Tooltip>
         </div>
       </FinderDraggable>

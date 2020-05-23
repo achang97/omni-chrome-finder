@@ -28,7 +28,7 @@ const FinderContainer = ({
   };
 
   return (
-    <div className={s('flex-1 flex flex-col relative')}>
+    <div className={s('min-h-0 flex-1 flex flex-col relative')}>
       <FinderView finderId={MAIN_STATE_ID} />
       <FinderModal
         isOpen={moveNodes.length !== 0}
