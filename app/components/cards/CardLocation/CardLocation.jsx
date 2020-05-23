@@ -35,13 +35,14 @@ const CardLocation = ({
     // eslint-disable-next-line no-param-reassign
     maxPathLength = fullPath.length;
   }
+  const startIndex = Math.max(0, fullPath.length - maxPathLength);
 
   return (
     <div className={s(`flex items-start ${className}`)}>
       <div className={s(`card-location-path ${pathClassName}`)}>
         {fullPath && (
           <>
-            {fullPath.slice(fullPath.length - maxPathLength).map(({ _id, name }, i) => (
+            {fullPath.slice(startIndex).map(({ _id, name }, i) => (
               <React.Fragment key={_id}>
                 {i !== 0 && <MdChevronRight className={s('flex-shrink-0')} />}
                 <span
