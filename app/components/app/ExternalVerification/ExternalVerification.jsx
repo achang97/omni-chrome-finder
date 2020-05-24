@@ -103,9 +103,10 @@ const ExternalVerification = ({
   const renderUntrackedView = () => {
     return (
       <>
+        <div className={s('text-xs text-gray-reg mb-xs')}>This knowledge is</div>
         <div className={s('flex mb-sm')}>
           <IoMdAlert className={s('text-purple-reg mr-xs')} />
-          <span className={s('text-sm font-bold')}> Unverified </span>
+          <span className={s('text-sm text-gray-dark font-bold')}> Unverified </span>
         </div>
         <Button
           text="Verify with Omni"
@@ -128,6 +129,7 @@ const ExternalVerification = ({
 
     return (
       <>
+        <div className={s('text-xs text-gray-reg mb-xs')}>This knowledge is</div>
         <CardStatus status={externalCard.status} />
         <div
           className={s('text-purple-reg text-xs mt-sm underline-border cursor-pointer')}
