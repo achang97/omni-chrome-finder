@@ -5,7 +5,7 @@
 }
 
 .suggestion-elem-path {
-  @apply text-gray-reg text-2xs font-medium flex-no-wrap truncate;
+  @apply text-purple-reg text-2xs font-semibold flex-no-wrap truncate;
 }
 
 .suggestion-elem-title {

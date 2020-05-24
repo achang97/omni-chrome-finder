@@ -198,7 +198,7 @@ const SuggestionCard = ({
 
   return (
     <div className={s(`${className} suggestion-elem`)} onClick={clickOpenCard}>
-      <div className={s('flex justify-between')}>
+      <div className={s('flex justify-between mb-xs')}>
         <CardLocation
           finderNode={finderNode}
           className={s('min-w-0')}
