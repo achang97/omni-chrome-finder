@@ -289,6 +289,20 @@ export default function finderReducer(state = initialState, action) {
       return updateStateById(finderId, () => ({ isDeletingNodes: false, deleteNodesError: error }));
     }
 
+    case types.UPDATE_FINDER_NODE: {
+      const { node } = payload;
+      const newState = _.mapValues(state, ({ activeNode, ...rest }) => ({
+        ...rest,
+        activeNode: {
+          ...activeNode,
+          children: activeNode.children.map((child) =>
+            child._id === node._id ? { ...child, ...node } : child
+          )
+        }
+      }));
+      return newState;
+    }
+
     default:
       return state;
   }

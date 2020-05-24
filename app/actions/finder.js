@@ -126,3 +126,7 @@ export function handleMoveFinderNodesSuccess(finderId) {
 export function handleMoveFinderNodesError(finderId, error) {
   return { type: types.MOVE_FINDER_NODES_ERROR, payload: { finderId, error } };
 }
+
+export function updateFinderNode(node) {
+  return { type: types.UPDATE_FINDER_NODE, payload: { node } };
+}

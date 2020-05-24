@@ -17,7 +17,7 @@ export default function* watchExternalVerificationRequests() {
     const { type, payload } = action;
     switch (type) {
       case GET_EXTERNAL_CARD_REQUEST: {
-        yield fork(getCard, payload);
+        yield fork(getCard);
         break;
       }
       case CREATE_EXTERNAL_CARD_REQUEST: {
@@ -31,8 +31,9 @@ export default function* watchExternalVerificationRequests() {
   }
 }
 
-function* getCard({ link }) {
+function* getCard() {
   try {
+    const link = yield select((state) => state.externalVerification.activeIntegration.links.link);
     const card = yield call(doGet, '/cards/byExternalLink', { link });
     yield put(handleGetExternalCardSuccess(card));
   } catch (error) {

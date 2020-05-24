@@ -77,6 +77,10 @@ export default function cardsReducer(state = initialState, action) {
   const updateActiveCardEdits = (newEditsInfo) => updateActiveCard({}, newEditsInfo);
 
   const updateCardById = (id, newInfo, updateCardsArray = false) => {
+    if (!state.activeCard) {
+      return state;
+    }
+
     if (id === state.activeCard._id && !updateCardsArray) {
       return updateActiveCard(newInfo);
     }
@@ -416,7 +420,7 @@ export default function cardsReducer(state = initialState, action) {
 
     case types.UPDATE_CARD: {
       const { card } = payload;
-      return updateCardById(card._id, card);
+      return updateCardById(card._id, convertCardToFrontendFormat(card));
     }
 
     /* API REQUESTS */

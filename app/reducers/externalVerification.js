@@ -61,7 +61,7 @@ export default function externalVerificationReducer(state = initialState, action
     }
     case types.GET_EXTERNAL_CARD_ERROR: {
       const { error } = payload;
-      return { ...state, isGettingCard: false, getCardError: error };
+      return { ...state, isGettingCard: false, externalCard: null, getCardError: error };
     }
 
     case types.CREATE_EXTERNAL_CARD_REQUEST: {
