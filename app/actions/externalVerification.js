@@ -36,8 +36,8 @@ export function updateExternalIntegration(integration) {
   return { type: types.UPDATE_EXTERNAL_INTEGRATION, payload: { integration } };
 }
 
-export function requestGetExternalCard(link) {
-  return { type: types.GET_EXTERNAL_CARD_REQUEST, payload: { link } };
+export function requestGetExternalCard() {
+  return { type: types.GET_EXTERNAL_CARD_REQUEST, payload: {} };
 }
 
 export function handleGetExternalCardSuccess(card) {

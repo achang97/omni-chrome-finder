@@ -2,6 +2,7 @@ import React, { useEffect, useState } from 'react';
 import AnimateHeight from 'react-animate-height';
 import PropTypes from 'prop-types';
 
+import { NOOP } from 'appConstants';
 import { getStyleApplicationFn } from 'utils/style';
 import style from './message.css';
 
@@ -21,30 +22,23 @@ const getColorClassName = (type) => {
 const Message = ({ message, type, className, animate, show, temporary, showDuration, onHide }) => {
   const [showState, setShowState] = useState(show);
 
-  const protectedOnHide = () => {
-    if (onHide) onHide();
-  };
-
   // eslint-disable-next-line consistent-return
   useEffect(() => {
     if (show) {
-      if (!showState) {
-        setShowState(true);
-      }
+      setShowState(true);
 
       if (temporary) {
         const timeoutId = setTimeout(() => {
           setShowState(false);
-          if (!animate) protectedOnHide();
+          if (!animate) onHide();
         }, showDuration);
 
         return () => {
           clearTimeout(timeoutId);
-          protectedOnHide();
         };
       }
     }
-  }, [show]);
+  }, [show, onHide, showDuration, animate, temporary, setShowState]);
 
   const body = (
     <div className={s(`${className} ${getColorClassName(type)} message`)}>{message}</div>
@@ -55,7 +49,7 @@ const Message = ({ message, type, className, animate, show, temporary, showDurat
     return (
       <AnimateHeight
         height={shouldShow ? 'auto' : 0}
-        onAnimationEnd={({ newHeight }) => newHeight === 0 && protectedOnHide()}
+        onAnimationEnd={({ newHeight }) => newHeight === 0 && onHide()}
       >
         {body}
       </AnimateHeight>
@@ -80,7 +74,8 @@ Message.defaultProps = {
   animate: false,
   show: true,
   temporary: false,
-  showDuration: 3000
+  showDuration: 3000,
+  onHide: NOOP
 };
 
 export default Message;

@@ -332,7 +332,7 @@ TaskItem.propTypes = {
   card: PropTypes.shape({
     _id: PropTypes.string.isRequired,
     question: PropTypes.string.isRequired,
-    answer: PropTypes.string.isRequired,
+    answer: PropTypes.string,
     externalLinkAnswer: PropTypes.shape({
       link: PropTypes.string.isRequired
     }),

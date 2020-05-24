@@ -20,7 +20,6 @@ const CardFooter = ({
   user,
   activeScreenRecordingId,
   _id,
-  question,
   isExternal,
   status,
   upvotes,
@@ -36,8 +35,7 @@ const CardFooter = ({
   requestUpdateCard,
   editCard,
   openCardModal,
-  cancelEditCard,
-  trackEvent
+  cancelEditCard
 }) => {
   const hasUpvoted = upvotes.some((upvoteId) => upvoteId === user._id);
   const hasBookmarked = user.bookmarkIds.some((bookmarkId) => bookmarkId === _id);
@@ -77,17 +75,7 @@ const CardFooter = ({
     );
   };
 
-  const clickEditCard = () => {
-    trackEvent('Click Edit Card', { 'Card ID': _id, Question: question, Status: status });
-    editCard();
-  };
-
   const clickUpvote = () => {
-    if (hasUpvoted) {
-      trackEvent('Unmark Card Helpful', { 'Card ID': _id, Question: question, Status: status });
-    } else {
-      trackEvent('Mark Card Helpful', { 'Card ID': _id, Question: question, Status: status });
-    }
     requestToggleUpvote(toggleUpvotes(upvotes, user._id));
   };
 
@@ -98,7 +86,7 @@ const CardFooter = ({
           text="Edit Card"
           color="primary"
           icon={<MdModeEdit className={s('mr-sm')} />}
-          onClick={clickEditCard}
+          onClick={editCard}
           className={s('mr-sm')}
         />
       </div>
@@ -154,7 +142,6 @@ CardFooter.propTypes = {
   user: UserPropTypes.isRequired,
   activeScreenRecordingId: PropTypes.string,
   _id: PropTypes.string.isRequired,
-  question: PropTypes.string.isRequired,
   isExternal: PropTypes.bool.isRequired,
   status: PropTypes.oneOf(Object.values(STATUS)).isRequired,
   upvotes: PropTypes.arrayOf(PropTypes.string).isRequired,
@@ -176,8 +163,7 @@ CardFooter.propTypes = {
   openCardModal: PropTypes.func.isRequired,
   requestUpdateCard: PropTypes.func.isRequired,
   editCard: PropTypes.func.isRequired,
-  cancelEditCard: PropTypes.func.isRequired,
-  trackEvent: PropTypes.func.isRequired
+  cancelEditCard: PropTypes.func.isRequired
 };
 
 CardFooter.defaultProps = {

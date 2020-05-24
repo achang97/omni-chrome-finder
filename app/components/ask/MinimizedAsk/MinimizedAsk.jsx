@@ -305,10 +305,7 @@ const MinimizedAsk = ({
           />
           <div className={s('mt-xl flex flex-row justify-between items-center pb-lg')}>
             <div className={s('flex flex-col justify-center items-center relative')}>
-              <div
-                className={s('flex items-center cursor-pointer')}
-                onClick={togglePerformanceScore}
-              >
+              <div className={s('flex items-center cursor-pointer')} onClick={togglePerformance}>
                 {isGettingOnboardingStats ? <Loader size="sm" /> : getPerformanceScoreOrBadge()}
               </div>
               <div

@@ -41,7 +41,7 @@ const FinderView = ({
   updateDraggingFinderNode
 }) => {
   useEffect(() => {
-    initFinder(finderId, startNodeId);
+    initFinder(finderId, startNodeId || FINDER.ROOT.ID);
   }, [finderId, startNodeId, initFinder]);
 
   const querySegment = useCallback(

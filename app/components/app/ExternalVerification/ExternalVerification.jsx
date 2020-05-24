@@ -87,7 +87,7 @@ const ExternalVerification = ({
       addExternalOwner(user);
 
       if (newIntegration) {
-        requestGetExternalCard(newIntegration.links.link);
+        requestGetExternalCard();
       }
     }
   }, [
@@ -186,6 +186,7 @@ const ExternalVerification = ({
         onRequestClose={toggleExternalCreateModal}
         title={title}
         shouldCloseOnOutsideClick
+        important
         className={s('external-verification-modal overflow-visible')}
         bodyClassName={s('px-lg py-reg overflow-visible')}
         primaryButtonProps={{
@@ -231,6 +232,7 @@ const ExternalVerification = ({
         </ReactDraggable>
         {renderCreateModal()}
         <FinderModal
+          important
           isOpen={isFinderModalOpen}
           finderId="external-verification"
           onSecondaryClick={toggleExternalFinderModal}
@@ -270,8 +272,8 @@ ExternalVerification.propTypes = {
   }),
   externalCard: PropTypes.shape({
     _id: PropTypes.string.isRequired,
-    status: PropTypes.string.isRequired,
-    finderNode: PropTypes.object.isRequired
+    status: PropTypes.number.isRequired,
+    finderNode: PropTypes.object
   }),
   isGettingCard: PropTypes.bool,
   isCreatingCard: PropTypes.bool,
