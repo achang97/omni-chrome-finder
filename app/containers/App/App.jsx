@@ -47,16 +47,7 @@ const dockPanelStyles = {
   borderRadius: '8px 0 0 8px'
 };
 
-const App = ({
-  dockVisible,
-  dockExpanded,
-  isLoggedIn,
-  user,
-  showAutofind,
-  requestGetUser,
-  requestGetTasks,
-  location: { pathname }
-}) => {
+const App = ({ dockVisible, isLoggedIn, user, showAutofind, requestGetUser, requestGetTasks }) => {
   useEffect(() => {
     if (isLoggedIn) {
       requestGetUser();
@@ -81,8 +72,7 @@ const App = ({
 
   const isVerified = user && user.isVerified;
   const completedOnboarding = user && auth.hasCompletedOnboarding(user.onboarding);
-  const showFullDock =
-    isLoggedIn && isVerified && completedOnboarding && (dockExpanded || pathname !== ROUTES.ASK);
+  const showFullDock = isLoggedIn && isVerified && completedOnboarding;
 
   return (
     <div className={s('app-container')}>
@@ -133,7 +123,6 @@ const App = ({
 App.propTypes = {
   // Redux State
   dockVisible: PropTypes.bool.isRequired,
-  dockExpanded: PropTypes.bool.isRequired,
   isLoggedIn: PropTypes.bool.isRequired,
   user: UserPropTypes.isRequired,
   showAutofind: PropTypes.bool.isRequired,

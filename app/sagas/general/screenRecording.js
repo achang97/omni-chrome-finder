@@ -1,7 +1,7 @@
 import { take, select, put } from 'redux-saga/effects';
 import { END_SCREEN_RECORDING, CLEAR_SCREEN_RECORDING } from 'actions/actionTypes';
 import { clearScreenRecording } from 'actions/screenRecording';
-import { toggleDock, toggleDockHeight } from 'actions/display';
+import { toggleDock } from 'actions/display';
 
 export default function* watchScreenRecordingActions() {
   while (true) {
@@ -16,17 +16,10 @@ export default function* watchScreenRecordingActions() {
         break;
       }
       case CLEAR_SCREEN_RECORDING: {
-        const { dockVisible, dockExpanded } = yield select((state) => state.display);
-
+        const dockVisible = yield select((state) => state.display.dockVisible);
         if (!dockVisible) {
           yield put(toggleDock());
         }
-
-        // Expand in all cases (not technically accurate but ok for now)
-        if (!dockExpanded) {
-          yield put(toggleDockHeight());
-        }
-
         break;
       }
       default: {

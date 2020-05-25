@@ -8,6 +8,10 @@ export function togglePerformanceScore() {
   return { type: types.TOGGLE_PERFORMANCE_SCORE, payload: {} };
 }
 
+export function toggleAskTeammate() {
+  return { type: types.TOGGLE_ASK_TEAMMATE, payload: {} };
+}
+
 export function changeAskIntegration(integration) {
   return { type: types.CHANGE_ASK_INTEGRATION, payload: { integration } };
 }

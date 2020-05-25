@@ -7,28 +7,28 @@
   opacity: 0.75;
 }
 
-.minimized-search-input {
+.search-input {
   box-shadow: 0 0 10px -4px rgba(122, 125, 175, 0.5) !important;
 }
 
-.minimized-search-input::placeholder {
+.search-input::placeholder {
   font-size: 14px !important;
 }
 
-.minimized-search-input:hover {
+.search-input:hover {
   box-shadow: 0 1px 6px 0 rgba(32, 33, 36, 0.28) !important;
 }
 
-.minimized-ask-accomplishment-section-container {
+.ask-accomplishment-section-container {
   background: #dde5ff26 !important;
 }
 
-.minimized-search-accomplishment-img-container {
+.search-accomplishment-img-container {
   height: 200px;
   background: white;
 }
 
-.minimized-search-badge-container {
+.search-badge-container {
   height: 30px;
 }
 

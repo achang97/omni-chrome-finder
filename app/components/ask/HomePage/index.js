@@ -1,14 +1,18 @@
 import { connect } from 'react-redux';
 import { requestGetUserOnboardingStats } from 'actions/profile';
-import { toggleDockHeight } from 'actions/display';
-import { togglePerformanceScore, updateAskSearchText, requestGetRecentCards } from 'actions/ask';
-import MinimizedAsk from './MinimizedAsk';
+import {
+  togglePerformanceScore,
+  toggleAskTeammate,
+  updateAskSearchText,
+  requestGetRecentCards
+} from 'actions/ask';
+import HomePage from './HomePage';
 
 const mapStateToProps = (state) => {
   const {
-    ask: { showPerformanceScore, searchText, recentCards, isGettingRecentCards },
+    ask: { showPerformanceScore, showAskTeammate, searchText, recentCards, isGettingRecentCards },
     profile: { badge, percentage, performance, isGettingOnboardingStats },
-    display: { dockVisible, dockExpanded }
+    display: { dockVisible }
   } = state;
 
   let remainingAccomplishments = [];
@@ -20,6 +24,7 @@ const mapStateToProps = (state) => {
 
   return {
     showPerformanceScore,
+    showAskTeammate,
     searchText,
     recentCards,
     isGettingRecentCards,
@@ -28,17 +33,16 @@ const mapStateToProps = (state) => {
     percentage,
     performance,
     remainingAccomplishments,
-    dockVisible,
-    dockExpanded
+    dockVisible
   };
 };
 
 const mapDispatchToProps = {
   togglePerformanceScore,
+  toggleAskTeammate,
   updateAskSearchText,
-  toggleDockHeight,
   requestGetUserOnboardingStats,
   requestGetRecentCards
 };
 
-export default connect(mapStateToProps, mapDispatchToProps)(MinimizedAsk);
+export default connect(mapStateToProps, mapDispatchToProps)(HomePage);

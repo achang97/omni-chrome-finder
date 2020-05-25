@@ -25,7 +25,7 @@ import {
   BADGE_PROPS,
   ACCOMPLISHMENT_IMAGES
 } from './PerformanceProps';
-import style from './minimized-ask.css';
+import style from './home-page.css';
 
 const s = getStyleApplicationFn(style);
 
@@ -36,14 +36,14 @@ const MinimizedAsk = ({
   remainingAccomplishments,
   isGettingOnboardingStats,
   dockVisible,
-  dockExpanded,
   searchText,
   showPerformanceScore,
+  showAskTeammate,
   recentCards,
   isGettingRecentCards,
   updateAskSearchText,
   togglePerformanceScore,
-  toggleDockHeight,
+  toggleAskTeammate,
   requestGetUserOnboardingStats,
   requestGetRecentCards
 }) => {
@@ -70,8 +70,10 @@ const MinimizedAsk = ({
   }, [showPerformanceScore, requestGetUserOnboardingStats, requestGetRecentCards]);
 
   useEffect(() => {
-    inputRef.current.focus();
-  }, [dockExpanded, dockVisible]);
+    if (!showAskTeammate) {
+      inputRef.current.focus();
+    }
+  }, [showAskTeammate, dockVisible]);
 
   const getPerformanceColors = (score) => {
     switch (true) {
@@ -86,25 +88,6 @@ const MinimizedAsk = ({
       default:
         return {};
     }
-  };
-
-  const showFullDock = () => {
-    if (showPerformanceScore) {
-      togglePerformanceScore();
-    }
-
-    updateAskSearchText('');
-
-    if (!dockExpanded) {
-      toggleDockHeight();
-    }
-  };
-
-  const togglePerformance = () => {
-    if (dockExpanded) {
-      toggleDockHeight();
-    }
-    togglePerformanceScore();
   };
 
   const getPerformanceMessage = () => {
@@ -149,7 +132,7 @@ const MinimizedAsk = ({
           <button onClick={() => updateCarouselIndex(-1)} disabled={carouselDisabled} type="button">
             <MdKeyboardArrowLeft />
           </button>
-          <div className={s('w-full rounded-lg minimized-search-accomplishment-img-container')}>
+          <div className={s('w-full rounded-lg search-accomplishment-img-container')}>
             <img src={imgSrc} className={s('h-full w-full object-cover rounded-lg')} alt={label} />
           </div>
           <button onClick={() => updateCarouselIndex(+1)} disabled={carouselDisabled} type="button">
@@ -195,7 +178,7 @@ const MinimizedAsk = ({
     const { imgSrc, textClassName } = BADGE_PROPS[badge];
     return (
       <>
-        <img src={imgSrc} className={s('minimized-search-badge-container')} alt={badge} />
+        <img src={imgSrc} className={s('search-badge-container')} alt={badge} />
         <div className={s(`${textClassName} text-xs font-semibold ml-sm`)}> {badge} </div>
       </>
     );
@@ -231,56 +214,47 @@ const MinimizedAsk = ({
           staticHeightAuto: s('performance-score-container')
         }}
       >
-        <div className={s('minimized-ask-accomplishment-section-container p-lg')}>
+        <div className={s('ask-accomplishment-section-container p-lg')}>
           <div className={s('flex justify-between')}>
             <div className={s('text-xs font-semibold text-gray-reg flex-1')}>
               {getPerformanceMessage()}
             </div>
-            <MdKeyboardArrowUp className={s('cursor-pointer')} onClick={togglePerformance} />
+            <MdKeyboardArrowUp className={s('cursor-pointer')} onClick={togglePerformanceScore} />
           </div>
           {renderAccomplishmentCarousel()}
         </div>
-        {!dockExpanded ? (
-          <div
-            className={s('text-center my-reg text-xs underline text-purple-reg cursor-pointer')}
-            onClick={toggleDockHeight}
-          >
-            Show All Tasks
-          </div>
-        ) : (
-          <div className={s('overflow-auto px-lg pb-lg')}>
-            {performance.map(({ badge: sectionTitle, accomplishments }) => (
-              <div key={sectionTitle}>
-                <div className={s('text-gray-light text-sm my-sm')}> {sectionTitle} </div>
-                {accomplishments.map(({ label, isComplete }) => (
+        <div className={s('overflow-auto px-lg pb-lg')}>
+          {performance.map(({ badge: sectionTitle, accomplishments }) => (
+            <div key={sectionTitle}>
+              <div className={s('text-gray-light text-sm my-sm')}> {sectionTitle} </div>
+              {accomplishments.map(({ label, isComplete }) => (
+                <div
+                  key={label}
+                  className={s(
+                    `flex justify-between mb-sm text-sm rounded-lg p-sm items-center ${
+                      isComplete
+                        ? 'gold-gradient italic opacity-50'
+                        : 'border border-solid border-gray-light'
+                    }`
+                  )}
+                >
+                  <div className={s('text-xs')}> {label} </div>
                   <div
-                    key={label}
                     className={s(
-                      `flex justify-between mb-sm text-sm rounded-lg p-sm items-center ${
+                      `p-xs rounded-lg font-semibold flex ${
                         isComplete
-                          ? 'gold-gradient italic opacity-50'
-                          : 'border border-solid border-gray-light'
+                          ? 'gold-gradient text-gold-reg'
+                          : 'text-purple-light bg-purple-light border border-solid border-gray-xlight'
                       }`
                     )}
                   >
-                    <div className={s('text-xs')}> {label} </div>
-                    <div
-                      className={s(
-                        `p-xs rounded-lg font-semibold flex ${
-                          isComplete
-                            ? 'gold-gradient text-gold-reg'
-                            : 'text-purple-light bg-purple-light border border-solid border-gray-xlight'
-                        }`
-                      )}
-                    >
-                      <MdCheck />
-                    </div>
+                    <MdCheck />
                   </div>
-                ))}
-              </div>
-            ))}
-          </div>
-        )}
+                </div>
+              ))}
+            </div>
+          ))}
+        </div>
       </AnimateHeight>
     );
   };
@@ -299,17 +273,20 @@ const MinimizedAsk = ({
             onChange={(e) => updateAskSearchText(e.target.value)}
             value={searchText}
             placeholder="Let's find what you're looking for"
-            className={s('w-full minimized-search-input')}
+            className={s('w-full search-input')}
             ref={inputRef}
             autoFocus
           />
           <div className={s('mt-xl flex flex-row justify-between items-center pb-lg')}>
             <div className={s('flex flex-col justify-center items-center relative')}>
-              <div className={s('flex items-center cursor-pointer')} onClick={togglePerformance}>
+              <div
+                className={s('flex items-center cursor-pointer')}
+                onClick={togglePerformanceScore}
+              >
                 {isGettingOnboardingStats ? <Loader size="sm" /> : getPerformanceScoreOrBadge()}
               </div>
               <div
-                onClick={togglePerformance}
+                onClick={togglePerformanceScore}
                 className={s(`robot-img ${!showRobot ? 'pointer-events-none' : ''}`)}
               >
                 <img
@@ -324,7 +301,7 @@ const MinimizedAsk = ({
               className={s(
                 'text-purple-reg font-semibold cursor-pointer flex items-center ask-teammate-container'
               )}
-              onClick={showFullDock}
+              onClick={toggleAskTeammate}
             >
               <div>Ask a Teammate</div>
               <MdPeople className={s('text-md ml-sm')} />
@@ -366,16 +343,16 @@ MinimizedAsk.propTypes = {
   ),
   isGettingOnboardingStats: PropTypes.bool,
   dockVisible: PropTypes.bool.isRequired,
-  dockExpanded: PropTypes.bool.isRequired,
   searchText: PropTypes.string.isRequired,
   recentCards: PropTypes.arrayOf(PropTypes.object).isRequired,
   isGettingRecentCards: PropTypes.bool,
   showPerformanceScore: PropTypes.bool.isRequired,
+  showAskTeammate: PropTypes.bool.isRequired,
 
   // Redux Actions
   updateAskSearchText: PropTypes.func.isRequired,
   togglePerformanceScore: PropTypes.func.isRequired,
-  toggleDockHeight: PropTypes.func.isRequired,
+  toggleAskTeammate: PropTypes.func.isRequired,
   requestGetUserOnboardingStats: PropTypes.func.isRequired
 };
 

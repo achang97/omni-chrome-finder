@@ -89,10 +89,10 @@ class ChromeMessageListener extends Component {
 
   handleContextMenuAction = (action, selectedText) => {
     const {
-      dockExpanded,
+      showAskTeammate,
       history,
       updateAskSearchText,
-      updateAskQuestionTitle,
+      toggleAskTeammate,
       updateCreateAnswerEditor,
       requestLogAudit,
       isValidUser
@@ -105,11 +105,10 @@ class ChromeMessageListener extends Component {
       switch (action) {
         case CHROME.MESSAGE.SEARCH: {
           url = ROUTES.ASK;
-          if (dockExpanded) {
-            updateAskQuestionTitle(selectedText);
-          } else {
-            updateAskSearchText(selectedText);
+          if (showAskTeammate) {
+            toggleAskTeammate();
           }
+          updateAskSearchText(selectedText);
           requestLogAudit(PROFILE.AUDIT_TYPE.CONTEXT_MENU_SEARCH, { query: selectedText });
           break;
         }
@@ -240,7 +239,7 @@ class ChromeMessageListener extends Component {
 ChromeMessageListener.propTypes = {
   // Redux State
   dockVisible: PropTypes.bool.isRequired,
-  dockExpanded: PropTypes.bool.isRequired,
+  showAskTeammate: PropTypes.bool.isRequired,
   autofindShown: PropTypes.bool.isRequired,
   tasks: PropTypes.arrayOf(PropTypes.object).isRequired,
   isValidUser: PropTypes.bool.isRequired,
@@ -252,7 +251,7 @@ ChromeMessageListener.propTypes = {
   requestGetUser: PropTypes.func.isRequired,
   openCard: PropTypes.func.isRequired,
   updateAskSearchText: PropTypes.func.isRequired,
-  updateAskQuestionTitle: PropTypes.func.isRequired,
+  toggleAskTeammate: PropTypes.func.isRequired,
   updateCreateAnswerEditor: PropTypes.func.isRequired,
   requestGetTasks: PropTypes.func.isRequired,
   updateTasksTab: PropTypes.func.isRequired,

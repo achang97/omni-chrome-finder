@@ -2,7 +2,6 @@ import * as types from 'actions/actionTypes';
 
 const initialState = {
   dockVisible: false,
-  dockExpanded: false,
   toggleTabShown: false,
   autofindShown: true,
   toggleTabY: 50,
@@ -21,15 +20,11 @@ export default function displayReducer(state = initialState, action) {
       return {
         ...state,
         dockVisible: !state.dockVisible,
-        dockExpanded: false,
         toggleTabShown: false
       };
     }
-    case types.TOGGLE_DOCK_HEIGHT: {
-      return { ...state, dockExpanded: !state.dockExpanded };
-    }
     case types.MINIMIZE_DOCK: {
-      return { ...state, toggleTabShown: true, dockVisible: false, dockExpanded: false };
+      return { ...state, toggleTabShown: true, dockVisible: false };
     }
     case types.HIDE_TOGGLE_TAB: {
       return { ...state, toggleTabShown: false };

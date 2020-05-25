@@ -5,10 +5,6 @@ export function toggleDock() {
   return { type: types.TOGGLE_DOCK, payload: {} };
 }
 
-export function toggleDockHeight() {
-  return { type: types.TOGGLE_DOCK_HEIGHT, payload: {} };
-}
-
 export function hideToggleTab() {
   return { type: types.HIDE_TOGGLE_TAB, payload: {} };
 }

@@ -5,6 +5,7 @@ import { removeIndex, updateIndex, updateArrayOfObjects } from 'utils/array';
 const initialState = {
   /* Minified Page */
   searchText: '',
+  showAskTeammate: false,
   showPerformanceScore: false,
   recentCards: [],
 
@@ -29,6 +30,9 @@ export default function askReducer(state = initialState, action) {
     case types.UPDATE_ASK_SEARCH_TEXT: {
       const { text } = payload;
       return { ...state, searchText: text };
+    }
+    case types.TOGGLE_ASK_TEAMMATE: {
+      return { ...state, showAskTeammate: !state.showAskTeammate };
     }
     case types.TOGGLE_PERFORMANCE_SCORE: {
       const { showPerformanceScore } = state;
