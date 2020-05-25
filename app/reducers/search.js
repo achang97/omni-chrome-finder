@@ -53,7 +53,7 @@ export default function searchReducer(state = initialState, action) {
         cards: clearCards ? cards : _.unionBy(cardState.cards, cards, '_id'),
         externalResults: externalResults || cardState.externalResults,
         page: clearCards ? 1 : cardState.page + 1,
-        hasReachedLimit: cards.length === 0
+        hasReachedLimit: cards.length === 0 || cards.length < SEARCH.PAGE_SIZE
       }));
     }
     case types.SEARCH_CARDS_ERROR: {

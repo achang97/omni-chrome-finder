@@ -36,6 +36,7 @@ const FinderBody = ({
   isMovingNodes,
   isSearchingSegment,
   segmentPage,
+  hasReachedSegmentLimit,
   selectedNodes,
   moveNodes,
   pushFinderNode,
@@ -71,7 +72,6 @@ const FinderBody = ({
     const isCard = isCardNode(finderType);
     const label = getNodeLabel(childNode);
     const isMoving = isMovingNode(_id);
-    // const isDraggable = activePath.type === PATH_TYPE.NODE;
 
     return (
       <FinderDraggable
@@ -162,6 +162,10 @@ const FinderBody = ({
     );
   };
 
+  const isSegment = () => {
+    return activePath.type === PATH_TYPE.SEGMENT;
+  };
+
   const render = () => {
     if (isGettingNode || isMovingNodes || (isSearchingSegment && segmentPage === 0)) {
       return <Loader className={s('w-full')} />;
@@ -189,7 +193,7 @@ const FinderBody = ({
                 {({ innerRef, placeholder, droppableProps }) => (
                   <div
                     ref={innerRef}
-                    className={s('flex-1 flex flex-wrap items-start content-start')}
+                    className={s('flex flex-wrap items-start content-start')}
                     {...droppableProps}
                   >
                     {nodes.map(renderChildNode)}
@@ -197,6 +201,16 @@ const FinderBody = ({
                   </div>
                 )}
               </Droppable>
+              {!isSearchingSegment && !hasReachedSegmentLimit && isSegment() && (
+                <div
+                  onClick={onBottom}
+                  className={s(
+                    'text-purple-reg mx-auto text-sm underline-border cursor-pointer my-sm'
+                  )}
+                >
+                  Show More
+                </div>
+              )}
               {isSearchingSegment && <Loader className={s('my-reg')} size="sm" />}
             </div>
           )}
@@ -223,6 +237,7 @@ FinderBody.propTypes = {
   isMovingNodes: PropTypes.bool,
   isSearchingSegment: PropTypes.bool,
   segmentPage: PropTypes.number.isRequired,
+  hasReachedSegmentLimit: PropTypes.bool.isRequired,
   selectedNodes: PropTypes.arrayOf(NodePropTypes).isRequired,
 
   // Redux Actions

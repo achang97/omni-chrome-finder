@@ -4,4 +4,6 @@ export const TYPE = {
   AUTOFIND: 'AUTOFIND'
 };
 
-export default { TYPE };
+export const PAGE_SIZE = 20;
+
+export default { TYPE, PAGE_SIZE };
