@@ -1,5 +1,4 @@
 import { connect } from 'react-redux';
-import { withRouter } from 'react-router-dom';
 
 import { toggleDock } from 'actions/display';
 import { requestGetUser } from 'actions/profile';
@@ -12,7 +11,7 @@ import App from './App';
 
 const mapStateToProps = (state) => {
   const {
-    display: { dockVisible, dockExpanded },
+    display: { dockVisible },
     auth: { token },
     profile: { user },
     search: {
@@ -24,7 +23,6 @@ const mapStateToProps = (state) => {
 
   return {
     dockVisible,
-    dockExpanded,
     isLoggedIn: !!token,
     user,
     showAutofind: cards.length !== 0
@@ -38,4 +36,4 @@ const mapDispatchToProps = {
   openCard
 };
 
-export default connect(mapStateToProps, mapDispatchToProps)(withRouter(App));
+export default connect(mapStateToProps, mapDispatchToProps)(App);

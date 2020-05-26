@@ -5,7 +5,10 @@ import { removeIndex, updateIndex, updateArrayOfObjects } from 'utils/array';
 const initialState = {
   /* Minified Page */
   searchText: '',
+  showAskTeammate: false,
   showPerformanceScore: false,
+  activityLog: [],
+  activityIndex: 0,
   recentCards: [],
 
   /* Expanded Page */
@@ -30,12 +33,19 @@ export default function askReducer(state = initialState, action) {
       const { text } = payload;
       return { ...state, searchText: text };
     }
+    case types.TOGGLE_ASK_TEAMMATE: {
+      return { ...state, showAskTeammate: !state.showAskTeammate };
+    }
     case types.TOGGLE_PERFORMANCE_SCORE: {
       const { showPerformanceScore } = state;
       return {
         ...state,
         showPerformanceScore: !showPerformanceScore
       };
+    }
+    case types.UPDATE_ACTIVITY_INDEX: {
+      const { index } = payload;
+      return { ...state, activityIndex: index };
     }
 
     case types.CHANGE_ASK_INTEGRATION: {
@@ -148,6 +158,18 @@ export default function askReducer(state = initialState, action) {
     case types.GET_RECENT_CARDS_ERROR: {
       const { error } = payload;
       return { ...state, isGettingRecentCards: false, getRecentError: error };
+    }
+
+    case types.GET_ACTIVITY_LOG_REQUEST: {
+      return { ...state, isGettingActivityLog: true, getActivityError: null };
+    }
+    case types.GET_ACTIVITY_LOG_SUCCESS: {
+      const { activityLog } = payload;
+      return { ...state, isGettingActivityLog: false, activityLog };
+    }
+    case types.GET_ACTIVITY_LOG_ERROR: {
+      const { error } = payload;
+      return { ...state, isGettingActivityLog: false, getActivityError: error };
     }
 
     case types.ASK_QUESTION_REQUEST: {

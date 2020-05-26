@@ -19,7 +19,11 @@ const mapStateToProps = (state, ownProps) => {
     },
     search: {
       cards: {
-        [SEARCH.TYPE.FINDER]: { isSearchingCards: isSearchingSegment, page: segmentPage }
+        [SEARCH.TYPE.FINDER]: {
+          isSearchingCards: isSearchingSegment,
+          page: segmentPage,
+          hasReachedLimit: hasReachedSegmentLimit
+        }
       }
     }
   } = state;
@@ -30,6 +34,7 @@ const mapStateToProps = (state, ownProps) => {
     isMovingNodes,
     isSearchingSegment,
     segmentPage,
+    hasReachedSegmentLimit,
     activePath,
     selectedNodes,
     moveNodes

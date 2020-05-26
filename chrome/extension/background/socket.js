@@ -2,7 +2,10 @@ import { CHROME, NODE_ENV, REQUEST } from 'appConstants';
 import { getStorage, addStorageListener } from 'utils/storage';
 import createNotification from './notifications';
 
+const MAX_CONNECTION_TRIES = 5;
+
 let socket;
+let numTries = 0;
 
 function closeSocket() {
   socket.close();
@@ -38,13 +41,19 @@ addStorageListener(CHROME.STORAGE.AUTH, ({ newValue }) => {
 });
 
 function setSocketListeners() {
-  socket.onopen = () => {};
+  numTries += 1;
+
+  socket.onopen = () => {
+    numTries = 0;
+  };
 
   socket.onclose = () => {
     socket = null;
 
     // Attempt to reconnect
-    initSocket();
+    if (numTries < MAX_CONNECTION_TRIES) {
+      initSocket();
+    }
   };
 
   socket.onmessage = (event) => {

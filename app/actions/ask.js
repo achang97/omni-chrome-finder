@@ -8,6 +8,14 @@ export function togglePerformanceScore() {
   return { type: types.TOGGLE_PERFORMANCE_SCORE, payload: {} };
 }
 
+export function updateActivityIndex(index) {
+  return { type: types.UPDATE_ACTIVITY_INDEX, payload: { index } };
+}
+
+export function toggleAskTeammate() {
+  return { type: types.TOGGLE_ASK_TEAMMATE, payload: {} };
+}
+
 export function changeAskIntegration(integration) {
   return { type: types.CHANGE_ASK_INTEGRATION, payload: { integration } };
 }
@@ -79,6 +87,18 @@ export function handleGetRecentCardsSuccess(cards) {
 
 export function handleGetRecentCardsError(error) {
   return { type: types.GET_RECENT_CARDS_ERROR, payload: { error } };
+}
+
+export function requestGetActivityLog() {
+  return { type: types.GET_ACTIVITY_LOG_REQUEST, payload: {} };
+}
+
+export function handleGetActivityLogSuccess(activityLog) {
+  return { type: types.GET_ACTIVITY_LOG_SUCCESS, payload: { activityLog } };
+}
+
+export function handleGetActivityLogError(error) {
+  return { type: types.GET_ACTIVITY_LOG_ERROR, payload: { error } };
 }
 
 export function requestAskQuestion() {

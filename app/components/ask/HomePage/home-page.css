@@ -1,0 +1,29 @@
+.ask-teammate-container {
+  font-size: 12px;
+  border-bottom: 1px solid #7a7daf7a;
+}
+
+.ask-teammate-container:hover {
+  opacity: 0.75;
+}
+
+.search-input {
+  box-shadow: 0 0 10px -4px rgba(122, 125, 175, 0.5) !important;
+}
+
+.search-input::placeholder {
+  font-size: 14px !important;
+}
+
+.search-input:hover {
+  box-shadow: 0 1px 6px 0 rgba(32, 33, 36, 0.28) !important;
+}
+
+.animated-section-container {
+  max-height: 100%;
+}
+
+.animated-section-container,
+.animated-section-container > * {
+  @apply min-h-0 flex flex-col flex-1;
+}

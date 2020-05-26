@@ -11,10 +11,11 @@ import {
   CLOSE_CARD,
   CANCEL_EDIT_CARD,
   DELETE_FINDER_NODES_SUCCESS,
-  MOVE_FINDER_NODES_SUCCESS
+  MOVE_FINDER_NODES_SUCCESS,
+  CREATE_CARD_SUCCESS
 } from 'actions/actionTypes';
 import { updateCard, handleDeleteCardSuccess, requestGetCard } from 'actions/cards';
-import { requestGetRecentCards } from 'actions/ask';
+import { requestGetRecentCards, requestGetActivityLog } from 'actions/ask';
 import { requestGetExternalCard } from 'actions/externalVerification';
 import { closeFinder, updateFinderNode } from 'actions/finder';
 import { MAIN_STATE_ID } from 'appConstants/finder';
@@ -34,7 +35,8 @@ export default function* watchCardActions() {
       GET_CARD_SUCCESS,
       DELETE_CARD_SUCCESS,
       DELETE_FINDER_NODES_SUCCESS,
-      MOVE_FINDER_NODES_SUCCESS
+      MOVE_FINDER_NODES_SUCCESS,
+      CREATE_CARD_SUCCESS
     ]);
 
     const { type, payload } = action;
@@ -45,6 +47,7 @@ export default function* watchCardActions() {
         const { card } = payload;
         yield put(updateCard(card));
         yield put(requestGetExternalCard());
+        yield put(requestGetActivityLog());
         yield put(updateFinderNode(card));
         break;
       }
@@ -54,11 +57,13 @@ export default function* watchCardActions() {
         const { cardIds } = payload;
         yield all(cardIds.map((cardId) => put(handleDeleteCardSuccess(cardId))));
         yield put(requestGetRecentCards());
+        yield put(requestGetActivityLog());
         yield put(requestGetExternalCard());
         break;
       }
       case MOVE_FINDER_NODES_SUCCESS: {
         yield put(requestGetRecentCards());
+        yield put(requestGetActivityLog());
         break;
       }
 
@@ -69,6 +74,13 @@ export default function* watchCardActions() {
       case APPROVE_CARD_SUCCESS:
       case GET_CARD_SUCCESS:
       case DELETE_CARD_SUCCESS: {
+        yield put(requestGetRecentCards());
+        yield put(requestGetExternalCard());
+        yield put(requestGetActivityLog());
+        break;
+      }
+
+      case CREATE_CARD_SUCCESS: {
         yield put(requestGetRecentCards());
         yield put(requestGetExternalCard());
         break;
