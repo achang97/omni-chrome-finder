@@ -33,6 +33,7 @@ const ActivityLog = ({
         className={s('text-sm p-reg rounded-lg')}
         key={_id}
         id={_id}
+        maxQuestionLines={1}
         question={question}
         status={status}
         finderNode={finderNode}

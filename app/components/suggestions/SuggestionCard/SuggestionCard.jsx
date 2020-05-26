@@ -24,6 +24,7 @@ const BUTTON_TYPE = {
 const SuggestionCard = ({
   id,
   question,
+  maxQuestionLines,
   answer,
   externalLinkAnswer,
   status,
@@ -210,7 +211,9 @@ const SuggestionCard = ({
       </div>
       <div className={s('flex flex-col w-full')}>
         <div className={s('flex')}>
-          <span className={s('suggestion-elem-title break-words line-clamp-2')}>{question}</span>
+          <span className={s(`suggestion-elem-title break-words line-clamp-${maxQuestionLines}`)}>
+            {question}
+          </span>
           {externalLinkAnswer && renderExternalLogo()}
         </div>
         {(answer || externalLinkAnswer) && (
@@ -232,6 +235,7 @@ const SuggestionCard = ({
 SuggestionCard.propTypes = {
   id: PropTypes.string.isRequired,
   question: PropTypes.string.isRequired,
+  maxQuestionLines: PropTypes.number,
   answer: PropTypes.string,
   externalLinkAnswer: PropTypes.shape({
     link: PropTypes.string.isRequired,
@@ -254,6 +258,7 @@ SuggestionCard.propTypes = {
 
 SuggestionCard.defaultProps = {
   className: '',
+  maxQuestionLines: 2,
   showMoreMenu: false,
   deleteProps: null
 };
