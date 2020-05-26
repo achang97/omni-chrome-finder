@@ -1,5 +1,11 @@
 import { take, put, select } from 'redux-saga/effects';
-import { EDIT_CARD, TOGGLE_UPVOTE_SUCCESS, OPEN_FINDER } from 'actions/actionTypes';
+import {
+  EDIT_CARD,
+  TOGGLE_UPVOTE_SUCCESS,
+  OPEN_FINDER,
+  TOGGLE_EXTERNAL_CREATE_MODAL,
+  CREATE_EXTERNAL_CARD_SUCCESS
+} from 'actions/actionTypes';
 import trackEvent from 'actions/analytics';
 
 function getCardProperties(card) {
@@ -7,9 +13,21 @@ function getCardProperties(card) {
   return { 'Card ID': _id, Question: question, Status: status };
 }
 
+function getExternalCardProperties(card) {
+  const { _id, question, status, externalLinkAnswer } = card;
+  const { type } = externalLinkAnswer;
+  return { 'Card ID': _id, Question: question, Status: status, Type: type };
+}
+
 export default function* watchAnalyticsActions() {
   while (true) {
-    const action = yield take([EDIT_CARD, TOGGLE_UPVOTE_SUCCESS, OPEN_FINDER]);
+    const action = yield take([
+      EDIT_CARD,
+      TOGGLE_UPVOTE_SUCCESS,
+      OPEN_FINDER,
+      TOGGLE_EXTERNAL_CREATE_MODAL,
+      CREATE_EXTERNAL_CARD_SUCCESS
+    ]);
 
     const { type, payload } = action;
 
@@ -43,13 +61,27 @@ export default function* watchAnalyticsActions() {
         break;
       }
 
+      case TOGGLE_EXTERNAL_CREATE_MODAL: {
+        const isCreateModalOpen = yield select(
+          (state) => state.externalVerification.isCreateModalOpen
+        );
+        if (isCreateModalOpen) event = 'Click Verify External Knowledge';
+        break;
+      }
+      case CREATE_EXTERNAL_CARD_SUCCESS: {
+        const { card } = payload;
+        properties = getExternalCardProperties(card);
+        event = 'Create External Card';
+        break;
+      }
+
       default: {
         break;
       }
     }
 
     if (event) {
-      yield put(trackEvent(event, properties));
+      yield put(trackEvent(event, properties || {}));
     }
   }
 }
