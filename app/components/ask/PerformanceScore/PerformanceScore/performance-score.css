@@ -3,15 +3,6 @@
   background: white;
 }
 
-.performance-score-container {
-  max-height: 100%;
-}
-
-.performance-score-container,
-.performance-score-container > * {
-  @apply min-h-0 flex flex-col flex-1;
-}
-
 .performance-score-section-container {
   background: #dde5ff26 !important;
 }

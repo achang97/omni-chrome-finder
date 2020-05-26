@@ -17,9 +17,17 @@ export const USER_BADGE = {
 };
 
 export const AUDIT_TYPE = {
+  SEARCH: 'search',
+  VIEW_CARD: 'viewCard',
+  USER_ACTION: 'userAction',
+  MARK_CARD_UPTODATE: 'markCardUpToDate',
+  MARK_CARD_OUTOFDATE: 'markCardOutOfDate',
+  UPDATE_CARD: 'updateCard',
+  CREATE_CARD: 'createCard',
   CREATE_CARD_EXTENSION: 'createCardExtension',
   CONTEXT_MENU_SEARCH: 'contextMenuSearch',
-  OPEN_EXTERNAL_DOC: 'openExternalDoc'
+  OPEN_EXTERNAL_DOC: 'openExternalDoc',
+  SLACK_FIND_COMMAND: 'slackFindCommand'
 };
 
 export const ONBOARDING_COMPLETE = -1;

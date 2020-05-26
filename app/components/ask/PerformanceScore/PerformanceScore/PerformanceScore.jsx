@@ -6,7 +6,6 @@ import {
   MdKeyboardArrowLeft,
   MdKeyboardArrowRight
 } from 'react-icons/md';
-import AnimateHeight from 'react-animate-height';
 
 import { USER_BADGE } from 'appConstants/profile';
 import { getStyleApplicationFn } from 'utils/style';
@@ -21,7 +20,6 @@ const PerformanceScore = ({
   badge,
   performance,
   remainingAccomplishments,
-  showPerformanceScore,
   togglePerformanceScore
 }) => {
   const [carouselIndex, setCarouselIndex] = useState(0);
@@ -91,12 +89,7 @@ const PerformanceScore = ({
 
   const render = () => {
     return (
-      <AnimateHeight
-        height={showPerformanceScore ? 'auto' : 0}
-        animationStateClasses={{
-          staticHeightAuto: s('performance-score-container')
-        }}
-      >
+      <>
         <div className={s('performance-score-section-container p-lg')}>
           <div className={s('flex justify-between')}>
             <div className={s('text-xs font-semibold text-gray-reg flex-1')}>
@@ -138,7 +131,7 @@ const PerformanceScore = ({
             </div>
           ))}
         </div>
-      </AnimateHeight>
+      </>
     );
   };
 
@@ -165,7 +158,6 @@ PerformanceScore.propTypes = {
       isComplete: PropTypes.bool.isRequired
     })
   ).isRequired,
-  showPerformanceScore: PropTypes.bool.isRequired,
 
   // Redux Actions
   togglePerformanceScore: PropTypes.func.isRequired

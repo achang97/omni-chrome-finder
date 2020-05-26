@@ -8,7 +8,8 @@ import {
   GET_SLACK_CONVERSATIONS_REQUEST,
   ADD_ASK_ATTACHMENT_REQUEST,
   REMOVE_ASK_ATTACHMENT_REQUEST,
-  GET_RECENT_CARDS_REQUEST
+  GET_RECENT_CARDS_REQUEST,
+  GET_ACTIVITY_LOG_REQUEST
 } from 'actions/actionTypes';
 import {
   handleAskQuestionSuccess,
@@ -20,7 +21,9 @@ import {
   handleRemoveAskAttachmentSuccess,
   handleRemoveAskAttachmentError,
   handleGetRecentCardsSuccess,
-  handleGetRecentCardsError
+  handleGetRecentCardsError,
+  handleGetActivityLogSuccess,
+  handleGetActivityLogError
 } from 'actions/ask';
 import { openModal } from 'actions/display';
 
@@ -31,7 +34,8 @@ export default function* watchAskRequests() {
       GET_SLACK_CONVERSATIONS_REQUEST,
       ADD_ASK_ATTACHMENT_REQUEST,
       REMOVE_ASK_ATTACHMENT_REQUEST,
-      GET_RECENT_CARDS_REQUEST
+      GET_RECENT_CARDS_REQUEST,
+      GET_ACTIVITY_LOG_REQUEST
     ]);
 
     const { type, payload } = action;
@@ -54,6 +58,10 @@ export default function* watchAskRequests() {
       }
       case GET_RECENT_CARDS_REQUEST: {
         yield fork(getRecentCards);
+        break;
+      }
+      case GET_ACTIVITY_LOG_REQUEST: {
+        yield fork(getActivityLog);
         break;
       }
       default: {
@@ -105,6 +113,15 @@ function* getRecentCards() {
     yield put(handleGetRecentCardsSuccess(cards));
   } catch (error) {
     yield put(handleGetRecentCardsError(getErrorMessage(error)));
+  }
+}
+
+function* getActivityLog() {
+  try {
+    const activityLog = yield call(doGet, '/analytics/cards/recent');
+    yield put(handleGetActivityLogSuccess(activityLog));
+  } catch (error) {
+    yield put(handleGetActivityLogError(getErrorMessage(error)));
   }
 }
 

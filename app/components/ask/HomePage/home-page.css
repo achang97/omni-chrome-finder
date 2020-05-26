@@ -18,3 +18,12 @@
 .search-input:hover {
   box-shadow: 0 1px 6px 0 rgba(32, 33, 36, 0.28) !important;
 }
+
+.animated-section-container {
+  max-height: 100%;
+}
+
+.animated-section-container,
+.animated-section-container > * {
+  @apply min-h-0 flex flex-col flex-1;
+}

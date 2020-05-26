@@ -1,15 +1,16 @@
 import React, { useEffect, useRef } from 'react';
 import PropTypes from 'prop-types';
-import AnimateHeight from 'react-animate-height';
 import { MdPeople } from 'react-icons/md';
+import AnimateHeight from 'react-animate-height';
 
-import { Loader, Separator } from 'components/common';
-import { SuggestionPanel, SuggestionCard } from 'components/suggestions';
+import { Separator } from 'components/common';
+import { SuggestionPanel } from 'components/suggestions';
 
 import { getStyleApplicationFn } from 'utils/style';
 
 import style from './home-page.css';
 
+import ActivityLog from '../ActivityLog';
 import PerformanceScore from '../PerformanceScore/PerformanceScore';
 import PerformanceBadge from '../PerformanceScore/PerformanceBadge';
 
@@ -20,12 +21,9 @@ const HomePage = ({
   searchText,
   showPerformanceScore,
   showAskTeammate,
-  recentCards,
-  isGettingRecentCards,
   updateAskSearchText,
   toggleAskTeammate,
-  requestGetUserOnboardingStats,
-  requestGetRecentCards
+  requestGetUserOnboardingStats
 }) => {
   const isMounted = useRef(null);
   const inputRef = useRef(null);
@@ -38,14 +36,10 @@ const HomePage = ({
       refreshStats = true;
     }
 
-    if (!showPerformanceScore) {
-      requestGetRecentCards();
-    }
-
     if (refreshStats) {
       requestGetUserOnboardingStats();
     }
-  }, [showPerformanceScore, requestGetUserOnboardingStats, requestGetRecentCards]);
+  }, [showPerformanceScore, requestGetUserOnboardingStats]);
 
   useEffect(() => {
     if (!showAskTeammate) {
@@ -53,31 +47,22 @@ const HomePage = ({
     }
   }, [showAskTeammate, dockVisible]);
 
-  const renderRecentCardsSection = () => {
-    const showSection = (isGettingRecentCards || recentCards.length !== 0) && !showPerformanceScore;
+  const renderAnimatedSection = (section, isSectionShown) => {
     return (
-      <AnimateHeight height={showSection ? 'auto' : 0}>
-        <div className={s('px-lg py-reg')}>
-          <div className={s('text-gray-reg text-xs mb-reg')}> Recent</div>
-          {recentCards.map(({ _id, question, status, finderNode }) => (
-            <SuggestionCard
-              className={s('text-sm p-reg my-sm rounded-lg')}
-              key={_id}
-              id={_id}
-              question={question}
-              status={status}
-              finderNode={finderNode}
-            />
-          ))}
-          {isGettingRecentCards && <Loader size="sm" />}
-        </div>
+      <AnimateHeight
+        height={isSectionShown ? 'auto' : 0}
+        animationStateClasses={{
+          staticHeightAuto: s('animated-section-container')
+        }}
+      >
+        {section}
       </AnimateHeight>
     );
   };
 
   const render = () => {
     return (
-      <div className={s('pt-lg flex flex-col min-h-0')}>
+      <div className={s('pt-lg flex-1 flex flex-col min-h-0')}>
         <div className={s('px-lg')}>
           <input
             onChange={(e) => updateAskSearchText(e.target.value)}
@@ -101,9 +86,9 @@ const HomePage = ({
           </div>
           <Separator className={s('my-0')} horizontal />
         </div>
-        <div className={s('min-h-0')}>
-          {renderRecentCardsSection()}
-          <PerformanceScore />
+        <div className={s('min-h-0 flex-1 flex flex-col')}>
+          {renderAnimatedSection(<ActivityLog />, !showPerformanceScore)}
+          {renderAnimatedSection(<PerformanceScore />, showPerformanceScore)}
         </div>
         <SuggestionPanel query={searchText} shouldSearchNodes />
       </div>
@@ -116,14 +101,11 @@ const HomePage = ({
 HomePage.propTypes = {
   dockVisible: PropTypes.bool.isRequired,
   searchText: PropTypes.string.isRequired,
-  recentCards: PropTypes.arrayOf(PropTypes.object).isRequired,
-  isGettingRecentCards: PropTypes.bool,
   showPerformanceScore: PropTypes.bool.isRequired,
   showAskTeammate: PropTypes.bool.isRequired,
 
   // Redux Actions
   updateAskSearchText: PropTypes.func.isRequired,
-  togglePerformanceScore: PropTypes.func.isRequired,
   toggleAskTeammate: PropTypes.func.isRequired,
   requestGetUserOnboardingStats: PropTypes.func.isRequired
 };

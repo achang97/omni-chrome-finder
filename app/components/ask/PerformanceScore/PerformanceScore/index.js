@@ -4,7 +4,6 @@ import PerformanceScore from './PerformanceScore';
 
 const mapStateToProps = (state) => {
   const {
-    ask: { showPerformanceScore },
     profile: { badge, performance }
   } = state;
 
@@ -19,7 +18,6 @@ const mapStateToProps = (state) => {
     badge,
     performance,
     remainingAccomplishments,
-    showPerformanceScore,
     togglePerformanceScore
   };
 };
