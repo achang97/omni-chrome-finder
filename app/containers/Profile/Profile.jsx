@@ -71,12 +71,12 @@ const Profile = ({
   userEdits,
   analytics,
   permissionState,
-  isSavingUser,
+  isUpdatingUser,
   isEditingAbout,
   changeFirstname,
   changeLastname,
   changeBio,
-  requestSaveUser,
+  requestUpdateUser,
   editUser,
   requestGetUser,
   requestUpdateUserPermissions,
@@ -95,7 +95,7 @@ const Profile = ({
   const renderAboutSection = () => {
     return (
       <div className={s('flex flex-col')}>
-        {isSavingUser ? (
+        {isUpdatingUser ? (
           <Loader />
         ) : (
           <div className={s('flex')}>
@@ -154,7 +154,7 @@ const Profile = ({
           <Button
             text="Save Changes"
             className={s('bg-purple-light text-purple-reg mt-reg')}
-            onClick={requestSaveUser}
+            onClick={() => requestUpdateUser(userEdits)}
           />
         )}
       </div>
@@ -322,14 +322,14 @@ Profile.propTypes = {
       isLoading: PropTypes.bool
     })
   ).isRequired,
-  isSavingUser: PropTypes.bool,
+  isUpdatingUser: PropTypes.bool,
   isEditingAbout: PropTypes.bool.isRequired,
 
   // Redux Actions
   changeFirstname: PropTypes.func.isRequired,
   changeLastname: PropTypes.func.isRequired,
   changeBio: PropTypes.func.isRequired,
-  requestSaveUser: PropTypes.func.isRequired,
+  requestUpdateUser: PropTypes.func.isRequired,
   editUser: PropTypes.func.isRequired,
   requestGetUser: PropTypes.func.isRequired,
   requestUpdateUserPermissions: PropTypes.func.isRequired,
@@ -337,7 +337,7 @@ Profile.propTypes = {
 };
 
 Profile.defaultProps = {
-  isSavingUser: false
+  isUpdatingUser: false
 };
 
 export default Profile;

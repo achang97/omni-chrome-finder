@@ -4,7 +4,7 @@ import { SETTING_SECTION_TYPE } from 'appConstants/profile';
 import {
   GET_USER_REQUEST,
   GET_USER_ONBOARDING_STATS_REQUEST,
-  SAVE_USER_REQUEST,
+  UPDATE_USER_REQUEST,
   UPDATE_USER_PERMISSIONS_REQUEST,
   LOGOUT_USER_INTEGRATION_REQUEST,
   UPDATE_PROFILE_PICTURE_REQUEST,
@@ -15,8 +15,8 @@ import {
   handleGetUserError,
   handleGetUserOnboardingStatsSuccess,
   handleGetUserOnboardingStatsError,
-  handleSaveUserSuccess,
-  handleSaveUserError,
+  handleUpdateUserSuccess,
+  handleUpdateUserError,
   handleUpdateProfilePictureSuccess,
   handleUpdateProfilePictureError,
   handleDeleteProfilePictureSuccess,
@@ -32,7 +32,7 @@ export default function* watchProfileRequests() {
     const action = yield take([
       GET_USER_REQUEST,
       GET_USER_ONBOARDING_STATS_REQUEST,
-      SAVE_USER_REQUEST,
+      UPDATE_USER_REQUEST,
       UPDATE_USER_PERMISSIONS_REQUEST,
       LOGOUT_USER_INTEGRATION_REQUEST,
       UPDATE_PROFILE_PICTURE_REQUEST,
@@ -49,8 +49,8 @@ export default function* watchProfileRequests() {
         yield fork(getUserOnboardingStats);
         break;
       }
-      case SAVE_USER_REQUEST: {
-        yield fork(updateUser);
+      case UPDATE_USER_REQUEST: {
+        yield fork(updateUser, payload);
         break;
       }
       case UPDATE_USER_PERMISSIONS_REQUEST: {
@@ -117,13 +117,13 @@ function* getUserOnboardingStats() {
   }
 }
 
-function* updateUser() {
+function* updateUser({ update }) {
   try {
-    const { user, userEdits } = yield select((state) => state.profile);
-    const userJson = yield call(doPut, '/users/me', userEdits);
-    yield put(handleSaveUserSuccess({ ...userJson, integrations: user.integrations }));
+    const user = yield select((state) => state.profile.user);
+    const userJson = yield call(doPut, '/users/me', update);
+    yield put(handleUpdateUserSuccess({ ...userJson, integrations: user.integrations }));
   } catch (error) {
-    yield put(handleSaveUserError(getErrorMessage(error)));
+    yield put(handleUpdateUserError(getErrorMessage(error)));
   }
 }
 

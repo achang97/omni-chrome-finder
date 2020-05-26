@@ -4,7 +4,7 @@ import {
   changeLastname,
   changeBio,
   editUser,
-  requestSaveUser,
+  requestUpdateUser,
   requestGetUser,
   requestUpdateUserPermissions
 } from 'actions/profile';
@@ -13,7 +13,7 @@ import Profile from './Profile';
 
 const mapStateToProps = (state) => {
   const {
-    profile: { user, userEdits, analytics, permissionState, isSavingUser, isEditingAbout },
+    profile: { user, userEdits, analytics, permissionState, isUpdatingUser, isEditingAbout },
     auth: { token }
   } = state;
 
@@ -22,7 +22,7 @@ const mapStateToProps = (state) => {
     userEdits,
     analytics,
     permissionState,
-    isSavingUser,
+    isUpdatingUser,
     isEditingAbout,
     token
   };
@@ -32,7 +32,7 @@ const mapDispatchToProps = {
   changeFirstname,
   changeLastname,
   changeBio,
-  requestSaveUser,
+  requestUpdateUser,
   editUser,
   requestGetUser,
   requestUpdateUserPermissions,

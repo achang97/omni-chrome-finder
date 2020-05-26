@@ -3,10 +3,12 @@ import _ from 'lodash';
 import { DEFAULT_VERIFICATION_INTERVAL } from 'appConstants/card';
 
 const initialState = {
-  isDisplayed: true,
+  isDisplayed: false,
   activeIntegration: null,
   isFinderModalOpen: false,
   isCreateModalOpen: false,
+  isSettingsModalOpen: false,
+  settingIndex: 0,
   owners: [],
   verificationInterval: DEFAULT_VERIFICATION_INTERVAL,
   finderNode: null,
@@ -33,6 +35,14 @@ export default function externalVerificationReducer(state = initialState, action
       return { ...state, owners: _.differencyBy(state.owners, [owner], '_id') };
     }
 
+    case types.UPDATE_EXTERNAL_SETTING_INDEX: {
+      const { index } = payload;
+      return { ...state, settingIndex: index };
+    }
+    case types.TOGGLE_EXTERNAL_SETTINGS_MODAL: {
+      return { ...state, isSettingsModalOpen: !state.isSettingsModalOpen };
+    }
+
     case types.TOGGLE_EXTERNAL_FINDER_MODAL: {
       return { ...state, isFinderModalOpen: !state.isFinderModalOpen };
     }
@@ -49,7 +59,7 @@ export default function externalVerificationReducer(state = initialState, action
     }
     case types.UPDATE_EXTERNAL_INTEGRATION: {
       const { integration } = payload;
-      return { ...state, activeIntegration: integration };
+      return { ...state, activeIntegration: integration, isDisplayed: !!integration };
     }
 
     case types.GET_EXTERNAL_CARD_REQUEST: {

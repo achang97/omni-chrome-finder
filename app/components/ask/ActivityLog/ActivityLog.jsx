@@ -75,8 +75,8 @@ const ActivityLog = ({
   const renderActivityLogSection = () => {
     return (
       <>
-        {activityLog.map(({ card, user, type, createdAt }) => (
-          <div key={card._id} className={s('mt-xs mb-reg')}>
+        {activityLog.map(({ _id, card, user, type, createdAt }) => (
+          <div key={_id} className={s('mt-xs mb-reg')}>
             <div className={s('flex items-center justify-between mb-xs text-2xs')}>
               <div className={s('flex items-center')}>
                 <CardUser

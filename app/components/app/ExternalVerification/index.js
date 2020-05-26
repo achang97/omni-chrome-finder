@@ -7,19 +7,22 @@ import {
   addExternalOwner,
   removeExternalOwner,
   toggleExternalCreateModal,
+  toggleExternalSettingsModal,
   toggleExternalFinderModal,
   toggleExternalDisplay,
+  updateExternalSettingIndex,
   updateExternalIntegration,
   updateExternalFinderNode,
   resetExternalState,
   requestCreateExternalCard,
   requestGetExternalCard
 } from 'actions/externalVerification';
+import { requestUpdateUser } from 'actions/profile';
 import ExternalVerification from './ExternalVerification';
 
 const mapStateToProps = (state) => {
   const {
-    profile: { user = {} },
+    profile: { user = {}, isUpdatingUser, updateUserError },
     auth: { token },
     display: { dockVisible },
     externalVerification: {
@@ -27,6 +30,8 @@ const mapStateToProps = (state) => {
       activeIntegration,
       isCreateModalOpen,
       isFinderModalOpen,
+      isSettingsModalOpen,
+      settingIndex,
       owners,
       verificationInterval,
       finderNode,
@@ -40,11 +45,15 @@ const mapStateToProps = (state) => {
   return {
     isValidUser: isValidUser(token, user),
     user,
+    isUpdatingUser,
+    updateUserError,
     dockVisible,
     isDisplayed,
     activeIntegration,
     isCreateModalOpen,
     isFinderModalOpen,
+    isSettingsModalOpen,
+    settingIndex,
     owners,
     verificationInterval,
     finderNode,
@@ -60,13 +69,16 @@ const mapDispatchToProps = {
   addExternalOwner,
   removeExternalOwner,
   toggleExternalCreateModal,
+  toggleExternalSettingsModal,
   toggleExternalFinderModal,
   toggleExternalDisplay,
+  updateExternalSettingIndex,
   updateExternalIntegration,
   updateExternalFinderNode,
   resetExternalState,
   requestCreateExternalCard,
   requestGetExternalCard,
+  requestUpdateUser,
   openCard,
   toggleDock
 };

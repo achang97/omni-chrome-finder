@@ -9,5 +9,5 @@
 .checkbox-container-selected {
   background: #e0e0eb;
 
-  @apply border-0;
+  @apply border-transparent;
 }

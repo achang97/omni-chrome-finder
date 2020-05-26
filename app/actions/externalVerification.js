@@ -20,6 +20,14 @@ export function toggleExternalFinderModal() {
   return { type: types.TOGGLE_EXTERNAL_FINDER_MODAL, payload: {} };
 }
 
+export function toggleExternalSettingsModal() {
+  return { type: types.TOGGLE_EXTERNAL_SETTINGS_MODAL, payload: {} };
+}
+
+export function updateExternalSettingIndex(index) {
+  return { type: types.UPDATE_EXTERNAL_SETTING_INDEX, payload: { index } };
+}
+
 export function updateExternalFinderNode(finderNode) {
   return { type: types.UPDATE_EXTERNAL_FINDER_NODE, payload: { finderNode } };
 }
