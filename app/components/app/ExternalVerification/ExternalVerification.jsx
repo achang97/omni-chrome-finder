@@ -22,15 +22,29 @@ import style from './external-verification.css';
 
 const s = getStyleApplicationFn(style);
 
+function trimTitle(documentTitle) {
+  return documentTitle.substring(0, documentTitle.lastIndexOf(' - '));
+}
+
 const URL_REGEXES = [
   {
     integration: INTEGRATIONS.GOOGLE.type,
-    regex: /https:\/\/docs\.google\.com\/[^/]+\/d\/([^/]+)/,
-    getTitle: (documentTitle) => documentTitle.substring(0, documentTitle.lastIndexOf(' - ')),
+    regex: /https:\/\/docs\.google\.com\/[^/]+\/d\/[^/]+/,
+    getTitle: trimTitle,
     getLinks: (regexMatch) => {
       const link = regexMatch[0];
       const previewLink = `${regexMatch[0]}/preview`;
       return { link, previewLink };
+    }
+  },
+  {
+    integration: INTEGRATIONS.CONFLUENCE.type,
+    regex: /https:\/\/\S+.atlassian.net\/wiki\/spaces\/[^/]+\/pages\/\d+/,
+    getTitle: (documentTitle) => {
+      return trimTitle(trimTitle(documentTitle));
+    },
+    getLinks: (regexMatch) => {
+      return { link: regexMatch[0] };
     }
   }
 ];
@@ -75,25 +89,27 @@ const ExternalVerification = ({
         const match = url.match(regex);
         if (match) {
           const links = getLinks(match);
-          const title = getTitle(document.title);
-          newIntegration = { links, title, integration };
+          newIntegration = { links, getTitle, integration };
           break;
         }
       }
 
       // Reset state + parameters
-      resetExternalState();
-      updateExternalIntegration(newIntegration);
-      addExternalOwner(user);
+      if (!activeIntegration || activeIntegration.link !== newIntegration.link) {
+        resetExternalState();
+        updateExternalIntegration(newIntegration);
+        addExternalOwner(user);
 
-      if (newIntegration) {
-        requestGetExternalCard();
+        if (newIntegration) {
+          requestGetExternalCard();
+        }
       }
     }
   }, [
     url,
     prevUrl,
     user,
+    activeIntegration,
     updateExternalIntegration,
     addExternalOwner,
     resetExternalState,
@@ -142,7 +158,8 @@ const ExternalVerification = ({
   };
 
   const renderCreateModal = () => {
-    const { title, links, integration } = activeIntegration;
+    const { links, getTitle, integration } = activeIntegration;
+    const title = getTitle(document.title);
     const externalLinkAnswer = { ...links, type: integration };
 
     const SECTIONS = [
@@ -256,11 +273,11 @@ ExternalVerification.propTypes = {
   // Redux State
   isDisplayed: PropTypes.bool.isRequired,
   activeIntegration: PropTypes.shape({
-    title: PropTypes.string.isRequired,
+    getTitle: PropTypes.func.isRequired,
     integration: PropTypes.string.isRequired,
     links: PropTypes.shape({
       link: PropTypes.string.isRequired,
-      previewLink: PropTypes.string.isRequired
+      previewLink: PropTypes.string
     })
   }),
   isCreateModalOpen: PropTypes.bool.isRequired,

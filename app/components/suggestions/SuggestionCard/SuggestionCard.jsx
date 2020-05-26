@@ -6,7 +6,7 @@ import { MdMoreHoriz } from 'react-icons/md';
 import { CardStatusIndicator, CardLocation } from 'components/cards';
 import { Button, Dropdown, Message, Loader, Separator, ConfirmModal } from 'components/common';
 
-import { CARD, INTEGRATIONS } from 'appConstants';
+import { CARD, INTEGRATION_IMAGES } from 'appConstants';
 import { copyCardUrl } from 'utils/card';
 import { NodePropTypes } from 'utils/propTypes';
 
@@ -27,6 +27,7 @@ const SuggestionCard = ({
   maxQuestionLines,
   answer,
   externalLinkAnswer,
+  showAnswer,
   status,
   finderNode,
   className,
@@ -179,16 +180,9 @@ const SuggestionCard = ({
   };
 
   const renderExternalLogo = () => {
-    const integration = Object.values(INTEGRATIONS).find(
-      ({ type }) => type === externalLinkAnswer.type
-    );
-
-    if (!integration) {
-      return null;
-    }
-
+    const logo = INTEGRATION_IMAGES[externalLinkAnswer.type];
     return (
-      <img src={integration.logo} alt={integration.title} className={s('mt-xs w-reg h-reg')} />
+      <img src={logo} alt={externalLinkAnswer.type} className={s('mt-xs ml-xs w-reg h-reg')} />
     );
   };
 
@@ -216,7 +210,7 @@ const SuggestionCard = ({
           </span>
           {externalLinkAnswer && renderExternalLogo()}
         </div>
-        {(answer || externalLinkAnswer) && (
+        {showAnswer && (answer || externalLinkAnswer) && (
           <span
             className={s(
               'mt-sm text-xs text-gray-dark font-medium line-clamp-2 break-words wb-break-words'
@@ -241,6 +235,7 @@ SuggestionCard.propTypes = {
     link: PropTypes.string.isRequired,
     type: PropTypes.string.isRequired
   }),
+  showAnswer: PropTypes.bool,
   status: PropTypes.oneOf(Object.values(CARD.STATUS)).isRequired,
   finderNode: NodePropTypes,
   className: PropTypes.string,
@@ -259,6 +254,7 @@ SuggestionCard.propTypes = {
 SuggestionCard.defaultProps = {
   className: '',
   maxQuestionLines: 2,
+  showAnswer: true,
   showMoreMenu: false,
   deleteProps: null
 };

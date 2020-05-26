@@ -6,6 +6,10 @@ import JiraIcon from 'assets/images/icons/Jira_Icon.svg';
 import SalesforceIcon from 'assets/images/icons/Salesforce_Icon.svg';
 import HubspotIcon from 'assets/images/icons/Hubspot_Icon.svg';
 import HelpscoutIcon from 'assets/images/icons/Helpscout_Icon.svg';
+import DropboxIcon from 'assets/images/icons/Dropbox_Icon.svg';
+import NotionIcon from 'assets/images/icons/Notion_Icon.svg';
+import ConfluenceIcon from 'assets/images/icons/Confluence_Icon.svg';
+import TettraIcon from 'assets/images/icons/Tettra_Icon.svg';
 
 export const ROUTES = {
   ASK: '/ask',
@@ -48,9 +52,27 @@ export const INTEGRATIONS = {
   GMAIL: { type: 'gmail', title: 'Gmail', logo: GmailIcon },
   SALESFORCE: { type: 'salesforce', title: 'Salesforce', logo: SalesforceIcon },
   JIRA: { type: 'jira', title: 'Jira', logo: JiraIcon },
-  HUBSPOT: { type: 'hubspot', title: 'Hubspot', logo: HubspotIcon }
+  HUBSPOT: { type: 'hubspot', title: 'Hubspot', logo: HubspotIcon },
+  CONFLUENCE: { type: 'confluence', title: 'Confluence', logo: ConfluenceIcon },
+  NOTION: { type: 'notion', title: 'Notion', logo: NotionIcon },
+  TETTRA: { type: 'tettra', title: 'Tettra', logo: TettraIcon },
+  DROPBOX: { type: 'dropbox', title: 'Dropbox', logo: DropboxIcon }
 };
+
+export const INTEGRATION_IMAGES = {};
+Object.values(INTEGRATIONS).forEach(({ type, logo }) => {
+  INTEGRATION_IMAGES[type] = logo;
+});
 
 export const NOOP = () => {};
 
-export default { ROUTES, WEB_APP_ROUTES, NODE_ENV, MAIN_CONTAINER_ID, URL, INTEGRATIONS, NOOP };
+export default {
+  ROUTES,
+  WEB_APP_ROUTES,
+  NODE_ENV,
+  MAIN_CONTAINER_ID,
+  URL,
+  INTEGRATIONS,
+  INTEGRATION_IMAGES,
+  NOOP
+};

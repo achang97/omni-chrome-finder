@@ -29,7 +29,8 @@
     "notifications",
     "https://app.addomni.com/*",
     "https://mail.google.com/*",
-    "https://docs.google.com/*"
+    "https://docs.google.com/*",
+    "https://*.atlassian.net/*"
   ],
   "content_security_policy": "default-src 'self'; script-src 'self' http://localhost:3000 https://localhost:3000 'unsafe-eval'; connect-src http://localhost:3000 https://localhost:3000 ws://localhost:8000 wss://api-dev.addomni.com; style-src * 'unsafe-inline' 'self' blob:; img-src 'self' data:;"
 }

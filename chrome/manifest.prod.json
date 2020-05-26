@@ -30,7 +30,8 @@
     "notifications",
     "https://app.addomni.com/*",
     "https://mail.google.com/*",
-    "https://docs.google.com/*"
+    "https://docs.google.com/*",
+    "https://*.atlassian.net/*"
   ],
   "content_security_policy": "default-src 'self'; script-src 'self'; ; connect-src wss://api.addomni.com; style-src * 'unsafe-inline'; img-src 'self' data:;"
 }

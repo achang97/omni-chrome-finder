@@ -27,7 +27,7 @@ const ActivityLog = ({
   updateActivityIndex
 }) => {
   const renderCard = (card) => {
-    const { _id, question, status, finderNode } = card;
+    const { _id, question, status, externalLinkAnswer, finderNode } = card;
     return (
       <SuggestionCard
         className={s('text-sm p-reg rounded-lg')}
@@ -35,6 +35,8 @@ const ActivityLog = ({
         id={_id}
         maxQuestionLines={1}
         question={question}
+        externalLinkAnswer={externalLinkAnswer}
+        showAnswer={false}
         status={status}
         finderNode={finderNode}
       />

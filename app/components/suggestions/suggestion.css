@@ -9,5 +9,5 @@
 }
 
 .suggestion-elem-title {
-  @apply flex-grow text-left font-semibold;
+  @apply text-left font-semibold;
 }
