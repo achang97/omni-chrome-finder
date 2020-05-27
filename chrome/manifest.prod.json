@@ -34,7 +34,8 @@
     "https://*.atlassian.net/*",
     "https://*.zendesk.com/*",
     "https://www.dropbox.com/*",
-    "https://app.tettra.co/*"
+    "https://app.tettra.co/*",
+    "https://notion.so/*"
   ],
   "content_security_policy": "default-src 'self'; script-src 'self'; ; connect-src wss://api.addomni.com; style-src * 'unsafe-inline'; img-src 'self' data:;"
 }

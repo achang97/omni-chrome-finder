@@ -90,7 +90,7 @@ const CardStatus = ({
   const dropdownDisabled = !isActionable || status === CARD.STATUS.NOT_DOCUMENTED;
 
   return (
-    <div onClick={(e) => !dropdownDisabled && e.stopPropagation()} className={s('flex')}>
+    <div className={s('flex')} onClick={(e) => !dropdownDisabled && e.stopPropagation()}>
       <Dropdown
         isOpen={shouldShowDropdown}
         onToggle={setDropdownOpen}

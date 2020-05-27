@@ -35,15 +35,28 @@ class Dropdown extends Component {
     };
   }
 
+  isOpen = () => {
+    const { isOpen: propsIsOpen } = this.props;
+    const { isOpen: stateIsOpen } = this.state;
+
+    const isOpen = propsIsOpen !== null ? propsIsOpen : stateIsOpen;
+    return isOpen;
+  };
+
   handleClickOutside = (e) => {
-    const { onToggle } = this.props;
+    const { onToggle, disabled } = this.props;
+    const isOpen = this.isOpen();
 
-    e.stopPropagation();
+    if (isOpen) {
+      if (!disabled) {
+        e.stopPropagation();
+      }
 
-    if (onToggle) {
-      onToggle(false);
-    } else {
-      this.setState({ isOpen: false });
+      if (onToggle) {
+        onToggle(false);
+      } else {
+        this.setState({ isOpen: false });
+      }
     }
   };
 
@@ -76,13 +89,11 @@ class Dropdown extends Component {
       disabled,
       isTogglerRelative,
       className,
-      togglerClassName,
-      isOpen: propsIsOpen
+      togglerClassName
     } = this.props;
-    const { isOpen: stateIsOpen } = this.state;
 
-    const isOpen = propsIsOpen !== null ? propsIsOpen : stateIsOpen;
     const style = getPositionStyle(isDown, isLeft);
+    const isOpen = this.isOpen();
 
     return (
       <div
