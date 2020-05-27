@@ -1,5 +1,5 @@
 {
-  "version": "2.0.4",
+  "version": "2.0.5",
   "name": "Omni Development",
   "manifest_version": 2,
   "description": "A lightweight Q&A tool that helps you document and find information faster.",
@@ -29,7 +29,11 @@
     "notifications",
     "https://app.addomni.com/*",
     "https://mail.google.com/*",
-    "https://docs.google.com/*"
+    "https://docs.google.com/*",
+    "https://*.atlassian.net/*",
+    "https://*.zendesk.com/*",
+    "https://www.dropbox.com/*",
+    "https://app.tettra.co/*"
   ],
   "content_security_policy": "default-src 'self'; script-src 'self' http://localhost:3000 https://localhost:3000 'unsafe-eval'; connect-src http://localhost:3000 https://localhost:3000 ws://localhost:8000 wss://api-dev.addomni.com; style-src * 'unsafe-inline' 'self' blob:; img-src 'self' data:;"
 }

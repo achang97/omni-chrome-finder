@@ -1,12 +1,10 @@
-import React, { useState, useEffect } from 'react';
+import React, { useEffect } from 'react';
 import PropTypes from 'prop-types';
-import AnimateHeight from 'react-animate-height';
 import { CircularProgressbar, buildStyles } from 'react-circular-progressbar';
-import { MdKeyboardArrowDown, MdKeyboardArrowUp, MdEdit } from 'react-icons/md';
-import Toggle from 'react-toggle';
+import { MdEdit } from 'react-icons/md';
 
-import { Button, Message, Separator, Loader } from 'components/common';
-import { IntegrationAuthButton, ProfilePicture } from 'components/profile';
+import { Button, Separator, Loader, CheckBox } from 'components/common';
+import { SettingsSection, ProfilePicture } from 'components/profile';
 
 import { PROFILE, INTEGRATIONS } from 'appConstants';
 import { UserPropTypes } from 'utils/propTypes';
@@ -19,43 +17,6 @@ import GoogleChromeIcon from 'assets/images/icons/GoogleChrome_Icon.svg';
 import style from './profile.css';
 
 const s = getStyleApplicationFn(style);
-
-const PROFILE_NOTIFICATIONS_OPTIONS = [
-  { type: 'email', title: 'Email', logo: GmailIcon },
-  INTEGRATIONS.SLACK,
-  { type: 'chrome', title: 'Chrome', logo: GoogleChromeIcon }
-];
-
-const PROFILE_SETTING_SECTIONS = [
-  {
-    type: PROFILE.SETTING_SECTION_TYPE.INTEGRATIONS,
-    title: 'Integrations',
-    options: [INTEGRATIONS.GOOGLE, INTEGRATIONS.ZENDESK, INTEGRATIONS.GMAIL, INTEGRATIONS.SLACK],
-    startOpen: true,
-    toggle: false
-  },
-  {
-    type: PROFILE.SETTING_SECTION_TYPE.AUTOFIND,
-    title: 'Autofind Permissions',
-    options: [
-      INTEGRATIONS.GMAIL,
-      { ...INTEGRATIONS.ZENDESK, disabled: true },
-      { ...INTEGRATIONS.SALESFORCE, disabled: true },
-      { ...INTEGRATIONS.HUBSPOT, disabled: true },
-      { ...INTEGRATIONS.JIRA, disabled: true },
-      { ...INTEGRATIONS.HELPSCOUT, disabled: true }
-    ],
-    startOpen: false,
-    toggle: true
-  },
-  {
-    type: PROFILE.SETTING_SECTION_TYPE.NOTIFICATIONS,
-    title: 'Notification Permissions',
-    options: PROFILE_NOTIFICATIONS_OPTIONS,
-    startOpen: false,
-    toggle: true
-  }
-];
 
 const PROGRESS_BAR_STYLES = {
   // How long animation takes to go from one percentage to another, in seconds
@@ -71,31 +32,103 @@ const Profile = ({
   userEdits,
   analytics,
   permissionState,
-  isSavingUser,
+  isSavingEdits,
   isEditingAbout,
   changeFirstname,
   changeLastname,
   changeBio,
-  requestSaveUser,
+  requestSaveUserEdits,
+  requestUpdateUser,
   editUser,
   requestGetUser,
   requestUpdateUserPermissions,
   logout
 }) => {
-  const [sectionOpen, setSectionOpen] = useState({
-    [PROFILE.SETTING_SECTION_TYPE.INTEGRATIONS]: true,
-    [PROFILE.SETTING_SECTION_TYPE.AUTOFIND]: false,
-    [PROFILE.SETTING_SECTION_TYPE.NOTIFICATIONS]: false
-  });
-
   useEffect(() => {
     requestGetUser();
   }, [requestGetUser]);
 
+  const PROFILE_SETTING_SECTIONS = [
+    {
+      sectionType: PROFILE.SETTING_SECTION_TYPE.INTEGRATIONS,
+      title: 'Integrations',
+      options: [INTEGRATIONS.GOOGLE, INTEGRATIONS.ZENDESK, INTEGRATIONS.GMAIL, INTEGRATIONS.SLACK],
+      startOpen: true,
+      type: 'authButton'
+    },
+    {
+      sectionType: PROFILE.SETTING_SECTION_TYPE.AUTOFIND,
+      title: 'Autofind Permissions',
+      options: [
+        INTEGRATIONS.GMAIL
+        // INTEGRATIONS.ZENDESK,
+        // INTEGRATIONS.SALESFORCE,
+        // INTEGRATIONS.HUBSPOT,
+        // INTEGRATIONS.JIRA,
+        // INTEGRATIONS.HELPSCOUT
+      ],
+      extendOption: ({ type }) => ({
+        isToggledOn: user.autofindPermissions[type],
+        disabled: type !== INTEGRATIONS.GMAIL.type
+      }),
+      startOpen: false,
+      type: 'toggle'
+    },
+    {
+      sectionType: PROFILE.SETTING_SECTION_TYPE.EXTERNAL_VERIFICATION,
+      title: 'External Verification',
+      options: [
+        INTEGRATIONS.GOOGLE,
+        INTEGRATIONS.CONFLUENCE,
+        INTEGRATIONS.ZENDESK,
+        INTEGRATIONS.DROPBOX,
+        INTEGRATIONS.TETTRA
+      ],
+      extendOption: ({ type }) => ({
+        isToggledOn: !user.widgetSettings.externalLink.disabledIntegrations.includes(type),
+        disabled: user.widgetSettings.externalLink.disabled
+      }),
+      startOpen: false,
+      type: 'toggle',
+      footer: (
+        <div className={s('flex items-center mt-reg')}>
+          <CheckBox
+            isSelected={user.widgetSettings.externalLink.disabled}
+            toggleCheckbox={() => {
+              requestUpdateUser({
+                widgetSettings: {
+                  ...user.widgetSettings,
+                  externalLink: {
+                    ...user.widgetSettings.externalLink,
+                    disabled: !user.widgetSettings.externalLink.disabled
+                  }
+                }
+              });
+            }}
+            className={s('flex-shrink-0 mr-reg')}
+          />
+          <div className={s('text-sm text-gray-dark')}> Disable All </div>
+        </div>
+      )
+    },
+    {
+      sectionType: PROFILE.SETTING_SECTION_TYPE.NOTIFICATIONS,
+      title: 'Notification Permissions',
+      options: [
+        { type: 'email', title: 'Email', logo: GmailIcon },
+        INTEGRATIONS.SLACK,
+        { type: 'chrome', title: 'Chrome', logo: GoogleChromeIcon }
+      ],
+      extendOption: ({ type }) => ({ isToggledOn: user.notificationPermissions[type] }),
+      startOpen: false,
+      type: 'toggle'
+    }
+  ];
+
   const renderAboutSection = () => {
     return (
       <div className={s('flex flex-col')}>
-        {isSavingUser ? (
+        {isSavingEdits ? (
           <Loader />
         ) : (
           <div className={s('flex')}>
@@ -154,7 +187,7 @@ const Profile = ({
           <Button
             text="Save Changes"
             className={s('bg-purple-light text-purple-reg mt-reg')}
-            onClick={requestSaveUser}
+            onClick={requestSaveUserEdits}
           />
         )}
       </div>
@@ -187,96 +220,29 @@ const Profile = ({
     );
   };
 
-  const renderIntegrations = (integrationSection) => {
-    const { type, toggle, options } = integrationSection;
-    const { autofindPermissions, notificationPermissions } = user;
-
-    return (
-      <div>
-        {options.map((integration, i) => {
-          const { type: optionType, title, logo, disabled } = integration;
-          return (
-            <div
-              key={title}
-              className={s(
-                `flex bg-white p-reg justify-between border border-solid border-gray-xlight items-center rounded-lg ${
-                  i > 0 ? 'mt-sm' : ''
-                }`
-              )}
-            >
-              <div className={s('flex flex-1 items-center')}>
-                <div className={s('profile-integration-img-container')}>
-                  <img src={logo} className={s('profile-integration-img')} alt={title} />
-                </div>
-                <div className={s('flex-1 text-sm')}> {title} </div>
-              </div>
-              {disabled && (
-                <span className={s('text-xs italic text-gray-light mx-sm')}>Coming soon!</span>
-              )}
-              {toggle ? (
-                <Toggle
-                  checked={
-                    !disabled &&
-                    (type === PROFILE.SETTING_SECTION_TYPE.AUTOFIND
-                      ? autofindPermissions[optionType]
-                      : notificationPermissions[optionType])
-                  }
-                  disabled={disabled}
-                  icons={false}
-                  onChange={() => requestUpdateUserPermissions(type, optionType)}
-                />
-              ) : (
-                <IntegrationAuthButton integration={integration} showIntegration={false} />
-              )}
-            </div>
-          );
-        })}
-      </div>
-    );
-  };
-
-  const toggleIntegrationSection = (type) => {
-    setSectionOpen({ ...sectionOpen, [type]: !sectionOpen[type] });
-  };
-
   const renderIntegrationsSection = () => {
     return (
       <div className={s('flex flex-col overflow-auto flex-grow px-lg py-sm')}>
-        {PROFILE_SETTING_SECTIONS.map((profileSettingSection, i) => {
-          const { type, title, toggle } = profileSettingSection;
-          const isOpen = sectionOpen[type];
-          const Icon = isOpen ? MdKeyboardArrowUp : MdKeyboardArrowDown;
+        {PROFILE_SETTING_SECTIONS.map((section, i) => {
+          const { sectionType, type, title, options, startOpen, extendOption, footer } = section;
           const { error, isLoading } = permissionState[type] || {};
 
           return (
-            <div
+            <SettingsSection
               key={title}
-              className={s(
-                `profile-integration-container ${
-                  isOpen
-                    ? 'profile-integration-container-active'
-                    : 'profile-integration-container-inactive'
-                } ${i !== 0 ? 'mt-reg' : ''}`
-              )}
-            >
-              <div
-                className={s(`py-sm flex items-center justify-between ${isOpen ? 'mb-sm' : ''}`)}
-                onClick={() => toggleIntegrationSection(type)}
-              >
-                <div className={s('text-purple-reg text-sm')}>{title}</div>
-                <div className={s('flex items-center')}>
-                  {toggle && isLoading && <Loader size="xs" className={s('mr-sm')} />}
-                  <Icon className={s('text-gray-dark cursor-pointer')} />
-                </div>
-              </div>
-              <AnimateHeight
-                height={isOpen ? 'auto' : 0}
-                animationStateClasses={{ animatingUp: s('invisible') }}
-              >
-                {renderIntegrations(profileSettingSection)}
-              </AnimateHeight>
-              <Message className={s('my-sm')} message={error} type="error" show={toggle} />
-            </div>
+              title={title}
+              type={type}
+              startOpen={startOpen}
+              onToggleOption={(optionType) => requestUpdateUserPermissions(sectionType, optionType)}
+              options={options.map((option) => ({
+                ...option,
+                ...(extendOption && extendOption(option))
+              }))}
+              error={error}
+              isLoading={isLoading}
+              className={s(i === 0 ? '' : 'mt-sm')}
+              footer={footer}
+            />
           );
         })}
       </div>
@@ -322,14 +288,15 @@ Profile.propTypes = {
       isLoading: PropTypes.bool
     })
   ).isRequired,
-  isSavingUser: PropTypes.bool,
+  isSavingEdits: PropTypes.bool,
   isEditingAbout: PropTypes.bool.isRequired,
 
   // Redux Actions
   changeFirstname: PropTypes.func.isRequired,
   changeLastname: PropTypes.func.isRequired,
   changeBio: PropTypes.func.isRequired,
-  requestSaveUser: PropTypes.func.isRequired,
+  requestSaveUserEdits: PropTypes.func.isRequired,
+  requestUpdateUser: PropTypes.func.isRequired,
   editUser: PropTypes.func.isRequired,
   requestGetUser: PropTypes.func.isRequired,
   requestUpdateUserPermissions: PropTypes.func.isRequired,
@@ -337,7 +304,7 @@ Profile.propTypes = {
 };
 
 Profile.defaultProps = {
-  isSavingUser: false
+  isSavingEdits: false
 };
 
 export default Profile;

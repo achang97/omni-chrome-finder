@@ -80,7 +80,7 @@ const CardConfirmModals = ({
                   <CheckBox
                     isSelected={selected}
                     toggleCheckbox={() => toggleSelectedMessage(i)}
-                    className={s('flex-shrink-0 margin-sm')}
+                    className={s('flex-shrink-0 m-sm')}
                   />
                 )}
               </div>
@@ -113,7 +113,7 @@ const CardConfirmModals = ({
               <CheckBox
                 isSelected={isSelected}
                 toggleCheckbox={() => updateCardSelectedThreadIndex(i)}
-                className={s('flex-shrink-0 margin-sm')}
+                className={s('flex-shrink-0 m-sm')}
               />
             </div>
           );

@@ -179,7 +179,7 @@ class AutofindListener extends Component {
       }
 
       const pageText = this.getPageText(integration);
-      if (pageText !== prevText) {
+      if (pageText !== prevText || isNewPage) {
         this.setState({ prevText: pageText });
         if (pageText && pageText !== '') {
           requestSearchCards(SEARCH.TYPE.AUTOFIND, { text: pageText });

@@ -1,0 +1,34 @@
+.settings-container {
+  @apply flex flex-col rounded-t-lg;
+
+  box-shadow: 0 -3px 3px rgba(50, 50, 50, 0.05);
+}
+
+.settings-toggle.react-toggle--checked .react-toggle-track {
+  background-color: #ab199f;
+}
+
+.settings-integration-container {
+  @apply p-reg rounded-lg;
+}
+
+.settings-integration-container-active {
+  @apply bg-purple-light;
+}
+
+.settings-integration-container-inactive {
+  @apply border border-solid border-gray-light bg-white;
+}
+
+.settings-integration-img-container {
+  height: 32px;
+  width: 32px;
+
+  @apply flex rounded-full border border-solid border-gray-light mr-reg;
+}
+
+.settings-integration-img {
+  max-height: 20px;
+
+  @apply m-auto;
+}

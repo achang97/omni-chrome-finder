@@ -21,7 +21,8 @@ export const initialState = {
 
   permissionState: {
     [PROFILE.SETTING_SECTION_TYPE.AUTOFIND]: {},
-    [PROFILE.SETTING_SECTION_TYPE.NOTIFICATIONS]: {}
+    [PROFILE.SETTING_SECTION_TYPE.NOTIFICATIONS]: {},
+    [PROFILE.SETTING_SECTION_TYPE.EXTERNAL_VERIFICATION]: {}
   },
 
   integrationState: {
@@ -99,16 +100,28 @@ export default function displayReducer(state = initialState, action) {
       return { ...state, userEdits: { ...state.userEdits, bio: text } };
     }
 
-    case types.SAVE_USER_REQUEST: {
-      return { ...state, isSavingUser: true, userSaveError: null };
+    case types.UPDATE_USER_REQUEST: {
+      return { ...state, isUpdatingUser: true, updateUserError: null };
     }
-    case types.SAVE_USER_SUCCESS: {
+    case types.UPDATE_USER_SUCCESS: {
       const { user } = payload;
-      return { ...state, isSavingUser: false, user, userEdits: {}, isEditingAbout: false };
+      return { ...state, isUpdatingUser: false, user };
     }
-    case types.SAVE_USER_ERROR: {
+    case types.UPDATE_USER_ERROR: {
       const { error } = payload;
-      return { ...state, isSavingUser: false, userSaveError: error };
+      return { ...state, isUpdatingUser: false, updateUserError: error };
+    }
+
+    case types.SAVE_USER_EDITS_REQUEST: {
+      return { ...state, isSavingEdits: true, saveEditsError: null };
+    }
+    case types.SAVE_USER_EDITS_SUCCESS: {
+      const { user } = payload;
+      return { ...state, isSavingEdits: false, user, userEdits: {}, isEditingAbout: false };
+    }
+    case types.SAVE_USER_EDITS_ERROR: {
+      const { error } = payload;
+      return { ...state, isSavingEdits: false, saveEditsError: error };
     }
 
     case types.UPDATE_PROFILE_PICTURE_REQUEST:

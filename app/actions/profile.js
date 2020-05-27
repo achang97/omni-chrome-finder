@@ -43,16 +43,28 @@ export function changeBio(text) {
   return { type: types.CHANGE_BIO, payload: { text } };
 }
 
-export function requestSaveUser() {
-  return { type: types.SAVE_USER_REQUEST, payload: {} };
+export function requestUpdateUser(update) {
+  return { type: types.UPDATE_USER_REQUEST, payload: { update } };
 }
 
-export function handleSaveUserSuccess(user) {
-  return { type: types.SAVE_USER_SUCCESS, payload: { user } };
+export function handleUpdateUserSuccess(user) {
+  return { type: types.UPDATE_USER_SUCCESS, payload: { user } };
 }
 
-export function handleSaveUserError(error) {
-  return { type: types.SAVE_USER_ERROR, payload: { error } };
+export function handleUpdateUserError(error) {
+  return { type: types.UPDATE_USER_ERROR, payload: { error } };
+}
+
+export function requestSaveUserEdits() {
+  return { type: types.SAVE_USER_EDITS_REQUEST, payload: {} };
+}
+
+export function handleSaveUserEditsSuccess(user) {
+  return { type: types.SAVE_USER_EDITS_SUCCESS, payload: { user } };
+}
+
+export function handleSaveUserEditsError(error) {
+  return { type: types.SAVE_USER_EDITS_ERROR, payload: { error } };
 }
 
 export function requestUpdateProfilePicture(file) {

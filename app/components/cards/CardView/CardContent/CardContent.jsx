@@ -10,7 +10,7 @@ import { ScreenRecordButton, AttachmentDropzone } from 'components/attachments';
 
 import { generateFileKey, isAnyLoading } from 'utils/file';
 import { getStyleApplicationFn } from 'utils/style';
-import { CARD, REQUEST } from 'appConstants';
+import { CARD, REQUEST, INTEGRATIONS, INTEGRATION_IMAGES } from 'appConstants';
 
 import SlackIcon from 'assets/images/icons/Slack_Mark.svg';
 
@@ -218,7 +218,9 @@ const CardContent = ({
   };
 
   const renderAnswer = () => {
-    if (externalLinkAnswer) {
+    const showIframe = externalLinkAnswer && externalLinkAnswer.type === INTEGRATIONS.GOOGLE.type;
+
+    if (externalLinkAnswer && showIframe) {
       return (
         <div className={s('flex-1 relative')}>
           <Loader className={s('card-answer-iframe-loader')} />
@@ -234,6 +236,28 @@ const CardContent = ({
             src={externalLinkAnswer.previewLink}
             className={s('w-full h-full border-0')}
           />
+        </div>
+      );
+    }
+
+    if (externalLinkAnswer && !showIframe) {
+      return (
+        <div className={s('py-xl px-lg')}>
+          <a href={externalLinkAnswer.link} target="_blank" rel="noopener noreferrer">
+            <div
+              className={s(
+                'rounded-lg bg-purple-gray-10 text-purple-reg shadow-md flex items-center p-reg'
+              )}
+            >
+              <img
+                src={INTEGRATION_IMAGES[externalLinkAnswer.type]}
+                alt={externalLinkAnswer.type}
+                className={s('h-xl w-xl')}
+              />
+              <div className={s('truncate mx-sm text-sm underline-border')}>{question}</div>
+              <MdOpenInNew className={s('ml-auto')} />
+            </div>
+          </a>
         </div>
       );
     }
@@ -335,8 +359,9 @@ CardContent.propTypes = {
   slackThreadConvoPairs: PropTypes.arrayOf(PropTypes.object).isRequired,
   slackReplies: PropTypes.arrayOf(PropTypes.object).isRequired,
   externalLinkAnswer: PropTypes.shape({
+    type: PropTypes.string.isRequired,
     link: PropTypes.string.isRequired,
-    previewLink: PropTypes.string.isRequired
+    previewLink: PropTypes.string
   }),
   isEditing: PropTypes.bool.isRequired,
   edits: PropTypes.shape({
