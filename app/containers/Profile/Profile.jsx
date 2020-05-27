@@ -86,9 +86,7 @@ const Profile = ({
       ],
       extendOption: ({ type }) => ({
         isToggledOn: !user.widgetSettings.externalLink.disabledIntegrations.includes(type),
-        disabled:
-          user.widgetSettings.externalLink.disabled ||
-          ![INTEGRATIONS.GOOGLE.type, INTEGRATIONS.CONFLUENCE.type].includes(type)
+        disabled: user.widgetSettings.externalLink.disabled
       }),
       startOpen: false,
       type: 'toggle',

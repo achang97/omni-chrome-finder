@@ -41,12 +41,20 @@ const URL_REGEXES = [
   {
     integration: INTEGRATIONS.CONFLUENCE,
     regex: /https:\/\/\S+.atlassian.net\/wiki\/spaces\/[^/]+\/pages\/\d+/,
-    getTitle: (documentTitle) => {
-      return trimTitle(trimTitle(documentTitle));
-    },
-    getLinks: (regexMatch) => {
-      return { link: regexMatch[0] };
-    }
+    getTitle: (documentTitle) => trimTitle(trimTitle(documentTitle))
+  },
+  {
+    integration: INTEGRATIONS.ZENDESK,
+    regex: /https:\/\/\S+\.zendesk\.com\/knowledge\/articles\/\d+/
+  },
+  {
+    integration: INTEGRATIONS.DROPBOX,
+    regex: /https:\/\/www\.dropbox\.com\/s\/[^/]+/
+  },
+  {
+    integration: INTEGRATIONS.TETTRA,
+    regex: /https:\/\/app\.tettra\.co\/teams\/[^/]+\/pages\/[^#]+/,
+    getTitle: (documentTitle) => trimTitle(trimTitle(documentTitle))
   }
 ];
 
@@ -115,7 +123,7 @@ const ExternalVerification = ({
         const { regex, getTitle, getLinks, integration } = URL_REGEXES[i];
         const match = url.match(regex);
         if (match) {
-          const links = getLinks(match);
+          const links = getLinks ? getLinks(match) : { link: match[0] };
           if (isEnabled({ integration, links })) {
             newIntegration = { links, getTitle, integration };
             break;
@@ -198,7 +206,7 @@ const ExternalVerification = ({
 
   const renderCreateModal = () => {
     const { links, getTitle, integration } = activeIntegration;
-    const title = getTitle(document.title);
+    const title = getTitle ? getTitle(document.title) : document.title;
     const externalLinkAnswer = { ...links, type: integration.type };
 
     const SECTIONS = [

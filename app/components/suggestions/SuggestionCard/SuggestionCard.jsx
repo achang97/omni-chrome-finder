@@ -120,7 +120,7 @@ const SuggestionCard = ({
           toggler={<MdMoreHoriz />}
           onToggle={setDropdownOpen}
           body={
-            <div className={s('navigate-more-dropdown')}>
+            <div className={s('suggestion-card-dropdown')}>
               {actions.map(({ label, onClick, buttonType }, i) => (
                 <div key={buttonType}>
                   <Button
@@ -182,7 +182,7 @@ const SuggestionCard = ({
   const renderExternalLogo = () => {
     const logo = INTEGRATION_IMAGES[externalLinkAnswer.type];
     return (
-      <img src={logo} alt={externalLinkAnswer.type} className={s('mt-xs ml-xs w-reg h-reg')} />
+      <img src={logo} alt={externalLinkAnswer.type} className={s('suggestion-external-logo')} />
     );
   };
 

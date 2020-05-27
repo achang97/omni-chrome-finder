@@ -359,8 +359,9 @@ CardContent.propTypes = {
   slackThreadConvoPairs: PropTypes.arrayOf(PropTypes.object).isRequired,
   slackReplies: PropTypes.arrayOf(PropTypes.object).isRequired,
   externalLinkAnswer: PropTypes.shape({
+    type: PropTypes.string.isRequired,
     link: PropTypes.string.isRequired,
-    previewLink: PropTypes.string.isRequired
+    previewLink: PropTypes.string
   }),
   isEditing: PropTypes.bool.isRequired,
   edits: PropTypes.shape({
