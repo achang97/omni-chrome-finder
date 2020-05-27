@@ -53,7 +53,7 @@ const URL_REGEXES = [
   },
   {
     integration: INTEGRATIONS.TETTRA,
-    regex: /https:\/\/app\.tettra\.co\/teams\/[^/]+\/pages\/[^#]+/,
+    regex: /https:\/\/app\.tettra\.co\/teams\/[^/]+\/pages\/[^/#]+/,
     getTitle: (documentTitle) => trimTitle(trimTitle(documentTitle))
   }
 ];
