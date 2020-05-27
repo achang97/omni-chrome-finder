@@ -55,6 +55,11 @@ const URL_REGEXES = [
     integration: INTEGRATIONS.TETTRA,
     regex: /https:\/\/app\.tettra\.co\/teams\/[^/]+\/pages\/[^/#]+/,
     getTitle: (documentTitle) => trimTitle(trimTitle(documentTitle))
+  },
+  {
+    integration: INTEGRATIONS.NOTION,
+    regex: /https:\/\/(?:www\.)?notion\.so\/([^/#]+)[^/#]{32}/,
+    getLinks: (regexMatch) => ({ link: regexMatch[0].replace(regexMatch[1], '') })
   }
 ];
 
@@ -400,7 +405,7 @@ ExternalVerification.propTypes = {
   // Redux State
   isDisplayed: PropTypes.bool.isRequired,
   activeIntegration: PropTypes.shape({
-    getTitle: PropTypes.func.isRequired,
+    getTitle: PropTypes.func,
     integration: PropTypes.shape({
       type: PropTypes.string.isRequired,
       logo: PropTypes.string.isRequired,
