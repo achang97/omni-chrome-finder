@@ -55,6 +55,18 @@ export function handleUpdateUserError(error) {
   return { type: types.UPDATE_USER_ERROR, payload: { error } };
 }
 
+export function requestSaveUserEdits() {
+  return { type: types.SAVE_USER_EDITS_REQUEST, payload: {} };
+}
+
+export function handleSaveUserEditsSuccess(user) {
+  return { type: types.SAVE_USER_EDITS_SUCCESS, payload: { user } };
+}
+
+export function handleSaveUserEditsError(error) {
+  return { type: types.SAVE_USER_EDITS_ERROR, payload: { error } };
+}
+
 export function requestUpdateProfilePicture(file) {
   return { type: types.UPDATE_PROFILE_PICTURE_REQUEST, payload: { file } };
 }

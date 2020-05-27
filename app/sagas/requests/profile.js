@@ -1,10 +1,12 @@
 import { take, call, fork, put, all, select } from 'redux-saga/effects';
+import _ from 'lodash';
 import { doGet, doPut, doPost, doDelete, getErrorMessage } from 'utils/request';
 import { SETTING_SECTION_TYPE } from 'appConstants/profile';
 import {
   GET_USER_REQUEST,
   GET_USER_ONBOARDING_STATS_REQUEST,
   UPDATE_USER_REQUEST,
+  SAVE_USER_EDITS_REQUEST,
   UPDATE_USER_PERMISSIONS_REQUEST,
   LOGOUT_USER_INTEGRATION_REQUEST,
   UPDATE_PROFILE_PICTURE_REQUEST,
@@ -17,6 +19,8 @@ import {
   handleGetUserOnboardingStatsError,
   handleUpdateUserSuccess,
   handleUpdateUserError,
+  handleSaveUserEditsSuccess,
+  handleSaveUserEditsError,
   handleUpdateProfilePictureSuccess,
   handleUpdateProfilePictureError,
   handleDeleteProfilePictureSuccess,
@@ -33,6 +37,7 @@ export default function* watchProfileRequests() {
       GET_USER_REQUEST,
       GET_USER_ONBOARDING_STATS_REQUEST,
       UPDATE_USER_REQUEST,
+      SAVE_USER_EDITS_REQUEST,
       UPDATE_USER_PERMISSIONS_REQUEST,
       LOGOUT_USER_INTEGRATION_REQUEST,
       UPDATE_PROFILE_PICTURE_REQUEST,
@@ -47,6 +52,10 @@ export default function* watchProfileRequests() {
       }
       case GET_USER_ONBOARDING_STATS_REQUEST: {
         yield fork(getUserOnboardingStats);
+        break;
+      }
+      case SAVE_USER_EDITS_REQUEST: {
+        yield fork(saveUserEdits);
         break;
       }
       case UPDATE_USER_REQUEST: {
@@ -76,18 +85,10 @@ export default function* watchProfileRequests() {
   }
 }
 
-function* updatePermissions({ type, permission }) {
-  const keyName =
-    type === SETTING_SECTION_TYPE.AUTOFIND ? 'autofindPermissions' : 'notificationPermissions';
-  const permissionsObj = yield select((state) => state.profile.user[keyName]);
-  const update = { [keyName]: { ...permissionsObj, [permission]: !permissionsObj[permission] } };
-
-  try {
-    const userJson = yield call(doPut, '/users/me', { update });
-    yield put(handleUpdateUserPermissionsSuccess(type, userJson));
-  } catch (error) {
-    yield put(handleUpdateUserPermissionsError(type, getErrorMessage(error)));
-  }
+function* callUpdateEndpoint(update) {
+  const integrations = yield select((state) => state.profile.user.integrations);
+  const userJson = yield call(doPut, '/users/me', update);
+  return { ...userJson, integrations };
 }
 
 function* getUser() {
@@ -105,6 +106,61 @@ function* getUser() {
   }
 }
 
+function* updatePermissions({ type, permission }) {
+  const { autofindPermissions, notificationPermissions, widgetSettings } = yield select(
+    (state) => state.profile.user
+  );
+
+  let update = {};
+  switch (type) {
+    case SETTING_SECTION_TYPE.AUTOFIND: {
+      update = {
+        autofindPermissions: {
+          ...autofindPermissions,
+          [permission]: !autofindPermissions[permission]
+        }
+      };
+      break;
+    }
+    case SETTING_SECTION_TYPE.NOTIFICATIONS: {
+      update = {
+        notificationPermissions: {
+          ...notificationPermissions,
+          [permission]: !notificationPermissions[permission]
+        }
+      };
+      break;
+    }
+    case SETTING_SECTION_TYPE.EXTERNAL_VERIFICATION: {
+      const {
+        externalLink: { disabledIntegrations }
+      } = widgetSettings;
+
+      update = {
+        widgetSettings: {
+          ...widgetSettings,
+          externalLink: {
+            ...widgetSettings.externalLink,
+            disabledIntegrations: disabledIntegrations.includes(permission)
+              ? _.difference(disabledIntegrations, [permission])
+              : _.union(disabledIntegrations, [permission])
+          }
+        }
+      };
+      break;
+    }
+    default:
+      break;
+  }
+
+  try {
+    const user = yield call(callUpdateEndpoint, update);
+    yield put(handleUpdateUserPermissionsSuccess(type, user));
+  } catch (error) {
+    yield put(handleUpdateUserPermissionsError(type, getErrorMessage(error)));
+  }
+}
+
 function* getUserOnboardingStats() {
   try {
     const { badge, percentage, performance } = yield call(
@@ -119,24 +175,32 @@ function* getUserOnboardingStats() {
 
 function* updateUser({ update }) {
   try {
-    const user = yield select((state) => state.profile.user);
-    const userJson = yield call(doPut, '/users/me', update);
-    yield put(handleUpdateUserSuccess({ ...userJson, integrations: user.integrations }));
+    const user = yield call(callUpdateEndpoint, update);
+    yield put(handleUpdateUserSuccess(user));
   } catch (error) {
     yield put(handleUpdateUserError(getErrorMessage(error)));
   }
 }
 
+function* saveUserEdits() {
+  try {
+    const userEdits = yield select((state) => state.profile.userEdits);
+    const user = yield call(callUpdateEndpoint, userEdits);
+    yield put(handleSaveUserEditsSuccess(user));
+  } catch (error) {
+    yield put(handleSaveUserEditsError(getErrorMessage(error)));
+  }
+}
+
 function* updateProfilePicture({ file }) {
   try {
-    const integrations = yield select((state) => state.profile.user.integrations);
-
     const formData = new FormData();
     formData.append('file', file);
 
     const { key } = yield call(doPost, '/files/upload', formData, { isForm: true });
-    const userJson = yield call(doPut, '/users/me', { profilePicture: key });
-    yield put(handleUpdateProfilePictureSuccess({ ...userJson, integrations }));
+    const user = yield call(callUpdateEndpoint, { profilePicture: key });
+
+    yield put(handleUpdateProfilePictureSuccess(user));
   } catch (error) {
     yield put(handleUpdateProfilePictureError(getErrorMessage(error)));
   }
@@ -144,12 +208,12 @@ function* updateProfilePicture({ file }) {
 
 function* deleteProfilePicture() {
   try {
-    const { integrations, profilePicture } = yield select((state) => state.profile.user);
-    const [userJson] = yield all([
-      call(doPut, '/users/me', { profilePicture: null }),
+    const { profilePicture } = yield select((state) => state.profile.user);
+    const [user] = yield all([
+      call(callUpdateEndpoint, { profilePicture: null }),
       call(doDelete, `/files/${profilePicture}`)
     ]);
-    yield put(handleDeleteProfilePictureSuccess({ ...userJson, integrations }));
+    yield put(handleDeleteProfilePictureSuccess(user));
   } catch (error) {
     yield put(handleDeleteProfilePictureError(getErrorMessage(error)));
   }

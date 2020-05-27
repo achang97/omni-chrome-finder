@@ -305,7 +305,10 @@ const ExternalVerification = ({
 
     const onSubmit = () => {
       requestUpdateUser({
-        widgetSettings: { externalLink: OPTIONS[settingIndex].newSettings }
+        widgetSettings: {
+          ...user.widgetSettings,
+          externalLink: OPTIONS[settingIndex].newSettings
+        }
       });
     };
 
