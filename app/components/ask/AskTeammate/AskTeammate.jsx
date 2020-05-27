@@ -48,6 +48,7 @@ const AskTeammate = ({
   updateAskRecipient,
   addAskRecipient,
   slackConversations,
+  isGettingSlackConversations,
   requestGetSlackConversations,
   toggleAskTeammate,
   history
@@ -152,7 +153,15 @@ const AskTeammate = ({
   };
 
   const renderChannelRecipient = (channel, index) => {
-    const { id, name, mentions, members, isDropdownOpen, isDropdownSelectOpen } = channel;
+    const {
+      id,
+      name,
+      mentions,
+      members,
+      isLoadingMembers,
+      isDropdownOpen,
+      isDropdownSelectOpen
+    } = channel;
     return (
       <div
         key={id}
@@ -212,13 +221,17 @@ const AskTeammate = ({
           }
           body={
             <div className={s('ask-recipient-dropdown')}>
-              <RecipientDropdownBody
-                mentions={mentions}
-                mentionOptions={members}
-                onAddMention={(newMention) =>
-                  updateAskRecipient(index, { mentions: _.union(mentions, [newMention]) })
-                }
-              />
+              {isLoadingMembers ? (
+                <Loader size="xs" />
+              ) : (
+                <RecipientDropdownBody
+                  mentions={mentions}
+                  mentionOptions={members}
+                  onAddMention={(newMention) =>
+                    updateAskRecipient(index, { mentions: _.union(mentions, [newMention]) })
+                  }
+                />
+              )}
             </div>
           }
         />
@@ -240,6 +253,9 @@ const AskTeammate = ({
           options={_.differenceBy(slackConversations, recipients, 'id')}
           getOptionLabel={(option) =>
             `${option.type === ASK.SLACK_RECIPIENT_TYPE.CHANNEL ? '#' : '@'}${option.name}`
+          }
+          noOptionsMessage={() =>
+            isGettingSlackConversations ? 'Loading conversations...' : 'No options'
           }
           getOptionValue={(option) => option.id}
           isSearchable
@@ -346,6 +362,7 @@ AskTeammate.propTypes = {
   questionTitle: PropTypes.string.isRequired,
   recipients: PropTypes.arrayOf(PropTypes.object).isRequired,
   slackConversations: PropTypes.arrayOf(PropTypes.object).isRequired,
+  isGettingSlackConversations: PropTypes.bool,
   user: UserPropTypes.isRequired,
 
   // Redux Actions

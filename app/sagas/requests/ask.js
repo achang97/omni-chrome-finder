@@ -9,7 +9,8 @@ import {
   ADD_ASK_ATTACHMENT_REQUEST,
   REMOVE_ASK_ATTACHMENT_REQUEST,
   GET_RECENT_CARDS_REQUEST,
-  GET_ACTIVITY_LOG_REQUEST
+  GET_ACTIVITY_LOG_REQUEST,
+  ADD_ASK_RECIPIENT
 } from 'actions/actionTypes';
 import {
   handleAskQuestionSuccess,
@@ -23,7 +24,10 @@ import {
   handleGetRecentCardsSuccess,
   handleGetRecentCardsError,
   handleGetActivityLogSuccess,
-  handleGetActivityLogError
+  handleGetActivityLogError,
+  requestGetSlackChannelMembers,
+  handleGetSlackChannelMembersSuccess,
+  handleGetSlackChannelMembersError
 } from 'actions/ask';
 import { openModal } from 'actions/display';
 
@@ -35,7 +39,8 @@ export default function* watchAskRequests() {
       ADD_ASK_ATTACHMENT_REQUEST,
       REMOVE_ASK_ATTACHMENT_REQUEST,
       GET_RECENT_CARDS_REQUEST,
-      GET_ACTIVITY_LOG_REQUEST
+      GET_ACTIVITY_LOG_REQUEST,
+      ADD_ASK_RECIPIENT
     ]);
 
     const { type, payload } = action;
@@ -62,6 +67,10 @@ export default function* watchAskRequests() {
       }
       case GET_ACTIVITY_LOG_REQUEST: {
         yield fork(getActivityLog);
+        break;
+      }
+      case ADD_ASK_RECIPIENT: {
+        yield fork(getSlackChannelMembers, payload);
         break;
       }
       default: {
@@ -100,10 +109,24 @@ function* askQuestion() {
 
 function* getSlackConversations() {
   try {
-    const { conversations } = yield call(doGet, '/slack/getAllConversations');
+    const conversations = yield call(doGet, '/slack/conversations');
     yield put(handleGetSlackConversationsSuccess(conversations));
   } catch (error) {
     yield put(handleGetSlackConversationsError(getErrorMessage(error)));
+  }
+}
+
+function* getSlackChannelMembers({ recipient }) {
+  const { type, id } = recipient;
+  if (type === ASK.SLACK_RECIPIENT_TYPE.CHANNEL) {
+    try {
+      yield put(requestGetSlackChannelMembers(id));
+      const members = yield call(doGet, `/slack/channels/${id}/members`);
+      yield put(handleGetSlackChannelMembersSuccess(id, members));
+    } catch (error) {
+      const message = getErrorMessage(error);
+      yield put(handleGetSlackChannelMembersError(id, message));
+    }
   }
 }
 

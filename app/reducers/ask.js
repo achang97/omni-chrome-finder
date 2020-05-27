@@ -28,6 +28,11 @@ export default function askReducer(state = initialState, action) {
     attachments: updateArrayOfObjects(state.attachments, { key }, newInfo)
   });
 
+  const updateRecipientById = (id, newInfo) => ({
+    ...state,
+    recipients: updateArrayOfObjects(state.recipients, { id }, newInfo)
+  });
+
   switch (type) {
     case types.UPDATE_ASK_SEARCH_TEXT: {
       const { text } = payload;
@@ -65,12 +70,12 @@ export default function askReducer(state = initialState, action) {
       if (recipients.some(({ id }) => id === recipient.id)) return state;
 
       let newRecipients;
-      if (recipient.type === 'user') {
+      if (recipient.type === ASK.SLACK_RECIPIENT_TYPE.USER) {
         newRecipients = [...recipients, recipient];
       } else {
-        //
         const newRecipient = {
           ...recipient,
+          members: [],
           mentions: [],
           isDropdownOpen: false,
           isDropdownSelectOpen: false
@@ -146,6 +151,19 @@ export default function askReducer(state = initialState, action) {
     case types.GET_SLACK_CONVERSATIONS_ERROR: {
       const { error } = payload;
       return { ...state, isGettingSlackConversations: false, getSlackConversationsError: error };
+    }
+
+    case types.GET_SLACK_CHANNEL_MEMBERS_REQUEST: {
+      const { channelId } = payload;
+      return updateRecipientById(channelId, { isLoadingMembers: true, loadMemberError: null });
+    }
+    case types.GET_SLACK_CHANNEL_MEMBERS_SUCCESS: {
+      const { channelId, members } = payload;
+      return updateRecipientById(channelId, { isLoadingMembers: false, members });
+    }
+    case types.GET_SLACK_CHANNEL_MEMBERS_ERROR: {
+      const { channelId, error } = payload;
+      return updateRecipientById(channelId, { isLoadingMembers: false, loadMemberError: error });
     }
 
     case types.GET_RECENT_CARDS_REQUEST: {

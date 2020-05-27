@@ -23,7 +23,8 @@ const mapStateToProps = (state) => {
       isAskingQuestion,
       questionTitle,
       recipients,
-      slackConversations
+      slackConversations,
+      isGettingSlackConversations
     },
     profile: { user }
   } = state;
@@ -35,6 +36,7 @@ const mapStateToProps = (state) => {
     questionTitle,
     recipients,
     slackConversations,
+    isGettingSlackConversations,
     user
   };
 };

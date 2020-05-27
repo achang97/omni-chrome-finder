@@ -77,6 +77,18 @@ export function handleGetSlackConversationsError(error) {
   return { type: types.GET_SLACK_CONVERSATIONS_ERROR, payload: { error } };
 }
 
+export function requestGetSlackChannelMembers(channelId) {
+  return { type: types.GET_SLACK_CHANNEL_MEMBERS_REQUEST, payload: { channelId } };
+}
+
+export function handleGetSlackChannelMembersSuccess(channelId, members) {
+  return { type: types.GET_SLACK_CHANNEL_MEMBERS_SUCCESS, payload: { channelId, members } };
+}
+
+export function handleGetSlackChannelMembersError(channelId, error) {
+  return { type: types.GET_SLACK_CHANNEL_MEMBERS_ERROR, payload: { error } };
+}
+
 export function requestGetRecentCards() {
   return { type: types.GET_RECENT_CARDS_REQUEST, payload: {} };
 }
