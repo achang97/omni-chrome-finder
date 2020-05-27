@@ -118,7 +118,12 @@ function* searchCards({ type, query, clearCards }) {
     const allRequests = [];
 
     if (!query.ids || query.ids.length !== 0) {
-      const body = { ...query, page, limit: SEARCH.PAGE_SIZE };
+      const body = {
+        ...query,
+        page,
+        limit: SEARCH.PAGE_SIZE,
+        orderBy: !query.q ? 'question' : null
+      };
       if (type === SEARCH.TYPE.AUTOFIND) {
         allRequests.push({ requestFn: doPost, url: '/suggest', body });
       } else {
