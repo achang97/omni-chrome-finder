@@ -2,6 +2,7 @@ import { Component } from 'react';
 import PropTypes from 'prop-types';
 
 import { INTEGRATIONS, SEARCH, CHROME } from 'appConstants';
+import { getGoogleText } from './parsers';
 
 const URL_REGEXES = [
   {
@@ -65,72 +66,6 @@ class AutofindListener extends Component {
     this.observer.observe(targetNode, config);
   };
 
-  trimAlphanumeric = (text) => {
-    return text.replace(/^[^a-z\d]+|[^a-z\d]+$/gi, '');
-  };
-
-  removeAll = (nodes, transform) => {
-    nodes.forEach((node) => {
-      if (transform) {
-        // eslint-disable-next-line no-param-reassign
-        node = transform(node);
-      }
-
-      if (node) {
-        node.remove();
-      }
-    });
-  };
-
-  getGoogleText = () => {
-    let text = '';
-
-    if (document) {
-      const mainTable = document.querySelector('div[role="main"] table[role="presentation"]');
-
-      const titleDiv = mainTable.querySelector('[tabindex="-1"]');
-      if (titleDiv) {
-        text += `${titleDiv.innerText}\n\n`;
-      }
-
-      const emailList = mainTable.querySelector('[role="list"]');
-      if (emailList) {
-        if (!this.observer) {
-          this.createMutator(emailList, { subtree: true, childList: true });
-        }
-
-        for (let i = 0; i < emailList.children.length; i++) {
-          const email = emailList.children[i];
-          if (email.getAttribute('role') === 'listitem') {
-            const emailCopy = email.cloneNode(true);
-
-            const removeFwds = emailCopy.querySelectorAll('.gmail_quote');
-            this.removeAll(removeFwds);
-
-            const removeShowContentToggle = [
-              ...emailCopy.querySelectorAll('[aria-label="Show trimmed content"]'),
-              ...emailCopy.querySelectorAll('[aria-label="Hide expanded content"]')
-            ];
-            this.removeAll(removeShowContentToggle, (toggle) => toggle.parentElement.nextSibling);
-
-            const removeTables = emailCopy.querySelectorAll('table');
-            this.removeAll(removeTables);
-
-            const removeSignatures = emailCopy.querySelectorAll(
-              '[data-smartmail="gmail_signature"]'
-            );
-            this.removeAll(removeSignatures);
-
-            const textContent = this.trimAlphanumeric(emailCopy.textContent);
-            text += `${textContent}\n\n`;
-          }
-        }
-      }
-    }
-
-    return text;
-  };
-
   getIntegration = () => {
     const urlRegex = URL_REGEXES.find(({ regex }) => regex.test(window.location.href));
 
@@ -150,7 +85,7 @@ class AutofindListener extends Component {
   getPageText = (integration) => {
     switch (integration) {
       case INTEGRATIONS.GMAIL.type: {
-        return this.getGoogleText();
+        return getGoogleText(this.observer, this.createMutator);
       }
       default:
         break;

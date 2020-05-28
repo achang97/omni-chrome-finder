@@ -3,9 +3,3 @@
 
   width: 175px;
 }
-
-.suggestion-external-logo {
-  margin-top: 2px;
-
-  @apply ml-xs w-reg h-reg;
-}

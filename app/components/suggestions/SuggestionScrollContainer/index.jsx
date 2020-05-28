@@ -81,7 +81,7 @@ const SuggestionScrollContainer = ({
       return null;
     }
 
-    const { _id, question, description, answer } = elem;
+    const { _id, question, description, answer, externalLinkAnswer } = elem;
     const { overflow, scroll } = positions;
 
     const overflowTop = overflow.top || 0;
@@ -96,6 +96,7 @@ const SuggestionScrollContainer = ({
           question={question}
           questionDescription={description}
           answer={answer}
+          externalLinkAnswer={externalLinkAnswer}
         />
         <Triangle
           size={10}

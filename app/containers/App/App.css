@@ -1,7 +1,7 @@
 .app-container {
   /* Override defaults */
   font-size: 16px !important;
-  line-height: 1.2 !important;
+  line-height: 1.25 !important;
   cursor: default !important;
 
   /* prettier-ignore */

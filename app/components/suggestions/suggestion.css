@@ -11,3 +11,9 @@
 .suggestion-elem-title {
   @apply text-left font-semibold;
 }
+
+.suggestion-external-logo {
+  margin-top: 2px;
+
+  @apply ml-xs w-reg h-reg;
+}

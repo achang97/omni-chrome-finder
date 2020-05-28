@@ -2,30 +2,46 @@ import React from 'react';
 import PropTypes from 'prop-types';
 
 import Button from 'components/common/Button';
+import { INTEGRATION_IMAGES } from 'appConstants';
 
 import { getStyleApplicationFn } from 'utils/style';
 import style from './suggestion-preview.css';
 
 const s = getStyleApplicationFn(style);
 
-const SuggestionPreview = ({ id, question, questionDescription, answer, openCard, trackEvent }) => {
+const SuggestionPreview = ({ id, question, answer, externalLinkAnswer, openCard, trackEvent }) => {
   const clickOpenCard = () => {
     trackEvent('Open Card from Search', { 'Card ID': id, Question: question });
     openCard({ _id: id });
   };
 
+  const renderExternalLogo = () => {
+    if (!externalLinkAnswer) {
+      return null;
+    }
+
+    const logo = INTEGRATION_IMAGES[externalLinkAnswer.type];
+    return (
+      <img
+        src={logo}
+        alt={externalLinkAnswer.type}
+        className={s('suggestion-external-logo mt-xs')}
+      />
+    );
+  };
+
+  const displayedAnswer = externalLinkAnswer ? externalLinkAnswer.link : answer;
+
   return (
     <div className={s('suggestion-preview')}>
-      <div className={s('bg-purple-2xlight p-reg rounded-t-lg')}>
+      <div className={s('flex bg-purple-2xlight p-reg rounded-t-lg')}>
         <div className={s('suggestion-elem-title line-clamp-3 break-words')}>{question}</div>
-        {questionDescription && (
-          <div className={s('mt-reg text-xs text-gray-dark font-medium line-clamp-2 break-words')}>
-            {questionDescription}
-          </div>
-        )}
+        {renderExternalLogo()}
       </div>
-      {answer && (
-        <div className={s('bg-white p-reg text-sm line-clamp-3 break-words')}>{answer}</div>
+      {displayedAnswer && (
+        <div className={s('bg-white p-reg text-sm')}>
+          <div className={s('line-clamp-3 break-words')}>{displayedAnswer}</div>
+        </div>
       )}
       <div className={s('bg-white rounded-b-lg')} onClick={clickOpenCard}>
         <Button
@@ -43,16 +59,15 @@ const SuggestionPreview = ({ id, question, questionDescription, answer, openCard
 SuggestionPreview.propTypes = {
   id: PropTypes.string.isRequired,
   question: PropTypes.string.isRequired,
-  questionDescription: PropTypes.string,
-  answer: PropTypes.string.isRequired,
+  answer: PropTypes.string,
+  externalLinkAnswer: PropTypes.shape({
+    link: PropTypes.string.isRequired,
+    type: PropTypes.string.isRequired
+  }),
 
   // Redux Actions
   openCard: PropTypes.func.isRequired,
   trackEvent: PropTypes.func.isRequired
-};
-
-SuggestionPreview.defaultProps = {
-  questionDescription: null
 };
 
 export default SuggestionPreview;
