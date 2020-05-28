@@ -99,10 +99,10 @@ Verify.propTypes = {
   verifyError: PropTypes.string,
   isGettingUser: PropTypes.bool,
   isResendingVerification: PropTypes.bool,
+  resendVerificationSuccess: PropTypes.bool,
+  resendVerificationError: PropTypes.string,
 
   // Redux Actions
-  resendVerificationSuccess: PropTypes.func.isRequired,
-  resendVerificationError: PropTypes.func.isRequired,
   updateVerificationCode: PropTypes.func.isRequired,
   requestVerify: PropTypes.func.isRequired,
   requestResendVerificationEmail: PropTypes.func.isRequired,

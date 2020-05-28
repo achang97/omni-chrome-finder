@@ -49,6 +49,10 @@ const DOCUMENTATION_INTEGRATIONS = [
   {
     integration: INTEGRATIONS.ZENDESK,
     url: '/zendesk/tickets/query'
+  },
+  {
+    integration: INTEGRATIONS.CONFLUENCE,
+    url: '/confluence/pages/query'
   }
 ];
 

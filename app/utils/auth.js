@@ -32,6 +32,7 @@ export function getIntegrationAuthLink(userId, token, integration) {
     }
     case INTEGRATIONS.ZENDESK.type:
     case INTEGRATIONS.GOOGLE.type:
+    case INTEGRATIONS.CONFLUENCE.type:
     case INTEGRATIONS.GMAIL.type: {
       const clearToken = token.replace('Bearer ', '');
       return `${REQUEST.URL.SERVER}/${integration}/authenticate?auth=${clearToken}`;
