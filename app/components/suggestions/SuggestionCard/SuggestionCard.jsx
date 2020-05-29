@@ -21,12 +21,48 @@ const BUTTON_TYPE = {
   DELETE: 'DELETE'
 };
 
+const HIGHLIGHT_REGEX = /<HIGHLIGHT>(.+?)<\/HIGHLIGHT>/g;
+
+const replaceHighlightTags = (matches) => {
+  const sections = [];
+
+  matches.forEach((match, i) => {
+    const matchSections = match.split(HIGHLIGHT_REGEX);
+    if (i > 0) {
+      sections.push(<span>...&nbsp;</span>);
+    }
+
+    let start = 0;
+    let j;
+
+    for (j = 0; j < matchSections.length; j++) {
+      const matchSection = matchSections[j];
+      const nextMatchSection = j < matchSections.length - 1 && matchSections[j + 1];
+
+      if (!nextMatchSection || (matchSection !== ' ' && nextMatchSection !== ' ')) {
+        const showHighlight = j % 2 === 1;
+        const matchElem = (
+          <span className={s(showHighlight ? 'bg-purple-gray-20 rounded-sm font-bold' : '')}>
+            {matchSections.slice(start, j + 1).join('')}
+          </span>
+        );
+
+        sections.push(matchElem);
+        start = j + 1;
+      }
+    }
+  });
+
+  return <>{sections.map((section) => section)}</>;
+};
+
 const SuggestionCard = ({
   id,
   question,
   maxQuestionLines,
   answer,
   externalLinkAnswer,
+  highlight,
   showAnswer,
   status,
   finderNode,
@@ -180,6 +216,10 @@ const SuggestionCard = ({
   };
 
   const renderExternalLogo = () => {
+    if (!externalLinkAnswer) {
+      return null;
+    }
+
     const logo = INTEGRATION_IMAGES[externalLinkAnswer.type];
     return (
       <img src={logo} alt={externalLinkAnswer.type} className={s('suggestion-external-logo')} />
@@ -191,39 +231,54 @@ const SuggestionCard = ({
     openCard({ _id: id });
   };
 
-  return (
-    <div className={s(`${className} suggestion-elem`)} onClick={clickOpenCard}>
-      <div className={s('flex justify-between')}>
-        <CardLocation
-          finderNode={finderNode}
-          className={s('min-w-0')}
-          pathClassName={s('suggestion-elem-path')}
-          maxPathLength={3}
-        />
-        <CardStatusIndicator status={status} className={s('self-end')} />
-        {renderDropdown()}
-      </div>
-      <div className={s('flex flex-col w-full')}>
-        <div className={s('flex')}>
-          <span className={s(`suggestion-elem-title break-words line-clamp-${maxQuestionLines}`)}>
-            {question}
-          </span>
-          {externalLinkAnswer && renderExternalLogo()}
+  const render = () => {
+    const { question: highlightQuestion, answer: highlightAnswer } = highlight;
+
+    const displayedQuestion = highlightQuestion
+      ? replaceHighlightTags(highlightQuestion)
+      : question;
+
+    let displayedAnswer = highlightAnswer && replaceHighlightTags(highlightAnswer);
+    if (!displayedAnswer) {
+      displayedAnswer = externalLinkAnswer ? externalLinkAnswer.link : answer;
+    }
+
+    return (
+      <div className={s(`${className} suggestion-elem`)} onClick={clickOpenCard}>
+        <div className={s('flex justify-between')}>
+          <CardLocation
+            finderNode={finderNode}
+            className={s('min-w-0')}
+            pathClassName={s('suggestion-elem-path')}
+            maxPathLength={3}
+          />
+          <CardStatusIndicator status={status} className={s('self-end')} />
+          {renderDropdown()}
         </div>
-        {showAnswer && (answer || externalLinkAnswer) && (
-          <span
-            className={s(
-              'mt-xs text-xs text-gray-dark font-medium line-clamp-2 break-words wb-break-words'
-            )}
-          >
-            {externalLinkAnswer ? externalLinkAnswer.link : answer}
-          </span>
-        )}
+        <div className={s('flex flex-col w-full')}>
+          <div className={s('flex')}>
+            <span className={s(`suggestion-elem-title break-words line-clamp-${maxQuestionLines}`)}>
+              {displayedQuestion}
+            </span>
+            {renderExternalLogo()}
+          </div>
+          {showAnswer && displayedAnswer && (
+            <span
+              className={s(
+                'mt-xs text-xs text-gray-dark font-medium line-clamp-2 break-words wb-break-words'
+              )}
+            >
+              {displayedAnswer}
+            </span>
+          )}
+        </div>
+        {renderShareSuccess()}
+        {renderModals()}
       </div>
-      {renderShareSuccess()}
-      {renderModals()}
-    </div>
-  );
+    );
+  };
+
+  return render();
 };
 
 SuggestionCard.propTypes = {
@@ -234,6 +289,10 @@ SuggestionCard.propTypes = {
   externalLinkAnswer: PropTypes.shape({
     link: PropTypes.string.isRequired,
     type: PropTypes.string.isRequired
+  }),
+  highlight: PropTypes.shape({
+    question: PropTypes.arrayOf(PropTypes.string),
+    answer: PropTypes.arrayOf(PropTypes.string)
   }),
   showAnswer: PropTypes.bool,
   status: PropTypes.oneOf(Object.values(CARD.STATUS)).isRequired,
@@ -253,6 +312,7 @@ SuggestionCard.propTypes = {
 
 SuggestionCard.defaultProps = {
   className: '',
+  highlight: {},
   maxQuestionLines: 2,
   showAnswer: true,
   showMoreMenu: false,

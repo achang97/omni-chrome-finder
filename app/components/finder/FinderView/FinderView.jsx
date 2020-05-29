@@ -74,7 +74,6 @@ const FinderView = ({
   const loadFinderContent = useCallback(() => {
     switch (activePath.type) {
       case FINDER.PATH_TYPE.NODE: {
-        // TODO: utilize search text in state
         requestGetFinderNode(finderId);
         break;
       }
