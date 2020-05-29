@@ -29,7 +29,7 @@ export const initialState = {
     [INTEGRATIONS.SLACK.type]: {},
     [INTEGRATIONS.ZENDESK.type]: {},
     [INTEGRATIONS.GOOGLE.type]: {},
-    [INTEGRATIONS.GMAIL.type]: {}
+    [INTEGRATIONS.CONFLUENCE.type]: {}
   }
 };
 

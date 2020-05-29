@@ -1,4 +1,5 @@
 import { connect } from 'react-redux';
+import { withRouter } from 'react-router';
 import {
   changeAskIntegration,
   requestAddAskAttachment,
@@ -55,4 +56,4 @@ const mapDispatchToProps = {
   requestGetSlackConversations
 };
 
-export default connect(mapStateToProps, mapDispatchToProps)(AskTeammate);
+export default connect(mapStateToProps, mapDispatchToProps)(withRouter(AskTeammate));

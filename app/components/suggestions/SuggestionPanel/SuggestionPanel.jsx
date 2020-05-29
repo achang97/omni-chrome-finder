@@ -12,9 +12,9 @@ import { SEARCH, INTEGRATIONS, ANIMATE, PROFILE } from 'appConstants';
 import { getStyleApplicationFn } from 'utils/style';
 import { NodePropTypes } from 'utils/propTypes';
 import mainStyle from './suggestion-panel.css';
-import externalIconStyle from '../ExternalResults/external-results.css';
+import externalIconStyle from '../ExternalResults/ExternalResult/external-result.css';
 
-import { SlackResult, GoogleResult, ZendeskResult, GmailResult } from '../ExternalResults';
+import { GoogleResult, ZendeskResult, ConfluenceResult } from '../ExternalResults';
 import SuggestionScrollContainer from '../SuggestionScrollContainer';
 
 const s = getStyleApplicationFn(mainStyle, externalIconStyle);
@@ -81,10 +81,6 @@ const SuggestionPanel = ({
 
     let ResultComponent;
     switch (type) {
-      case INTEGRATIONS.SLACK.type: {
-        ResultComponent = SlackResult;
-        break;
-      }
       case INTEGRATIONS.GOOGLE.type: {
         ResultComponent = GoogleResult;
         break;
@@ -93,8 +89,8 @@ const SuggestionPanel = ({
         ResultComponent = ZendeskResult;
         break;
       }
-      case INTEGRATIONS.GMAIL.type: {
-        ResultComponent = GmailResult;
+      case INTEGRATIONS.CONFLUENCE.type: {
+        ResultComponent = ConfluenceResult;
         break;
       }
       default:
@@ -103,7 +99,7 @@ const SuggestionPanel = ({
 
     const renderResult = (result) => (
       <ResultComponent
-        key={ResultComponent.getKey(result)}
+        key={ResultComponent.getKey ? ResultComponent.getKey(result) : result.id}
         logo={logo}
         onClick={() => logClick(result)}
         {...result}

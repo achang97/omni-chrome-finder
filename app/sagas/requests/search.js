@@ -35,20 +35,16 @@ const CANCEL_SOURCE = {};
 
 const DOCUMENTATION_INTEGRATIONS = [
   {
-    integration: INTEGRATIONS.GMAIL,
-    url: '/gmail/messages/query'
-  },
-  {
     integration: INTEGRATIONS.GOOGLE,
     url: '/google/drive/query'
   },
   {
-    integration: INTEGRATIONS.SLACK,
-    url: '/slack/query'
-  },
-  {
     integration: INTEGRATIONS.ZENDESK,
     url: '/zendesk/tickets/query'
+  },
+  {
+    integration: INTEGRATIONS.CONFLUENCE,
+    url: '/confluence/pages/query'
   }
 ];
 

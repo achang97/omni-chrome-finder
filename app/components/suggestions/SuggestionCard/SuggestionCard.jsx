@@ -193,7 +193,7 @@ const SuggestionCard = ({
 
   return (
     <div className={s(`${className} suggestion-elem`)} onClick={clickOpenCard}>
-      <div className={s('flex justify-between mb-xs')}>
+      <div className={s('flex justify-between')}>
         <CardLocation
           finderNode={finderNode}
           className={s('min-w-0')}
@@ -213,7 +213,7 @@ const SuggestionCard = ({
         {showAnswer && (answer || externalLinkAnswer) && (
           <span
             className={s(
-              'mt-sm text-xs text-gray-dark font-medium line-clamp-2 break-words wb-break-words'
+              'mt-xs text-xs text-gray-dark font-medium line-clamp-2 break-words wb-break-words'
             )}
           >
             {externalLinkAnswer ? externalLinkAnswer.link : answer}
