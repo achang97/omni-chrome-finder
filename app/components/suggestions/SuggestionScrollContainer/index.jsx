@@ -56,7 +56,7 @@ const SuggestionScrollContainer = ({
       );
     }
 
-    const { _id, question, answer, status, externalLinkAnswer, finderNode } = elem;
+    const { _id, question, answer, status, externalLinkAnswer, finderNode, highlight } = elem;
     const { className: cardClassName = '', ...restCardProps } = getCardProps
       ? getCardProps(elem, i)
       : {};
@@ -68,6 +68,7 @@ const SuggestionScrollContainer = ({
         answer={answer}
         externalLinkAnswer={externalLinkAnswer}
         status={status}
+        highlight={highlight}
         className={s(`suggestion-scroll-container-card ${cardClassName}`)}
         finderNode={finderNode}
         {...restCardProps}

@@ -34,6 +34,8 @@
   @apply w-full h-full;
 }
 
-.external-result-date {
-  @apply text-xs text-gray-light text-right mt-sm;
+.external-result-body {
+  @apply text-gray-reg;
+
+  font-size: 11px;
 }
