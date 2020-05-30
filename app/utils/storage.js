@@ -33,7 +33,7 @@ export function getStorage(key) {
 
 export function addStorageListener(storageKey, callback) {
   if (chrome.storage) {
-    chrome.storage.onChanged.addListener((changes, namespace) => {
+    const listener = (changes, namespace) => {
       Object.entries(changes).forEach(([key, change]) => {
         const { oldValue, newValue } = change;
         if (namespace === 'local' && key === getStorageName(storageKey)) {
@@ -42,8 +42,24 @@ export function addStorageListener(storageKey, callback) {
           callback({ oldValue: oldValueJSON, newValue: newValueJSON });
         }
       });
-    });
+    };
+
+    chrome.storage.onChanged.addListener(listener);
+
+    return listener;
   }
+
+  return null;
 }
 
-export default { getStorageName, setStorage, getStorage, addStorageListener };
+export function removeStorageListener(callback) {
+  chrome.storage.onChanged.removeListener(callback);
+}
+
+export default {
+  getStorageName,
+  setStorage,
+  getStorage,
+  addStorageListener,
+  removeStorageListener
+};

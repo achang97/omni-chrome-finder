@@ -8,7 +8,9 @@ let socket;
 let numTries = 0;
 
 function closeSocket() {
-  socket.close();
+  if (socket) {
+    socket.close();
+  }
   socket = null;
 }
 

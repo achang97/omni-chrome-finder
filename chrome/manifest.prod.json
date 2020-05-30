@@ -37,5 +37,8 @@
     "https://app.tettra.co/*",
     "https://notion.so/*"
   ],
+  "externally_connectable": {
+    "matches": ["https://app.addomni.com/*"]
+  },
   "content_security_policy": "default-src 'self'; script-src 'self'; ; connect-src wss://api.addomni.com; style-src * 'unsafe-inline'; img-src 'self' data:;"
 }
