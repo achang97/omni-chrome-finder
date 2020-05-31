@@ -1,6 +1,6 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import { MdNotificationsActive, MdLightbulbOutline } from 'react-icons/md';
+import { MdNotificationsActive, MdLightbulbOutline, MdAdd, MdSearch } from 'react-icons/md';
 import { IoIosFolder } from 'react-icons/io';
 
 import { Tabs, Tab, Badge, PlaceholderImg } from 'components/common';
@@ -34,47 +34,62 @@ const Header = ({
       <Tabs
         onTabClick={handleTabClick}
         activeValue={pathname}
-        tabClassName={s('text-md py-xl px-0 font-semibold flex items-center')}
-        tabContainerClassName={s('flex align-center')}
+        tabClassName={s(
+          'text-sm my-xl mx-0 bg-white shadow-md rounded-full font-semibold flex items-center p-0 border-0'
+        )}
+        tabContainerClassName={s('flex align-center border-0')}
+        activeTabClassName={s('bg-purple-light border-0')}
         color={colors.purple.reg}
         showRipple={false}
       >
-        <Tab label="Search" key="ask" value={ROUTES.ASK} tabContainerClassName={s('mx-reg')} />
         <Tab
-          label="Create"
+          key="ask"
+          value={ROUTES.ASK}
+          tabContainerClassName={s('ml-reg')}
+          tabClassName={s('px-sm')}
+        >
+          <MdSearch />
+          <div className={s('text-xs ml-xs')}>Find</div>
+        </Tab>
+        <Tab
           key="create"
           value={ROUTES.CREATE}
-          tabContainerClassName={s('mx-reg')}
-        />
+          tabContainerClassName={s('mx-sm')}
+          tabClassName={s('px-sm')}
+        >
+          <MdAdd />
+          <div className={s('text-xs ml-xs')}>Create</div>
+        </Tab>
         {showAutofind && (
           <Tab
             key="suggest"
             value={ROUTES.SUGGEST}
             tabContainerClassName={s('header-small-tab ml-auto')}
+            tabClassName={s('header-badge-container gold-gradient')}
           >
-            <div className={s('header-badge-container gold-gradient')}>
-              <MdLightbulbOutline className={s('text-gold-reg')} />
-              <Badge count={numAutofindCards} size="sm" className={s('bg-gold-reg')} />
-            </div>
+            <MdLightbulbOutline className={s('text-gold-reg')} />
+            <Badge count={numAutofindCards} size="sm" className={s('bg-gold-reg')} />
           </Tab>
         )}
         <Tab
           key="cards"
           onTabClick={openFinder}
           tabContainerClassName={s(`header-small-tab ${!showAutofind ? 'ml-auto' : ''}`)}
-          tabClassName={s('opacity-100')}
+          tabClassName={s('opacity-100 primary-gradient text-white px-sm')}
         >
-          <div className={s('header-badge-container bg-gray-xlight')}>
-            <IoIosFolder />
-          </div>
+          <IoIosFolder className={s('flex-shrink-0')} />
+          <div className={s('text-xs ml-xs')}>Cards</div>
         </Tab>
-        <Tab key="tasks" value={ROUTES.TASKS} tabContainerClassName={s('header-small-tab')}>
-          <div className={s('header-badge-container bg-gray-xlight')}>
-            <MdNotificationsActive />
-            <Badge count={numTasks} size="sm" className={s('bg-red-500')} />
-          </div>
+        <Tab
+          key="tasks"
+          value={ROUTES.TASKS}
+          tabContainerClassName={s('header-small-tab')}
+          tabClassName={s('header-badge-container bg-white shadow-md')}
+        >
+          <MdNotificationsActive />
+          <Badge count={numTasks} size="sm" className={s('bg-red-500')} />
         </Tab>
-        <Tab key="profile" value={ROUTES.PROFILE} tabContainerClassName={s('mx-reg')}>
+        <Tab key="profile" value={ROUTES.PROFILE} tabContainerClassName={s('ml-xs mr-reg')}>
           <PlaceholderImg
             name={`${user.firstname} ${user.lastname}`}
             src={user.profilePicture}
