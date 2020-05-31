@@ -116,9 +116,10 @@ const ExternalVerification = ({
     const resetState = () => {
       if (activeIntegration) {
         resetExternalState();
-        addExternalOwner(user);
         updateExternalIntegration(null);
       }
+
+      addExternalOwner(user);
     };
 
     if (!isValidUser || !url || (activeIntegration && !isEnabled(activeIntegration))) {

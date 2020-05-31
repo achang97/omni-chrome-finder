@@ -3,8 +3,8 @@ import { INTEGRATIONS, NODE_ENV, REQUEST, PROFILE } from 'appConstants';
 export function hasCompletedOnboarding(onboarding) {
   return (
     onboarding &&
-    onboarding.extension &&
-    Object.values(onboarding.extension).every((val) => val === PROFILE.ONBOARDING_COMPLETE)
+    onboarding.admin === PROFILE.ONBOARDING_COMPLETE &&
+    onboarding.member === PROFILE.ONBOARDING_COMPLETE
   );
 }
 

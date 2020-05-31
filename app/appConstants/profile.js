@@ -17,6 +17,23 @@ export const USER_BADGE = {
   PLATINUM: 'Platinum'
 };
 
+export const USER_PERFORMANCE = {
+  SEARCH_OPEN: 'searchOpen',
+  MARK_HELPFUL: 'markHelpful',
+  ADD_INTEGRATIONS: 'addIntegrations',
+  CREATE_CARD: 'createCard',
+
+  ADD_PROFILE_PICTURE: 'addProfilePicture',
+  VERIFY_EXTERNAL: 'verifyExternal',
+
+  ALL_UP_TO_DATE: 'allUpToDate',
+  ADD_SUBSCRIBER: 'addSubscriber',
+  CREATE_CARD_RECENT: 'createCardRecent',
+
+  OPEN_EXTERNAL_DOC: 'openExternalDoc',
+  USE_SLACK_FIND: 'useSlackFind'
+};
+
 export const AUDIT_TYPE = {
   SEARCH: 'search',
   VIEW_CARD: 'viewCard',
@@ -33,16 +50,11 @@ export const AUDIT_TYPE = {
 
 export const ONBOARDING_COMPLETE = -1;
 
-export const ONBOARDING_SECTION = {
-  CREATE_CARDS: 'createCards',
-  INTEGRATIONS: 'integrations'
-};
-
 export default {
   SETTING_SECTION_TYPE,
   USER_ROLE,
   USER_BADGE,
+  USER_PERFORMANCE,
   AUDIT_TYPE,
-  ONBOARDING_COMPLETE,
-  ONBOARDING_SECTION
+  ONBOARDING_COMPLETE
 };
