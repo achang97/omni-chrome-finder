@@ -27,7 +27,6 @@ const mapStateToProps = (state) => {
         createError,
         isCreatingCard,
         isUpdatingCard,
-        isEditing,
         edits,
         modalOpen: { [MODAL_TYPE.CREATE]: isOpen }
       }
@@ -42,7 +41,6 @@ const mapStateToProps = (state) => {
     createError,
     isCreatingCard,
     isUpdatingCard,
-    isEditing,
     edits,
     isOpen,
     seenFeatures: _.omit(seenFeatures, '_id')

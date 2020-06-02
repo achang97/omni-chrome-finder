@@ -10,6 +10,8 @@ import { SEEN_FEATURES } from 'appConstants/profile';
 import { hasValidEdits, isExistingCard, isJustMe } from 'utils/card';
 import { getStyleApplicationFn } from 'utils/style';
 
+import style from './card-create-modal.css';
+
 import CardWalkthroughHelper from '../CardWalkthroughHelper';
 import CardSection from '../../CardSection';
 import CardUsers from '../../CardUsers';
@@ -18,7 +20,7 @@ import CardPermissions from '../../CardPermissions';
 import CardVerificationInterval from '../../CardVerificationInterval';
 import CardLocation from '../../CardLocation';
 
-const s = getStyleApplicationFn();
+const s = getStyleApplicationFn(style);
 
 const WALKTHROUGH_PROPS = {
   [SEEN_FEATURES.OWNERS]: {
@@ -43,7 +45,6 @@ const CardCreateModal = ({
   createError,
   isCreatingCard,
   isUpdatingCard,
-  isEditing,
   edits,
   isOpen,
   seenFeatures,
@@ -106,7 +107,7 @@ const CardCreateModal = ({
     finderNode = {}
   } = edits;
 
-  const renderLocation = () => {
+  const renderLocation = (isEditable) => {
     const onChangeClick = () => {
       closeCardModal(MODAL_TYPE.CREATE);
       openCardModal(MODAL_TYPE.FINDER);
@@ -115,17 +116,17 @@ const CardCreateModal = ({
     return (
       <CardLocation
         finderNode={finderNode}
-        isEditable
+        isEditable={isEditable}
         isPathClickable
         onChangeClick={onChangeClick}
       />
     );
   };
 
-  const renderOwners = () => {
+  const renderOwners = (isEditable) => {
     return (
       <CardUsers
-        isEditable
+        isEditable={isEditable}
         users={owners}
         onAdd={addCardOwner}
         onRemoveClick={({ index }) => removeCardOwner(index)}
@@ -136,20 +137,20 @@ const CardCreateModal = ({
     );
   };
 
-  const renderVerificationInterval = () => {
+  const renderVerificationInterval = (isEditable) => {
     return (
       <CardVerificationInterval
         verificationInterval={verificationInterval}
         onChange={updateCardVerificationInterval}
-        isEditable
+        isEditable={isEditable}
       />
     );
   };
 
-  const renderSubscribers = () => {
+  const renderSubscribers = (isEditable) => {
     return (
       <CardUsers
-        isEditable={isEditing}
+        isEditable={isEditable}
         users={subscribers.map((subscriber) => ({
           ...subscriber,
           isEditable: !owners.some(({ _id: ownerId }) => ownerId === subscriber._id)
@@ -163,7 +164,7 @@ const CardCreateModal = ({
     );
   };
 
-  const renderAdvanced = (isExisting, justMe) => {
+  const renderAdvanced = (isEditable, isExisting, justMe) => {
     return (
       <>
         <AnimateHeight
@@ -173,7 +174,7 @@ const CardCreateModal = ({
           <div className={s('mb-sm')}>
             <div className={s('text-gray-reg text-xs mb-sm')}> Tags </div>
             <CardTags
-              isEditable
+              isEditable={isEditable}
               tags={tags}
               onChange={updateCardTags}
               onRemoveClick={({ index }) => removeCardTag(index)}
@@ -184,7 +185,7 @@ const CardCreateModal = ({
         <div>
           <div className={s('text-gray-reg text-xs mb-sm')}> Permissions </div>
           <CardPermissions
-            isEditable
+            isEditable={isEditable}
             selectedPermissions={permissions}
             onChangePermissions={updateCardPermissions}
             permissionGroups={permissionGroups}
@@ -306,18 +307,18 @@ const CardCreateModal = ({
                     preview={preview}
                     showSeparator={i < CARD_SECTIONS.length - 1}
                   >
-                    {renderFn(isExisting, justMe)}
+                    {renderFn(
+                      !currWalkthroughKey || featureKey === currWalkthroughKey,
+                      isExisting,
+                      justMe
+                    )}
                   </CardSection>
                 </div>
               </AnimateHeight>
             )
           )}
           <Message className={s('my-sm')} message={createError} type="error" />
-          {currWalkthroughKey && (
-            <div
-              className={s('bg-gray-overlay z-0 opacity-50 absolute top-0 left-0 right-0 bottom-0')}
-            />
-          )}
+          {currWalkthroughKey && <div className={s('card-walkthrough-overlay')} />}
           {currWalkthroughKey && (
             <CardWalkthroughHelper
               {...WALKTHROUGH_PROPS[currWalkthroughKey]}
@@ -342,7 +343,6 @@ CardCreateModal.propTypes = {
   createError: PropTypes.string,
   isCreatingCard: PropTypes.bool,
   isUpdatingCard: PropTypes.bool,
-  isEditing: PropTypes.bool.isRequired,
   isOpen: PropTypes.bool.isRequired,
   edits: PropTypes.shape({
     owners: PropTypes.arrayOf(PropTypes.object),

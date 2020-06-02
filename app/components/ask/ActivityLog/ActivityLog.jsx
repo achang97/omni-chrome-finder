@@ -26,6 +26,10 @@ const ActivityLog = ({
   requestGetActivityLog,
   updateActivityIndex
 }) => {
+  const renderPlaceholder = (placeholder) => {
+    return <div className={s('text-sm text-gray-light mt-reg')}>{placeholder}</div>;
+  };
+
   const renderCard = (card) => {
     const { _id, question, status, externalLinkAnswer, finderNode } = card;
     return (
@@ -43,7 +47,7 @@ const ActivityLog = ({
     );
   };
 
-  const renderRecentCardsSection = () => {
+  const renderRecentCardsSection = (placeholder, isLoading) => {
     return (
       <>
         {recentCards.map((card) => (
@@ -51,6 +55,7 @@ const ActivityLog = ({
             {renderCard(card)}
           </div>
         ))}
+        {recentCards.length === 0 && !isLoading && renderPlaceholder(placeholder)}
       </>
     );
   };
@@ -72,7 +77,7 @@ const ActivityLog = ({
     }
   };
 
-  const renderActivityLogSection = () => {
+  const renderActivityLogSection = (placeholder, isLoading) => {
     return (
       <>
         {activityLog.map(({ _id, card, user, type, createdAt }) => (
@@ -94,6 +99,7 @@ const ActivityLog = ({
             {renderCard(card)}
           </div>
         ))}
+        {activityLog.length === 0 && !isLoading && renderPlaceholder(placeholder)}
       </>
     );
   };
@@ -103,15 +109,18 @@ const ActivityLog = ({
       Icon: FaListUl,
       label: 'Activity',
       renderFn: renderActivityLogSection,
+      placeholder:
+        "Here, you'll see your team's activity and cards that have been recently created, edited, or viewed.",
       getDataFn: requestGetActivityLog,
-      isLoading: isGettingRecentCards
+      isLoading: isGettingActivityLog
     },
     {
       Icon: FiClock,
       label: 'Recent',
       renderFn: renderRecentCardsSection,
+      placeholder: "Here, you'll see cards that you've recently created, edited, or viewed.",
       getDataFn: requestGetRecentCards,
-      isLoading: isGettingActivityLog
+      isLoading: isGettingRecentCards
     }
   ];
 
@@ -144,11 +153,11 @@ const ActivityLog = ({
             </Tab>
           ))}
         </Tabs>
-        {TABS.map(({ label, renderFn, isLoading }, i) => (
+        {TABS.map(({ label, renderFn, isLoading, placeholder }, i) => (
           <React.Fragment key={label}>
             {i === activityIndex ? (
               <div className={s('px-lg overflow-auto flex-1')}>
-                {renderFn()}
+                {renderFn(placeholder, isLoading)}
                 {isLoading && <Loader size="sm" />}
               </div>
             ) : null}
