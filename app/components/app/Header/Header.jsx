@@ -49,7 +49,7 @@ const Header = ({
           tabClassName={s('px-sm')}
         >
           <MdSearch />
-          <div className={s('text-xs ml-xs')}>Find</div>
+          <div className={s('text-xs ml-xs')}>Home</div>
         </Tab>
         <Tab
           key="create"
