@@ -295,7 +295,9 @@ const CardCreateModal = ({
                   ref={(ref) => setRef(ref, featureKey)}
                   className={s(`
                     relative px-lg pt-lg
-                    ${featureKey === currWalkthroughKey ? 'bg-white z-10' : ''}
+                    ${
+                      currWalkthroughKey && featureKey === currWalkthroughKey ? 'bg-white z-10' : ''
+                    }
                   `)}
                 >
                   <CardSection
