@@ -1,4 +1,4 @@
-import React, { useRef, useEffect } from 'react';
+import React, { useRef, useEffect, useCallback, useState } from 'react';
 import PropTypes from 'prop-types';
 import AnimateHeight from 'react-animate-height';
 import { MdLock } from 'react-icons/md';
@@ -6,9 +6,11 @@ import { MdLock } from 'react-icons/md';
 import { Modal, Message } from 'components/common';
 
 import { HINTS, MODAL_TYPE } from 'appConstants/card';
+import { SEEN_FEATURES } from 'appConstants/profile';
 import { hasValidEdits, isExistingCard, isJustMe } from 'utils/card';
 import { getStyleApplicationFn } from 'utils/style';
 
+import CardWalkthroughHelper from '../CardWalkthroughHelper';
 import CardSection from '../../CardSection';
 import CardUsers from '../../CardUsers';
 import CardTags from '../../CardTags';
@@ -18,6 +20,24 @@ import CardLocation from '../../CardLocation';
 
 const s = getStyleApplicationFn();
 
+const WALKTHROUGH_PROPS = {
+  [SEEN_FEATURES.OWNERS]: {
+    title: 'Card Properties: Owners',
+    subtitle:
+      'Each card must have one or more owners. They are responsible for keeping this knowledge up to date.'
+  },
+  [SEEN_FEATURES.SUBSCRIBERS]: {
+    title: 'Card Properties: Subscribers',
+    subtitle:
+      "Subscribers 'follow' along a card and receive notifications when the card content changes. Add team members you think would find this card useful."
+  },
+  [SEEN_FEATURES.UPDATE_INTERVAL]: {
+    title: 'Card Properties: Verification Interval',
+    subtitle:
+      'This is how often we’ll send a notification to remind the owner(s) to verify that this card is up to date.'
+  }
+};
+
 const CardCreateModal = ({
   _id,
   createError,
@@ -26,6 +46,7 @@ const CardCreateModal = ({
   isEditing,
   edits,
   isOpen,
+  seenFeatures,
   requestCreateCard,
   requestUpdateCard,
   openCardModal,
@@ -38,9 +59,32 @@ const CardCreateModal = ({
   removeCardTag,
   updateCardVerificationInterval,
   updateCardPermissions,
-  updateCardPermissionGroups
+  updateCardPermissionGroups,
+  requestUpdateUser
 }) => {
   const bottomRef = useRef(null);
+  const [walkthroughRef, setWalkthroughRef] = useState(null);
+
+  const getCurrentWalkthroughKey = () => {
+    const FEATURES = [
+      SEEN_FEATURES.OWNERS,
+      SEEN_FEATURES.UPDATE_INTERVAL,
+      SEEN_FEATURES.SUBSCRIBERS
+    ];
+
+    return FEATURES.find((feature) => !seenFeatures[feature]);
+  };
+
+  const currWalkthroughKey = getCurrentWalkthroughKey();
+
+  const setRef = useCallback(
+    (ref, featureKey) => {
+      if (featureKey && featureKey === currWalkthroughKey) {
+        setWalkthroughRef(ref);
+      }
+    },
+    [currWalkthroughKey]
+  );
 
   const scrollToBottom = () => {
     bottomRef.current.scrollIntoView({ behavior: 'smooth', block: 'end' });
@@ -171,6 +215,7 @@ const CardCreateModal = ({
     const onClick = isExisting ? requestUpdateCard : requestCreateCard;
 
     const justMe = isJustMe(edits.permissions);
+
     const CARD_SECTIONS = [
       {
         title: 'Location',
@@ -184,6 +229,7 @@ const CardCreateModal = ({
         startExpanded: true,
         isExpandable: false,
         hint: HINTS.OWNERS,
+        featureKey: SEEN_FEATURES.OWNERS,
         renderFn: renderOwners
       },
       {
@@ -191,6 +237,7 @@ const CardCreateModal = ({
         startExpanded: true,
         isExpandable: false,
         hint: HINTS.VERIFICATION_INTERVAL,
+        featureKey: SEEN_FEATURES.UPDATE_INTERVAL,
         renderFn: renderVerificationInterval
       },
       {
@@ -198,6 +245,7 @@ const CardCreateModal = ({
         startExpanded: true,
         isExpandable: false,
         hint: HINTS.SUBSCRIBERS,
+        featureKey: SEEN_FEATURES.SUBSCRIBERS,
         renderFn: renderSubscribers
       },
       {
@@ -223,29 +271,62 @@ const CardCreateModal = ({
         onRequestClose={() => closeCardModal(MODAL_TYPE.CREATE)}
         title={edits.question}
         overlayClassName={s('rounded-b-lg')}
-        bodyClassName={s('rounded-b-lg flex flex-col')}
+        bodyClassName={s('flex flex-col')}
         primaryButtonProps={primaryButtonProps}
       >
-        <div className={s('flex-grow overflow-auto px-lg py-reg')}>
+        <div className={s('flex-grow overflow-auto')}>
           {CARD_SECTIONS.map(
-            ({ title, hint, renderFn, showJustMe, startExpanded, isExpandable, preview }, i) => (
+            (
+              {
+                title,
+                hint,
+                renderFn,
+                showJustMe,
+                startExpanded,
+                isExpandable,
+                preview,
+                featureKey
+              },
+              i
+            ) => (
               <AnimateHeight height={!justMe || showJustMe ? 'auto' : 0} key={title}>
-                <CardSection
-                  className={s(i < CARD_SECTIONS.length - 1 ? 'mb-lg' : '')}
-                  title={title}
-                  hint={hint}
-                  isVertical={false}
-                  startExpanded={startExpanded}
-                  isExpandable={isExpandable}
-                  preview={preview}
-                  showSeparator={i < CARD_SECTIONS.length - 1}
+                <div
+                  ref={(ref) => setRef(ref, featureKey)}
+                  className={s(`
+                    relative px-lg pt-lg
+                    ${featureKey === currWalkthroughKey ? 'bg-white z-10' : ''}
+                  `)}
                 >
-                  {renderFn(isExisting, justMe)}
-                </CardSection>
+                  <CardSection
+                    title={title}
+                    hint={hint}
+                    isVertical={false}
+                    startExpanded={startExpanded}
+                    isExpandable={isExpandable}
+                    preview={preview}
+                    showSeparator={i < CARD_SECTIONS.length - 1}
+                  >
+                    {renderFn(isExisting, justMe)}
+                  </CardSection>
+                </div>
               </AnimateHeight>
             )
           )}
           <Message className={s('my-sm')} message={createError} type="error" />
+          {currWalkthroughKey && (
+            <div
+              className={s('bg-gray-overlay z-0 opacity-50 absolute top-0 left-0 right-0 bottom-0')}
+            />
+          )}
+          {currWalkthroughKey && (
+            <CardWalkthroughHelper
+              {...WALKTHROUGH_PROPS[currWalkthroughKey]}
+              ref={walkthroughRef}
+              onNextClick={() =>
+                requestUpdateUser({ seenFeatures: { ...seenFeatures, [currWalkthroughKey]: true } })
+              }
+            />
+          )}
           <div ref={bottomRef} />
         </div>
       </Modal>
@@ -272,6 +353,7 @@ CardCreateModal.propTypes = {
     permissionGroups: PropTypes.arrayOf(PropTypes.object),
     finderNode: PropTypes.object
   }),
+  seenFeatures: PropTypes.objectOf(PropTypes.bool).isRequired,
 
   // Redux Actions
   requestCreateCard: PropTypes.func.isRequired,
@@ -286,7 +368,8 @@ CardCreateModal.propTypes = {
   removeCardTag: PropTypes.func.isRequired,
   updateCardVerificationInterval: PropTypes.func.isRequired,
   updateCardPermissions: PropTypes.func.isRequired,
-  updateCardPermissionGroups: PropTypes.func.isRequired
+  updateCardPermissionGroups: PropTypes.func.isRequired,
+  requestUpdateUser: PropTypes.func.isRequired
 };
 
 export default CardCreateModal;

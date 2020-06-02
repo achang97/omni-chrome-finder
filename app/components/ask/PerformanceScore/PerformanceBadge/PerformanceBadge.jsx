@@ -7,23 +7,15 @@ import { Loader } from 'components/common';
 import { colors } from 'styles/colors';
 import { getStyleApplicationFn } from 'utils/style';
 
-import robotGetStarted from 'assets/images/general/robotGetStarted.png';
-
 import style from './performance-badge.css';
 
-import {
-  GET_STARTED_PERFORMANCE_CUTOFF,
-  PROGRESS_BAR_STYLES,
-  BADGE_PROPS
-} from '../PerformanceProps';
+import { PROGRESS_BAR_STYLES, BADGE_PROPS } from '../PerformanceProps';
 
 const s = getStyleApplicationFn(style);
 
 const PerformanceBadge = ({
   badge,
   percentage,
-  hasLoadedPerformance,
-  showPerformanceScore,
   isGettingOnboardingStats,
   togglePerformanceScore
 }) => {
@@ -74,27 +66,10 @@ const PerformanceBadge = ({
   };
 
   const render = () => {
-    const showRobot =
-      !isGettingOnboardingStats &&
-      !showPerformanceScore &&
-      hasLoadedPerformance &&
-      percentage < GET_STARTED_PERFORMANCE_CUTOFF;
-
     return (
       <div className={s('flex flex-col justify-center items-center relative')}>
         <div className={s('flex items-center cursor-pointer')} onClick={togglePerformanceScore}>
           {isGettingOnboardingStats ? <Loader size="sm" /> : getPerformanceScoreOrBadge()}
-        </div>
-        <div
-          onClick={togglePerformanceScore}
-          className={s(`robot-img ${!showRobot ? 'pointer-events-none' : ''}`)}
-        >
-          <img
-            src={robotGetStarted}
-            style={{ opacity: showRobot ? 1 : 0 }}
-            alt="Omni Robot"
-            className={s('h-full')}
-          />
         </div>
       </div>
     );
@@ -107,8 +82,6 @@ PerformanceBadge.propTypes = {
   // Redux Actions
   badge: PropTypes.string,
   percentage: PropTypes.number.isRequired,
-  hasLoadedPerformance: PropTypes.bool.isRequired,
-  showPerformanceScore: PropTypes.bool.isRequired,
   isGettingOnboardingStats: PropTypes.bool,
 
   // Redux Actions

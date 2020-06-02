@@ -1,6 +1,6 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import { MdNotificationsActive, MdLightbulbOutline, MdAdd, MdSearch } from 'react-icons/md';
+import { MdNotificationsActive, MdLightbulbOutline, MdAdd, MdHome } from 'react-icons/md';
 import { IoIosFolder } from 'react-icons/io';
 
 import { Tabs, Tab, Badge, PlaceholderImg } from 'components/common';
@@ -48,7 +48,7 @@ const Header = ({
           tabContainerClassName={s('ml-reg')}
           tabClassName={s('px-sm')}
         >
-          <MdSearch />
+          <MdHome />
           <div className={s('text-xs ml-xs')}>Home</div>
         </Tab>
         <Tab

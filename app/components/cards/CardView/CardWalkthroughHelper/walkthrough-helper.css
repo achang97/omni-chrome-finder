@@ -1,0 +1,45 @@
+.walkthrough-helper {
+  @apply bg-white shadow-md rounded-lg outline-purple-gray-10 p-lg text-sm fixed;
+
+  transition: all 0.5s ease-in-out;
+  animation: slideIn 1s forwards;
+  -webkit-animation: slidein 1s forwards;
+  -moz-animation: slidein 1s forwards;
+}
+
+.walkthrough-helper-triangle {
+  @apply absolute !important;
+
+  left: 100%;
+  bottom: 5px;
+}
+
+@-webkit-keyframes slideIn {
+  0% {
+    transform: translateX(-50vw);
+  }
+
+  100% {
+    transform: translateX(0);
+  }
+}
+
+@-moz-keyframes slideIn {
+  0% {
+    transform: translateX(-50vw);
+  }
+
+  100% {
+    transform: translateX(0);
+  }
+}
+
+@keyframes slideIn {
+  0% {
+    transform: translateX(-50vw);
+  }
+
+  100% {
+    transform: translateX(0);
+  }
+}

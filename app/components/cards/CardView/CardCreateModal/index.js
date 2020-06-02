@@ -1,4 +1,5 @@
 import { connect } from 'react-redux';
+import _ from 'lodash';
 import {
   requestCreateCard,
   requestUpdateCard,
@@ -14,6 +15,7 @@ import {
   updateCardPermissions,
   updateCardPermissionGroups
 } from 'actions/cards';
+import { requestUpdateUser } from 'actions/profile';
 import { MODAL_TYPE } from 'appConstants/card';
 import CardCreateModal from './CardCreateModal';
 
@@ -29,6 +31,9 @@ const mapStateToProps = (state) => {
         edits,
         modalOpen: { [MODAL_TYPE.CREATE]: isOpen }
       }
+    },
+    profile: {
+      user: { seenFeatures }
     }
   } = state;
 
@@ -39,7 +44,8 @@ const mapStateToProps = (state) => {
     isUpdatingCard,
     isEditing,
     edits,
-    isOpen
+    isOpen,
+    seenFeatures: _.omit(seenFeatures, '_id')
   };
 };
 
@@ -56,7 +62,8 @@ const mapDispatchToProps = {
   removeCardTag,
   updateCardVerificationInterval,
   updateCardPermissions,
-  updateCardPermissionGroups
+  updateCardPermissionGroups,
+  requestUpdateUser
 };
 
 export default connect(mapStateToProps, mapDispatchToProps)(CardCreateModal);

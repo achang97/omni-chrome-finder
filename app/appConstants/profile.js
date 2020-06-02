@@ -48,6 +48,15 @@ export const AUDIT_TYPE = {
   SLACK_FIND_COMMAND: 'slackFindCommand'
 };
 
+export const SEEN_FEATURES = {
+  OWNERS: 'owners',
+  UPDATE_INTERVAL: 'updateInterval',
+  SUBSCRIBERS: 'subscribers',
+  VERIFY_EXTERNAL: 'verifyExternal',
+  FINDER: 'finder',
+  TASKS: 'tasks'
+};
+
 export const ONBOARDING_COMPLETE = -1;
 
 export default {
@@ -56,5 +65,6 @@ export default {
   USER_BADGE,
   USER_PERFORMANCE,
   AUDIT_TYPE,
+  SEEN_FEATURES,
   ONBOARDING_COMPLETE
 };
