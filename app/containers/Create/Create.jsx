@@ -68,7 +68,7 @@ const Create = ({
 
   const renderInputSection = () => (
     <div>
-      <textarea
+      <input
         placeholder="Title or Question"
         className={s('w-full')}
         value={question}
@@ -80,7 +80,7 @@ const Create = ({
         onEditorStateChange={updateCreateAnswerEditor}
         editorState={answerEditorState}
         editorType="EXTENSION"
-        placeholder="Add an answer here"
+        placeholder="Add a body or answer here"
       />
     </div>
   );
@@ -153,7 +153,7 @@ const Create = ({
     return (
       <div className={s('flex flex-col flex-1 min-h-0')}>
         <div className={s('p-lg flex flex-col flex-grow overflow-auto min-h-0')}>
-          <div className={s('flex justify-between items-center')}>
+          <div className={s('flex justify-between items-center mb-reg')}>
             <div> Create a Card </div>
             <Button
               text="Expand Card"
@@ -165,19 +165,19 @@ const Create = ({
               iconLeft={false}
             />
           </div>
-          <Button
-            onClick={toggleTemplateView}
-            text="Use a Template"
-            color="transparent"
-            className={s('mt-reg')}
-          />
-          <div className={s('text-gray-light mt-reg mb-sm flex items-center')}>
+          {renderInputSection()}
+          {renderAttachmentSection()}
+          <div className={s('text-gray-light my-reg flex items-center')}>
             <Separator horizontal className={s('section-separator')} />
             <div className={s('text-xs')}> OR </div>
             <Separator horizontal className={s('section-separator')} />
           </div>
-          {renderInputSection()}
-          {renderAttachmentSection()}
+          <div
+            className={s('text-purple-reg cursor-pointer underline-border text-sm mx-auto')}
+            onClick={toggleTemplateView}
+          >
+            Use a Template
+          </div>
         </div>
         <Button
           className={s(

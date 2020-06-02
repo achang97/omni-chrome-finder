@@ -28,7 +28,7 @@ const PerformanceBadge = ({
       case score < 80 && score >= 60:
         return { pathColor: colors.yellow.reg, textColor: 'text-yellow-500' };
       case score < 60:
-        return { pathColor: colors.purple.reg, textColor: 'text-purple-reg' };
+        return { pathColor: colors.red.reg, textColor: 'text-red-500' };
       default:
         return {};
     }
@@ -51,7 +51,7 @@ const PerformanceBadge = ({
               `text-xs font-semibold ml-sm ${getPerformanceColors(percentage).textColor}`
             )}
           >
-            My Performance: {percentage}%
+            Get Started: {percentage}%
           </div>
         </>
       );

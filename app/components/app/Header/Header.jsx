@@ -35,7 +35,7 @@ const Header = ({
         onTabClick={handleTabClick}
         activeValue={pathname}
         tabClassName={s(
-          'text-sm my-xl mx-0 bg-white shadow-md rounded-full font-semibold flex items-center p-0 border-0'
+          'text-sm mt-xl mb-reg mx-0 bg-white shadow-md rounded-full font-semibold flex items-center p-0 border-0'
         )}
         tabContainerClassName={s('flex align-center border-0')}
         activeTabClassName={s('bg-purple-light border-0')}

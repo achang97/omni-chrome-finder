@@ -166,7 +166,7 @@ const CardHeader = ({
         {!isEditing && (
           <div className={s('flex items-center')}>
             {lastVerified && lastVerified.user && (
-              <div className={s('italic flex items-center text-gray-dark')}>
+              <div className={s('flex items-center text-gray-dark')}>
                 <Tooltip
                   tooltip={`${lastVerified.user.firstname} ${lastVerified.user.lastname}`}
                   show
@@ -179,12 +179,14 @@ const CardHeader = ({
                     />
                   </div>
                 </Tooltip>
-                <span className={s('opacity-75')}>Verified by&nbsp;</span>
-                <span className={s('opacity-75')}>
-                  {lastVerified.user._id === ownUserId ? 'you' : `${lastVerified.user.firstname}`}
-                </span>
-                &nbsp;
-                <Timeago date={lastVerified.time} live={false} textTransform={_.lowerCase} />
+                <div className={s('italic flex items-center')}>
+                  <span className={s('opacity-75')}>Verified by&nbsp;</span>
+                  <span className={s('opacity-75')}>
+                    {lastVerified.user._id === ownUserId ? 'you' : `${lastVerified.user.firstname}`}
+                  </span>
+                  &nbsp;
+                  <Timeago date={lastVerified.time} live={false} textTransform={_.lowerCase} />
+                </div>
               </div>
             )}
             <Separator className={s('bg-purple-gray-10 mx-sm opacity-75')} />

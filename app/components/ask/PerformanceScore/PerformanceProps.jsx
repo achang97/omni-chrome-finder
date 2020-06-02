@@ -54,7 +54,7 @@ export const BADGE_PROPS = {
 
 export const ACCOMPLISHMENTS = {
   [USER_PERFORMANCE.CREATE_CARD]: {
-    label: 'Make your first card',
+    label: 'Create your first card',
     imgSrc: searchCardImg
   },
   [USER_PERFORMANCE.SEARCH_OPEN]: {
