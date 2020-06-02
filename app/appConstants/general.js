@@ -35,7 +35,7 @@ export const MAIN_CONTAINER_ID = 'omni-chrome-ext-main-container';
 export const WEB_APP_ROUTES = {
   EXTENSION: '/extension',
   SIGNUP: '/signup',
-  ONBOARDING: '/onboarding/extension'
+  ONBOARDING: '/onboarding'
 };
 
 const PROD_WEB_APP_URL = 'https://app.addomni.com';

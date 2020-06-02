@@ -54,9 +54,10 @@ const Profile = ({
       title: 'Integrations',
       options: [
         INTEGRATIONS.GOOGLE,
-        INTEGRATIONS.ZENDESK,
         INTEGRATIONS.SLACK,
-        INTEGRATIONS.CONFLUENCE
+        INTEGRATIONS.ZENDESK
+        // INTEGRATIONS.CONFLUENCE,
+        // INTEGRATIONS.JIRA
       ],
       startOpen: true,
       type: 'authButton'
@@ -83,12 +84,12 @@ const Profile = ({
       sectionType: PROFILE.SETTING_SECTION_TYPE.EXTERNAL_VERIFICATION,
       title: 'External Verification',
       options: [
-        INTEGRATIONS.GOOGLE,
         INTEGRATIONS.CONFLUENCE,
-        INTEGRATIONS.ZENDESK,
-        INTEGRATIONS.NOTION,
         INTEGRATIONS.DROPBOX,
-        INTEGRATIONS.TETTRA
+        INTEGRATIONS.GOOGLE,
+        INTEGRATIONS.NOTION,
+        INTEGRATIONS.TETTRA,
+        INTEGRATIONS.ZENDESK
       ],
       extendOption: ({ type }) => ({
         isToggledOn: !user.widgetSettings.externalLink.disabledIntegrations.includes(type),

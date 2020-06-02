@@ -76,7 +76,11 @@ const CardSection = ({
           </AnimateHeight>
         </div>
       </div>
-      {showSeparator && <Separator horizontal className={s('mt-sm')} />}
+      {showSeparator && (
+        <div className={s('pt-sm')}>
+          <Separator horizontal className={s('my-0')} />
+        </div>
+      )}
     </div>
   );
 };

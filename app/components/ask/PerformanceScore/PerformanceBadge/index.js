@@ -4,15 +4,12 @@ import PerformanceBadge from './PerformanceBadge';
 
 const mapStateToProps = (state) => {
   const {
-    ask: { showPerformanceScore },
-    profile: { badge, percentage, performance, isGettingOnboardingStats }
+    profile: { badge, percentage, isGettingOnboardingStats }
   } = state;
 
   return {
     badge,
     percentage,
-    hasLoadedPerformance: performance.length !== 0,
-    showPerformanceScore,
     isGettingOnboardingStats
   };
 };

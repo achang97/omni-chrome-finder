@@ -32,7 +32,7 @@ export default function externalVerificationReducer(state = initialState, action
     }
     case types.REMOVE_EXTERNAL_OWNER: {
       const { owner } = payload;
-      return { ...state, owners: _.differencyBy(state.owners, [owner], '_id') };
+      return { ...state, owners: _.differenceBy(state.owners, [owner], '_id') };
     }
 
     case types.UPDATE_EXTERNAL_SETTING_INDEX: {

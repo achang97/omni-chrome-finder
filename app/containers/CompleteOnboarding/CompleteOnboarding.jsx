@@ -2,27 +2,18 @@ import React, { useEffect } from 'react';
 import PropTypes from 'prop-types';
 import AuthView from 'components/auth/AuthView';
 import { Loader } from 'components/common';
-import { URL, WEB_APP_ROUTES, PROFILE } from 'appConstants';
 
 import { getStyleApplicationFn } from 'utils/style';
 
 const s = getStyleApplicationFn();
 
-const CompleteOnboarding = ({
-  dockVisible,
-  isGettingUser,
-  onboardingSection,
-  onboardingSubsection,
-  logout,
-  requestGetUser
-}) => {
+const CompleteOnboarding = ({ dockVisible, isGettingUser, url, logout, requestGetUser }) => {
   useEffect(() => {
     if (dockVisible) {
       requestGetUser();
     }
   }, [dockVisible, requestGetUser]);
 
-  const onboardingUrl = `${URL.WEB_APP}${WEB_APP_ROUTES.ONBOARDING}/${onboardingSection}/${onboardingSubsection}`;
   return (
     <AuthView
       // title="Complete Onboarding"
@@ -40,7 +31,7 @@ const CompleteOnboarding = ({
       }
       submitButtonProps={{
         text: 'Complete Onboarding',
-        onClick: () => window.open(onboardingUrl)
+        onClick: () => window.open(url)
       }}
       footer={
         <div className={s('cursor-pointer text-xs text-right')} onClick={logout}>
@@ -54,8 +45,7 @@ const CompleteOnboarding = ({
 CompleteOnboarding.propTypes = {
   dockVisible: PropTypes.bool.isRequired,
   isGettingUser: PropTypes.bool,
-  onboardingSection: PropTypes.oneOf(Object.values(PROFILE.ONBOARDING_SECTION)).isRequired,
-  onboardingSubsection: PropTypes.number.isRequired,
+  url: PropTypes.string.isRequired,
 
   // Redux Actions
   logout: PropTypes.func.isRequired,

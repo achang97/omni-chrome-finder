@@ -1,7 +1,7 @@
 import { connect } from 'react-redux';
 import { logout } from 'actions/auth';
 import { requestGetUser } from 'actions/profile';
-import { ONBOARDING_COMPLETE, ONBOARDING_SECTION } from 'appConstants/profile';
+import { URL, WEB_APP_ROUTES, PROFILE } from 'appConstants';
 import CompleteOnboarding from './CompleteOnboarding';
 
 const mapStateToProps = (state) => {
@@ -9,20 +9,20 @@ const mapStateToProps = (state) => {
     auth: { isGettingUser },
     profile: {
       user: {
-        onboarding: { extension }
+        onboarding: { member, admin },
+        role
       }
     },
     display: { dockVisible }
   } = state;
 
-  const sections = [ONBOARDING_SECTION.CREATE_CARDS, ONBOARDING_SECTION.INTEGRATIONS];
-  const currSection = sections.find((section) => extension[section] !== ONBOARDING_COMPLETE);
+  const currSection = role === PROFILE.USER_ROLE.MEMBER ? member : admin;
+  const url = `${URL.WEB_APP}${WEB_APP_ROUTES.ONBOARDING}/${role.toLowerCase()}/${currSection}`;
 
   return {
     dockVisible,
     isGettingUser,
-    onboardingSection: currSection,
-    onboardingSubsection: extension[currSection]
+    url
   };
 };
 

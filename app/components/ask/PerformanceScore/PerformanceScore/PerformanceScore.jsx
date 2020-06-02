@@ -12,7 +12,7 @@ import { getStyleApplicationFn } from 'utils/style';
 
 import style from './performance-score.css';
 
-import { ACCOMPLISHMENT_IMAGES } from '../PerformanceProps';
+import { ACCOMPLISHMENTS } from '../PerformanceProps';
 
 const s = getStyleApplicationFn(style);
 
@@ -57,8 +57,8 @@ const PerformanceScore = ({
     }
 
     const carouselDisabled = numRemainingAccomplishments <= 1;
-    const { label } = remainingAccomplishments[carouselIndex];
-    const { imgSrc } = ACCOMPLISHMENT_IMAGES[label];
+    const { type } = remainingAccomplishments[carouselIndex];
+    const { imgSrc, label } = ACCOMPLISHMENTS[type];
 
     return (
       <>
@@ -103,9 +103,9 @@ const PerformanceScore = ({
           {performance.map(({ badge: sectionTitle, accomplishments }) => (
             <div key={sectionTitle}>
               <div className={s('text-gray-light text-sm my-sm')}> {sectionTitle} </div>
-              {accomplishments.map(({ label, isComplete }) => (
+              {accomplishments.map(({ type, isComplete }) => (
                 <div
-                  key={label}
+                  key={type}
                   className={s(
                     `flex justify-between mb-sm text-sm rounded-lg p-sm items-center ${
                       isComplete
@@ -114,7 +114,7 @@ const PerformanceScore = ({
                     }`
                   )}
                 >
-                  <div className={s('text-xs')}> {label} </div>
+                  <div className={s('text-xs')}> {ACCOMPLISHMENTS[type].label} </div>
                   <div
                     className={s(
                       `p-xs rounded-lg font-semibold flex ${
@@ -146,7 +146,7 @@ PerformanceScore.propTypes = {
       badge: PropTypes.string.isRequired,
       accomplishments: PropTypes.arrayOf(
         PropTypes.shape({
-          label: PropTypes.string.isRequired,
+          type: PropTypes.string.isRequired,
           isComplete: PropTypes.bool.isRequired
         })
       )
@@ -154,7 +154,7 @@ PerformanceScore.propTypes = {
   ).isRequired,
   remainingAccomplishments: PropTypes.arrayOf(
     PropTypes.shape({
-      label: PropTypes.string.isRequired,
+      type: PropTypes.string.isRequired,
       isComplete: PropTypes.bool.isRequired
     })
   ).isRequired,

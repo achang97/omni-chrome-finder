@@ -4,7 +4,6 @@ export { default as auth } from './auth';
 export { default as card } from './card';
 export { default as editor } from './editor';
 export { default as file } from './file';
-export { default as heap } from './heap';
 export { default as window } from './window';
 export { default as react } from './react';
 export { default as propTypes } from './propTypes';
