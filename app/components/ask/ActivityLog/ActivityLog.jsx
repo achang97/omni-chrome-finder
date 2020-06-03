@@ -21,6 +21,7 @@ const ActivityLog = ({
   showPerformanceScore,
   activityLog,
   isGettingActivityLog,
+  dockVisible,
   ownUserId,
   requestGetRecentCards,
   requestGetActivityLog,
@@ -125,11 +126,23 @@ const ActivityLog = ({
   ];
 
   const prevActivityIndex = usePrevious(activityIndex);
+  const prevDockVisible = usePrevious(dockVisible);
+
   useEffect(() => {
-    if (!showPerformanceScore && prevActivityIndex !== activityIndex) {
+    const isMounting = prevActivityIndex === undefined && prevDockVisible === undefined;
+    const hasPropsChanged =
+      (prevDockVisible === false && dockVisible) ||
+      (prevActivityIndex !== undefined && prevActivityIndex !== activityIndex);
+
+    const shouldReload = !showPerformanceScore && (isMounting || hasPropsChanged);
+
+    // TODO: Since we add reload behavior when the extension is opened, this fires twice
+    // for app.addomni.com/extension. To hopefully avoid 2 requests, we check the isLoading flag,
+    // which is not super reliable but works as a temp fix.
+    if (shouldReload && !TABS[activityIndex].isLoading) {
       TABS[activityIndex].getDataFn();
     }
-  }, [TABS, activityIndex, prevActivityIndex, showPerformanceScore]);
+  }, [TABS, activityIndex, prevActivityIndex, showPerformanceScore, prevDockVisible, dockVisible]);
 
   const render = () => {
     return (
@@ -192,6 +205,7 @@ ActivityLog.propTypes = {
     })
   ).isRequired,
   isGettingActivityLog: PropTypes.bool,
+  dockVisible: PropTypes.bool.isRequired,
   ownUserId: PropTypes.string.isRequired,
 
   // Redux Actions
