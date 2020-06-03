@@ -12,6 +12,7 @@ const mapStateToProps = (state) => {
       activityLog,
       isGettingActivityLog
     },
+    display: { dockVisible },
     profile: {
       user: { _id: ownUserId }
     }
@@ -24,6 +25,7 @@ const mapStateToProps = (state) => {
     activityIndex,
     activityLog,
     isGettingActivityLog,
+    dockVisible,
     ownUserId
   };
 };

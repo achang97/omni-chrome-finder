@@ -45,7 +45,8 @@ export const AUDIT_TYPE = {
   CREATE_CARD_EXTENSION: 'createCardExtension',
   CONTEXT_MENU_SEARCH: 'contextMenuSearch',
   OPEN_EXTERNAL_DOC: 'openExternalDoc',
-  SLACK_FIND_COMMAND: 'slackFindCommand'
+  SLACK_FIND_COMMAND: 'slackFindCommand',
+  OPEN_EXTENSION: 'openExtension'
 };
 
 export const SEEN_FEATURES = {

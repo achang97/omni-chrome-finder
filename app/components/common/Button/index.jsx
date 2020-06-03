@@ -47,8 +47,8 @@ const Button = ({
 }) => {
   const { outerClassName = '', innerClassName = '' } = getClassNames(color, underline);
 
-  const protectedOnClick = () => {
-    if (onClick && !disabled) onClick();
+  const protectedOnClick = (e) => {
+    if (onClick && !disabled) onClick(e);
   };
 
   return (
