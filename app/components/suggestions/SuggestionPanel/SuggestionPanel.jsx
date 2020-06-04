@@ -7,7 +7,7 @@ import AnimateHeight from 'react-animate-height';
 import { Button, Triangle, Separator } from 'components/common';
 
 import { colors } from 'styles/colors';
-import { SEARCH, INTEGRATIONS, ANIMATE, PROFILE } from 'appConstants';
+import { SEARCH, INTEGRATIONS, INTEGRATIONS_MAP, ANIMATE, PROFILE } from 'appConstants';
 
 import { getStyleApplicationFn } from 'utils/style';
 import { NodePropTypes } from 'utils/propTypes';
@@ -21,31 +21,47 @@ const s = getStyleApplicationFn(mainStyle, externalIconStyle);
 
 const DEFAULT_NUM_EXT_RESULTS_SHOWN = 4;
 
+const VALID_INTEGRATIONS = [
+  INTEGRATIONS.GOOGLE.type,
+  INTEGRATIONS.ZENDESK.type,
+  INTEGRATIONS.CONFLUENCE.type
+];
+
 const SuggestionPanel = ({
   query,
   shouldSearchNodes,
+  shouldSearchIntegrations,
   cards,
-  externalResults,
   isSearchingCards,
   hasReachedLimit,
   nodes,
   isSearchingNodes,
+  integrationResults,
+  isSearchingIntegrations,
   requestSearchCards,
   clearSearchCards,
   requestSearchNodes,
+  requestSearchIntegrations,
   requestLogAudit,
   trackEvent
 }) => {
   const [isVisible, setIsVisible] = useState(true);
-  const [showExternalResults, setShowExternalResults] = useState(true);
+  const [showIntegrationResults, setShowIntegrationResults] = useState(true);
   const [showIntegration, setShowIntegration] = useState({});
 
-  const externalResultsRef = useRef(null);
+  const integrationResultsRef = useRef(null);
 
   const searchCards = (clearCards) => {
     requestSearchCards(SEARCH.TYPE.POPOUT, { q: query }, clearCards);
-    if (shouldSearchNodes && clearCards) {
-      requestSearchNodes(query);
+
+    if (clearCards) {
+      if (shouldSearchNodes) {
+        requestSearchNodes(query);
+      }
+
+      if (shouldSearchIntegrations) {
+        requestSearchIntegrations(query);
+      }
     }
   };
 
@@ -59,7 +75,7 @@ const SuggestionPanel = ({
     } else {
       debouncedRequestSearch();
     }
-  }, [query]);
+  }, [query, clearSearchCards, debouncedRequestSearch]);
 
   const toggleIntegration = (integration) => {
     setShowIntegration({
@@ -69,10 +85,8 @@ const SuggestionPanel = ({
   };
 
   const renderExternalSourceResults = (externalSource) => {
-    const {
-      integration: { type, logo, title },
-      results
-    } = externalSource;
+    const { type, items } = externalSource;
+    const { logo, title } = INTEGRATIONS_MAP[type];
 
     const logClick = (result) => {
       trackEvent(`Open External Document - ${title}`, { Type: type, Title: title });
@@ -94,7 +108,7 @@ const SuggestionPanel = ({
         break;
       }
       default:
-        break;
+        return null;
     }
 
     const renderResult = (result) => (
@@ -115,7 +129,7 @@ const SuggestionPanel = ({
               <img src={logo} alt={title} />
             </div>
             <span className={s('font-semibold mr-sm')}> {title} </span>
-            <span> ({results.length}) </span>
+            <span> ({items.length}) </span>
           </div>
           {isFullyExpanded && (
             <MdKeyboardArrowUp
@@ -125,8 +139,8 @@ const SuggestionPanel = ({
           )}
         </div>
         <div className={s('px-lg')}>
-          {results.slice(0, DEFAULT_NUM_EXT_RESULTS_SHOWN).map(renderResult)}
-          {results.length > DEFAULT_NUM_EXT_RESULTS_SHOWN && (
+          {items.slice(0, DEFAULT_NUM_EXT_RESULTS_SHOWN).map(renderResult)}
+          {items.length > DEFAULT_NUM_EXT_RESULTS_SHOWN && (
             <AnimateHeight height={isFullyExpanded ? 0 : 'auto'}>
               <div
                 className={s(
@@ -134,55 +148,57 @@ const SuggestionPanel = ({
                 )}
                 onClick={() => toggleIntegration(type)}
               >
-                View More ({results.length - DEFAULT_NUM_EXT_RESULTS_SHOWN})
+                View More ({items.length - DEFAULT_NUM_EXT_RESULTS_SHOWN})
               </div>
             </AnimateHeight>
           )}
           <AnimateHeight height={isFullyExpanded ? 'auto' : 0}>
-            {results.slice(DEFAULT_NUM_EXT_RESULTS_SHOWN).map(renderResult)}
+            {items.slice(DEFAULT_NUM_EXT_RESULTS_SHOWN).map(renderResult)}
           </AnimateHeight>
         </div>
       </div>
     );
   };
 
-  const countExternalResults = () => {
-    let numExternalResults = 0;
-    externalResults.forEach(({ results }) => {
-      numExternalResults += results.length;
+  const countIntegrationResults = () => {
+    let numIntegrationResults = 0;
+    integrationResults.forEach(({ type, items }) => {
+      if (VALID_INTEGRATIONS.includes(type)) {
+        numIntegrationResults += items.length;
+      }
     });
-    return numExternalResults;
+    return numIntegrationResults;
   };
 
   const renderExternalDocumentationResults = () => {
-    const numExternalResults = countExternalResults();
-    if (numExternalResults === 0) {
+    const numIntegrationResults = countIntegrationResults();
+    if (numIntegrationResults === 0 || !shouldSearchIntegrations || isSearchingIntegrations) {
       // AnimateHeight expects children prop
       return <div />;
     }
 
     return (
-      <div className={s('flex-col justify-center items-center')} ref={externalResultsRef}>
+      <div className={s('flex-col justify-center items-center')} ref={integrationResultsRef}>
         {cards.length !== 0 && <Separator horizontal className={s('my-xs')} />}
         <div className={s('flex justify-between items-center p-sm px-lg')}>
           <div className={s('text-purple-reg font-semibold text-sm')}>
-            Found in your documentation ({numExternalResults})
+            Found in your documentation ({numIntegrationResults})
           </div>
           <MdClose
             className={s('button-hover')}
             color={colors.purple['gray-50']}
-            onClick={() => setShowExternalResults(false)}
+            onClick={() => setShowIntegrationResults(false)}
           />
         </div>
-        {externalResults.map(renderExternalSourceResults)}
+        {integrationResults.map(renderExternalSourceResults)}
       </div>
     );
   };
 
   const renderFooter = () => {
-    const numExternalResults = countExternalResults();
+    const numIntegrationResults = countIntegrationResults();
 
-    if (numExternalResults === 0) {
+    if (numIntegrationResults === 0) {
       return null;
     }
 
@@ -190,10 +206,10 @@ const SuggestionPanel = ({
       <div className={s('suggestion-panel-footer')}>
         <Button
           text={`Found in your documentation ${
-            numExternalResults !== 0 ? `(${numExternalResults})` : ''
+            numIntegrationResults !== 0 ? `(${numIntegrationResults})` : ''
           }`}
           underline
-          onClick={() => setShowExternalResults(true)}
+          onClick={() => setShowIntegrationResults(true)}
           color="transparent"
           textClassName={s('text-sm')}
           className={s('self-stretch rounded-none shadow-none py-sm')}
@@ -206,8 +222,13 @@ const SuggestionPanel = ({
     setIsVisible(!isVisible);
   };
 
-  const numExternalResults = countExternalResults();
+  const numIntegrationResults = countIntegrationResults();
   const showMainPanel = isVisible && query.length !== 0;
+
+  const isLoading =
+    isSearchingCards ||
+    (shouldSearchNodes && isSearchingNodes) ||
+    (shouldSearchIntegrations && isSearchingIntegrations);
 
   return (
     <div className={s(`suggestion-panel ${!showMainPanel ? 'border-0' : ''}`)}>
@@ -222,29 +243,29 @@ const SuggestionPanel = ({
           <SuggestionScrollContainer
             scrollContainerClassName={s(
               `suggestion-panel-card-container ${
-                showExternalResults ? 'suggestion-panel-card-container-lg' : ''
+                showIntegrationResults ? 'suggestion-panel-card-container-lg' : ''
               }`
             )}
             cards={cards}
             nodes={shouldSearchNodes ? nodes : []}
-            isSearching={isSearchingCards || (shouldSearchNodes && isSearchingNodes)}
-            showPlaceholder={!showExternalResults || numExternalResults === 0}
+            isSearching={isLoading}
+            showPlaceholder={!showIntegrationResults || numIntegrationResults === 0}
             triangleColor={colors.purple.light}
             onBottom={() => searchCards(false)}
             hasReachedLimit={hasReachedLimit}
             footer={
               <AnimateHeight
-                height={showExternalResults ? 'auto' : 0}
+                height={showIntegrationResults ? 'auto' : 0}
                 onAnimationEnd={({ newHeight }) =>
                   newHeight !== 0 &&
-                  externalResultsRef.current.scrollIntoView({ behavior: 'smooth' })
+                  integrationResultsRef.current.scrollIntoView({ behavior: 'smooth' })
                 }
               >
                 {renderExternalDocumentationResults()}
               </AnimateHeight>
             }
           />
-          {!showExternalResults && renderFooter()}
+          {!showIntegrationResults && renderFooter()}
         </div>
       </AnimateHeight>
       {showMainPanel && (
@@ -274,35 +295,34 @@ const SuggestionPanel = ({
 SuggestionPanel.propTypes = {
   query: PropTypes.string.isRequired,
   shouldSearchNodes: PropTypes.bool,
+  shouldSearchIntegrations: PropTypes.bool,
 
   // Redux State
   cards: PropTypes.arrayOf(PropTypes.object).isRequired,
-  externalResults: PropTypes.arrayOf(
-    PropTypes.shape({
-      integration: PropTypes.shape({
-        type: PropTypes.string.isRequired,
-        logo: PropTypes.string.isRequired,
-        title: PropTypes.string.isRequired
-      }),
-      results: PropTypes.array
-    })
-  ).isRequired,
   isSearchingCards: PropTypes.bool,
   hasReachedLimit: PropTypes.bool.isRequired,
   nodes: PropTypes.arrayOf(NodePropTypes).isRequired,
   isSearchingNodes: PropTypes.bool,
+  integrationResults: PropTypes.arrayOf(
+    PropTypes.shape({
+      type: PropTypes.string.isRequired,
+      items: PropTypes.array
+    })
+  ).isRequired,
+  isSearchingIntegrations: PropTypes.bool,
 
   // Redux Actions
   requestSearchCards: PropTypes.func.isRequired,
   clearSearchCards: PropTypes.func.isRequired,
   requestSearchNodes: PropTypes.func.isRequired,
+  requestSearchIntegrations: PropTypes.func.isRequired,
   requestLogAudit: PropTypes.func.isRequired,
   trackEvent: PropTypes.func.isRequired
 };
 
 SuggestionPanel.defaultProps = {
   shouldSearchNodes: false,
-  isSearchingCards: false
+  shouldSearchIntegrations: false
 };
 
 export default SuggestionPanel;

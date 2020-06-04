@@ -90,7 +90,7 @@ const HomePage = ({
           {renderAnimatedSection(<ActivityLog />, !showPerformanceScore)}
           {renderAnimatedSection(<PerformanceScore />, showPerformanceScore)}
         </div>
-        <SuggestionPanel query={searchText} shouldSearchNodes />
+        <SuggestionPanel query={searchText} shouldSearchNodes shouldSearchIntegrations />
       </div>
     );
   };

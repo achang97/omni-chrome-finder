@@ -1,11 +1,11 @@
 import { CancelToken, isCancel } from 'axios';
-import { take, call, fork, all, put, select } from 'redux-saga/effects';
+import { take, call, fork, put, select } from 'redux-saga/effects';
 import { doGet, doPost, getErrorMessage } from 'utils/request';
-import { isLoggedIn } from 'utils/auth';
-import { SEARCH, INTEGRATIONS } from 'appConstants';
+import { SEARCH } from 'appConstants';
 import {
   SEARCH_CARDS_REQUEST,
   SEARCH_NODES_REQUEST,
+  SEARCH_INTEGRATIONS_REQUEST,
   SEARCH_TAGS_REQUEST,
   SEARCH_USERS_REQUEST,
   SEARCH_PERMISSION_GROUPS_REQUEST
@@ -15,6 +15,8 @@ import {
   handleSearchCardsError,
   handleSearchNodesSuccess,
   handleSearchNodesError,
+  handleSearchIntegrationsSuccess,
+  handleSearchIntegrationsError,
   handleSearchTagsSuccess,
   handleSearchTagsError,
   handleSearchUsersSuccess,
@@ -26,6 +28,7 @@ import {
 const CANCEL_TYPE = {
   CARDS: 'CARDS',
   NODES: 'NODES',
+  INTEGRATIONS: 'INTEGRATIONS',
   TAGS: 'TAGS',
   USERS: 'USERS',
   PERMISSION_GROUPS: 'PERMISSION_GROUPS'
@@ -33,26 +36,12 @@ const CANCEL_TYPE = {
 
 const CANCEL_SOURCE = {};
 
-const DOCUMENTATION_INTEGRATIONS = [
-  {
-    integration: INTEGRATIONS.GOOGLE,
-    url: '/google/drive/query'
-  },
-  {
-    integration: INTEGRATIONS.ZENDESK,
-    url: '/zendesk/tickets/query'
-  },
-  {
-    integration: INTEGRATIONS.CONFLUENCE,
-    url: '/confluence/pages/query'
-  }
-];
-
 export default function* watchSearchRequests() {
   while (true) {
     const action = yield take([
       SEARCH_CARDS_REQUEST,
       SEARCH_NODES_REQUEST,
+      SEARCH_INTEGRATIONS_REQUEST,
       SEARCH_TAGS_REQUEST,
       SEARCH_USERS_REQUEST,
       SEARCH_PERMISSION_GROUPS_REQUEST
@@ -66,6 +55,10 @@ export default function* watchSearchRequests() {
       }
       case SEARCH_NODES_REQUEST: {
         yield fork(searchNodes, payload);
+        break;
+      }
+      case SEARCH_INTEGRATIONS_REQUEST: {
+        yield fork(searchIntegrations, payload);
         break;
       }
       case SEARCH_TAGS_REQUEST: {
@@ -106,12 +99,7 @@ function* searchCards({ type, query, clearCards }) {
 
   try {
     const page = yield select((state) => state.search.cards[type].page);
-    const user = yield select((state) => state.profile.user);
-
     let cards = [];
-    const externalResults = [];
-
-    const allRequests = [];
 
     if (!query.ids || query.ids.length !== 0) {
       const body = {
@@ -120,39 +108,15 @@ function* searchCards({ type, query, clearCards }) {
         limit: SEARCH.PAGE_SIZE,
         orderBy: !query.q ? 'question' : null
       };
+
       if (type === SEARCH.TYPE.AUTOFIND) {
-        allRequests.push({ requestFn: doPost, url: '/suggest', body });
+        cards = yield call(doPost, '/suggest', body, { cancelToken });
       } else {
-        allRequests.push({ url: '/cards/query', body });
+        cards = yield call(doGet, '/cards/query', body, { cancelToken });
       }
     }
 
-    if (type === SEARCH.TYPE.POPOUT && query.q !== '') {
-      DOCUMENTATION_INTEGRATIONS.forEach(({ integration, url }) => {
-        if (isLoggedIn(user, integration.type)) {
-          allRequests.push({ url, integration, body: { q: query.q } });
-        }
-      });
-    }
-
-    const results = yield all(
-      allRequests.map(({ requestFn, url, body }) =>
-        call(requestFn || doGet, url, body, { cancelToken })
-      )
-    );
-
-    if (results.length !== 0) {
-      cards = results[0];
-    }
-
-    let i;
-    for (i = 1; i < results.length; i++) {
-      if (results[i].length !== 0) {
-        externalResults.push({ integration: allRequests[i].integration, results: results[i] });
-      }
-    }
-
-    yield put(handleSearchCardsSuccess(type, cards, externalResults, clearCards));
+    yield put(handleSearchCardsSuccess(type, cards, clearCards));
   } catch (error) {
     if (!isCancel(error)) {
       yield put(handleSearchCardsError(type, getErrorMessage(error)));
@@ -169,6 +133,19 @@ function* searchNodes({ query }) {
   } catch (error) {
     if (!isCancel(error)) {
       yield put(handleSearchNodesError(getErrorMessage(error)));
+    }
+  }
+}
+
+function* searchIntegrations({ query }) {
+  const cancelToken = cancelRequest(CANCEL_TYPE.INTEGRATIONS);
+
+  try {
+    const results = yield call(doGet, '/search/integrations', { q: query }, { cancelToken });
+    yield put(handleSearchIntegrationsSuccess(results));
+  } catch (error) {
+    if (!isCancel(error)) {
+      yield put(handleSearchIntegrationsError(getErrorMessage(error)));
     }
   }
 }
