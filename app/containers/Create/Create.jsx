@@ -157,7 +157,7 @@ const Create = ({
             <div> Create a Card </div>
             <Button
               text="Expand Card"
-              onClick={openCardWithProps}
+              onClick={() => openCardWithProps(false)}
               disabled={isAnyLoading(attachments)}
               color="primary"
               className={s('p-sm text-xs')}
