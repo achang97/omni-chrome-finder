@@ -6,7 +6,7 @@ import { MdEdit } from 'react-icons/md';
 import { Button, Separator, Loader, CheckBox } from 'components/common';
 import { SettingsSection, ProfilePicture } from 'components/profile';
 
-import { PROFILE, INTEGRATIONS } from 'appConstants';
+import { PROFILE, INTEGRATIONS, URL } from 'appConstants';
 import { UserPropTypes } from 'utils/propTypes';
 
 import { colors } from 'styles/colors';
@@ -201,6 +201,23 @@ const Profile = ({
     );
   };
 
+  const renderDashboardButton = () => {
+    if (user.role !== PROFILE.USER_ROLE.ADMIN) {
+      return null;
+    }
+
+    return (
+      <a href={URL.WEB_APP} target="_blank" rel="noreferrer noopener" className={s('mt-sm')}>
+        <Button
+          className={s('py-sm')}
+          textClassName={s('text-xs')}
+          color="primary"
+          text="Open Admin Dashboard"
+        />
+      </a>
+    );
+  };
+
   const renderMetricsSection = () => {
     const { count = 0, upToDateCount } = analytics;
     let upToDatePercentage = 0;
@@ -212,7 +229,7 @@ const Profile = ({
     }
 
     return (
-      <div className={s('flex justify-between bg-white shadow-light p-reg mt-reg rounded-lg')}>
+      <div className={s('flex justify-between bg-white shadow-light p-reg mt-sm rounded-lg')}>
         <div>
           <div className={s('text-xl text-purple-reg font-semibold')}>{upToDatePercentageText}</div>
           <div className={s('text-sm text-purple-reg mt-sm')}> Cards up to date</div>
@@ -261,6 +278,7 @@ const Profile = ({
       <div className={s('flex flex-col px-lg')}>
         {renderAboutSection()}
         {renderMetricsSection()}
+        {renderDashboardButton()}
         <Separator horizontal className={s('my-reg')} />
       </div>
       {renderIntegrationsSection()}
