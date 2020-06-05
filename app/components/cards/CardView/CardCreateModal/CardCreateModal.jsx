@@ -5,7 +5,7 @@ import { MdLock } from 'react-icons/md';
 
 import { Modal, Message } from 'components/common';
 
-import { HINTS, MODAL_TYPE } from 'appConstants/card';
+import { HINTS, MODAL_TYPE, DELAYED_TASK_TYPE } from 'appConstants/card';
 import { SEEN_FEATURES } from 'appConstants/profile';
 import { hasValidEdits, isExistingCard, isJustMe } from 'utils/card';
 import { getStyleApplicationFn } from 'utils/style';
@@ -61,6 +61,8 @@ const CardCreateModal = ({
   updateCardVerificationInterval,
   updateCardPermissions,
   updateCardPermissionGroups,
+  updateInviteType,
+  updateInviteEmail,
   requestUpdateUser
 }) => {
   const bottomRef = useRef(null);
@@ -107,6 +109,12 @@ const CardCreateModal = ({
     finderNode = {}
   } = edits;
 
+  const openInviteModal = (inviteEmail, inviteType) => {
+    openCardModal(MODAL_TYPE.INVITE_USER);
+    updateInviteType(inviteType);
+    updateInviteEmail(inviteEmail);
+  };
+
   const renderLocation = (isEditable) => {
     const onChangeClick = () => {
       closeCardModal(MODAL_TYPE.CREATE);
@@ -130,7 +138,9 @@ const CardCreateModal = ({
         users={owners}
         onAdd={addCardOwner}
         onRemoveClick={({ index }) => removeCardOwner(index)}
+        onCreate={(value) => openInviteModal(value, DELAYED_TASK_TYPE.ADD_CARD_OWNER)}
         showTooltips
+        showInviteOptions
         size="xs"
         showNames={false}
       />
@@ -157,8 +167,10 @@ const CardCreateModal = ({
         }))}
         size="xs"
         showNames={false}
+        showInviteOptions
         onAdd={addCardSubscriber}
         onRemoveClick={({ index }) => removeCardSubscriber(index)}
+        onCreate={(value) => openInviteModal(value, DELAYED_TASK_TYPE.ADD_CARD_SUBSCRIBER)}
         showTooltips
       />
     );
@@ -371,6 +383,8 @@ CardCreateModal.propTypes = {
   updateCardVerificationInterval: PropTypes.func.isRequired,
   updateCardPermissions: PropTypes.func.isRequired,
   updateCardPermissionGroups: PropTypes.func.isRequired,
+  updateInviteType: PropTypes.func.isRequired,
+  updateInviteEmail: PropTypes.func.isRequired,
   requestUpdateUser: PropTypes.func.isRequired
 };
 

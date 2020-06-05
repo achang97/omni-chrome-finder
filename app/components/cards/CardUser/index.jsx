@@ -17,7 +17,8 @@ const CardUser = ({
   onClick,
   onRemoveClick,
   showName,
-  showTooltip
+  showTooltip,
+  isInvited
 }) => {
   const protectedOnClick = () => {
     if (onClick) onClick({ img, name });
@@ -30,7 +31,14 @@ const CardUser = ({
           <div className={s('relative')}>
             <CircleButton
               content={
-                <PlaceholderImg src={img} name={name} className={s('w-full h-full text-sm')} />
+                <PlaceholderImg
+                  src={img}
+                  name={name}
+                  className={s(`
+                    w-full h-full text-sm rounded-full
+                    ${isInvited ? 'border-dashed border border-purple-gray-50 opacity-75' : ''}
+                  `)}
+                />
               }
               size={size}
               onClick={protectedOnClick}
@@ -56,7 +64,8 @@ CardUser.propTypes = {
   onClick: PropTypes.func,
   onRemoveClick: PropTypes.func,
   showName: PropTypes.bool,
-  showTooltip: PropTypes.bool
+  showTooltip: PropTypes.bool,
+  isInvited: PropTypes.bool
 };
 
 CardUser.defaultProps = {
@@ -66,7 +75,8 @@ CardUser.defaultProps = {
   showTooltip: false,
   img: null,
   onClick: null,
-  onRemoveClick: null
+  onRemoveClick: null,
+  isInvited: false
 };
 
 export default CardUser;

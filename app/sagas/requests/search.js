@@ -8,7 +8,8 @@ import {
   SEARCH_INTEGRATIONS_REQUEST,
   SEARCH_TAGS_REQUEST,
   SEARCH_USERS_REQUEST,
-  SEARCH_PERMISSION_GROUPS_REQUEST
+  SEARCH_PERMISSION_GROUPS_REQUEST,
+  SEARCH_INVITED_USERS_REQUEST
 } from 'actions/actionTypes';
 import {
   handleSearchCardsSuccess,
@@ -22,7 +23,9 @@ import {
   handleSearchUsersSuccess,
   handleSearchUsersError,
   handleSearchPermissionGroupsSuccess,
-  handleSearchPermissionGroupsError
+  handleSearchPermissionGroupsError,
+  handleSearchInvitedUsersSuccess,
+  handleSearchInvitedUsersError
 } from 'actions/search';
 
 const CANCEL_TYPE = {
@@ -44,7 +47,8 @@ export default function* watchSearchRequests() {
       SEARCH_INTEGRATIONS_REQUEST,
       SEARCH_TAGS_REQUEST,
       SEARCH_USERS_REQUEST,
-      SEARCH_PERMISSION_GROUPS_REQUEST
+      SEARCH_PERMISSION_GROUPS_REQUEST,
+      SEARCH_INVITED_USERS_REQUEST
     ]);
 
     const { type, payload } = action;
@@ -71,6 +75,10 @@ export default function* watchSearchRequests() {
       }
       case SEARCH_PERMISSION_GROUPS_REQUEST: {
         yield fork(searchPermissionGroups, payload);
+        break;
+      }
+      case SEARCH_INVITED_USERS_REQUEST: {
+        yield fork(searchInvitedUsers);
         break;
       }
       default: {
@@ -191,5 +199,14 @@ function* searchPermissionGroups({ name }) {
     if (!isCancel(error)) {
       yield put(handleSearchPermissionGroupsError(getErrorMessage(error)));
     }
+  }
+}
+
+function* searchInvitedUsers() {
+  try {
+    const invitedUsers = yield call(doGet, '/invitedUsers');
+    yield put(handleSearchInvitedUsersSuccess(invitedUsers));
+  } catch (error) {
+    yield put(handleSearchInvitedUsersError(getErrorMessage(error)));
   }
 }

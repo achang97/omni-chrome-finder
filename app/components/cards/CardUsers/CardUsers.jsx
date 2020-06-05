@@ -7,6 +7,7 @@ import { CircleButton, PlaceholderImg, Select } from 'components/common';
 
 import { DEBOUNCE } from 'appConstants/animate';
 
+import { isInvitedUser } from 'utils/card';
 import { getStyleApplicationFn } from 'utils/style';
 import style from './card-users.css';
 import CardUser from '../CardUser';
@@ -20,13 +21,17 @@ const CardUsers = ({
   onRemoveClick,
   onUserClick,
   onAdd,
+  onCreate,
   showSelect,
   showTooltips,
   size,
   showNames,
+  placeholder,
   userOptions,
-  isSearchingUsers,
-  requestSearchUsers
+  isLoading,
+  isAdmin,
+  requestSearchUsers,
+  requestSearchInvitedUsers
 }) => {
   const [showSelectState, setShowSelectState] = useState(false);
 
@@ -34,64 +39,92 @@ const CardUsers = ({
     requestSearchUsers(inputValue);
   };
 
+  const onFocus = () => {
+    loadOptions('');
+    requestSearchInvitedUsers();
+  };
+
+  const getSelectOptionLabel = (user) => {
+    const { firstname, lastname, email, label, __isNew__ } = user;
+
+    if (__isNew__) {
+      return label;
+    }
+
+    if (isInvitedUser(user)) {
+      return email;
+    }
+
+    return `${firstname} ${lastname}`;
+  };
+
   const renderUser = (user, index) => {
-    const {
-      _id,
-      name,
-      firstname,
-      lastname,
-      profilePicture,
-      isEditable: userIsEditable = true
-    } = user;
+    const { _id, profilePicture, isEditable: userIsEditable = true } = user;
+    const name = getSelectOptionLabel(user);
 
     return (
       <CardUser
         key={_id}
         size={size}
-        name={name || `${firstname} ${lastname}`}
+        name={name}
         showName={showNames}
         img={profilePicture}
         className={s('mr-sm mb-sm')}
         onClick={onUserClick}
         onRemoveClick={isEditable && userIsEditable ? () => onRemoveClick({ user, index }) : null}
         showTooltip={showTooltips}
+        isInvited={isInvitedUser(user)}
       />
     );
   };
 
+  const formatSelectOptionLabel = (option) => {
+    const { profilePicture, __isNew__ } = option;
+    const label = getSelectOptionLabel(option);
+
+    return (
+      <div className={s('flex items-center')}>
+        {!__isNew__ && (
+          <PlaceholderImg
+            src={profilePicture}
+            name={label}
+            className={s('h-3xl w-3xl rounded-full mr-sm')}
+          />
+        )}
+        <div> {label} </div>
+      </div>
+    );
+  };
+
   const shouldShowSelect = (showSelect || showSelectState) && isEditable;
+
   return (
     <div className={s(`card-users-container ${className}`)}>
       {shouldShowSelect && (
         <Select
+          type={isAdmin && onCreate ? 'creatable' : 'default'}
           className={s('w-full mb-sm')}
           value={null}
           options={_.differenceBy(userOptions, users, '_id')}
-          onChange={(option) => onAdd(option)}
+          onChange={({ __isNew__, ...option }) =>
+            __isNew__ && onCreate ? onCreate(option.value) : onAdd(option)
+          }
           onInputChange={_.debounce(loadOptions, DEBOUNCE.MS_300)}
-          onFocus={() => loadOptions('')}
+          onFocus={onFocus}
           isSearchable
           menuShouldScrollIntoView
           isClearable={false}
           placeholder="Add users..."
-          getOptionLabel={(option) => option.name}
-          getOptionValue={(option) => option._id}
-          formatOptionLabel={({ name, profilePicture }) => (
-            <div className={s('flex items-center')}>
-              <PlaceholderImg
-                src={profilePicture}
-                name={name}
-                className={s('h-3xl w-3xl rounded-full mr-sm')}
-              />
-              <div> {name} </div>
-            </div>
-          )}
-          noOptionsMessage={() => (isSearchingUsers ? 'Searching users...' : 'No options')}
+          getOptionLabel={getSelectOptionLabel}
+          formatCreateLabel={(inputValue) => `Invite ${inputValue}`}
+          getOptionValue={({ _id, value, __isNew__ }) => (__isNew__ ? value : _id)}
+          formatOptionLabel={formatSelectOptionLabel}
+          noOptionsMessage={() => (isLoading ? 'Searching users...' : 'No options')}
         />
       )}
       {users.map(renderUser)}
       {!isEditable && users.length === 0 && (
-        <div className={s('text-sm text-gray-light')}>No current users</div>
+        <div className={s('text-sm text-gray-light')}>{placeholder}</div>
       )}
       {isEditable && onAdd && !shouldShowSelect && (
         <CircleButton
@@ -108,35 +141,46 @@ const CardUsers = ({
   );
 };
 
-const UserPropTypes = PropTypes.arrayOf(
-  PropTypes.shape({
-    _id: PropTypes.string.isRequired,
-    name: PropTypes.string,
-    firstname: PropTypes.string,
-    lastname: PropTypes.string,
-    img: PropTypes.string,
-    isEditable: PropTypes.bool
-  })
+const UsersPropTypes = PropTypes.arrayOf(
+  PropTypes.oneOfType([
+    PropTypes.shape({
+      _id: PropTypes.string.isRequired,
+      firstname: PropTypes.string,
+      lastname: PropTypes.string,
+      img: PropTypes.string,
+      isEditable: PropTypes.bool
+    }),
+    PropTypes.shape({
+      _id: PropTypes.string.isRequired,
+      email: PropTypes.string,
+      isEditable: PropTypes.bool
+    })
+  ])
 );
 
 CardUsers.propTypes = {
   isEditable: PropTypes.bool,
   className: PropTypes.string,
-  users: UserPropTypes.isRequired,
+  users: UsersPropTypes.isRequired,
   onRemoveClick: PropTypes.func,
   onUserClick: PropTypes.func,
   onAdd: PropTypes.func,
+  onCreate: PropTypes.func,
   showSelect: PropTypes.bool,
   showTooltips: PropTypes.bool,
   size: PropTypes.oneOfType([PropTypes.number, PropTypes.oneOf(['xs', 'sm', 'md', 'lg'])]),
   showNames: PropTypes.bool,
+  placeholder: PropTypes.string,
+  showInviteOptions: PropTypes.bool, // eslint-disable-line react/no-unused-prop-types
 
   // Redux State
-  userOptions: UserPropTypes.isRequired,
-  isSearchingUsers: PropTypes.bool,
+  userOptions: UsersPropTypes.isRequired,
+  isLoading: PropTypes.bool,
+  isAdmin: PropTypes.bool.isRequired,
 
   // Redux Actions
-  requestSearchUsers: PropTypes.func.isRequired
+  requestSearchUsers: PropTypes.func.isRequired,
+  requestSearchInvitedUsers: PropTypes.func.isRequired
 };
 
 CardUsers.defaultProps = {
@@ -148,7 +192,9 @@ CardUsers.defaultProps = {
   showNames: true,
   onRemoveClick: null,
   onUserClick: null,
-  onAdd: null
+  onAdd: null,
+  placeholder: 'No current users',
+  showInviteOptions: false
 };
 
 export default CardUsers;

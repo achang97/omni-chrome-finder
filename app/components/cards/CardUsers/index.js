@@ -1,17 +1,31 @@
 import { connect } from 'react-redux';
-import { requestSearchUsers } from 'actions/search';
+import { requestSearchUsers, requestSearchInvitedUsers } from 'actions/search';
+import { USER_ROLE } from 'appConstants/profile';
+import { formatInvitedUser } from 'utils/card';
 import CardUsers from './CardUsers';
 
-const mapStateToProps = (state) => {
+const mapStateToProps = (state, ownProps) => {
   const {
-    search: { users, isSearchingUsers }
+    search: { users, isSearchingUsers, invitedUsers, isSearchingInvites },
+    profile: {
+      user: { role }
+    }
   } = state;
 
-  return { userOptions: users, isSearchingUsers };
+  const { showInviteOptions } = ownProps;
+
+  let userOptions = users;
+  if (showInviteOptions) {
+    userOptions = userOptions.concat(invitedUsers.map(formatInvitedUser));
+  }
+
+  const isAdmin = role === USER_ROLE.ADMIN;
+  return { userOptions, isLoading: isSearchingUsers || isSearchingInvites, isAdmin };
 };
 
 const mapDispatchToProps = {
-  requestSearchUsers
+  requestSearchUsers,
+  requestSearchInvitedUsers
 };
 
 export default connect(mapStateToProps, mapDispatchToProps)(CardUsers);

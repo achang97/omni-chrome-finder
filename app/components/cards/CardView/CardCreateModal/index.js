@@ -13,7 +13,9 @@ import {
   removeCardTag,
   updateCardVerificationInterval,
   updateCardPermissions,
-  updateCardPermissionGroups
+  updateCardPermissionGroups,
+  updateInviteType,
+  updateInviteEmail
 } from 'actions/cards';
 import { requestUpdateUser } from 'actions/profile';
 import { MODAL_TYPE } from 'appConstants/card';
@@ -61,6 +63,8 @@ const mapDispatchToProps = {
   updateCardVerificationInterval,
   updateCardPermissions,
   updateCardPermissionGroups,
+  updateInviteType,
+  updateInviteEmail,
   requestUpdateUser
 };
 

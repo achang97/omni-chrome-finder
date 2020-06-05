@@ -1,9 +1,11 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 
-import { CheckBox, ConfirmModal } from 'components/common';
+import { CheckBox, ConfirmModal, Select } from 'components/common';
 import { MODAL_TYPE } from 'appConstants/card';
+import { USER_ROLE } from 'appConstants/profile';
 
+import { createSelectOptions, createSelectOption } from 'utils/select';
 import { getStyleApplicationFn } from 'utils/style';
 import style from './card-confirm-modals.css';
 
@@ -14,6 +16,8 @@ const CardConfirmModals = ({
   isEditing,
   slackReplies,
   edits,
+  isCreatingInvite,
+  createInviteError,
   modalOpen,
   slackThreadConvoPairs,
   updateCardSelectedThreadIndex,
@@ -38,7 +42,10 @@ const CardConfirmModals = ({
   getSlackThreadError,
   outOfDateReasonInput,
   updateOutOfDateReason,
-  toggleCardSelectedMessage
+  toggleCardSelectedMessage,
+  updateInviteRole,
+  updateInviteEmail,
+  requestCreateInvite
 }) => {
   const closeThreadModal = () => {
     closeCardModal(MODAL_TYPE.THREAD);
@@ -165,6 +172,38 @@ const CardConfirmModals = ({
       }
     },
     {
+      modalType: MODAL_TYPE.INVITE_USER,
+      title: 'Invite User',
+      shouldCloseOnOutsideClick: true,
+      body: (
+        <div className="flex items-center">
+          <input
+            value={edits.inviteEmail}
+            placeholder="Enter invite email"
+            onChange={(e) => updateInviteEmail(e.target.value)}
+            className={s('flex-1 mr-xs')}
+          />
+          <Select
+            value={createSelectOption(edits.inviteRole)}
+            placeholder="Select invite role"
+            options={createSelectOptions(Object.values(USER_ROLE))}
+            onChange={({ value }) => updateInviteRole(value)}
+            className={s('flex-1 ml-xs')}
+          />
+        </div>
+      ),
+      error: createInviteError,
+      secondaryButtonProps: {
+        text: 'Cancel'
+      },
+      primaryButtonProps: {
+        text: 'Invite User',
+        onClick: requestCreateInvite,
+        isLoading: isCreatingInvite,
+        disabled: !edits.inviteEmail
+      }
+    },
+    {
       modalType: MODAL_TYPE.CONFIRM_CLOSE,
       title: 'Save Changes',
       description:
@@ -175,7 +214,6 @@ const CardConfirmModals = ({
         isLoading: isUpdatingCard
       },
       secondaryButtonProps: {
-        text: 'No',
         onClick: () => closeCard(activeCardIndex)
       }
     },
@@ -217,7 +255,6 @@ const CardConfirmModals = ({
       description: 'Are you sure this card is now Up to Date?',
       error: markStatusError,
       primaryButtonProps: {
-        text: 'Yes',
         onClick: requestMarkUpToDate,
         isLoading: isMarkingStatus
       }
@@ -228,7 +265,6 @@ const CardConfirmModals = ({
       description:
         'This card was originally not labeled as up to date. Would you like to mark it as Up to Date?',
       primaryButtonProps: {
-        text: 'Yes',
         onClick: requestMarkUpToDate,
         isLoading: isMarkingStatus
       }
@@ -238,7 +274,6 @@ const CardConfirmModals = ({
       title: 'Confirm Approval',
       description: 'Would you like to approve the changes to this card?',
       primaryButtonProps: {
-        text: 'Yes',
         onClick: requestApproveCard,
         isLoading: isMarkingStatus
       }
@@ -258,7 +293,6 @@ const CardConfirmModals = ({
       title: 'Update Error',
       description: `${updateError} Would you still like to close the card?`,
       primaryButtonProps: {
-        text: 'Yes',
         onClick: () => closeCard(activeCardIndex)
       }
     },
@@ -293,7 +327,6 @@ const CardConfirmModals = ({
         isLoading: isUpdatingCard
       },
       secondaryButtonProps: {
-        text: 'No',
         onClick: confirmCloseEditModalSecondary
       }
     }
@@ -329,9 +362,13 @@ CardConfirmModals.propTypes = {
   isEditing: PropTypes.bool.isRequired,
   slackReplies: SlackRepliesPropTypes.isRequired,
   edits: PropTypes.shape({
-    slackReplies: SlackRepliesPropTypes
+    slackReplies: SlackRepliesPropTypes,
+    inviteEmail: PropTypes.string,
+    inviteRole: PropTypes.oneOf(Object.values(USER_ROLE))
   }).isRequired,
   modalOpen: PropTypes.objectOf(PropTypes.bool).isRequired,
+  isCreatingInvite: PropTypes.bool,
+  createInviteError: PropTypes.string,
   slackThreadConvoPairs: PropTypes.arrayOf(
     PropTypes.shape({
       _id: PropTypes.string.isRequired,
@@ -363,7 +400,10 @@ CardConfirmModals.propTypes = {
   requestUpdateCard: PropTypes.func.isRequired,
   requestMarkUpToDate: PropTypes.func.isRequired,
   requestMarkOutOfDate: PropTypes.func.isRequired,
-  requestApproveCard: PropTypes.func.isRequired
+  requestApproveCard: PropTypes.func.isRequired,
+  updateInviteRole: PropTypes.func.isRequired,
+  updateInviteEmail: PropTypes.func.isRequired,
+  requestCreateInvite: PropTypes.func.isRequired
 };
 
 export default CardConfirmModals;
