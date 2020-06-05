@@ -4,7 +4,6 @@ import { SEARCH } from 'appConstants';
 
 const BASE_CARDS_STATE = {
   cards: [],
-  externalResults: [],
   page: 0,
   hasReachedLimit: false
 };
@@ -12,6 +11,7 @@ const BASE_CARDS_STATE = {
 const initialState = {
   cards: _.mapValues(SEARCH.TYPE, () => BASE_CARDS_STATE),
   nodes: [], // TODO: make this take a type
+  integrationResults: [],
   tags: [],
   users: [],
   permissionGroups: []
@@ -47,11 +47,10 @@ export default function searchReducer(state = initialState, action) {
       }));
     }
     case types.SEARCH_CARDS_SUCCESS: {
-      const { type: searchType, cards, externalResults, clearCards } = payload;
+      const { type: searchType, cards, clearCards } = payload;
       return updateCardStateByType(searchType, (cardState) => ({
         isSearchingCards: false,
         cards: clearCards ? cards : _.unionBy(cardState.cards, cards, '_id'),
-        externalResults: externalResults || cardState.externalResults,
         page: clearCards ? 1 : cardState.page + 1,
         hasReachedLimit: cards.length === 0 || cards.length < SEARCH.PAGE_SIZE
       }));
@@ -102,6 +101,18 @@ export default function searchReducer(state = initialState, action) {
     case types.REMOVE_SEARCH_NODES: {
       const { nodeIds } = payload;
       return { ...state, nodes: state.nodes.filter(({ _id }) => !nodeIds.includes(_id)) };
+    }
+
+    case types.SEARCH_INTEGRATIONS_REQUEST: {
+      return { ...state, isSearchingIntegrations: true, searchIntegrationsError: null };
+    }
+    case types.SEARCH_INTEGRATIONS_SUCCESS: {
+      const { results } = payload;
+      return { ...state, isSearchingIntegrations: false, integrationResults: results };
+    }
+    case types.SEARCH_INTEGRATIONS_ERROR: {
+      const { error } = payload;
+      return { ...state, isSearchingIntegrations: false, searchIntegrationsError: error };
     }
 
     case types.SEARCH_TAGS_REQUEST: {

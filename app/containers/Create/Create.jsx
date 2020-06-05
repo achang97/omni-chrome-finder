@@ -202,7 +202,7 @@ const Create = ({
             </span>
           }
         />
-        <SuggestionPanel query={question} />
+        <SuggestionPanel query={question} shouldSearchIntegrations />
       </div>
     );
   };

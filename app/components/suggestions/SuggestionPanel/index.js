@@ -1,5 +1,10 @@
 import { connect } from 'react-redux';
-import { requestSearchCards, clearSearchCards, requestSearchNodes } from 'actions/search';
+import {
+  requestSearchCards,
+  clearSearchCards,
+  requestSearchNodes,
+  requestSearchIntegrations
+} from 'actions/search';
 import { requestLogAudit } from 'actions/auditLog';
 import trackEvent from 'actions/analytics';
 import { SEARCH } from 'appConstants';
@@ -10,17 +15,20 @@ const mapStateToProps = (state) => {
     search: {
       cards: { [SEARCH.TYPE.POPOUT]: cards },
       nodes,
-      isSearchingNodes
+      isSearchingNodes,
+      integrationResults,
+      isSearchingIntegrations
     }
   } = state;
 
-  return { ...cards, nodes, isSearchingNodes };
+  return { ...cards, nodes, isSearchingNodes, integrationResults, isSearchingIntegrations };
 };
 
 const mapDispatchToProps = {
   requestSearchCards,
   clearSearchCards,
   requestSearchNodes,
+  requestSearchIntegrations,
   requestLogAudit,
   trackEvent
 };

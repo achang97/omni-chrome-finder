@@ -4,11 +4,8 @@ export function requestSearchCards(type, query, clearCards = false) {
   return { type: types.SEARCH_CARDS_REQUEST, payload: { type, query, clearCards } };
 }
 
-export function handleSearchCardsSuccess(type, cards, externalResults, clearCards) {
-  return {
-    type: types.SEARCH_CARDS_SUCCESS,
-    payload: { type, cards, externalResults, clearCards }
-  };
+export function handleSearchCardsSuccess(type, cards, clearCards) {
+  return { type: types.SEARCH_CARDS_SUCCESS, payload: { type, cards, clearCards } };
 }
 
 export function handleSearchCardsError(type, error) {
@@ -45,6 +42,18 @@ export function updateSearchNode(node) {
 
 export function removeSearchNodes(nodeIds) {
   return { type: types.REMOVE_SEARCH_NODES, payload: { nodeIds } };
+}
+
+export function requestSearchIntegrations(query) {
+  return { type: types.SEARCH_INTEGRATIONS_REQUEST, payload: { query } };
+}
+
+export function handleSearchIntegrationsSuccess(results) {
+  return { type: types.SEARCH_INTEGRATIONS_SUCCESS, payload: { results } };
+}
+
+export function handleSearchIntegrationsError(error) {
+  return { type: types.SEARCH_INTEGRATIONS_ERROR, payload: { error } };
 }
 
 export function requestSearchTags(name) {

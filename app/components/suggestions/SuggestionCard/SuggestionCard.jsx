@@ -6,7 +6,7 @@ import { MdMoreHoriz } from 'react-icons/md';
 import { CardStatusIndicator, CardLocation } from 'components/cards';
 import { Button, Dropdown, Message, Loader, Separator, ConfirmModal } from 'components/common';
 
-import { CARD, INTEGRATION_IMAGES } from 'appConstants';
+import { CARD, INTEGRATIONS_MAP } from 'appConstants';
 import { copyCardUrl } from 'utils/card';
 import { NodePropTypes } from 'utils/propTypes';
 
@@ -53,7 +53,14 @@ const replaceHighlightTags = (matches) => {
     }
   });
 
-  return <>{sections.map((section) => section)}</>;
+  return (
+    <>
+      {sections.map((section, i) => (
+        // eslint-disable-next-line react/no-array-index-key
+        <React.Fragment key={`section-${i}`}>{section}</React.Fragment>
+      ))}
+    </>
+  );
 };
 
 const SuggestionCard = ({
@@ -220,7 +227,7 @@ const SuggestionCard = ({
       return null;
     }
 
-    const logo = INTEGRATION_IMAGES[externalLinkAnswer.type];
+    const { logo } = INTEGRATIONS_MAP[externalLinkAnswer.type];
     return (
       <img src={logo} alt={externalLinkAnswer.type} className={s('suggestion-external-logo')} />
     );

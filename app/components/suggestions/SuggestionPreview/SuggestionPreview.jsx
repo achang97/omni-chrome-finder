@@ -2,7 +2,7 @@ import React from 'react';
 import PropTypes from 'prop-types';
 
 import Button from 'components/common/Button';
-import { INTEGRATION_IMAGES } from 'appConstants';
+import { INTEGRATIONS_MAP } from 'appConstants';
 
 import { getStyleApplicationFn } from 'utils/style';
 import style from './suggestion-preview.css';
@@ -20,7 +20,7 @@ const SuggestionPreview = ({ id, question, answer, externalLinkAnswer, openCard,
       return null;
     }
 
-    const logo = INTEGRATION_IMAGES[externalLinkAnswer.type];
+    const { logo } = INTEGRATIONS_MAP[externalLinkAnswer.type];
     return (
       <img
         src={logo}

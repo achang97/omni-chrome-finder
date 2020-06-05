@@ -10,7 +10,7 @@ import { ScreenRecordButton, AttachmentDropzone } from 'components/attachments';
 
 import { generateFileKey, isAnyLoading } from 'utils/file';
 import { getStyleApplicationFn } from 'utils/style';
-import { CARD, REQUEST, INTEGRATIONS, INTEGRATION_IMAGES } from 'appConstants';
+import { CARD, REQUEST, INTEGRATIONS, INTEGRATIONS_MAP } from 'appConstants';
 
 import SlackIcon from 'assets/images/icons/Slack_Mark.svg';
 
@@ -250,7 +250,7 @@ const CardContent = ({
               )}
             >
               <img
-                src={INTEGRATION_IMAGES[externalLinkAnswer.type]}
+                src={INTEGRATIONS_MAP[externalLinkAnswer.type].logo}
                 alt={externalLinkAnswer.type}
                 className={s('h-xl w-xl')}
               />

@@ -1,3 +1,4 @@
+import _ from 'lodash';
 import SlackIcon from 'assets/images/icons/Slack_Mark.svg';
 import GoogleDriveIcon from 'assets/images/icons/GoogleDrive_Icon.svg';
 import ZendeskIcon from 'assets/images/icons/Zendesk_Icon.svg';
@@ -59,10 +60,7 @@ export const INTEGRATIONS = {
   DROPBOX: { type: 'dropbox', title: 'Dropbox', logo: DropboxIcon }
 };
 
-export const INTEGRATION_IMAGES = {};
-Object.values(INTEGRATIONS).forEach(({ type, logo }) => {
-  INTEGRATION_IMAGES[type] = logo;
-});
+export const INTEGRATIONS_MAP = _.mapKeys(INTEGRATIONS, ({ type }) => type);
 
 export const NOOP = () => {};
 
@@ -73,6 +71,6 @@ export default {
   MAIN_CONTAINER_ID,
   URL,
   INTEGRATIONS,
-  INTEGRATION_IMAGES,
+  INTEGRATIONS_MAP,
   NOOP
 };
