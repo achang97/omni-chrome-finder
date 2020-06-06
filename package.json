@@ -15,6 +15,7 @@
     "lint:js:fix": "eslint app chrome test scripts webpack --ext .js --ext jsx --fix",
     "lint:css": "stylelint \"app/**/*.css\"",
     "lint:css:fix": "stylelint \"app/**/*.css\" --fix",
+    "release": "VERSION=$(sentry-cli releases propose-version) && sentry-cli releases new $VERSION && sentry-cli releases set-commits --auto $VERSION",
     "test-e2e": "cross-env NODE_ENV=test mocha -r ./test/setup-app test/e2e",
     "test": "cross-env NODE_ENV=test mocha -r ./test/setup-app test/app"
   },
@@ -101,6 +102,7 @@
   },
   "dependencies": {
     "@babel/runtime": "^7.9.2",
+    "@sentry/browser": "^5.16.1",
     "@types/react-transition-group": "^4.2.3",
     "autoprefixer": "^7.2.5",
     "axios": "^0.19.2",

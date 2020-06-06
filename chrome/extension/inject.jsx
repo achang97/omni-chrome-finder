@@ -1,13 +1,20 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
+import * as Sentry from '@sentry/browser';
 import { getStorage } from 'utils/storage';
-import { MAIN_CONTAINER_ID, CHROME } from 'appConstants';
+import { MAIN_CONTAINER_ID, CHROME, NODE_ENV } from 'appConstants';
 import { initialState as authInitialState } from 'reducers/auth';
 import { initialState as profileInitialState } from 'reducers/profile';
 import { initialState as tasksInitialState } from 'reducers/tasks';
 import Root from 'containers/Root';
 
 function render(state, wrapper) {
+  if (process.env.NODE_ENV === NODE_ENV.PROD) {
+    Sentry.init({
+      dsn: 'https://b1ba8c5c572a4f5697caabb564e0bbfe@o403492.ingest.sentry.io/5266283'
+    });
+  }
+
   // Import has to be here for Redux dev tools to work
   // eslint-disable-next-line global-require
   const createStore = require('store/configureStore').default;

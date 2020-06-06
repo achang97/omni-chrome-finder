@@ -12,3 +12,6 @@ package-lock.json
 *.crx
 *.pem
 update.xml
+
+# Sentry
+.sentryclirc
