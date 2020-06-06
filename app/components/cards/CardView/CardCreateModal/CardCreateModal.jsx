@@ -213,7 +213,7 @@ const CardCreateModal = ({
   const render = () => {
     const isExisting = isExistingCard(_id);
     const isLoading = isExisting ? isUpdatingCard : isCreatingCard;
-    const onClick = isExisting ? requestUpdateCard : requestCreateCard;
+    const onClick = isExisting ? () => requestUpdateCard(false) : requestCreateCard;
 
     const justMe = isJustMe(edits.permissions);
 
