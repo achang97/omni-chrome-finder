@@ -198,27 +198,25 @@ function getDelayedTaskRequests(card) {
 function* populateDelayedTasks(card) {
   const delayedTasks = yield call(doGet, '/delayedTasks/query', { cardId: card._id });
 
-  if (delayedTasks.length !== 0) {
-    Object.entries(_.groupBy(delayedTasks, 'type')).forEach(([taskType, tasks]) => {
-      const invitedUsers = tasks.map(({ _id, data }) => ({
-        taskId: _id,
-        ...formatInvitedUser(data.invitedUser)
-      }));
+  Object.entries(_.groupBy(delayedTasks, 'type')).forEach(([taskType, tasks]) => {
+    const invitedUsers = tasks.map(({ _id, data }) => ({
+      taskId: _id,
+      ...formatInvitedUser(data.invitedUser)
+    }));
 
-      switch (taskType) {
-        case DELAYED_TASK_TYPE.ADD_CARD_OWNER: {
-          card.owners = _.union(card.owners, invitedUsers);
-          break;
-        }
-        case DELAYED_TASK_TYPE.ADD_CARD_SUBSCRIBER: {
-          card.subscribers = _.union(card.subscribers, invitedUsers);
-          break;
-        }
-        default:
-          break;
+    switch (taskType) {
+      case DELAYED_TASK_TYPE.ADD_CARD_OWNER: {
+        card.owners = _.union(card.owners, invitedUsers);
+        break;
       }
-    });
-  }
+      case DELAYED_TASK_TYPE.ADD_CARD_SUBSCRIBER: {
+        card.subscribers = _.union(card.subscribers, invitedUsers);
+        break;
+      }
+      default:
+        break;
+    }
+  });
 
   return card;
 }
