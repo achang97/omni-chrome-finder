@@ -23,11 +23,6 @@ const ConfirmModal = ({
   bodyClassName,
   overlayClassName
 }) => {
-  if (!secondaryButtonProps) {
-    // eslint-disable-next-line no-param-reassign
-    secondaryButtonProps = { text: 'No', onClick: onRequestClose };
-  }
-
   return (
     <Modal
       isOpen={isOpen}
@@ -36,8 +31,12 @@ const ConfirmModal = ({
       overlayClassName={s(`rounded-b-lg ${overlayClassName}`)}
       title={title}
       important
-      secondaryButtonProps={showSecondary ? secondaryButtonProps : null}
-      primaryButtonProps={showPrimary ? primaryButtonProps : null}
+      secondaryButtonProps={
+        showSecondary ? { text: 'No', onClick: onRequestClose, ...secondaryButtonProps } : null
+      }
+      primaryButtonProps={
+        showPrimary ? { text: 'Yes', onClick: onRequestClose, ...primaryButtonProps } : null
+      }
     >
       <div className={s(`confirm-modal-body ${bodyClassName}`)}>
         {description && <div> {description} </div>}
@@ -56,12 +55,12 @@ ConfirmModal.propTypes = {
   error: PropTypes.string,
   onRequestClose: PropTypes.func,
   primaryButtonProps: PropTypes.shape({
-    text: PropTypes.node.isRequired,
+    text: PropTypes.node,
     onClick: PropTypes.func.isRequired
   }),
   secondaryButtonProps: PropTypes.shape({
-    text: PropTypes.node.isRequired,
-    onClick: PropTypes.func.isRequired
+    text: PropTypes.node,
+    onClick: PropTypes.func
   }),
   showPrimary: PropTypes.bool,
   showSecondary: PropTypes.bool,

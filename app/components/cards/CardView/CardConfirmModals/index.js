@@ -3,6 +3,8 @@ import {
   updateOutOfDateReason,
   updateCardSelectedThreadIndex,
   toggleCardSelectedMessage,
+  updateInviteRole,
+  updateInviteEmail,
   closeCardModal,
   closeCard,
   cancelEditCard,
@@ -12,7 +14,8 @@ import {
   requestMarkUpToDate,
   requestMarkOutOfDate,
   requestApproveCard,
-  requestGetSlackThread
+  requestGetSlackThread,
+  requestCreateInvite
 } from 'actions/cards';
 import CardConfirmModals from './CardConfirmModals';
 
@@ -34,7 +37,9 @@ const mapStateToProps = (state) => {
         markStatusError,
         isGettingSlackThread,
         getSlackThreadError,
-        outOfDateReasonInput
+        outOfDateReasonInput,
+        isCreatingInvite,
+        createInviteError
       },
       activeCardIndex
     }
@@ -56,6 +61,8 @@ const mapStateToProps = (state) => {
     isGettingSlackThread,
     getSlackThreadError,
     outOfDateReasonInput,
+    isCreatingInvite,
+    createInviteError,
     activeCardIndex
   };
 };
@@ -64,6 +71,8 @@ const mapDispatchToProps = {
   updateOutOfDateReason,
   updateCardSelectedThreadIndex,
   toggleCardSelectedMessage,
+  updateInviteRole,
+  updateInviteEmail,
   closeCardModal,
   closeCard,
   cancelEditCard,
@@ -73,7 +82,8 @@ const mapDispatchToProps = {
   requestMarkUpToDate,
   requestMarkOutOfDate,
   requestApproveCard,
-  requestGetSlackThread
+  requestGetSlackThread,
+  requestCreateInvite
 };
 
 export default connect(mapStateToProps, mapDispatchToProps)(CardConfirmModals);

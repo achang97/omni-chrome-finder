@@ -2,8 +2,8 @@ import _ from 'lodash';
 import { EditorState } from 'draft-js';
 import * as types from 'actions/actionTypes';
 import { removeIndex, updateIndex, updateArrayOfObjects } from 'utils/array';
-import { convertCardToFrontendFormat, generateCardId } from 'utils/card';
-import { CARD, FINDER } from 'appConstants';
+import { convertCardToFrontendFormat, generateCardId, formatInvitedUser } from 'utils/card';
+import { CARD, FINDER, PROFILE } from 'appConstants';
 
 const initialState = {
   showCards: false,
@@ -128,6 +128,7 @@ export default function cardsReducer(state = initialState, action) {
         answerEditorState,
         finderNode,
         slackReplies,
+        inviteRole: PROFILE.USER_ROLE.MEMBER,
         ...edits
       }
     };
@@ -405,6 +406,19 @@ export default function cardsReducer(state = initialState, action) {
       return updateActiveCardEdits({ permissionGroups: permissionGroups || [] });
     }
 
+    case types.UPDATE_INVITE_EMAIL: {
+      const { email } = payload;
+      return updateActiveCardEdits({ inviteEmail: email });
+    }
+    case types.UPDATE_INVITE_ROLE: {
+      const { role } = payload;
+      return updateActiveCardEdits({ inviteRole: role });
+    }
+    case types.UPDATE_INVITE_TYPE: {
+      const { inviteType } = payload;
+      return updateActiveCardEdits({ inviteType });
+    }
+
     case types.EDIT_CARD: {
       const { activeCard } = state;
       return { ...state, activeCard: createCardEdits(activeCard) };
@@ -651,6 +665,40 @@ export default function cardsReducer(state = initialState, action) {
     case types.GET_SLACK_THREAD_ERROR: {
       const { cardId, error } = payload;
       return updateCardById(cardId, { isGettingSlackThread: false, getSlackThreadError: error });
+    }
+
+    case types.CREATE_INVITE_REQUEST: {
+      return updateActiveCard({ isCreatingInvite: true, createInviteError: null });
+    }
+    case types.CREATE_INVITE_SUCCESS: {
+      const { cardId, invitedUser } = payload;
+      const { modalOpen, edits } = getCardById(cardId);
+
+      const newEdits = { ...edits, inviteRole: PROFILE.USER_ROLE.MEMBER };
+      const newUser = formatInvitedUser(invitedUser);
+
+      switch (edits.inviteType) {
+        case CARD.DELAYED_TASK_TYPE.ADD_CARD_OWNER: {
+          newEdits.owners = _.unionBy(edits.owners, [newUser], '_id');
+        }
+        // Falls through, as owners are always subscribers
+        case CARD.DELAYED_TASK_TYPE.ADD_CARD_SUBSCRIBER: {
+          newEdits.subscribers = _.unionBy(edits.subscribers, [newUser], '_id');
+          break;
+        }
+        default:
+          break;
+      }
+
+      return updateCardById(cardId, {
+        isCreatingInvite: false,
+        modalOpen: { ...modalOpen, [CARD.MODAL_TYPE.INVITE_USER]: false },
+        edits: newEdits
+      });
+    }
+    case types.CREATE_INVITE_ERROR: {
+      const { cardId, error } = payload;
+      return updateCardById(cardId, { isCreatingInvite: false, createInviteError: error });
     }
 
     case types.CLOSE_ALL_CARDS: {

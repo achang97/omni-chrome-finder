@@ -14,6 +14,8 @@ import {
   updateCardVerificationInterval,
   updateCardPermissions,
   updateCardPermissionGroups,
+  updateInviteType,
+  updateInviteEmail,
   editCard
 } from 'actions/cards';
 import CardSideDock from './CardSideDock';
@@ -75,6 +77,8 @@ const mapDispatchToProps = {
   updateCardVerificationInterval,
   updateCardPermissions,
   updateCardPermissionGroups,
+  updateInviteType,
+  updateInviteEmail,
   editCard
 };
 

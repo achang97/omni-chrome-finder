@@ -110,6 +110,18 @@ export function closeCardModal(modalType) {
   return { type: types.CLOSE_CARD_MODAL, payload: { modalType } };
 }
 
+export function updateInviteEmail(email) {
+  return { type: types.UPDATE_INVITE_EMAIL, payload: { email } };
+}
+
+export function updateInviteRole(role) {
+  return { type: types.UPDATE_INVITE_ROLE, payload: { role } };
+}
+
+export function updateInviteType(inviteType) {
+  return { type: types.UPDATE_INVITE_TYPE, payload: { inviteType } };
+}
+
 export function editCard() {
   return { type: types.EDIT_CARD, payload: {} };
 }
@@ -285,4 +297,16 @@ export function handleGetSlackThreadSuccess(cardId, slackReplies) {
 
 export function handleGetSlackThreadError(cardId, error) {
   return { type: types.GET_SLACK_THREAD_ERROR, payload: { cardId, error } };
+}
+
+export function requestCreateInvite() {
+  return { type: types.CREATE_INVITE_REQUEST, payload: {} };
+}
+
+export function handleCreateInviteSuccess(cardId, invitedUser) {
+  return { type: types.CREATE_INVITE_SUCCESS, payload: { cardId, invitedUser } };
+}
+
+export function handleCreateInviteError(cardId, error) {
+  return { type: types.CREATE_INVITE_ERROR, payload: { cardId, error } };
 }

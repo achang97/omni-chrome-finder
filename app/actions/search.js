@@ -91,3 +91,15 @@ export function handleSearchPermissionGroupsSuccess(permissionGroups) {
 export function handleSearchPermissionGroupsError(error) {
   return { type: types.SEARCH_PERMISSION_GROUPS_ERROR, payload: { error } };
 }
+
+export function requestSearchInvitedUsers() {
+  return { type: types.SEARCH_INVITED_USERS_REQUEST, payload: {} };
+}
+
+export function handleSearchInvitedUsersSuccess(invitedUsers) {
+  return { type: types.SEARCH_INVITED_USERS_SUCCESS, payload: { invitedUsers } };
+}
+
+export function handleSearchInvitedUsersError(error) {
+  return { type: types.SEARCH_INVITED_USERS_ERROR, payload: { error } };
+}

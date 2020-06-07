@@ -171,7 +171,7 @@ const ActivityLog = ({
             {i === activityIndex ? (
               <div className={s('px-lg overflow-auto flex-1')}>
                 {renderFn(placeholder, isLoading)}
-                {isLoading && <Loader size="sm" />}
+                {isLoading && <Loader size="sm" className={s('my-sm')} />}
               </div>
             ) : null}
           </React.Fragment>

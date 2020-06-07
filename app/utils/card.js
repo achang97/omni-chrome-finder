@@ -107,7 +107,7 @@ export function hasValidEdits(edits, isExternal = false) {
     question !== '' &&
     (isExternal || (!!answerEditorState && answerEditorState.getCurrentContent().hasText())) &&
     hasValidPermissions(permissions, permissionGroups) &&
-    owners.length !== 0 &&
+    owners.filter(({ isInvited }) => !isInvited).length !== 0 &&
     !!verificationInterval &&
     !isAnyLoading(attachments)
   );
@@ -132,13 +132,8 @@ export function isApprover(user, tags) {
   );
 }
 
-export function convertUserToSearchFormat(user) {
-  const { _id, firstname, lastname, profilePicture } = user;
-  return { _id, name: `${firstname} ${lastname}`, profilePicture };
-}
-
 export function getNewCardBaseState(user) {
-  const ownUser = [convertUserToSearchFormat(user)];
+  const ownUser = [user];
   return {
     owners: ownUser,
     subscribers: ownUser,
@@ -184,6 +179,18 @@ export function cardStateChanged(card) {
   return false;
 }
 
+export function formatInvitedUser(invitedUser) {
+  return { ...invitedUser, isInvited: true };
+}
+
+export function isInvitedUser(user) {
+  return !!user.isInvited;
+}
+
+export function isRegisteredUser(user) {
+  return !user.isInvited;
+}
+
 export function copyCardUrl(cardId) {
   copyText(`${URL.EXTENSION}?cardId=${cardId}`);
 }
@@ -218,10 +225,12 @@ export default {
   isExistingCard,
   isJustMe,
   isApprover,
-  convertUserToSearchFormat,
   getNewCardBaseState,
   cardStateChanged,
   isExternalCard,
+  formatInvitedUser,
+  isInvitedUser,
+  isRegisteredUser,
   copyCardUrl,
   getDraggableStyle
 };
