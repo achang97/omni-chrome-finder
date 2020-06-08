@@ -179,6 +179,14 @@ export function cardStateChanged(card) {
   return false;
 }
 
+export function formatDelayedTasks(delayedTasks) {
+  const invitedUsers = delayedTasks.map(({ _id, data }) => ({
+    taskId: _id,
+    ...formatInvitedUser(data.invitedUser)
+  }));
+  return invitedUsers;
+}
+
 export function formatInvitedUser(invitedUser) {
   return { ...invitedUser, isInvited: true };
 }

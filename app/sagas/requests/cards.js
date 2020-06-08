@@ -10,7 +10,7 @@ import {
   isApprover,
   isExternalCard,
   isInvitedUser,
-  formatInvitedUser,
+  formatDelayedTasks,
   isRegisteredUser
 } from 'utils/card';
 import { convertAttachmentsToBackendFormat } from 'utils/file';
@@ -173,24 +173,35 @@ function getDelayedTaskRequests(card) {
     }
   ];
 
-  let allRequests = [];
+  const newTasks = [];
+  const removeTaskIds = [];
 
   DELAYED_TASKS.forEach(({ key, taskType }) => {
     const addTasks = _.differenceBy(card.edits[key], card[key], '_id');
     const removeTasks = _.differenceBy(card[key], card.edits[key], '_id');
 
-    const addRequests = addTasks.filter(isInvitedUser).map(({ _id }) => {
-      const body = { type: taskType, data: { cardId: card._id, invitedUserId: _id } };
-      return call(doPost, '/delayedTasks', body);
+    addTasks.filter(isInvitedUser).forEach(({ _id }) => {
+      const body = {
+        type: taskType,
+        data: { cardId: card._id, invitedUserId: _id }
+      };
+      newTasks.push(body);
     });
 
-    const removeRequests = removeTasks
-      .filter(isInvitedUser)
-      .map(({ taskId }) => call(doDelete, `/delayedTasks/${taskId}`));
-
-    allRequests = allRequests.concat(addRequests);
-    allRequests = allRequests.concat(removeRequests);
+    removeTasks.filter(isInvitedUser).forEach(({ taskId }) => {
+      removeTaskIds.push(taskId);
+    });
   });
+
+  const allRequests = [];
+
+  if (newTasks.length > 0) {
+    allRequests.push(call(doPost, '/delayedTasks/bulk', newTasks));
+  }
+
+  if (removeTaskIds.length > 0) {
+    allRequests.push(call(doDelete, '/delayedTasks/bulk', removeTaskIds));
+  }
 
   return allRequests;
 }
@@ -199,11 +210,7 @@ function* populateDelayedTasks(card) {
   const delayedTasks = yield call(doGet, '/delayedTasks/query', { cardId: card._id });
 
   Object.entries(_.groupBy(delayedTasks, 'type')).forEach(([taskType, tasks]) => {
-    const invitedUsers = tasks.map(({ _id, data }) => ({
-      taskId: _id,
-      ...formatInvitedUser(data.invitedUser)
-    }));
-
+    const invitedUsers = formatDelayedTasks(tasks);
     switch (taskType) {
       case DELAYED_TASK_TYPE.ADD_CARD_OWNER: {
         card.owners = _.union(card.owners, invitedUsers);
