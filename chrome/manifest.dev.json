@@ -34,7 +34,9 @@
     "https://*.zendesk.com/*",
     "https://www.dropbox.com/*",
     "https://app.tettra.co/*",
-    "https://notion.so/*"
+    "https://notion.so/*",
+
+    "https://help.parsable.com/*"
   ],
   "externally_connectable": {
     "matches": ["http://localhost:5000/*"]

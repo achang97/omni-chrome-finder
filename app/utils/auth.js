@@ -1,3 +1,4 @@
+import queryString from 'query-string';
 import { INTEGRATIONS, NODE_ENV, REQUEST, PROFILE } from 'appConstants';
 
 export function hasCompletedOnboarding(onboarding) {
@@ -22,7 +23,7 @@ export function isLoggedIn(user, integration) {
   );
 }
 
-export function getIntegrationAuthLink(userId, token, integration) {
+export function getIntegrationAuthLink(userId, token, integration, queryParams = {}) {
   switch (integration) {
     case INTEGRATIONS.SLACK.type: {
       const slackAuthUrl = `https://slack.com/oauth/v2/authorize?client_id=902571434263.${
@@ -35,7 +36,8 @@ export function getIntegrationAuthLink(userId, token, integration) {
     case INTEGRATIONS.CONFLUENCE.type:
     case INTEGRATIONS.JIRA.type: {
       const clearToken = token.replace('Bearer ', '');
-      return `${REQUEST.URL.SERVER}/${integration}/authenticate?auth=${clearToken}`;
+      const params = { auth: clearToken, ...queryParams };
+      return `${REQUEST.URL.SERVER}/${integration}/authenticate?${queryString.stringify(params)}`;
     }
     default:
       return '';
