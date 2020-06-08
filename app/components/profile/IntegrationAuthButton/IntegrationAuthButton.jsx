@@ -145,7 +145,13 @@ const IntegrationAuthButton = ({
         className={s(`p-reg ${className}`)}
         onClick={onSignIn}
       />
-      <ConfirmModal isOpen={!!isModalOpen} showSecondary={false} {...getModalProps()} />
+      <ConfirmModal
+        shouldCloseOnOutsideClick
+        isOpen={!!isModalOpen}
+        showSecondary={false}
+        onRequestClose={() => setModalOpen(false)}
+        {...getModalProps()}
+      />
     </>
   );
 };

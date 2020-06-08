@@ -1,6 +1,6 @@
 .card {
   position: fixed !important;
-  z-index: 100000000;
+  z-index: 10000000000;
 }
 
 .card-tab {
