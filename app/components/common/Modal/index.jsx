@@ -74,7 +74,6 @@ const Modal = ({
             <form
               onSubmit={(e) => {
                 e.preventDefault();
-                console.log('here');
                 if (showPrimaryButton && !extendedPrimaryButtonProps.disabled) {
                   if (extendedPrimaryButtonProps.onClick) {
                     extendedPrimaryButtonProps.onClick();
@@ -113,10 +112,10 @@ const Modal = ({
                       className={s(`flex-1 ${secondaryButtonProps ? 'ml-reg' : 'rounded-t-none'}`)}
                       onClick={onRequestClose}
                       text="Close"
-                      type="submit"
                       {...extendedPrimaryButtonProps}
                     />
                   )}
+                  <input className={s('hidden')} type="submit" />
                 </div>
               )}
             </form>

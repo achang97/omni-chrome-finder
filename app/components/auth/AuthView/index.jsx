@@ -49,7 +49,7 @@ const AuthView = ({
       </AuthHeader>
       <div className={s('bg-purple-light p-2xl rounded-lg')}>
         {/* Avoid using actual button due to weird styling across pages */}
-        <input className={s('hidden')} type="submit" onClick={protectedOnClick} />
+        <input className={s('hidden')} type="submit" />
         <Button
           color="primary"
           disabled={disabled}

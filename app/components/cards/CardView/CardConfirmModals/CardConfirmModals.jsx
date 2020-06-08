@@ -182,6 +182,7 @@ const CardConfirmModals = ({
             placeholder="Enter invite email"
             onChange={(e) => updateInviteEmail(e.target.value)}
             className={s('flex-1 mr-xs')}
+            autoFocus
           />
           <Select
             value={createSelectOption(edits.inviteRole)}
