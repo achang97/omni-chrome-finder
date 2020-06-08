@@ -2,9 +2,10 @@ import React, { useState, useEffect } from 'react';
 import PropTypes from 'prop-types';
 import { MdKeyboardArrowDown } from 'react-icons/md';
 
-import { Button, Dropdown, Loader } from 'components/common';
+import { Button, Dropdown, Loader, ConfirmModal } from 'components/common';
 import { getIntegrationAuthLink, isLoggedIn } from 'utils/auth';
 import { UserPropTypes } from 'utils/propTypes';
+import { INTEGRATIONS } from 'appConstants';
 
 import { getStyleApplicationFn } from 'utils/style';
 import style from './integration-auth-button.css';
@@ -25,12 +26,29 @@ const IntegrationAuthButton = ({
   const loggedIn = isLoggedIn(user, type);
   const [dropdownOpen, setDropdownOpen] = useState(false);
 
-  const onSignIn = () => {
-    const authLink = getIntegrationAuthLink(user._id, token, type);
+  // Integration Specific
+  const [isModalOpen, setModalOpen] = useState(false);
+  const [zendeskHost, setZendeskHost] = useState('');
+
+  const openAuthWindow = (queryParams) => {
+    const authLink = getIntegrationAuthLink(user._id, token, type, queryParams);
     const newWindow = window.open(authLink, 'popup', 'width=600,height=600');
 
     setAuthWindow(newWindow);
     if (onWindowOpen) onWindowOpen(newWindow);
+  };
+
+  const onSignIn = () => {
+    switch (type) {
+      case INTEGRATIONS.ZENDESK.type: {
+        setModalOpen(true);
+        break;
+      }
+      default: {
+        openAuthWindow();
+        break;
+      }
+    }
   };
 
   useEffect(() => {
@@ -43,6 +61,36 @@ const IntegrationAuthButton = ({
   const onSignOut = () => {
     setDropdownOpen(false);
     requestLogoutUserIntegration(type);
+  };
+
+  const getModalProps = () => {
+    switch (type) {
+      case INTEGRATIONS.ZENDESK.type: {
+        return {
+          title: 'Sign into Zendesk',
+          body: (
+            <input
+              placeholder="Account Host (i.e. help.addomni.com)"
+              className={s('w-full')}
+              value={zendeskHost}
+              onChange={(e) => setZendeskHost(e.target.value)}
+            />
+          ),
+          primaryButtonProps: {
+            text: 'Sign In',
+            onClick: () => {
+              openAuthWindow({ subdomain: zendeskHost });
+              setModalOpen(false);
+              setZendeskHost('');
+            },
+            disabled: zendeskHost === ''
+          }
+        };
+      }
+      default: {
+        return {};
+      }
+    }
   };
 
   let textSuffix = '';
@@ -89,13 +137,16 @@ const IntegrationAuthButton = ({
     );
   }
   return (
-    <Button
-      text={`Sign In${textSuffix}`}
-      color="transparent"
-      icon={icon}
-      className={s(`p-reg ${className}`)}
-      onClick={onSignIn}
-    />
+    <>
+      <Button
+        text={`Sign In${textSuffix}`}
+        color="transparent"
+        icon={icon}
+        className={s(`p-reg ${className}`)}
+        onClick={onSignIn}
+      />
+      <ConfirmModal isOpen={!!isModalOpen} showSecondary={false} {...getModalProps()} />
+    </>
   );
 };
 

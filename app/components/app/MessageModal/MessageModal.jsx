@@ -8,7 +8,7 @@ const s = getStyleApplicationFn();
 
 const MessageModal = ({
   modalOpen,
-  modalProps: { title, subtitle, buttonText, showHeader = true },
+  modalProps: { title, subtitle, body, buttonProps = {}, showHeader = true },
   closeModal
 }) => (
   <Modal
@@ -20,12 +20,14 @@ const MessageModal = ({
     overlayClassName={s('rounded-bl-lg rounded-tl-lg')}
     bodyClassName={s('rounded-bl-lg rounded-tl-lg flex flex-col')}
     primaryButtonProps={{
-      text: buttonText || 'Ok'
+      ...buttonProps,
+      text: buttonProps.text || 'Ok'
     }}
   >
     <div className={s('p-xl')}>
       {!showHeader && <div className={s(subtitle ? 'mt-lg' : '')}> {title} </div>}
       {subtitle && <div className={s('text-center text-sm')}> {subtitle} </div>}
+      {body}
     </div>
   </Modal>
 );
@@ -36,8 +38,9 @@ MessageModal.propTypes = {
   modalProps: PropTypes.shape({
     title: PropTypes.node.isRequired,
     subtitle: PropTypes.node,
-    buttonText: PropTypes.node,
-    showHeader: PropTypes.bool
+    buttonProps: PropTypes.object,
+    showHeader: PropTypes.bool,
+    body: PropTypes.node
   }).isRequired,
 
   // Redux Actions

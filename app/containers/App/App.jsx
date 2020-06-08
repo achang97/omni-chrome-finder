@@ -81,6 +81,7 @@ const App = ({ dockVisible, isLoggedIn, user, showAutofind, requestGetUser, requ
         fluid={false}
         dimMode="none"
         size={350}
+        zIndex={10000000000}
         isVisible={dockVisible}
         dockStyle={{
           height: showFullDock ? '100%' : 'auto',

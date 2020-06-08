@@ -101,7 +101,6 @@ function* verify() {
       put(
         openModal({
           title: `We've successfully verified your account, ${firstname}!`,
-          buttonText: 'Ok!',
           showHeader: false
         })
       )
