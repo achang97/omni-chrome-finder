@@ -58,6 +58,7 @@ const Modal = ({
   };
 
   const baseStyle = getBaseAnimationStyle(transitionMs);
+  const extendedPrimaryButtonProps = getButtonProps(primaryButtonProps);
 
   return (
     <div>
@@ -70,40 +71,55 @@ const Modal = ({
             onMouseOver={(e) => e.stopPropagation()}
             onFocus={NOOP}
           >
-            {showHeader && (
-              <div className={s(`modal-header ${headerClassName}`)}>
-                <div className={s('font-semibold')}> {title} </div>
-                {onRequestClose && (
-                  <button onClick={onRequestClose} type="button">
-                    <MdClose className={s('text-purple-gray-50')} />
-                  </button>
-                )}
-              </div>
-            )}
-            <div className={s(`modal-body ${bodyClassName}`)}>{children}</div>
-            {(showPrimaryButton || secondaryButtonProps) && (
-              <div className={s(secondaryButtonProps ? 'flex py-sm px-reg' : '')}>
-                {secondaryButtonProps && (
-                  <Button
-                    color="transparent"
-                    className={s('flex-1 mr-reg')}
-                    underline
-                    {...getButtonProps(secondaryButtonProps)}
-                  />
-                )}
-                {showPrimaryButton && (
-                  <Button
-                    color="primary"
-                    underline
-                    underlineColor="purple-gray-50"
-                    className={s(`flex-1 ${secondaryButtonProps ? 'ml-reg' : 'rounded-t-none'}`)}
-                    onClick={onRequestClose}
-                    text="Close"
-                    {...getButtonProps(primaryButtonProps)}
-                  />
-                )}
-              </div>
-            )}
+            <form
+              onSubmit={(e) => {
+                e.preventDefault();
+                console.log('here');
+                if (showPrimaryButton && !extendedPrimaryButtonProps.disabled) {
+                  if (extendedPrimaryButtonProps.onClick) {
+                    extendedPrimaryButtonProps.onClick();
+                  } else {
+                    onRequestClose();
+                  }
+                }
+              }}
+            >
+              {showHeader && (
+                <div className={s(`modal-header ${headerClassName}`)}>
+                  <div className={s('font-semibold')}> {title} </div>
+                  {onRequestClose && (
+                    <button onClick={onRequestClose} type="button">
+                      <MdClose className={s('text-purple-gray-50')} />
+                    </button>
+                  )}
+                </div>
+              )}
+              <div className={s(`modal-body ${bodyClassName}`)}>{children}</div>
+              {(showPrimaryButton || secondaryButtonProps) && (
+                <div className={s(secondaryButtonProps ? 'flex py-sm px-reg' : '')}>
+                  {secondaryButtonProps && (
+                    <Button
+                      color="transparent"
+                      className={s('flex-1 mr-reg')}
+                      underline
+                      {...getButtonProps(secondaryButtonProps)}
+                    />
+                  )}
+                  {showPrimaryButton && (
+                    <Button
+                      color="primary"
+                      underline
+                      underlineColor="purple-gray-50"
+                      className={s(`flex-1 ${secondaryButtonProps ? 'ml-reg' : 'rounded-t-none'}`)}
+                      onClick={onRequestClose}
+                      text="Close"
+                      type="submit"
+                      {...extendedPrimaryButtonProps}
+                    />
+                  )}
+                </div>
+              )}
+            </form>
           </div>
         )}
       </Transition>
