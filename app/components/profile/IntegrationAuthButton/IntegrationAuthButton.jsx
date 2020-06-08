@@ -70,10 +70,11 @@ const IntegrationAuthButton = ({
           title: 'Sign into Zendesk',
           body: (
             <input
-              placeholder="Account Host (i.e. help.addomni.com)"
+              placeholder="Account Host (i.e. addomni.zendesk.com)"
               className={s('w-full')}
               value={zendeskHost}
               onChange={(e) => setZendeskHost(e.target.value)}
+              autoFocus
             />
           ),
           primaryButtonProps: {

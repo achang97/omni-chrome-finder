@@ -104,6 +104,7 @@ const Cards = ({
   const renderCloseModal = () => {
     return (
       <ConfirmModal
+        important
         isOpen={showCloseModal}
         onRequestClose={closeCardContainerModal}
         title="Close Cards"

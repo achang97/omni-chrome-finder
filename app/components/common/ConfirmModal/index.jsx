@@ -21,6 +21,7 @@ const ConfirmModal = ({
   showPrimary,
   showSecondary,
   shouldCloseOnOutsideClick,
+  important,
   bodyClassName,
   overlayClassName
 }) => {
@@ -32,7 +33,7 @@ const ConfirmModal = ({
       overlayClassName={s(`rounded-b-lg ${overlayClassName}`)}
       shouldCloseOnOutsideClick={shouldCloseOnOutsideClick}
       title={title}
-      important
+      important={important}
       secondaryButtonProps={
         showSecondary ? { text: 'No', onClick: onRequestClose, ...secondaryButtonProps } : null
       }
@@ -67,6 +68,7 @@ ConfirmModal.propTypes = {
   showPrimary: PropTypes.bool,
   showSecondary: PropTypes.bool,
   shouldCloseOnOutsideClick: PropTypes.bool,
+  important: PropTypes.bool,
   overlayClassName: PropTypes.string,
   bodyClassName: PropTypes.string
 };
@@ -80,6 +82,7 @@ ConfirmModal.defaultProps = {
   error: null,
   onRequestClose: null,
   shouldCloseOnOutsideClick: false,
+  important: false,
   overlayClassName: '',
   bodyClassName: ''
 };
