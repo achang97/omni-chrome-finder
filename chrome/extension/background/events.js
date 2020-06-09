@@ -35,15 +35,20 @@ chrome.runtime.onConnectExternal.addListener((port) => {
     }
   };
 
-  getStorage(CHROME.STORAGE.AUTH).then((auth) => {
-    if (!justInstalled || (auth && auth.token)) {
-      sendMessage(auth);
-    } else {
-      port.postMessage({ type: CHROME.EXTERNAL_MESSAGE.INSTALL });
-    }
+  getStorage(CHROME.STORAGE.AUTH)
+    .then((auth) => {
+      if (!justInstalled || (auth && auth.token)) {
+        sendMessage(auth);
+      } else {
+        port.postMessage({ type: CHROME.EXTERNAL_MESSAGE.INSTALL });
+      }
 
-    justInstalled = false;
-  });
+      justInstalled = false;
+    })
+    .catch(() => {
+      port.postMessage({ type: CHROME.EXTERNAL_MESSAGE.INSTALL });
+      justInstalled = false;
+    });
 
   const listener = addStorageListener(CHROME.STORAGE.AUTH, ({ newValue, oldValue }) => {
     const newToken = newValue && newValue.token;
