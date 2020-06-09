@@ -53,7 +53,12 @@ const IntegrationAuthButton = ({
 
   useEffect(() => {
     if (loggedIn && authWindow) {
-      authWindow.close();
+      try {
+        authWindow.close();
+      } catch {
+        // Do Nothing
+      }
+
       setAuthWindow(null);
     }
   }, [loggedIn]);
