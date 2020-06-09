@@ -19,23 +19,7 @@ chrome.runtime.onInstalled.addListener(({ reason }) => {
 });
 
 chrome.runtime.onMessageExternal.addListener((message, sender, sendResponse) => {
-  const { type, payload } = message;
   if (sender.origin === URL.WEB_APP) {
-    switch (type) {
-      case CHROME.EXTERNAL_MESSAGE.LOGIN_SUCCESS:
-      case CHROME.EXTERNAL_MESSAGE.SIGNUP_SUCCESS: {
-        const { user, token, refreshToken } = payload;
-        setStorage(CHROME.STORAGE.AUTH, { user, token, refreshToken });
-        break;
-      }
-      case CHROME.EXTERNAL_MESSAGE.LOGOUT: {
-        setStorage(CHROME.STORAGE.AUTH, { user: {} });
-        break;
-      }
-      default:
-        break;
-    }
-
     // Send back basic response
     sendResponse(`Successfully received message from ${URL.WEB_APP}.`);
   }
@@ -67,6 +51,24 @@ chrome.runtime.onConnectExternal.addListener((port) => {
 
     if (newToken !== oldToken) {
       sendMessage(newValue);
+    }
+  });
+
+  port.onMessage.addListener((message) => {
+    const { type, payload } = message;
+    switch (type) {
+      case CHROME.EXTERNAL_MESSAGE.LOGIN_SUCCESS:
+      case CHROME.EXTERNAL_MESSAGE.SIGNUP_SUCCESS: {
+        const { user, token, refreshToken } = payload;
+        setStorage(CHROME.STORAGE.AUTH, { user, token, refreshToken });
+        break;
+      }
+      case CHROME.EXTERNAL_MESSAGE.LOGOUT: {
+        setStorage(CHROME.STORAGE.AUTH, { user: {} });
+        break;
+      }
+      default:
+        break;
     }
   });
 
