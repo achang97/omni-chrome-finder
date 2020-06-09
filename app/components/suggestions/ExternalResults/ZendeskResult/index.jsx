@@ -1,7 +1,7 @@
 import React from 'react';
 import PropTypes from 'prop-types';
+import { MdThumbUp, MdThumbDown } from 'react-icons/md';
 
-import { Timeago } from 'components/common';
 import { getStyleApplicationFn } from 'utils/style';
 
 import ExternalResult from '../ExternalResult';
@@ -10,43 +10,51 @@ const s = getStyleApplicationFn();
 
 const ZendeskResult = ({
   agentUrl,
+  author,
   updated_at: updatedAt,
-  raw_subject: rawSubject,
-  description,
-  priority,
-  status,
+  title,
+  draft,
+  promoted,
+  vote_sum: voteSum,
   logo,
   onClick
 }) => (
   <ExternalResult
     url={agentUrl}
     onClick={onClick}
-    title={rawSubject}
+    title={title}
     logo={logo}
+    timestamp={updatedAt}
     body={
-      <>
-        <div className={s('mb-xs')}>
-          <span>
-            Priority: <span className={s('italic')}> {priority} </span>
-          </span>
-          <span className={s('ml-sm')}>
-            Status: <span className={s('italic')}> {status} </span>
-          </span>
+      <div className={s('flex items-center')}>
+        <div
+          className={s(`
+            flex items-center mr-sm
+            ${voteSum > 0 ? 'text-green-500' : ''}
+            ${voteSum < 0 ? 'text-red-500' : ''}
+          `)}
+        >
+          {voteSum >= 0 ? <MdThumbUp /> : <MdThumbDown />}
+          <div className={s('ml-xs')}> {voteSum} </div>
         </div>
-        <div className={s('text-xs line-clamp-3 mb-xs')}> {description} </div>
-        <Timeago date={updatedAt} className={s('text-gray-light text-right')} />
-      </>
+        {author && <div className={s('mr-reg')}>{author.name}</div>}
+        {promoted && <div className={s('italic mr-sm')}> Promoted </div>}
+        {draft && <div className={s('italic mr-sm')}> Draft </div>}
+      </div>
     }
   />
 );
 
 ZendeskResult.propTypes = {
   agentUrl: PropTypes.string.isRequired,
+  author: PropTypes.shape({
+    name: PropTypes.string
+  }),
   updated_at: PropTypes.string.isRequired,
-  raw_subject: PropTypes.string.isRequired,
-  description: PropTypes.string.isRequired,
-  priority: PropTypes.string.isRequired,
-  status: PropTypes.string.isRequired,
+  title: PropTypes.string.isRequired,
+  promoted: PropTypes.bool.isRequired,
+  draft: PropTypes.bool.isRequired,
+  vote_sum: PropTypes.number.isRequired,
   logo: PropTypes.string.isRequired,
   onClick: PropTypes.func.isRequired
 };

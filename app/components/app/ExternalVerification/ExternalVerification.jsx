@@ -46,6 +46,7 @@ const URL_REGEXES = [
   {
     integration: INTEGRATIONS.ZENDESK,
     regex: /https:\/\/\S+\.(zendesk|\S+)\.com\/hc\/\S+\/articles\/\d+/
+    // regex: /https:\/\/\S+\.(zendesk|\S+)\.com(\/((hc\/\S+)|(knowledge)))\/articles\/\d+/
   },
   {
     integration: INTEGRATIONS.DROPBOX,

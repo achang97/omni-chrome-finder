@@ -9,7 +9,8 @@ export const MESSAGE = {
 export const EXTERNAL_MESSAGE = {
   LOGIN_SUCCESS: 'LOGIN_SUCCESS',
   SIGNUP_SUCCESS: 'SIGNUP_SUCCESS',
-  LOGOUT: 'LOGOUT'
+  LOGOUT: 'LOGOUT',
+  INSTALL: 'INSTALL'
 };
 
 export const COMMAND = {

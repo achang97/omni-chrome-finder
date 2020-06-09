@@ -37,54 +37,55 @@ function removeAll(nodes, transform) {
 export function getGoogleText(observer, createMutator) {
   let text = '';
 
-  if (document) {
-    const mainTable = document.querySelector('div[role="main"] table[role="presentation"]');
+  const mainTable = document.querySelector('div[role="main"] table[role="presentation"]');
+  if (!mainTable) {
+    return text;
+  }
 
-    const titleDiv = mainTable.querySelector('[tabindex="-1"]');
-    if (titleDiv) {
-      text += `${titleDiv.innerText}\n\n`;
+  const titleDiv = mainTable.querySelector('[tabindex="-1"]');
+  if (titleDiv) {
+    text += `${titleDiv.innerText}\n\n`;
+  }
+
+  const emailList = mainTable.querySelector('[role="list"]');
+  if (emailList) {
+    if (!observer) {
+      createMutator(emailList, { subtree: true, childList: true });
     }
 
-    const emailList = mainTable.querySelector('[role="list"]');
-    if (emailList) {
-      if (!observer) {
-        createMutator(emailList, { subtree: true, childList: true });
-      }
+    for (let i = 0; i < emailList.children.length; i++) {
+      const email = emailList.children[i];
+      if (email.getAttribute('role') === 'listitem') {
+        const emailCopy = email.cloneNode(true);
 
-      for (let i = 0; i < emailList.children.length; i++) {
-        const email = emailList.children[i];
-        if (email.getAttribute('role') === 'listitem') {
-          const emailCopy = email.cloneNode(true);
+        const removeFwds = emailCopy.querySelectorAll('.gmail_quote');
+        removeAll(removeFwds);
 
-          const removeFwds = emailCopy.querySelectorAll('.gmail_quote');
-          removeAll(removeFwds);
+        const removeShowContentToggle = [
+          ...emailCopy.querySelectorAll('[aria-label="Show trimmed content"]'),
+          ...emailCopy.querySelectorAll('[aria-label="Hide expanded content"]')
+        ];
+        removeAll(removeShowContentToggle, (toggle) => toggle.parentElement.nextSibling);
 
-          const removeShowContentToggle = [
-            ...emailCopy.querySelectorAll('[aria-label="Show trimmed content"]'),
-            ...emailCopy.querySelectorAll('[aria-label="Hide expanded content"]')
-          ];
-          removeAll(removeShowContentToggle, (toggle) => toggle.parentElement.nextSibling);
+        const removeTables = emailCopy.querySelectorAll('table');
+        removeAll(removeTables);
 
-          const removeTables = emailCopy.querySelectorAll('table');
-          removeAll(removeTables);
+        const removeAttachments = getElementsByXpath('//div[text()="Attachments area"]');
+        removeAll(removeAttachments, (attachment) => attachment.parentElement);
 
-          const removeAttachments = getElementsByXpath('//div[text()="Attachments area"]');
-          removeAll(removeAttachments, (attachment) => attachment.parentElement);
+        const removeAttachmentButton = emailCopy.querySelectorAll(
+          '[aria-label="Download all attachments"]'
+        );
+        removeAll(
+          removeAttachmentButton,
+          (attachmentButton) => attachmentButton.parentElement.parentElement.parentElement
+        );
 
-          const removeAttachmentButton = emailCopy.querySelectorAll(
-            '[aria-label="Download all attachments"]'
-          );
-          removeAll(
-            removeAttachmentButton,
-            (attachmentButton) => attachmentButton.parentElement.parentElement.parentElement
-          );
+        const removeSignatures = emailCopy.querySelectorAll('[data-smartmail="gmail_signature"]');
+        removeAll(removeSignatures);
 
-          const removeSignatures = emailCopy.querySelectorAll('[data-smartmail="gmail_signature"]');
-          removeAll(removeSignatures);
-
-          const textContent = trimAlphanumeric(emailCopy.textContent);
-          text += `${textContent}\n\n`;
-        }
+        const textContent = trimAlphanumeric(emailCopy.textContent);
+        text += `${textContent}\n\n`;
       }
     }
   }
