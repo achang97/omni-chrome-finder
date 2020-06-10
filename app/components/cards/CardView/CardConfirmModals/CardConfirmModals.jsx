@@ -1,5 +1,6 @@
 import React from 'react';
 import PropTypes from 'prop-types';
+import { MdOpenInNew } from 'react-icons/md';
 
 import { CheckBox, ConfirmModal, Select } from 'components/common';
 import { MODAL_TYPE } from 'appConstants/card';
@@ -64,32 +65,50 @@ const CardConfirmModals = ({
           <div className={s('text-center p-lg')}>No Slack replies to display</div>
         )}
         {currSlackReplies.map(
-          ({ id, senderName, senderImageUrl, message, selected }, i) =>
+          ({ id, senderName, senderImageUrl, message, selected, link }, i) =>
             (isEditing || selected) && (
               <div
                 key={id}
-                className={s(`flex p-reg   ${i % 2 === 0 ? '' : 'bg-purple-gray-10'} `)}
+                className={s(`
+                  p-reg relative cursor-pointer ${i % 2 === 0 ? '' : 'bg-purple-gray-10'}
+                `)}
+                onClick={() => toggleSelectedMessage(i)}
               >
-                <img
-                  src={senderImageUrl}
-                  className={s(
-                    'message-photo-container rounded-lg flex-shrink-0 flex justify-center mr-reg shadow-md'
-                  )}
-                  alt={senderName}
-                />
-                <div className={s('flex flex-col flex-grow')}>
-                  <div className={s('flex items-end')}>
-                    <div className={s('text-sm font-semibold mr-reg')}> {senderName} </div>
-                  </div>
-                  <div className={s('mt-sm text-sm')}>{message}</div>
-                </div>
-                {isEditing && (
-                  <CheckBox
-                    isSelected={!!selected}
-                    toggleCheckbox={() => toggleSelectedMessage(i)}
-                    className={s('flex-shrink-0 m-sm')}
-                  />
+                {link && (
+                  <a
+                    href={link}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className={s('absolute top-0 right-0')}
+                    onClick={(e) => e.stopPropagation()}
+                  >
+                    <div
+                      className={s(
+                        'bg-purple-gray-10 rounded-tr-lg rounded-bl-lg p-xs text-purple-reg text-sm'
+                      )}
+                    >
+                      <MdOpenInNew />
+                    </div>
+                  </a>
                 )}
+                <div className={s('flex')}>
+                  <img
+                    src={senderImageUrl}
+                    className={s(
+                      'message-photo-container rounded-lg flex-shrink-0 flex justify-center mr-reg shadow-md'
+                    )}
+                    alt={senderName}
+                  />
+                  <div className={s('flex flex-col flex-grow')}>
+                    <div className={s('flex items-end')}>
+                      <div className={s('text-sm font-semibold mr-reg')}> {senderName} </div>
+                    </div>
+                    <div className={s('mt-sm text-sm')}>{message}</div>
+                  </div>
+                  {isEditing && (
+                    <CheckBox isSelected={!!selected} className={s('flex-shrink-0 m-sm')} />
+                  )}
+                </div>
               </div>
             )
         )}
@@ -105,23 +124,21 @@ const CardConfirmModals = ({
           return (
             <div
               key={_id}
-              className={s(
-                `flex p-reg items-center justify-between ${i % 2 === 0 ? '' : 'bg-purple-gray-10'} `
-              )}
+              className={s(`
+                flex p-reg items-center justify-between cursor-pointer
+                ${i % 2 === 0 ? '' : 'bg-purple-gray-10'}
+              `)}
+              onClick={() => updateCardSelectedThreadIndex(i)}
             >
               <div
                 className={s(
                   `${isSelected ? 'font-semibold' : 'text-gray-light font-medium'} text-md`
                 )}
               >
-                {channelId.charAt(0) === 'U' ? '@' : '#'}
+                {channelId.charAt(0) === 'D' ? '@' : '#'}
                 {channelName}
               </div>
-              <CheckBox
-                isSelected={isSelected}
-                toggleCheckbox={() => updateCardSelectedThreadIndex(i)}
-                className={s('flex-shrink-0 m-sm')}
-              />
+              <CheckBox isSelected={isSelected} className={s('flex-shrink-0 m-sm')} />
             </div>
           );
         })}

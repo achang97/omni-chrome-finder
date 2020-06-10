@@ -247,6 +247,8 @@ function* getCard() {
 function* convertCardToBackendFormat(card) {
   const {
     status,
+    slackThreadConvoPairs,
+    slackThreadIndex,
     edits: {
       question,
       answerEditorState,
@@ -256,8 +258,6 @@ function* convertCardToBackendFormat(card) {
       verificationInterval,
       permissions,
       permissionGroups,
-      slackThreadIndex,
-      slackThreadConvoPairs,
       slackReplies,
       attachments,
       finderNode
@@ -466,7 +466,7 @@ function* getSlackThread() {
   const { threadId, channelId } = slackThreadConvoPairs[slackThreadIndex];
 
   try {
-    const { slackReplies } = yield call(doPost, '/slack/getThreadReplies', { threadId, channelId });
+    const slackReplies = yield call(doPost, '/slack/getThreadReplies', { threadId, channelId });
     yield put(handleGetSlackThreadSuccess(activeCard._id, slackReplies));
   } catch (error) {
     yield put(handleGetSlackThreadError(activeCard._id, getErrorMessage(error)));

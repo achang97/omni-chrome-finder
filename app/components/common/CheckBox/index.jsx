@@ -29,7 +29,7 @@ const CheckBox = ({
 
 CheckBox.propTypes = {
   isSelected: PropTypes.bool.isRequired,
-  toggleCheckbox: PropTypes.func.isRequired,
+  toggleCheckbox: PropTypes.func,
   className: PropTypes.string,
   selectedClassName: PropTypes.string,
   unselectedClassName: PropTypes.string

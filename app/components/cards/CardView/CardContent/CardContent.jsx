@@ -62,10 +62,10 @@ const CardContent = ({
   }, [hasLoaded, status, slackThreadConvoPairs.length, slackReplies.length, openCardModal]);
 
   useEffect(() => {
-    if (!hasLoaded && !isGettingCard) {
+    if (!hasLoaded && !isGettingCard && !getError) {
       requestGetCard();
     }
-  }, [_id, hasLoaded, isGettingCard, requestGetCard]);
+  }, [_id, hasLoaded, getError, isGettingCard, requestGetCard]);
 
   useEffect(() => {
     const questionElem = questionRef.current;
