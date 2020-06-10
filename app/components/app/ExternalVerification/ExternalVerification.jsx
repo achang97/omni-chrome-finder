@@ -11,7 +11,7 @@ import { Button, Modal, Message, Loader, CheckBox } from 'components/common';
 import { getStyleApplicationFn } from 'utils/style';
 import { usePrevious } from 'utils/react';
 import { UserPropTypes } from 'utils/propTypes';
-import { EXTERNAL_VERIFICATION, INTEGRATIONS_MAP } from 'appConstants';
+import { EXTERNAL_VERIFICATION, INTEGRATIONS_MAP, INTEGRATIONS } from 'appConstants';
 import style from './external-verification.css';
 
 const s = getStyleApplicationFn(style);
@@ -51,8 +51,23 @@ const ExternalVerification = ({
       const {
         widgetSettings: {
           externalLink: { disabledPages, disabledIntegrations, disabled }
-        }
+        },
+        integrations
       } = user;
+
+      // Specific check for Zendesk brand url
+      if (integration === INTEGRATIONS.ZENDESK.type) {
+        const { brands: zendeskBrands } = integrations[INTEGRATIONS.ZENDESK.type];
+        if (zendeskBrands) {
+          const hasMatch = zendeskBrands.some(({ brand_url: brandUrl }) =>
+            link.startsWith(brandUrl)
+          );
+
+          if (hasMatch) {
+            return false;
+          }
+        }
+      }
 
       return (
         !disabled && !disabledIntegrations.includes(integration) && !disabledPages.includes(link)
