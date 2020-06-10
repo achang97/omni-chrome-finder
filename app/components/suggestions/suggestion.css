@@ -17,3 +17,7 @@
 
   @apply ml-xs w-reg h-reg;
 }
+
+.suggestion-share {
+  @apply flex-1 mt-sm mx-sm p-xs text-center bg-purple-light rounded-full text-xs;
+}

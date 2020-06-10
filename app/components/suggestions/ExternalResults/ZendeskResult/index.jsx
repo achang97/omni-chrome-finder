@@ -11,12 +11,12 @@ const s = getStyleApplicationFn();
 const ZendeskResult = ({
   html_url: htmlUrl,
   author,
-  updated_at: updatedAt,
   title,
   draft,
   promoted,
   vote_sum: voteSum,
   logo,
+  card,
   onClick
 }) => (
   <ExternalResult
@@ -24,7 +24,7 @@ const ZendeskResult = ({
     onClick={onClick}
     title={title}
     logo={logo}
-    timestamp={updatedAt}
+    card={card}
     body={
       <div className={s('flex items-center')}>
         <div
@@ -50,13 +50,13 @@ ZendeskResult.propTypes = {
   author: PropTypes.shape({
     name: PropTypes.string
   }),
-  updated_at: PropTypes.string.isRequired,
   title: PropTypes.string.isRequired,
   promoted: PropTypes.bool.isRequired,
   draft: PropTypes.bool.isRequired,
   vote_sum: PropTypes.number.isRequired,
   logo: PropTypes.string.isRequired,
-  onClick: PropTypes.func.isRequired
+  onClick: PropTypes.func.isRequired,
+  card: PropTypes.shape({})
 };
 
 export default ZendeskResult;

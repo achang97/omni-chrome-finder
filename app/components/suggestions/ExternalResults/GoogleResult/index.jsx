@@ -3,13 +3,14 @@ import PropTypes from 'prop-types';
 
 import ExternalResult from '../ExternalResult';
 
-const GoogleResult = ({ name, webViewLink, iconLink, owners, onClick }) => {
+const GoogleResult = ({ name, webViewLink, iconLink, owners, card, onClick }) => {
   return (
     <ExternalResult
       url={webViewLink}
       onClick={onClick}
       logo={iconLink}
       title={name}
+      card={card}
       body={
         owners.length !== 0 && (
           <>
@@ -37,7 +38,8 @@ GoogleResult.propTypes = {
       permissionId: PropTypes.string.isRequired
     })
   ).isRequired,
-  onClick: PropTypes.func.isRequired
+  onClick: PropTypes.func.isRequired,
+  card: PropTypes.shape({})
 };
 
 export default GoogleResult;

@@ -23,8 +23,8 @@ import style from './external-verification.css';
 
 const s = getStyleApplicationFn(style);
 
-function trimTitle(documentTitle) {
-  return documentTitle.substring(0, documentTitle.lastIndexOf(' - '));
+function trimTitle(documentTitle, sepChar = '-') {
+  return documentTitle.substring(0, documentTitle.lastIndexOf(` ${sepChar} `));
 }
 
 const URL_REGEXES = [
@@ -45,7 +45,8 @@ const URL_REGEXES = [
   },
   {
     integration: INTEGRATIONS.ZENDESK,
-    regex: /https:\/\/\S+\.(zendesk|\S+)\.com\/hc\/\S+\/articles\/\d+/
+    regex: /https:\/\/\S+\.(zendesk|\S+)\.com\/hc\/\S+\/articles\/\d+/,
+    getTitle: (documentTitle) => trimTitle(documentTitle, '–')
     // regex: /https:\/\/\S+\.(zendesk|\S+)\.com(\/((hc\/\S+)|(knowledge)))\/articles\/\d+/
   },
   {
