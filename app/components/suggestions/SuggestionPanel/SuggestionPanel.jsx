@@ -36,6 +36,7 @@ const SuggestionPanel = ({
   hasReachedLimit,
   nodes,
   isSearchingNodes,
+  dockVisible,
   integrationResults,
   isSearchingIntegrations,
   requestSearchCards,
@@ -114,7 +115,6 @@ const SuggestionPanel = ({
     const renderResult = (result) => (
       <ResultComponent
         key={ResultComponent.getKey ? ResultComponent.getKey(result) : result.id}
-        logo={logo}
         onClick={() => logClick(result)}
         {...result}
       />
@@ -223,7 +223,7 @@ const SuggestionPanel = ({
   };
 
   const numIntegrationResults = countIntegrationResults();
-  const showMainPanel = isVisible && query.length !== 0;
+  const showMainPanel = isVisible && query.length !== 0 && dockVisible;
 
   const isLoading =
     isSearchingCards ||
@@ -310,6 +310,7 @@ SuggestionPanel.propTypes = {
     })
   ).isRequired,
   isSearchingIntegrations: PropTypes.bool,
+  dockVisible: PropTypes.bool.isRequired,
 
   // Redux Actions
   requestSearchCards: PropTypes.func.isRequired,

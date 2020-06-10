@@ -1,5 +1,5 @@
 {
-  "version": "2.0.15",
+  "version": "2.1.0",
   "name": "Omni Development",
   "manifest_version": 2,
   "description": "A lightweight Q&A tool that helps you document and find information faster.",
@@ -30,6 +30,7 @@
     "https://app.addomni.com/*",
     "https://mail.google.com/*",
     "https://docs.google.com/*",
+    "https://drive.google.com/*",
     "https://*.atlassian.net/*",
     "https://*.zendesk.com/*",
     "https://www.dropbox.com/*",

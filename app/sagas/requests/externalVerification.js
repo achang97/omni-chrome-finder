@@ -14,14 +14,14 @@ export default function* watchExternalVerificationRequests() {
   while (true) {
     const action = yield take([GET_EXTERNAL_CARD_REQUEST, CREATE_EXTERNAL_CARD_REQUEST]);
 
-    const { type, payload } = action;
+    const { type } = action;
     switch (type) {
       case GET_EXTERNAL_CARD_REQUEST: {
         yield fork(getCard);
         break;
       }
       case CREATE_EXTERNAL_CARD_REQUEST: {
-        yield fork(createCard, payload);
+        yield fork(createCard);
         break;
       }
       default: {
@@ -41,9 +41,9 @@ function* getCard() {
   }
 }
 
-function* createCard({ title, externalLinkAnswer }) {
+function* createCard() {
   try {
-    const { owners, verificationInterval, finderNode } = yield select(
+    const { title, owners, verificationInterval, finderNode, externalLinkAnswer } = yield select(
       (state) => state.externalVerification
     );
     const newCardInfo = {

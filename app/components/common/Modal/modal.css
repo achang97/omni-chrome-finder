@@ -1,3 +1,9 @@
+.modal-container-fixed {
+  @apply fixed top-0 right-0 left-0 bottom-0;
+
+  z-index: 100000000000;
+}
+
 .modal {
   @apply absolute bg-purple-2xlight flex flex-col rounded-lg;
 

@@ -6,11 +6,6 @@
   right: 100px;
 }
 
-.external-verification-modal,
-.external-finder-modal {
+.external-verification-modal {
   width: 600px;
-}
-
-.external-finder-modal {
-  height: 400px;
 }

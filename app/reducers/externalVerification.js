@@ -5,10 +5,12 @@ import { DEFAULT_VERIFICATION_INTERVAL } from 'appConstants/card';
 const initialState = {
   isDisplayed: false,
   activeIntegration: null,
-  isFinderModalOpen: false,
   isCreateModalOpen: false,
   isSettingsModalOpen: false,
   settingIndex: 0,
+  resultId: null,
+  externalLinkAnswer: {},
+  title: '',
   owners: [],
   verificationInterval: DEFAULT_VERIFICATION_INTERVAL,
   finderNode: null,
@@ -21,6 +23,20 @@ export default function externalVerificationReducer(state = initialState, action
   switch (type) {
     case types.RESET_EXTERNAL_STATE: {
       return initialState;
+    }
+
+    case types.UPDATE_EXTERNAL_LINK_ANSWER: {
+      const { externalLinkAnswer } = payload;
+      return { ...state, externalLinkAnswer };
+    }
+    case types.UPDATE_EXTERNAL_RESULT_ID: {
+      const { resultId } = payload;
+      return { ...state, resultId };
+    }
+
+    case types.UPDATE_EXTERNAL_TITLE: {
+      const { title } = payload;
+      return { ...state, title };
     }
     case types.UPDATE_EXTERNAL_VERIFICATION_INTERVAL: {
       const { interval } = payload;
@@ -43,9 +59,6 @@ export default function externalVerificationReducer(state = initialState, action
       return { ...state, isSettingsModalOpen: !state.isSettingsModalOpen };
     }
 
-    case types.TOGGLE_EXTERNAL_FINDER_MODAL: {
-      return { ...state, isFinderModalOpen: !state.isFinderModalOpen };
-    }
     case types.UPDATE_EXTERNAL_FINDER_NODE: {
       const { finderNode } = payload;
       return { ...state, finderNode };

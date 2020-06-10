@@ -3,19 +3,15 @@ import { isValidUser } from 'utils/auth';
 import { toggleDock } from 'actions/display';
 import { openCard } from 'actions/cards';
 import {
-  updateExternalVerificationInterval,
-  addExternalOwner,
-  removeExternalOwner,
-  toggleExternalCreateModal,
   toggleExternalSettingsModal,
-  toggleExternalFinderModal,
+  toggleExternalCreateModal,
   toggleExternalDisplay,
   updateExternalSettingIndex,
   updateExternalIntegration,
-  updateExternalFinderNode,
   resetExternalState,
-  requestCreateExternalCard,
-  requestGetExternalCard
+  requestGetExternalCard,
+  updateExternalTitle,
+  updateExternalLinkAnswer
 } from 'actions/externalVerification';
 import { requestUpdateUser } from 'actions/profile';
 import ExternalVerification from './ExternalVerification';
@@ -28,17 +24,10 @@ const mapStateToProps = (state) => {
     externalVerification: {
       isDisplayed,
       activeIntegration,
-      isCreateModalOpen,
-      isFinderModalOpen,
       isSettingsModalOpen,
       settingIndex,
-      owners,
-      verificationInterval,
-      finderNode,
       externalCard,
-      isGettingCard,
-      isCreatingCard,
-      createCardError
+      isGettingCard
     }
   } = state;
 
@@ -50,34 +39,23 @@ const mapStateToProps = (state) => {
     dockVisible,
     isDisplayed,
     activeIntegration,
-    isCreateModalOpen,
-    isFinderModalOpen,
     isSettingsModalOpen,
     settingIndex,
-    owners,
-    verificationInterval,
-    finderNode,
     externalCard,
-    isGettingCard,
-    isCreatingCard,
-    createCardError
+    isGettingCard
   };
 };
 
 const mapDispatchToProps = {
-  updateExternalVerificationInterval,
-  addExternalOwner,
-  removeExternalOwner,
-  toggleExternalCreateModal,
   toggleExternalSettingsModal,
-  toggleExternalFinderModal,
+  toggleExternalCreateModal,
   toggleExternalDisplay,
   updateExternalSettingIndex,
   updateExternalIntegration,
-  updateExternalFinderNode,
   resetExternalState,
-  requestCreateExternalCard,
   requestGetExternalCard,
+  updateExternalTitle,
+  updateExternalLinkAnswer,
   requestUpdateUser,
   openCard,
   toggleDock

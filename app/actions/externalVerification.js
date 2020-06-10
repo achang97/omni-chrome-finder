@@ -4,6 +4,18 @@ export function resetExternalState() {
   return { type: types.RESET_EXTERNAL_STATE, payload: {} };
 }
 
+export function updateExternalLinkAnswer(externalLinkAnswer) {
+  return { type: types.UPDATE_EXTERNAL_LINK_ANSWER, payload: { externalLinkAnswer } };
+}
+
+export function updateExternalResultId(resultId) {
+  return { type: types.UPDATE_EXTERNAL_RESULT_ID, payload: { resultId } };
+}
+
+export function updateExternalTitle(title) {
+  return { type: types.UPDATE_EXTERNAL_TITLE, payload: { title } };
+}
+
 export function updateExternalVerificationInterval(interval) {
   return { type: types.UPDATE_EXTERNAL_VERIFICATION_INTERVAL, payload: { interval } };
 }
@@ -14,10 +26,6 @@ export function addExternalOwner(owner) {
 
 export function removeExternalOwner(owner) {
   return { type: types.REMOVE_EXTERNAL_OWNER, payload: { owner } };
-}
-
-export function toggleExternalFinderModal() {
-  return { type: types.TOGGLE_EXTERNAL_FINDER_MODAL, payload: {} };
 }
 
 export function toggleExternalSettingsModal() {
@@ -56,8 +64,8 @@ export function handleGetExternalCardError(error) {
   return { type: types.GET_EXTERNAL_CARD_ERROR, payload: { error } };
 }
 
-export function requestCreateExternalCard(title, externalLinkAnswer) {
-  return { type: types.CREATE_EXTERNAL_CARD_REQUEST, payload: { title, externalLinkAnswer } };
+export function requestCreateExternalCard() {
+  return { type: types.CREATE_EXTERNAL_CARD_REQUEST, payload: {} };
 }
 
 export function handleCreateExternalCardSuccess(card) {

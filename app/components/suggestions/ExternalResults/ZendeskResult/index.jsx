@@ -3,27 +3,30 @@ import PropTypes from 'prop-types';
 import { MdThumbUp, MdThumbDown } from 'react-icons/md';
 
 import { getStyleApplicationFn } from 'utils/style';
+import { INTEGRATIONS } from 'appConstants';
 
 import ExternalResult from '../ExternalResult';
 
 const s = getStyleApplicationFn();
 
 const ZendeskResult = ({
+  id,
   html_url: htmlUrl,
   author,
   title,
   draft,
   promoted,
   vote_sum: voteSum,
-  logo,
   card,
   onClick
 }) => (
   <ExternalResult
+    id={id}
     url={htmlUrl}
     onClick={onClick}
     title={title}
-    logo={logo}
+    logo={INTEGRATIONS.ZENDESK.logo}
+    type={INTEGRATIONS.ZENDESK.type}
     card={card}
     body={
       <div className={s('flex items-center')}>
@@ -46,6 +49,7 @@ const ZendeskResult = ({
 );
 
 ZendeskResult.propTypes = {
+  id: PropTypes.string.isRequired,
   html_url: PropTypes.string.isRequired,
   author: PropTypes.shape({
     name: PropTypes.string
@@ -54,7 +58,6 @@ ZendeskResult.propTypes = {
   promoted: PropTypes.bool.isRequired,
   draft: PropTypes.bool.isRequired,
   vote_sum: PropTypes.number.isRequired,
-  logo: PropTypes.string.isRequired,
   onClick: PropTypes.func.isRequired,
   card: PropTypes.shape({})
 };

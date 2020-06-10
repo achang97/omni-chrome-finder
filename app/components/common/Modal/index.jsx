@@ -51,6 +51,7 @@ const Modal = ({
   bodyClassName,
   title,
   children,
+  fixed,
   important
 }) => {
   const onOutsideClick = () => {
@@ -61,7 +62,11 @@ const Modal = ({
   const extendedPrimaryButtonProps = getButtonProps(primaryButtonProps);
 
   return (
-    <div>
+    <div
+      className={s(
+        `${fixed ? `modal-container-fixed ${!isOpen ? 'pointer-events-none' : ''}` : ''}`
+      )}
+    >
       <Transition in={isOpen} timeout={transitionMs} mountOnEnter unmountOnExit>
         {(state) => (
           <div
@@ -150,6 +155,7 @@ Modal.propTypes = {
   showHeader: PropTypes.bool,
   transitionMs: PropTypes.number,
   important: PropTypes.bool,
+  fixed: PropTypes.bool,
   primaryButtonProps: PropTypes.shape({
     disabled: PropTypes.bool,
     isLoading: PropTypes.bool,
@@ -178,6 +184,7 @@ Modal.defaultProps = {
   secondaryButtonProps: null,
   transitionMs: 100,
   important: false,
+  fixed: false,
   showHeader: true,
   showPrimaryButton: true
 };

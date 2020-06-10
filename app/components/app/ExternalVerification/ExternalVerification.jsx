@@ -5,105 +5,47 @@ import { IoMdAlert } from 'react-icons/io';
 import { MdClose, MdSettings } from 'react-icons/md';
 import ReactDraggable from 'react-draggable';
 
-import {
-  CardStatus,
-  CardSection,
-  CardLocation,
-  CardUsers,
-  CardVerificationInterval
-} from 'components/cards';
-import { FinderModal } from 'components/finder';
+import { CardStatus } from 'components/cards';
 import { Button, Modal, Message, Loader, CheckBox } from 'components/common';
 
 import { getStyleApplicationFn } from 'utils/style';
 import { usePrevious } from 'utils/react';
 import { UserPropTypes } from 'utils/propTypes';
-import { INTEGRATIONS } from 'appConstants';
+import { EXTERNAL_VERIFICATION, INTEGRATIONS_MAP } from 'appConstants';
 import style from './external-verification.css';
 
 const s = getStyleApplicationFn(style);
 
-function trimTitle(documentTitle, sepChar = '-') {
-  return documentTitle.substring(0, documentTitle.lastIndexOf(` ${sepChar} `));
-}
-
-const URL_REGEXES = [
-  {
-    integration: INTEGRATIONS.GOOGLE,
-    regex: /https:\/\/docs\.google\.com\/[^/]+\/d\/[^/]+/,
-    getTitle: trimTitle,
-    getLinks: (regexMatch) => {
-      const link = regexMatch[0];
-      const previewLink = `${regexMatch[0]}/preview`;
-      return { link, previewLink };
-    }
-  },
-  {
-    integration: INTEGRATIONS.CONFLUENCE,
-    regex: /https:\/\/\S+.atlassian.net\/wiki\/spaces\/[^/]+\/pages\/\d+/,
-    getTitle: (documentTitle) => trimTitle(trimTitle(documentTitle))
-  },
-  {
-    integration: INTEGRATIONS.ZENDESK,
-    regex: /https:\/\/\S+\.(zendesk|\S+)\.com\/hc\/\S+\/articles\/\d+/,
-    getTitle: (documentTitle) => trimTitle(documentTitle, '–')
-    // regex: /https:\/\/\S+\.(zendesk|\S+)\.com(\/((hc\/\S+)|(knowledge)))\/articles\/\d+/
-  },
-  {
-    integration: INTEGRATIONS.DROPBOX,
-    regex: /https:\/\/www\.dropbox\.com\/s\/[^/]+/
-  },
-  {
-    integration: INTEGRATIONS.TETTRA,
-    regex: /https:\/\/app\.tettra\.co\/teams\/[^/]+\/pages\/[^/#]+/,
-    getTitle: (documentTitle) => trimTitle(trimTitle(documentTitle))
-  },
-  {
-    integration: INTEGRATIONS.NOTION,
-    regex: /https:\/\/(?:www\.)?notion\.so\/([^/#]+)[^/#]{32}/,
-    getLinks: (regexMatch) => ({ link: regexMatch[0].replace(regexMatch[1], '') })
-  }
-];
+const URL_REGEX_LIST = Object.entries(EXTERNAL_VERIFICATION.URL_REGEXES);
 
 const ExternalVerification = ({
   url,
   isDisplayed,
   activeIntegration,
-  isCreateModalOpen,
-  isFinderModalOpen,
   isSettingsModalOpen,
   settingIndex,
-  owners,
-  verificationInterval,
-  finderNode,
   externalCard,
   isGettingCard,
-  isCreatingCard,
-  createCardError,
   user,
   isValidUser,
   isUpdatingUser,
   updateUserError,
   dockVisible,
-  updateExternalVerificationInterval,
-  addExternalOwner,
-  removeExternalOwner,
-  toggleExternalCreateModal,
-  toggleExternalFinderModal,
   toggleExternalSettingsModal,
+  toggleExternalCreateModal,
   toggleExternalDisplay,
   updateExternalSettingIndex,
   updateExternalIntegration,
-  updateExternalFinderNode,
   resetExternalState,
-  requestCreateExternalCard,
   requestGetExternalCard,
+  updateExternalTitle,
+  updateExternalLinkAnswer,
   requestUpdateUser,
   toggleDock,
   openCard
 }) => {
   useEffect(() => {
-    const isEnabled = ({ integration: { type }, links: { link } }) => {
+    const isEnabled = ({ integration, links: { link } }) => {
       if (!isValidUser) return false;
 
       const {
@@ -112,16 +54,15 @@ const ExternalVerification = ({
         }
       } = user;
 
-      return !disabled && !disabledIntegrations.includes(type) && !disabledPages.includes(link);
+      return (
+        !disabled && !disabledIntegrations.includes(integration) && !disabledPages.includes(link)
+      );
     };
 
     const resetState = () => {
       if (activeIntegration) {
         resetExternalState();
-        updateExternalIntegration(null);
       }
-
-      addExternalOwner(user);
     };
 
     if (!isValidUser || !url || (activeIntegration && !isEnabled(activeIntegration))) {
@@ -129,11 +70,12 @@ const ExternalVerification = ({
     } else {
       let i;
       let newIntegration = null;
-      for (i = 0; i < URL_REGEXES.length; i++) {
-        const { regex, getTitle, getLinks, integration } = URL_REGEXES[i];
+
+      for (i = 0; i < URL_REGEX_LIST.length; i++) {
+        const [integration, { regex, getTitle, getLinks }] = URL_REGEX_LIST[i];
         const match = url.match(regex);
         if (match) {
-          const links = getLinks ? getLinks(match) : { link: match[0] };
+          const links = getLinks(match);
           if (isEnabled({ integration, links })) {
             newIntegration = { links, getTitle, integration };
             break;
@@ -154,7 +96,6 @@ const ExternalVerification = ({
     isValidUser,
     activeIntegration,
     updateExternalIntegration,
-    addExternalOwner,
     resetExternalState,
     requestGetExternalCard
   ]);
@@ -174,6 +115,14 @@ const ExternalVerification = ({
   ]);
 
   const renderUntrackedView = () => {
+    const onOpenModal = () => {
+      toggleExternalCreateModal();
+
+      const { links, getTitle, integration } = activeIntegration;
+      updateExternalTitle(getTitle(document.title));
+      updateExternalLinkAnswer({ ...links, type: integration });
+    };
+
     return (
       <>
         <div className={s('text-xs text-gray-reg mb-xs')}>This knowledge is</div>
@@ -185,7 +134,7 @@ const ExternalVerification = ({
           text="Verify with Omni"
           className={s('py-sm')}
           color="transparent"
-          onClick={toggleExternalCreateModal}
+          onClick={onOpenModal}
         />
       </>
     );
@@ -214,84 +163,12 @@ const ExternalVerification = ({
     );
   };
 
-  const renderCreateModal = () => {
-    const { links, getTitle, integration } = activeIntegration;
-    const title = getTitle ? getTitle(document.title) : document.title;
-    const externalLinkAnswer = { ...links, type: integration.type };
-
-    const SECTIONS = [
-      {
-        title: 'Location',
-        children: (
-          <CardLocation
-            finderNode={finderNode}
-            isEditable
-            onChangeClick={toggleExternalFinderModal}
-          />
-        )
-      },
-      {
-        title: 'Owner(s)',
-        children: (
-          <CardUsers
-            users={owners}
-            onAdd={addExternalOwner}
-            onRemoveClick={({ user: removeUser }) => removeExternalOwner(removeUser)}
-            size="sm"
-            isEditable
-          />
-        )
-      },
-      {
-        title: 'Verification Interval',
-        children: (
-          <CardVerificationInterval
-            verificationInterval={verificationInterval}
-            isEditable
-            onChange={updateExternalVerificationInterval}
-          />
-        )
-      }
-    ];
-
-    return (
-      <Modal
-        isOpen={isCreateModalOpen}
-        onRequestClose={toggleExternalCreateModal}
-        title={title}
-        shouldCloseOnOutsideClick
-        important
-        className={s('external-verification-modal overflow-visible')}
-        bodyClassName={s('px-lg py-reg overflow-visible')}
-        primaryButtonProps={{
-          text: 'Track',
-          disabled: owners.length === 0 || !verificationInterval,
-          isLoading: isCreatingCard,
-          onClick: () => requestCreateExternalCard(title, externalLinkAnswer)
-        }}
-      >
-        {SECTIONS.map(({ title: sectionTitle, children }, i) => (
-          <CardSection
-            key={sectionTitle}
-            title={sectionTitle}
-            isVertical={false}
-            isExpandable={false}
-            className={s('py-xs')}
-            showSeparator={i !== SECTIONS.length - 1}
-          >
-            {children}
-          </CardSection>
-        ))}
-        <Message type="error" message={createCardError} className={s('my-sm')} />
-      </Modal>
-    );
-  };
-
   const renderSettingsModal = () => {
     const {
-      integration: { type, title },
+      integration,
       links: { link }
     } = activeIntegration;
+    const { title = '' } = INTEGRATIONS_MAP[integration] || {};
 
     const {
       widgetSettings: { externalLink }
@@ -311,7 +188,7 @@ const ExternalVerification = ({
         isImportant: true,
         newSettings: {
           ...externalLink,
-          disabledIntegrations: _.union(externalLink.disabledIntegrations, [type])
+          disabledIntegrations: _.union(externalLink.disabledIntegrations, [integration])
         }
       },
       {
@@ -337,6 +214,7 @@ const ExternalVerification = ({
         title="Verify Existing Documents Settings"
         shouldCloseOnOutsideClick
         important
+        fixed
         className={s('external-verification-modal')}
         bodyClassName={s('px-lg py-reg overflow-visible')}
         primaryButtonProps={{
@@ -383,20 +261,7 @@ const ExternalVerification = ({
             {!isGettingCard && (externalCard ? renderTrackedView() : renderUntrackedView())}
           </div>
         </ReactDraggable>
-        {renderCreateModal()}
         {renderSettingsModal()}
-        <FinderModal
-          important
-          isOpen={isFinderModalOpen}
-          finderId="external-verification"
-          onSecondaryClick={toggleExternalFinderModal}
-          onPrimaryClick={(destination) => {
-            toggleExternalFinderModal();
-            updateExternalFinderNode(destination);
-          }}
-          className={s('external-finder-modal')}
-          overlayClassName={s('rounded-lg')}
-        />
       </>
     );
   };
@@ -411,32 +276,19 @@ ExternalVerification.propTypes = {
   isDisplayed: PropTypes.bool.isRequired,
   activeIntegration: PropTypes.shape({
     getTitle: PropTypes.func,
-    integration: PropTypes.shape({
-      type: PropTypes.string.isRequired,
-      logo: PropTypes.string.isRequired,
-      title: PropTypes.string.isRequired
-    }).isRequired,
+    integration: PropTypes.string.isRequired,
     links: PropTypes.shape({
       link: PropTypes.string.isRequired,
       previewLink: PropTypes.string
     })
   }),
-  isCreateModalOpen: PropTypes.bool.isRequired,
-  isFinderModalOpen: PropTypes.bool.isRequired,
   settingIndex: PropTypes.number.isRequired,
-  owners: PropTypes.arrayOf(PropTypes.object).isRequired,
-  verificationInterval: PropTypes.shape({
-    label: PropTypes.string.isRequired,
-    value: PropTypes.number.isRequired
-  }).isRequired,
   externalCard: PropTypes.shape({
     _id: PropTypes.string.isRequired,
     status: PropTypes.number.isRequired,
     finderNode: PropTypes.object
   }),
   isGettingCard: PropTypes.bool,
-  isCreatingCard: PropTypes.bool,
-  createCardError: PropTypes.string,
   user: UserPropTypes.isRequired,
   isValidUser: PropTypes.bool.isRequired,
   isUpdatingUser: PropTypes.bool,
@@ -444,19 +296,15 @@ ExternalVerification.propTypes = {
   dockVisible: PropTypes.bool.isRequired,
 
   // Redux Actions
-  updateExternalVerificationInterval: PropTypes.func.isRequired,
-  addExternalOwner: PropTypes.func.isRequired,
-  removeExternalOwner: PropTypes.func.isRequired,
-  toggleExternalCreateModal: PropTypes.func.isRequired,
-  toggleExternalFinderModal: PropTypes.func.isRequired,
   toggleExternalSettingsModal: PropTypes.func.isRequired,
+  toggleExternalCreateModal: PropTypes.func.isRequired,
   toggleExternalDisplay: PropTypes.func.isRequired,
   updateExternalSettingIndex: PropTypes.func.isRequired,
   updateExternalIntegration: PropTypes.func.isRequired,
-  updateExternalFinderNode: PropTypes.func.isRequired,
   resetExternalState: PropTypes.func.isRequired,
-  requestCreateExternalCard: PropTypes.func.isRequired,
   requestGetExternalCard: PropTypes.func.isRequired,
+  updateExternalTitle: PropTypes.func.isRequired,
+  updateExternalLinkAnswer: PropTypes.func.isRequired,
   requestUpdateUser: PropTypes.func.isRequired,
   toggleDock: PropTypes.func.isRequired,
   openCard: PropTypes.func.isRequired

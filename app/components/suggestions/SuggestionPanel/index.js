@@ -18,10 +18,18 @@ const mapStateToProps = (state) => {
       isSearchingNodes,
       integrationResults,
       isSearchingIntegrations
-    }
+    },
+    display: { dockVisible }
   } = state;
 
-  return { ...cards, nodes, isSearchingNodes, integrationResults, isSearchingIntegrations };
+  return {
+    ...cards,
+    nodes,
+    isSearchingNodes,
+    integrationResults,
+    isSearchingIntegrations,
+    dockVisible
+  };
 };
 
 const mapDispatchToProps = {

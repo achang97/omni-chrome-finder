@@ -4,8 +4,9 @@ import PropTypes from 'prop-types';
 import { Timeago, Message } from 'components/common';
 import { CardStatusIndicator } from 'components/cards';
 
-import { copyCardUrl } from 'utils/card';
+import { copyText } from 'utils/window';
 import { getStyleApplicationFn } from 'utils/style';
+import { URL_REGEXES } from 'appConstants/externalVerification';
 
 import style from './external-result.css';
 
@@ -14,21 +15,28 @@ import SuggestionDropdown from '../../SuggestionDropdown';
 const s = getStyleApplicationFn(style);
 
 const ExternalResult = ({
+  id,
   url,
   onClick,
+  type,
   logo,
   title,
   timestamp,
   body,
   bodyClassName,
   card,
-  openCard
+  showDropdown,
+  openCard,
+  updateExternalLinkAnswer,
+  toggleExternalCreateModal,
+  updateExternalTitle,
+  updateExternalResultId
 }) => {
   const [showShare, setShowShare] = useState(false);
 
   const shareCard = () => {
     // Create invisible element with text
-    copyCardUrl(card._id);
+    copyText(url);
     setShowShare(true);
   };
 
@@ -49,16 +57,34 @@ const ExternalResult = ({
     window.open(url, '_blank');
   };
 
-  const ACTIONS = [
-    {
-      label: 'Copy Link',
-      onClick: shareCard
-    },
-    {
-      label: 'Open Omni Card',
-      onClick: () => openCard({ _id: card._id })
-    }
-  ];
+  let ACTIONS;
+  if (!card) {
+    ACTIONS = [
+      {
+        label: 'Verify with Omni',
+        onClick: () => {
+          toggleExternalCreateModal();
+          updateExternalTitle(title);
+          updateExternalResultId(id);
+
+          const { getLinks, regex } = URL_REGEXES[type];
+          const links = getLinks(url.match(regex));
+          updateExternalLinkAnswer({ type, ...links });
+        }
+      }
+    ];
+  } else {
+    ACTIONS = [
+      {
+        label: 'Copy Link',
+        onClick: shareCard
+      },
+      {
+        label: 'Open Omni Card',
+        onClick: () => openCard({ _id: card._id })
+      }
+    ];
+  }
 
   return (
     <div className={s('external-result flex-col cursor-pointer')} onClick={onResultClick}>
@@ -70,12 +96,10 @@ const ExternalResult = ({
           <div className={s('external-result-text')}> {title} </div>
           <div className={s(`external-result-description ${bodyClassName}`)}>{body}</div>
         </div>
-        {card && (
-          <div className={s('flex self-start')}>
-            <CardStatusIndicator status={card.status} />
-            <SuggestionDropdown actions={ACTIONS} />
-          </div>
-        )}
+        <div className={s('flex self-start')}>
+          {card && <CardStatusIndicator status={card.status} />}
+          {showDropdown && <SuggestionDropdown actions={ACTIONS} />}
+        </div>
       </div>
       {timestamp && (
         <Timeago
@@ -90,8 +114,10 @@ const ExternalResult = ({
 };
 
 ExternalResult.propTypes = {
+  id: PropTypes.string.isRequired,
   url: PropTypes.string.isRequired,
   onClick: PropTypes.func.isRequired,
+  type: PropTypes.string.isRequired,
   logo: PropTypes.string.isRequired,
   title: PropTypes.string.isRequired,
   timestamp: PropTypes.string,
@@ -100,14 +126,20 @@ ExternalResult.propTypes = {
   card: PropTypes.shape({
     _id: PropTypes.string.isRequired,
     status: PropTypes.string.isRequired
-  }).isRequired,
+  }),
+  showDropdown: PropTypes.bool,
 
   // Redux Actions
-  openCard: PropTypes.func.isRequired
+  openCard: PropTypes.func.isRequired,
+  updateExternalLinkAnswer: PropTypes.func.isRequired,
+  toggleExternalCreateModal: PropTypes.func.isRequired,
+  updateExternalTitle: PropTypes.func.isRequired,
+  updateExternalResultId: PropTypes.func.isRequired
 };
 
 ExternalResult.defaultProps = {
-  bodyClassName: ''
+  bodyClassName: '',
+  showDropdown: true
 };
 
 export default ExternalResult;

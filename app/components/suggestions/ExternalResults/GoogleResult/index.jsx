@@ -1,16 +1,23 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 
+import { INTEGRATIONS } from 'appConstants';
+
 import ExternalResult from '../ExternalResult';
 
-const GoogleResult = ({ name, webViewLink, iconLink, owners, card, onClick }) => {
+const FOLDER_MIME_TYPE = 'application/vnd.google-apps.folder';
+
+const GoogleResult = ({ id, name, webViewLink, mimeType, iconLink, owners, card, onClick }) => {
   return (
     <ExternalResult
+      id={id}
       url={webViewLink}
       onClick={onClick}
       logo={iconLink}
+      type={INTEGRATIONS.GOOGLE.type}
       title={name}
       card={card}
+      showDropdown={mimeType !== FOLDER_MIME_TYPE}
       body={
         owners.length !== 0 && (
           <>
@@ -28,9 +35,11 @@ const GoogleResult = ({ name, webViewLink, iconLink, owners, card, onClick }) =>
 };
 
 GoogleResult.propTypes = {
+  id: PropTypes.string.isRequired,
   name: PropTypes.string.isRequired,
   webViewLink: PropTypes.string.isRequired,
   iconLink: PropTypes.string.isRequired,
+  mimeType: PropTypes.string.isRequired,
   owners: PropTypes.arrayOf(
     PropTypes.shape({
       displayName: PropTypes.string.isRequired,
