@@ -1,4 +1,4 @@
-import { take, put } from 'redux-saga/effects';
+import { take, put, select } from 'redux-saga/effects';
 import {
   UPDATE_CARD_SUCCESS,
   MARK_OUT_OF_DATE_SUCCESS,
@@ -8,13 +8,15 @@ import {
   APPROVE_CARD_FROM_TASKS_SUCCESS,
   UPDATE_FINDER_FOLDER_SUCCESS,
   DELETE_CARD_SUCCESS,
-  DELETE_FINDER_NODES_SUCCESS
+  DELETE_FINDER_NODES_SUCCESS,
+  CREATE_EXTERNAL_CARD_SUCCESS
 } from 'actions/actionTypes';
 import {
   updateSearchCard,
   removeSearchCards,
   removeSearchNodes,
-  updateSearchNode
+  updateSearchNode,
+  updateSearchIntegrationResult
 } from 'actions/search';
 
 export default function* watchSearchActions() {
@@ -28,7 +30,8 @@ export default function* watchSearchActions() {
       APPROVE_CARD_FROM_TASKS_SUCCESS,
       UPDATE_FINDER_FOLDER_SUCCESS,
       DELETE_CARD_SUCCESS,
-      DELETE_FINDER_NODES_SUCCESS
+      DELETE_FINDER_NODES_SUCCESS,
+      CREATE_EXTERNAL_CARD_SUCCESS
     ]);
 
     const { type, payload } = action;
@@ -63,6 +66,19 @@ export default function* watchSearchActions() {
         yield put(removeSearchNodes(nodeIds));
         break;
       }
+
+      // Update Integration Results
+      // TODO: Handle deletion and status update of corresponding card
+      case CREATE_EXTERNAL_CARD_SUCCESS: {
+        const { card } = payload;
+        const {
+          externalLinkAnswer: { type: integrationType },
+          resultId
+        } = yield select((state) => state.externalVerification);
+        yield put(updateSearchIntegrationResult(integrationType, { id: resultId }, { card }));
+        break;
+      }
+
       default: {
         break;
       }

@@ -59,13 +59,13 @@ const CardContent = ({
     ) {
       openCardModal(CARD.MODAL_TYPE.SELECT_THREAD);
     }
-  }, [hasLoaded]);
+  }, [hasLoaded, status, slackThreadConvoPairs.length, slackReplies.length, openCardModal]);
 
   useEffect(() => {
     if (!hasLoaded && !isGettingCard) {
       requestGetCard();
     }
-  }, [_id]);
+  }, [_id, hasLoaded, isGettingCard, requestGetCard]);
 
   useEffect(() => {
     const questionElem = questionRef.current;

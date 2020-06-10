@@ -1,6 +1,7 @@
 import _ from 'lodash';
 import * as types from 'actions/actionTypes';
 import { SEARCH } from 'appConstants';
+import { updateArrayOfObjects } from 'utils/array';
 
 const BASE_CARDS_STATE = {
   cards: [],
@@ -114,6 +115,23 @@ export default function searchReducer(state = initialState, action) {
     case types.SEARCH_INTEGRATIONS_ERROR: {
       const { error } = payload;
       return { ...state, isSearchingIntegrations: false, searchIntegrationsError: error };
+    }
+
+    case types.UPDATE_SEARCH_INTEGRATION_RESULT: {
+      const { integrationType, matchParams, update } = payload;
+
+      const newIntegrationResults = state.integrationResults.map((currResults) => {
+        const { type: currType, items } = currResults;
+
+        if (currType !== integrationType) {
+          return currResults;
+        }
+
+        const newItems = updateArrayOfObjects(items, matchParams, update);
+        return { type: currType, items: newItems };
+      });
+
+      return { ...state, integrationResults: newIntegrationResults };
     }
 
     case types.SEARCH_TAGS_REQUEST: {

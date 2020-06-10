@@ -44,7 +44,7 @@ const StyledDropzone = ({ onDrop, accept, style, className, children, useBaseSty
       ...(isDragAccept ? acceptStyle : {}),
       ...(isDragReject ? rejectStyle : {})
     }),
-    [isDragActive, isDragReject]
+    [isDragActive, isDragReject, isDragAccept, style, useBaseStyle]
   );
 
   return (

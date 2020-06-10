@@ -93,16 +93,16 @@ const FinderView = ({
   const prevPath = usePrevious(activePath);
   useEffect(() => {
     if (activePath) {
-      const prevPathId = prevPath && prevPath._id;
+      const { _id: prevPathId, state: prevState = {} } = prevPath || {};
       if (prevPathId !== activePath._id) {
         // Changed "page" in the history
         loadFinderContent();
-      } else {
+      } else if (prevState.searchText !== activePath.state.searchText) {
         // Some other change, including search text, filters, etc.
         debouncedLoadFinderContent();
       }
     }
-  }, [activePath, loadFinderContent, debouncedLoadFinderContent]);
+  }, [prevPath, activePath, loadFinderContent, debouncedLoadFinderContent]);
 
   const unselectAll = useCallback(() => {
     updateSelectedFinderNodes(finderId, []);

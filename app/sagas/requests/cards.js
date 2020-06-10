@@ -256,6 +256,8 @@ function* convertCardToBackendFormat(card) {
       verificationInterval,
       permissions,
       permissionGroups,
+      slackThreadIndex,
+      slackThreadConvoPairs,
       slackReplies,
       attachments,
       finderNode
@@ -275,16 +277,20 @@ function* convertCardToBackendFormat(card) {
   let cardOwners = getArrayIds(owners.filter(isRegisteredUser));
   let cardSubscribers = _.union(cardOwners, getArrayIds(subscribers.filter(isRegisteredUser)));
   let cardTags = tags;
-  let cardSlackReplies = slackReplies.filter(({ selected }) => selected);
   let cardUpdateInterval = verificationInterval.value;
 
   if (permissions.value === PERMISSION_OPTION.JUST_ME) {
     cardOwners = [_id];
     cardSubscribers = [_id];
     cardTags = [];
-    cardSlackReplies = [];
     cardUpdateInterval = VERIFICATION_INTERVAL_OPTION.NEVER;
   }
+
+  const cardSlackReplies = slackReplies.filter(({ selected }) => selected);
+  const cardSlackThreadConvoPairs = slackThreadConvoPairs.map((pair, i) => ({
+    ...pair,
+    selected: i === slackThreadIndex
+  }));
 
   let finderNodeId = null;
   if (finderNode && finderNode._id !== ROOT.ID) {
@@ -300,6 +306,7 @@ function* convertCardToBackendFormat(card) {
     owners: cardOwners,
     subscribers: cardSubscribers,
     tags: cardTags,
+    slackThreadConvoPairs: cardSlackThreadConvoPairs,
     slackReplies: cardSlackReplies,
     updateInterval: cardUpdateInterval,
     status: isNewCard ? STATUS.UP_TO_DATE : status,

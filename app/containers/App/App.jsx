@@ -1,16 +1,17 @@
-import React, { useEffect } from 'react';
+import React, { useEffect, useRef } from 'react';
 import PropTypes from 'prop-types';
 import { Switch, Redirect } from 'react-router-dom';
 import Dock from 'react-dock';
 
 import { ROUTES } from 'appConstants';
-import { auth, segment, window as windowUtils } from 'utils';
+import { auth, segment } from 'utils';
 import { UserPropTypes } from 'utils/propTypes';
 
 import {
   Header,
   AutofindListener,
   ChromeMessageListener,
+  ExternalCreateModal,
   ToggleTab,
   MessageModal,
   MinimizeButton
@@ -48,29 +49,22 @@ const dockPanelStyles = {
 };
 
 const App = ({ dockVisible, isLoggedIn, user, showAutofind, requestGetUser, requestGetTasks }) => {
+  const isMounted = useRef(null);
+
+  const isVerified = user && user.isVerified;
+
   useEffect(() => {
-    if (isLoggedIn) {
+    if (isLoggedIn && !isMounted.current) {
+      segment.identify(user);
       requestGetUser();
-      if (user && user.isVerified) {
+      if (isVerified) {
         requestGetTasks();
       }
     }
-  }, []);
 
-  useEffect(() => {
-    if (dockVisible && isLoggedIn) {
-      const segmentScript = `!function(){var analytics=window.analytics=window.analytics||[];if(!analytics.initialize)if(analytics.invoked)window.console&&console.error&&console.error("Segment snippet included twice.");else{analytics.invoked=!0;analytics.methods=["trackSubmit","trackClick","trackLink","trackForm","pageview","identify","reset","group","track","ready","alias","debug","page","once","off","on"];analytics.factory=function(t){return function(){var e=Array.prototype.slice.call(arguments);e.unshift(t);analytics.push(e);return analytics}};for(var t=0;t<analytics.methods.length;t++){var e=analytics.methods[t];analytics[e]=analytics.factory(e)}analytics.load=function(t,e){var n=document.createElement("script");n.type="text/javascript";n.async=!0;n.src="https://cdn.segment.com/analytics.js/v1/"+t+"/analytics.min.js";var a=document.getElementsByTagName("script")[0];a.parentNode.insertBefore(n,a);analytics._loadOptions=e};analytics.SNIPPET_VERSION="4.1.0";
-        analytics.load('${process.env.SEGMENT_KEY}');
-        analytics.page();
-        }}();`;
+    isMounted.current = true;
+  }, [isLoggedIn, user, isVerified, requestGetUser, requestGetTasks]);
 
-      windowUtils.addScript({ code: segmentScript });
-      segment.identify(user);
-      segment.track({ name: 'Open Extension' });
-    }
-  }, [dockVisible]);
-
-  const isVerified = user && user.isVerified;
   const completedOnboarding = user && auth.hasCompletedOnboarding(user.onboarding);
   const showFullDock = isLoggedIn && isVerified && completedOnboarding;
 
@@ -116,6 +110,7 @@ const App = ({ dockVisible, isLoggedIn, user, showAutofind, requestGetUser, requ
       <AutofindListener />
       <ChromeMessageListener />
       <ToggleTab />
+      <ExternalCreateModal />
       {isLoggedIn && isVerified && dockVisible && <Cards />}
     </div>
   );

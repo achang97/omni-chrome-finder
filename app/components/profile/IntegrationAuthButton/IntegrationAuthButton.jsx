@@ -53,15 +53,10 @@ const IntegrationAuthButton = ({
 
   useEffect(() => {
     if (loggedIn && authWindow) {
-      try {
-        authWindow.close();
-      } catch {
-        // Do Nothing
-      }
-
+      authWindow.close();
       setAuthWindow(null);
     }
-  }, [loggedIn]);
+  }, [loggedIn, authWindow]);
 
   const onSignOut = () => {
     setDropdownOpen(false);

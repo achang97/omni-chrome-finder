@@ -8,6 +8,7 @@ import { CardUser } from 'components/cards';
 import { SuggestionCard } from 'components/suggestions';
 import { AUDIT_TYPE } from 'appConstants/profile';
 
+import { isSlackCard } from 'utils/card';
 import { getStyleApplicationFn } from 'utils/style';
 import { UserPropTypes } from 'utils/propTypes';
 import { usePrevious } from 'utils/react';
@@ -40,6 +41,7 @@ const ActivityLog = ({
         id={_id}
         maxQuestionLines={1}
         question={question}
+        createdFromSlack={isSlackCard(card)}
         externalLinkAnswer={externalLinkAnswer}
         showAnswer={false}
         status={status}

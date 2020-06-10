@@ -207,6 +207,11 @@ export function isExternalCard(card) {
   return !!card.externalLinkAnswer;
 }
 
+export function isSlackCard(card) {
+  const { slackThreadConvoPairs = [], slackReplies = [] } = card;
+  return slackThreadConvoPairs.length !== 0 || slackReplies.length !== 0;
+}
+
 export function getDraggableStyle(isDragging, draggableStyle, windowPosition) {
   const { top, left, ...rest } = draggableStyle;
 
@@ -239,6 +244,7 @@ export default {
   formatInvitedUser,
   isInvitedUser,
   isRegisteredUser,
+  isSlackCard,
   copyCardUrl,
   getDraggableStyle
 };

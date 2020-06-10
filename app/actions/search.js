@@ -56,6 +56,13 @@ export function handleSearchIntegrationsError(error) {
   return { type: types.SEARCH_INTEGRATIONS_ERROR, payload: { error } };
 }
 
+export function updateSearchIntegrationResult(integrationType, matchParams, update) {
+  return {
+    type: types.UPDATE_SEARCH_INTEGRATION_RESULT,
+    payload: { integrationType, matchParams, update }
+  };
+}
+
 export function requestSearchTags(name) {
   return { type: types.SEARCH_TAGS_REQUEST, payload: { name } };
 }

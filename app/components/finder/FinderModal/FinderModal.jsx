@@ -12,6 +12,7 @@ const s = getStyleApplicationFn(style);
 
 const FinderModal = ({
   isOpen,
+  fixed,
   important,
   finderId,
   startNodeId,
@@ -37,6 +38,7 @@ const FinderModal = ({
   return (
     <Modal
       isOpen={isOpen}
+      fixed={fixed}
       important={important}
       showHeader={false}
       overlayClassName={s(`finder-modal-overlay ${overlayClassName}`)}
@@ -59,6 +61,7 @@ const FinderModal = ({
 
 FinderModal.propTypes = {
   isOpen: PropTypes.bool.isRequired,
+  fixed: PropTypes.bool,
   important: PropTypes.bool,
   finderId: PropTypes.string.isRequired,
   startNodeId: PropTypes.string,
@@ -75,6 +78,7 @@ FinderModal.propTypes = {
 };
 
 FinderModal.defaultProps = {
+  fixed: false,
   important: false,
   className: '',
   overlayClassName: ''

@@ -85,7 +85,7 @@ const CardConfirmModals = ({
                 </div>
                 {isEditing && (
                   <CheckBox
-                    isSelected={selected}
+                    isSelected={!!selected}
                     toggleCheckbox={() => toggleSelectedMessage(i)}
                     className={s('flex-shrink-0 m-sm')}
                   />
@@ -147,7 +147,7 @@ const CardConfirmModals = ({
       onRequestClose: closeThreadModal,
       showPrimary: isEditing,
       showSecondary: false,
-      bodyClassName: s('p-0'),
+      bodyClassName: s('p-0 overflow-auto'),
       body: renderModalThreadBody(),
       primaryButtonProps: {
         text: 'Save',
@@ -353,7 +353,7 @@ const SlackRepliesPropTypes = PropTypes.arrayOf(
     senderName: PropTypes.string.isRequired,
     senderImageUrl: PropTypes.string.isRequired,
     message: PropTypes.string.isRequired,
-    selected: PropTypes.bool.isRequired
+    selected: PropTypes.bool
   })
 );
 

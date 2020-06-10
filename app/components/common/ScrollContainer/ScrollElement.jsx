@@ -1,4 +1,4 @@
-import React, { useRef, useEffect, useState } from 'react';
+import React, { useRef, useEffect, useState, useCallback } from 'react';
 import PropTypes from 'prop-types';
 
 import { NOOP } from 'appConstants';
@@ -27,23 +27,23 @@ const ScrollElement = ({
 
   const getMarginNumber = (px) => parseInt(px.substring(0, px.length - 2));
 
-  const getMarginAdjustment = () => {
-    const { marginTop, marginLeft, marginBottom, marginRight } = window.getComputedStyle(
-      elemRef.current.children[0]
-    );
-    return {
-      marginTop: verticalMarginAdjust ? getMarginNumber(marginTop) : 0,
-      marginLeft: horizontalMarginAdjust ? getMarginNumber(marginLeft) : 0,
-      marginBottom: verticalMarginAdjust ? getMarginNumber(marginBottom) : 0,
-      marginRight: horizontalMarginAdjust ? getMarginNumber(marginRight) : 0
-    };
-  };
-
   const getPositionAdjustment = () => {
     return { top: 0, left: 0, right: 0, bottom: 0 };
   };
 
-  const showOverflowElement = () => {
+  const showOverflowElement = useCallback(() => {
+    const getMarginAdjustment = () => {
+      const { marginTop, marginLeft, marginBottom, marginRight } = window.getComputedStyle(
+        elemRef.current.children[0]
+      );
+      return {
+        marginTop: verticalMarginAdjust ? getMarginNumber(marginTop) : 0,
+        marginLeft: horizontalMarginAdjust ? getMarginNumber(marginLeft) : 0,
+        marginBottom: verticalMarginAdjust ? getMarginNumber(marginBottom) : 0,
+        marginRight: horizontalMarginAdjust ? getMarginNumber(marginRight) : 0
+      };
+    };
+
     const overflowElem = overflowElemRef.current;
     const shownElem = elemRef.current;
 
@@ -114,7 +114,7 @@ const ScrollElement = ({
     }
 
     setPosition({ position: { scroll: shownElemPosition, overflow: overflowElemPosition } });
-  };
+  }, [horizontalMarginAdjust, verticalMarginAdjust, matchDimensions, position, setPosition]);
 
   const hideOverflowElement = () => {
     const overflowElem = overflowElemRef.current;
@@ -129,7 +129,7 @@ const ScrollElement = ({
         hideOverflowElement();
       }
     }
-  }, [showCondition]);
+  }, [showCondition, showOverflowElement]);
 
   const onMouseOver = (e) => {
     if (showCondition === 'hover') {
