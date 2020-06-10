@@ -9,7 +9,7 @@ import ExternalResult from '../ExternalResult';
 const s = getStyleApplicationFn();
 
 const ZendeskResult = ({
-  agentUrl,
+  html_url: htmlUrl,
   author,
   updated_at: updatedAt,
   title,
@@ -20,7 +20,7 @@ const ZendeskResult = ({
   onClick
 }) => (
   <ExternalResult
-    url={agentUrl}
+    url={htmlUrl}
     onClick={onClick}
     title={title}
     logo={logo}
@@ -46,7 +46,7 @@ const ZendeskResult = ({
 );
 
 ZendeskResult.propTypes = {
-  agentUrl: PropTypes.string.isRequired,
+  html_url: PropTypes.string.isRequired,
   author: PropTypes.shape({
     name: PropTypes.string
   }),

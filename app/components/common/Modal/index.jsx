@@ -82,6 +82,7 @@ const Modal = ({
                   }
                 }
               }}
+              className={s('min-h-0 flex-1 flex flex-col')}
             >
               {showHeader && (
                 <div className={s(`modal-header ${headerClassName}`)}>

@@ -29,7 +29,7 @@ const ConfirmModal = ({
     <Modal
       isOpen={isOpen}
       onRequestClose={onRequestClose}
-      bodyClassName={s('overflow-visible')}
+      bodyClassName={s(`confirm-modal-body ${bodyClassName}`)}
       overlayClassName={s(`rounded-b-lg ${overlayClassName}`)}
       shouldCloseOnOutsideClick={shouldCloseOnOutsideClick}
       title={title}
@@ -41,18 +41,16 @@ const ConfirmModal = ({
         showPrimary ? { text: 'Yes', onClick: onRequestClose, ...primaryButtonProps } : null
       }
     >
-      <div className={s(`confirm-modal-body ${bodyClassName}`)}>
-        {description && <div> {description} </div>}
-        {body}
-        <Message className={s('mt-xs')} message={error} type="error" />
-      </div>
+      {description && <div> {description} </div>}
+      {body}
+      <Message className={s('mt-xs')} message={error} type="error" />
     </Modal>
   );
 };
 
 ConfirmModal.propTypes = {
   isOpen: PropTypes.bool.isRequired,
-  title: PropTypes.string.isRequired,
+  title: PropTypes.string,
   description: PropTypes.string,
   body: PropTypes.node,
   error: PropTypes.string,

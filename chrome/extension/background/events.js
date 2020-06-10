@@ -46,8 +46,10 @@ chrome.runtime.onConnectExternal.addListener((port) => {
       justInstalled = false;
     })
     .catch(() => {
-      port.postMessage({ type: CHROME.EXTERNAL_MESSAGE.INSTALL });
-      justInstalled = false;
+      if (justInstalled) {
+        port.postMessage({ type: CHROME.EXTERNAL_MESSAGE.INSTALL });
+        justInstalled = false;
+      }
     });
 
   const listener = addStorageListener(CHROME.STORAGE.AUTH, ({ newValue, oldValue }) => {

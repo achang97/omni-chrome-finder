@@ -67,7 +67,7 @@ const AskTeammate = ({
         setAuthWindow(null);
       }
     }
-  }, [isLoggedInSlack]);
+  }, [isLoggedInSlack, authWindow, requestGetSlackConversations]);
 
   const renderTabHeader = () => {
     return (

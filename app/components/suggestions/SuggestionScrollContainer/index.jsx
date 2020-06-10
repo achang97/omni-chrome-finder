@@ -4,6 +4,7 @@ import _ from 'lodash';
 
 import { Loader, Triangle, ScrollContainer } from 'components/common';
 import { colors } from 'styles/colors';
+import { isSlackCard } from 'utils/card';
 import { getStyleApplicationFn } from 'utils/style';
 import { NodePropTypes } from 'utils/propTypes';
 import { NODE_TYPE } from 'appConstants/finder';
@@ -66,6 +67,7 @@ const SuggestionScrollContainer = ({
         id={_id}
         question={question}
         answer={answer}
+        createdFromSlack={isSlackCard(elem)}
         externalLinkAnswer={externalLinkAnswer}
         status={status}
         highlight={highlight}
