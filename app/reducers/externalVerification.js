@@ -92,7 +92,14 @@ export default function externalVerificationReducer(state = initialState, action
     }
     case types.CREATE_EXTERNAL_CARD_SUCCESS: {
       const { card } = payload;
-      return { ...state, isCreatingCard: false, externalCard: card, isCreateModalOpen: false };
+
+      const newState = { ...state, isCreatingCard: false, isCreateModalOpen: false };
+      if (state.resultId === null) {
+        // Request came from ExternalVerification component
+        newState.externalCard = card;
+      }
+
+      return newState;
     }
     case types.CREATE_EXTERNAL_CARD_ERROR: {
       const { error } = payload;
