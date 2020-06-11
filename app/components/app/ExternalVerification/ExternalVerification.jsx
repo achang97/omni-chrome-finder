@@ -57,13 +57,13 @@ const ExternalVerification = ({
 
       // Specific check for Zendesk brand url
       if (integration === INTEGRATIONS.ZENDESK.type) {
-        const { brands: zendeskBrands } = integrations[INTEGRATIONS.ZENDESK.type];
-        if (zendeskBrands) {
+        const { brands: zendeskBrands = [] } = integrations[INTEGRATIONS.ZENDESK.type];
+        if (zendeskBrands.length !== 0) {
           const hasMatch = zendeskBrands.some(({ brand_url: brandUrl }) =>
             link.startsWith(brandUrl)
           );
 
-          if (hasMatch) {
+          if (!hasMatch) {
             return false;
           }
         }
