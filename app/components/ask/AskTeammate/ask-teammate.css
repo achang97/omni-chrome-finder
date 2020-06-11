@@ -2,7 +2,8 @@
   height: 15px;
   box-sizing: content-box;
 
-  @apply m-xs relative text-purple-reg font-semibold text-xs rounded-lg flex justify-between items-center p-reg;
+  @apply flex justify-between items-center;
+  @apply m-xs relative text-purple-reg font-semibold text-xs rounded-lg p-reg min-w-0;
 }
 
 .ask-recipient-dropdown {

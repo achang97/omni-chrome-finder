@@ -121,7 +121,7 @@ function* getSlackChannelMembers({ recipient }) {
   if (type === ASK.SLACK_RECIPIENT_TYPE.CHANNEL) {
     try {
       yield put(requestGetSlackChannelMembers(id));
-      const members = yield call(doGet, `/slack/channels/${id}/members`);
+      const members = yield call(doGet, `/slack/conversations/${id}/members`);
       yield put(handleGetSlackChannelMembersSuccess(id, members));
     } catch (error) {
       const message = getErrorMessage(error);
