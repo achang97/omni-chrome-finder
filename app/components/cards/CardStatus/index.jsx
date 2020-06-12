@@ -5,7 +5,7 @@ import { FaPencilAlt, FaUserCheck } from 'react-icons/fa';
 import { IoMdAlert } from 'react-icons/io';
 
 import { Dropdown, Timeago, Triangle } from 'components/common';
-import { CARD, NOOP } from 'appConstants';
+import { CARD } from 'appConstants';
 
 import { colors } from 'styles/colors';
 import { getStyleApplicationFn } from 'utils/style';
@@ -82,7 +82,9 @@ const CardStatus = ({
   const [dropdownOpen, setDropdownOpen] = useState(false);
 
   const onClick = () => {
-    onDropdownOptionClick(status);
+    if (onDropdownOptionClick) {
+      onDropdownOptionClick(status);
+    }
     setDropdownOpen(false);
   };
 
@@ -179,7 +181,6 @@ CardStatus.propTypes = {
 CardStatus.defaultProps = {
   isActionable: false,
   className: '',
-  onDropdownOptionClick: NOOP,
   outOfDateReason: null
 };
 

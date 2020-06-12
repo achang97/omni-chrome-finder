@@ -5,7 +5,6 @@ import { Button } from 'components/common';
 import { getStyleApplicationFn } from 'utils/style';
 import { NodePropTypes } from 'utils/propTypes';
 import { FINDER_TYPE } from 'appConstants/finder';
-import { NOOP } from 'appConstants';
 
 import finderStyle from '../finder.css';
 
@@ -32,13 +31,24 @@ const FinderFooter = ({
     return activeNode;
   };
 
+  const isDisabled = (destination) => {
+    switch (typeof isPrimaryDisabled) {
+      case 'boolean':
+        return isPrimaryDisabled;
+      case 'function':
+        return isPrimaryDisabled(destination);
+      default:
+        return false;
+    }
+  };
+
   const render = () => {
     if (!isModal) {
       return null;
     }
 
     const destination = getDestinationNode();
-    const disabled = isPrimaryDisabled(destination);
+    const disabled = isDisabled(destination);
 
     return (
       <div
@@ -70,15 +80,11 @@ FinderFooter.propTypes = {
   isModal: PropTypes.bool.isRequired,
   onSecondaryClick: PropTypes.func,
   onPrimaryClick: PropTypes.func,
-  isPrimaryDisabled: PropTypes.func,
+  isPrimaryDisabled: PropTypes.oneOfType([PropTypes.func, PropTypes.bool]),
 
   // Redux State
   activeNode: NodePropTypes.isRequired,
   selectedNodes: PropTypes.arrayOf(NodePropTypes).isRequired
-};
-
-FinderFooter.defaultProps = {
-  isPrimaryDisabled: NOOP
 };
 
 export default FinderFooter;

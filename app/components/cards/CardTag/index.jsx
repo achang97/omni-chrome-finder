@@ -2,8 +2,6 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import { MdClose, MdLock } from 'react-icons/md';
 
-import { NOOP } from 'appConstants';
-
 import { getStyleApplicationFn } from 'utils/style';
 import style from './card-tag.css';
 
@@ -48,9 +46,7 @@ CardTag.propTypes = {
 
 CardTag.defaultProps = {
   className: '',
-  onClick: NOOP,
-  locked: false,
-  onRemoveClick: null
+  locked: false
 };
 
 export default CardTag;

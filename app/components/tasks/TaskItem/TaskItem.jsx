@@ -6,7 +6,7 @@ import { AiFillMinusCircle, AiFillQuestionCircle } from 'react-icons/ai';
 
 import { Button, PlaceholderImg, Timeago, Loader, Message } from 'components/common';
 import { CardTags } from 'components/cards';
-import { TASKS, NOOP } from 'appConstants';
+import { TASKS } from 'appConstants';
 import { UserPropTypes } from 'utils/propTypes';
 
 import SlackIcon from 'assets/images/icons/Slack_Mark.svg';
@@ -359,7 +359,6 @@ TaskItem.propTypes = {
 TaskItem.defaultProps = {
   notifier: null,
   error: null,
-  onHide: NOOP,
   isLoading: false,
   className: ''
 };
