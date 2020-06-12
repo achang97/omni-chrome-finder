@@ -1,6 +1,11 @@
 import _ from 'lodash';
 import * as types from 'actions/actionTypes';
-import { PROFILE, INTEGRATIONS } from 'appConstants';
+import { PROFILE } from 'appConstants';
+
+const BASE_INTEGRATION_STATE = {};
+PROFILE.USER_INTEGRATIONS.forEach(({ type }) => {
+  BASE_INTEGRATION_STATE[type] = {};
+});
 
 export const initialState = {
   user: {},
@@ -25,12 +30,7 @@ export const initialState = {
     [PROFILE.SETTING_SECTION_TYPE.EXTERNAL_VERIFICATION]: {}
   },
 
-  integrationState: {
-    [INTEGRATIONS.SLACK.type]: {},
-    [INTEGRATIONS.ZENDESK.type]: {},
-    [INTEGRATIONS.GOOGLE.type]: {},
-    [INTEGRATIONS.CONFLUENCE.type]: {}
-  }
+  integrationState: BASE_INTEGRATION_STATE
 };
 
 export default function displayReducer(state = initialState, action) {

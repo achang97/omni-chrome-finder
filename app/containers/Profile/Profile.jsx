@@ -52,13 +52,7 @@ const Profile = ({
     {
       sectionType: PROFILE.SETTING_SECTION_TYPE.INTEGRATIONS,
       title: 'Integrations',
-      options: [
-        INTEGRATIONS.GOOGLE,
-        INTEGRATIONS.SLACK,
-        INTEGRATIONS.ZENDESK
-        // INTEGRATIONS.CONFLUENCE,
-        // INTEGRATIONS.JIRA
-      ],
+      options: PROFILE.USER_INTEGRATIONS,
       startOpen: true,
       type: 'authButton'
     },
