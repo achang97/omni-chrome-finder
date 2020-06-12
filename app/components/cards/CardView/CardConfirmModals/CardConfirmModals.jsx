@@ -70,9 +70,11 @@ const CardConfirmModals = ({
               <div
                 key={id}
                 className={s(`
-                  p-reg relative cursor-pointer ${i % 2 === 0 ? '' : 'bg-purple-gray-10'}
+                  p-reg relative
+                  ${isEditing ? 'cursor-pointer' : ''}
+                  ${i % 2 === 0 ? '' : 'bg-purple-gray-10'}
                 `)}
-                onClick={() => toggleSelectedMessage(i)}
+                onClick={isEditing ? () => toggleSelectedMessage(i) : null}
               >
                 {link && (
                   <a

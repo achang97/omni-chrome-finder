@@ -325,7 +325,7 @@ const CardContent = ({
 
     if (!hasLoaded || isGettingCard) {
       return (
-        <div className={s('flex flex-col h-full justify-center bg-purple-2xlight')}>
+        <div className={s('flex flex-col h-full justify-center bg-purple-2xlight rounded-b-lg')}>
           <Loader />
         </div>
       );
