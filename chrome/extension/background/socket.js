@@ -2,7 +2,7 @@ import { CHROME, NODE_ENV, REQUEST } from 'appConstants';
 import { getStorage, addStorageListener } from 'utils/storage';
 import createNotification from './notifications';
 
-const MAX_CONNECTION_TRIES = 5;
+const MAX_CONNECTION_TRIES = 10;
 
 let socket;
 let numTries = 0;
