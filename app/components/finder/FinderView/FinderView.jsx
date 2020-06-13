@@ -55,7 +55,7 @@ const FinderView = ({
         }
         case FINDER.SEGMENT_TYPE.BOOKMARKED: {
           if (bookmarkIds.length === 0) {
-            clearSearchCards(SEARCH.TYPE.FINDER);
+            clearSearchCards(SEARCH.SOURCE.SEGMENT);
             return;
           }
           queryParams.statuses = Object.values(CARD.STATUS).join(',');
@@ -66,7 +66,7 @@ const FinderView = ({
           break;
       }
 
-      requestSearchCards(SEARCH.TYPE.FINDER, queryParams, clearCards);
+      requestSearchCards(SEARCH.SOURCE.SEGMENT, queryParams, clearCards);
     },
     [activePath, bookmarkIds, ownUserId, clearSearchCards, requestSearchCards]
   );

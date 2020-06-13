@@ -7,7 +7,7 @@ const mapStateToProps = (state) => {
   const {
     search: {
       cards: {
-        [SEARCH.TYPE.AUTOFIND]: { cards, isSearchingCards, hasReachedLimit }
+        [SEARCH.SOURCE.AUTOFIND]: { cards, isSearchingCards, hasReachedLimit }
       }
     }
   } = state;

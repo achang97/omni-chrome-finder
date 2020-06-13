@@ -97,16 +97,16 @@ function cancelRequest(cancelType) {
   return CANCEL_SOURCE[cancelType].token;
 }
 
-function* searchCards({ type, query, clearCards }) {
+function* searchCards({ source, query, clearCards }) {
   const cancelToken = cancelRequest(CANCEL_TYPE.CARDS);
 
   if (!query) {
     // eslint-disable-next-line no-param-reassign
-    query = yield select((state) => state.search.cards[type].oldQuery);
+    query = yield select((state) => state.search.cards[source].oldQuery);
   }
 
   try {
-    const page = yield select((state) => state.search.cards[type].page);
+    const page = yield select((state) => state.search.cards[source].page);
     let cards = [];
 
     if (!query.ids || query.ids.length !== 0) {
@@ -117,17 +117,17 @@ function* searchCards({ type, query, clearCards }) {
         orderBy: !query.q ? 'question' : null
       };
 
-      if (type === SEARCH.TYPE.AUTOFIND) {
+      if (source === SEARCH.SOURCE.AUTOFIND) {
         cards = yield call(doPost, '/suggest', body, { cancelToken });
       } else {
-        cards = yield call(doGet, '/cards/query', body, { cancelToken });
+        cards = yield call(doGet, '/cards/query', { source, ...body }, { cancelToken });
       }
     }
 
-    yield put(handleSearchCardsSuccess(type, cards, clearCards));
+    yield put(handleSearchCardsSuccess(source, cards, clearCards));
   } catch (error) {
     if (!isCancel(error)) {
-      yield put(handleSearchCardsError(type, getErrorMessage(error)));
+      yield put(handleSearchCardsError(source, getErrorMessage(error)));
     }
   }
 }

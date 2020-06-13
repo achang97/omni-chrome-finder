@@ -37,7 +37,7 @@ class AutofindListener extends Component {
       if (!prevEnabled && currEnabled) {
         this.handlePageLoad();
       } else if (prevEnabled && !currEnabled) {
-        clearSearchCards(SEARCH.TYPE.AUTOFIND);
+        clearSearchCards(SEARCH.SOURCE.AUTOFIND);
       }
     }
   }
@@ -117,9 +117,9 @@ class AutofindListener extends Component {
       if (pageText !== prevText || isNewPage) {
         this.setState({ prevText: pageText });
         if (pageText && pageText !== '') {
-          requestSearchCards(SEARCH.TYPE.AUTOFIND, { text: pageText });
+          requestSearchCards(SEARCH.SOURCE.AUTOFIND, { text: pageText });
         } else if (isNewPage) {
-          clearSearchCards(SEARCH.TYPE.AUTOFIND);
+          clearSearchCards(SEARCH.SOURCE.AUTOFIND);
         }
       }
     } else {
@@ -127,7 +127,7 @@ class AutofindListener extends Component {
         this.setState({ prevText: '' });
       }
 
-      clearSearchCards(SEARCH.TYPE.AUTOFIND);
+      clearSearchCards(SEARCH.SOURCE.AUTOFIND);
     }
   };
 

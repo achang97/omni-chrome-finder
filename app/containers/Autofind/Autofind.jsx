@@ -14,7 +14,7 @@ const Autofind = ({ isSearchingCards, cards, hasReachedLimit, requestSearchCards
     verticalMarginAdjust
     isSearchingCards={isSearchingCards}
     hasReachedLimit={hasReachedLimit}
-    onBottom={() => requestSearchCards(SEARCH.TYPE.AUTOFIND)}
+    onBottom={() => requestSearchCards(SEARCH.SOURCE.AUTOFIND)}
     getCardProps={(card, i) => ({
       className: i === 0 ? 'my-reg' : ''
     })}

@@ -44,7 +44,6 @@ export const AUDIT_TYPE = {
   MARK_CARD_OUTOFDATE: 'markCardOutOfDate',
   UPDATE_CARD: 'updateCard',
   CREATE_CARD: 'createCard',
-  CREATE_CARD_EXTENSION: 'createCardExtension',
   CONTEXT_MENU_SEARCH: 'contextMenuSearch',
   OPEN_EXTERNAL_DOC: 'openExternalDoc',
   SLACK_FIND_COMMAND: 'slackFindCommand',

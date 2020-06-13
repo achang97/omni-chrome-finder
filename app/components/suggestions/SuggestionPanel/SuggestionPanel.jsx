@@ -53,7 +53,7 @@ const SuggestionPanel = ({
   const integrationResultsRef = useRef(null);
 
   const searchCards = (clearCards) => {
-    requestSearchCards(SEARCH.TYPE.POPOUT, { q: query }, clearCards);
+    requestSearchCards(SEARCH.SOURCE.DOCK, { q: query }, clearCards);
 
     if (clearCards) {
       if (shouldSearchNodes) {
@@ -72,7 +72,7 @@ const SuggestionPanel = ({
 
   useEffect(() => {
     if (query === '') {
-      clearSearchCards(SEARCH.TYPE.POPOUT);
+      clearSearchCards(SEARCH.SOURCE.DOCK);
     } else {
       debouncedRequestSearch();
     }

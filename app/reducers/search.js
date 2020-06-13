@@ -9,8 +9,13 @@ const BASE_CARDS_STATE = {
   hasReachedLimit: false
 };
 
+const INITIAL_CARDS_STATE = {};
+Object.values(SEARCH.SOURCE).forEach((type) => {
+  INITIAL_CARDS_STATE[type] = BASE_CARDS_STATE;
+});
+
 const initialState = {
-  cards: _.mapValues(SEARCH.TYPE, () => BASE_CARDS_STATE),
+  cards: INITIAL_CARDS_STATE,
   nodes: [], // TODO: make this take a type
   integrationResults: [],
   tags: [],
@@ -22,7 +27,7 @@ const initialState = {
 export default function searchReducer(state = initialState, action) {
   const { type, payload = {} } = action;
 
-  const updateCardStateByType = (searchType, updateFn) => ({
+  const updateCardStateBySource = (searchType, updateFn) => ({
     ...state,
     cards: {
       ...state.cards,
@@ -40,8 +45,8 @@ export default function searchReducer(state = initialState, action) {
 
   switch (type) {
     case types.SEARCH_CARDS_REQUEST: {
-      const { type: searchType, query, clearCards } = payload;
-      return updateCardStateByType(searchType, (cardState) => ({
+      const { source, query, clearCards } = payload;
+      return updateCardStateBySource(source, (cardState) => ({
         ...(clearCards ? BASE_CARDS_STATE : {}),
         isSearchingCards: true,
         searchCardsError: null,
@@ -49,8 +54,8 @@ export default function searchReducer(state = initialState, action) {
       }));
     }
     case types.SEARCH_CARDS_SUCCESS: {
-      const { type: searchType, cards, clearCards } = payload;
-      return updateCardStateByType(searchType, (cardState) => ({
+      const { source, cards, clearCards } = payload;
+      return updateCardStateBySource(source, (cardState) => ({
         isSearchingCards: false,
         cards: clearCards ? cards : _.unionBy(cardState.cards, cards, '_id'),
         page: clearCards ? 1 : cardState.page + 1,
@@ -58,16 +63,16 @@ export default function searchReducer(state = initialState, action) {
       }));
     }
     case types.SEARCH_CARDS_ERROR: {
-      const { type: searchType, error } = payload;
-      return updateCardStateByType(searchType, () => ({
+      const { source, error } = payload;
+      return updateCardStateBySource(source, () => ({
         isSearchingCards: false,
         searchCardsError: error
       }));
     }
 
     case types.CLEAR_SEARCH_CARDS: {
-      const { type: searchType } = payload;
-      return updateCardStateByType(searchType, () => BASE_CARDS_STATE);
+      const { source } = payload;
+      return updateCardStateBySource(source, () => BASE_CARDS_STATE);
     }
 
     case types.UPDATE_SEARCH_CARD: {
