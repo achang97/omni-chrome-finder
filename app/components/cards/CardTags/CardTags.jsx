@@ -5,7 +5,7 @@ import { MdLock } from 'react-icons/md';
 import _ from 'lodash';
 
 import Select from 'components/common/Select';
-import { NOOP, ANIMATE } from 'appConstants';
+import { ANIMATE } from 'appConstants';
 
 import { getStyleApplicationFn } from 'utils/style';
 import style from './card-tags.css';
@@ -109,7 +109,7 @@ class CardTags extends Component {
             } ${className}`
           )}
           onClick={onTagClick}
-          onRemoveClick={isEditable ? () => onRemoveClick({ tag, index }) : null}
+          onRemoveClick={isEditable && onRemoveClick ? () => onRemoveClick({ tag, index }) : null}
         />
       </React.Fragment>
     );
@@ -158,7 +158,7 @@ class CardTags extends Component {
             menuShouldScrollIntoView
             isClearable={false}
             placeholder="Add tags..."
-            onBlur={hideSelectOnBlur ? () => this.setState({ showSelect: false }) : NOOP}
+            onBlur={hideSelectOnBlur ? () => this.setState({ showSelect: false }) : null}
             getOptionLabel={(option) => option.name}
             getOptionValue={(option) => option._id}
             formatOptionLabel={this.renderOptionLabel}

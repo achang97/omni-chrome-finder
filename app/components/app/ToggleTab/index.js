@@ -13,7 +13,7 @@ const mapStateToProps = (state) => {
   const {
     search: {
       cards: {
-        [SEARCH.TYPE.AUTOFIND]: { cards }
+        [SEARCH.SOURCE.AUTOFIND]: { cards }
       }
     },
     display: { dockVisible, autofindShown, toggleTabShown, toggleTabY }

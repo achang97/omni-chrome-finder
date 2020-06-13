@@ -5,14 +5,13 @@ import { CardLocation } from 'components/cards';
 
 import { MAIN_STATE_ID } from 'appConstants/finder';
 import { getStyleApplicationFn } from 'utils/style';
-import { NodePropTypes } from 'utils/propTypes';
 import FinderFolder from 'assets/images/finder/folder.svg';
 
 import mainStyle from '../suggestion.css';
 
 const s = getStyleApplicationFn(mainStyle);
 
-const SuggestionNode = ({ className, id, name, finderNode, openFinder, pushFinderNode }) => {
+const SuggestionNode = ({ className, id, name, path, openFinder, pushFinderNode }) => {
   const onClick = () => {
     openFinder();
     pushFinderNode(MAIN_STATE_ID, id);
@@ -25,7 +24,7 @@ const SuggestionNode = ({ className, id, name, finderNode, openFinder, pushFinde
     >
       <div className={s('min-w-0')}>
         <CardLocation
-          finderNode={finderNode}
+          path={path}
           pathClassName={s('suggestion-elem-path')}
           maxPathLength={3}
           wrap={false}
@@ -41,7 +40,12 @@ SuggestionNode.propTypes = {
   id: PropTypes.string.isRequired,
   name: PropTypes.string.isRequired,
   className: PropTypes.string,
-  finderNode: NodePropTypes,
+  path: PropTypes.arrayOf(
+    PropTypes.shape({
+      _id: PropTypes.string.isRequired,
+      name: PropTypes.string.isRequired
+    })
+  ),
 
   // Redux Actions
   openFinder: PropTypes.func.isRequired,

@@ -1,6 +1,5 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import _ from 'lodash';
 
 import { Loader, Triangle, ScrollContainer } from 'components/common';
 import { colors } from 'styles/colors';
@@ -52,7 +51,7 @@ const SuggestionScrollContainer = ({
           id={_id}
           name={name}
           className={s('suggestion-scroll-container-card')}
-          finderNode={path && _.last(path)}
+          path={path}
         />
       );
     }

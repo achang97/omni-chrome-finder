@@ -1,4 +1,5 @@
 import _ from 'lodash';
+import queryString from 'query-string';
 import { take, all, call, fork, put, select } from 'redux-saga/effects';
 import { doGet, doPost, doPut, doDelete, getErrorMessage } from 'utils/request';
 import { getArrayIds } from 'utils/array';
@@ -18,7 +19,8 @@ import {
   STATUS,
   PERMISSION_OPTION,
   VERIFICATION_INTERVAL_OPTION,
-  DELAYED_TASK_TYPE
+  DELAYED_TASK_TYPE,
+  SOURCE
 } from 'appConstants/card';
 import { ROOT } from 'appConstants/finder';
 import {
@@ -321,7 +323,8 @@ function* createCard() {
   try {
     if (hasValidEdits(activeCard.edits)) {
       const newCardInfo = yield call(convertCardToBackendFormat, activeCard);
-      const card = yield call(doPost, '/cards', newCardInfo);
+      const source = queryString.stringify({ source: SOURCE.INTERNAL });
+      const card = yield call(doPost, `/cards?${source}`, newCardInfo);
 
       const delayedTaskRequests = yield call(getDelayedTaskRequests, {
         ...activeCard,

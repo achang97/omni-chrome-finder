@@ -1,9 +1,9 @@
-export const TYPE = {
-  POPOUT: 'POPOUT',
-  FINDER: 'FINDER',
-  AUTOFIND: 'AUTOFIND'
+export const SOURCE = {
+  DOCK: 'dock',
+  SEGMENT: 'segment',
+  AUTOFIND: 'autofind'
 };
 
 export const PAGE_SIZE = 20;
 
-export default { TYPE, PAGE_SIZE };
+export default { SOURCE, PAGE_SIZE };

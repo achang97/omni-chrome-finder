@@ -19,7 +19,7 @@ const mapStateToProps = (state, ownProps) => {
     },
     search: {
       cards: {
-        [SEARCH.TYPE.FINDER]: {
+        [SEARCH.SOURCE.SEGMENT]: {
           hasReachedLimit: hasReachedSegmentLimit,
           isSearchingCards: isSearchingSegment,
           cards

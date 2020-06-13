@@ -16,7 +16,6 @@ import { MdClose, MdError, MdOpenInNew } from 'react-icons/md';
 
 import { Loader, ToggleableInput, Tooltip } from 'components/common';
 import { isVideo, isImage, isAudio, getFileUrl } from 'utils/file';
-import { NOOP } from 'appConstants';
 
 import { getStyleApplicationFn } from 'utils/style';
 import style from './card-attachment.css';
@@ -156,7 +155,7 @@ const CardAttachment = ({
           value={fileName}
           inputProps={{
             placeholder: 'File Name',
-            onChange: (e) => onFileNameChange(e.target.value),
+            onChange: (e) => onFileNameChange && onFileNameChange(e.target.value),
             className: s('flex-1')
           }}
           className={fileNameClassName}
@@ -198,9 +197,7 @@ CardAttachment.defaultProps = {
   removeIconClassName: '',
   typeIconClassName: '',
   error: null,
-  onClick: NOOP,
   onRemoveClick: null,
-  onFileNameChange: NOOP,
   isLoading: false,
   isEditable: false
 };

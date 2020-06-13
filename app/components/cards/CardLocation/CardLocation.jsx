@@ -16,6 +16,7 @@ const HOME_NODE = { _id: FINDER.ROOT.ID, name: FINDER.ROOT.NAME };
 
 const CardLocation = ({
   finderNode,
+  path,
   onChangeClick,
   isEditable,
   isPathClickable,
@@ -30,7 +31,13 @@ const CardLocation = ({
     pushFinderNode(FINDER.MAIN_STATE_ID, nodeId);
   };
 
-  const fullPath = [HOME_NODE, ...getFullPath(finderNode)];
+  let fullPath = [HOME_NODE];
+  if (finderNode) {
+    fullPath = fullPath.concat(getFullPath(finderNode));
+  } else if (path) {
+    fullPath = fullPath.concat(path);
+  }
+
   if (!maxPathLength) {
     // eslint-disable-next-line no-param-reassign
     maxPathLength = fullPath.length;
@@ -70,10 +77,16 @@ const CardLocation = ({
 };
 
 CardLocation.propTypes = {
+  finderNode: NodePropTypes,
+  path: PropTypes.arrayOf(
+    PropTypes.shape({
+      _id: PropTypes.string.isRequired,
+      name: PropTypes.string.isRequired
+    })
+  ),
   isEditable: PropTypes.bool,
   isPathClickable: PropTypes.bool,
   onChangeClick: PropTypes.func,
-  finderNode: NodePropTypes,
   className: PropTypes.string,
   pathClassName: PropTypes.string,
   maxPathLength: PropTypes.number,

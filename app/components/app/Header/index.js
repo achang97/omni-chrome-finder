@@ -9,7 +9,7 @@ const mapStateToProps = (state) => {
     profile: { user },
     search: {
       cards: {
-        [SEARCH.TYPE.AUTOFIND]: { cards }
+        [SEARCH.SOURCE.AUTOFIND]: { cards }
       }
     },
     tasks: { tasks }

@@ -1,3 +1,5 @@
+import { INTEGRATIONS } from './general';
+
 export const SETTING_SECTION_TYPE = {
   INTEGRATIONS: 'INTEGRATIONS',
   AUTOFIND: 'AUTOFIND',
@@ -42,7 +44,6 @@ export const AUDIT_TYPE = {
   MARK_CARD_OUTOFDATE: 'markCardOutOfDate',
   UPDATE_CARD: 'updateCard',
   CREATE_CARD: 'createCard',
-  CREATE_CARD_EXTENSION: 'createCardExtension',
   CONTEXT_MENU_SEARCH: 'contextMenuSearch',
   OPEN_EXTERNAL_DOC: 'openExternalDoc',
   SLACK_FIND_COMMAND: 'slackFindCommand',
@@ -58,6 +59,14 @@ export const SEEN_FEATURES = {
   TASKS: 'tasks'
 };
 
+export const USER_INTEGRATIONS = [
+  INTEGRATIONS.CONFLUENCE,
+  INTEGRATIONS.GOOGLE,
+  INTEGRATIONS.JIRA,
+  INTEGRATIONS.SLACK,
+  INTEGRATIONS.ZENDESK
+];
+
 export const ONBOARDING_COMPLETE = -1;
 
 export default {
@@ -67,5 +76,6 @@ export default {
   USER_PERFORMANCE,
   AUDIT_TYPE,
   SEEN_FEATURES,
+  USER_INTEGRATIONS,
   ONBOARDING_COMPLETE
 };

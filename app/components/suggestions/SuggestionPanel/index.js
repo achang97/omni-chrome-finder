@@ -13,7 +13,7 @@ import SuggestionPanel from './SuggestionPanel';
 const mapStateToProps = (state) => {
   const {
     search: {
-      cards: { [SEARCH.TYPE.POPOUT]: cards },
+      cards: { [SEARCH.SOURCE.DOCK]: cards },
       nodes,
       isSearchingNodes,
       integrationResults,
