@@ -1,6 +1,8 @@
+import _ from 'lodash';
+import { SOURCE as ALL_SOURCES } from './general';
+
 export const SOURCE = {
-  DOCK: 'dock',
-  SEGMENT: 'segment',
+  ..._.pickBy(ALL_SOURCES, (value) => [ALL_SOURCES.DOCK, ALL_SOURCES.SEGMENT].includes(value)),
   AUTOFIND: 'autofind'
 };
 
