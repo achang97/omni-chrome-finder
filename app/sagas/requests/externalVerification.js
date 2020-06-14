@@ -2,7 +2,8 @@ import queryString from 'query-string';
 import { take, call, fork, select, put } from 'redux-saga/effects';
 import { doGet, doPost, getErrorMessage } from 'utils/request';
 import { getArrayIds } from 'utils/array';
-import { STATUS, SOURCE } from 'appConstants/card';
+import { STATUS } from 'appConstants/card';
+import { SOURCE } from 'appConstants';
 import { GET_EXTERNAL_CARD_REQUEST, CREATE_EXTERNAL_CARD_REQUEST } from 'actions/actionTypes';
 import {
   handleGetExternalCardSuccess,

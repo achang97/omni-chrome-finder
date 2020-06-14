@@ -90,11 +90,6 @@ export const DELAYED_TASK_TYPE = {
   ADD_USER_TO_PERMISSION_GROUP: 'addUserToPermissionGroup'
 };
 
-export const SOURCE = {
-  INTERNAL: 'internal',
-  EXTERNAL: 'external'
-};
-
 export default {
   DIMENSIONS,
   HINTS,
@@ -106,6 +101,5 @@ export default {
   DEFAULT_VERIFICATION_INTERVAL,
   PERMISSION_OPTION,
   PERMISSION_OPTIONS,
-  DELAYED_TASK_TYPE,
-  SOURCE
+  DELAYED_TASK_TYPE
 };
