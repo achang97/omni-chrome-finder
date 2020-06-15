@@ -4,7 +4,7 @@ import { Switch, Redirect } from 'react-router-dom';
 import Dock from 'react-dock';
 
 import { ROUTES } from 'appConstants';
-import { auth, segment } from 'utils';
+import { auth } from 'utils';
 import { UserPropTypes } from 'utils/propTypes';
 
 import {
@@ -55,7 +55,6 @@ const App = ({ dockVisible, isLoggedIn, user, showAutofind, requestGetUser, requ
 
   useEffect(() => {
     if (isLoggedIn && !isMounted.current) {
-      segment.identify(user);
       requestGetUser();
       if (isVerified) {
         requestGetTasks();

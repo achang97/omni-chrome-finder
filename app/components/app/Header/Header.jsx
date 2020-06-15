@@ -6,7 +6,6 @@ import { IoIosFolder } from 'react-icons/io';
 import { Tabs, Tab, Badge, PlaceholderImg } from 'components/common';
 import { ROUTES } from 'appConstants';
 
-import { segment } from 'utils';
 import { UserPropTypes } from 'utils/propTypes';
 
 import { colors } from 'styles/colors';
@@ -24,7 +23,6 @@ const Header = ({
   location: { pathname }
 }) => {
   const handleTabClick = (activeLink) => {
-    segment.track({ name: `Open ${activeLink[1].toUpperCase() + activeLink.substr(2)} Tab` });
     history.push(activeLink);
   };
 
