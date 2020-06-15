@@ -8,7 +8,6 @@ import {
 } from 'actions/actionTypes';
 import { CHROME } from 'appConstants';
 import { setStorage } from 'utils/storage';
-import * as segment from 'utils/segment';
 
 export default function* watchAuthActions() {
   while (true) {
@@ -25,7 +24,6 @@ export default function* watchAuthActions() {
       case LOGIN_SUCCESS:
       case SIGNUP_SUCCESS: {
         setStorage(CHROME.STORAGE.AUTH, payload);
-        segment.identify(payload.user);
         break;
       }
       case VERIFY_SUCCESS: {
