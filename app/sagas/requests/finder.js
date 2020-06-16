@@ -23,7 +23,7 @@ import {
   handleMoveFinderNodesSuccess,
   handleMoveFinderNodesError
 } from 'actions/finder';
-import { ROOT, FINDER_TYPE } from 'appConstants/finder';
+import { ROOT, FINDER_TYPE, PATH_TYPE } from 'appConstants/finder';
 
 export default function* watchFinderRequests() {
   while (true) {
@@ -64,10 +64,10 @@ export default function* watchFinderRequests() {
   }
 }
 
-function* getParentNodeId(finderId) {
+function* getParentNode(finderId) {
   const finderHistory = yield select((state) => state.finder[finderId].history);
   const parentNode = _.last(finderHistory);
-  return parentNode._id;
+  return parentNode;
 }
 
 function* getFolderEdits(finderId) {
@@ -107,7 +107,7 @@ function* getGroupedSelectedNodeIds(finderId) {
 
 function* getNode({ finderId }) {
   try {
-    const nodeId = yield call(getParentNodeId, finderId);
+    const { _id: nodeId } = yield call(getParentNode, finderId);
     const finderHistory = yield select((state) => state.finder[finderId].history);
     const {
       state: { searchText }
@@ -131,7 +131,7 @@ function* getNode({ finderId }) {
 function* createFolder({ finderId }) {
   try {
     const newFolderInfo = yield call(getFolderEdits, finderId);
-    const parentNodeId = yield call(getParentNodeId, finderId);
+    const { _id: parentNodeId } = yield call(getParentNode, finderId);
     yield call(doPost, `/finder/node/${parentNodeId}/createFolder`, newFolderInfo);
 
     yield put(requestGetFinderNode(finderId));
@@ -159,6 +159,8 @@ function* updateFolder({ finderId }) {
 function* deleteNodes({ finderId }) {
   try {
     const groupedNodeIds = yield call(getGroupedSelectedNodeIds, finderId);
+    const { type: parentNodeType } = yield call(getParentNode, finderId);
+
     const { [FINDER_TYPE.NODE]: nodeIds, [FINDER_TYPE.CARD]: cardIds } = groupedNodeIds;
 
     const requests = nodeIds.map((nodeId) => call(doDelete, `/finder/node/${nodeId}`));
@@ -167,7 +169,11 @@ function* deleteNodes({ finderId }) {
     }
     yield all(requests);
 
-    yield put(requestGetFinderNode(finderId));
+    // Confirm presence in node view before attempted reload
+    if (parentNodeType === PATH_TYPE.NODE) {
+      yield put(requestGetFinderNode(finderId));
+    }
+
     yield put(handleDeleteFinderNodesSuccess(finderId, nodeIds, cardIds));
   } catch (error) {
     yield put(handleDeleteFinderNodesError(finderId, getErrorMessage(error)));

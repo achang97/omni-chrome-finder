@@ -102,14 +102,20 @@ const FinderConfirmModals = ({
       title: 'Failed to Move Content',
       description: moveNodesError,
       shouldCloseOnOutsideClick: true,
-      showSecondary: false
+      showSecondary: false,
+      primaryButtonProps: {
+        text: 'Ok'
+      }
     },
     {
       modalType: MODAL_TYPE.ERROR_GET,
       title: 'Folder Not Found',
       description: getNodeError,
       shouldCloseOnOutsideClick: true,
-      showSecondary: false
+      showSecondary: false,
+      primaryButtonProps: {
+        text: 'Ok'
+      }
     }
   ];
 
