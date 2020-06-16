@@ -21,7 +21,7 @@ import {
   VERIFICATION_INTERVAL_OPTION,
   DELAYED_TASK_TYPE
 } from 'appConstants/card';
-import { SOURCE } from 'appConstants';
+import { AUDIT } from 'appConstants/profile';
 import { ROOT } from 'appConstants/finder';
 import {
   GET_CARD_REQUEST,
@@ -323,7 +323,7 @@ function* createCard() {
   try {
     if (hasValidEdits(activeCard.edits)) {
       const newCardInfo = yield call(convertCardToBackendFormat, activeCard);
-      const source = queryString.stringify({ source: SOURCE.DOCK });
+      const source = queryString.stringify({ source: AUDIT.SOURCE.DOCK });
       const card = yield call(doPost, `/cards?${source}`, newCardInfo);
 
       const delayedTaskRequests = yield call(getDelayedTaskRequests, {

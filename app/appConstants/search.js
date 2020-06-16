@@ -1,8 +1,8 @@
 import _ from 'lodash';
-import { SOURCE as ALL_SOURCES } from './general';
+import { AUDIT } from './profile';
 
 export const SOURCE = {
-  ..._.pickBy(ALL_SOURCES, (value) => [ALL_SOURCES.DOCK, ALL_SOURCES.SEGMENT].includes(value)),
+  ..._.pickBy(AUDIT.SOURCE, (value) => [AUDIT.SOURCE.DOCK, AUDIT.SOURCE.SEGMENT].includes(value)),
   AUTOFIND: 'autofind'
 };
 

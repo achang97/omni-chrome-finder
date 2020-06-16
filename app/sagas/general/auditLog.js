@@ -1,7 +1,7 @@
 import { take, put, select } from 'redux-saga/effects';
 import { TOGGLE_DOCK } from 'actions/actionTypes';
 import { requestLogAudit } from 'actions/auditLog';
-import { AUDIT_TYPE } from 'appConstants/profile';
+import { AUDIT } from 'appConstants/profile';
 
 export default function* watchAuditLogActions() {
   while (true) {
@@ -14,7 +14,7 @@ export default function* watchAuditLogActions() {
         case TOGGLE_DOCK: {
           const dockVisible = yield select((state) => state.display.dockVisible);
           if (dockVisible) {
-            yield put(requestLogAudit(AUDIT_TYPE.OPEN_EXTENSION, {}));
+            yield put(requestLogAudit(AUDIT.TYPE.OPEN_EXTENSION, {}));
           }
           break;
         }

@@ -36,18 +36,27 @@ export const USER_PERFORMANCE = {
   USE_SLACK_FIND: 'useSlackFind'
 };
 
-export const AUDIT_TYPE = {
-  SEARCH: 'search',
-  VIEW_CARD: 'viewCard',
-  USER_ACTION: 'userAction',
-  MARK_CARD_UPTODATE: 'markCardUpToDate',
-  MARK_CARD_OUTOFDATE: 'markCardOutOfDate',
-  UPDATE_CARD: 'updateCard',
-  CREATE_CARD: 'createCard',
-  CONTEXT_MENU_SEARCH: 'contextMenuSearch',
-  OPEN_EXTERNAL_DOC: 'openExternalDoc',
-  SLACK_FIND_COMMAND: 'slackFindCommand',
-  OPEN_EXTENSION: 'openExtension'
+export const AUDIT = {
+  TYPE: {
+    SEARCH: 'search',
+    VIEW_CARD: 'viewCard',
+    USER_ACTION: 'userAction',
+    MARK_CARD_UPTODATE: 'markCardUpToDate',
+    MARK_CARD_OUTOFDATE: 'markCardOutOfDate',
+    UPDATE_CARD: 'updateCard',
+    CREATE_CARD: 'createCard',
+    CONTEXT_MENU_SEARCH: 'contextMenuSearch',
+    OPEN_EXTERNAL_DOC: 'openExternalDoc',
+    OPEN_EXTENSION: 'openExtension'
+  },
+  SOURCE: {
+    FINDER: 'finder',
+    DOCK: 'dock',
+    EXTERNAL: 'external',
+    SLACK: 'slack',
+    SEGMENT: 'segment',
+    DASHBOARD: 'dashboard'
+  }
 };
 
 export const SEEN_FEATURES = {
@@ -73,8 +82,8 @@ export default {
   SETTING_SECTION_TYPE,
   USER_ROLE,
   USER_BADGE,
+  AUDIT,
   USER_PERFORMANCE,
-  AUDIT_TYPE,
   SEEN_FEATURES,
   USER_INTEGRATIONS,
   ONBOARDING_COMPLETE

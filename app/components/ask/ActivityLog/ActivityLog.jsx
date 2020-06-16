@@ -6,7 +6,7 @@ import { FaListUl } from 'react-icons/fa';
 import { Loader, Tabs, Tab, Timeago } from 'components/common';
 import { CardUser } from 'components/cards';
 import { SuggestionCard } from 'components/suggestions';
-import { AUDIT_TYPE } from 'appConstants/profile';
+import { AUDIT } from 'appConstants/profile';
 
 import { isSlackCard } from 'utils/card';
 import { getStyleApplicationFn } from 'utils/style';
@@ -65,13 +65,13 @@ const ActivityLog = ({
 
   const getActionName = (type) => {
     switch (type) {
-      case AUDIT_TYPE.VIEW_CARD: {
+      case AUDIT.TYPE.VIEW_CARD: {
         return 'viewed';
       }
-      case AUDIT_TYPE.CREATE_CARD: {
+      case AUDIT.TYPE.CREATE_CARD: {
         return 'created';
       }
-      case AUDIT_TYPE.UPDATE_CARD: {
+      case AUDIT.TYPE.UPDATE_CARD: {
         return 'updated';
       }
       default: {

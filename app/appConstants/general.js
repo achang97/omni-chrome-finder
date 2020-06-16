@@ -62,13 +62,6 @@ export const INTEGRATIONS = {
 
 export const INTEGRATIONS_MAP = _.mapKeys(INTEGRATIONS, ({ type }) => type);
 
-export const SOURCE = {
-  FINDER: 'finder',
-  DOCK: 'dock',
-  EXTERNAL: 'external',
-  SEGMENT: 'segment'
-};
-
 export const NOOP = () => {};
 
 export default {
@@ -79,6 +72,5 @@ export default {
   URL,
   INTEGRATIONS,
   INTEGRATIONS_MAP,
-  SOURCE,
   NOOP
 };

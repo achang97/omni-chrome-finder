@@ -3,7 +3,7 @@ import { take, call, fork, select, put } from 'redux-saga/effects';
 import { doGet, doPost, getErrorMessage } from 'utils/request';
 import { getArrayIds } from 'utils/array';
 import { STATUS } from 'appConstants/card';
-import { SOURCE } from 'appConstants';
+import { AUDIT } from 'appConstants/profile';
 import { GET_EXTERNAL_CARD_REQUEST, CREATE_EXTERNAL_CARD_REQUEST } from 'actions/actionTypes';
 import {
   handleGetExternalCardSuccess,
@@ -57,7 +57,7 @@ function* createCard() {
       updateInterval: verificationInterval.value,
       status: STATUS.UP_TO_DATE
     };
-    const source = queryString.stringify({ source: SOURCE.EXTERNAL });
+    const source = queryString.stringify({ source: AUDIT.SOURCE.EXTERNAL });
     const newCard = yield call(doPost, `/cards?${source}`, newCardInfo);
     yield put(handleCreateExternalCardSuccess(newCard));
   } catch (error) {

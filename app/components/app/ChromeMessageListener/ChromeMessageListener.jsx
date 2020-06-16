@@ -109,7 +109,7 @@ class ChromeMessageListener extends Component {
             toggleAskTeammate();
           }
           updateAskSearchText(selectedText);
-          requestLogAudit(PROFILE.AUDIT_TYPE.CONTEXT_MENU_SEARCH, { query: selectedText });
+          requestLogAudit(PROFILE.AUDIT.TYPE.CONTEXT_MENU_SEARCH, { query: selectedText });
           break;
         }
         case CHROME.MESSAGE.CREATE: {

@@ -92,7 +92,7 @@ const SuggestionPanel = ({
     const logClick = (result) => {
       trackEvent(`Open External Document - ${title}`, { Type: type, Title: title });
       trackEvent(`Retention Event`, { type: 'Open External Document' });
-      requestLogAudit(PROFILE.AUDIT_TYPE.OPEN_EXTERNAL_DOC, { type, ...result });
+      requestLogAudit(PROFILE.AUDIT.TYPE.OPEN_EXTERNAL_DOC, { type, ...result });
     };
 
     let ResultComponent;
