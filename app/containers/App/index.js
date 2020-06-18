@@ -11,7 +11,7 @@ import App from './App';
 
 const mapStateToProps = (state) => {
   const {
-    display: { dockVisible },
+    display: { dockVisible, onlyShowSearchBar },
     auth: { token },
     profile: { user },
     search: {
@@ -23,6 +23,7 @@ const mapStateToProps = (state) => {
 
   return {
     dockVisible,
+    onlyShowSearchBar,
     isLoggedIn: !!token,
     user,
     showAutofind: cards.length !== 0

@@ -9,7 +9,10 @@ const initialState = {
   modalOpen: false,
   modalProps: {
     title: ''
-  }
+  },
+
+  onlyShowSearchBar: false,
+  hasClosedSearchBar: false
 };
 
 export default function displayReducer(state = initialState, action) {
@@ -20,11 +23,12 @@ export default function displayReducer(state = initialState, action) {
       return {
         ...state,
         dockVisible: !state.dockVisible,
-        toggleTabShown: false
+        toggleTabShown: false,
+        onlyShowSearchBar: false
       };
     }
     case types.MINIMIZE_DOCK: {
-      return { ...state, toggleTabShown: true, dockVisible: false };
+      return { ...state, toggleTabShown: true, dockVisible: false, onlyShowSearchBar: false };
     }
     case types.HIDE_TOGGLE_TAB: {
       return { ...state, toggleTabShown: false };
@@ -44,6 +48,13 @@ export default function displayReducer(state = initialState, action) {
     case types.UPDATE_TOGGLE_TAB_POSITION: {
       const { newY } = payload;
       return { ...state, toggleTabY: newY };
+    }
+
+    case types.TOGGLE_SEARCH_BAR: {
+      return { ...state, onlyShowSearchBar: !state.onlyShowSearchBar };
+    }
+    case types.MINIMIZE_SEARCH_BAR: {
+      return { ...state, onlyShowSearchBar: false, toggleTabShown: true, hasClosedSearchBar: true };
     }
 
     default:

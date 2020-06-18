@@ -14,11 +14,14 @@ import {
   ExternalCreateModal,
   ToggleTab,
   MessageModal,
-  MinimizeButton
+  MinimizeButton,
+  SearchBar
 } from 'components/app';
 import { PublicRoute, PrivateRoute } from 'components/routes';
 
 import { getStyleApplicationFn } from 'utils/style';
+import { DOCK_PANEL_STYLE } from 'styles/dock';
+
 import Ask from '../Ask';
 import Create from '../Create';
 import Tasks from '../Tasks';
@@ -43,10 +46,7 @@ import style from './App.css';
 
 const s = getStyleApplicationFn(style);
 
-const dockPanelStyles = {
-  background: 'white',
-  borderRadius: '8px 0 0 8px'
-};
+const DOCK_WIDTH = 350;
 
 const App = ({ dockVisible, isLoggedIn, user, showAutofind, requestGetUser, requestGetTasks }) => {
   const isMounted = useRef(null);
@@ -65,7 +65,9 @@ const App = ({ dockVisible, isLoggedIn, user, showAutofind, requestGetUser, requ
   }, [isLoggedIn, user, isVerified, requestGetUser, requestGetTasks]);
 
   const completedOnboarding = user && auth.hasCompletedOnboarding(user.onboarding);
+
   const showFullDock = isLoggedIn && isVerified && completedOnboarding;
+  const showHeader = isLoggedIn && isVerified && completedOnboarding;
 
   return (
     <div className={s('app-container')}>
@@ -73,18 +75,18 @@ const App = ({ dockVisible, isLoggedIn, user, showAutofind, requestGetUser, requ
         position="right"
         fluid={false}
         dimMode="none"
-        size={350}
+        size={DOCK_WIDTH}
         zIndex={10000000000}
         isVisible={dockVisible}
         dockStyle={{
           height: showFullDock ? '100%' : 'auto',
-          ...dockPanelStyles
+          ...DOCK_PANEL_STYLE
         }}
       >
         <div className={s(`flex relative flex-col ${showFullDock ? 'h-screen' : ''}`)}>
           <MessageModal />
           <MinimizeButton />
-          {isLoggedIn && isVerified && completedOnboarding && <Header />}
+          {showHeader && <Header />}
           <Switch>
             <PrivateRoute path={ROUTES.ASK} component={Ask} />
             <PrivateRoute path={ROUTES.CREATE} component={Create} />
@@ -106,6 +108,7 @@ const App = ({ dockVisible, isLoggedIn, user, showAutofind, requestGetUser, requ
           </Switch>
         </div>
       </Dock>
+      <SearchBar />
       <AutofindListener />
       <ChromeMessageListener />
       <ToggleTab />

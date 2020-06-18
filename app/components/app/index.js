@@ -6,4 +6,5 @@ export { default as ExternalCreateModal } from './ExternalCreateModal';
 export { default as Header } from './Header';
 export { default as MessageModal } from './MessageModal';
 export { default as MinimizeButton } from './MinimizeButton';
+export { default as SearchBar } from './SearchBar';
 export { default as ToggleTab } from './ToggleTab';

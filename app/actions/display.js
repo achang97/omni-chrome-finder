@@ -28,3 +28,11 @@ export function closeModal() {
 export function updateToggleTabPosition(newY) {
   return { type: types.UPDATE_TOGGLE_TAB_POSITION, payload: { newY } };
 }
+
+export function toggleSearchBar() {
+  return { type: types.TOGGLE_SEARCH_BAR, payload: {} };
+}
+
+export function minimizeSearchBar() {
+  return { type: types.MINIMIZE_SEARCH_BAR, payload: {} };
+}

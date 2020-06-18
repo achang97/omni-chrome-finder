@@ -61,11 +61,11 @@ const Profile = ({
       title: 'Autofind Permissions',
       options: [
         INTEGRATIONS.GMAIL
-        // INTEGRATIONS.ZENDESK,
-        // INTEGRATIONS.SALESFORCE,
+        // INTEGRATIONS.HELPSCOUT,
         // INTEGRATIONS.HUBSPOT,
         // INTEGRATIONS.JIRA,
-        // INTEGRATIONS.HELPSCOUT
+        // INTEGRATIONS.SALESFORCE,
+        // INTEGRATIONS.ZENDESK
       ],
       extendOption: ({ type }) => ({
         isToggledOn: user.autofindPermissions[type],
@@ -113,12 +113,20 @@ const Profile = ({
       )
     },
     {
+      sectionType: PROFILE.SETTING_SECTION_TYPE.SEARCH_BAR,
+      title: 'Search Bar',
+      options: [INTEGRATIONS.JIRA, INTEGRATIONS.SLACK, INTEGRATIONS.ZENDESK],
+      extendOption: ({ type }) => ({ isToggledOn: !user.widgetSettings.searchBar[type].disabled }),
+      startOpen: false,
+      type: 'toggle'
+    },
+    {
       sectionType: PROFILE.SETTING_SECTION_TYPE.NOTIFICATIONS,
       title: 'Notification Permissions',
       options: [
+        { type: 'chrome', title: 'Chrome', logo: GoogleChromeIcon },
         { type: 'email', title: 'Email', logo: GmailIcon },
-        INTEGRATIONS.SLACK,
-        { type: 'chrome', title: 'Chrome', logo: GoogleChromeIcon }
+        INTEGRATIONS.SLACK
       ],
       extendOption: ({ type }) => ({ isToggledOn: user.notificationPermissions[type] }),
       startOpen: false,
