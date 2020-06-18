@@ -2,7 +2,7 @@ import React, { useEffect } from 'react';
 import PropTypes from 'prop-types';
 import { useDebouncedCallback } from 'use-debounce';
 import { MdChevronRight } from 'react-icons/md';
-import { DEBOUNCE } from 'appConstants/animate';
+import { ANIMATE, ROUTES } from 'appConstants';
 import Dock from 'react-dock';
 
 import { getStyleApplicationFn } from 'utils/style';
@@ -18,14 +18,16 @@ const SearchBar = ({
   toggleSearchBar,
   toggleDock,
   updateAskSearchText,
-  minimizeSearchBar
+  minimizeSearchBar,
+  history
 }) => {
   const [debouncedOpenExtension] = useDebouncedCallback((query) => {
     if (onlyShowSearchBar && query !== '') {
       toggleSearchBar();
       toggleDock();
+      history.push(ROUTES.ASK);
     }
-  }, DEBOUNCE.MS_300);
+  }, ANIMATE.DEBOUNCE.MS_300);
 
   useEffect(() => {
     debouncedOpenExtension(searchText);

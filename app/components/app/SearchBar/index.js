@@ -1,4 +1,5 @@
 import { connect } from 'react-redux';
+import { withRouter } from 'react-router';
 import { toggleSearchBar, toggleDock, minimizeSearchBar } from 'actions/display';
 import { updateAskSearchText } from 'actions/ask';
 import SearchBar from './SearchBar';
@@ -19,4 +20,4 @@ const mapDispatchToProps = {
   minimizeSearchBar
 };
 
-export default connect(mapStateToProps, mapDispatchToProps)(SearchBar);
+export default connect(mapStateToProps, mapDispatchToProps)(withRouter(SearchBar));
