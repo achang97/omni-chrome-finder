@@ -195,7 +195,7 @@ const CardConfirmModals = ({
       title: 'Invite User',
       shouldCloseOnOutsideClick: true,
       body: (
-        <div className="flex items-center">
+        <div className={s('flex items-center')}>
           <input
             value={edits.inviteEmail}
             placeholder="Enter invite email"

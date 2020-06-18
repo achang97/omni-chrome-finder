@@ -115,19 +115,13 @@ function* updatePermissions({ type, permission }) {
   switch (type) {
     case SETTING_SECTION_TYPE.AUTOFIND: {
       update = {
-        autofindPermissions: {
-          ...autofindPermissions,
-          [permission]: !autofindPermissions[permission]
-        }
+        [`autofindPermissions.${permission}`]: !autofindPermissions[permission]
       };
       break;
     }
     case SETTING_SECTION_TYPE.NOTIFICATIONS: {
       update = {
-        notificationPermissions: {
-          ...notificationPermissions,
-          [permission]: !notificationPermissions[permission]
-        }
+        [`notificationPermissions.${permission}`]: !notificationPermissions[permission]
       };
       break;
     }
@@ -136,16 +130,19 @@ function* updatePermissions({ type, permission }) {
         externalLink: { disabledIntegrations }
       } = widgetSettings;
 
+      const newDisabledIntegrations = disabledIntegrations.includes(permission)
+        ? _.difference(disabledIntegrations, [permission])
+        : _.union(disabledIntegrations, [permission]);
+
       update = {
-        widgetSettings: {
-          ...widgetSettings,
-          externalLink: {
-            ...widgetSettings.externalLink,
-            disabledIntegrations: disabledIntegrations.includes(permission)
-              ? _.difference(disabledIntegrations, [permission])
-              : _.union(disabledIntegrations, [permission])
-          }
-        }
+        'widgetSettings.externalLink.disabledIntegrations': newDisabledIntegrations
+      };
+      break;
+    }
+    case SETTING_SECTION_TYPE.SEARCH_BAR: {
+      const { searchBar } = widgetSettings;
+      update = {
+        [`widgetSettings.searchBar.${permission}.disabled`]: !searchBar[permission].disabled
       };
       break;
     }

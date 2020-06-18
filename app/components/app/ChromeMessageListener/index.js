@@ -1,6 +1,7 @@
 import { connect } from 'react-redux';
 import { withRouter } from 'react-router-dom';
-import { toggleDock, minimizeDock, toggleAutofindTab } from 'actions/display';
+import _ from 'lodash';
+import { toggleDock, minimizeDock, toggleAutofindTab, toggleSearchBar } from 'actions/display';
 import { updateAskSearchText, toggleAskTeammate } from 'actions/ask';
 import { openCard } from 'actions/cards';
 import { requestSearchCards, clearSearchCards } from 'actions/search';
@@ -13,17 +14,21 @@ import ChromeMessageListener from './ChromeMessageListener';
 
 const mapStateToProps = (state) => {
   const {
-    display: { dockVisible, autofindShown },
+    display: { dockVisible, toggleTabShown, autofindShown, onlyShowSearchBar },
     ask: { showAskTeammate },
     auth: { token },
     profile: { user = {} },
     tasks: { tasks }
   } = state;
 
+  const searchBarSettings = _.get(user, 'widgetSettings.searchBar', {});
   return {
     dockVisible,
+    toggleTabShown,
+    onlyShowSearchBar,
     autofindShown,
     isValidUser: isValidUser(token, user),
+    searchBarSettings,
     showAskTeammate,
     tasks
   };
@@ -33,6 +38,7 @@ const mapDispatchToProps = {
   toggleDock,
   minimizeDock,
   toggleAutofindTab,
+  toggleSearchBar,
   requestGetUser,
   openCard,
   updateAskSearchText,
