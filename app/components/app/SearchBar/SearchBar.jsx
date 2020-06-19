@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 import PropTypes from 'prop-types';
 import { useDebouncedCallback } from 'use-debounce';
 import { MdSettings, MdClose } from 'react-icons/md';
@@ -23,6 +23,8 @@ const SearchBar = ({
   minimizeSearchBar,
   history
 }) => {
+  const [isHovering, setIsHovering] = useState(false);
+
   const [debouncedOpenExtension] = useDebouncedCallback((query) => {
     if (onlyShowSearchBar && query !== '') {
       toggleSearchBar();
@@ -34,6 +36,11 @@ const SearchBar = ({
   useEffect(() => {
     debouncedOpenExtension(searchText);
   }, [searchText, debouncedOpenExtension]);
+
+  const openSettings = () => {
+    toggleDock();
+    history.push(ROUTES.PROFILE);
+  };
 
   return (
     <Dock
@@ -48,28 +55,26 @@ const SearchBar = ({
         height: 'auto'
       }}
     >
-      <div className={s('flex items-center')}>
-        {/*
-        <div
-          className={s(
-            'self-stretch px-xs rounded-l-lg bg-purple-reg text-white flex items-center cursor-pointer'
-          )}
-          onClick={minimizeSearchBar}
-        >
-          <MdChevronRight />
-        </div> */}
-
-        <div className={s('toggle-close-button')} onClick={minimizeSearchBar}>
-          <MdClose />
+      <div
+        className={s('flex items-center')}
+        onMouseEnter={() => setIsHovering(true)}
+        onMouseLeave={() => setIsHovering(false)}
+      >
+        {isHovering && (
+          <div className={s('close-button')} onClick={minimizeSearchBar}>
+            <MdClose />
+          </div>
+        )}
+        <div onClick={toggleDock} className={s('cursor-pointer')}>
+          <img src={logo} alt="Omni logo for searchbar" className={s('searchbar-logo')} />
         </div>
-        <img src={logo} alt="Omni logo for searchbar" className={s('searchbar-logo ml-sm')} />
         <input
           onChange={(e) => updateAskSearchText(e.target.value)}
           value={searchText}
           placeholder="Search in Omni"
           className={s('flex-1 searchbar-input m-sm')}
         />
-        <div className={s('text-gray-reg')}>
+        <div className={s('text-gray-reg cursor-pointer')} onClick={openSettings}>
           <MdSettings className={s('text-xs mr-xs')} />
         </div>
       </div>
