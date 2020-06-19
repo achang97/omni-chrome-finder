@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react';
+import React, { useEffect, useRef } from 'react';
 import PropTypes from 'prop-types';
 import { CircularProgressbar, buildStyles } from 'react-circular-progressbar';
 import { MdEdit } from 'react-icons/md';
@@ -42,8 +42,18 @@ const Profile = ({
   editUser,
   requestGetUser,
   requestUpdateUserPermissions,
-  logout
+  logout,
+  location: { state = {} }
 }) => {
+  const { startOpenSettingsSection = PROFILE.SETTING_SECTION_TYPE.INTEGRATIONS } = state;
+
+  const settingSectionRefs = useRef([]);
+
+  useEffect(() => {
+    const numSections = Object.keys(PROFILE.SETTING_SECTION_TYPE).length;
+    settingSectionRefs.current = [...Array(numSections).fill(null)];
+  }, []);
+
   useEffect(() => {
     requestGetUser();
   }, [requestGetUser]);
@@ -53,7 +63,6 @@ const Profile = ({
       sectionType: PROFILE.SETTING_SECTION_TYPE.INTEGRATIONS,
       title: 'Integrations',
       options: PROFILE.USER_INTEGRATIONS,
-      startOpen: true,
       type: 'authButton'
     },
     {
@@ -71,7 +80,6 @@ const Profile = ({
         isToggledOn: user.autofindPermissions[type],
         disabled: type !== INTEGRATIONS.GMAIL.type
       }),
-      startOpen: false,
       type: 'toggle'
     },
     {
@@ -89,7 +97,6 @@ const Profile = ({
         isToggledOn: !user.widgetSettings.externalLink.disabledIntegrations.includes(type),
         disabled: user.widgetSettings.externalLink.disabled
       }),
-      startOpen: false,
       type: 'toggle',
       footer: (
         <div className={s('flex items-center mt-reg')}>
@@ -115,9 +122,14 @@ const Profile = ({
     {
       sectionType: PROFILE.SETTING_SECTION_TYPE.SEARCH_BAR,
       title: 'Search Bar',
-      options: [INTEGRATIONS.JIRA, INTEGRATIONS.SLACK, INTEGRATIONS.ZENDESK],
+      options: [
+        INTEGRATIONS.CONFLUENCE,
+        INTEGRATIONS.GOOGLE,
+        INTEGRATIONS.JIRA,
+        INTEGRATIONS.SLACK,
+        INTEGRATIONS.ZENDESK
+      ],
       extendOption: ({ type }) => ({ isToggledOn: !user.widgetSettings.searchBar[type].disabled }),
-      startOpen: false,
       type: 'toggle'
     },
     {
@@ -129,7 +141,6 @@ const Profile = ({
         INTEGRATIONS.SLACK
       ],
       extendOption: ({ type }) => ({ isToggledOn: user.notificationPermissions[type] }),
-      startOpen: false,
       type: 'toggle'
     }
   ];
@@ -249,16 +260,28 @@ const Profile = ({
   const renderIntegrationsSection = () => {
     return (
       <div className={s('flex flex-col overflow-auto flex-grow px-lg py-sm')}>
+        <div className={s('mb-sm text-gray-reg text-sm')}> Profile Settings </div>
         {PROFILE_SETTING_SECTIONS.map((section, i) => {
-          const { sectionType, type, title, options, startOpen, extendOption, footer } = section;
+          const { sectionType, type, title, options, extendOption, footer } = section;
           const { error, isLoading } = permissionState[type] || {};
+
+          const setRef = (ref) => {
+            if (!settingSectionRefs.current[i] && sectionType === startOpenSettingsSection && ref) {
+              ref.scrollIntoView();
+            }
+
+            if (ref) {
+              settingSectionRefs.current[i] = ref;
+            }
+          };
 
           return (
             <SettingsSection
+              ref={(ref) => setRef(ref)}
               key={title}
               title={title}
               type={type}
-              startOpen={startOpen}
+              startOpen={startOpenSettingsSection === sectionType}
               onToggleOption={(optionType) => requestUpdateUserPermissions(sectionType, optionType)}
               options={options.map((option) => ({
                 ...option,
@@ -281,7 +304,7 @@ const Profile = ({
         {renderAboutSection()}
         {renderMetricsSection()}
         {renderDashboardButton()}
-        <Separator horizontal className={s('my-reg')} />
+        <Separator horizontal className={s('mt-reg')} />
       </div>
       {renderIntegrationsSection()}
       <div className={s('flex justify-between pt-reg px-lg')}>

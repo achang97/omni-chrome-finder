@@ -1,16 +1,18 @@
-import React, { useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 import PropTypes from 'prop-types';
 import { useDebouncedCallback } from 'use-debounce';
-import { MdChevronRight } from 'react-icons/md';
-import { ANIMATE, ROUTES } from 'appConstants';
+import { MdSettings, MdClose } from 'react-icons/md';
+import { ANIMATE, ROUTES, PROFILE } from 'appConstants';
 import Dock from 'react-dock';
 
+import logo from 'assets/images/logos/logo-dark-icon.svg';
 import { getStyleApplicationFn } from 'utils/style';
 import { DOCK_PANEL_STYLE } from 'styles/dock';
+import style from './search-bar.css';
 
 const DOCK_WIDTH = 225;
 
-const s = getStyleApplicationFn();
+const s = getStyleApplicationFn(style);
 
 const SearchBar = ({
   onlyShowSearchBar,
@@ -21,6 +23,8 @@ const SearchBar = ({
   minimizeSearchBar,
   history
 }) => {
+  const [isHovering, setIsHovering] = useState(false);
+
   const [debouncedOpenExtension] = useDebouncedCallback((query) => {
     if (onlyShowSearchBar && query !== '') {
       toggleSearchBar();
@@ -32,6 +36,13 @@ const SearchBar = ({
   useEffect(() => {
     debouncedOpenExtension(searchText);
   }, [searchText, debouncedOpenExtension]);
+
+  const openSettings = () => {
+    toggleDock();
+    history.push(ROUTES.PROFILE, {
+      startOpenSettingsSection: PROFILE.SETTING_SECTION_TYPE.SEARCH_BAR
+    });
+  };
 
   return (
     <Dock
@@ -46,21 +57,28 @@ const SearchBar = ({
         height: 'auto'
       }}
     >
-      <div className={s('flex')}>
-        <div
-          className={s(
-            'self-stretch px-xs rounded-l-lg bg-purple-light text-purple-reg flex items-center cursor-pointer'
-          )}
-          onClick={minimizeSearchBar}
-        >
-          <MdChevronRight />
+      <div
+        className={s('flex items-center')}
+        onMouseEnter={() => setIsHovering(true)}
+        onMouseLeave={() => setIsHovering(false)}
+      >
+        {isHovering && (
+          <div className={s('close-button')} onClick={minimizeSearchBar}>
+            <MdClose />
+          </div>
+        )}
+        <div onClick={toggleDock} className={s('cursor-pointer')}>
+          <img src={logo} alt="Omni logo for searchbar" className={s('searchbar-logo')} />
         </div>
         <input
           onChange={(e) => updateAskSearchText(e.target.value)}
           value={searchText}
-          placeholder="Search Omni"
-          className={s('flex-1 search-input m-xs')}
+          placeholder="Search in Omni"
+          className={s('flex-1 searchbar-input m-sm')}
         />
+        <div className={s('text-gray-reg cursor-pointer')} onClick={openSettings}>
+          <MdSettings className={s('text-xs mr-xs')} />
+        </div>
       </div>
     </Dock>
   );

@@ -1,0 +1,13 @@
+.searchbar-logo {
+  @apply ml-sm;
+
+  height: 16px !important;
+}
+
+.close-button {
+  @apply absolute top-0 left-0;
+  @apply bg-purple-reg rounded-full text-white text-xs shadow-md cursor-pointer h-reg w-reg;
+
+  z-index: 10000000001;
+  transform: translateX(-40%);
+}
