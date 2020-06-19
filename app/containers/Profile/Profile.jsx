@@ -266,9 +266,12 @@ const Profile = ({
           const { error, isLoading } = permissionState[type] || {};
 
           const setRef = (ref) => {
-            settingSectionRefs.current[i] = ref;
-            if (sectionType === startOpenSettingsSection && ref) {
+            if (!settingSectionRefs.current[i] && sectionType === startOpenSettingsSection && ref) {
               ref.scrollIntoView();
+            }
+
+            if (ref) {
+              settingSectionRefs.current[i] = ref;
             }
           };
 

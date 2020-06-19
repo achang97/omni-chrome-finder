@@ -272,9 +272,11 @@ ChromeMessageListener.propTypes = {
   autofindShown: PropTypes.bool.isRequired,
   tasks: PropTypes.arrayOf(PropTypes.object).isRequired,
   isValidUser: PropTypes.bool.isRequired,
-  searchBarSettings: PropTypes.objectOf({
-    disabled: PropTypes.bool
-  }),
+  searchBarSettings: PropTypes.objectOf(
+    PropTypes.shape({
+      disabled: PropTypes.bool
+    })
+  ),
 
   // Redux Actions
   toggleDock: PropTypes.func.isRequired,
