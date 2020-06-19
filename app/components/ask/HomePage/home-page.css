@@ -7,6 +7,21 @@
   opacity: 0.75;
 }
 
+.searchbar-input {
+  box-shadow: 0 0 10px -4px rgba(122, 125, 175, 0.5) !important;
+  height: 30px !important;
+  font-size: 12px !important;
+  cursor: text !important;
+}
+
+.searchbar-input::placeholder {
+  font-size: 12px !important;
+}
+
+.searchbar-input:hover {
+  box-shadow: 0 1px 6px 0 rgba(32, 33, 36, 0.28) !important;
+}
+
 .search-input {
   box-shadow: 0 0 10px -4px rgba(122, 125, 175, 0.5) !important;
 }
