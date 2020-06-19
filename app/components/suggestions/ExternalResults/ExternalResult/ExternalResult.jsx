@@ -6,7 +6,7 @@ import { CardStatusIndicator } from 'components/cards';
 
 import { copyText } from 'utils/window';
 import { getStyleApplicationFn } from 'utils/style';
-import { URL_REGEXES } from 'appConstants/externalVerification';
+import { PROFILE, SEGMENT, EXTERNAL_VERIFICATION } from 'appConstants';
 
 import style from './external-result.css';
 
@@ -17,7 +17,6 @@ const s = getStyleApplicationFn(style);
 const ExternalResult = ({
   id,
   url,
-  onClick,
   type,
   logo,
   title,
@@ -30,7 +29,9 @@ const ExternalResult = ({
   updateExternalLinkAnswer,
   toggleExternalCreateModal,
   updateExternalTitle,
-  updateExternalResultId
+  updateExternalResultId,
+  requestLogAudit,
+  trackEvent
 }) => {
   const [showShare, setShowShare] = useState(false);
 
@@ -53,7 +54,9 @@ const ExternalResult = ({
   };
 
   const onResultClick = () => {
-    onClick();
+    trackEvent(`${SEGMENT.EVENT.OPEN_EXTERNAL_DOC} - ${title}`, { Type: type, Title: title });
+    trackEvent(SEGMENT.EVENT.RETENTION_EVENT, { type: SEGMENT.EVENT.OPEN_EXTERNAL_DOC });
+    requestLogAudit(PROFILE.AUDIT.TYPE.OPEN_EXTERNAL_DOC, { type, title });
     window.open(url, '_blank');
   };
 
@@ -67,7 +70,7 @@ const ExternalResult = ({
           updateExternalTitle(title);
           updateExternalResultId(id);
 
-          const { getLinks, regex } = URL_REGEXES[type];
+          const { getLinks, regex } = EXTERNAL_VERIFICATION.URL_REGEXES[type];
           const links = getLinks(url.match(regex));
           updateExternalLinkAnswer({ type, ...links });
         }
@@ -116,7 +119,6 @@ const ExternalResult = ({
 ExternalResult.propTypes = {
   id: PropTypes.string.isRequired,
   url: PropTypes.string.isRequired,
-  onClick: PropTypes.func.isRequired,
   type: PropTypes.string.isRequired,
   logo: PropTypes.string.isRequired,
   title: PropTypes.string.isRequired,
@@ -134,7 +136,9 @@ ExternalResult.propTypes = {
   updateExternalLinkAnswer: PropTypes.func.isRequired,
   toggleExternalCreateModal: PropTypes.func.isRequired,
   updateExternalTitle: PropTypes.func.isRequired,
-  updateExternalResultId: PropTypes.func.isRequired
+  updateExternalResultId: PropTypes.func.isRequired,
+  requestLogAudit: PropTypes.func.isRequired,
+  trackEvent: PropTypes.func.isRequired
 };
 
 ExternalResult.defaultProps = {

@@ -5,7 +5,6 @@ import {
   requestSearchNodes,
   requestSearchIntegrations
 } from 'actions/search';
-import { requestLogAudit } from 'actions/auditLog';
 import { openCard } from 'actions/cards';
 import trackEvent from 'actions/analytics';
 import { SEARCH } from 'appConstants';
@@ -38,7 +37,6 @@ const mapDispatchToProps = {
   clearSearchCards,
   requestSearchNodes,
   requestSearchIntegrations,
-  requestLogAudit,
   openCard,
   trackEvent
 };

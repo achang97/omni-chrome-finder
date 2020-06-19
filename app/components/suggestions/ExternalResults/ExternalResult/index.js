@@ -6,6 +6,8 @@ import {
   updateExternalTitle,
   updateExternalResultId
 } from 'actions/externalVerification';
+import { requestLogAudit } from 'actions/auditLog';
+import trackEvent from 'actions/analytics';
 import ExternalResult from './ExternalResult';
 
 const mapDispatchToProps = {
@@ -13,7 +15,9 @@ const mapDispatchToProps = {
   updateExternalLinkAnswer,
   toggleExternalCreateModal,
   updateExternalTitle,
-  updateExternalResultId
+  updateExternalResultId,
+  requestLogAudit,
+  trackEvent
 };
 
 export default connect(null, mapDispatchToProps)(ExternalResult);

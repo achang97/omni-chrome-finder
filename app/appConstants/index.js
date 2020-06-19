@@ -8,5 +8,6 @@ export { default as FINDER } from './finder';
 export { default as PROFILE } from './profile';
 export { default as REQUEST } from './request';
 export { default as SEARCH } from './search';
+export { default as SEGMENT } from './segment';
 export { default as TASKS } from './tasks';
 export { default as WINDOW } from './window';

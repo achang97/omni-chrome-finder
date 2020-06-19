@@ -16,7 +16,7 @@ Object.values(SEARCH.SOURCE).forEach((type) => {
 
 const initialState = {
   cards: INITIAL_CARDS_STATE,
-  nodes: [], // TODO: make this take a type
+  nodes: [],
   integrationResults: [],
   tags: [],
   users: [],

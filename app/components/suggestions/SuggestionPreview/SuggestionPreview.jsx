@@ -2,7 +2,7 @@ import React from 'react';
 import PropTypes from 'prop-types';
 
 import Button from 'components/common/Button';
-import { INTEGRATIONS_MAP } from 'appConstants';
+import { INTEGRATIONS_MAP, SEGMENT } from 'appConstants';
 
 import { getStyleApplicationFn } from 'utils/style';
 import style from './suggestion-preview.css';
@@ -11,7 +11,7 @@ const s = getStyleApplicationFn(style);
 
 const SuggestionPreview = ({ id, question, answer, externalLinkAnswer, openCard, trackEvent }) => {
   const clickOpenCard = () => {
-    trackEvent('Open Card from Search', { 'Card ID': id, Question: question });
+    trackEvent(SEGMENT.EVENT.OPEN_CARD_FROM_SEARCH, { 'Card ID': id, Question: question });
     openCard({ _id: id });
   };
 

@@ -4,7 +4,7 @@ import PropTypes from 'prop-types';
 import { CardStatusIndicator, CardLocation } from 'components/cards';
 import { Message } from 'components/common';
 
-import { CARD, INTEGRATIONS, INTEGRATIONS_MAP } from 'appConstants';
+import { CARD, INTEGRATIONS, INTEGRATIONS_MAP, SEGMENT } from 'appConstants';
 import { copyCardUrl } from 'utils/card';
 import { NodePropTypes } from 'utils/propTypes';
 
@@ -112,7 +112,8 @@ const SuggestionCard = ({
   };
 
   const clickOpenCard = () => {
-    trackEvent('Open Card from Search', { 'Card ID': id, Question: question, Status: status });
+    const eventProperties = { 'Card ID': id, Question: question, Status: status };
+    trackEvent(SEGMENT.EVENT.OPEN_CARD_FROM_SEARCH, eventProperties);
     openCard({ _id: id });
   };
 

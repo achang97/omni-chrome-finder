@@ -7,6 +7,7 @@ import {
   TOGGLE_EXTERNAL_CREATE_MODAL,
   CREATE_EXTERNAL_CARD_SUCCESS
 } from 'actions/actionTypes';
+import { EVENT } from 'appConstants/segment';
 import trackEvent from 'actions/analytics';
 
 function getCardProperties(card) {
@@ -42,14 +43,14 @@ export default function* watchAnalyticsActions() {
         case TOGGLE_DOCK: {
           const dockVisible = yield select((state) => state.display.dockVisible);
           if (dockVisible) {
-            event = 'Open Extension';
+            event = EVENT.OPEN_EXTENSION;
           }
           break;
         }
         // Cards
         case EDIT_CARD: {
           const activeCard = yield select((state) => state.cards.activeCard);
-          event = 'Click Edit Card';
+          event = EVENT.CLICK_EDIT_CARD;
           properties = getCardProperties(activeCard);
           break;
         }
@@ -59,16 +60,16 @@ export default function* watchAnalyticsActions() {
           properties = getCardProperties(card);
 
           if (!card.upvotes.some(({ _id }) => _id === userId)) {
-            event = 'Unmark Card Helpful';
+            event = EVENT.UNMARK_CARD_HELPFUL;
           } else {
-            event = 'Mark Card Helpful';
+            event = EVENT.MARK_CARD_HELPFUL;
           }
           break;
         }
 
         // Finder
         case OPEN_FINDER: {
-          event = 'Open Finder';
+          event = EVENT.OPEN_FINDER;
           break;
         }
 
@@ -76,13 +77,13 @@ export default function* watchAnalyticsActions() {
           const isCreateModalOpen = yield select(
             (state) => state.externalVerification.isCreateModalOpen
           );
-          if (isCreateModalOpen) event = 'Click Verify External Knowledge';
+          if (isCreateModalOpen) event = EVENT.CLICK_VERIFY_EXTERNAL_KNOWLEDGE;
           break;
         }
         case CREATE_EXTERNAL_CARD_SUCCESS: {
           const { card } = payload;
           properties = getExternalCardProperties(card);
-          event = 'Create External Card';
+          event = EVENT.CREATE_EXTERNAL_CARD;
           break;
         }
 

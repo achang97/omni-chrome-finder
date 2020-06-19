@@ -5,12 +5,11 @@ import { INTEGRATIONS } from 'appConstants';
 
 import ExternalResult from '../ExternalResult';
 
-const ConfluenceResult = ({ id, title, url, card, onClick }) => {
+const ConfluenceResult = ({ id, title, url, card }) => {
   return (
     <ExternalResult
       id={id}
       url={url}
-      onClick={onClick}
       logo={INTEGRATIONS.CONFLUENCE.logo}
       type={INTEGRATIONS.CONFLUENCE.type}
       title={title}
@@ -23,7 +22,6 @@ ConfluenceResult.propTypes = {
   id: PropTypes.string.isRequired,
   title: PropTypes.string.isRequired,
   url: PropTypes.string.isRequired,
-  onClick: PropTypes.func.isRequired,
   card: PropTypes.shape({})
 };
 
