@@ -19,6 +19,10 @@ const SEARCH_BAR_REGEXES = [
   {
     integration: INTEGRATIONS.SLACK,
     regex: /https:\/\/app.slack.com\/client\/[^/]+\/[^/]+/
+  },
+  {
+    integration: { type: '' },
+    regex: /.*/
   }
 ];
 

@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react';
 import PropTypes from 'prop-types';
 import { useDebouncedCallback } from 'use-debounce';
 import { MdSettings, MdClose } from 'react-icons/md';
-import { ANIMATE, ROUTES } from 'appConstants';
+import { ANIMATE, ROUTES, PROFILE } from 'appConstants';
 import Dock from 'react-dock';
 
 import logo from 'assets/images/logos/logo-dark-icon.svg';
@@ -39,7 +39,9 @@ const SearchBar = ({
 
   const openSettings = () => {
     toggleDock();
-    history.push(ROUTES.PROFILE);
+    history.push(ROUTES.PROFILE, {
+      startOpenSettingsSection: PROFILE.SETTING_SECTION_TYPE.SEARCH_BAR
+    });
   };
 
   return (
