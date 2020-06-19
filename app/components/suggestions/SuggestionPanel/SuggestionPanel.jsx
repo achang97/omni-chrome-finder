@@ -1,10 +1,10 @@
 import React, { useState, useRef, useEffect } from 'react';
 import PropTypes from 'prop-types';
 import { useDebouncedCallback } from 'use-debounce';
-import { MdClose, MdKeyboardArrowUp, MdKeyboardArrowLeft } from 'react-icons/md';
+import { MdClose, MdKeyboardArrowUp, MdKeyboardArrowLeft, MdAddCircle } from 'react-icons/md';
 import AnimateHeight from 'react-animate-height';
 
-import { Button, Triangle, Separator } from 'components/common';
+import { Button, Triangle, Separator, Loader } from 'components/common';
 
 import { colors } from 'styles/colors';
 import { SEARCH, INTEGRATIONS, INTEGRATIONS_MAP, ANIMATE, PROFILE } from 'appConstants';
@@ -13,11 +13,12 @@ import { getStyleApplicationFn } from 'utils/style';
 import { NodePropTypes } from 'utils/propTypes';
 import mainStyle from './suggestion-panel.css';
 import externalIconStyle from '../ExternalResults/ExternalResult/external-result.css';
+import scrollStyle from '../SuggestionScrollContainer/suggestion-scroll-container.css';
 
 import { GoogleResult, ZendeskResult, ConfluenceResult } from '../ExternalResults';
 import SuggestionScrollContainer from '../SuggestionScrollContainer';
 
-const s = getStyleApplicationFn(mainStyle, externalIconStyle);
+const s = getStyleApplicationFn(mainStyle, externalIconStyle, scrollStyle);
 
 const DEFAULT_NUM_EXT_RESULTS_SHOWN = 4;
 
@@ -44,6 +45,7 @@ const SuggestionPanel = ({
   requestSearchNodes,
   requestSearchIntegrations,
   requestLogAudit,
+  openCard,
   trackEvent
 }) => {
   const [isVisible, setIsVisible] = useState(true);
@@ -196,7 +198,34 @@ const SuggestionPanel = ({
     );
   };
 
-  const renderFooter = () => {
+  const renderScrollContainerFooter = (isLoading) => {
+    return (
+      <>
+        {!isSearchingCards && (
+          <div
+            className={s('suggestion-elem suggestion-scroll-container-card flex items-center')}
+            onClick={() => openCard({ question: query }, true)}
+          >
+            <MdAddCircle className={s('text-purple-gray-50 mr-xs')} />
+            <span className={s('text-sm font-bold')}>Create Card &ldquo;{query}&rdquo;</span>
+          </div>
+        )}
+        {!isLoading && shouldSearchIntegrations && isSearchingIntegrations && (
+          <Loader size="sm" className={s('my-sm')} />
+        )}
+        <AnimateHeight
+          height={showIntegrationResults ? 'auto' : 0}
+          onAnimationEnd={({ newHeight }) =>
+            newHeight !== 0 && integrationResultsRef.current.scrollIntoView({ behavior: 'smooth' })
+          }
+        >
+          {renderExternalDocumentationResults()}
+        </AnimateHeight>
+      </>
+    );
+  };
+
+  const renderPanelFooter = () => {
     const numIntegrationResults = countIntegrationResults();
 
     if (numIntegrationResults === 0) {
@@ -223,14 +252,9 @@ const SuggestionPanel = ({
     setIsVisible(!isVisible);
   };
 
-  const numIntegrationResults = countIntegrationResults();
   const showMainPanel = isVisible && query.length !== 0 && dockVisible;
 
-  const isLoading =
-    isSearchingCards ||
-    (shouldSearchNodes && isSearchingNodes) ||
-    (shouldSearchIntegrations && isSearchingIntegrations);
-
+  const isLoading = isSearchingCards || (shouldSearchNodes && isSearchingNodes);
   return (
     <div className={s(`suggestion-panel ${!showMainPanel ? 'border-0' : ''}`)}>
       <AnimateHeight height={showMainPanel ? 'auto' : 0}>
@@ -250,23 +274,13 @@ const SuggestionPanel = ({
             cards={cards}
             nodes={shouldSearchNodes ? nodes : []}
             isSearching={isLoading}
-            showPlaceholder={!showIntegrationResults || numIntegrationResults === 0}
             triangleColor={colors.purple.light}
             onBottom={() => searchCards(false)}
             hasReachedLimit={hasReachedLimit}
-            footer={
-              <AnimateHeight
-                height={showIntegrationResults ? 'auto' : 0}
-                onAnimationEnd={({ newHeight }) =>
-                  newHeight !== 0 &&
-                  integrationResultsRef.current.scrollIntoView({ behavior: 'smooth' })
-                }
-              >
-                {renderExternalDocumentationResults()}
-              </AnimateHeight>
-            }
+            showPlaceholder={false}
+            footer={renderScrollContainerFooter(isLoading)}
           />
-          {!showIntegrationResults && renderFooter()}
+          {!showIntegrationResults && renderPanelFooter()}
         </div>
       </AnimateHeight>
       {showMainPanel && (
@@ -319,6 +333,7 @@ SuggestionPanel.propTypes = {
   requestSearchNodes: PropTypes.func.isRequired,
   requestSearchIntegrations: PropTypes.func.isRequired,
   requestLogAudit: PropTypes.func.isRequired,
+  openCard: PropTypes.func.isRequired,
   trackEvent: PropTypes.func.isRequired
 };
 

@@ -6,6 +6,7 @@ import {
   requestSearchIntegrations
 } from 'actions/search';
 import { requestLogAudit } from 'actions/auditLog';
+import { openCard } from 'actions/cards';
 import trackEvent from 'actions/analytics';
 import { SEARCH } from 'appConstants';
 import SuggestionPanel from './SuggestionPanel';
@@ -38,6 +39,7 @@ const mapDispatchToProps = {
   requestSearchNodes,
   requestSearchIntegrations,
   requestLogAudit,
+  openCard,
   trackEvent
 };
 
