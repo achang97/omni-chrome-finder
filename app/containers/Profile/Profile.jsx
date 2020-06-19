@@ -122,7 +122,13 @@ const Profile = ({
     {
       sectionType: PROFILE.SETTING_SECTION_TYPE.SEARCH_BAR,
       title: 'Search Bar',
-      options: [INTEGRATIONS.JIRA, INTEGRATIONS.SLACK, INTEGRATIONS.ZENDESK],
+      options: [
+        INTEGRATIONS.CONFLUENCE,
+        INTEGRATIONS.GOOGLE,
+        INTEGRATIONS.JIRA,
+        INTEGRATIONS.SLACK,
+        INTEGRATIONS.ZENDESK
+      ],
       extendOption: ({ type }) => ({ isToggledOn: !user.widgetSettings.searchBar[type].disabled }),
       type: 'toggle'
     },

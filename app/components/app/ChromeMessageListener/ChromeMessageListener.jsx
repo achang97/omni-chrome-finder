@@ -3,28 +3,11 @@ import PropTypes from 'prop-types';
 import queryString from 'query-string';
 import { EditorState, ContentState } from 'draft-js';
 
-import { CHROME, ROUTES, URL, TASKS, PROFILE, INTEGRATIONS } from 'appConstants';
+import { CHROME, ROUTES, URL, TASKS, PROFILE } from 'appConstants';
+
+import SEARCH_BAR_REGEXES from './regex';
 
 import ExternalVerification from '../ExternalVerification';
-
-const SEARCH_BAR_REGEXES = [
-  {
-    integration: INTEGRATIONS.ZENDESK,
-    regex: /https:\/\/\S+\.zendesk\.com\/(?:agent\/tickets\/\d+|chat\/agent#visitors\/visitor_list\/state#!\S+)/
-  },
-  {
-    integration: INTEGRATIONS.JIRA,
-    regex: /https:\/\/\S+\.atlassian\.net\/(?:issues|browse|jira\/servicedesk\/projects\/[^/]+\/queues\/custom\/\d+\/\S+)/
-  },
-  {
-    integration: INTEGRATIONS.SLACK,
-    regex: /https:\/\/app.slack.com\/client\/[^/]+\/[^/]+/
-  },
-  {
-    integration: { type: '' },
-    regex: /.*/
-  }
-];
 
 class ChromeMessageListener extends Component {
   constructor(props) {
