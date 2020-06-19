@@ -198,16 +198,23 @@ const SuggestionPanel = ({
     );
   };
 
+  const clickCreateCard = () => {
+    // TODO: Add segment event for 'Click Create Card from Search'
+    openCard({ question: query }, true);
+  };
+
   const renderScrollContainerFooter = (isLoading) => {
     return (
       <>
         {!isSearchingCards && (
           <div
-            className={s('suggestion-elem suggestion-scroll-container-card flex items-center')}
-            onClick={() => openCard({ question: query }, true)}
+            className={s(
+              'suggestion-create-card suggestion-scroll-container-card flex items-center'
+            )}
+            onClick={() => clickCreateCard()}
           >
             <MdAddCircle className={s('text-purple-gray-50 mr-xs')} />
-            <span className={s('text-sm font-bold')}>Create Card &ldquo;{query}&rdquo;</span>
+            <span className={s('text-sm font-bold')}>Create a card for &ldquo;{query}&rdquo;</span>
           </div>
         )}
         {!isLoading && shouldSearchIntegrations && isSearchingIntegrations && (
