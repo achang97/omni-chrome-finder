@@ -370,7 +370,7 @@ export const EXTENSION_TOOLBAR_PROPS = {
     inDropdown: true,
     className: s('text-editor-dropdown-container-md no-hover-shadow'),
     component: undefined,
-    popupClassName: undefined,
+    popupClassName: s('text-editor-popup text-editor-link-popup'),
     dropdownClassName: s('text-editor-dropdown no-hover-shadow'),
     showOpenOptionOnHover: true,
     options: ['link', 'unlink'],
