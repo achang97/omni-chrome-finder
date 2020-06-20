@@ -2,7 +2,7 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import { MdChevronRight } from 'react-icons/md';
 
-import { FINDER } from 'appConstants';
+import { FINDER, SEGMENT } from 'appConstants';
 import { getFullPath } from 'utils/finder';
 import { getStyleApplicationFn } from 'utils/style';
 import { NodePropTypes } from 'utils/propTypes';
@@ -24,11 +24,13 @@ const CardLocation = ({
   className,
   pathClassName,
   openFinder,
-  pushFinderNode
+  pushFinderNode,
+  trackEvent
 }) => {
-  const onNodeClick = (nodeId) => {
+  const onNodeClick = (nodeId, nodeName) => {
     openFinder();
     pushFinderNode(FINDER.MAIN_STATE_ID, nodeId);
+    trackEvent(SEGMENT.EVENT.CLICK_FOLDER, { 'Folder Name': nodeName });
   };
 
   let fullPath = [HOME_NODE];
@@ -54,7 +56,7 @@ const CardLocation = ({
                 {i !== 0 && <MdChevronRight className={s('flex-shrink-0')} />}
                 <span
                   className={s(isPathClickable ? 'cursor-pointer' : '')}
-                  onClick={() => isPathClickable && onNodeClick(_id)}
+                  onClick={() => isPathClickable && onNodeClick(_id, name)}
                 >
                   {name}
                 </span>
@@ -93,7 +95,8 @@ CardLocation.propTypes = {
 
   // Redux Actions
   openFinder: PropTypes.func.isRequired,
-  pushFinderNode: PropTypes.func.isRequired
+  pushFinderNode: PropTypes.func.isRequired,
+  trackEvent: PropTypes.func.isRequired
 };
 
 CardLocation.defaultProps = {

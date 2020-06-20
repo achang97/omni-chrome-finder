@@ -11,12 +11,12 @@ import { Button, Modal, Message, Loader, CheckBox } from 'components/common';
 import { getStyleApplicationFn } from 'utils/style';
 import { usePrevious } from 'utils/react';
 import { UserPropTypes } from 'utils/propTypes';
-import { EXTERNAL_VERIFICATION, INTEGRATIONS_MAP, INTEGRATIONS } from 'appConstants';
+import { URL_REGEX, INTEGRATIONS_MAP, INTEGRATIONS } from 'appConstants';
 import style from './external-verification.css';
 
 const s = getStyleApplicationFn(style);
 
-const URL_REGEX_LIST = Object.entries(EXTERNAL_VERIFICATION.URL_REGEXES);
+const URL_REGEX_LIST = Object.entries(URL_REGEX.EXTERNAL_VERIFICATION);
 
 const ExternalVerification = ({
   url,

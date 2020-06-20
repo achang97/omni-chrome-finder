@@ -5,6 +5,7 @@ import AnimateHeight from 'react-animate-height';
 
 import { Separator } from 'components/common';
 import { SuggestionPanel } from 'components/suggestions';
+import { SEGMENT } from 'appConstants';
 
 import { getStyleApplicationFn } from 'utils/style';
 
@@ -23,7 +24,8 @@ const HomePage = ({
   showAskTeammate,
   updateAskSearchText,
   toggleAskTeammate,
-  requestGetUserOnboardingStats
+  requestGetUserOnboardingStats,
+  trackEvent
 }) => {
   const isMounted = useRef(null);
   const inputRef = useRef(null);
@@ -60,6 +62,11 @@ const HomePage = ({
     );
   };
 
+  const openAskTeammateView = () => {
+    toggleAskTeammate();
+    trackEvent(SEGMENT.EVENT.CLICK_ASK_TEAMMATE);
+  };
+
   const render = () => {
     return (
       <div className={s('pt-lg flex-1 flex flex-col min-h-0')}>
@@ -78,7 +85,7 @@ const HomePage = ({
               className={s(
                 'text-purple-reg font-semibold cursor-pointer flex items-center ask-teammate-container'
               )}
-              onClick={toggleAskTeammate}
+              onClick={openAskTeammateView}
             >
               <div>Ask a Teammate</div>
               <MdPeople className={s('text-md ml-sm')} />
@@ -107,7 +114,8 @@ HomePage.propTypes = {
   // Redux Actions
   updateAskSearchText: PropTypes.func.isRequired,
   toggleAskTeammate: PropTypes.func.isRequired,
-  requestGetUserOnboardingStats: PropTypes.func.isRequired
+  requestGetUserOnboardingStats: PropTypes.func.isRequired,
+  trackEvent: PropTypes.func.isRequired
 };
 
 export default HomePage;

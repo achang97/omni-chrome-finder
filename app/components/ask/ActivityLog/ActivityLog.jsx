@@ -6,7 +6,7 @@ import { FaListUl } from 'react-icons/fa';
 import { Loader, Tabs, Tab, Timeago } from 'components/common';
 import { CardUser } from 'components/cards';
 import { SuggestionCard } from 'components/suggestions';
-import { AUDIT } from 'appConstants/profile';
+import { PROFILE, SEGMENT } from 'appConstants';
 
 import { isSlackCard } from 'utils/card';
 import { getStyleApplicationFn } from 'utils/style';
@@ -32,13 +32,14 @@ const ActivityLog = ({
     return <div className={s('text-sm text-gray-light mt-reg')}>{placeholder}</div>;
   };
 
-  const renderCard = (card) => {
+  const renderCard = (card, event) => {
     const { _id, question, status, externalLinkAnswer, finderNode } = card;
     return (
       <SuggestionCard
         className={s('text-sm p-reg rounded-lg')}
         key={_id}
         id={_id}
+        event={event}
         maxQuestionLines={1}
         question={question}
         createdFromSlack={isSlackCard(card)}
@@ -50,12 +51,12 @@ const ActivityLog = ({
     );
   };
 
-  const renderRecentCardsSection = (placeholder, isLoading) => {
+  const renderRecentCardsSection = (placeholder, event, isLoading) => {
     return (
       <>
         {recentCards.map((card) => (
           <div key={card._id} className={s('my-sm')}>
-            {renderCard(card)}
+            {renderCard(card, event)}
           </div>
         ))}
         {recentCards.length === 0 && !isLoading && renderPlaceholder(placeholder)}
@@ -65,13 +66,13 @@ const ActivityLog = ({
 
   const getActionName = (type) => {
     switch (type) {
-      case AUDIT.TYPE.VIEW_CARD: {
+      case PROFILE.AUDIT.TYPE.VIEW_CARD: {
         return 'viewed';
       }
-      case AUDIT.TYPE.CREATE_CARD: {
+      case PROFILE.AUDIT.TYPE.CREATE_CARD: {
         return 'created';
       }
-      case AUDIT.TYPE.UPDATE_CARD: {
+      case PROFILE.AUDIT.TYPE.UPDATE_CARD: {
         return 'updated';
       }
       default: {
@@ -80,7 +81,7 @@ const ActivityLog = ({
     }
   };
 
-  const renderActivityLogSection = (placeholder, isLoading) => {
+  const renderActivityLogSection = (placeholder, event, isLoading) => {
     return (
       <>
         {activityLog.map(({ _id, card, user, type, createdAt }) => (
@@ -99,7 +100,7 @@ const ActivityLog = ({
               </div>
               <Timeago live={false} date={createdAt} className={s('text-2xs text-gray-reg')} />
             </div>
-            {renderCard(card)}
+            {renderCard(card, event)}
           </div>
         ))}
         {activityLog.length === 0 && !isLoading && renderPlaceholder(placeholder)}
@@ -115,7 +116,8 @@ const ActivityLog = ({
       placeholder:
         "Here, you'll see your team's activity and cards that have been recently created, edited, or viewed.",
       getDataFn: requestGetActivityLog,
-      isLoading: isGettingActivityLog
+      isLoading: isGettingActivityLog,
+      event: SEGMENT.EVENT.OPEN_CARD_FROM_ACTIVITY_LOG
     },
     {
       Icon: FiClock,
@@ -123,7 +125,8 @@ const ActivityLog = ({
       renderFn: renderRecentCardsSection,
       placeholder: "Here, you'll see cards that you've recently created, edited, or viewed.",
       getDataFn: requestGetRecentCards,
-      isLoading: isGettingRecentCards
+      isLoading: isGettingRecentCards,
+      event: SEGMENT.EVENT.OPEN_CARD_FROM_RECENT
     }
   ];
 
@@ -168,11 +171,11 @@ const ActivityLog = ({
             </Tab>
           ))}
         </Tabs>
-        {TABS.map(({ label, renderFn, isLoading, placeholder }, i) => (
+        {TABS.map(({ label, renderFn, isLoading, placeholder, event }, i) => (
           <React.Fragment key={label}>
             {i === activityIndex ? (
               <div className={s('px-lg overflow-auto flex-1')}>
-                {renderFn(placeholder, isLoading)}
+                {renderFn(placeholder, event, isLoading)}
                 {isLoading && <Loader size="sm" className={s('my-sm')} />}
               </div>
             ) : null}

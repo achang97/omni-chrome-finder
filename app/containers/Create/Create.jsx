@@ -14,6 +14,7 @@ import { getNewCardBaseState } from 'utils/card';
 import { createSelectOptions, createSelectOption } from 'utils/select';
 import { getEditorStateFromContentState } from 'utils/editor';
 import { UserPropTypes, NodePropTypes } from 'utils/propTypes';
+import { SEGMENT } from 'appConstants';
 
 import { getStyleApplicationFn } from 'utils/style';
 import style from './create.css';
@@ -38,7 +39,8 @@ const Create = ({
   requestAddCreateAttachment,
   updateCreateAttachmentName,
   requestRemoveCreateAttachment,
-  openCard
+  openCard,
+  trackEvent
 }) => {
   useEffect(() => {
     if (isTemplateView) {
@@ -100,10 +102,15 @@ const Create = ({
     </div>
   );
 
-  const openTemplate = ({ question: templateQuestion, answer }) => {
+  const openTemplate = ({ title, question: templateQuestion, answer }) => {
     openCardWithProps(false, {
       question: templateQuestion,
       answerEditorState: getEditorStateFromContentState(answer)
+    });
+
+    trackEvent(SEGMENT.EVENT.CLICK_NEW_CARD_FROM_TEMPLATE, {
+      Template: title,
+      Channel: finderNode ? SEGMENT.CHANNEL.FINDER : SEGMENT.CHANNEL.EXTENSION
     });
   };
 
@@ -157,7 +164,10 @@ const Create = ({
             <div> Create a Card </div>
             <Button
               text="Expand Card"
-              onClick={() => openCardWithProps(false)}
+              onClick={() => {
+                openCardWithProps(false);
+                trackEvent(SEGMENT.EVENT.CLICK_EXPAND_CARD);
+              }}
               disabled={isAnyLoading(attachments)}
               color="primary"
               className={s('p-sm text-xs')}
@@ -233,7 +243,8 @@ Create.propTypes = {
   requestAddCreateAttachment: PropTypes.func.isRequired,
   updateCreateAttachmentName: PropTypes.func.isRequired,
   requestRemoveCreateAttachment: PropTypes.func.isRequired,
-  openCard: PropTypes.func.isRequired
+  openCard: PropTypes.func.isRequired,
+  trackEvent: PropTypes.func.isRequired
 };
 
 export default Create;

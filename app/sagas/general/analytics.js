@@ -3,23 +3,12 @@ import {
   TOGGLE_DOCK,
   EDIT_CARD,
   TOGGLE_UPVOTE_SUCCESS,
-  OPEN_FINDER,
   TOGGLE_EXTERNAL_CREATE_MODAL,
   CREATE_EXTERNAL_CARD_SUCCESS
 } from 'actions/actionTypes';
 import { EVENT } from 'appConstants/segment';
+import { getCardProperties, getExternalCardProperties } from 'utils/segment';
 import trackEvent from 'actions/analytics';
-
-function getCardProperties(card) {
-  const { _id, question, status } = card;
-  return { 'Card ID': _id, Question: question, Status: status };
-}
-
-function getExternalCardProperties(card) {
-  const { _id, question, status, externalLinkAnswer } = card;
-  const { type } = externalLinkAnswer;
-  return { 'Card ID': _id, Question: question, Status: status, Type: type };
-}
 
 export default function* watchAnalyticsActions() {
   while (true) {
@@ -27,7 +16,6 @@ export default function* watchAnalyticsActions() {
       TOGGLE_DOCK,
       EDIT_CARD,
       TOGGLE_UPVOTE_SUCCESS,
-      OPEN_FINDER,
       TOGGLE_EXTERNAL_CREATE_MODAL,
       CREATE_EXTERNAL_CARD_SUCCESS
     ]);
@@ -40,13 +28,13 @@ export default function* watchAnalyticsActions() {
       let properties;
 
       switch (type) {
+        // General
         case TOGGLE_DOCK: {
           const dockVisible = yield select((state) => state.display.dockVisible);
-          if (dockVisible) {
-            event = EVENT.OPEN_EXTENSION;
-          }
+          event = dockVisible ? EVENT.OPEN_EXTENSION : EVENT.CLOSE_EXTENSION;
           break;
         }
+
         // Cards
         case EDIT_CARD: {
           const activeCard = yield select((state) => state.cards.activeCard);
@@ -67,12 +55,7 @@ export default function* watchAnalyticsActions() {
           break;
         }
 
-        // Finder
-        case OPEN_FINDER: {
-          event = EVENT.OPEN_FINDER;
-          break;
-        }
-
+        // External Verification
         case TOGGLE_EXTERNAL_CREATE_MODAL: {
           const isCreateModalOpen = yield select(
             (state) => state.externalVerification.isCreateModalOpen
@@ -93,7 +76,7 @@ export default function* watchAnalyticsActions() {
       }
 
       if (event) {
-        yield put(trackEvent(event, properties || {}));
+        yield put(trackEvent(event, properties));
       }
     }
   }

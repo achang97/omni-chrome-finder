@@ -3,6 +3,7 @@ import PropTypes from 'prop-types';
 import { CircularProgressbar, buildStyles } from 'react-circular-progressbar';
 
 import { Loader } from 'components/common';
+import { SEGMENT } from 'appConstants';
 
 import { colors } from 'styles/colors';
 import { getStyleApplicationFn } from 'utils/style';
@@ -17,7 +18,8 @@ const PerformanceBadge = ({
   badge,
   percentage,
   isGettingOnboardingStats,
-  togglePerformanceScore
+  togglePerformanceScore,
+  trackEvent
 }) => {
   const getPerformanceColors = (score) => {
     switch (true) {
@@ -65,12 +67,15 @@ const PerformanceBadge = ({
     );
   };
 
+  const onBadgeClick = () => {
+    togglePerformanceScore();
+    trackEvent(SEGMENT.EVENT.CLICK_PERFORMANCE_SCORE);
+  };
+
   const render = () => {
     return (
-      <div className={s('flex flex-col justify-center items-center relative')}>
-        <div className={s('flex items-center cursor-pointer')} onClick={togglePerformanceScore}>
-          {isGettingOnboardingStats ? <Loader size="sm" /> : getPerformanceScoreOrBadge()}
-        </div>
+      <div className={s('flex items-center cursor-pointer')} onClick={onBadgeClick}>
+        {isGettingOnboardingStats ? <Loader size="sm" /> : getPerformanceScoreOrBadge()}
       </div>
     );
   };
@@ -85,7 +90,8 @@ PerformanceBadge.propTypes = {
   isGettingOnboardingStats: PropTypes.bool,
 
   // Redux Actions
-  togglePerformanceScore: PropTypes.func.isRequired
+  togglePerformanceScore: PropTypes.func.isRequired,
+  trackEvent: PropTypes.func.isRequired
 };
 
 export default PerformanceBadge;

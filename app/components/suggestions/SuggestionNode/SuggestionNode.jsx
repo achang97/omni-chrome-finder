@@ -3,7 +3,7 @@ import PropTypes from 'prop-types';
 
 import { CardLocation } from 'components/cards';
 
-import { MAIN_STATE_ID } from 'appConstants/finder';
+import { FINDER, SEGMENT } from 'appConstants';
 import { getStyleApplicationFn } from 'utils/style';
 import FinderFolder from 'assets/images/finder/folder.svg';
 
@@ -11,10 +11,23 @@ import mainStyle from '../suggestion.css';
 
 const s = getStyleApplicationFn(mainStyle);
 
-const SuggestionNode = ({ className, id, name, path, openFinder, pushFinderNode }) => {
+const SuggestionNode = ({
+  className,
+  id,
+  name,
+  path,
+  event,
+  openFinder,
+  pushFinderNode,
+  trackEvent
+}) => {
   const onClick = () => {
     openFinder();
-    pushFinderNode(MAIN_STATE_ID, id);
+    pushFinderNode(FINDER.MAIN_STATE_ID, id);
+    if (event) {
+      const fullPath = [FINDER.ROOT.NAME, ...path.map(({ name: folderName }) => folderName), name];
+      trackEvent(event, { Folder: fullPath.join(' > ') });
+    }
   };
 
   return (
@@ -39,6 +52,7 @@ const SuggestionNode = ({ className, id, name, path, openFinder, pushFinderNode 
 SuggestionNode.propTypes = {
   id: PropTypes.string.isRequired,
   name: PropTypes.string.isRequired,
+  event: PropTypes.oneOf(Object.values(SEGMENT.EVENT)),
   className: PropTypes.string,
   path: PropTypes.arrayOf(
     PropTypes.shape({
@@ -49,7 +63,8 @@ SuggestionNode.propTypes = {
 
   // Redux Actions
   openFinder: PropTypes.func.isRequired,
-  pushFinderNode: PropTypes.func.isRequired
+  pushFinderNode: PropTypes.func.isRequired,
+  trackEvent: PropTypes.func.isRequired
 };
 
 SuggestionNode.defaultProps = {

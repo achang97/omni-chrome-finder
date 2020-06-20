@@ -12,7 +12,7 @@ function getDefaultTitle(title) {
   return title;
 }
 
-export const URL_REGEXES = {
+export const EXTERNAL_VERIFICATION = {
   [INTEGRATIONS.GOOGLE.type]: {
     regex: /https:\/\/(docs|drive)\.google\.com\/[^/]+\/d\/[^/]+/,
     getTitle: trimTitle,
@@ -50,4 +50,27 @@ export const URL_REGEXES = {
   }
 };
 
-export default { URL_REGEXES };
+export const SEARCH_BAR = [
+  {
+    integration: INTEGRATIONS.ZENDESK,
+    regex: /https:\/\/\S+\.zendesk\.com\/(?:agent\/tickets\/\d+|chat\/agent#visitors\/visitor_list\/state#!\S+)/
+  },
+  {
+    integration: INTEGRATIONS.JIRA,
+    regex: /https:\/\/\S+\.atlassian\.net\/(?:issues|browse|jira\/servicedesk\/projects\/[^/]+\/queues\/custom\/\d+\/\S+)/
+  },
+  {
+    integration: INTEGRATIONS.SLACK,
+    regex: /https:\/\/app.slack.com\/client\/[^/]+\/[^/]+/
+  },
+  {
+    integration: INTEGRATIONS.CONFLUENCE,
+    regex: EXTERNAL_VERIFICATION[INTEGRATIONS.CONFLUENCE.type].regex
+  },
+  {
+    integration: INTEGRATIONS.GOOGLE,
+    regex: EXTERNAL_VERIFICATION[INTEGRATIONS.GOOGLE.type].regex
+  }
+];
+
+export default { EXTERNAL_VERIFICATION, SEARCH_BAR };

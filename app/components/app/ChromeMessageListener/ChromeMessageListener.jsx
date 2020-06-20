@@ -3,9 +3,7 @@ import PropTypes from 'prop-types';
 import queryString from 'query-string';
 import { EditorState, ContentState } from 'draft-js';
 
-import { CHROME, ROUTES, URL, TASKS, PROFILE } from 'appConstants';
-
-import SEARCH_BAR_REGEXES from './regex';
+import { CHROME, ROUTES, URL, TASKS, PROFILE, URL_REGEX } from 'appConstants';
 
 import ExternalVerification from '../ExternalVerification';
 
@@ -77,7 +75,7 @@ class ChromeMessageListener extends Component {
       }
 
       if (isValidUser) {
-        const matchesSearchBar = SEARCH_BAR_REGEXES.some(({ integration, regex }) => {
+        const matchesSearchBar = URL_REGEX.SEARCH_BAR.some(({ integration, regex }) => {
           const integrationSetting = searchBarSettings[integration.type];
           return (!integrationSetting || !integrationSetting.disabled) && url.match(regex);
         });

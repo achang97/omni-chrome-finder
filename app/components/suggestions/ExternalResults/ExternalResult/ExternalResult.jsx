@@ -6,7 +6,7 @@ import { CardStatusIndicator } from 'components/cards';
 
 import { copyText } from 'utils/window';
 import { getStyleApplicationFn } from 'utils/style';
-import { PROFILE, SEGMENT, EXTERNAL_VERIFICATION } from 'appConstants';
+import { PROFILE, SEGMENT, URL_REGEX } from 'appConstants';
 
 import style from './external-result.css';
 
@@ -70,7 +70,7 @@ const ExternalResult = ({
           updateExternalTitle(title);
           updateExternalResultId(id);
 
-          const { getLinks, regex } = EXTERNAL_VERIFICATION.URL_REGEXES[type];
+          const { getLinks, regex } = URL_REGEX.EXTERNAL_VERIFICATION[type];
           const links = getLinks(url.match(regex));
           updateExternalLinkAnswer({ type, ...links });
         }

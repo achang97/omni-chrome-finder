@@ -18,7 +18,7 @@ import { UserPropTypes } from 'utils/propTypes';
 import FinderFolder from 'assets/images/finder/folder.svg';
 
 import { colors } from 'styles/colors';
-import { CARD, FINDER } from 'appConstants';
+import { CARD, FINDER, SEGMENT } from 'appConstants';
 import { getStyleApplicationFn } from 'utils/style';
 import style from './cards.css';
 
@@ -48,7 +48,8 @@ const Cards = ({
   openCardModal,
   openCardContainerModal,
   closeCardContainerModal,
-  toggleCards
+  toggleCards,
+  trackEvent
 }) => {
   const getCurrentCard = (index) => {
     // Get updated current card
@@ -214,7 +215,10 @@ const Cards = ({
     return (
       <div
         className={s(`card-tab button-hover ${!isActiveTab ? 'card-inactive-tab' : ''}`)}
-        onClick={openFinder}
+        onClick={() => {
+          openFinder();
+          trackEvent(SEGMENT.EVENT.OPEN_FINDER, { Channel: SEGMENT.CHANNEL.CARDS_TAB });
+        }}
       >
         <img src={FinderFolder} className={s('h-reg mr-xs')} alt="Finder" />
         <div> Finder </div>
@@ -223,6 +227,11 @@ const Cards = ({
   };
 
   const renderTabHeader = () => {
+    const openNewCard = () => {
+      openCard(getNewCardBaseState(user), true);
+      trackEvent(SEGMENT.EVENT.CLICK_NEW_CARD, { Channel: SEGMENT.CHANNEL.CARDS_TAB });
+    };
+
     return (
       <div id="card-tab-container" className={s('card-tab-container')}>
         {renderTabHeaderButtons()}
@@ -249,7 +258,7 @@ const Cards = ({
                 </Tabs>
                 {!snapshot.draggingFromThisWith && (
                   <button
-                    onClick={() => openCard(getNewCardBaseState(user), true)}
+                    onClick={openNewCard}
                     className={s('mx-xs text-purple-gray-50')}
                     type="button"
                   >
@@ -387,7 +396,8 @@ Cards.propTypes = {
   openCardModal: PropTypes.func.isRequired,
   openCardContainerModal: PropTypes.func.isRequired,
   closeCardContainerModal: PropTypes.func.isRequired,
-  toggleCards: PropTypes.func.isRequired
+  toggleCards: PropTypes.func.isRequired,
+  trackEvent: PropTypes.func.isRequired
 };
 
 export default Cards;

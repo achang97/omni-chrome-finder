@@ -2,6 +2,7 @@ import { connect } from 'react-redux';
 import { openCard } from 'actions/cards';
 import { requestSearchCards } from 'actions/search';
 import * as createActions from 'actions/create';
+import trackEvent from 'actions/analytics';
 import Create from './Create';
 
 const mapStateToProps = (state) => {
@@ -35,7 +36,8 @@ const mapStateToProps = (state) => {
 const mapDispatchToProps = {
   openCard,
   requestSearchCards,
-  ...createActions
+  ...createActions,
+  trackEvent
 };
 
 export default connect(mapStateToProps, mapDispatchToProps)(Create);

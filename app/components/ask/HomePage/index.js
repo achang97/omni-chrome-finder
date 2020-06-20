@@ -1,6 +1,7 @@
 import { connect } from 'react-redux';
 import { requestGetUserOnboardingStats } from 'actions/profile';
 import { toggleAskTeammate, updateAskSearchText } from 'actions/ask';
+import trackEvent from 'actions/analytics';
 import HomePage from './HomePage';
 
 const mapStateToProps = (state) => {
@@ -22,7 +23,8 @@ const mapStateToProps = (state) => {
 const mapDispatchToProps = {
   updateAskSearchText,
   toggleAskTeammate,
-  requestGetUserOnboardingStats
+  requestGetUserOnboardingStats,
+  trackEvent
 };
 
 export default connect(mapStateToProps, mapDispatchToProps)(HomePage);

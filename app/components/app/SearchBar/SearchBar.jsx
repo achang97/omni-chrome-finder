@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react';
 import PropTypes from 'prop-types';
 import { useDebouncedCallback } from 'use-debounce';
 import { MdSettings, MdClose } from 'react-icons/md';
-import { ANIMATE, ROUTES, PROFILE } from 'appConstants';
+import { ANIMATE, ROUTES, PROFILE, SEGMENT, URL_REGEX } from 'appConstants';
 import Dock from 'react-dock';
 
 import logo from 'assets/images/logos/logo-dark-icon.svg';
@@ -14,6 +14,11 @@ const DOCK_WIDTH = 225;
 
 const s = getStyleApplicationFn(style);
 
+const regexMatch = URL_REGEX.SEARCH_BAR.find(({ regex }) => window.location.href.match(regex));
+const BASE_EVENT_PROPERTIES = {
+  type: regexMatch && regexMatch.integration.title
+};
+
 const SearchBar = ({
   onlyShowSearchBar,
   searchText,
@@ -21,6 +26,7 @@ const SearchBar = ({
   toggleDock,
   updateAskSearchText,
   minimizeSearchBar,
+  trackEvent,
   history
 }) => {
   const [isHovering, setIsHovering] = useState(false);
@@ -29,6 +35,7 @@ const SearchBar = ({
     if (onlyShowSearchBar && query !== '') {
       toggleSearchBar();
       toggleDock();
+      trackEvent(SEGMENT.EVENT.SEARCH_IN_SEARCHBAR, { Query: query, ...BASE_EVENT_PROPERTIES });
       history.push(ROUTES.ASK);
     }
   }, ANIMATE.DEBOUNCE.MS_300);
@@ -39,9 +46,15 @@ const SearchBar = ({
 
   const openSettings = () => {
     toggleDock();
+    trackEvent(SEGMENT.EVENT.CLICK_SEARCHBAR_SETTINGS, BASE_EVENT_PROPERTIES);
     history.push(ROUTES.PROFILE, {
       startOpenSettingsSection: PROFILE.SETTING_SECTION_TYPE.SEARCH_BAR
     });
+  };
+
+  const closeSearchBar = () => {
+    minimizeSearchBar();
+    trackEvent(SEGMENT.EVENT.CLOSE_SEARCHBAR, BASE_EVENT_PROPERTIES);
   };
 
   return (
@@ -63,7 +76,7 @@ const SearchBar = ({
         onMouseLeave={() => setIsHovering(false)}
       >
         {isHovering && (
-          <div className={s('close-button')} onClick={minimizeSearchBar}>
+          <div className={s('close-button')} onClick={closeSearchBar}>
             <MdClose />
           </div>
         )}
@@ -72,6 +85,7 @@ const SearchBar = ({
         </div>
         <input
           onChange={(e) => updateAskSearchText(e.target.value)}
+          onClick={() => trackEvent(SEGMENT.EVENT.CLICK_SEARCHBAR_INPUT, BASE_EVENT_PROPERTIES)}
           value={searchText}
           placeholder="Search in Omni"
           className={s('flex-1 searchbar-input m-sm')}
@@ -93,7 +107,8 @@ SearchBar.propTypes = {
   toggleSearchBar: PropTypes.func.isRequired,
   toggleDock: PropTypes.func.isRequired,
   updateAskSearchText: PropTypes.func.isRequired,
-  minimizeSearchBar: PropTypes.func.isRequired
+  minimizeSearchBar: PropTypes.func.isRequired,
+  trackEvent: PropTypes.func.isRequired
 };
 
 export default SearchBar;

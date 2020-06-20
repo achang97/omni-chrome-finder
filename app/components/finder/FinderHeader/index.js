@@ -10,6 +10,7 @@ import {
 } from 'actions/finder';
 import { openCard, toggleCards } from 'actions/cards';
 import { toggleTemplateView, updateCreateFinderNode } from 'actions/create';
+import trackEvent from 'actions/analytics';
 import FinderHeader from './FinderHeader';
 
 const mapStateToProps = (state, ownProps) => {
@@ -43,7 +44,8 @@ const mapDispatchToProps = {
   openCard,
   toggleCards,
   toggleTemplateView,
-  updateCreateFinderNode
+  updateCreateFinderNode,
+  trackEvent
 };
 
 export default connect(mapStateToProps, mapDispatchToProps)(withRouter(FinderHeader));
