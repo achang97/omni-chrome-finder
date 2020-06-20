@@ -7,12 +7,11 @@ import ExternalResult from '../ExternalResult';
 
 const FOLDER_MIME_TYPE = 'application/vnd.google-apps.folder';
 
-const GoogleResult = ({ id, name, webViewLink, mimeType, iconLink, owners, card, onClick }) => {
+const GoogleResult = ({ id, name, webViewLink, mimeType, iconLink, owners, card }) => {
   return (
     <ExternalResult
       id={id}
       url={webViewLink}
-      onClick={onClick}
       logo={iconLink}
       type={INTEGRATIONS.GOOGLE.type}
       title={name}
@@ -47,7 +46,6 @@ GoogleResult.propTypes = {
       permissionId: PropTypes.string.isRequired
     })
   ).isRequired,
-  onClick: PropTypes.func.isRequired,
   card: PropTypes.shape({})
 };
 

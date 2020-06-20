@@ -7,7 +7,7 @@ import AnimateHeight from 'react-animate-height';
 import { Button, Triangle, Separator, Loader } from 'components/common';
 
 import { colors } from 'styles/colors';
-import { SEARCH, INTEGRATIONS, INTEGRATIONS_MAP, ANIMATE, PROFILE } from 'appConstants';
+import { SEARCH, INTEGRATIONS, INTEGRATIONS_MAP, ANIMATE, SEGMENT } from 'appConstants';
 
 import { getStyleApplicationFn } from 'utils/style';
 import { NodePropTypes } from 'utils/propTypes';
@@ -44,7 +44,6 @@ const SuggestionPanel = ({
   clearSearchCards,
   requestSearchNodes,
   requestSearchIntegrations,
-  requestLogAudit,
   openCard,
   trackEvent
 }) => {
@@ -91,12 +90,6 @@ const SuggestionPanel = ({
     const { type, items } = externalSource;
     const { logo, title } = INTEGRATIONS_MAP[type];
 
-    const logClick = (result) => {
-      trackEvent(`Open External Document - ${title}`, { Type: type, Title: title });
-      trackEvent(`Retention Event`, { type: 'Open External Document' });
-      requestLogAudit(PROFILE.AUDIT.TYPE.OPEN_EXTERNAL_DOC, { type, ...result });
-    };
-
     let ResultComponent;
     switch (type) {
       case INTEGRATIONS.GOOGLE.type: {
@@ -118,7 +111,6 @@ const SuggestionPanel = ({
     const renderResult = (result) => (
       <ResultComponent
         key={ResultComponent.getKey ? ResultComponent.getKey(result) : result.id}
-        onClick={() => logClick(result)}
         {...result}
       />
     );
@@ -199,7 +191,7 @@ const SuggestionPanel = ({
   };
 
   const clickCreateCard = () => {
-    // TODO: Add segment event for 'Click Create Card from Search'
+    trackEvent(SEGMENT.EVENT.CLICK_CREATE_CARD_FROM_SEARCH, { Question: query });
     openCard({ question: query }, true);
   };
 
@@ -339,7 +331,6 @@ SuggestionPanel.propTypes = {
   clearSearchCards: PropTypes.func.isRequired,
   requestSearchNodes: PropTypes.func.isRequired,
   requestSearchIntegrations: PropTypes.func.isRequired,
-  requestLogAudit: PropTypes.func.isRequired,
   openCard: PropTypes.func.isRequired,
   trackEvent: PropTypes.func.isRequired
 };

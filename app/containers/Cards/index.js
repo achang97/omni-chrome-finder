@@ -13,6 +13,7 @@ import {
   openCard
 } from 'actions/cards';
 import { openFinder } from 'actions/finder';
+import trackEvent from 'actions/analytics';
 import Cards from './Cards';
 
 const mapStateToProps = (state) => {
@@ -57,7 +58,8 @@ const mapDispatchToProps = {
   updateCardTabOrder,
   openCardModal,
   openCardContainerModal,
-  closeCardContainerModal
+  closeCardContainerModal,
+  trackEvent
 };
 
 export default connect(mapStateToProps, mapDispatchToProps)(Cards);

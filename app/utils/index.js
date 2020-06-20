@@ -9,5 +9,6 @@ export { default as react } from './react';
 export { default as propTypes } from './propTypes';
 export { default as request } from './request';
 export { default as select } from './select';
+export { default as segment } from './segment';
 export { default as storage } from './storage';
 export { default as style } from './style';

@@ -8,6 +8,7 @@ import {
   updateFinderFolderPermissionGroups
 } from 'actions/finder';
 import { openCard } from 'actions/cards';
+import trackEvent from 'actions/analytics';
 import { SEARCH } from 'appConstants';
 import FinderBody from './FinderBody';
 
@@ -47,7 +48,8 @@ const mapDispatchToProps = {
   openCard,
   updateFinderFolderName,
   updateFinderFolderPermissions,
-  updateFinderFolderPermissionGroups
+  updateFinderFolderPermissionGroups,
+  trackEvent
 };
 
 export default connect(mapStateToProps, mapDispatchToProps)(FinderBody);

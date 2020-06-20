@@ -8,10 +8,11 @@ import { Droppable } from 'react-beautiful-dnd';
 import { Tooltip, Loader } from 'components/common';
 import { CardStatusIndicator } from 'components/cards';
 
-import { FINDER_TYPE, MODAL_TYPE, PATH_TYPE } from 'appConstants/finder';
+import { SEGMENT, FINDER } from 'appConstants';
 import { getArrayIds } from 'utils/array';
 import { getStyleApplicationFn } from 'utils/style';
 import { NodePropTypes } from 'utils/propTypes';
+import { getCardProperties } from 'utils/segment';
 
 import FinderFolder from 'assets/images/finder/folder.svg';
 import FinderCard from 'assets/images/finder/card.svg';
@@ -29,6 +30,7 @@ const INFINITE_SCROLL_OFFSET = 300;
 
 const FinderBody = ({
   finderId,
+  onBottom,
   isModal,
   nodes,
   activePath,
@@ -45,10 +47,10 @@ const FinderBody = ({
   updateFinderFolderName,
   updateFinderFolderPermissions,
   updateFinderFolderPermissionGroups,
-  onBottom
+  trackEvent
 }) => {
   const isCardNode = (finderType) => {
-    return finderType === FINDER_TYPE.CARD;
+    return finderType === FINDER.FINDER_TYPE.CARD;
   };
 
   const getNodeLabel = ({ finderType, name, question }) => {
@@ -59,11 +61,15 @@ const FinderBody = ({
     return getArrayIds(moveNodes).includes(nodeId);
   };
 
-  const openNode = ({ finderType, _id }) => {
+  const openNode = (node) => {
+    const { finderType, _id, name } = node;
+
     if (isCardNode(finderType)) {
       openCard({ _id });
+      trackEvent(SEGMENT.EVENT.OPEN_CARD_FROM_FINDER, getCardProperties(node));
     } else if (!isMovingNode(_id)) {
       pushFinderNode(finderId, _id);
+      trackEvent(SEGMENT.EVENT.CLICK_FOLDER, { 'Folder Name': name });
     }
   };
 
@@ -125,7 +131,7 @@ const FinderBody = ({
         onClick: () => {
           const { name, permissions, permissionGroups } = selectedNodes[0];
           updateFinderFolderName(finderId, name);
-          openFinderModal(finderId, MODAL_TYPE.EDIT_FOLDER);
+          openFinderModal(finderId, FINDER.MODAL_TYPE.EDIT_FOLDER);
           updateFinderFolderPermissions(finderId, permissions);
           updateFinderFolderPermissionGroups(finderId, permissionGroups);
         }
@@ -134,7 +140,7 @@ const FinderBody = ({
         label: 'Delete',
         Icon: FaRegTrashAlt,
         show: selectedNodes.length !== 0,
-        onClick: () => openFinderModal(finderId, MODAL_TYPE.CONFIRM_DELETE)
+        onClick: () => openFinderModal(finderId, FINDER.MODAL_TYPE.CONFIRM_DELETE)
       }
     ];
 
@@ -163,7 +169,7 @@ const FinderBody = ({
   };
 
   const isSegment = () => {
-    return activePath.type === PATH_TYPE.SEGMENT;
+    return activePath.type === FINDER.PATH_TYPE.SEGMENT;
   };
 
   const render = () => {
@@ -226,11 +232,12 @@ const FinderBody = ({
 FinderBody.propTypes = {
   isModal: PropTypes.bool.isRequired,
   nodes: PropTypes.arrayOf(NodePropTypes).isRequired,
+  onBottom: PropTypes.func,
 
   // Redux State
   activePath: PropTypes.shape({
     _id: PropTypes.string.isRequired,
-    type: PropTypes.oneOf(Object.values(PATH_TYPE)).isRequired,
+    type: PropTypes.oneOf(Object.values(FINDER.PATH_TYPE)).isRequired,
     state: PropTypes.object
   }).isRequired,
   isGettingNode: PropTypes.bool,

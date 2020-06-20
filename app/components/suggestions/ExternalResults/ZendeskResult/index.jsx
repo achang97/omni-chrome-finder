@@ -17,13 +17,11 @@ const ZendeskResult = ({
   draft,
   promoted,
   vote_sum: voteSum,
-  card,
-  onClick
+  card
 }) => (
   <ExternalResult
     id={id}
     url={htmlUrl}
-    onClick={onClick}
     title={title}
     logo={INTEGRATIONS.ZENDESK.logo}
     type={INTEGRATIONS.ZENDESK.type}
@@ -58,7 +56,6 @@ ZendeskResult.propTypes = {
   promoted: PropTypes.bool.isRequired,
   draft: PropTypes.bool.isRequired,
   vote_sum: PropTypes.number.isRequired,
-  onClick: PropTypes.func.isRequired,
   card: PropTypes.shape({})
 };
 

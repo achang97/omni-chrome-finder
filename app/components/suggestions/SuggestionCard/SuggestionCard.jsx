@@ -4,7 +4,7 @@ import PropTypes from 'prop-types';
 import { CardStatusIndicator, CardLocation } from 'components/cards';
 import { Message } from 'components/common';
 
-import { CARD, INTEGRATIONS, INTEGRATIONS_MAP } from 'appConstants';
+import { CARD, INTEGRATIONS, INTEGRATIONS_MAP, SEGMENT } from 'appConstants';
 import { copyCardUrl } from 'utils/card';
 import { NodePropTypes } from 'utils/propTypes';
 
@@ -68,6 +68,7 @@ const SuggestionCard = ({
   showAnswer,
   status,
   finderNode,
+  event,
   className,
   showMoreMenu,
   openCard,
@@ -112,7 +113,11 @@ const SuggestionCard = ({
   };
 
   const clickOpenCard = () => {
-    trackEvent('Open Card from Search', { 'Card ID': id, Question: question, Status: status });
+    if (event) {
+      const eventProperties = { 'Card ID': id, Question: question, Status: status };
+      trackEvent(event, eventProperties);
+    }
+
     openCard({ _id: id });
   };
 
@@ -191,6 +196,7 @@ SuggestionCard.propTypes = {
   showAnswer: PropTypes.bool,
   status: PropTypes.oneOf(Object.values(CARD.STATUS)).isRequired,
   finderNode: NodePropTypes,
+  event: PropTypes.oneOf(Object.values(SEGMENT.EVENT)),
   className: PropTypes.string,
   showMoreMenu: PropTypes.bool,
 

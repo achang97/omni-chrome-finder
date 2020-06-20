@@ -4,7 +4,7 @@ import { MdNotificationsActive, MdLightbulbOutline, MdAdd, MdHome } from 'react-
 import { IoIosFolder } from 'react-icons/io';
 
 import { Tabs, Tab, Badge, PlaceholderImg } from 'components/common';
-import { ROUTES } from 'appConstants';
+import { ROUTES, SEGMENT } from 'appConstants';
 
 import { UserPropTypes } from 'utils/propTypes';
 
@@ -19,83 +19,122 @@ const Header = ({
   numAutofindCards,
   numTasks,
   openFinder,
+  trackEvent,
   history,
   location: { pathname }
 }) => {
+  const showAutofind = numAutofindCards !== 0;
+
+  const TABS = [
+    {
+      key: 'ask',
+      value: ROUTES.ASK,
+      tabClassName: 'px-sm',
+      tabContainerClassName: 'ml-reg',
+      children: (
+        <>
+          <MdHome />
+          <div className={s('header-tab-label')}>Home</div>
+        </>
+      )
+    },
+    {
+      key: 'create',
+      value: ROUTES.CREATE,
+      tabContainerClassName: 'mx-sm',
+      tabClassName: 'px-sm',
+      children: (
+        <>
+          <MdAdd />
+          <div className={s('header-tab-label')}>Create</div>
+        </>
+      )
+    },
+    {
+      isVisible: showAutofind,
+      key: 'suggest',
+      value: ROUTES.SUGGEST,
+      tabContainerClassName: 'header-small-tab ml-auto',
+      tabClassName: 'header-badge-container gold-gradient',
+      children: (
+        <>
+          <MdLightbulbOutline className={s('text-gold-reg')} />
+          <Badge count={numAutofindCards} size="sm" className={s('bg-gold-reg')} />
+        </>
+      )
+    },
+    {
+      key: 'cards',
+      onTabClick: () => {
+        openFinder();
+        trackEvent(SEGMENT.EVENT.OPEN_FINDER, { Channel: SEGMENT.CHANNEL.EXTENSION });
+      },
+      tabContainerClassName: `header-small-tab ${!showAutofind ? 'ml-auto' : ''}`,
+      tabClassName: 'opacity-100 primary-gradient text-white px-sm',
+      children: (
+        <>
+          <IoIosFolder className={s('flex-shrink-0')} />
+          <div className={s('header-tab-label')}>Cards</div>
+        </>
+      )
+    },
+    {
+      key: 'tasks',
+      value: ROUTES.TASKS,
+      tabContainerClassName: 'header-small-tab',
+      tabClassName: 'header-badge-container bg-white shadow-md',
+      children: (
+        <>
+          <MdNotificationsActive />
+          <Badge count={numTasks} size="sm" className={s('bg-red-500')} />
+        </>
+      )
+    },
+    {
+      key: 'profile',
+      value: ROUTES.PROFILE,
+      tabContainerClassName: 'ml-xs mr-reg',
+      children: (
+        <PlaceholderImg
+          name={`${user.firstname} ${user.lastname}`}
+          src={user.profilePicture}
+          className={s('header-profile-picture')}
+        />
+      )
+    }
+  ];
+
   const handleTabClick = (activeLink) => {
     history.push(activeLink);
   };
 
-  const showAutofind = numAutofindCards !== 0;
   return (
-    <div className={s('relative')}>
-      <Tabs
-        onTabClick={handleTabClick}
-        activeValue={pathname}
-        tabClassName={s(
-          'text-sm mt-xl mb-reg mx-0 bg-white shadow-md rounded-full font-semibold flex items-center p-0 border-0'
-        )}
-        tabContainerClassName={s('flex align-center border-0')}
-        activeTabClassName={s('bg-purple-light border-0')}
-        color={colors.purple.reg}
-        showRipple={false}
-      >
-        <Tab
-          key="ask"
-          value={ROUTES.ASK}
-          tabContainerClassName={s('ml-reg')}
-          tabClassName={s('px-sm')}
-        >
-          <MdHome />
-          <div className={s('text-xs ml-xs')}>Home</div>
-        </Tab>
-        <Tab
-          key="create"
-          value={ROUTES.CREATE}
-          tabContainerClassName={s('mx-sm')}
-          tabClassName={s('px-sm')}
-        >
-          <MdAdd />
-          <div className={s('text-xs ml-xs')}>Create</div>
-        </Tab>
-        {showAutofind && (
+    <Tabs
+      onTabClick={handleTabClick}
+      activeValue={pathname}
+      className={s('flex-shrink-0')}
+      tabClassName={s(
+        'text-sm mt-xl mb-reg mx-0 bg-white shadow-md rounded-full font-semibold flex items-center p-0 border-0'
+      )}
+      tabContainerClassName={s('flex align-center border-0')}
+      activeTabClassName={s('bg-purple-light border-0')}
+      color={colors.purple.reg}
+      showRipple={false}
+    >
+      {TABS.filter(({ isVisible = true }) => isVisible).map(
+        ({ key, tabClassName = '', tabContainerClassName = '', onTabClick, value, children }) => (
           <Tab
-            key="suggest"
-            value={ROUTES.SUGGEST}
-            tabContainerClassName={s('header-small-tab ml-auto')}
-            tabClassName={s('header-badge-container gold-gradient')}
+            key={key}
+            value={value}
+            tabClassName={s(tabClassName)}
+            tabContainerClassName={s(tabContainerClassName)}
+            onTabClick={onTabClick}
           >
-            <MdLightbulbOutline className={s('text-gold-reg')} />
-            <Badge count={numAutofindCards} size="sm" className={s('bg-gold-reg')} />
+            {children}
           </Tab>
-        )}
-        <Tab
-          key="cards"
-          onTabClick={openFinder}
-          tabContainerClassName={s(`header-small-tab ${!showAutofind ? 'ml-auto' : ''}`)}
-          tabClassName={s('opacity-100 primary-gradient text-white px-sm')}
-        >
-          <IoIosFolder className={s('flex-shrink-0')} />
-          <div className={s('text-xs ml-xs')}>Cards</div>
-        </Tab>
-        <Tab
-          key="tasks"
-          value={ROUTES.TASKS}
-          tabContainerClassName={s('header-small-tab')}
-          tabClassName={s('header-badge-container bg-white shadow-md')}
-        >
-          <MdNotificationsActive />
-          <Badge count={numTasks} size="sm" className={s('bg-red-500')} />
-        </Tab>
-        <Tab key="profile" value={ROUTES.PROFILE} tabContainerClassName={s('ml-xs mr-reg')}>
-          <PlaceholderImg
-            name={`${user.firstname} ${user.lastname}`}
-            src={user.profilePicture}
-            className={s('header-profile-picture')}
-          />
-        </Tab>
-      </Tabs>
-    </div>
+        )
+      )}
+    </Tabs>
   );
 };
 
@@ -106,7 +145,8 @@ Header.propTypes = {
   numTasks: PropTypes.number.isRequired,
 
   // Redux Actions
-  openFinder: PropTypes.func.isRequired
+  openFinder: PropTypes.func.isRequired,
+  trackEvent: PropTypes.func.isRequired
 };
 
 export default Header;

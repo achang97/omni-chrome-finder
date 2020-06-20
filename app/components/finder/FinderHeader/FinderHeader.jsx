@@ -9,7 +9,7 @@ import { Dropdown, ContextMenu, CircleButton, Tooltip } from 'components/common'
 import { getNewCardBaseState } from 'utils/card';
 import { UserPropTypes, NodePropTypes } from 'utils/propTypes';
 import { getStyleApplicationFn } from 'utils/style';
-import { FINDER, ROUTES } from 'appConstants';
+import { FINDER, ROUTES, SEGMENT } from 'appConstants';
 
 import MoveFolder from 'assets/images/finder/move-folder.svg';
 
@@ -37,6 +37,7 @@ const FinderHeader = ({
   toggleCards,
   toggleTemplateView,
   updateCreateFinderNode,
+  trackEvent,
   history
 }) => {
   const [isNewDropdownOpen, setNewDropdownOpen] = useState(false);
@@ -132,6 +133,7 @@ const FinderHeader = ({
             onClick: onClickWrapper(() => {
               const newCard = { ...getNewCardBaseState(user), finderNode };
               openCard(newCard, true);
+              trackEvent(SEGMENT.EVENT.CLICK_NEW_CARD, { Channel: SEGMENT.CHANNEL.FINDER });
             })
           },
           {
@@ -242,7 +244,8 @@ FinderHeader.propTypes = {
   openCard: PropTypes.func.isRequired,
   toggleCards: PropTypes.func.isRequired,
   toggleTemplateView: PropTypes.func.isRequired,
-  updateCreateFinderNode: PropTypes.func.isRequired
+  updateCreateFinderNode: PropTypes.func.isRequired,
+  trackEvent: PropTypes.func.isRequired
 };
 
 export default FinderHeader;

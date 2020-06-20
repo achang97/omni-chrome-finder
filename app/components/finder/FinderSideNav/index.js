@@ -1,6 +1,7 @@
 import { connect } from 'react-redux';
 import _ from 'lodash';
 import { pushFinderNode, pushFinderSegment } from 'actions/finder';
+import trackEvent from 'actions/analytics';
 import FinderSideNav from './FinderSideNav';
 
 const mapStateToProps = (state, ownProps) => {
@@ -17,7 +18,8 @@ const mapStateToProps = (state, ownProps) => {
 
 const mapDispatchToProps = {
   pushFinderNode,
-  pushFinderSegment
+  pushFinderSegment,
+  trackEvent
 };
 
 export default connect(mapStateToProps, mapDispatchToProps)(FinderSideNav);

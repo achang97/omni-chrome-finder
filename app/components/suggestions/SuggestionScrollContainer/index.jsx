@@ -6,7 +6,7 @@ import { colors } from 'styles/colors';
 import { isSlackCard } from 'utils/card';
 import { getStyleApplicationFn } from 'utils/style';
 import { NodePropTypes } from 'utils/propTypes';
-import { NODE_TYPE } from 'appConstants/finder';
+import { FINDER, SEGMENT } from 'appConstants';
 
 import SuggestionCard from '../SuggestionCard';
 import SuggestionNode from '../SuggestionNode';
@@ -44,7 +44,7 @@ const SuggestionScrollContainer = ({
   };
 
   const renderScrollElement = (elem, i) => {
-    if (elem.type === NODE_TYPE.FOLDER) {
+    if (elem.type === FINDER.NODE_TYPE.FOLDER) {
       const { _id, name, path } = elem;
       return (
         <SuggestionNode
@@ -52,6 +52,7 @@ const SuggestionScrollContainer = ({
           name={name}
           className={s('suggestion-scroll-container-card')}
           path={path}
+          event={SEGMENT.EVENT.OPEN_FOLDER_FROM_SEARCH}
         />
       );
     }
@@ -65,6 +66,7 @@ const SuggestionScrollContainer = ({
       <SuggestionCard
         id={_id}
         question={question}
+        event={SEGMENT.EVENT.OPEN_CARD_FROM_SEARCH}
         answer={answer}
         createdFromSlack={isSlackCard(elem)}
         externalLinkAnswer={externalLinkAnswer}
@@ -78,7 +80,7 @@ const SuggestionScrollContainer = ({
   };
 
   const renderOverflowElement = (elem, i, positions) => {
-    if (elem.type === NODE_TYPE.FOLDER) {
+    if (elem.type === FINDER.NODE_TYPE.FOLDER) {
       return null;
     }
 

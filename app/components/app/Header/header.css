@@ -6,6 +6,10 @@
   @apply rounded-full;
 }
 
+.header-tab-label {
+  @apply text-xs ml-xs;
+}
+
 .header-profile-picture {
   @apply text-xs border border-gray-light border-solid;
 }

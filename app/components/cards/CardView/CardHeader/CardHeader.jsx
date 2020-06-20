@@ -9,7 +9,7 @@ import { copyCardUrl, isApprover } from 'utils/card';
 import { copyText } from 'utils/window';
 import { getStyleApplicationFn } from 'utils/style';
 import { UserPropTypes } from 'utils/propTypes';
-import { MODAL_TYPE, STATUS } from 'appConstants/card';
+import { CARD, SEGMENT } from 'appConstants';
 
 import CardStatus from '../../CardStatus';
 
@@ -37,30 +37,10 @@ const CardHeader = ({
 }) => {
   const goBackToView = () => {
     if (hasCardChanged) {
-      openCardModal(MODAL_TYPE.CONFIRM_CLOSE_EDIT);
+      openCardModal(CARD.MODAL_TYPE.CONFIRM_CLOSE_EDIT);
     } else {
       cancelEditCard();
     }
-  };
-
-  const clickViewAttachments = () => {
-    trackEvent('Click View Attachments', { 'Card ID': _id, Question: question, Status: status });
-    openCardSideDock();
-  };
-
-  const clickCopyAnswer = () => {
-    trackEvent('Copy Card Body', { 'Card ID': _id, Question: question, Status: status });
-    copyText(answer || externalLink);
-  };
-
-  const clickCopyUrl = () => {
-    trackEvent('Share Card', { 'Card ID': _id, Question: question, Status: status });
-    copyCardUrl(_id);
-  };
-
-  const clickMoreMenu = () => {
-    trackEvent('Click Card More Menu', { 'Card ID': _id, Question: question, Status: status });
-    openCardSideDock();
   };
 
   const renderHeaderButtons = () => {
@@ -69,35 +49,40 @@ const CardHeader = ({
         Icon: MdAttachFile,
         label: attachments.length,
         tooltip: `View Attachments (${attachments.length})`,
-        onClick: clickViewAttachments,
+        onClick: openCardSideDock,
         className: `py-xs px-sm rounded-full shadow-md ${
           attachments.length > 0 ? 'gold-gradient' : 'bg-purple-light'
-        }`
+        }`,
+        event: SEGMENT.EVENT.CLICK_VIEW_ATTACHMENTS
       },
       {
         Icon: MdContentCopy,
         toast: 'Copied answer to clipboard!',
         tooltip: 'Copy Answer',
-        onClick: clickCopyAnswer
+        onClick: () => copyText(answer || externalLink),
+        event: SEGMENT.EVENT.COPY_CARD_BODY
       },
       {
         Icon: IoIosShareAlt,
         toast: 'Copied link to clipboard!',
         tooltip: 'Share Card',
         iconClassName: 'text-lg',
-        onClick: clickCopyUrl
+        onClick: () => copyCardUrl(_id),
+        event: SEGMENT.EVENT.SHARE_CARD
       },
       {
         Icon: MdMoreHoriz,
         label: 'More',
         tooltip: 'Advanced Settings',
-        onClick: clickMoreMenu,
-        showEdit: true
+        onClick: openCardSideDock,
+        showEdit: true,
+        event: SEGMENT.EVENT.CLICK_CARD_MORE_MENU
       }
     ];
 
-    const headerOnClick = (onClick, toast) => {
+    const headerOnClick = (onClick, event, toast) => {
       if (toast) setToastMessage(toast);
+      trackEvent(event, { 'Card ID': _id, Question: question, Status: status });
       onClick();
     };
 
@@ -105,11 +90,14 @@ const CardHeader = ({
     return (
       <div className={s('flex items-center opacity-75')}>
         {filteredButtons.map(
-          ({ Icon, toast, label, tooltip, onClick, className = '', iconClassName = '' }, i) => (
+          (
+            { Icon, toast, event, label, tooltip, onClick, className = '', iconClassName = '' },
+            i
+          ) => (
             <React.Fragment key={tooltip}>
               <Tooltip show={!!tooltip} tooltip={tooltip} tooltipProps={{ place: 'left' }}>
                 <button
-                  onClick={() => headerOnClick(onClick, toast)}
+                  onClick={() => headerOnClick(onClick, event, toast)}
                   className={s(`flex items-center ${className}`)}
                   type="button"
                 >
@@ -129,17 +117,17 @@ const CardHeader = ({
 
   const cardStatusOnClick = (prevStatus) => {
     switch (prevStatus) {
-      case STATUS.OUT_OF_DATE:
-      case STATUS.NEEDS_VERIFICATION: {
-        openCardModal(MODAL_TYPE.CONFIRM_UP_TO_DATE);
+      case CARD.STATUS.OUT_OF_DATE:
+      case CARD.STATUS.NEEDS_VERIFICATION: {
+        openCardModal(CARD.MODAL_TYPE.CONFIRM_UP_TO_DATE);
         break;
       }
-      case STATUS.UP_TO_DATE: {
-        openCardModal(MODAL_TYPE.CONFIRM_OUT_OF_DATE);
+      case CARD.STATUS.UP_TO_DATE: {
+        openCardModal(CARD.MODAL_TYPE.CONFIRM_OUT_OF_DATE);
         break;
       }
-      case STATUS.NEEDS_APPROVAL: {
-        openCardModal(MODAL_TYPE.CONFIRM_APPROVE);
+      case CARD.STATUS.NEEDS_APPROVAL: {
+        openCardModal(CARD.MODAL_TYPE.CONFIRM_APPROVE);
         break;
       }
       default:
@@ -151,14 +139,14 @@ const CardHeader = ({
     return (
       <>
         {/* Case 1: Card is documented and in edit */}
-        {isEditing && status !== STATUS.NOT_DOCUMENTED && (
+        {isEditing && status !== CARD.STATUS.NOT_DOCUMENTED && (
           <div className={s('flex cursor-pointer font-bold opacity-75')} onClick={goBackToView}>
             <MdKeyboardArrowLeft className={s('text-gray-dark')} />
             <div className={s('underline text-purple-reg')}> Back to View </div>
           </div>
         )}
         {/* Case 2: Card is not yet documented */}
-        {isEditing && status === STATUS.NOT_DOCUMENTED && (
+        {isEditing && status === CARD.STATUS.NOT_DOCUMENTED && (
           <div className={s('font-bold opacity-75')}> New Card </div>
         )}
 
@@ -192,7 +180,7 @@ const CardHeader = ({
             <Separator className={s('bg-purple-gray-10 mx-sm opacity-75')} />
             <CardStatus
               status={status}
-              isActionable={status !== STATUS.NEEDS_APPROVAL || isApprover(user, tags)}
+              isActionable={status !== CARD.STATUS.NEEDS_APPROVAL || isApprover(user, tags)}
               outOfDateReason={outOfDateReason}
               onDropdownOptionClick={cardStatusOnClick}
               className={s('text-gray-dark')}
@@ -237,7 +225,7 @@ CardHeader.propTypes = {
   externalLink: PropTypes.string,
   question: PropTypes.string,
   isEditing: PropTypes.bool.isRequired,
-  status: PropTypes.oneOf(Object.values(STATUS)).isRequired,
+  status: PropTypes.oneOf(Object.values(CARD.STATUS)).isRequired,
   attachments: PropTypes.arrayOf(PropTypes.object).isRequired,
   lastVerified: LastTimestampPropTypes,
   hasCardChanged: PropTypes.bool.isRequired,

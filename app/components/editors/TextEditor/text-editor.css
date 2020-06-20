@@ -4,7 +4,7 @@
 }
 
 .text-editor-container {
-  @apply relative flex flex-col min-h-0 overflow-hidden;
+  @apply relative flex flex-col min-h-0;
 
   transition: max-height 1s ease;
 }
