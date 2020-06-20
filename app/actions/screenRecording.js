@@ -4,18 +4,12 @@ export function addScreenRecordingChunk(recordingChunk) {
   return { type: types.ADD_SCREEN_RECORDING_CHUNK, payload: { recordingChunk } };
 }
 
-export function startScreenRecording({
-  id,
-  stream,
-  desktopStream,
-  voiceStream,
-  mediaRecorder,
-  onSuccess
-}) {
-  return {
-    type: types.START_SCREEN_RECORDING,
-    payload: { id, stream, desktopStream, voiceStream, mediaRecorder, onSuccess }
-  };
+export function initScreenRecording(id, onSuccess) {
+  return { type: types.INIT_SCREEN_RECORDING, payload: { id, onSuccess } };
+}
+
+export function startScreenRecording() {
+  return { type: types.START_SCREEN_RECORDING, payload: {} };
 }
 
 export function endScreenRecording() {
