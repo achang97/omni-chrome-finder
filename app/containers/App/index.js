@@ -1,10 +1,8 @@
 import { connect } from 'react-redux';
-import { withRouter } from 'react-router';
 import { toggleDock } from 'actions/display';
 import { requestGetUser } from 'actions/profile';
 import { requestGetTasks } from 'actions/tasks';
 import { openCard } from 'actions/cards';
-import trackEvent from 'actions/analytics';
 import { SEARCH } from 'appConstants';
 
 import App from './App';
@@ -34,8 +32,7 @@ const mapDispatchToProps = {
   toggleDock,
   requestGetUser,
   requestGetTasks,
-  openCard,
-  trackEvent
+  openCard
 };
 
-export default connect(mapStateToProps, mapDispatchToProps)(withRouter(App));
+export default connect(mapStateToProps, mapDispatchToProps)(App);

@@ -1,10 +1,9 @@
 import React, { useEffect, useRef } from 'react';
 import PropTypes from 'prop-types';
 import { Switch, Redirect } from 'react-router-dom';
-import _ from 'lodash';
 import Dock from 'react-dock';
 
-import { ROUTES, SEGMENT } from 'appConstants';
+import { ROUTES } from 'appConstants';
 import { auth } from 'utils';
 import { UserPropTypes } from 'utils/propTypes';
 
@@ -49,36 +48,10 @@ const s = getStyleApplicationFn(style);
 
 const DOCK_WIDTH = 350;
 
-const App = ({
-  dockVisible,
-  isLoggedIn,
-  user,
-  showAutofind,
-  requestGetUser,
-  requestGetTasks,
-  trackEvent,
-  history
-}) => {
+const App = ({ dockVisible, isLoggedIn, user, showAutofind, requestGetUser, requestGetTasks }) => {
   const isMounted = useRef(null);
 
   const isVerified = user && user.isVerified;
-
-  useEffect(() => {
-    history.listen(({ pathname }) => {
-      switch (pathname) {
-        case ROUTES.ASK:
-        case ROUTES.CREATE:
-        case ROUTES.TASKS:
-        case ROUTES.PROFILE: {
-          const pageName = _.capitalize(pathname.substring(1));
-          trackEvent(`${SEGMENT.EVENT.NAVIGATE} ${pageName}`);
-          break;
-        }
-        default:
-          break;
-      }
-    });
-  }, [history, trackEvent]);
 
   useEffect(() => {
     if (isLoggedIn && !isMounted.current) {
@@ -154,8 +127,7 @@ App.propTypes = {
 
   // Redux Actions
   requestGetUser: PropTypes.func.isRequired,
-  requestGetTasks: PropTypes.func.isRequired,
-  trackEvent: PropTypes.func.isRequired
+  requestGetTasks: PropTypes.func.isRequired
 };
 
 export default App;
