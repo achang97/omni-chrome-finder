@@ -54,8 +54,7 @@ const ExternalResult = ({
   };
 
   const onResultClick = () => {
-    trackEvent(`${SEGMENT.EVENT.OPEN_EXTERNAL_DOC} - ${title}`, { Type: type, Title: title });
-    trackEvent(SEGMENT.EVENT.RETENTION_EVENT, { type: SEGMENT.EVENT.OPEN_EXTERNAL_DOC });
+    trackEvent(SEGMENT.EVENT.OPEN_EXTERNAL_DOC, { Type: type, Title: title }, true);
     requestLogAudit(PROFILE.AUDIT.TYPE.OPEN_EXTERNAL_DOC, { type, title });
     window.open(url, '_blank');
   };

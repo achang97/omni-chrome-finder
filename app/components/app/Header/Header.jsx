@@ -1,5 +1,6 @@
 import React from 'react';
 import PropTypes from 'prop-types';
+import _ from 'lodash';
 import { MdNotificationsActive, MdLightbulbOutline, MdAdd, MdHome } from 'react-icons/md';
 import { IoIosFolder } from 'react-icons/io';
 
@@ -106,6 +107,8 @@ const Header = ({
 
   const handleTabClick = (activeLink) => {
     history.push(activeLink);
+    const pageName = _.capitalize(activeLink.substring(1));
+    trackEvent(`${SEGMENT.EVENT.NAVIGATE} ${pageName}`);
   };
 
   return (
