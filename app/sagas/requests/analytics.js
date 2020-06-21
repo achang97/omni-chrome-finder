@@ -19,9 +19,9 @@ export default function* watchAnalyticsRequests() {
   }
 }
 
-function* trackEvent({ event, properties }) {
+function* trackEvent({ event, properties, isRetention }) {
   try {
-    yield call(doPost, '/track', { event, properties });
+    yield call(doPost, '/track', { event, properties, isRetention });
   } catch (error) {
     /* TODO: Add Error Catching */
   }
