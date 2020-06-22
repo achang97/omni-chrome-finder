@@ -1,4 +1,6 @@
 .card {
+  @apply top-0;
+
   position: fixed !important;
   z-index: 10000000000;
 }

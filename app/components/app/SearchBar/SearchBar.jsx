@@ -2,12 +2,12 @@ import React, { useEffect, useState } from 'react';
 import PropTypes from 'prop-types';
 import { useDebouncedCallback } from 'use-debounce';
 import { MdSettings, MdClose } from 'react-icons/md';
+
+import { Dock } from 'components/common';
 import { ANIMATE, ROUTES, PROFILE, SEGMENT, URL_REGEX } from 'appConstants';
-import Dock from 'react-dock';
 
 import logo from 'assets/images/logos/logo-dark-icon.svg';
 import { getStyleApplicationFn } from 'utils/style';
-import { DOCK_PANEL_STYLE } from 'styles/dock';
 import style from './search-bar.css';
 
 const DOCK_WIDTH = 225;
@@ -58,18 +58,7 @@ const SearchBar = ({
   };
 
   return (
-    <Dock
-      position="right"
-      fluid={false}
-      dimMode="none"
-      size={DOCK_WIDTH}
-      zIndex={10000000000}
-      isVisible={onlyShowSearchBar}
-      dockStyle={{
-        ...DOCK_PANEL_STYLE,
-        height: 'auto'
-      }}
-    >
+    <Dock position="right" width={DOCK_WIDTH} isVisible={onlyShowSearchBar} isFullHeight={false}>
       <div
         className={s('flex items-center')}
         onMouseEnter={() => setIsHovering(true)}

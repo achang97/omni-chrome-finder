@@ -5,6 +5,7 @@ export { default as CheckBox } from './CheckBox';
 export { default as CircleButton } from './CircleButton';
 export { default as ConfirmModal } from './ConfirmModal';
 export { default as ContextMenu } from './ContextMenu';
+export { default as Dock } from './Dock';
 export { default as Dropdown } from './Dropdown';
 export { default as Dropzone } from './Dropzone';
 export { default as HelpTooltip } from './HelpTooltip';

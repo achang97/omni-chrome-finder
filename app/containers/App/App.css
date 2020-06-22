@@ -19,15 +19,6 @@
   letter-spacing: 0 !important;
 }
 
-/* Override React Dock */
-.app-container > div > div > div:nth-child(2) {
-  overflow: initial !important;
-}
-
-.app-container > div:first-child > div > div:first-child {
-  @apply hidden !important;
-}
-
 .app-container h1,
 .app-container h2,
 .app-container h3,

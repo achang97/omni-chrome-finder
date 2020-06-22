@@ -22,12 +22,12 @@ function render(state, wrapper) {
 }
 
 (() => {
-  const { body } = document;
+  const { documentElement } = document;
 
   const wrapper = document.createElement('div');
   wrapper.id = MAIN_CONTAINER_ID;
   wrapper.style = 'all: initial;';
-  body.insertBefore(wrapper, body.firstChild);
+  documentElement.appendChild(wrapper);
 
   const initialState = {};
 

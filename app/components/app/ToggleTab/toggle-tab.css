@@ -1,7 +1,7 @@
 .toggle-tab {
   z-index: 10000000000;
 
-  @apply flex flex-col fixed right-0;
+  @apply flex flex-col fixed right-0 top-0;
 }
 
 .toggle-drag-handle {
