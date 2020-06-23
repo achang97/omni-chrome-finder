@@ -141,9 +141,9 @@ const SuggestionPanel = ({
             {...SWITCH_PROPS}
             checked={isSearchEnabled(type)}
             icons={false}
-            onChange={(e) => {
+            onChange={(checked) => {
               requestUpdateUser({
-                [`widgetSettings.integrationSearch.${type}.disabled`]: !e.target.checked
+                [`widgetSettings.integrationSearch.${type}.disabled`]: !checked
               });
             }}
           />

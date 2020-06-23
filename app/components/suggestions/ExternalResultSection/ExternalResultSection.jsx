@@ -142,7 +142,7 @@ const ExternalResultSection = ({
                 {...SWITCH_PROPS}
                 checked={!isIntegrationDisabled}
                 icons={false}
-                onChange={(e) => toggleSettings(e.target.checked)}
+                onChange={(checked) => toggleSettings(checked)}
               />
               {isExpanded && (
                 <MdKeyboardArrowUp
