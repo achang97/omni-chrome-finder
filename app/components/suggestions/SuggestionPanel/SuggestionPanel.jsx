@@ -15,7 +15,7 @@ import mainStyle from './suggestion-panel.css';
 import externalIconStyle from '../ExternalResults/ExternalResult/external-result.css';
 import scrollStyle from '../SuggestionScrollContainer/suggestion-scroll-container.css';
 
-import { GoogleResult, ZendeskResult, ConfluenceResult } from '../ExternalResults';
+import { GoogleResult, ZendeskResult, ConfluenceResult, JiraResult } from '../ExternalResults';
 import SuggestionScrollContainer from '../SuggestionScrollContainer';
 
 const s = getStyleApplicationFn(mainStyle, externalIconStyle, scrollStyle);
@@ -102,6 +102,10 @@ const SuggestionPanel = ({
       }
       case INTEGRATIONS.CONFLUENCE.type: {
         ResultComponent = ConfluenceResult;
+        break;
+      }
+      case INTEGRATIONS.JIRA.type: {
+        ResultComponent = JiraResult;
         break;
       }
       default:
