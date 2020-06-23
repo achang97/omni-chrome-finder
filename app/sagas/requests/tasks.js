@@ -53,7 +53,7 @@ export default function* watchTasksRequests() {
 
 function* getTasks() {
   try {
-    const { notifs: tasks } = yield call(doGet, '/notifications', { resolved: false });
+    const tasks = yield call(doGet, '/notifications', { resolved: false });
     yield put(handleGetTasksSuccess(tasks));
   } catch (error) {
     yield put(handleGetTasksError(getErrorMessage(error)));
@@ -71,7 +71,7 @@ function* markUpToDate({ taskId, cardId }) {
 
 function* dismissTask({ taskId }) {
   try {
-    yield call(doPut, '/notifications', { update: { resolved: true }, notificationId: taskId });
+    yield call(doPut, `/notifications/${taskId}`, { resolved: true });
     yield put(handleDismissTaskSuccess(taskId));
   } catch (error) {
     yield put(handleDismissTaskError(taskId, getErrorMessage(error)));

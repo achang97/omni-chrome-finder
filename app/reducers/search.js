@@ -115,7 +115,12 @@ export default function searchReducer(state = initialState, action) {
     }
     case types.SEARCH_INTEGRATIONS_SUCCESS: {
       const { results } = payload;
-      return { ...state, isSearchingIntegrations: false, integrationResults: results };
+      return {
+        ...state,
+        isSearchingIntegrations: false,
+        integrationResults: results,
+        hasSearchedIntegrations: true
+      };
     }
     case types.SEARCH_INTEGRATIONS_ERROR: {
       const { error } = payload;

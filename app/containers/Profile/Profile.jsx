@@ -124,7 +124,7 @@ const Profile = ({
       title: 'Search Bar',
       options: [
         INTEGRATIONS.CONFLUENCE,
-        INTEGRATIONS.GOOGLE,
+        // INTEGRATIONS.GOOGLE,
         INTEGRATIONS.JIRA,
         INTEGRATIONS.SLACK,
         INTEGRATIONS.ZENDESK

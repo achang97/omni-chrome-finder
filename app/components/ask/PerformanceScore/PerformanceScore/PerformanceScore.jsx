@@ -1,12 +1,8 @@
 import React, { useState } from 'react';
 import PropTypes from 'prop-types';
-import {
-  MdCheck,
-  MdKeyboardArrowUp,
-  MdKeyboardArrowLeft,
-  MdKeyboardArrowRight
-} from 'react-icons/md';
+import { MdCheck, MdKeyboardArrowLeft, MdKeyboardArrowRight } from 'react-icons/md';
 
+import { BackButton } from 'components/common';
 import { USER_BADGE } from 'appConstants/profile';
 import { getStyleApplicationFn } from 'utils/style';
 
@@ -91,11 +87,11 @@ const PerformanceScore = ({
     return (
       <>
         <div className={s('performance-score-section-container p-lg')}>
-          <div className={s('flex justify-between')}>
-            <div className={s('text-xs font-semibold text-gray-reg flex-1')}>
+          <div className={s('flex')}>
+            <BackButton onClick={togglePerformanceScore} />
+            <div className={s('ml-sm text-xs font-semibold text-gray-reg flex-1')}>
               {getPerformanceMessage()}
             </div>
-            <MdKeyboardArrowUp className={s('cursor-pointer')} onClick={togglePerformanceScore} />
           </div>
           {renderAccomplishmentCarousel()}
         </div>

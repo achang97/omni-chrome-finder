@@ -7,7 +7,7 @@ import { FINDER, SEGMENT } from 'appConstants';
 import { getStyleApplicationFn } from 'utils/style';
 import FinderFolder from 'assets/images/finder/folder.svg';
 
-import mainStyle from '../suggestion.css';
+import mainStyle from '../styles/suggestion.css';
 
 const s = getStyleApplicationFn(mainStyle);
 

@@ -1,7 +1,6 @@
 import React, { useEffect, useRef } from 'react';
 import PropTypes from 'prop-types';
 import { Switch, Redirect } from 'react-router-dom';
-import Dock from 'react-dock';
 
 import { ROUTES } from 'appConstants';
 import { auth } from 'utils';
@@ -17,10 +16,10 @@ import {
   MinimizeButton,
   SearchBar
 } from 'components/app';
+import { Dock } from 'components/common';
 import { PublicRoute, PrivateRoute } from 'components/routes';
 
 import { getStyleApplicationFn } from 'utils/style';
-import { DOCK_PANEL_STYLE } from 'styles/dock';
 
 import Ask from '../Ask';
 import Create from '../Create';
@@ -71,18 +70,7 @@ const App = ({ dockVisible, isLoggedIn, user, showAutofind, requestGetUser, requ
 
   return (
     <div className={s('app-container')}>
-      <Dock
-        position="right"
-        fluid={false}
-        dimMode="none"
-        size={DOCK_WIDTH}
-        zIndex={10000000000}
-        isVisible={dockVisible}
-        dockStyle={{
-          height: showFullDock ? '100%' : 'auto',
-          ...DOCK_PANEL_STYLE
-        }}
-      >
+      <Dock position="right" width={DOCK_WIDTH} isVisible={dockVisible} isFullHeight={showFullDock}>
         <div className={s(`flex relative flex-col ${showFullDock ? 'h-screen' : ''}`)}>
           <MessageModal />
           <MinimizeButton />

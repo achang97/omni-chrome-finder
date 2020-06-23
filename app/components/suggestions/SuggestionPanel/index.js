@@ -1,4 +1,5 @@
 import { connect } from 'react-redux';
+import { withRouter } from 'react-router';
 import {
   requestSearchCards,
   clearSearchCards,
@@ -6,6 +7,7 @@ import {
   requestSearchIntegrations
 } from 'actions/search';
 import { openCard } from 'actions/cards';
+import { requestUpdateUser } from 'actions/profile';
 import trackEvent from 'actions/analytics';
 import { SEARCH } from 'appConstants';
 import SuggestionPanel from './SuggestionPanel';
@@ -17,9 +19,11 @@ const mapStateToProps = (state) => {
       nodes,
       isSearchingNodes,
       integrationResults,
-      isSearchingIntegrations
+      isSearchingIntegrations,
+      hasSearchedIntegrations
     },
-    display: { dockVisible }
+    display: { dockVisible },
+    profile: { user }
   } = state;
 
   return {
@@ -28,7 +32,9 @@ const mapStateToProps = (state) => {
     isSearchingNodes,
     integrationResults,
     isSearchingIntegrations,
-    dockVisible
+    hasSearchedIntegrations,
+    dockVisible,
+    user
   };
 };
 
@@ -38,7 +44,8 @@ const mapDispatchToProps = {
   requestSearchNodes,
   requestSearchIntegrations,
   openCard,
+  requestUpdateUser,
   trackEvent
 };
 
-export default connect(mapStateToProps, mapDispatchToProps)(SuggestionPanel);
+export default connect(mapStateToProps, mapDispatchToProps)(withRouter(SuggestionPanel));

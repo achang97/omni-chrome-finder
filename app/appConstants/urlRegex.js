@@ -66,11 +66,11 @@ export const SEARCH_BAR = [
   {
     integration: INTEGRATIONS.CONFLUENCE,
     regex: EXTERNAL_VERIFICATION[INTEGRATIONS.CONFLUENCE.type].regex
-  },
-  {
-    integration: INTEGRATIONS.GOOGLE,
-    regex: EXTERNAL_VERIFICATION[INTEGRATIONS.GOOGLE.type].regex
   }
+  // {
+  //   integration: INTEGRATIONS.GOOGLE,
+  //   regex: EXTERNAL_VERIFICATION[INTEGRATIONS.GOOGLE.type].regex
+  // }
 ];
 
 export default { EXTERNAL_VERIFICATION, SEARCH_BAR };
