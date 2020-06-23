@@ -38,7 +38,7 @@ const getItemProps = (type, item) => {
         url: webViewLink,
         title: name,
         showDropdown: mimeType !== FOLDER_MIME_TYPE,
-        body: owners.length !== 0 && (
+        body: owners && (
           <>
             {owners.map(({ displayName, permissionId, me }, i) => (
               <React.Fragment key={permissionId}>
