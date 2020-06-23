@@ -29,7 +29,6 @@ const SettingsSection = React.forwardRef(
             <Switch
               checked={!disabled && isToggledOn}
               disabled={disabled}
-              icons={false}
               onChange={() => onToggleOption(optionType)}
               uncheckedIcon={false}
               checkedIcon={false}
