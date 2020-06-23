@@ -63,17 +63,15 @@ const App = ({ dockVisible, isLoggedIn, user, showAutofind, requestGetUser, requ
   }, [isLoggedIn, user, isVerified, requestGetUser, requestGetTasks]);
 
   const completedOnboarding = user && auth.hasCompletedOnboarding(user.onboarding);
-
-  const showFullDock = isLoggedIn && isVerified && completedOnboarding;
-  const showHeader = isLoggedIn && isVerified && completedOnboarding;
+  const isValidUser = auth.isValidUser(user);
 
   return (
     <div className={s('app-container')}>
-      <Dock position="right" width={DOCK_WIDTH} isVisible={dockVisible} isFullHeight={showFullDock}>
-        <div className={s(`flex relative flex-col ${showFullDock ? 'h-screen' : ''}`)}>
+      <Dock position="right" width={DOCK_WIDTH} isVisible={dockVisible} isFullHeight={isValidUser}>
+        <div className={s(`flex relative flex-col ${isValidUser ? 'h-screen' : ''}`)}>
           <MessageModal />
           <MinimizeButton />
-          {showHeader && <Header />}
+          {isValidUser && <Header />}
           <Switch>
             <PrivateRoute path={ROUTES.ASK} component={Ask} />
             <PrivateRoute path={ROUTES.CREATE} component={Create} />
@@ -95,12 +93,16 @@ const App = ({ dockVisible, isLoggedIn, user, showAutofind, requestGetUser, requ
           </Switch>
         </div>
       </Dock>
-      <SearchBar />
-      <AutofindListener />
       <ChromeMessageListener />
       <ToggleTab />
-      <ExternalCreateModal />
-      {isLoggedIn && isVerified && dockVisible && <Cards />}
+      {isValidUser && (
+        <>
+          <SearchBar />
+          <AutofindListener />
+          <ExternalCreateModal />
+          {dockVisible && <Cards />}
+        </>
+      )}
     </div>
   );
 };

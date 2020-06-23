@@ -28,9 +28,9 @@ class AutofindListener extends Component {
 
   componentDidUpdate(prevProps) {
     const { hasLoaded } = this.state;
-    const { clearSearchCards, isValidUser } = this.props;
+    const { clearSearchCards } = this.props;
 
-    if (hasLoaded && isValidUser) {
+    if (hasLoaded) {
       const prevEnabled = this.isAutofindEnabled(prevProps.autofindPermissions);
       const currEnabled = this.isAutofindEnabled();
 
@@ -104,11 +104,11 @@ class AutofindListener extends Component {
   };
 
   handlePageUpdate = (isNewPage) => {
-    const { requestSearchCards, clearSearchCards, autofindPermissions, isValidUser } = this.props;
+    const { requestSearchCards, clearSearchCards, autofindPermissions } = this.props;
     const { prevText } = this.state;
 
     const integration = this.getIntegration();
-    if (isValidUser && autofindPermissions[integration]) {
+    if (autofindPermissions[integration]) {
       if (isNewPage) {
         this.disconnectMutatorObserver();
       }
@@ -158,7 +158,6 @@ AutofindListener.propTypes = {
     jira: PropTypes.bool,
     hubspot: PropTypes.bool
   }).isRequired,
-  isValidUser: PropTypes.bool.isRequired,
 
   // Redux Actions
   requestSearchCards: PropTypes.func.isRequired,

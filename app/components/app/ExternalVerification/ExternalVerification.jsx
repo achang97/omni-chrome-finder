@@ -27,7 +27,6 @@ const ExternalVerification = ({
   externalCard,
   isGettingCard,
   user,
-  isValidUser,
   isUpdatingUser,
   updateUserError,
   dockVisible,
@@ -46,8 +45,6 @@ const ExternalVerification = ({
 }) => {
   useEffect(() => {
     const isEnabled = ({ integration, links: { link } }) => {
-      if (!isValidUser) return false;
-
       const {
         widgetSettings: {
           externalLink: { disabledPages, disabledIntegrations, disabled }
@@ -80,7 +77,7 @@ const ExternalVerification = ({
       }
     };
 
-    if (!isValidUser || !url || (activeIntegration && !isEnabled(activeIntegration))) {
+    if (!url || (activeIntegration && !isEnabled(activeIntegration))) {
       resetState();
     } else {
       let i;
@@ -108,7 +105,6 @@ const ExternalVerification = ({
   }, [
     url,
     user,
-    isValidUser,
     activeIntegration,
     updateExternalIntegration,
     resetExternalState,
@@ -254,7 +250,7 @@ const ExternalVerification = ({
   };
 
   const render = () => {
-    if (!isValidUser || !isDisplayed || !activeIntegration) {
+    if (!isDisplayed || !activeIntegration) {
       return null;
     }
 
@@ -305,7 +301,6 @@ ExternalVerification.propTypes = {
   }),
   isGettingCard: PropTypes.bool,
   user: UserPropTypes.isRequired,
-  isValidUser: PropTypes.bool.isRequired,
   isUpdatingUser: PropTypes.bool,
   updateUserError: PropTypes.string,
   dockVisible: PropTypes.bool.isRequired,

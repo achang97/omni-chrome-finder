@@ -1,5 +1,4 @@
 import { connect } from 'react-redux';
-import { isValidUser } from 'utils/auth';
 import { toggleDock } from 'actions/display';
 import { openCard } from 'actions/cards';
 import {
@@ -18,8 +17,7 @@ import ExternalVerification from './ExternalVerification';
 
 const mapStateToProps = (state) => {
   const {
-    profile: { user = {}, isUpdatingUser, updateUserError },
-    auth: { token },
+    profile: { user, isUpdatingUser, updateUserError },
     display: { dockVisible },
     externalVerification: {
       isDisplayed,
@@ -32,7 +30,6 @@ const mapStateToProps = (state) => {
   } = state;
 
   return {
-    isValidUser: isValidUser(token, user),
     user,
     isUpdatingUser,
     updateUserError,

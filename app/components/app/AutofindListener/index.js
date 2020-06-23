@@ -1,16 +1,14 @@
 import { connect } from 'react-redux';
 import { requestSearchCards, clearSearchCards } from 'actions/search';
-import { isValidUser } from 'utils/auth';
 import AutofindListener from './AutofindListener';
 
 const mapStateToProps = (state) => {
   const {
-    profile: { user = {} },
-    auth: { token }
+    profile: { user = {} }
   } = state;
 
   const { autofindPermissions = {} } = user;
-  return { autofindPermissions, isValidUser: isValidUser(token, user) };
+  return { autofindPermissions };
 };
 
 const mapDispatchToProps = {

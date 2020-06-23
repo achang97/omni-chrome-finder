@@ -252,11 +252,13 @@ class ChromeMessageListener extends Component {
 
   render() {
     const { prevUrl } = this.state;
-    return (
-      <>
-        <ExternalVerification url={prevUrl} />
-      </>
-    );
+    const { isValidUser } = this.props;
+
+    if (!isValidUser) {
+      return null;
+    }
+
+    return <ExternalVerification url={prevUrl} />;
   }
 }
 

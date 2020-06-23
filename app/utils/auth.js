@@ -1,3 +1,4 @@
+import _ from 'lodash';
 import queryString from 'query-string';
 import { INTEGRATIONS, NODE_ENV, REQUEST, PROFILE } from 'appConstants';
 
@@ -9,8 +10,8 @@ export function hasCompletedOnboarding(onboarding) {
   );
 }
 
-export function isValidUser(token, user) {
-  return !!token && !!user.isVerified && hasCompletedOnboarding(user.onboarding);
+export function isValidUser(user) {
+  return !!user && !_.isEmpty(user) && !!user.isVerified && hasCompletedOnboarding(user.onboarding);
 }
 
 export function isLoggedIn(user, integration) {

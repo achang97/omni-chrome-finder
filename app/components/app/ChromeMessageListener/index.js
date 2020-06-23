@@ -16,7 +16,6 @@ const mapStateToProps = (state) => {
   const {
     display: { dockVisible, toggleTabShown, autofindShown, onlyShowSearchBar },
     ask: { showAskTeammate },
-    auth: { token },
     profile: { user = {} },
     tasks: { tasks }
   } = state;
@@ -27,7 +26,7 @@ const mapStateToProps = (state) => {
     toggleTabShown,
     onlyShowSearchBar,
     autofindShown,
-    isValidUser: isValidUser(token, user),
+    isValidUser: isValidUser(user),
     searchBarSettings,
     showAskTeammate,
     tasks
