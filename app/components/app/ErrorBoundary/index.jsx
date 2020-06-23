@@ -15,8 +15,8 @@ class ExampleBoundary extends Component {
   componentDidCatch(error, errorInfo) {
     Sentry.withScope((scope) => {
       scope.setExtras(errorInfo);
-      const eventId = Sentry.captureException(error);
-      Sentry.showReportDialog({ eventId });
+      Sentry.captureException(error);
+      // Sentry.showReportDialog({ eventId });
     });
   }
 
