@@ -19,7 +19,7 @@ const s = getStyleApplicationFn(style);
 const URL_REGEX_LIST = Object.entries(URL_REGEX.EXTERNAL_VERIFICATION);
 
 const ExternalVerification = ({
-  url,
+  windowUrl,
   isDisplayed,
   activeIntegration,
   isSettingsModalOpen,
@@ -77,7 +77,7 @@ const ExternalVerification = ({
       }
     };
 
-    if (!url || (activeIntegration && !isEnabled(activeIntegration))) {
+    if (!windowUrl || (activeIntegration && !isEnabled(activeIntegration))) {
       resetState();
     } else {
       let i;
@@ -85,7 +85,7 @@ const ExternalVerification = ({
 
       for (i = 0; i < URL_REGEX_LIST.length; i++) {
         const [integration, { regex, getTitle, getLinks }] = URL_REGEX_LIST[i];
-        const match = url.match(regex);
+        const match = windowUrl.match(regex);
         if (match) {
           const links = getLinks(match);
           if (isEnabled({ integration, links })) {
@@ -103,7 +103,7 @@ const ExternalVerification = ({
       }
     }
   }, [
-    url,
+    windowUrl,
     user,
     activeIntegration,
     updateExternalIntegration,
@@ -281,7 +281,7 @@ const ExternalVerification = ({
 };
 
 ExternalVerification.propTypes = {
-  url: PropTypes.string,
+  windowUrl: PropTypes.string,
 
   // Redux State
   isDisplayed: PropTypes.bool.isRequired,

@@ -7,11 +7,23 @@ import SearchBar from './SearchBar';
 
 const mapStateToProps = (state) => {
   const {
-    display: { onlyShowSearchBar },
-    ask: { searchText }
+    display: { onlyShowSearchBar, dockVisible, toggleTabShown, windowUrl },
+    ask: { searchText },
+    profile: {
+      user: {
+        widgetSettings: { searchBar }
+      }
+    }
   } = state;
 
-  return { onlyShowSearchBar, searchText };
+  return {
+    windowUrl,
+    onlyShowSearchBar,
+    searchText,
+    dockVisible,
+    toggleTabShown,
+    searchBarSettings: searchBar
+  };
 };
 
 const mapDispatchToProps = {

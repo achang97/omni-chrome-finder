@@ -12,7 +12,9 @@ const initialState = {
   },
 
   onlyShowSearchBar: false,
-  hasClosedSearchBar: false
+  hasClosedSearchBar: false,
+
+  windowUrl: null
 };
 
 export default function displayReducer(state = initialState, action) {
@@ -55,6 +57,11 @@ export default function displayReducer(state = initialState, action) {
     }
     case types.MINIMIZE_SEARCH_BAR: {
       return { ...state, onlyShowSearchBar: false, toggleTabShown: true, hasClosedSearchBar: true };
+    }
+
+    case types.UPDATE_WINDOW_URL: {
+      const { url } = payload;
+      return { ...state, windowUrl: url };
     }
 
     default:

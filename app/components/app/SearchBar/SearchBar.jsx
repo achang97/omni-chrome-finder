@@ -5,6 +5,7 @@ import { MdSettings, MdClose } from 'react-icons/md';
 
 import { Dock } from 'components/common';
 import { ANIMATE, ROUTES, PROFILE, SEGMENT, URL_REGEX } from 'appConstants';
+import { usePrevious } from 'utils/react';
 
 import logo from 'assets/images/logos/logo-dark-icon.svg';
 import { getStyleApplicationFn } from 'utils/style';
@@ -20,8 +21,12 @@ const BASE_EVENT_PROPERTIES = {
 };
 
 const SearchBar = ({
+  windowUrl,
   onlyShowSearchBar,
   searchText,
+  toggleTabShown,
+  dockVisible,
+  searchBarSettings,
   toggleSearchBar,
   toggleDock,
   updateAskSearchText,
@@ -30,6 +35,34 @@ const SearchBar = ({
   history
 }) => {
   const [isHovering, setIsHovering] = useState(false);
+
+  const prevSearchBarSettings = usePrevious(searchBarSettings);
+  const prevUrl = usePrevious(windowUrl);
+
+  useEffect(() => {
+    if (prevUrl !== windowUrl || prevSearchBarSettings !== searchBarSettings) {
+      const matchesSearchBar = URL_REGEX.SEARCH_BAR.some(({ integration, regex }) => {
+        return !searchBarSettings[integration.type].disabled && window.location.href.match(regex);
+      });
+
+      const shouldToggleSearchBar = matchesSearchBar
+        ? !onlyShowSearchBar && !dockVisible && !toggleTabShown
+        : onlyShowSearchBar;
+
+      if (shouldToggleSearchBar) {
+        toggleSearchBar();
+      }
+    }
+  }, [
+    prevUrl,
+    windowUrl,
+    prevSearchBarSettings,
+    searchBarSettings,
+    dockVisible,
+    toggleTabShown,
+    onlyShowSearchBar,
+    toggleSearchBar
+  ]);
 
   const [debouncedOpenExtension] = useDebouncedCallback((query) => {
     if (onlyShowSearchBar && query !== '') {
@@ -89,8 +122,16 @@ const SearchBar = ({
 
 SearchBar.propTypes = {
   // Redux State
+  windowUrl: PropTypes.string,
   onlyShowSearchBar: PropTypes.bool.isRequired,
   searchText: PropTypes.string.isRequired,
+  toggleTabShown: PropTypes.bool.isRequired,
+  dockVisible: PropTypes.bool.isRequired,
+  searchBarSettings: PropTypes.objectOf(
+    PropTypes.shape({
+      disabled: PropTypes.bool.isRequired
+    })
+  ).isRequired,
 
   // Redux Actions
   toggleSearchBar: PropTypes.func.isRequired,

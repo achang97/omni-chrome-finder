@@ -1,7 +1,7 @@
 import { Component } from 'react';
 import PropTypes from 'prop-types';
 
-import { INTEGRATIONS, SEARCH, CHROME } from 'appConstants';
+import { INTEGRATIONS, SEARCH } from 'appConstants';
 import { getGoogleText } from './parsers';
 
 const URL_REGEXES = [
@@ -23,18 +23,19 @@ class AutofindListener extends Component {
 
   componentDidMount() {
     window.addEventListener('load', this.handlePageLoad);
-    chrome.runtime.onMessage.addListener(this.listener);
   }
 
   componentDidUpdate(prevProps) {
     const { hasLoaded } = this.state;
-    const { clearSearchCards } = this.props;
+    const { clearSearchCards, windowUrl } = this.props;
 
     if (hasLoaded) {
       const prevEnabled = this.isAutofindEnabled(prevProps.autofindPermissions);
       const currEnabled = this.isAutofindEnabled();
 
-      if (!prevEnabled && currEnabled) {
+      if (windowUrl !== prevProps.windowUrl) {
+        this.handlePageUpdate(true);
+      } else if (!prevEnabled && currEnabled) {
         this.handlePageLoad();
       } else if (prevEnabled && !currEnabled) {
         clearSearchCards(SEARCH.SOURCE.AUTOFIND);
@@ -44,7 +45,6 @@ class AutofindListener extends Component {
 
   componentWillUnmount() {
     window.removeEventListener('load', this.handlePageLoad);
-    chrome.runtime.onMessage.removeListener(this.listener);
     this.disconnectMutatorObserver();
   }
 
@@ -131,18 +131,6 @@ class AutofindListener extends Component {
     }
   };
 
-  listener = (msg) => {
-    const { type } = msg;
-    switch (type) {
-      case CHROME.MESSAGE.TAB_UPDATE: {
-        this.handlePageUpdate(true);
-        break;
-      }
-      default:
-        break;
-    }
-  };
-
   render() {
     return null;
   }
@@ -158,6 +146,7 @@ AutofindListener.propTypes = {
     jira: PropTypes.bool,
     hubspot: PropTypes.bool
   }).isRequired,
+  windowUrl: PropTypes.string,
 
   // Redux Actions
   requestSearchCards: PropTypes.func.isRequired,

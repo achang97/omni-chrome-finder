@@ -18,7 +18,7 @@ import ExternalVerification from './ExternalVerification';
 const mapStateToProps = (state) => {
   const {
     profile: { user, isUpdatingUser, updateUserError },
-    display: { dockVisible },
+    display: { dockVisible, windowUrl },
     externalVerification: {
       isDisplayed,
       activeIntegration,
@@ -34,6 +34,7 @@ const mapStateToProps = (state) => {
     isUpdatingUser,
     updateUserError,
     dockVisible,
+    windowUrl,
     isDisplayed,
     activeIntegration,
     isSettingsModalOpen,

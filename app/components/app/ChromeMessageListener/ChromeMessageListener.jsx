@@ -1,21 +1,11 @@
-import React, { Component } from 'react';
+import { Component } from 'react';
 import PropTypes from 'prop-types';
 import queryString from 'query-string';
 import { EditorState, ContentState } from 'draft-js';
 
-import { CHROME, ROUTES, URL, TASKS, PROFILE, URL_REGEX } from 'appConstants';
-
-import ExternalVerification from '../ExternalVerification';
+import { CHROME, ROUTES, URL, TASKS, PROFILE } from 'appConstants';
 
 class ChromeMessageListener extends Component {
-  constructor(props) {
-    super(props);
-
-    this.state = {
-      prevUrl: null
-    };
-  }
-
   componentDidMount() {
     chrome.runtime.onMessage.addListener(this.listener);
     this.openChromeExtension();
@@ -26,12 +16,11 @@ class ChromeMessageListener extends Component {
   }
 
   hasUrlChanged = () => {
-    const { prevUrl } = this.state;
-    const { toggleAutofindTab, autofindShown } = this.props;
+    const { toggleAutofindTab, autofindShown, windowUrl, updateWindowUrl } = this.props;
 
-    const hasChanged = prevUrl !== window.location.href;
+    const hasChanged = windowUrl !== window.location.href;
     if (hasChanged) {
-      this.setState({ prevUrl: window.location.href });
+      updateWindowUrl(window.location.href);
       if (!autofindShown) toggleAutofindTab();
     }
 
@@ -46,15 +35,7 @@ class ChromeMessageListener extends Component {
   };
 
   openChromeExtension = () => {
-    const {
-      openCard,
-      onlyShowSearchBar,
-      toggleTabShown,
-      dockVisible,
-      isValidUser,
-      searchBarSettings,
-      toggleSearchBar
-    } = this.props;
+    const { openCard, isValidUser } = this.props;
 
     if (this.hasUrlChanged()) {
       const url = window.location.href;
@@ -71,20 +52,6 @@ class ChromeMessageListener extends Component {
           if (cardId) {
             openCard({ _id: cardId, isEditing: edit === 'true' });
           }
-        }
-      }
-
-      if (isValidUser) {
-        const matchesSearchBar = URL_REGEX.SEARCH_BAR.some(({ integration, regex }) => {
-          return !searchBarSettings[integration.type].disabled && url.match(regex);
-        });
-
-        const shouldToggleSearchBar = matchesSearchBar
-          ? !onlyShowSearchBar && !dockVisible && !toggleTabShown
-          : onlyShowSearchBar;
-
-        if (shouldToggleSearchBar) {
-          toggleSearchBar();
         }
       }
     }
@@ -251,37 +218,24 @@ class ChromeMessageListener extends Component {
   };
 
   render() {
-    const { prevUrl } = this.state;
-    const { isValidUser } = this.props;
-
-    if (!isValidUser) {
-      return null;
-    }
-
-    return <ExternalVerification url={prevUrl} />;
+    return null;
   }
 }
 
 ChromeMessageListener.propTypes = {
   // Redux State
   dockVisible: PropTypes.bool.isRequired,
-  toggleTabShown: PropTypes.bool.isRequired,
-  onlyShowSearchBar: PropTypes.bool.isRequired,
+  windowUrl: PropTypes.string,
   showAskTeammate: PropTypes.bool.isRequired,
   autofindShown: PropTypes.bool.isRequired,
   tasks: PropTypes.arrayOf(PropTypes.object).isRequired,
   isValidUser: PropTypes.bool.isRequired,
-  searchBarSettings: PropTypes.objectOf(
-    PropTypes.shape({
-      disabled: PropTypes.bool
-    })
-  ),
 
   // Redux Actions
   toggleDock: PropTypes.func.isRequired,
   minimizeDock: PropTypes.func.isRequired,
   toggleAutofindTab: PropTypes.func.isRequired,
-  toggleSearchBar: PropTypes.func.isRequired,
+  updateWindowUrl: PropTypes.func.isRequired,
   requestGetUser: PropTypes.func.isRequired,
   openCard: PropTypes.func.isRequired,
   updateAskSearchText: PropTypes.func.isRequired,

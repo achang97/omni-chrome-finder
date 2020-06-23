@@ -10,6 +10,7 @@ import {
   Header,
   AutofindListener,
   ChromeMessageListener,
+  ExternalVerification,
   ExternalCreateModal,
   ToggleTab,
   MessageModal,
@@ -99,6 +100,7 @@ const App = ({ dockVisible, isLoggedIn, user, showAutofind, requestGetUser, requ
         <>
           <SearchBar />
           <AutofindListener />
+          <ExternalVerification />
           <ExternalCreateModal />
           {dockVisible && <Cards />}
         </>

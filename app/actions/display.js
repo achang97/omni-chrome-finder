@@ -36,3 +36,7 @@ export function toggleSearchBar() {
 export function minimizeSearchBar() {
   return { type: types.MINIMIZE_SEARCH_BAR, payload: {} };
 }
+
+export function updateWindowUrl(url) {
+  return { type: types.UPDATE_WINDOW_URL, payload: { url } };
+}

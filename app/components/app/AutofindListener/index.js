@@ -4,11 +4,12 @@ import AutofindListener from './AutofindListener';
 
 const mapStateToProps = (state) => {
   const {
-    profile: { user = {} }
+    profile: { user },
+    display: { windowUrl }
   } = state;
 
-  const { autofindPermissions = {} } = user;
-  return { autofindPermissions };
+  const { autofindPermissions } = user;
+  return { autofindPermissions, windowUrl };
 };
 
 const mapDispatchToProps = {
