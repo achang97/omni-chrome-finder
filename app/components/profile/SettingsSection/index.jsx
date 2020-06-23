@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import PropTypes from 'prop-types';
 import { MdKeyboardArrowDown, MdKeyboardArrowUp } from 'react-icons/md';
-import Toggle from 'react-toggle';
+import Switch from 'react-switch';
 
 import AnimateHeight from 'react-animate-height';
 
@@ -26,11 +26,12 @@ const SettingsSection = React.forwardRef(
         case 'toggle': {
           const { type: optionType, disabled, isToggledOn } = option;
           return (
-            <Toggle
+            <Switch
               checked={!disabled && isToggledOn}
               disabled={disabled}
-              icons={false}
               onChange={() => onToggleOption(optionType)}
+              uncheckedIcon={false}
+              checkedIcon={false}
             />
           );
         }

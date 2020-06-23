@@ -3,7 +3,7 @@ import PropTypes from 'prop-types';
 import { useDebouncedCallback } from 'use-debounce';
 import { MdClose, MdKeyboardArrowLeft, MdAddCircle } from 'react-icons/md';
 import AnimateHeight from 'react-animate-height';
-import Toggle from 'react-toggle';
+import Switch from 'react-switch';
 
 import { Button, Triangle, Separator, Loader } from 'components/common';
 
@@ -17,7 +17,7 @@ import mainStyle from './suggestion-panel.css';
 import scrollStyle from '../SuggestionScrollContainer/suggestion-scroll-container.css';
 
 import SuggestionScrollContainer from '../SuggestionScrollContainer';
-import ExternalResultSection from '../ExternalResultSection';
+import ExternalResultSection, { SWITCH_PROPS } from '../ExternalResultSection';
 import ExternalResultHeader from '../ExternalResultHeader';
 
 const s = getStyleApplicationFn(mainStyle, scrollStyle);
@@ -137,7 +137,8 @@ const SuggestionPanel = ({
           isLoggedIn(user, type) &&
           (!isSearchEnabled(type) || integrationResults.every((result) => result.type !== type)),
         getHeaderEnd: (type) => (
-          <Toggle
+          <Switch
+            {...SWITCH_PROPS}
             checked={isSearchEnabled(type)}
             icons={false}
             onChange={(e) => {

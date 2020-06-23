@@ -76,8 +76,7 @@ class ChromeMessageListener extends Component {
 
       if (isValidUser) {
         const matchesSearchBar = URL_REGEX.SEARCH_BAR.some(({ integration, regex }) => {
-          const integrationSetting = searchBarSettings[integration.type];
-          return (!integrationSetting || !integrationSetting.disabled) && url.match(regex);
+          return !searchBarSettings[integration.type].disabled && url.match(regex);
         });
 
         const shouldToggleSearchBar = matchesSearchBar

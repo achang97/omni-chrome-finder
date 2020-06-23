@@ -1,6 +1,6 @@
 import { connect } from 'react-redux';
 import { requestUpdateUser } from 'actions/profile';
-import ExternalResultSection from './ExternalResultSection';
+import ExternalResultSection, { SWITCH_PROPS } from './ExternalResultSection';
 
 const mapStateToProps = (state) => {
   const {
@@ -18,4 +18,5 @@ const mapDispatchToProps = {
   requestUpdateUser
 };
 
+export { SWITCH_PROPS };
 export default connect(mapStateToProps, mapDispatchToProps)(ExternalResultSection);
