@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import PropTypes from 'prop-types';
 import AnimateHeight from 'react-animate-height';
-import Toggle from 'react-toggle';
+import Switch from 'react-switch';
 import { MdKeyboardArrowUp, MdThumbUp, MdThumbDown } from 'react-icons/md';
 
 import { INTEGRATIONS_MAP, INTEGRATIONS } from 'appConstants';
@@ -14,6 +14,13 @@ const s = getStyleApplicationFn();
 
 const FOLDER_MIME_TYPE = 'application/vnd.google-apps.folder';
 const DEFAULT_NUM_EXT_RESULTS_SHOWN = 4;
+
+export const SWITCH_PROPS = {
+  width: 35,
+  height: 17,
+  checkedIcon: false,
+  uncheckedIcon: false
+};
 
 const getItemProps = (type, item) => {
   const baseProps = {
@@ -131,7 +138,8 @@ const ExternalResultSection = ({
           numItems={items.length}
           headerEnd={
             <div className={s('flex items-center')}>
-              <Toggle
+              <Switch
+                {...SWITCH_PROPS}
                 checked={!isIntegrationDisabled}
                 icons={false}
                 onChange={(e) => toggleSettings(e.target.checked)}
