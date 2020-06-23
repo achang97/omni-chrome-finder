@@ -51,7 +51,7 @@ const getItemProps = (type, item) => {
       };
     }
     case INTEGRATIONS.ZENDESK.type: {
-      const { id, html_url: htmlUrl, title, voteSum, author, promoted, draft } = item;
+      const { id, html_url: htmlUrl, title, vote_sum: voteSum, author, promoted, draft } = item;
       return {
         ...baseProps,
         id,

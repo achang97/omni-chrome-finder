@@ -2,7 +2,9 @@ import { Component } from 'react';
 import PropTypes from 'prop-types';
 import * as Sentry from '@sentry/browser';
 
-class ExampleBoundary extends Component {
+import { UserPropTypes } from 'utils/propTypes';
+
+class ErrorBoundary extends Component {
   constructor(props) {
     super(props);
     this.state = {};
@@ -13,8 +15,15 @@ class ExampleBoundary extends Component {
   }
 
   componentDidCatch(error, errorInfo) {
+    const { user } = this.props;
+
     Sentry.withScope((scope) => {
       scope.setExtras(errorInfo);
+      if (user) {
+        scope.setUser({ email: user.email });
+      }
+      scope.setExtra('version', chrome.runtime.getManifest().version);
+
       Sentry.captureException(error);
       // Sentry.showReportDialog({ eventId });
     });
@@ -33,8 +42,9 @@ class ExampleBoundary extends Component {
   }
 }
 
-ExampleBoundary.propTypes = {
+ErrorBoundary.propTypes = {
+  user: UserPropTypes,
   children: PropTypes.node
 };
 
-export default ExampleBoundary;
+export default ErrorBoundary;
