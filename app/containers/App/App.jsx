@@ -34,7 +34,6 @@ import Verify from '../Verify';
 import CompleteOnboarding from '../CompleteOnboarding';
 import ForgotPassword from '../ForgotPassword';
 
-import 'react-toggle/style.css';
 import 'react-circular-progressbar/dist/styles.css';
 import 'react-image-lightbox/style.css';
 import 'video-react/dist/video-react.css';
