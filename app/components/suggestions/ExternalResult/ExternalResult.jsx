@@ -9,10 +9,11 @@ import { getStyleApplicationFn } from 'utils/style';
 import { PROFILE, SEGMENT, URL_REGEX } from 'appConstants';
 
 import style from './external-result.css';
+import sharedStyle from '../styles/external-result.css';
 
-import SuggestionDropdown from '../../SuggestionDropdown';
+import SuggestionDropdown from '../SuggestionDropdown';
 
-const s = getStyleApplicationFn(style);
+const s = getStyleApplicationFn(style, sharedStyle);
 
 const ExternalResult = ({
   id,
@@ -116,7 +117,7 @@ const ExternalResult = ({
 };
 
 ExternalResult.propTypes = {
-  id: PropTypes.string.isRequired,
+  id: PropTypes.oneOfType([PropTypes.string, PropTypes.number]).isRequired,
   url: PropTypes.string.isRequired,
   type: PropTypes.string.isRequired,
   logo: PropTypes.string.isRequired,

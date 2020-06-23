@@ -9,7 +9,7 @@ import { copyCardUrl } from 'utils/card';
 import { NodePropTypes } from 'utils/propTypes';
 
 import { getStyleApplicationFn } from 'utils/style';
-import mainStyle from '../suggestion.css';
+import mainStyle from '../styles/suggestion.css';
 
 import SuggestionDropdown from '../SuggestionDropdown';
 

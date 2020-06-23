@@ -1,31 +1,32 @@
 import React, { useState, useRef, useEffect } from 'react';
 import PropTypes from 'prop-types';
 import { useDebouncedCallback } from 'use-debounce';
-import { MdClose, MdKeyboardArrowUp, MdKeyboardArrowLeft, MdAddCircle } from 'react-icons/md';
+import { MdClose, MdKeyboardArrowLeft, MdAddCircle } from 'react-icons/md';
 import AnimateHeight from 'react-animate-height';
+import Toggle from 'react-toggle';
 
 import { Button, Triangle, Separator, Loader } from 'components/common';
 
 import { colors } from 'styles/colors';
-import { SEARCH, INTEGRATIONS, INTEGRATIONS_MAP, ANIMATE, SEGMENT } from 'appConstants';
+import { SEARCH, ANIMATE, SEGMENT, INTEGRATIONS, ROUTES } from 'appConstants';
 
 import { getStyleApplicationFn } from 'utils/style';
-import { NodePropTypes } from 'utils/propTypes';
+import { isLoggedIn } from 'utils/auth';
+import { NodePropTypes, UserPropTypes } from 'utils/propTypes';
 import mainStyle from './suggestion-panel.css';
-import externalIconStyle from '../ExternalResults/ExternalResult/external-result.css';
 import scrollStyle from '../SuggestionScrollContainer/suggestion-scroll-container.css';
 
-import { GoogleResult, ZendeskResult, ConfluenceResult, JiraResult } from '../ExternalResults';
 import SuggestionScrollContainer from '../SuggestionScrollContainer';
+import ExternalResultSection from '../ExternalResultSection';
+import ExternalResultHeader from '../ExternalResultHeader';
 
-const s = getStyleApplicationFn(mainStyle, externalIconStyle, scrollStyle);
+const s = getStyleApplicationFn(mainStyle, scrollStyle);
 
-const DEFAULT_NUM_EXT_RESULTS_SHOWN = 4;
-
-const VALID_INTEGRATIONS = [
-  INTEGRATIONS.GOOGLE.type,
-  INTEGRATIONS.ZENDESK.type,
-  INTEGRATIONS.CONFLUENCE.type
+const SEARCH_INTEGRATIONS = [
+  INTEGRATIONS.CONFLUENCE,
+  INTEGRATIONS.GOOGLE,
+  INTEGRATIONS.JIRA,
+  INTEGRATIONS.ZENDESK
 ];
 
 const SuggestionPanel = ({
@@ -40,16 +41,19 @@ const SuggestionPanel = ({
   dockVisible,
   integrationResults,
   isSearchingIntegrations,
+  hasSearchedIntegrations,
+  user,
   requestSearchCards,
   clearSearchCards,
   requestSearchNodes,
   requestSearchIntegrations,
   openCard,
-  trackEvent
+  requestUpdateUser,
+  trackEvent,
+  history
 }) => {
   const [isVisible, setIsVisible] = useState(true);
   const [showIntegrationResults, setShowIntegrationResults] = useState(true);
-  const [showIntegration, setShowIntegration] = useState({});
 
   const integrationResultsRef = useRef(null);
 
@@ -79,92 +83,10 @@ const SuggestionPanel = ({
     }
   }, [query, clearSearchCards, debouncedRequestSearch]);
 
-  const toggleIntegration = (integration) => {
-    setShowIntegration({
-      ...showIntegration,
-      [integration]: !showIntegration[integration]
-    });
-  };
-
-  const renderExternalSourceResults = (externalSource) => {
-    const { type, items } = externalSource;
-    const { logo, title } = INTEGRATIONS_MAP[type];
-
-    let ResultComponent;
-    switch (type) {
-      case INTEGRATIONS.GOOGLE.type: {
-        ResultComponent = GoogleResult;
-        break;
-      }
-      case INTEGRATIONS.ZENDESK.type: {
-        ResultComponent = ZendeskResult;
-        break;
-      }
-      case INTEGRATIONS.CONFLUENCE.type: {
-        ResultComponent = ConfluenceResult;
-        break;
-      }
-      case INTEGRATIONS.JIRA.type: {
-        ResultComponent = JiraResult;
-        break;
-      }
-      default:
-        return null;
-    }
-
-    const renderResult = (result) => (
-      <ResultComponent
-        key={ResultComponent.getKey ? ResultComponent.getKey(result) : result.id}
-        {...result}
-      />
-    );
-
-    const isFullyExpanded = showIntegration[type];
-    return (
-      <div key={type}>
-        <div className={s('flex items-center justify-between px-reg pt-xs pb-sm mb-xs')}>
-          <div className={s('flex items-center text-sm text-gray-dark')}>
-            <div className={s('external-result-icon mr-sm')}>
-              <img src={logo} alt={title} />
-            </div>
-            <span className={s('font-semibold mr-sm')}> {title} </span>
-            <span> ({items.length}) </span>
-          </div>
-          {isFullyExpanded && (
-            <MdKeyboardArrowUp
-              className={s('cursor-pointer')}
-              onClick={() => toggleIntegration(type)}
-            />
-          )}
-        </div>
-        <div className={s('px-lg')}>
-          {items.slice(0, DEFAULT_NUM_EXT_RESULTS_SHOWN).map(renderResult)}
-          {items.length > DEFAULT_NUM_EXT_RESULTS_SHOWN && (
-            <AnimateHeight height={isFullyExpanded ? 0 : 'auto'}>
-              <div
-                className={s(
-                  'cursor-pointer text-center p-sm my-sm text-xs bg-white shadow-md rounded-lg text-gray-dark'
-                )}
-                onClick={() => toggleIntegration(type)}
-              >
-                View More ({items.length - DEFAULT_NUM_EXT_RESULTS_SHOWN})
-              </div>
-            </AnimateHeight>
-          )}
-          <AnimateHeight height={isFullyExpanded ? 'auto' : 0}>
-            {items.slice(DEFAULT_NUM_EXT_RESULTS_SHOWN).map(renderResult)}
-          </AnimateHeight>
-        </div>
-      </div>
-    );
-  };
-
   const countIntegrationResults = () => {
     let numIntegrationResults = 0;
-    integrationResults.forEach(({ type, items }) => {
-      if (VALID_INTEGRATIONS.includes(type)) {
-        numIntegrationResults += items.length;
-      }
+    integrationResults.forEach(({ items }) => {
+      numIntegrationResults += items.length;
     });
     return numIntegrationResults;
   };
@@ -189,7 +111,9 @@ const SuggestionPanel = ({
             onClick={() => setShowIntegrationResults(false)}
           />
         </div>
-        {integrationResults.map(renderExternalSourceResults)}
+        {integrationResults.map(({ type, items }) => (
+          <ExternalResultSection key={type} integrationType={type} items={items} />
+        ))}
       </div>
     );
   };
@@ -197,6 +121,64 @@ const SuggestionPanel = ({
   const clickCreateCard = () => {
     trackEvent(SEGMENT.EVENT.CLICK_CREATE_CARD_FROM_SEARCH, { Question: query });
     openCard({ question: query }, true);
+  };
+
+  const renderDisconnectedIntegrations = () => {
+    if (isSearchingIntegrations || !hasSearchedIntegrations) {
+      return null;
+    }
+
+    const isSearchEnabled = (type) => !user.widgetSettings.integrationSearch[type].disabled;
+
+    /* eslint-disable react/display-name */
+    const DISCONNECTED_INTEGRATIONS = [
+      {
+        isShown: ({ type }) =>
+          isLoggedIn(user, type) &&
+          (!isSearchEnabled(type) || integrationResults.every((result) => result.type !== type)),
+        getHeaderEnd: (type) => (
+          <Toggle
+            checked={isSearchEnabled(type)}
+            icons={false}
+            onChange={(e) => {
+              requestUpdateUser({
+                [`widgetSettings.integrationSearch.${type}.disabled`]: !e.target.checked
+              });
+            }}
+          />
+        )
+      },
+      {
+        isShown: ({ type }) => !isLoggedIn(user, type),
+        getHeaderEnd: () => (
+          <Button
+            text="Sign in"
+            color="transparent"
+            className={s('py-xs')}
+            textClassName={s('text-xs')}
+            onClick={() => history.push(ROUTES.PROFILE)}
+          />
+        )
+      }
+    ];
+    /* eslint-enable react/display-name */
+
+    return (
+      <>
+        <Separator horizontal className={s('w-5/6')} />
+        <div className={s('text-gray-light my-sm text-xs px-reg')}> Disabled Integrations </div>
+        {DISCONNECTED_INTEGRATIONS.map(({ isShown, getHeaderEnd }) =>
+          SEARCH_INTEGRATIONS.filter(isShown).map(({ type, logo, title }) => (
+            <ExternalResultHeader
+              key={type}
+              logo={logo}
+              title={title}
+              headerEnd={getHeaderEnd(type)}
+            />
+          ))
+        )}
+      </>
+    );
   };
 
   const renderScrollContainerFooter = (isLoading) => {
@@ -223,6 +205,7 @@ const SuggestionPanel = ({
           }
         >
           {renderExternalDocumentationResults()}
+          {renderDisconnectedIntegrations()}
         </AnimateHeight>
       </>
     );
@@ -328,13 +311,16 @@ SuggestionPanel.propTypes = {
     })
   ).isRequired,
   isSearchingIntegrations: PropTypes.bool,
+  hasSearchedIntegrations: PropTypes.bool,
   dockVisible: PropTypes.bool.isRequired,
+  user: UserPropTypes.isRequired,
 
   // Redux Actions
   requestSearchCards: PropTypes.func.isRequired,
   clearSearchCards: PropTypes.func.isRequired,
   requestSearchNodes: PropTypes.func.isRequired,
   requestSearchIntegrations: PropTypes.func.isRequired,
+  requestUpdateUser: PropTypes.func.isRequired,
   openCard: PropTypes.func.isRequired,
   trackEvent: PropTypes.func.isRequired
 };
