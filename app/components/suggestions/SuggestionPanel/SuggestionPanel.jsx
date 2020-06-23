@@ -166,7 +166,7 @@ const SuggestionPanel = ({
     return (
       <>
         <Separator horizontal className={s('w-5/6')} />
-        <div className={s('text-gray-light my-sm text-xs px-reg')}> Disabled Integrations </div>
+        <div className={s('text-gray-light my-sm text-xs px-reg')}> Show search results from: </div>
         {DISCONNECTED_INTEGRATIONS.map(({ isShown, getHeaderEnd }) =>
           SEARCH_INTEGRATIONS.filter(isShown).map(({ type, logo, title }) => (
             <ExternalResultHeader
