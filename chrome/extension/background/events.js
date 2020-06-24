@@ -4,13 +4,24 @@ import { logout, syncAuthInfo } from 'actions/auth';
 import { injectExtension, loadScript } from './inject';
 import initSocket from './socket';
 
+const STATUS = {
+  UPDATE_AVAILABLE: 'update_available',
+  NO_UPDATE: 'no_update',
+  THROTTLED: 'throttled'
+};
+
+const INSTALL_REASON = {
+  INSTALL: 'install',
+  UPDATE: 'update'
+};
+
 let justInstalled = false;
-// let lastUpdateStatus;
+let lastUpdateStatus;
 
 chrome.runtime.requestUpdateCheck((status) => {
-  // lastUpdateStatus = status;
+  lastUpdateStatus = status;
 
-  if (status === 'update_available') {
+  if (status === STATUS.UPDATE_AVAILABLE) {
     chrome.runtime.reload();
   }
 });
@@ -21,27 +32,47 @@ chrome.runtime.onUpdateAvailable.addListener(() => {
 });
 
 chrome.runtime.onInstalled.addListener(({ reason }) => {
-  if (reason === 'install') {
-    justInstalled = true;
-    window.open(`${URL.WEB_APP}${WEB_APP_ROUTES.SIGNUP}`);
+  switch (reason) {
+    case INSTALL_REASON.INSTALL: {
+      justInstalled = true;
+      window.open(`${URL.WEB_APP}${WEB_APP_ROUTES.SIGNUP}`);
+      break;
+    }
+    case INSTALL_REASON.UPDATE: {
+      lastUpdateStatus = STATUS.NO_UPDATE;
+      break;
+    }
+    default:
+      break;
   }
 });
 
-// chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
-//   const { type, payload } = message;
-//   switch (type) {
-//     case CHROME.EXTENSION_MESSAGE.CATCH_ERROR: {
-//       // chrome.runtime.requestUpdateCheck((status) => {
-//       //   if (status !== 'throttled') {
-//       //     lastUpdateStatus = status;
-//       //   }
-//       // });
-//       break;
-//     }
-//     default:
-//       break;
-//   }
-// });
+chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
+  const { type } = message;
+  switch (type) {
+    case CHROME.EXTENSION_MESSAGE.CATCH_ERROR: {
+      chrome.runtime.requestUpdateCheck((status) => {
+        if (status !== STATUS.THROTTLED) {
+          lastUpdateStatus = status;
+        }
+
+        sendResponse(lastUpdateStatus === STATUS.UPDATE_AVAILABLE);
+      });
+
+      // Mark as asynchronous response
+      return true;
+    }
+    case CHROME.EXTENSION_MESSAGE.RELOAD_EXTENSION: {
+      chrome.runtime.reload();
+      sendResponse('Successfully reloaded extension!');
+      break;
+    }
+    default:
+      break;
+  }
+
+  return false;
+});
 
 chrome.runtime.onMessageExternal.addListener((message, sender, sendResponse) => {
   if (sender.origin === URL.WEB_APP) {

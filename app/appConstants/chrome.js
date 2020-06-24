@@ -7,7 +7,8 @@ export const MESSAGE = {
 };
 
 export const EXTENSION_MESSAGE = {
-  CATCH_ERROR: 'CATCH_ERROR'
+  CATCH_ERROR: 'CATCH_ERROR',
+  RELOAD_EXTENSION: 'RELOAD_EXTENSION'
 };
 
 export const EXTERNAL_MESSAGE = {
