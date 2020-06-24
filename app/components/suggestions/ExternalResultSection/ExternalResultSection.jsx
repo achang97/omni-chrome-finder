@@ -141,7 +141,6 @@ const ExternalResultSection = ({
               <Switch
                 {...SWITCH_PROPS}
                 checked={!isIntegrationDisabled}
-                icons={false}
                 onChange={(checked) => toggleSettings(checked)}
               />
               {isExpanded && (

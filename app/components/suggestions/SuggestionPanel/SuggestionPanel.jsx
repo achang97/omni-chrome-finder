@@ -140,7 +140,6 @@ const SuggestionPanel = ({
           <Switch
             {...SWITCH_PROPS}
             checked={isSearchEnabled(type)}
-            icons={false}
             onChange={(checked) => {
               requestUpdateUser({
                 [`widgetSettings.integrationSearch.${type}.disabled`]: !checked

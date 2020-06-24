@@ -5,6 +5,15 @@ import { injectExtension, loadScript } from './inject';
 import initSocket from './socket';
 
 let justInstalled = false;
+// let lastUpdateStatus;
+
+chrome.runtime.requestUpdateCheck((status) => {
+  // lastUpdateStatus = status;
+
+  if (status === 'update_available') {
+    chrome.runtime.reload();
+  }
+});
 
 chrome.runtime.onUpdateAvailable.addListener(() => {
   // Automatically update
@@ -17,6 +26,22 @@ chrome.runtime.onInstalled.addListener(({ reason }) => {
     window.open(`${URL.WEB_APP}${WEB_APP_ROUTES.SIGNUP}`);
   }
 });
+
+// chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
+//   const { type, payload } = message;
+//   switch (type) {
+//     case CHROME.EXTENSION_MESSAGE.CATCH_ERROR: {
+//       // chrome.runtime.requestUpdateCheck((status) => {
+//       //   if (status !== 'throttled') {
+//       //     lastUpdateStatus = status;
+//       //   }
+//       // });
+//       break;
+//     }
+//     default:
+//       break;
+//   }
+// });
 
 chrome.runtime.onMessageExternal.addListener((message, sender, sendResponse) => {
   if (sender.origin === URL.WEB_APP) {

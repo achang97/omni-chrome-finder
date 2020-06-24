@@ -1,0 +1,7 @@
+.activity-log-entry {
+  @apply text-sm p-reg rounded-lg;
+}
+
+.activity-log-signup {
+  @apply flex items-center justify-between;
+}

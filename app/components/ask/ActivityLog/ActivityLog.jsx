@@ -13,7 +13,30 @@ import { getStyleApplicationFn } from 'utils/style';
 import { UserPropTypes } from 'utils/propTypes';
 import { usePrevious } from 'utils/react';
 
-const s = getStyleApplicationFn();
+import suggestionStyle from 'components/suggestions/styles/suggestion.css';
+import style from './activity-log.css';
+
+const s = getStyleApplicationFn(style, suggestionStyle);
+
+const getActionName = (type) => {
+  switch (type) {
+    case PROFILE.AUDIT.TYPE.VIEW_CARD: {
+      return 'viewed';
+    }
+    case PROFILE.AUDIT.TYPE.CREATE_CARD: {
+      return 'created';
+    }
+    case PROFILE.AUDIT.TYPE.UPDATE_CARD: {
+      return 'updated';
+    }
+    case PROFILE.AUDIT.TYPE.SIGN_UP: {
+      return 'joined the team! 🎉';
+    }
+    default: {
+      return '';
+    }
+  }
+};
 
 const ActivityLog = ({
   isGettingRecentCards,
@@ -36,7 +59,7 @@ const ActivityLog = ({
     const { _id, question, status, externalLinkAnswer, finderNode } = card;
     return (
       <SuggestionCard
-        className={s('text-sm p-reg rounded-lg')}
+        className={s('activity-log-entry')}
         key={_id}
         id={_id}
         event={event}
@@ -64,27 +87,10 @@ const ActivityLog = ({
     );
   };
 
-  const getActionName = (type) => {
-    switch (type) {
-      case PROFILE.AUDIT.TYPE.VIEW_CARD: {
-        return 'viewed';
-      }
-      case PROFILE.AUDIT.TYPE.CREATE_CARD: {
-        return 'created';
-      }
-      case PROFILE.AUDIT.TYPE.UPDATE_CARD: {
-        return 'updated';
-      }
-      default: {
-        return '';
-      }
-    }
-  };
-
   const renderActivityLogSection = (placeholder, event, isLoading) => {
     return (
       <>
-        {activityLog.map(({ _id, card, user, type, createdAt }) => (
+        {activityLog.map(({ _id, card, user, type, createdAt, data }) => (
           <div key={_id} className={s('mt-xs mb-reg')}>
             <div className={s('flex items-center justify-between mb-xs text-2xs')}>
               <div className={s('flex items-center')}>
@@ -98,9 +104,27 @@ const ActivityLog = ({
                   {user._id === ownUserId ? 'You' : user.firstname} {getActionName(type)}
                 </span>
               </div>
-              <Timeago live={false} date={createdAt} className={s('text-2xs text-gray-reg')} />
+              <Timeago
+                live={false}
+                date={createdAt || data.date}
+                className={s('text-2xs text-gray-reg')}
+              />
             </div>
-            {renderCard(card, event)}
+            {card ? (
+              renderCard(card, event)
+            ) : (
+              <div className={s('suggestion-elem activity-log-entry activity-log-signup')}>
+                <div className={s('font-bold mr-sm')}>
+                  {user.firstname} {user.lastname} ({user.role})
+                </div>
+                <CardUser
+                  name={`${user.firstname} ${user.lastname}`}
+                  img={user.profilePicture}
+                  showName={false}
+                  size="xs"
+                />
+              </div>
+            )}
           </div>
         ))}
         {activityLog.length === 0 && !isLoading && renderPlaceholder(placeholder)}

@@ -1,32 +1,28 @@
 import { Component } from 'react';
 import PropTypes from 'prop-types';
 import * as Sentry from '@sentry/browser';
-
-import { UserPropTypes } from 'utils/propTypes';
+import { EXTENSION_MESSAGE } from 'appConstants/chrome';
 
 class ErrorBoundary extends Component {
   constructor(props) {
     super(props);
-    this.state = {};
-  }
-
-  static getDerivedStateFromError() {
-    return { hasError: true };
+    this.state = { hasError: false };
   }
 
   componentDidCatch(error, errorInfo) {
-    const { user } = this.props;
-
     Sentry.withScope((scope) => {
-      scope.setExtras(errorInfo);
-      if (user) {
-        scope.setUser({ email: user.email });
-      }
-      scope.setExtra('version', chrome.runtime.getManifest().version);
+      scope.setExtras({
+        ...errorInfo,
+        version: chrome.runtime.getManifest().version
+      });
 
       Sentry.captureException(error);
-      // Sentry.showReportDialog({ eventId });
     });
+
+    this.setState({ hasError: true });
+
+    // Communicate with background page to get version information?
+    chrome.runtime.sendMessage({ type: EXTENSION_MESSAGE.CATCH_ERROR });
   }
 
   render() {
@@ -43,7 +39,6 @@ class ErrorBoundary extends Component {
 }
 
 ErrorBoundary.propTypes = {
-  user: UserPropTypes,
   children: PropTypes.node
 };
 

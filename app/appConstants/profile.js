@@ -48,7 +48,8 @@ export const AUDIT = {
     CREATE_CARD: 'createCard',
     CONTEXT_MENU_SEARCH: 'contextMenuSearch',
     OPEN_EXTERNAL_DOC: 'openExternalDoc',
-    OPEN_EXTENSION: 'openExtension'
+    OPEN_EXTENSION: 'openExtension',
+    SIGN_UP: 'signUp'
   },
   SOURCE: {
     FINDER: 'finder',
