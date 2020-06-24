@@ -7,13 +7,13 @@ import { ROUTES } from 'appConstants';
 import App from './App';
 
 const Root = ({ store }) => (
-  <Provider store={store}>
-    <ErrorBoundary>
+  <ErrorBoundary>
+    <Provider store={store}>
       <MemoryRouter initialEntries={[ROUTES.ASK]}>
         <App />
       </MemoryRouter>
-    </ErrorBoundary>
-  </Provider>
+    </Provider>
+  </ErrorBoundary>
 );
 
 Root.propTypes = {

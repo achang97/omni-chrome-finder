@@ -1,6 +1,7 @@
 import React, { useEffect, useRef } from 'react';
 import PropTypes from 'prop-types';
 import { Switch, Redirect } from 'react-router-dom';
+import * as Sentry from '@sentry/browser';
 
 import { ROUTES } from 'appConstants';
 import { auth } from 'utils';
@@ -55,6 +56,7 @@ const App = ({ dockVisible, isLoggedIn, user, showAutofind, requestGetUser, requ
   useEffect(() => {
     if (isLoggedIn && !isMounted.current) {
       requestGetUser();
+      Sentry.configureScope((scope) => scope.setUser({ email: user.email }));
       if (isVerified) {
         requestGetTasks();
       }

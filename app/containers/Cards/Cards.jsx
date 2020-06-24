@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import PropTypes from 'prop-types';
 import ReactDraggable from 'react-draggable';
 import { Resizable } from 're-resizable';
@@ -51,6 +51,8 @@ const Cards = ({
   toggleCards,
   trackEvent
 }) => {
+  const [startCardPosition, setStartCardPosition] = useState({});
+
   const getCurrentCard = (index) => {
     // Get updated current card
     let currentCard = cards[index];
@@ -274,8 +276,34 @@ const Cards = ({
     );
   };
 
+  const onResizeStart = (e, direction, ref) => {
+    const { x, y } = ref.getBoundingClientRect();
+    setStartCardPosition({ x, y });
+  };
+
   const onResizeStop = (e, direction, ref) => {
     adjustCardsDimensions(ref.clientWidth, ref.clientHeight);
+  };
+
+  const onResizeLocationChange = (e, direction, ref) => {
+    const { x, y, width, height } = ref.getBoundingClientRect();
+
+    let newX = x;
+    let newY = y;
+
+    if (['left', 'bottomLeft', 'topLeft'].includes(direction)) {
+      const deltaWidth = width - cardsWidth - (startCardPosition.x - x);
+      newX = x - deltaWidth;
+    }
+
+    if (['top', 'topLeft', 'topRight'].includes(direction)) {
+      const deltaHeight = height - cardsHeight - (startCardPosition.y - y);
+      newY = y - deltaHeight;
+    }
+
+    if (newX !== x || newY !== y) {
+      updateCardWindowPosition({ x: newX, y: newY });
+    }
   };
 
   const renderExpandedCards = () => {
@@ -301,24 +329,17 @@ const Cards = ({
               handle="#card-tab-container"
               cancel={`.${s('card-disable-window-drag')}`}
               onStop={(e, { x, y }) => updateCardWindowPosition({ x, y })}
+              position={windowPosition}
               defaultPosition={windowPosition}
             >
               <Resizable
                 className={s('card bg-white rounded-lg shadow-2xl flex flex-col')}
                 size={{ width: cardsWidth, height: cardsHeight }}
+                onResize={onResizeLocationChange}
+                onResizeStart={onResizeStart}
                 onResizeStop={onResizeStop}
                 minWidth={CARD.DIMENSIONS.DEFAULT_CARDS_WIDTH}
                 minHeight={CARD.DIMENSIONS.DEFAULT_CARDS_HEIGHT}
-                enable={{
-                  top: false,
-                  right: true,
-                  bottom: true,
-                  left: false,
-                  topRight: false,
-                  bottomRight: true,
-                  bottomLeft: false,
-                  topLeft: false
-                }}
               >
                 {renderTabHeader()}
                 {isFinderShown() ? <FinderContainer /> : <CardView />}

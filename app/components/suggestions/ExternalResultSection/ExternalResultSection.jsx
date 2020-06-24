@@ -38,7 +38,7 @@ const getItemProps = (type, item) => {
         url: webViewLink,
         title: name,
         showDropdown: mimeType !== FOLDER_MIME_TYPE,
-        body: owners.length !== 0 && (
+        body: owners && (
           <>
             {owners.map(({ displayName, permissionId, me }, i) => (
               <React.Fragment key={permissionId}>
@@ -51,7 +51,7 @@ const getItemProps = (type, item) => {
       };
     }
     case INTEGRATIONS.ZENDESK.type: {
-      const { id, html_url: htmlUrl, title, voteSum, author, promoted, draft } = item;
+      const { id, html_url: htmlUrl, title, vote_sum: voteSum, author, promoted, draft } = item;
       return {
         ...baseProps,
         id,
@@ -141,7 +141,6 @@ const ExternalResultSection = ({
               <Switch
                 {...SWITCH_PROPS}
                 checked={!isIntegrationDisabled}
-                icons={false}
                 onChange={(checked) => toggleSettings(checked)}
               />
               {isExpanded && (
