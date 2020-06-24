@@ -1,7 +1,7 @@
-function getElementsByXpath(path) {
+function getElementsByXpath(node, path) {
   const nodesSnapshot = document.evaluate(
     path,
-    document,
+    node,
     null,
     XPathResult.ORDERED_NODE_SNAPSHOT_TYPE,
     null
@@ -70,7 +70,7 @@ export function getGoogleText(observer, createMutator) {
         const removeTables = emailCopy.querySelectorAll('table');
         removeAll(removeTables);
 
-        const removeAttachments = getElementsByXpath('//div[text()="Attachments area"]');
+        const removeAttachments = getElementsByXpath(emailCopy, '//div[text()="Attachments area"]');
         removeAll(removeAttachments, (attachment) => attachment.parentElement);
 
         const removeAttachmentButton = emailCopy.querySelectorAll(
