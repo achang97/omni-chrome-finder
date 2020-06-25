@@ -10,6 +10,10 @@ const customStyles = {
     boxSizing: 'border-box',
     fontWeight: '400'
   }),
+  menuPortal: (provided) => ({
+    ...provided,
+    zIndex: 100000000000
+  }),
   control: (provided, state) => ({
     ...provided,
     background: state.isDisabled ? 'transparent' : provided.background,

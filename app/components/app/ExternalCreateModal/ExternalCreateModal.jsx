@@ -94,8 +94,8 @@ const ExternalCreateModal = ({
         shouldCloseOnOutsideClick
         important
         fixed
-        className={s('external-create-modal overflow-visible')}
-        bodyClassName={s('px-lg py-reg overflow-visible')}
+        className={s('external-create-modal')}
+        bodyClassName={s('px-lg py-reg')}
         primaryButtonProps={{
           text: 'Track',
           disabled: title === '' || owners.length === 0 || !verificationInterval,
