@@ -40,6 +40,7 @@ const ConfirmModal = ({
       primaryButtonProps={
         showPrimary ? { text: 'Yes', onClick: onRequestClose, ...primaryButtonProps } : null
       }
+      showPrimaryButton={showPrimary}
     >
       {description && <div> {description} </div>}
       {body}
