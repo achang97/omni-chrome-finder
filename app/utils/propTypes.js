@@ -11,7 +11,6 @@ export const UserPropTypes = PropTypes.shape({
   isVerified: PropTypes.bool,
   role: PropTypes.oneOf(Object.values(PROFILE.USER_ROLE)),
   team: PropTypes.string,
-  companyName: PropTypes.string,
   company: PropTypes.oneOfType([PropTypes.object, PropTypes.string]),
   permissionGroups: PropTypes.arrayOf(PropTypes.oneOfType([PropTypes.object, PropTypes.string])),
   bookmarkIds: PropTypes.arrayOf(PropTypes.string),
