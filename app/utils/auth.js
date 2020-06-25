@@ -14,14 +14,21 @@ export function isValidUser(user) {
   return !!user && !_.isEmpty(user) && !!user.isVerified && hasCompletedOnboarding(user.onboarding);
 }
 
-export function isLoggedIn(user, integration) {
-  // use new userIntegrations here.
-  return (
-    !!user &&
-    !!user.integrations &&
-    !!user.integrations[integration] &&
-    !!user.integrations[integration].access_token
-  );
+export function isLoggedIn(user = {}, integration) {
+  const integrationInfo = _.get(user, `integrations.${integration}`);
+  if (!integrationInfo) {
+    return false;
+  }
+
+  switch (integration) {
+    case INTEGRATIONS.CONFLUENCE.type:
+    case INTEGRATIONS.JIRA.type: {
+      const { access_token: accessToken, oauthTokenSecret, deployedSiteUrl } = integrationInfo;
+      return deployedSiteUrl ? !!oauthTokenSecret : !!accessToken;
+    }
+    default:
+      return !!integrationInfo.access_token;
+  }
 }
 
 export function getIntegrationAuthLink(userId, token, integration, queryParams = {}) {

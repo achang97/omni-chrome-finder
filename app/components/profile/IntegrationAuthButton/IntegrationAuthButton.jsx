@@ -28,19 +28,31 @@ const IntegrationAuthButton = ({
 
   // Integration Specific
   const [isModalOpen, setModalOpen] = useState(false);
-  const [zendeskHost, setZendeskHost] = useState('');
+  const [hostUrl, setHostUrl] = useState('');
+  const [isAtlassianServer, setAtlassianServer] = useState(false);
+
+  const resetState = () => {
+    setModalOpen(false);
+    setHostUrl('');
+    setAtlassianServer(false);
+  };
 
   const openAuthWindow = (queryParams) => {
     const authLink = getIntegrationAuthLink(user._id, token, type, queryParams);
     const newWindow = window.open(authLink, 'popup', 'width=600,height=600');
 
     setAuthWindow(newWindow);
+
+    // Unset everything here
+    resetState();
     if (onWindowOpen) onWindowOpen(newWindow);
   };
 
   const onSignIn = () => {
     switch (type) {
-      case INTEGRATIONS.ZENDESK.type: {
+      case INTEGRATIONS.ZENDESK.type:
+      case INTEGRATIONS.CONFLUENCE.type:
+      case INTEGRATIONS.JIRA.type: {
         setModalOpen(true);
         break;
       }
@@ -63,28 +75,59 @@ const IntegrationAuthButton = ({
     requestLogoutUserIntegration(type);
   };
 
+  const getHostUrlInput = (placeholder) => (
+    <input
+      placeholder={placeholder}
+      className={s('w-full')}
+      value={hostUrl}
+      onChange={(e) => setHostUrl(e.target.value)}
+      autoFocus
+    />
+  );
+
   const getModalProps = () => {
     switch (type) {
       case INTEGRATIONS.ZENDESK.type: {
         return {
           title: 'Sign into Zendesk',
-          body: (
-            <input
-              placeholder="Account Host (i.e. addomni.zendesk.com)"
-              className={s('w-full')}
-              value={zendeskHost}
-              onChange={(e) => setZendeskHost(e.target.value)}
-              autoFocus
-            />
-          ),
+          body: getHostUrlInput('Account Host (i.e. addomni.zendesk.com)'),
           primaryButtonProps: {
-            text: 'Sign In',
-            onClick: () => {
-              openAuthWindow({ subdomain: zendeskHost });
-              setModalOpen(false);
-              setZendeskHost('');
-            },
-            disabled: zendeskHost === ''
+            onClick: () => openAuthWindow({ subdomain: hostUrl })
+          }
+        };
+      }
+      case INTEGRATIONS.CONFLUENCE.type:
+      case INTEGRATIONS.JIRA.type: {
+        return {
+          title: `Sign into ${title}`,
+          body: !isAtlassianServer ? (
+            <>
+              <div className={s('text-sm mb-reg')}>
+                Contact your site admin to see which solution {user.company.companyName} uses.
+              </div>
+              <Button color="secondary" text={`${title} Cloud`} onClick={openAuthWindow} />
+              <Button
+                color="transparent"
+                className={s('mt-sm')}
+                text={`${title} Server`}
+                onClick={() => setAtlassianServer(true)}
+              />
+              <a
+                href="https://addomnihelp.zendesk.com/hc/en-us/articles/360010492158"
+                target="_blank"
+                rel="noopener noreferrer"
+              >
+                <div className={s('text-blue-500 text-xs mt-reg text-center')}>
+                  How to set up {title} Server with Omni
+                </div>
+              </a>
+            </>
+          ) : (
+            getHostUrlInput(`Site Url (i.e. addomni.${type}.com)`)
+          ),
+          showPrimary: isAtlassianServer,
+          primaryButtonProps: {
+            onClick: () => openAuthWindow({ siteUrl: hostUrl })
           }
         };
       }
@@ -137,6 +180,8 @@ const IntegrationAuthButton = ({
       </div>
     );
   }
+
+  const { primaryButtonProps, ...restModalProps } = getModalProps();
   return (
     <>
       <Button
@@ -150,8 +195,13 @@ const IntegrationAuthButton = ({
         shouldCloseOnOutsideClick
         isOpen={!!isModalOpen}
         showSecondary={false}
-        onRequestClose={() => setModalOpen(false)}
-        {...getModalProps()}
+        onRequestClose={resetState}
+        primaryButtonProps={{
+          text: 'Sign In',
+          disabled: hostUrl === '',
+          ...primaryButtonProps
+        }}
+        {...restModalProps}
       />
     </>
   );

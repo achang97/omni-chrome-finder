@@ -163,6 +163,10 @@ const SuggestionPanel = ({
     ];
     /* eslint-enable react/display-name */
 
+    if (!DISCONNECTED_INTEGRATIONS.some(({ isShown }) => SEARCH_INTEGRATIONS.some(isShown))) {
+      return null;
+    }
+
     return (
       <>
         <Separator horizontal className={s('w-5/6')} />
