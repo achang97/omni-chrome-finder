@@ -33,6 +33,7 @@ const Select = ({ className, type, styles, ...rest }) => {
       {...rest}
       classNamePrefix="omni-react-select"
       menuPortalTarget={document.querySelector(`#${APP_CONTAINER_ID}`)}
+      menuPosition="fixed"
       className={s(`select ${className}`)}
       styles={styles ? { ...customStyles, ...styles } : customStyles}
       theme={(theme) => ({
