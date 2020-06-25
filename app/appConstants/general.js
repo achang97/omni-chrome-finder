@@ -32,6 +32,7 @@ export const NODE_ENV = {
 };
 
 export const MAIN_CONTAINER_ID = 'omni-chrome-ext-main-container';
+export const APP_CONTAINER_ID = 'omni-chrome-ext-react-app';
 
 export const WEB_APP_ROUTES = {
   EXTENSION: '/extension',
@@ -69,6 +70,7 @@ export default {
   WEB_APP_ROUTES,
   NODE_ENV,
   MAIN_CONTAINER_ID,
+  APP_CONTAINER_ID,
   URL,
   INTEGRATIONS,
   INTEGRATIONS_MAP,

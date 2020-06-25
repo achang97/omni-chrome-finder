@@ -3,7 +3,7 @@ import PropTypes from 'prop-types';
 import { Switch, Redirect } from 'react-router-dom';
 import * as Sentry from '@sentry/browser';
 
-import { ROUTES } from 'appConstants';
+import { ROUTES, APP_CONTAINER_ID } from 'appConstants';
 import { auth } from 'utils';
 import { UserPropTypes } from 'utils/propTypes';
 
@@ -69,7 +69,7 @@ const App = ({ dockVisible, isLoggedIn, user, showAutofind, requestGetUser, requ
   const isValidUser = auth.isValidUser(user);
 
   return (
-    <div className={s('app-container')}>
+    <div className={s('app-container')} id={APP_CONTAINER_ID}>
       <Dock position="right" width={DOCK_WIDTH} isVisible={dockVisible} isFullHeight={isValidUser}>
         <div className={s(`flex relative flex-col ${isValidUser ? 'h-screen' : ''}`)}>
           <MessageModal />
