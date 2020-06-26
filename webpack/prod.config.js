@@ -4,7 +4,7 @@ const autoprefixer = require('autoprefixer');
 const tailwindcss = require('tailwindcss');
 const TerserPlugin = require('terser-webpack-plugin');
 const tailwindConfig = require('../tailwind.config');
-require('dotenv').config();
+require('dotenv').config({ path: path.join(__dirname, '../.prod.env') });
 
 const customPath = path.join(__dirname, './customPublicPath');
 
@@ -25,8 +25,7 @@ module.exports = {
     new webpack.DefinePlugin({
       'process.env': {
         NODE_ENV: JSON.stringify('production'),
-        HEAP_APP_ID: JSON.stringify(process.env.PROD_HEAP_APP_ID),
-        SEGMENT_KEY: JSON.stringify(process.env.PROD_SEGMENT_KEY)
+        SEGMENT_KEY: JSON.stringify(process.env.SEGMENT_KEY)
       }
     })
   ],
