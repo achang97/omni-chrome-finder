@@ -10,6 +10,7 @@ import {
   openCardContainerModal,
   closeCardContainerModal,
   toggleCards,
+  toggleMaximizeCards,
   openCard
 } from 'actions/cards';
 import { openFinder } from 'actions/finder';
@@ -22,6 +23,7 @@ const mapStateToProps = (state) => {
       cards,
       showCards,
       cardsExpanded,
+      cardsMaximized,
       activeCardIndex,
       activeCard,
       cardsWidth,
@@ -35,6 +37,7 @@ const mapStateToProps = (state) => {
   return {
     user,
     cardsExpanded,
+    cardsMaximized,
     showCards,
     cards,
     activeCardIndex,
@@ -51,6 +54,7 @@ const mapDispatchToProps = {
   openFinder,
   closeCard,
   closeAllCards,
+  toggleMaximizeCards,
   toggleCards,
   setActiveCardIndex,
   updateCardWindowPosition,

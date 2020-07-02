@@ -24,7 +24,7 @@ import { PublicRoute, PrivateRoute } from 'components/routes';
 import { getStyleApplicationFn } from 'utils/style';
 
 import Ask from '../Ask';
-import Create from '../Create';
+// import Create from '../Create';
 import Tasks from '../Tasks';
 import Cards from '../Cards';
 import Autofind from '../Autofind';
@@ -39,8 +39,17 @@ import ForgotPassword from '../ForgotPassword';
 import 'react-circular-progressbar/dist/styles.css';
 import 'react-image-lightbox/style.css';
 import 'video-react/dist/video-react.css';
-import 'react-draft-wysiwyg/dist/react-draft-wysiwyg.css';
 import 'react-image-crop/dist/ReactCrop.css';
+
+/* eslint-disable import/no-extraneous-dependencies, import/extensions */
+import 'froala-editor/css/froala_style.min.css';
+import 'froala-editor/css/froala_editor.pkgd.min.css';
+import 'font-awesome/css/font-awesome.css';
+import 'froala-editor/js/third_party/font_awesome.min.js';
+/* eslint-enable import/no-extraneous-dependencies */
+
+// Overrides
+import 'styles/overrides/froala.css';
 
 import style from './App.css';
 
@@ -77,7 +86,7 @@ const App = ({ dockVisible, isLoggedIn, user, showAutofind, requestGetUser, requ
           {isValidUser && <Header />}
           <Switch>
             <PrivateRoute path={ROUTES.ASK} component={Ask} />
-            <PrivateRoute path={ROUTES.CREATE} component={Create} />
+            {/* <PrivateRoute path={ROUTES.CREATE} component={Create} /> */}
             <PrivateRoute path={ROUTES.TASKS} component={Tasks} />
             <PrivateRoute path={ROUTES.PROFILE} component={Profile} />
             {!completedOnboarding && (

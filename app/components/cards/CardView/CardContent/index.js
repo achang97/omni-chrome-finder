@@ -2,7 +2,7 @@ import { connect } from 'react-redux';
 import {
   openCardModal,
   updateCardQuestion,
-  updateCardAnswerEditor,
+  updateCardAnswer,
   requestGetCard,
   openCardSideDock,
   requestAddCardAttachment
@@ -15,7 +15,7 @@ const mapStateToProps = (state) => {
       activeCard: {
         _id,
         question,
-        answerEditorState,
+        answerModel,
         status,
         attachments,
         slackThreadConvoPairs,
@@ -33,7 +33,7 @@ const mapStateToProps = (state) => {
   return {
     _id,
     question,
-    answerEditorState,
+    answerModel,
     status,
     attachments,
     slackThreadConvoPairs,
@@ -50,7 +50,7 @@ const mapStateToProps = (state) => {
 const mapDispatchToProps = {
   openCardModal,
   updateCardQuestion,
-  updateCardAnswerEditor,
+  updateCardAnswer,
   requestGetCard,
   openCardSideDock,
   requestAddCardAttachment

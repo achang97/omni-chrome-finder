@@ -25,7 +25,8 @@ module.exports = {
     new webpack.DefinePlugin({
       'process.env': {
         NODE_ENV: JSON.stringify('production'),
-        SEGMENT_KEY: JSON.stringify(process.env.SEGMENT_KEY)
+        SEGMENT_KEY: JSON.stringify(process.env.SEGMENT_KEY),
+        FROALA_KEY: JSON.stringify(process.env.FROALA_KEY)
       }
     })
   ],
@@ -76,6 +77,22 @@ module.exports = {
             }
           }
         ]
+      },
+      {
+        test: /\.woff(\?v=\d+\.\d+\.\d+)?$/,
+        use: 'url-loader?limit=10000&mimetype=application/font-woff'
+      },
+      {
+        test: /\.woff2(\?v=\d+\.\d+\.\d+)?$/,
+        use: 'url-loader?limit=10000&mimetype=application/font-woff'
+      },
+      {
+        test: /\.ttf(\?v=\d+\.\d+\.\d+)?$/,
+        use: 'url-loader?limit=10000&mimetype=application/octet-stream'
+      },
+      {
+        test: /\.eot(\?v=\d+\.\d+\.\d+)?$/,
+        use: 'file-loader'
       }
     ]
   },

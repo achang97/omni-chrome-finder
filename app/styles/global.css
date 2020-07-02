@@ -78,15 +78,6 @@
   box-shadow: 0 10px 30px 0 rgba(33, 26, 29, 0.05) !important;
 }
 
-/* Z-index */
-.modal-overlay-important {
-  z-index: 200;
-}
-
-.modal-important {
-  z-index: 201;
-}
-
 /* Large icons */
 .large-icon-container {
   height: 125px;

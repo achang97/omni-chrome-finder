@@ -1,7 +1,6 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import { MdModeEdit, MdThumbUp, MdBookmarkBorder } from 'react-icons/md';
-import { EditorState } from 'draft-js';
 
 import { Message, Button, Loader, Tooltip } from 'components/common';
 import { hasValidEdits, toggleUpvotes } from 'utils/card';
@@ -52,7 +51,7 @@ const CardFooter = ({
           className={s('rounded-t-none p-lg')}
           disabled={
             edits.question === '' ||
-            !edits.answerEditorState.getCurrentContent().hasText() ||
+            !edits.answerModel ||
             isAnyLoading(edits.attachments) ||
             isRecording
           }
@@ -147,7 +146,7 @@ CardFooter.propTypes = {
   upvotes: PropTypes.arrayOf(PropTypes.string).isRequired,
   edits: PropTypes.shape({
     question: PropTypes.string,
-    answerEditorState: PropTypes.instanceOf(EditorState),
+    answerModel: PropTypes.string,
     attachments: PropTypes.arrayOf(PropTypes.object)
   }).isRequired,
   isUpdatingBookmark: PropTypes.bool,

@@ -1,15 +1,13 @@
-import { EditorState } from 'draft-js';
 import _ from 'lodash';
 
 import { URL, CARD, PROFILE } from 'appConstants';
-import { getEditorStateFromContentState, getContentStateFromEditorState } from './editor';
 import { getArrayIds } from './array';
 import { isAnyLoading } from './file';
 import { copyText } from './window';
 
 export function convertCardToFrontendFormat(card) {
   const {
-    contentStateAnswer,
+    answerModel,
     updateInterval,
     userPermissions,
     permissionGroups,
@@ -31,9 +29,7 @@ export function convertCardToFrontendFormat(card) {
   const permissions = convertPermissionsToFrontendFormat(userPermissions, permissionGroups);
 
   return {
-    answerEditorState: contentStateAnswer
-      ? getEditorStateFromContentState(contentStateAnswer)
-      : EditorState.createEmpty(),
+    answerModel: answerModel || '',
     verificationInterval,
     permissions,
     permissionGroups,
@@ -94,7 +90,7 @@ export function hasValidPermissions(permissions, permissionGroups) {
 export function hasValidEdits(edits, isExternal = false) {
   const {
     question,
-    answerEditorState,
+    answerModel,
     owners = [],
     verificationInterval,
     permissions,
@@ -105,7 +101,7 @@ export function hasValidEdits(edits, isExternal = false) {
   return (
     !!question &&
     question !== '' &&
-    (isExternal || (!!answerEditorState && answerEditorState.getCurrentContent().hasText())) &&
+    (isExternal || !!answerModel) &&
     hasValidPermissions(permissions, permissionGroups) &&
     owners.filter(({ isInvited }) => !isInvited).length !== 0 &&
     !!verificationInterval &&
@@ -152,27 +148,8 @@ export function cardStateChanged(card) {
   let i;
   for (i = 0; i < editAttributes.length; i++) {
     const [editAttribute, editValue] = editAttributes[i];
-
-    switch (editAttribute) {
-      case 'answerEditorState': {
-        const cardValue = getContentStateFromEditorState(card[editAttribute]).contentState;
-        const cardEditValue = getContentStateFromEditorState(editValue).contentState;
-
-        const isNewCard = !isExistingCard(card._id);
-        const hasChanged = isNewCard
-          ? editValue.getCurrentContent().hasText()
-          : cardValue !== cardEditValue;
-        if (hasChanged) {
-          return true;
-        }
-        break;
-      }
-      default: {
-        if (JSON.stringify(card[editAttribute]) !== JSON.stringify(editValue)) {
-          return true;
-        }
-        break;
-      }
+    if (JSON.stringify(card[editAttribute]) !== JSON.stringify(editValue)) {
+      return true;
     }
   }
 

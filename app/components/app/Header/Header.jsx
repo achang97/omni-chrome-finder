@@ -11,6 +11,7 @@ import { UserPropTypes } from 'utils/propTypes';
 
 import { colors } from 'styles/colors';
 import { getStyleApplicationFn } from 'utils/style';
+import { getNewCardBaseState } from 'utils/card';
 import style from './header.css';
 
 const s = getStyleApplicationFn(style);
@@ -20,6 +21,7 @@ const Header = ({
   numAutofindCards,
   numTasks,
   openFinder,
+  openCard,
   trackEvent,
   history,
   location: { pathname }
@@ -41,7 +43,10 @@ const Header = ({
     },
     {
       key: 'create',
-      value: ROUTES.CREATE,
+      onTabClick: () => {
+        openCard(getNewCardBaseState(user), true);
+        trackEvent(SEGMENT.EVENT.CLICK_NEW_CARD, { Channel: SEGMENT.CHANNEL.EXTENSION });
+      },
       tabContainerClassName: 'mx-sm',
       tabClassName: 'px-sm',
       children: (
@@ -148,6 +153,7 @@ Header.propTypes = {
   numTasks: PropTypes.number.isRequired,
 
   // Redux Actions
+  openCard: PropTypes.func.isRequired,
   openFinder: PropTypes.func.isRequired,
   trackEvent: PropTypes.func.isRequired
 };

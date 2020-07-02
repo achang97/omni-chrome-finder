@@ -9,8 +9,7 @@ const mapStateToProps = (state) => {
   const {
     create: {
       question,
-      descriptionEditorState,
-      answerEditorState,
+      answerModel,
       attachments,
       finderNode,
       isTemplateView,
@@ -22,8 +21,7 @@ const mapStateToProps = (state) => {
 
   return {
     question,
-    descriptionEditorState,
-    answerEditorState,
+    answerModel,
     attachments,
     finderNode,
     isTemplateView,

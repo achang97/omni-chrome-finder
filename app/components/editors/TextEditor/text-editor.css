@@ -3,190 +3,27 @@
   height: 100%;
 }
 
-.text-editor-container {
-  @apply relative flex flex-col min-h-0;
-
-  transition: max-height 1s ease;
-}
-
-.text-editor-toggle-rte-button {
-  border-radius: 8px 0 0 8px;
-  height: 36px;
-  z-index: 10;
-
-  @apply absolute top-0 right-0 text-white flex justify-center items-center text-lg shadow-md flex;
-}
-
-.text-editor-toggle-rte-button:hover {
-  padding: 0 2px;
-}
-
-.text-editor-toggle-arrow {
-  margin-right: -4px;
-}
-
 .text-editor-extension {
-  height: 120px !important;
+  height: 150px !important;
 }
 
 .text-editor,
 .text-editor-extension {
+  @apply flex flex-col;
+
   border: 1px solid #00025f1a;
-  padding: 10px;
   border-radius: 0 0 8px 8px;
   justify-content: space-between;
   font-size: 14px;
 }
 
-.text-editor *,
-.text-editor-extension * {
+.text-editor > div,
+.text-editor-extension > div {
+  border: none !important;
   background: transparent;
 }
 
 .text-editor:hover,
 .text-editor-extension:hover {
   cursor: text;
-}
-
-.text-editor div,
-.text-editor-extension div {
-  margin: 0 !important;
-}
-
-.text-editor-wrapper {
-  width: 100%;
-  display: block;
-  height: 100%;
-}
-
-.text-editor-toolbar {
-  border-bottom: 0 !important;
-  margin-bottom: 0 !important;
-  border-radius: 8px 8px 0 0 !important;
-  padding-top: 3px !important;
-  padding-bottom: 3px !important;
-  border-color: #00025f1a !important;
-  display: flex;
-  justify-content: flex-start;
-}
-
-.text-editor-toolbar > * {
-  @apply mb-0 !important;
-}
-
-.text-editor-list-dropdown {
-  width: 42px !important;
-  border-radius: 8px !important;
-  background-color: #bdc8f926 !important;
-  color: #7a7daf !important;
-  border: 0 !important;
-}
-
-.text-editor-link-dropdown {
-  width: 42px !important;
-  border-radius: 8px !important;
-  background-color: #bdc8f926 !important;
-  color: #7a7daf !important;
-  border: 0 !important;
-}
-
-/* Small Button - applies to Inline Buttons */
-.text-editor-button-sm {
-  min-width: 18px !important;
-  height: auto !important;
-  align-self: stretch !important;
-  border-radius: 8px !important;
-  background-color: #bdc8f926 !important;
-  color: #7a7daf !important;
-  border: 0 !important;
-}
-
-.text-editor-button-sm[aria-selected='true'] {
-  @apply bg-purple-reg shadow-none !important;
-}
-
-/* Dropdown Container Regular - applies to list, font size, spacing, link, color */
-.text-editor-dropdown-container-md {
-  width: 42px !important;
-}
-
-.text-editor-dropdown-container-lg {
-  width: 80px !important;
-}
-
-.text-editor-dropdown-container-md > a,
-.text-editor-dropdown-container-lg > a {
-  color: #7a7daf !important;
-  text-decoration: none !important;
-}
-
-.text-editor-dropdown-container-md > a > span,
-.text-editor-dropdown-container-lg > a > span {
-  @apply truncate;
-}
-
-.text-editor-dropdown-container-md,
-.text-editor-dropdown-container-lg {
-  @apply rounded-lg !important;
-
-  background-color: #bdc8f926 !important;
-  color: #7a7daf !important;
-  border: 0 !important;
-  z-index: 2 !important;
-}
-
-.text-editor-link-popup > label {
-  @apply mb-xs text-xs text-gray-dark !important;
-}
-
-/* Hide checkbox */
-.text-editor-link-popup > label:nth-last-child(2) {
-  display: none !important;
-}
-
-.text-editor-link-popup > input {
-  height: 30px !important;
-
-  @apply mb-xs !important;
-}
-
-.text-editor-link-popup > span {
-  @apply flex items-center justify-between m-0 !important;
-}
-
-.text-editor-link-popup > span > button {
-  @apply flex-1 mt-sm p-xs text-sm text-center !important;
-}
-
-.text-editor-link-popup > span > button:first-child {
-  @apply text-white rounded-l-lg !important;
-
-  background: linear-gradient(143deg, #777bad 0%, #a0a1cd 100%) !important;
-}
-
-.text-editor-link-popup > span > button:last-child {
-  @apply bg-purple-gray-10 rounded-r-lg !important;
-}
-
-/* Dropdown - applies to all dropdowns to standardize styling */
-.text-editor-dropdown,
-.text-editor-popup {
-  max-height: 180px !important;
-}
-
-.text-editor-dropdown {
-  border-radius: 8px !important;
-}
-
-/* Color Picker */
-.text-editor-popup {
-  left: unset !important;
-  right: 5px;
-
-  @apply rounded-lg shadow-md overflow-auto !important;
-}
-
-/* Applies to all buttons and dropdowns to remove hover shadow */
-.no-hover-shadow:hover {
-  box-shadow: none !important;
 }

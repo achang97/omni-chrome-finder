@@ -41,7 +41,8 @@ const baseDevConfig = () => ({
       __PORT__: port,
       'process.env': {
         NODE_ENV: JSON.stringify('development'),
-        SEGMENT_KEY: JSON.stringify(process.env.SEGMENT_KEY)
+        SEGMENT_KEY: JSON.stringify(process.env.SEGMENT_KEY),
+        FROALA_KEY: JSON.stringify(process.env.FROALA_KEY)
       }
     })
   ],
@@ -61,7 +62,7 @@ const baseDevConfig = () => ({
       },
       {
         test: /\.css$/,
-        exclude: /node_modules/,
+        exclude: /node_modules|app\/styles\/overrides/,
         use: [
           'style-loader',
           'css-loader?modules&importLoaders=1&localIdentName=[name]_[local]_[hash:base64:5]',
@@ -75,7 +76,7 @@ const baseDevConfig = () => ({
       },
       {
         test: /\.css$/,
-        include: /node_modules/,
+        include: /node_modules|app\/styles\/overrides/,
         use: ['style-loader', 'css-loader']
       },
       {
@@ -90,6 +91,22 @@ const baseDevConfig = () => ({
             }
           }
         ]
+      },
+      {
+        test: /\.woff(\?v=\d+\.\d+\.\d+)?$/,
+        use: 'url-loader?limit=10000&mimetype=application/font-woff'
+      },
+      {
+        test: /\.woff2(\?v=\d+\.\d+\.\d+)?$/,
+        use: 'url-loader?limit=10000&mimetype=application/font-woff'
+      },
+      {
+        test: /\.ttf(\?v=\d+\.\d+\.\d+)?$/,
+        use: 'url-loader?limit=10000&mimetype=application/octet-stream'
+      },
+      {
+        test: /\.eot(\?v=\d+\.\d+\.\d+)?$/,
+        use: 'file-loader'
       }
     ]
   }

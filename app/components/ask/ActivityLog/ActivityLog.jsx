@@ -60,7 +60,6 @@ const ActivityLog = ({
     return (
       <SuggestionCard
         className={s('activity-log-entry')}
-        key={_id}
         id={_id}
         event={event}
         maxQuestionLines={1}
@@ -91,7 +90,7 @@ const ActivityLog = ({
     return (
       <>
         {activityLog.map(({ _id, card, user, type, createdAt, data }) => (
-          <div key={_id} className={s('mt-xs mb-reg')}>
+          <div key={_id || user._id} className={s('mt-xs mb-reg')}>
             <div className={s('flex items-center justify-between mb-xs text-2xs')}>
               <div className={s('flex items-center')}>
                 <CardUser
@@ -228,7 +227,7 @@ ActivityLog.propTypes = {
   activityLog: PropTypes.arrayOf(
     PropTypes.shape({
       user: UserPropTypes.isRequired,
-      createdAt: PropTypes.string.isRequired,
+      createdAt: PropTypes.string,
       type: PropTypes.string.isRequired,
       card: PropTypes.object
     })

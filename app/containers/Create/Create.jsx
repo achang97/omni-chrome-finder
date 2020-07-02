@@ -2,7 +2,6 @@ import React, { useEffect } from 'react';
 import PropTypes from 'prop-types';
 import { FiMaximize2 } from 'react-icons/fi';
 import { MdAdd, MdOpenInNew } from 'react-icons/md';
-import { EditorState } from 'draft-js';
 
 import { Button, Separator, BackButton, Select } from 'components/common';
 import TextEditor from 'components/editors/TextEditor';
@@ -12,7 +11,6 @@ import { ScreenRecordButton, AttachmentDropdown, AttachmentDropzone } from 'comp
 import { generateFileKey, isAnyLoading } from 'utils/file';
 import { getNewCardBaseState } from 'utils/card';
 import { createSelectOptions, createSelectOption } from 'utils/select';
-import { getEditorStateFromContentState } from 'utils/editor';
 import { UserPropTypes, NodePropTypes } from 'utils/propTypes';
 import { SEGMENT } from 'appConstants';
 
@@ -23,7 +21,7 @@ const s = getStyleApplicationFn(style);
 
 const Create = ({
   question,
-  answerEditorState,
+  answerModel,
   attachments,
   finderNode,
   user,
@@ -34,7 +32,7 @@ const Create = ({
   toggleTemplateView,
   requestGetTemplates,
   updateCreateQuestion,
-  updateCreateAnswerEditor,
+  updateCreateAnswer,
   clearCreatePanel,
   requestAddCreateAttachment,
   updateCreateAttachmentName,
@@ -54,7 +52,7 @@ const Create = ({
     newCardInfo.edits = {
       ...newCardInfo.edits,
       question,
-      answerEditorState,
+      answerModel,
       attachments,
       ...edits
     };
@@ -71,7 +69,7 @@ const Create = ({
   const renderInputSection = () => (
     <div>
       <input
-        placeholder="Title or Question"
+        placeholder="Add a title or question"
         className={s('w-full')}
         value={question}
         onChange={(e) => updateCreateQuestion(e.target.value)}
@@ -79,8 +77,8 @@ const Create = ({
       />
       <Separator horizontal className={s('my-reg')} />
       <TextEditor
-        onEditorStateChange={updateCreateAnswerEditor}
-        editorState={answerEditorState}
+        onModelChange={updateCreateAnswer}
+        model={answerModel}
         editorType="EXTENSION"
         placeholder="Add a body or answer here"
       />
@@ -105,7 +103,7 @@ const Create = ({
   const openTemplate = ({ title, question: templateQuestion, answer }) => {
     openCardWithProps(false, {
       question: templateQuestion,
-      answerEditorState: getEditorStateFromContentState(answer)
+      answerModel: answer
     });
 
     trackEvent(SEGMENT.EVENT.CLICK_NEW_CARD_FROM_TEMPLATE, {
@@ -197,11 +195,7 @@ const Create = ({
           color="primary"
           text="Create Card"
           iconLeft={false}
-          disabled={
-            question === '' ||
-            !answerEditorState.getCurrentContent().hasText() ||
-            isAnyLoading(attachments)
-          }
+          disabled={question === '' || !answerModel || isAnyLoading(attachments)}
           icon={
             <span
               className={s(
@@ -222,7 +216,7 @@ const Create = ({
 
 Create.propTypes = {
   question: PropTypes.string.isRequired,
-  answerEditorState: PropTypes.instanceOf(EditorState).isRequired,
+  answerModel: PropTypes.string.isRequired,
   attachments: PropTypes.arrayOf(PropTypes.object).isRequired,
   finderNode: NodePropTypes,
   user: UserPropTypes.isRequired,
@@ -238,7 +232,7 @@ Create.propTypes = {
   toggleTemplateView: PropTypes.func.isRequired,
   requestGetTemplates: PropTypes.func.isRequired,
   updateCreateQuestion: PropTypes.func.isRequired,
-  updateCreateAnswerEditor: PropTypes.func.isRequired,
+  updateCreateAnswer: PropTypes.func.isRequired,
   clearCreatePanel: PropTypes.func.isRequired,
   requestAddCreateAttachment: PropTypes.func.isRequired,
   updateCreateAttachmentName: PropTypes.func.isRequired,

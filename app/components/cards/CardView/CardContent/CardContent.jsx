@@ -2,7 +2,6 @@ import React, { useRef, useEffect, useState } from 'react';
 import PropTypes from 'prop-types';
 import { MdError, MdLock, MdAttachment, MdOpenInNew } from 'react-icons/md';
 import { FaSlack } from 'react-icons/fa';
-import { EditorState } from 'draft-js';
 
 import TextEditor from 'components/editors/TextEditor';
 import { Button, Loader, Tooltip } from 'components/common';
@@ -28,7 +27,7 @@ const s = getStyleApplicationFn(style);
 const CardContent = ({
   _id,
   question,
-  answerEditorState,
+  answerModel,
   status,
   attachments,
   slackThreadConvoPairs,
@@ -41,7 +40,7 @@ const CardContent = ({
   getError,
   openCardModal,
   updateCardQuestion,
-  updateCardAnswerEditor,
+  updateCardAnswer,
   requestGetCard,
   openCardSideDock,
   requestAddCardAttachment
@@ -74,53 +73,26 @@ const CardContent = ({
     }
   }, [question]);
 
-  const getTextEditorProps = () => {
-    const defaultProps = {
-      toolbarHidden: true,
-      readOnly: true,
-      editorState: answerEditorState,
-      onEditorStateChange: updateCardAnswerEditor
-    };
-
+  const renderTextEditor = () => {
+    let textEditorProps;
     if (!isEditing) {
-      return {
-        ...defaultProps,
+      textEditorProps = {
+        model: answerModel,
+        readOnly: true,
         wrapperClassName: 'rounded-0',
-        editorClassName: 'card-text-editor-view card-text-editor-view-spacing'
+        editorClassName: 'card-text-editor-view'
+      };
+    } else {
+      textEditorProps = {
+        placeholder: 'Add an answer here',
+        model: edits.answerModel,
+        onModelChange: updateCardAnswer,
+        editorClassName: 'card-text-editor-view bg-white',
+        readOnly: false
       };
     }
 
-    // Add editing props
-    return {
-      ...defaultProps,
-      placeholder: 'Add an answer here',
-      editorState: edits.answerEditorState,
-      editorClassName: 'card-text-editor-view bg-white',
-      toolbarHidden: false,
-      readOnly: false,
-      wrapperClassName: 'card-text-editor-wrapper-inactive light-gradient'
-    };
-  };
-
-  const renderTextEditor = () => {
-    const {
-      className = '',
-      wrapperClassName = '',
-      editorClassName = '',
-      onClick,
-      ...rest
-    } = getTextEditorProps();
-    return (
-      <TextEditor
-        className={s(className)}
-        onClick={() => onClick && onClick()}
-        wrapperClassName={s(`flex flex-col flex-grow min-h-0 ${wrapperClassName}`)}
-        editorClassName={s(`overflow-auto ${editorClassName}`)}
-        toolbarClassName={s('border-t-0 border-l-0 border-r-0')}
-        autoFocus
-        {...rest}
-      />
-    );
+    return <TextEditor {...textEditorProps} />;
   };
 
   const addCardAttachments = (files, cardId) => {
@@ -192,7 +164,7 @@ const CardContent = ({
     <div className={s('card-content-spacing mt-xs')}>
       {isEditing ? (
         <input
-          placeholder="Title or Question"
+          placeholder="Add a title or question"
           className={s('w-full')}
           value={edits.question}
           onChange={(e) => updateCardQuestion(e.target.value)}
@@ -353,7 +325,7 @@ CardContent.propTypes = {
   // Redux State
   _id: PropTypes.string.isRequired,
   question: PropTypes.string.isRequired,
-  answerEditorState: PropTypes.instanceOf(EditorState).isRequired,
+  answerModel: PropTypes.string.isRequired,
   status: PropTypes.oneOf(Object.values(CARD.STATUS)).isRequired,
   attachments: PropTypes.arrayOf(PropTypes.object).isRequired,
   slackThreadConvoPairs: PropTypes.arrayOf(PropTypes.object).isRequired,
@@ -366,7 +338,7 @@ CardContent.propTypes = {
   isEditing: PropTypes.bool.isRequired,
   edits: PropTypes.shape({
     question: PropTypes.string,
-    answerEditorState: PropTypes.instanceOf(EditorState),
+    answerModel: PropTypes.string,
     attachments: PropTypes.arrayOf(PropTypes.object),
     slackReplies: PropTypes.arrayOf(PropTypes.object)
   }).isRequired,
@@ -377,7 +349,7 @@ CardContent.propTypes = {
   // Redux Actions
   openCardModal: PropTypes.func.isRequired,
   updateCardQuestion: PropTypes.func.isRequired,
-  updateCardAnswerEditor: PropTypes.func.isRequired,
+  updateCardAnswer: PropTypes.func.isRequired,
   requestGetCard: PropTypes.func.isRequired,
   openCardSideDock: PropTypes.func.isRequired,
   requestAddCardAttachment: PropTypes.func.isRequired
