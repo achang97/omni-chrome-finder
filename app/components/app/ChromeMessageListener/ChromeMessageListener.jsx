@@ -11,12 +11,38 @@ import { isValidUser } from 'utils/auth';
 class ChromeMessageListener extends Component {
   componentDidMount() {
     chrome.runtime.onMessage.addListener(this.listener);
+
+    if (document.addEventListener) {
+      document.addEventListener('click', this.interceptClickEvent);
+    } else if (document.attachEvent) {
+      document.attachEvent('onclick', this.interceptClickEvent);
+    }
+
     this.openChromeExtension();
   }
 
   componentWillUnmount() {
     chrome.runtime.onMessage.removeListener(this.listener);
+
+    if (document.removeEventListener) {
+      document.removeEventListener('click', this.interceptClickEvent);
+    } else if (document.detachEvent) {
+      document.detachEvent('onclick', this.interceptClickEvent);
+    }
   }
+
+  interceptClickEvent = (e) => {
+    const target = e.target || e.srcElement;
+
+    if (target.tagName === 'A') {
+      const href = target.getAttribute('href');
+      const isExtensionLink = this.openChromeExtension(href);
+      if (isExtensionLink) {
+        // Tell the browser not to respond to the link click
+        e.preventDefault();
+      }
+    }
+  };
 
   isValidUser = () => {
     const { user } = this.props;
@@ -42,27 +68,28 @@ class ChromeMessageListener extends Component {
     }
   };
 
-  openChromeExtension = () => {
+  openChromeExtension = (url = window.location.href) => {
     const { openCard } = this.props;
 
-    if (this.hasUrlChanged()) {
-      const url = window.location.href;
+    if (url.startsWith(URL.EXTENSION)) {
+      this.openDock();
 
-      if (url.startsWith(URL.EXTENSION)) {
-        this.openDock();
+      if (this.isValidUser()) {
+        const searchParams = url.substring(url.indexOf('?') + 1);
+        const { taskId, cardId, edit } = queryString.parse(searchParams);
+        if (taskId) {
+          this.openTask(taskId);
+        }
 
-        if (this.isValidUser()) {
-          const { taskId, cardId, edit } = queryString.parse(window.location.search);
-          if (taskId) {
-            this.openTask(taskId);
-          }
-
-          if (cardId) {
-            openCard({ _id: cardId, isEditing: edit === 'true' });
-          }
+        if (cardId) {
+          openCard({ _id: cardId, isEditing: edit === 'true' });
         }
       }
+
+      return true;
     }
+
+    return false;
   };
 
   openTask = (taskId) => {
@@ -193,7 +220,9 @@ class ChromeMessageListener extends Component {
         break;
       }
       case CHROME.MESSAGE.TAB_UPDATE: {
-        this.openChromeExtension();
+        if (this.hasUrlChanged()) {
+          this.openChromeExtension();
+        }
         break;
       }
       case CHROME.MESSAGE.SEARCH:
