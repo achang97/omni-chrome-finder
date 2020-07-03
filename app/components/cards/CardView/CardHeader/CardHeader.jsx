@@ -118,7 +118,8 @@ const CardHeader = ({
   const cardStatusOnClick = (prevStatus) => {
     switch (prevStatus) {
       case CARD.STATUS.OUT_OF_DATE:
-      case CARD.STATUS.NEEDS_VERIFICATION: {
+      case CARD.STATUS.NEEDS_VERIFICATION:
+      case CARD.STATUS.ARCHIVED: {
         openCardModal(CARD.MODAL_TYPE.CONFIRM_UP_TO_DATE);
         break;
       }

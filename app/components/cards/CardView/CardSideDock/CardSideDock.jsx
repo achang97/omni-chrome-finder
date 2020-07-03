@@ -3,7 +3,7 @@ import PropTypes from 'prop-types';
 import { Transition } from 'react-transition-group';
 import AnimateHeight from 'react-animate-height';
 import moment from 'moment';
-import { MdClose, MdEdit } from 'react-icons/md';
+import { MdClose, MdEdit, MdArchive } from 'react-icons/md';
 import { FaRegTrashAlt } from 'react-icons/fa';
 
 import { Button } from 'components/common';
@@ -30,6 +30,7 @@ const DATE_FORMAT = 'MMM DD, YYYY';
 const SIDE_DOCK_TRANSITION_MS = 200;
 
 const CardSideDock = ({
+  hasDeleteAccess,
   isEditing,
   status,
   finderNode,
@@ -210,6 +211,21 @@ const CardSideDock = ({
   };
 
   const renderFooter = () => {
+    const FOOTER_BUTTONS = [
+      {
+        text: 'Archive This Card',
+        Icon: MdArchive,
+        modalType: MODAL_TYPE.CONFIRM_ARCHIVE,
+        disabled: isDeletingCard
+      },
+      {
+        text: 'Delete This Card',
+        Icon: FaRegTrashAlt,
+        modalType: MODAL_TYPE.CONFIRM_DELETE,
+        disabled: isDeletingCard
+      }
+    ];
+
     return (
       <div className={s('pt-lg')}>
         <div className={s('text-sm font-medium')}>
@@ -222,16 +238,23 @@ const CardSideDock = ({
             <div className={s('text-purple-gray-50')}>{moment(updatedAt).format(DATE_FORMAT)}</div>
           </div>
         </div>
-        <Button
-          className={s('justify-between mt-lg bg-white text-red-500')}
-          text="Delete This Card"
-          underline
-          onClick={() => openCardModal(MODAL_TYPE.CONFIRM_DELETE)}
-          underlineColor="red-200"
-          disabled={isDeletingCard}
-          icon={<FaRegTrashAlt />}
-          iconLeft={false}
-        />
+        {hasDeleteAccess && (
+          <div className={s('mt-lg')}>
+            {FOOTER_BUTTONS.map(({ text, Icon, disabled, modalType }) => (
+              <Button
+                key={text}
+                className={s('justify-between mb-sm bg-white text-red-500')}
+                text={text}
+                underline
+                onClick={() => openCardModal(modalType)}
+                underlineColor="red-200"
+                disabled={disabled}
+                icon={<Icon />}
+                iconLeft={false}
+              />
+            ))}
+          </div>
+        )}
       </div>
     );
   };
@@ -350,6 +373,7 @@ const CardSideDock = ({
 };
 
 CardSideDock.propTypes = {
+  hasDeleteAccess: PropTypes.bool.isRequired,
   isEditing: PropTypes.bool.isRequired,
   status: PropTypes.oneOf(Object.values(STATUS)).isRequired,
   path: PropTypes.arrayOf(PropTypes.object),

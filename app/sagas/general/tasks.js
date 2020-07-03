@@ -8,6 +8,7 @@ import {
   DELETE_FINDER_NODES_SUCCESS,
   DELETE_CARD_SUCCESS,
   MARK_UP_TO_DATE_SUCCESS,
+  ARCHIVE_CARD_SUCCESS,
   APPROVE_CARD_SUCCESS,
   UPDATE_CARD_SUCCESS,
   LOGOUT
@@ -36,6 +37,7 @@ export default function* watchTaskActions() {
       DELETE_FINDER_NODES_SUCCESS,
       DELETE_CARD_SUCCESS,
       MARK_UP_TO_DATE_SUCCESS,
+      ARCHIVE_CARD_SUCCESS,
       APPROVE_CARD_SUCCESS,
       UPDATE_CARD_SUCCESS,
       LOGOUT
@@ -65,6 +67,7 @@ export default function* watchTaskActions() {
         cardIds.forEach((cardId) => removeTask(cardId));
         break;
       }
+      case ARCHIVE_CARD_SUCCESS:
       case DELETE_CARD_SUCCESS: {
         const { cardId } = payload;
         removeTask(cardId);

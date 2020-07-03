@@ -31,6 +31,7 @@ import {
   DELETE_CARD_REQUEST,
   MARK_UP_TO_DATE_REQUEST,
   MARK_OUT_OF_DATE_REQUEST,
+  ARCHIVE_CARD_REQUEST,
   APPROVE_CARD_REQUEST,
   ADD_BOOKMARK_REQUEST,
   REMOVE_BOOKMARK_REQUEST,
@@ -55,6 +56,8 @@ import {
   handleMarkOutOfDateError,
   handleApproveCardSuccess,
   handleApproveCardError,
+  handleArchiveCardSuccess,
+  handleArchiveCardError,
   handleAddBookmarkSuccess,
   handleAddBookmarkError,
   handleRemoveBookmarkSuccess,
@@ -80,6 +83,7 @@ export default function* watchCardsRequests() {
       MARK_UP_TO_DATE_REQUEST,
       APPROVE_CARD_REQUEST,
       MARK_OUT_OF_DATE_REQUEST,
+      ARCHIVE_CARD_REQUEST,
       ADD_BOOKMARK_REQUEST,
       REMOVE_BOOKMARK_REQUEST,
       ADD_CARD_ATTACHMENT_REQUEST,
@@ -115,6 +119,10 @@ export default function* watchCardsRequests() {
       }
       case MARK_OUT_OF_DATE_REQUEST: {
         yield fork(markOutOfDate);
+        break;
+      }
+      case ARCHIVE_CARD_REQUEST: {
+        yield fork(archiveCard);
         break;
       }
       case APPROVE_CARD_REQUEST: {
@@ -369,7 +377,6 @@ function* updateCard({ shouldCloseCard }) {
 
 function* deleteCard() {
   const cardId = yield call(getActiveCardId);
-
   try {
     yield call(doDelete, `/cards/${cardId}`);
     yield put(handleDeleteCardSuccess(cardId));
@@ -404,7 +411,6 @@ function* markUpToDate() {
 function* markOutOfDate() {
   const cardId = yield call(getActiveCardId);
   const reason = yield select((state) => state.cards.activeCard.outOfDateReasonInput);
-
   try {
     const updatedCard = yield call(doPost, `/cards/${cardId}/markOutOfDate`, { reason });
     yield put(handleMarkOutOfDateSuccess(updatedCard));
@@ -413,9 +419,18 @@ function* markOutOfDate() {
   }
 }
 
+function* archiveCard() {
+  const cardId = yield call(getActiveCardId);
+  try {
+    yield call(doPost, `/cards/${cardId}/archive`);
+    yield put(handleArchiveCardSuccess(cardId));
+  } catch (error) {
+    yield put(handleArchiveCardError(cardId, getErrorMessage(error)));
+  }
+}
+
 function* approveCard() {
   const cardId = yield call(getActiveCardId);
-
   try {
     const { updatedCard } = yield call(doPost, `/cards/${cardId}/approve`);
     yield put(handleApproveCardSuccess(updatedCard));

@@ -19,6 +19,8 @@ const getStatusColor = (status) => {
       return 'text-blue-500';
     case STATUS.NEEDS_APPROVAL:
       return 'text-orange-500';
+    case STATUS.ARCHIVED:
+      return 'text-purple-reg';
     default:
       return {};
   }

@@ -14,6 +14,7 @@ import {
   requestMarkUpToDate,
   requestMarkOutOfDate,
   requestApproveCard,
+  requestArchiveCard,
   requestGetSlackThread,
   requestCreateInvite
 } from 'actions/cards';
@@ -35,6 +36,8 @@ const mapStateToProps = (state) => {
         isUpdatingCard,
         isMarkingStatus,
         markStatusError,
+        isArchivingCard,
+        archiveError,
         isGettingSlackThread,
         getSlackThreadError,
         outOfDateReasonInput,
@@ -60,6 +63,8 @@ const mapStateToProps = (state) => {
     isUpdatingCard,
     isMarkingStatus,
     markStatusError,
+    isArchivingCard,
+    archiveError,
     isGettingSlackThread,
     getSlackThreadError,
     outOfDateReasonInput,
@@ -86,6 +91,7 @@ const mapDispatchToProps = {
   requestMarkUpToDate,
   requestMarkOutOfDate,
   requestApproveCard,
+  requestArchiveCard,
   requestGetSlackThread,
   requestCreateInvite
 };

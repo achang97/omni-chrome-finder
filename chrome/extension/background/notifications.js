@@ -7,20 +7,22 @@ import { getActiveTab, injectExtension, loadScript } from './inject';
 export default function createNotification({ message, notification }) {
   const { notifier, resolver, card, question, status, resolved, _id } = notification;
 
-  // Create chrome notification
-  const notificationId =
-    _id && !resolved
-      ? `${CHROME.NOTIFICATION_TYPE.TASK}-${status}-${_id}`
-      : `${CHROME.NOTIFICATION_TYPE.CARD}-${status}-${card._id}`;
+  // Create chrome notification only if resolver !== notifier
+  if (resolver && resolver._id !== notifier._id) {
+    const notificationId =
+      _id && !resolved
+        ? `${CHROME.NOTIFICATION_TYPE.TASK}-${status}-${_id}`
+        : `${CHROME.NOTIFICATION_TYPE.CARD}-${status}-${card._id}`;
 
-  const notifierName = notifier ? `${notifier.firstname} ${notifier.lastname}` : 'Omni';
-  chrome.notifications.create(notificationId, {
-    type: 'basic',
-    iconUrl: chrome.runtime.getURL('/img/icon-128.png'),
-    title: message,
-    message: `Card: "${question}"`,
-    contextMessage: `Sent by ${resolved ? resolver.name : notifierName}`
-  });
+    const notifierName = notifier ? `${notifier.firstname} ${notifier.lastname}` : 'Omni';
+    chrome.notifications.create(notificationId, {
+      type: 'basic',
+      iconUrl: chrome.runtime.getURL('/img/icon-128.png'),
+      title: message,
+      message: `Card: "${question}"`,
+      contextMessage: `Sent by ${resolved ? resolver.name : notifierName}`
+    });
+  }
 
   if (_id) {
     getStorage(CHROME.STORAGE.TASKS).then((tasks) => {
@@ -29,7 +31,7 @@ export default function createNotification({ message, notification }) {
         if (resolved) {
           newTasks = tasks.filter((task) => task._id !== _id);
         } else {
-          newTasks = _.unionBy(tasks, [notification], '_id');
+          newTasks = _.unionBy([notification], tasks, '_id');
         }
 
         setStorage(CHROME.STORAGE.TASKS, newTasks);
