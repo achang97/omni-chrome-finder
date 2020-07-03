@@ -17,6 +17,11 @@
   font-size: 14px;
 }
 
+.text-editor:hover,
+.text-editor-extension:hover {
+  cursor: text;
+}
+
 .text-editor > div,
 .text-editor-extension > div {
   border: none !important;
