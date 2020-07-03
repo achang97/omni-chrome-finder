@@ -48,7 +48,7 @@ module.exports = {
       },
       {
         test: /\.css$/,
-        exclude: /node_modules/,
+        exclude: /node_modules|app\/styles\/overrides/,
         use: [
           'style-loader',
           'css-loader?modules&importLoaders=1&localIdentName=[name]_[local]_[hash:base64:5]',
@@ -62,7 +62,7 @@ module.exports = {
       },
       {
         test: /\.css$/,
-        include: /node_modules/,
+        include: /node_modules|app\/styles\/overrides/,
         use: ['style-loader', 'css-loader']
       },
       {
