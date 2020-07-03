@@ -103,7 +103,7 @@ const IntegrationAuthButton = ({
           body: !isAtlassianServer ? (
             <>
               <div className={s('text-sm mb-reg')}>
-                Contact your site admin to see which solution {user.company.companyName} uses.
+                Contact your site admin to see which solution {user.company.name} uses.
               </div>
               <Button color="secondary" text={`${title} Cloud`} onClick={openAuthWindow} />
               <Button

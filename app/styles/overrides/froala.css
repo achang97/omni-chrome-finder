@@ -1,0 +1,143 @@
+#omni-chrome-ext-main-container .fr-wrapper {
+  flex: 1;
+  min-height: 0;
+  overflow: auto;
+  border-radius: 0 0 8px 8px;
+}
+
+#omni-chrome-ext-main-container .fr-view {
+  min-height: 100%;
+  flex: 1;
+  padding: 10px;
+}
+
+#omni-chrome-ext-main-container .fr-element *:not(pre) {
+  font-family:
+    'HelveticaNeue-Light',
+    'Helvetica Neue Light',
+    'Helvetica Neue',
+    Helvetica,
+    Arial,
+    sans-serif;
+}
+
+#omni-chrome-ext-main-container .fr-view pre {
+  background: #211a1d0d;
+  border-radius: 8px;
+  padding: 5px;
+}
+
+#omni-chrome-ext-main-container .fr-placeholder {
+  font-family: inherit;
+  font-size: 14px;
+}
+
+#omni-chrome-ext-main-container .fr-view a {
+  color: blue !important;
+  text-decoration: underline !important;
+}
+
+#omni-chrome-ext-main-container .fr-view ol,
+#omni-chrome-ext-main-container .fr-view ul {
+  margin: 0 14px;
+  padding-left: 20px;
+}
+
+#omni-chrome-ext-main-container .fr-view ol {
+  list-style: decimal;
+}
+
+#omni-chrome-ext-main-container .fr-view ul {
+  list-style: disc;
+}
+
+#omni-chrome-ext-main-container .fr-toolbar .fr-btn-grp {
+  margin: 0;
+}
+
+#omni-chrome-ext-main-container .fr-command.fr-btn {
+  margin: 0 !important;
+  width: auto;
+}
+
+#omni-chrome-ext-main-container .fr-command.fr-btn,
+#omni-chrome-ext-main-container .fr-toolbar .fr-more-toolbar.fr-expanded {
+  height: 30px;
+}
+
+#omni-chrome-ext-main-container .fr-toolbar.fr-toolbar-open {
+  padding-bottom: 30px;
+}
+
+#omni-chrome-ext-main-container .fr-command.fr-btn.fr-options {
+  width: 12px !important;
+}
+
+#omni-chrome-ext-main-container .fr-toolbar .fr-command.fr-btn i,
+#omni-chrome-ext-main-container .fr-toolbar .fr-command.fr-btn svg,
+#omni-chrome-ext-main-container ~ .fr-popup .fr-command.fr-btn i,
+#omni-chrome-ext-main-container ~ .fr-popup .fr-command.fr-btn svg,
+#omni-chrome-ext-main-container ~ .fr-modal .fr-command.fr-btn i,
+#omni-chrome-ext-main-container ~ .fr-modal .fr-command.fr-btn svg {
+  margin: 0 4px;
+}
+
+#omni-chrome-ext-main-container .fr-toolbar .fr-command.fr-btn.fr-dropdown,
+#omni-chrome-ext-main-container ~ .fr-popup .fr-command.fr-btn.fr-dropdown,
+#omni-chrome-ext-main-container ~ .fr-modal .fr-command.fr-btn.fr-dropdown {
+  padding-right: 5px;
+}
+
+#omni-chrome-ext-main-container .fr-toolbar .fr-command.fr-btn.fr-dropdown::after,
+#omni-chrome-ext-main-container ~ .fr-popup .fr-command.fr-btn.fr-dropdown::after,
+#omni-chrome-ext-main-container ~ .fr-modal .fr-command.fr-btn.fr-dropdown::after {
+  top: 50%;
+}
+
+#omni-chrome-ext-main-container .fr-code {
+  height: 100% !important;
+  width: 100%;
+  border-radius: 0;
+  border: none !important;
+  outline: none !important;
+}
+
+#omni-chrome-ext-main-container .fr-quick-insert {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+#omni-chrome-ext-main-container .fr-qi-helper > .fr-floating-btn {
+  padding: 10px !important;
+}
+
+#omni-chrome-ext-main-container .fr-message:focus {
+  outline: none !important;
+}
+
+#omni-chrome-ext-main-container .fr-view .fr-file {
+  padding: 10px;
+  border-radius: 8px;
+  background: #777bad1a;
+  display: block;
+  width: fit-content;
+}
+
+#omni-chrome-ext-main-container .fr-view .fr-file::after {
+  content: '';
+}
+
+#omni-chrome-ext-main-container .fr-view .fr-class-code {
+  display: block;
+  padding: 4px 10px;
+}
+
+#omni-chrome-ext-main-container ~ .fr-popup.fr-active,
+#omni-chrome-ext-main-container ~ .fr-modal {
+  z-index: 2147483646 !important;
+}
+
+#omni-chrome-ext-main-container ~ .fr-tooltip {
+  z-index: 2147483647 !important;
+}

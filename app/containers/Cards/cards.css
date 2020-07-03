@@ -2,7 +2,7 @@
   @apply top-0;
 
   position: fixed !important;
-  z-index: 10000000000;
+  z-index: 102;
 }
 
 .card-tab {
@@ -24,7 +24,7 @@
 
 .card-minimized-tab {
   width: 175px;
-  z-index: 100000000;
+  z-index: 102;
 
   @apply fixed bottom-0 left-0 ml-xs cursor-pointer outline-purple-gray-10;
 }

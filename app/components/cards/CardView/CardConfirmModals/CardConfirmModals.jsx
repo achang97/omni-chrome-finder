@@ -17,6 +17,8 @@ const CardConfirmModals = ({
   isEditing,
   slackReplies,
   edits,
+  inviteEmail,
+  inviteRole,
   isCreatingInvite,
   createInviteError,
   modalOpen,
@@ -197,14 +199,14 @@ const CardConfirmModals = ({
       body: (
         <div className={s('flex items-center')}>
           <input
-            value={edits.inviteEmail}
+            value={inviteEmail}
             placeholder="Enter invite email"
             onChange={(e) => updateInviteEmail(e.target.value)}
             className={s('flex-1 mr-xs')}
             autoFocus
           />
           <Select
-            value={createSelectOption(edits.inviteRole)}
+            value={createSelectOption(inviteRole)}
             placeholder="Select invite role"
             options={createSelectOptions(Object.values(USER_ROLE))}
             onChange={({ value }) => updateInviteRole(value)}
@@ -220,7 +222,7 @@ const CardConfirmModals = ({
         text: 'Invite User',
         onClick: requestCreateInvite,
         isLoading: isCreatingInvite,
-        disabled: !edits.inviteEmail
+        disabled: !inviteEmail
       }
     },
     {
@@ -382,11 +384,11 @@ CardConfirmModals.propTypes = {
   isEditing: PropTypes.bool.isRequired,
   slackReplies: SlackRepliesPropTypes.isRequired,
   edits: PropTypes.shape({
-    slackReplies: SlackRepliesPropTypes,
-    inviteEmail: PropTypes.string,
-    inviteRole: PropTypes.oneOf(Object.values(USER_ROLE))
+    slackReplies: SlackRepliesPropTypes
   }).isRequired,
   modalOpen: PropTypes.objectOf(PropTypes.bool).isRequired,
+  inviteEmail: PropTypes.string,
+  inviteRole: PropTypes.oneOf(Object.values(USER_ROLE)),
   isCreatingInvite: PropTypes.bool,
   createInviteError: PropTypes.string,
   slackThreadConvoPairs: PropTypes.arrayOf(

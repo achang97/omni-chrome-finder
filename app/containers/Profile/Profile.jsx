@@ -157,7 +157,7 @@ const Profile = ({
               {!isEditingAbout && (
                 <div className={s('flex mt-xs text-sm text-purple-reg')}>
                   <div className={s('flex-1')}>
-                    {user.companyName} • {user.role}
+                    {user.company.name} • {user.role}
                   </div>
                   <div className={s('cursor-pointer flex')} onClick={editUser}>
                     <MdEdit />

@@ -3,7 +3,6 @@ import queryString from 'query-string';
 import { take, all, call, fork, put, select } from 'redux-saga/effects';
 import { doGet, doPost, doPut, doDelete, getErrorMessage } from 'utils/request';
 import { getArrayIds } from 'utils/array';
-import { getContentStateFromEditorState } from 'utils/editor';
 import {
   toggleUpvotes,
   convertPermissionsToBackendFormat,
@@ -14,6 +13,7 @@ import {
   formatDelayedTasks,
   isRegisteredUser
 } from 'utils/card';
+import { getModelText } from 'utils/editor';
 import { convertAttachmentsToBackendFormat } from 'utils/file';
 import {
   STATUS,
@@ -253,7 +253,7 @@ function* convertCardToBackendFormat(card) {
     slackThreadIndex,
     edits: {
       question,
-      answerEditorState,
+      answerModel,
       owners,
       subscribers,
       tags,
@@ -269,10 +269,7 @@ function* convertCardToBackendFormat(card) {
   const isNewCard = card.status === STATUS.NOT_DOCUMENTED;
   const _id = yield call(getUserId);
 
-  const { contentState: contentStateAnswer, text: answerText } = getContentStateFromEditorState(
-    answerEditorState
-  );
-
+  const answerText = getModelText(answerModel);
   const permissionsInfo = convertPermissionsToBackendFormat(_id, permissions, permissionGroups);
 
   // Handle invited owners / subscribers
@@ -302,7 +299,7 @@ function* convertCardToBackendFormat(card) {
   return {
     question,
     answer: answerText,
-    contentStateAnswer,
+    answerModel,
     attachments: convertAttachmentsToBackendFormat(attachments),
     ...permissionsInfo,
     owners: cardOwners,
@@ -478,9 +475,7 @@ function* getSlackThread() {
 
 function* createInvite() {
   const activeCard = yield call(getActiveCard);
-  const {
-    edits: { inviteEmail, inviteRole }
-  } = activeCard;
+  const { inviteEmail, inviteRole } = activeCard;
 
   try {
     const invitedUserInfo = { email: inviteEmail, role: inviteRole };

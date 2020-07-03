@@ -1,5 +1,5 @@
 .toggle-tab {
-  z-index: 10000000000;
+  z-index: 99;
 
   @apply flex flex-col fixed right-0 top-0;
 }
@@ -18,9 +18,8 @@
 }
 
 .toggle-close-button {
-  @apply absolute top-0 left-0;
+  @apply absolute top-0 left-0 z-10;
   @apply bg-white rounded-full text-purple-reg text-xs shadow-md cursor-pointer h-reg w-reg;
 
-  z-index: 10000000001;
   transform: translate(-40%, -40%);
 }

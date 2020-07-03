@@ -4,11 +4,9 @@ import { toggleDock, minimizeDock, toggleAutofindTab, updateWindowUrl } from 'ac
 import { updateAskSearchText, toggleAskTeammate } from 'actions/ask';
 import { openCard } from 'actions/cards';
 import { requestSearchCards, clearSearchCards } from 'actions/search';
-import { updateCreateAnswerEditor } from 'actions/create';
 import { requestGetUser } from 'actions/profile';
 import { requestLogAudit } from 'actions/auditLog';
 import { requestGetTasks, updateTasksOpenSection, updateTasksTab } from 'actions/tasks';
-import { isValidUser } from 'utils/auth';
 import ChromeMessageListener from './ChromeMessageListener';
 
 const mapStateToProps = (state) => {
@@ -23,7 +21,7 @@ const mapStateToProps = (state) => {
     dockVisible,
     windowUrl,
     autofindShown,
-    isValidUser: isValidUser(user),
+    user,
     showAskTeammate,
     tasks
   };
@@ -38,7 +36,6 @@ const mapDispatchToProps = {
   openCard,
   updateAskSearchText,
   toggleAskTeammate,
-  updateCreateAnswerEditor,
   requestSearchCards,
   clearSearchCards,
   requestGetTasks,

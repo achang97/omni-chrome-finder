@@ -38,6 +38,8 @@ const mapStateToProps = (state) => {
         isGettingSlackThread,
         getSlackThreadError,
         outOfDateReasonInput,
+        inviteEmail,
+        inviteRole,
         isCreatingInvite,
         createInviteError
       },
@@ -61,6 +63,8 @@ const mapStateToProps = (state) => {
     isGettingSlackThread,
     getSlackThreadError,
     outOfDateReasonInput,
+    inviteEmail,
+    inviteRole,
     isCreatingInvite,
     createInviteError,
     activeCardIndex

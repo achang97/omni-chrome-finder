@@ -1,7 +1,6 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 
-import Button from 'components/common/Button';
 import { INTEGRATIONS_MAP, SEGMENT } from 'appConstants';
 
 import { getStyleApplicationFn } from 'utils/style';
@@ -33,8 +32,11 @@ const SuggestionPreview = ({ id, question, answer, externalLinkAnswer, openCard,
   const displayedAnswer = externalLinkAnswer ? externalLinkAnswer.link : answer;
 
   return (
-    <div className={s('suggestion-preview')}>
-      <div className={s('flex bg-purple-2xlight p-reg rounded-t-lg')}>
+    <div
+      className={s('suggestion-preview rounded-lg overflow-hidden cursor-pointer')}
+      onClick={clickOpenCard}
+    >
+      <div className={s('flex bg-purple-2xlight p-reg')}>
         <div className={s('suggestion-elem-title line-clamp-3 break-words')}>{question}</div>
         {renderExternalLogo()}
       </div>
@@ -43,15 +45,6 @@ const SuggestionPreview = ({ id, question, answer, externalLinkAnswer, openCard,
           <div className={s('line-clamp-3 break-words')}>{displayedAnswer}</div>
         </div>
       )}
-      <div className={s('bg-white rounded-b-lg')} onClick={clickOpenCard}>
-        <Button
-          text="View full card"
-          underline
-          color="transparent"
-          className={s('rounded-t-none py-sm')}
-          textClassName={s('text-sm')}
-        />
-      </div>
     </div>
   );
 };

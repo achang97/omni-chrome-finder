@@ -5,8 +5,8 @@ export function updateCreateQuestion(newValue) {
   return { type: types.UPDATE_CREATE_QUESTION, payload: { newValue } };
 }
 
-export function updateCreateAnswerEditor(editorState) {
-  return { type: types.UPDATE_CREATE_ANSWER_EDITOR, payload: { editorState } };
+export function updateCreateAnswer(answer) {
+  return { type: types.UPDATE_CREATE_ANSWER, payload: { answer } };
 }
 
 export function updateCreateFinderNode(finderNode) {

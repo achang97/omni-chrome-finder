@@ -1,5 +1,4 @@
 import _ from 'lodash';
-import { EditorState } from 'draft-js';
 import * as types from 'actions/actionTypes';
 import { removeIndex, updateIndex, updateArrayOfObjects } from 'utils/array';
 import { convertCardToFrontendFormat, generateCardId, formatInvitedUser } from 'utils/card';
@@ -13,6 +12,7 @@ const initialState = {
   activeCardIndex: FINDER.TAB_INDEX,
   activeCard: FINDER.TAB,
   cardsExpanded: true,
+  cardsMaximized: false,
   windowPosition: {
     x: window.innerWidth / 2 - CARD.DIMENSIONS.DEFAULT_CARDS_WIDTH / 2,
     y: window.innerHeight / 2 - CARD.DIMENSIONS.DEFAULT_CARDS_HEIGHT / 2
@@ -42,7 +42,8 @@ const BASE_CARD_STATE = {
   owners: [],
   subscribers: [],
   question: '',
-  answerEditorState: EditorState.createEmpty()
+  answerModel: '',
+  inviteRole: PROFILE.USER_ROLE.MEMBER
 };
 
 export default function cardsReducer(state = initialState, action) {
@@ -108,7 +109,7 @@ export default function cardsReducer(state = initialState, action) {
       permissionGroups,
       verificationInterval,
       question,
-      answerEditorState,
+      answerModel,
       finderNode,
       slackReplies,
       edits
@@ -125,10 +126,9 @@ export default function cardsReducer(state = initialState, action) {
         permissionGroups,
         verificationInterval,
         question,
-        answerEditorState,
+        answerModel,
         finderNode,
         slackReplies,
-        inviteRole: PROFILE.USER_ROLE.MEMBER,
         ...edits
       }
     };
@@ -227,6 +227,9 @@ export default function cardsReducer(state = initialState, action) {
 
       return { ...state, cards: newCards, activeCardIndex: destination.index };
     }
+    case types.TOGGLE_MAXIMIZE_CARDS: {
+      return { ...state, cardsMaximized: !state.cardsMaximized };
+    }
     case types.TOGGLE_CARDS: {
       return { ...state, cardsExpanded: !state.cardsExpanded };
     }
@@ -312,9 +315,9 @@ export default function cardsReducer(state = initialState, action) {
       const { question } = payload;
       return updateActiveCardEdits({ question });
     }
-    case types.UPDATE_CARD_ANSWER_EDITOR: {
-      const { editorState } = payload;
-      return updateActiveCardEdits({ answerEditorState: editorState });
+    case types.UPDATE_CARD_ANSWER: {
+      const { answer } = payload;
+      return updateActiveCardEdits({ answerModel: answer });
     }
 
     case types.UPDATE_CARD_SELECTED_THREAD: {
@@ -408,15 +411,15 @@ export default function cardsReducer(state = initialState, action) {
 
     case types.UPDATE_INVITE_EMAIL: {
       const { email } = payload;
-      return updateActiveCardEdits({ inviteEmail: email });
+      return updateActiveCard({ inviteEmail: email });
     }
     case types.UPDATE_INVITE_ROLE: {
       const { role } = payload;
-      return updateActiveCardEdits({ inviteRole: role });
+      return updateActiveCard({ inviteRole: role });
     }
     case types.UPDATE_INVITE_TYPE: {
       const { inviteType } = payload;
-      return updateActiveCardEdits({ inviteType });
+      return updateActiveCard({ inviteType });
     }
 
     case types.EDIT_CARD: {
@@ -674,7 +677,7 @@ export default function cardsReducer(state = initialState, action) {
       const { cardId, invitedUser } = payload;
       const { modalOpen, edits } = getCardById(cardId);
 
-      const newEdits = { ...edits, inviteRole: PROFILE.USER_ROLE.MEMBER };
+      const newEdits = edits;
       const newUser = formatInvitedUser(invitedUser);
 
       switch (edits.inviteType) {
@@ -693,6 +696,7 @@ export default function cardsReducer(state = initialState, action) {
       return updateCardById(cardId, {
         isCreatingInvite: false,
         modalOpen: { ...modalOpen, [CARD.MODAL_TYPE.INVITE_USER]: false },
+        inviteRole: PROFILE.USER_ROLE.MEMBER,
         edits: newEdits
       });
     }

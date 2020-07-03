@@ -1,26 +1,19 @@
-import { EditorState, convertToRaw, convertFromRaw } from 'draft-js';
-import { stateToHTML } from 'draft-js-export-html';
+import h2p from 'html2plaintext';
 
-export const getContentStateFromEditorState = (editorState) => {
-  const contentState = editorState.getCurrentContent();
-  return {
-    text: contentState.getPlainText(),
-    contentState: JSON.stringify(convertToRaw(contentState))
-  };
-};
+export function getModelText(model) {
+  const baseStr = h2p(model);
+  return baseStr
+    .split('\n')
+    .filter((section) => !!section)
+    .join('\n');
+}
 
-export const getContentStateFromString = (contentStateString) =>
-  convertFromRaw(JSON.parse(contentStateString));
+export function getVideoEmbeddedCode(link) {
+  return `<iframe width="640" height="360" src="${link}" />`;
+}
 
-export const getContentStateHTMLFromString = (contentStateString) =>
-  stateToHTML(getContentStateFromString(contentStateString));
+export function convertTextToModel(text) {
+  return `<p>${text}</p>`;
+}
 
-export const getEditorStateFromContentState = (contentStateString) =>
-  EditorState.createWithContent(getContentStateFromString(contentStateString));
-
-export default {
-  getContentStateFromEditorState,
-  getContentStateFromString,
-  getContentStateHTMLFromString,
-  getEditorStateFromContentState
-};
+export default { getModelText, getVideoEmbeddedCode, convertTextToModel };

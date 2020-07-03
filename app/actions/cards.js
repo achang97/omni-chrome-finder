@@ -13,6 +13,10 @@ export function updateCardTabOrder(source, destination) {
   return { type: types.UPDATE_CARD_TAB_ORDER, payload: { source, destination } };
 }
 
+export function toggleMaximizeCards() {
+  return { type: types.TOGGLE_MAXIMIZE_CARDS, payload: {} };
+}
+
 export function toggleCards() {
   return { type: types.TOGGLE_CARDS, payload: {} };
 }
@@ -46,8 +50,8 @@ export function updateCardQuestion(question) {
   return { type: types.UPDATE_CARD_QUESTION, payload: { question } };
 }
 
-export function updateCardAnswerEditor(editorState) {
-  return { type: types.UPDATE_CARD_ANSWER_EDITOR, payload: { editorState } };
+export function updateCardAnswer(answer) {
+  return { type: types.UPDATE_CARD_ANSWER, payload: { answer } };
 }
 
 export function updateCardSelectedThreadIndex(index) {

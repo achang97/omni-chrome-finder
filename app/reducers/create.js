@@ -1,4 +1,3 @@
-import { EditorState } from 'draft-js';
 import { updateArrayOfObjects } from 'utils/array';
 import * as types from 'actions/actionTypes';
 
@@ -8,7 +7,7 @@ const initialState = {
   selectedTemplateCategory: null,
 
   question: '',
-  answerEditorState: EditorState.createEmpty(),
+  answerModel: '',
   attachments: []
 };
 
@@ -25,9 +24,9 @@ export default function createReducer(state = initialState, action) {
       const { newValue } = payload;
       return { ...state, question: newValue };
     }
-    case types.UPDATE_CREATE_ANSWER_EDITOR: {
-      const { editorState } = payload;
-      return { ...state, answerEditorState: editorState };
+    case types.UPDATE_CREATE_ANSWER: {
+      const { answer } = payload;
+      return { ...state, answerModel: answer };
     }
     case types.UPDATE_CREATE_FINDER_NODE: {
       const { finderNode } = payload;

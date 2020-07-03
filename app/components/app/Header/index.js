@@ -1,6 +1,7 @@
 import { connect } from 'react-redux';
 import { withRouter } from 'react-router-dom';
 import { SEARCH } from 'appConstants';
+import { openCard } from 'actions/cards';
 import { openFinder } from 'actions/finder';
 import trackEvent from 'actions/analytics';
 import Header from './Header';
@@ -25,6 +26,7 @@ const mapStateToProps = (state) => {
 
 const mapDispatchToProps = {
   openFinder,
+  openCard,
   trackEvent
 };
 

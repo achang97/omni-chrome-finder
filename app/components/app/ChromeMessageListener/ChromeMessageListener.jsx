@@ -1,19 +1,53 @@
 import { Component } from 'react';
 import PropTypes from 'prop-types';
 import queryString from 'query-string';
-import { EditorState, ContentState } from 'draft-js';
 
 import { CHROME, ROUTES, URL, TASKS, PROFILE } from 'appConstants';
+import { getNewCardBaseState } from 'utils/card';
+import { UserPropTypes } from 'utils/propTypes';
+import { convertTextToModel } from 'utils/editor';
+import { isValidUser } from 'utils/auth';
 
 class ChromeMessageListener extends Component {
   componentDidMount() {
     chrome.runtime.onMessage.addListener(this.listener);
+
+    if (document.addEventListener) {
+      document.addEventListener('click', this.interceptClickEvent);
+    } else if (document.attachEvent) {
+      document.attachEvent('onclick', this.interceptClickEvent);
+    }
+
     this.openChromeExtension();
   }
 
   componentWillUnmount() {
     chrome.runtime.onMessage.removeListener(this.listener);
+
+    if (document.removeEventListener) {
+      document.removeEventListener('click', this.interceptClickEvent);
+    } else if (document.detachEvent) {
+      document.detachEvent('onclick', this.interceptClickEvent);
+    }
   }
+
+  interceptClickEvent = (e) => {
+    const target = e.target || e.srcElement;
+
+    if (target.tagName === 'A') {
+      const href = target.getAttribute('href');
+      const isExtensionLink = this.openChromeExtension(href);
+      if (isExtensionLink) {
+        // Tell the browser not to respond to the link click
+        e.preventDefault();
+      }
+    }
+  };
+
+  isValidUser = () => {
+    const { user } = this.props;
+    return isValidUser(user);
+  };
 
   hasUrlChanged = () => {
     const { toggleAutofindTab, autofindShown, windowUrl, updateWindowUrl } = this.props;
@@ -34,27 +68,28 @@ class ChromeMessageListener extends Component {
     }
   };
 
-  openChromeExtension = () => {
-    const { openCard, isValidUser } = this.props;
+  openChromeExtension = (url = window.location.href) => {
+    const { openCard } = this.props;
 
-    if (this.hasUrlChanged()) {
-      const url = window.location.href;
+    if (url.startsWith(URL.EXTENSION)) {
+      this.openDock();
 
-      if (url.startsWith(URL.EXTENSION)) {
-        this.openDock();
+      if (this.isValidUser()) {
+        const searchParams = url.substring(url.indexOf('?') + 1);
+        const { taskId, cardId, edit } = queryString.parse(searchParams);
+        if (taskId) {
+          this.openTask(taskId);
+        }
 
-        if (isValidUser) {
-          const { taskId, cardId, edit } = queryString.parse(window.location.search);
-          if (taskId) {
-            this.openTask(taskId);
-          }
-
-          if (cardId) {
-            openCard({ _id: cardId, isEditing: edit === 'true' });
-          }
+        if (cardId) {
+          openCard({ _id: cardId, isEditing: edit === 'true' });
         }
       }
+
+      return true;
     }
+
+    return false;
   };
 
   openTask = (taskId) => {
@@ -84,46 +119,44 @@ class ChromeMessageListener extends Component {
       history,
       updateAskSearchText,
       toggleAskTeammate,
-      updateCreateAnswerEditor,
+      openCard,
       requestLogAudit,
-      isValidUser
+      user
     } = this.props;
 
     this.openDock();
 
-    if (isValidUser) {
-      let url;
+    if (this.isValidUser()) {
       switch (action) {
         case CHROME.MESSAGE.SEARCH: {
-          url = ROUTES.ASK;
           if (showAskTeammate) {
             toggleAskTeammate();
           }
           updateAskSearchText(selectedText);
           requestLogAudit(PROFILE.AUDIT.TYPE.CONTEXT_MENU_SEARCH, { query: selectedText });
+          history.push(ROUTES.ASK);
           break;
         }
         case CHROME.MESSAGE.CREATE: {
-          url = ROUTES.CREATE;
-          updateCreateAnswerEditor(
-            EditorState.createWithContent(ContentState.createFromText(selectedText))
-          );
+          const newCardState = {
+            ...getNewCardBaseState(user),
+            edits: { answerModel: convertTextToModel(selectedText) }
+          };
+          openCard(newCardState, true);
           break;
         }
         default:
           break;
       }
-
-      history.push(url);
     }
   };
 
   handleNotificationOpened = ({ type, id }) => {
-    const { openCard, requestGetTasks, isValidUser } = this.props;
+    const { openCard, requestGetTasks } = this.props;
 
     this.openDock();
 
-    if (isValidUser) {
+    if (this.isValidUser()) {
       const {
         location: { pathname }
       } = this.props;
@@ -187,7 +220,9 @@ class ChromeMessageListener extends Component {
         break;
       }
       case CHROME.MESSAGE.TAB_UPDATE: {
-        this.openChromeExtension();
+        if (this.hasUrlChanged()) {
+          this.openChromeExtension();
+        }
         break;
       }
       case CHROME.MESSAGE.SEARCH:
@@ -229,7 +264,7 @@ ChromeMessageListener.propTypes = {
   showAskTeammate: PropTypes.bool.isRequired,
   autofindShown: PropTypes.bool.isRequired,
   tasks: PropTypes.arrayOf(PropTypes.object).isRequired,
-  isValidUser: PropTypes.bool.isRequired,
+  user: UserPropTypes,
 
   // Redux Actions
   toggleDock: PropTypes.func.isRequired,
@@ -240,7 +275,6 @@ ChromeMessageListener.propTypes = {
   openCard: PropTypes.func.isRequired,
   updateAskSearchText: PropTypes.func.isRequired,
   toggleAskTeammate: PropTypes.func.isRequired,
-  updateCreateAnswerEditor: PropTypes.func.isRequired,
   requestGetTasks: PropTypes.func.isRequired,
   updateTasksTab: PropTypes.func.isRequired,
   updateTasksOpenSection: PropTypes.func.isRequired,

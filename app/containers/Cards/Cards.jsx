@@ -5,7 +5,7 @@ import { Resizable } from 're-resizable';
 import { Transition } from 'react-transition-group';
 import { DragDropContext, Droppable, Draggable } from 'react-beautiful-dnd';
 import { MdClose } from 'react-icons/md';
-import { FiMinus, FiPlus } from 'react-icons/fi';
+import { FiMinus, FiPlus, FiMaximize2 } from 'react-icons/fi';
 
 import { CardView } from 'components/cards';
 import { FinderContainer } from 'components/finder';
@@ -26,11 +26,23 @@ const s = getStyleApplicationFn(style);
 
 const CARDS_TRANSITION_MS = 300;
 
+const RESIZABLE_ENABLED = {
+  top: true,
+  right: true,
+  bottom: true,
+  left: true,
+  topRight: true,
+  bottomRight: true,
+  bottomLeft: true,
+  topLeft: true
+};
+
 const Cards = ({
   user,
   cards,
   showCards,
   cardsExpanded,
+  cardsMaximized,
   activeCardIndex,
   activeCard,
   cardsWidth,
@@ -49,6 +61,7 @@ const Cards = ({
   openCardContainerModal,
   closeCardContainerModal,
   toggleCards,
+  toggleMaximizeCards,
   trackEvent
 }) => {
   const [startCardPosition, setStartCardPosition] = useState({});
@@ -136,6 +149,11 @@ const Cards = ({
         key: 'toggle',
         Icon: cardsExpanded ? FiMinus : FiPlus,
         onClick: toggleCards
+      },
+      {
+        key: 'maximize',
+        Icon: FiMaximize2,
+        onClick: toggleMaximizeCards
       }
     ];
 
@@ -329,15 +347,21 @@ const Cards = ({
               handle="#card-tab-container"
               cancel={`.${s('card-disable-window-drag')}`}
               onStop={(e, { x, y }) => updateCardWindowPosition({ x, y })}
-              position={windowPosition}
+              position={cardsMaximized ? { x: 0, y: 0 } : windowPosition}
+              disabled={cardsMaximized}
               defaultPosition={windowPosition}
             >
               <Resizable
                 className={s('card bg-white rounded-lg shadow-2xl flex flex-col')}
-                size={{ width: cardsWidth, height: cardsHeight }}
+                size={
+                  cardsMaximized
+                    ? { width: '100%', height: '100%' }
+                    : { width: cardsWidth, height: cardsHeight }
+                }
                 onResize={onResizeLocationChange}
                 onResizeStart={onResizeStart}
                 onResizeStop={onResizeStop}
+                enable={cardsMaximized ? null : RESIZABLE_ENABLED}
                 minWidth={CARD.DIMENSIONS.DEFAULT_CARDS_WIDTH}
                 minHeight={CARD.DIMENSIONS.DEFAULT_CARDS_HEIGHT}
               >
@@ -391,6 +415,7 @@ Cards.propTypes = {
   cards: PropTypes.arrayOf(PropTypes.object).isRequired,
   showCards: PropTypes.bool.isRequired,
   cardsExpanded: PropTypes.bool.isRequired,
+  cardsMaximized: PropTypes.bool.isRequired,
   activeCardIndex: PropTypes.number.isRequired,
   activeCard: PropTypes.shape({
     question: PropTypes.string,
@@ -418,6 +443,7 @@ Cards.propTypes = {
   openCardContainerModal: PropTypes.func.isRequired,
   closeCardContainerModal: PropTypes.func.isRequired,
   toggleCards: PropTypes.func.isRequired,
+  toggleMaximizeCards: PropTypes.func.isRequired,
   trackEvent: PropTypes.func.isRequired
 };
 
