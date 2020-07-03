@@ -52,7 +52,8 @@ const Modal = ({
   title,
   children,
   fixed,
-  important
+  important,
+  zIndex
 }) => {
   const onOutsideClick = () => {
     if (shouldCloseOnOutsideClick && onRequestClose) onRequestClose();
@@ -70,7 +71,7 @@ const Modal = ({
       <Transition in={isOpen} timeout={transitionMs} mountOnEnter unmountOnExit>
         {(state) => (
           <div
-            style={{ ...baseStyle, ...MODAL_TRANSITION_STYLES[state] }}
+            style={{ ...baseStyle, ...MODAL_TRANSITION_STYLES[state], zIndex }}
             className={s(`modal ${className} ${important ? 'modal-important' : ''}`)}
             onClick={(e) => e.stopPropagation()}
             onMouseOver={(e) => e.stopPropagation()}
@@ -131,7 +132,11 @@ const Modal = ({
       <Transition in={isOpen} timeout={transitionMs} mountOnEnter unmountOnExit>
         {(state) => (
           <div
-            style={{ ...baseStyle, ...ANIMATE.TRANSITIONS.FADE_IN[state] }}
+            style={{
+              ...baseStyle,
+              ...ANIMATE.TRANSITIONS.FADE_IN[state],
+              ...(typeof zIndex === 'number' ? { zIndex: zIndex - 1 } : null)
+            }}
             className={s(
               `modal-overlay ${overlayClassName} ${important ? 'modal-overlay-important' : ''}`
             )}
@@ -155,6 +160,7 @@ Modal.propTypes = {
   showHeader: PropTypes.bool,
   transitionMs: PropTypes.number,
   important: PropTypes.bool,
+  zIndex: PropTypes.number,
   fixed: PropTypes.bool,
   primaryButtonProps: PropTypes.shape({
     disabled: PropTypes.bool,

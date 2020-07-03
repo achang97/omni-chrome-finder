@@ -120,7 +120,7 @@ const Cards = ({
   const renderCloseModal = () => {
     return (
       <ConfirmModal
-        important
+        zIndex={1000}
         isOpen={showCloseModal}
         onRequestClose={closeCardContainerModal}
         title="Close Cards"

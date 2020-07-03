@@ -23,31 +23,34 @@ const CardConfirmModals = ({
   createInviteError,
   modalOpen,
   slackThreadConvoPairs,
-  updateCardSelectedThreadIndex,
   slackThreadIndex,
+  deleteError,
+  isDeletingCard,
+  updateError,
+  isUpdatingCard,
+  isGettingSlackThread,
+  getSlackThreadError,
+  outOfDateReasonInput,
+  isMarkingStatus,
+  markStatusError,
+  isArchivingCard,
+  archiveError,
   closeCardModal,
   closeCard,
   cancelEditCard,
   cancelEditCardMessages,
-  requestDeleteCard,
-  deleteError,
-  isDeletingCard,
-  requestUpdateCard,
-  updateError,
-  isUpdatingCard,
-  requestMarkUpToDate,
-  requestMarkOutOfDate,
-  requestApproveCard,
-  isMarkingStatus,
-  markStatusError,
-  requestGetSlackThread,
-  isGettingSlackThread,
-  getSlackThreadError,
-  outOfDateReasonInput,
+  updateCardSelectedThreadIndex,
   updateOutOfDateReason,
   toggleCardSelectedMessage,
   updateInviteRole,
   updateInviteEmail,
+  requestUpdateCard,
+  requestDeleteCard,
+  requestMarkUpToDate,
+  requestMarkOutOfDate,
+  requestApproveCard,
+  requestArchiveCard,
+  requestGetSlackThread,
   requestCreateInvite
 }) => {
   const closeThreadModal = () => {
@@ -237,7 +240,8 @@ const CardConfirmModals = ({
       },
       secondaryButtonProps: {
         onClick: () => closeCard(activeCardIndex)
-      }
+      },
+      important: true
     },
     {
       modalType: MODAL_TYPE.CONFIRM_CLOSE_UNDOCUMENTED,
@@ -247,7 +251,8 @@ const CardConfirmModals = ({
       primaryButtonProps: {
         text: 'Close Card',
         onClick: confirmCloseModalUndocumentedPrimary
-      }
+      },
+      important: true
     },
     {
       modalType: MODAL_TYPE.CONFIRM_OUT_OF_DATE,
@@ -335,9 +340,29 @@ const CardConfirmModals = ({
         'Deletion is permanent. All information will be lost upon closing. Are you sure you want to delete this card?',
       primaryButtonProps: {
         text: 'Delete',
-        onClick: () => requestDeleteCard(activeCardIndex),
+        onClick: requestDeleteCard,
         isLoading: isDeletingCard
       }
+    },
+    {
+      modalType: MODAL_TYPE.CONFIRM_ARCHIVE,
+      title: 'Confirm Archive',
+      description: 'Are you sure you want to archive this card?',
+      primaryButtonProps: {
+        text: 'Archive',
+        onClick: requestArchiveCard,
+        isLoading: isArchivingCard
+      }
+    },
+    {
+      modalType: MODAL_TYPE.ERROR_ARCHIVE,
+      title: 'Archive Error',
+      description: `${archiveError} Please try again.`,
+      primaryButtonProps: {
+        text: 'Ok',
+        onClick: () => closeCardModal(MODAL_TYPE.ERROR_ARCHIVE)
+      },
+      showSecondary: false
     },
     {
       modalType: MODAL_TYPE.CONFIRM_CLOSE_EDIT,
@@ -350,7 +375,8 @@ const CardConfirmModals = ({
       },
       secondaryButtonProps: {
         onClick: confirmCloseEditModalSecondary
-      }
+      },
+      important: true
     }
   ];
 
@@ -405,6 +431,8 @@ CardConfirmModals.propTypes = {
   isUpdatingCard: PropTypes.bool,
   isMarkingStatus: PropTypes.bool,
   markStatusError: PropTypes.string,
+  isArchivingCard: PropTypes.bool,
+  archiveError: PropTypes.string,
   isGettingSlackThread: PropTypes.bool,
   getSlackThreadError: PropTypes.string,
   outOfDateReasonInput: PropTypes.string.isRequired,
@@ -423,6 +451,7 @@ CardConfirmModals.propTypes = {
   requestMarkUpToDate: PropTypes.func.isRequired,
   requestMarkOutOfDate: PropTypes.func.isRequired,
   requestApproveCard: PropTypes.func.isRequired,
+  requestArchiveCard: PropTypes.func.isRequired,
   updateInviteRole: PropTypes.func.isRequired,
   updateInviteEmail: PropTypes.func.isRequired,
   requestCreateInvite: PropTypes.func.isRequired

@@ -596,12 +596,21 @@ export default function cardsReducer(state = initialState, action) {
       });
     }
 
+    case types.ARCHIVE_CARD_REQUEST: {
+      return updateActiveCard({ isArchivingCard: true, archiveError: null });
+    }
+    case types.ARCHIVE_CARD_ERROR: {
+      const { cardId, error } = payload;
+      const newInfo = {
+        isArchivingCard: false,
+        archiveError: error,
+        modalOpen: { ...BASE_MODAL_OPEN_STATE, [CARD.MODAL_TYPE.ERROR_ARCHIVE]: true }
+      };
+      return updateCardById(cardId, newInfo);
+    }
+
     case types.DELETE_CARD_REQUEST: {
       return updateActiveCard({ isDeletingCard: true, deleteError: null });
-    }
-    case types.DELETE_CARD_SUCCESS: {
-      const { cardId } = payload;
-      return removeCardById(cardId);
     }
     case types.DELETE_CARD_ERROR: {
       const { cardId, error } = payload;
@@ -611,6 +620,12 @@ export default function cardsReducer(state = initialState, action) {
         modalOpen: { ...BASE_MODAL_OPEN_STATE, [CARD.MODAL_TYPE.ERROR_DELETE]: true }
       };
       return updateCardById(cardId, newInfo);
+    }
+
+    case types.ARCHIVE_CARD_SUCCESS:
+    case types.DELETE_CARD_SUCCESS: {
+      const { cardId } = payload;
+      return removeCardById(cardId);
     }
 
     case types.MARK_UP_TO_DATE_REQUEST:

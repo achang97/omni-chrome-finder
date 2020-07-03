@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import PropTypes from 'prop-types';
-import { MdCheck, MdRemoveCircle, MdArrowDropDown } from 'react-icons/md';
+import { MdCheck, MdRemoveCircle, MdArrowDropDown, MdArchive } from 'react-icons/md';
 import { FaPencilAlt, FaUserCheck } from 'react-icons/fa';
 import { IoMdAlert } from 'react-icons/io';
 
@@ -46,6 +46,12 @@ const getDisplayInfo = (status) => {
         bgColor: 'orange-200',
         fontColor: 'orange-500'
       };
+    case CARD.STATUS.ARCHIVED:
+      return {
+        Icon: MdArchive,
+        bgColor: 'purple-light',
+        fontColor: 'purple-reg'
+      };
     default:
       return {};
   }
@@ -55,6 +61,7 @@ const getDropdownInfo = (status) => {
   switch (status) {
     case CARD.STATUS.NEEDS_VERIFICATION:
     case CARD.STATUS.OUT_OF_DATE:
+    case CARD.STATUS.ARCHIVED:
       return { label: 'Flag as up to date', Icon: MdCheck, fontColor: 'green-reg' };
     case CARD.STATUS.UP_TO_DATE:
       return { label: 'Flag as outdated', Icon: MdRemoveCircle, fontColor: 'red-500' };

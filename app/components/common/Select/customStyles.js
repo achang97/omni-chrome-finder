@@ -12,7 +12,8 @@ const customStyles = {
   }),
   menuPortal: (provided) => ({
     ...provided,
-    zIndex: 100000000000
+    zIndex: 100000000000,
+    fontSize: '14px'
   }),
   control: (provided, state) => ({
     ...provided,

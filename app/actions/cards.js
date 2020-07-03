@@ -255,6 +255,18 @@ export function handleMarkOutOfDateError(cardId, error) {
   return { type: types.MARK_OUT_OF_DATE_ERROR, payload: { cardId, error } };
 }
 
+export function requestArchiveCard() {
+  return { type: types.ARCHIVE_CARD_REQUEST, payload: {} };
+}
+
+export function handleArchiveCardSuccess(cardId) {
+  return { type: types.ARCHIVE_CARD_SUCCESS, payload: { cardId } };
+}
+
+export function handleArchiveCardError(cardId, error) {
+  return { type: types.ARCHIVE_CARD_ERROR, payload: { cardId, error } };
+}
+
 export function requestApproveCard() {
   return { type: types.APPROVE_CARD_REQUEST, payload: {} };
 }

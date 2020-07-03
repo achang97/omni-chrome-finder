@@ -30,9 +30,9 @@
 }
 
 .modal-overlay-important {
-  z-index: 102 !important;
+  z-index: 102;
 }
 
 .modal-important {
-  z-index: 103 !important;
+  z-index: 103;
 }
