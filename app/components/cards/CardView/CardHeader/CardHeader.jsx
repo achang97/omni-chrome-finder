@@ -19,7 +19,6 @@ const CardHeader = ({
   setToastMessage,
   ownUserId,
   user,
-  tags,
   outOfDateReason,
   _id,
   answer,
@@ -181,7 +180,7 @@ const CardHeader = ({
             <Separator className={s('bg-purple-gray-10 mx-sm opacity-75')} />
             <CardStatus
               status={status}
-              isActionable={status !== CARD.STATUS.NEEDS_APPROVAL || isApprover(user, tags)}
+              isActionable={status !== CARD.STATUS.NEEDS_APPROVAL || isApprover(user)}
               outOfDateReason={outOfDateReason}
               onDropdownOptionClick={cardStatusOnClick}
               className={s('text-gray-dark')}
@@ -214,7 +213,6 @@ CardHeader.propTypes = {
 
   // Redux State
   user: UserPropTypes.isRequired,
-  tags: PropTypes.arrayOf(PropTypes.object).isRequired,
   outOfDateReason: PropTypes.shape({
     reason: PropTypes.string.isRequired,
     sender: PropTypes.object.isRequired,

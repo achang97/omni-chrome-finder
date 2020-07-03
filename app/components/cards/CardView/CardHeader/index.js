@@ -17,7 +17,6 @@ const mapStateToProps = (state) => {
     answer,
     externalLinkAnswer,
     question,
-    tags,
     outOfDateReason,
     attachments,
     _id,
@@ -28,7 +27,6 @@ const mapStateToProps = (state) => {
 
   return {
     user,
-    tags,
     outOfDateReason,
     ownUserId,
     answer,

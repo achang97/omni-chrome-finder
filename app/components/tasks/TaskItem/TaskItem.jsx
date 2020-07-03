@@ -5,7 +5,6 @@ import { MdCheck, MdAdd, MdEdit, MdCheckCircle } from 'react-icons/md';
 import { AiFillMinusCircle, AiFillQuestionCircle } from 'react-icons/ai';
 
 import { Button, PlaceholderImg, Timeago, Loader, Message } from 'components/common';
-import { CardTags } from 'components/cards';
 import { TASKS } from 'appConstants';
 import { UserPropTypes } from 'utils/propTypes';
 
@@ -30,7 +29,6 @@ const TaskItem = ({
   ownUserId,
   requestMarkUpToDateFromTasks,
   requestDismissTask,
-  requestApproveCardFromTasks,
   openCard
 }) => {
   const getNotifierName = () => {
@@ -156,7 +154,7 @@ const TaskItem = ({
       case TASKS.TYPE.NEEDS_APPROVAL:
         return {
           primaryOption: 'Approve',
-          primaryAction: () => requestApproveCardFromTasks(id, cardId),
+          primaryAction: () => requestMarkUpToDateFromTasks(id, cardId),
           secondaryOption: 'Dismiss',
           secondaryAction: () => requestDismissTask(id)
         };
@@ -166,12 +164,7 @@ const TaskItem = ({
   };
 
   const renderTaskPreview = () => {
-    const { answer, externalLinkAnswer, tags, outOfDateReason } = card;
-
-    // Autopopulate depth doesn't populate approvers, so they're IDs by default
-    const lockedTags = tags.filter(
-      ({ locked, approvers }) => locked && approvers.some((approverId) => approverId === ownUserId)
-    );
+    const { answer, externalLinkAnswer, outOfDateReason } = card;
 
     switch (type) {
       case TASKS.TYPE.NEEDS_VERIFICATION:
@@ -220,7 +213,6 @@ const TaskItem = ({
               src={notifier.profilePicture}
               className={s('task-item-profile-picture')}
             />
-            <CardTags tags={lockedTags} className={s('flex-1')} />
           </div>
         );
       default:
@@ -352,7 +344,6 @@ TaskItem.propTypes = {
   // Redux Actions
   requestMarkUpToDateFromTasks: PropTypes.func.isRequired,
   requestDismissTask: PropTypes.func.isRequired,
-  requestApproveCardFromTasks: PropTypes.func.isRequired,
   openCard: PropTypes.func.isRequired
 };
 

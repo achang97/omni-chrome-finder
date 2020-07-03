@@ -1,9 +1,5 @@
 import { connect } from 'react-redux';
-import {
-  requestMarkUpToDateFromTasks,
-  requestDismissTask,
-  requestApproveCardFromTasks
-} from 'actions/tasks';
+import { requestMarkUpToDateFromTasks, requestDismissTask } from 'actions/tasks';
 import { openCard } from 'actions/cards';
 import TaskItem from './TaskItem';
 
@@ -18,7 +14,6 @@ const mapStateToProps = (state) => {
 const mapDispatchToProps = {
   requestMarkUpToDateFromTasks,
   requestDismissTask,
-  requestApproveCardFromTasks,
   openCard
 };
 
