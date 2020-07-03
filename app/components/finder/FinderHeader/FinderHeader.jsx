@@ -9,7 +9,7 @@ import { Dropdown, ContextMenu, CircleButton, Tooltip } from 'components/common'
 import { getNewCardBaseState } from 'utils/card';
 import { UserPropTypes, NodePropTypes } from 'utils/propTypes';
 import { getStyleApplicationFn } from 'utils/style';
-import { FINDER, ROUTES, SEGMENT } from 'appConstants';
+import { FINDER, SEGMENT } from 'appConstants';
 
 import MoveFolder from 'assets/images/finder/move-folder.svg';
 
@@ -26,7 +26,7 @@ const FinderHeader = ({
   activeNode,
   selectedNodes,
   moveNodes,
-  isTemplateView,
+  // isTemplateView,
   user,
   goBackFinder,
   pushFinderNode,
@@ -34,11 +34,11 @@ const FinderHeader = ({
   openFinderModal,
   startMoveFinderNodes,
   openCard,
-  toggleCards,
-  toggleTemplateView,
-  updateCreateFinderNode,
-  trackEvent,
-  history
+  // toggleCards,
+  // toggleTemplateView,
+  // updateCreateFinderNode,
+  trackEvent
+  // history
 }) => {
   const [isNewDropdownOpen, setNewDropdownOpen] = useState(false);
 
@@ -115,32 +115,37 @@ const FinderHeader = ({
       };
     };
 
-    const onTemplateClick = () => {
-      history.push(ROUTES.CREATE);
-      toggleCards();
-      updateCreateFinderNode(finderNode);
-      if (!isTemplateView) {
-        toggleTemplateView();
-      }
-    };
+    // const onTemplateClick = () => {
+    //   history.push(ROUTES.CREATE);
+    //   toggleCards();
+    //   updateCreateFinderNode(finderNode);
+    //   if (!isTemplateView) {
+    //     toggleTemplateView();
+    //   }
+    // };
 
     const CONTEXT_MENU_OPTIONS = [
       {
         label: 'New Card',
-        options: [
-          {
-            label: 'Blank Card',
-            onClick: onClickWrapper(() => {
-              const newCard = { ...getNewCardBaseState(user), finderNode };
-              openCard(newCard, true);
-              trackEvent(SEGMENT.EVENT.CLICK_NEW_CARD, { Channel: SEGMENT.CHANNEL.FINDER });
-            })
-          },
-          {
-            label: 'From Template',
-            onClick: onClickWrapper(onTemplateClick)
-          }
-        ],
+        onClick: onClickWrapper(() => {
+          const newCard = { ...getNewCardBaseState(user), finderNode };
+          openCard(newCard, true);
+          trackEvent(SEGMENT.EVENT.CLICK_NEW_CARD, { Channel: SEGMENT.CHANNEL.FINDER });
+        }),
+        // options: [
+        //   {
+        //     label: 'Blank Card',
+        //     onClick: onClickWrapper(() => {
+        //       const newCard = { ...getNewCardBaseState(user), finderNode };
+        //       openCard(newCard, true);
+        //       trackEvent(SEGMENT.EVENT.CLICK_NEW_CARD, { Channel: SEGMENT.CHANNEL.FINDER });
+        //     })
+        //   },
+        //   {
+        //     label: 'From Template',
+        //     onClick: onClickWrapper(onTemplateClick)
+        //   }
+        // ],
         showModal: false
       },
       {
@@ -232,7 +237,7 @@ FinderHeader.propTypes = {
   activeNode: NodePropTypes.isRequired,
   selectedNodes: PropTypes.arrayOf(NodePropTypes).isRequired,
   moveNodes: PropTypes.arrayOf(NodePropTypes).isRequired,
-  isTemplateView: PropTypes.bool.isRequired,
+  // isTemplateView: PropTypes.bool.isRequired,
   user: UserPropTypes.isRequired,
 
   // Redux Actions
@@ -242,9 +247,9 @@ FinderHeader.propTypes = {
   openFinderModal: PropTypes.func.isRequired,
   startMoveFinderNodes: PropTypes.func.isRequired,
   openCard: PropTypes.func.isRequired,
-  toggleCards: PropTypes.func.isRequired,
-  toggleTemplateView: PropTypes.func.isRequired,
-  updateCreateFinderNode: PropTypes.func.isRequired,
+  // toggleCards: PropTypes.func.isRequired,
+  // toggleTemplateView: PropTypes.func.isRequired,
+  // updateCreateFinderNode: PropTypes.func.isRequired,
   trackEvent: PropTypes.func.isRequired
 };
 
