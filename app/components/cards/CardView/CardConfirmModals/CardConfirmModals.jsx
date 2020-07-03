@@ -240,7 +240,8 @@ const CardConfirmModals = ({
       },
       secondaryButtonProps: {
         onClick: () => closeCard(activeCardIndex)
-      }
+      },
+      important: true
     },
     {
       modalType: MODAL_TYPE.CONFIRM_CLOSE_UNDOCUMENTED,
@@ -250,7 +251,8 @@ const CardConfirmModals = ({
       primaryButtonProps: {
         text: 'Close Card',
         onClick: confirmCloseModalUndocumentedPrimary
-      }
+      },
+      important: true
     },
     {
       modalType: MODAL_TYPE.CONFIRM_OUT_OF_DATE,
@@ -373,7 +375,8 @@ const CardConfirmModals = ({
       },
       secondaryButtonProps: {
         onClick: confirmCloseEditModalSecondary
-      }
+      },
+      important: true
     }
   ];
 
