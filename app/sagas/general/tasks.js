@@ -9,7 +9,6 @@ import {
   DELETE_CARD_SUCCESS,
   MARK_UP_TO_DATE_SUCCESS,
   ARCHIVE_CARD_SUCCESS,
-  APPROVE_CARD_SUCCESS,
   UPDATE_CARD_SUCCESS,
   LOGOUT
 } from 'actions/actionTypes';
@@ -38,7 +37,6 @@ export default function* watchTaskActions() {
       DELETE_CARD_SUCCESS,
       MARK_UP_TO_DATE_SUCCESS,
       ARCHIVE_CARD_SUCCESS,
-      APPROVE_CARD_SUCCESS,
       UPDATE_CARD_SUCCESS,
       LOGOUT
     ]);
@@ -74,7 +72,6 @@ export default function* watchTaskActions() {
         break;
       }
       case MARK_UP_TO_DATE_SUCCESS:
-      case APPROVE_CARD_SUCCESS:
       case UPDATE_CARD_SUCCESS: {
         const { card } = payload;
         if (card.status === CARD.STATUS.UP_TO_DATE) {

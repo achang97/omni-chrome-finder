@@ -629,13 +629,11 @@ export default function cardsReducer(state = initialState, action) {
     }
 
     case types.MARK_UP_TO_DATE_REQUEST:
-    case types.MARK_OUT_OF_DATE_REQUEST:
-    case types.APPROVE_CARD_REQUEST: {
+    case types.MARK_OUT_OF_DATE_REQUEST: {
       return updateActiveCard({ isMarkingStatus: true, markStatusError: null });
     }
     case types.MARK_UP_TO_DATE_SUCCESS:
-    case types.MARK_OUT_OF_DATE_SUCCESS:
-    case types.APPROVE_CARD_SUCCESS: {
+    case types.MARK_OUT_OF_DATE_SUCCESS: {
       const { card } = payload;
       const newInfo = {
         isMarkingStatus: false,
@@ -646,8 +644,7 @@ export default function cardsReducer(state = initialState, action) {
       return updateCardById(card._id, newInfo, true);
     }
     case types.MARK_UP_TO_DATE_ERROR:
-    case types.MARK_OUT_OF_DATE_ERROR:
-    case types.APPROVE_CARD_ERROR: {
+    case types.MARK_OUT_OF_DATE_ERROR: {
       const { cardId, error } = payload;
       return updateCardById(cardId, { isMarkingStatus: false, markStatusError: error });
     }

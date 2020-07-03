@@ -1,11 +1,9 @@
 import { take, put, all, select } from 'redux-saga/effects';
 import {
   MARK_UP_TO_DATE_FROM_TASKS_SUCCESS,
-  APPROVE_CARD_FROM_TASKS_SUCCESS,
   UPDATE_CARD_SUCCESS,
   MARK_OUT_OF_DATE_SUCCESS,
   MARK_UP_TO_DATE_SUCCESS,
-  APPROVE_CARD_SUCCESS,
   GET_CARD_SUCCESS,
   DELETE_CARD_SUCCESS,
   CLOSE_CARD,
@@ -24,14 +22,12 @@ export default function* watchCardActions() {
   while (true) {
     const action = yield take([
       MARK_UP_TO_DATE_FROM_TASKS_SUCCESS,
-      APPROVE_CARD_FROM_TASKS_SUCCESS,
       DELETE_FINDER_NODES_SUCCESS,
       CLOSE_CARD,
       CANCEL_EDIT_CARD,
       UPDATE_CARD_SUCCESS,
       MARK_OUT_OF_DATE_SUCCESS,
       MARK_UP_TO_DATE_SUCCESS,
-      APPROVE_CARD_SUCCESS,
       GET_CARD_SUCCESS,
       DELETE_CARD_SUCCESS,
       DELETE_FINDER_NODES_SUCCESS,
@@ -42,8 +38,7 @@ export default function* watchCardActions() {
     const { type, payload } = action;
     switch (type) {
       // Handle tasks actions
-      case MARK_UP_TO_DATE_FROM_TASKS_SUCCESS:
-      case APPROVE_CARD_FROM_TASKS_SUCCESS: {
+      case MARK_UP_TO_DATE_FROM_TASKS_SUCCESS: {
         const { card } = payload;
         yield put(updateCard(card));
         yield put(requestGetExternalCard());
@@ -71,7 +66,6 @@ export default function* watchCardActions() {
       case UPDATE_CARD_SUCCESS:
       case MARK_OUT_OF_DATE_SUCCESS:
       case MARK_UP_TO_DATE_SUCCESS:
-      case APPROVE_CARD_SUCCESS:
       case GET_CARD_SUCCESS:
       case DELETE_CARD_SUCCESS: {
         yield put(requestGetRecentCards());

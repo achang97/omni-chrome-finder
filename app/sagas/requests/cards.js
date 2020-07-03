@@ -32,7 +32,6 @@ import {
   MARK_UP_TO_DATE_REQUEST,
   MARK_OUT_OF_DATE_REQUEST,
   ARCHIVE_CARD_REQUEST,
-  APPROVE_CARD_REQUEST,
   ADD_BOOKMARK_REQUEST,
   REMOVE_BOOKMARK_REQUEST,
   ADD_CARD_ATTACHMENT_REQUEST,
@@ -54,8 +53,6 @@ import {
   handleMarkUpToDateError,
   handleMarkOutOfDateSuccess,
   handleMarkOutOfDateError,
-  handleApproveCardSuccess,
-  handleApproveCardError,
   handleArchiveCardSuccess,
   handleArchiveCardError,
   handleAddBookmarkSuccess,
@@ -81,7 +78,6 @@ export default function* watchCardsRequests() {
       TOGGLE_UPVOTE_REQUEST,
       DELETE_CARD_REQUEST,
       MARK_UP_TO_DATE_REQUEST,
-      APPROVE_CARD_REQUEST,
       MARK_OUT_OF_DATE_REQUEST,
       ARCHIVE_CARD_REQUEST,
       ADD_BOOKMARK_REQUEST,
@@ -123,10 +119,6 @@ export default function* watchCardsRequests() {
       }
       case ARCHIVE_CARD_REQUEST: {
         yield fork(archiveCard);
-        break;
-      }
-      case APPROVE_CARD_REQUEST: {
-        yield fork(approveCard);
         break;
       }
       case ADD_BOOKMARK_REQUEST: {
@@ -364,7 +356,7 @@ function* updateCard({ shouldCloseCard }) {
       const populatedCard = yield call(populateDelayedTasks, card);
 
       const user = yield select((state) => state.profile.user);
-      const canApprove = isApprover(user, populatedCard.tags);
+      const canApprove = isApprover(user);
 
       yield put(handleUpdateCardSuccess(populatedCard, shouldCloseCard, canApprove));
     } else {
@@ -426,16 +418,6 @@ function* archiveCard() {
     yield put(handleArchiveCardSuccess(cardId));
   } catch (error) {
     yield put(handleArchiveCardError(cardId, getErrorMessage(error)));
-  }
-}
-
-function* approveCard() {
-  const cardId = yield call(getActiveCardId);
-  try {
-    const { updatedCard } = yield call(doPost, `/cards/${cardId}/approve`);
-    yield put(handleApproveCardSuccess(updatedCard));
-  } catch (error) {
-    yield put(handleApproveCardError(cardId, getErrorMessage(error)));
   }
 }
 

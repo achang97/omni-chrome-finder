@@ -13,7 +13,6 @@ import {
   requestUpdateCard,
   requestMarkUpToDate,
   requestMarkOutOfDate,
-  requestApproveCard,
   requestArchiveCard,
   requestGetSlackThread,
   requestCreateInvite
@@ -90,7 +89,6 @@ const mapDispatchToProps = {
   requestUpdateCard,
   requestMarkUpToDate,
   requestMarkOutOfDate,
-  requestApproveCard,
   requestArchiveCard,
   requestGetSlackThread,
   requestCreateInvite

@@ -48,7 +48,6 @@ const CardConfirmModals = ({
   requestDeleteCard,
   requestMarkUpToDate,
   requestMarkOutOfDate,
-  requestApproveCard,
   requestArchiveCard,
   requestGetSlackThread,
   requestCreateInvite
@@ -301,7 +300,7 @@ const CardConfirmModals = ({
       title: 'Confirm Approval',
       description: 'Would you like to approve the changes to this card?',
       primaryButtonProps: {
-        onClick: requestApproveCard,
+        onClick: requestMarkUpToDate,
         isLoading: isMarkingStatus
       }
     },
@@ -450,7 +449,6 @@ CardConfirmModals.propTypes = {
   requestUpdateCard: PropTypes.func.isRequired,
   requestMarkUpToDate: PropTypes.func.isRequired,
   requestMarkOutOfDate: PropTypes.func.isRequired,
-  requestApproveCard: PropTypes.func.isRequired,
   requestArchiveCard: PropTypes.func.isRequired,
   updateInviteRole: PropTypes.func.isRequired,
   updateInviteEmail: PropTypes.func.isRequired,
