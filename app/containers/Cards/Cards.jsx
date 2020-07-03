@@ -5,7 +5,7 @@ import { Resizable } from 're-resizable';
 import { Transition } from 'react-transition-group';
 import { DragDropContext, Droppable, Draggable } from 'react-beautiful-dnd';
 import { MdClose } from 'react-icons/md';
-import { FiMinus, FiPlus, FiMaximize2 } from 'react-icons/fi';
+import { FiMinus, FiPlus, FiMaximize2, FiMinimize2 } from 'react-icons/fi';
 
 import { CardView } from 'components/cards';
 import { FinderContainer } from 'components/finder';
@@ -152,7 +152,7 @@ const Cards = ({
       },
       {
         key: 'maximize',
-        Icon: FiMaximize2,
+        Icon: cardsMaximized ? FiMinimize2 : FiMaximize2,
         onClick: toggleMaximizeCards
       }
     ];
