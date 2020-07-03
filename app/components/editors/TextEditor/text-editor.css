@@ -22,8 +22,3 @@
   border: none !important;
   background: transparent;
 }
-
-.text-editor:hover,
-.text-editor-extension:hover {
-  cursor: text;
-}

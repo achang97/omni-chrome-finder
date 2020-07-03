@@ -44,8 +44,8 @@ import 'react-image-crop/dist/ReactCrop.css';
 /* eslint-disable import/no-extraneous-dependencies, import/extensions */
 import 'froala-editor/css/froala_style.min.css';
 import 'froala-editor/css/froala_editor.pkgd.min.css';
-import 'font-awesome/css/font-awesome.css';
-import 'froala-editor/js/third_party/font_awesome.min.js';
+import 'froala-editor/css/plugins.pkgd.min.css';
+import 'froala-editor/css/froala_editor.min.css';
 /* eslint-enable import/no-extraneous-dependencies */
 
 // Overrides

@@ -76,8 +76,7 @@ export const CARD_CONFIG = {
       buttonsVisible: 2
     },
     align: {
-      buttons: ['alignLeft', 'alignCenter', 'alignRight', 'alignJustify'],
-      buttonsVisible: 0
+      buttons: ['align']
     },
     moreRich: {
       buttons: [
