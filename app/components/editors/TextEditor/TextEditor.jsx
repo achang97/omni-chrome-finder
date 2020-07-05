@@ -13,6 +13,7 @@ import 'froala-editor/js/plugins.pkgd.min.js';
 
 import { getStyleApplicationFn } from 'utils/style';
 import { getVideoEmbeddedCode } from 'utils/editor';
+import { createConfig } from 'utils/request';
 import { URL } from 'appConstants/request';
 
 import { CARD_CONFIG, EXTENSION_CONFIG } from './TextEditorProps';
@@ -33,16 +34,12 @@ class TextEditor extends React.Component {
     this.editorRef = React.createRef();
   }
 
-  getRequestHeaders = () => {
-    const { token } = this.props;
-    return { Authorization: token };
-  };
-
   handleUpload = (type, response) => {
     const { editor } = this.editorRef.current;
+    const { token } = this.props;
 
     const { key, name } = JSON.parse(response);
-    const headers = { headers: this.getRequestHeaders() };
+    const headers = createConfig(token);
     axios.get(`${URL.SERVER}/files/${key}/accesstoken`, headers).then(({ data }) => {
       const params = queryString.stringify({ token: data.token });
       const location = `${URL.SERVER}/files/bytoken/${key}?${params}`;
@@ -76,7 +73,8 @@ class TextEditor extends React.Component {
       readOnly,
       autofocus,
       editorType,
-      placeholder
+      placeholder,
+      token
     } = this.props;
 
     const defaultEditorClassName = editorType === 'CARD' ? 'text-editor' : 'text-editor-extension';
@@ -94,7 +92,7 @@ class TextEditor extends React.Component {
         ref={this.editorRef}
         config={{
           ...(editorType === 'CARD' ? CARD_CONFIG : EXTENSION_CONFIG),
-          requestHeaders: this.getRequestHeaders(),
+          requestHeaders: createConfig(token).headers,
           events: {
             'image.uploaded': (response) => this.handleUpload(EVENT_TYPE.IMAGE, response),
             'file.uploaded': (response) => this.handleUpload(EVENT_TYPE.FILE, response),

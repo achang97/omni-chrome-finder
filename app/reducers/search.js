@@ -20,7 +20,6 @@ const initialState = {
   integrationResults: [],
   tags: [],
   users: [],
-  invitedUsers: [],
   permissionGroups: []
 };
 
@@ -178,18 +177,6 @@ export default function searchReducer(state = initialState, action) {
     case types.SEARCH_PERMISSION_GROUPS_ERROR: {
       const { error } = payload;
       return { ...state, isSearchingPermissionGroups: false, searchPermissionGroupsError: error };
-    }
-
-    case types.SEARCH_INVITED_USERS_REQUEST: {
-      return { ...state, isSearchingInvites: true, searchInvitesError: null };
-    }
-    case types.SEARCH_INVITED_USERS_SUCCESS: {
-      const { invitedUsers } = payload;
-      return { ...state, isSearchingInvites: false, invitedUsers };
-    }
-    case types.SEARCH_INVITED_USERS_ERROR: {
-      const { error } = payload;
-      return { ...state, isSearchingInvites: false, searchInvitesError: error };
     }
 
     default:

@@ -1,6 +1,6 @@
 import _ from 'lodash';
 import queryString from 'query-string';
-import { take, all, call, fork, put, select } from 'redux-saga/effects';
+import { take, call, fork, put, select } from 'redux-saga/effects';
 import { doGet, doPost, doPut, doDelete, getErrorMessage } from 'utils/request';
 import { getArrayIds } from 'utils/array';
 import {
@@ -8,19 +8,11 @@ import {
   convertPermissionsToBackendFormat,
   hasValidEdits,
   isApprover,
-  isExternalCard,
-  isInvitedUser,
-  formatDelayedTasks,
-  isRegisteredUser
+  isExternalCard
 } from 'utils/card';
 import { getModelText } from 'utils/editor';
 import { convertAttachmentsToBackendFormat } from 'utils/file';
-import {
-  STATUS,
-  PERMISSION_OPTION,
-  VERIFICATION_INTERVAL_OPTION,
-  DELAYED_TASK_TYPE
-} from 'appConstants/card';
+import { STATUS, PERMISSION_OPTION, VERIFICATION_INTERVAL_OPTION } from 'appConstants/card';
 import { AUDIT } from 'appConstants/profile';
 import { ROOT } from 'appConstants/finder';
 import {
@@ -163,79 +155,11 @@ function* getUserId() {
   return _id;
 }
 
-function getDelayedTaskRequests(card) {
-  const DELAYED_TASKS = [
-    {
-      key: 'owners',
-      taskType: DELAYED_TASK_TYPE.ADD_CARD_OWNER
-    },
-    {
-      key: 'subscribers',
-      taskType: DELAYED_TASK_TYPE.ADD_CARD_SUBSCRIBER
-    }
-  ];
-
-  const newTasks = [];
-  const removeTaskIds = [];
-
-  DELAYED_TASKS.forEach(({ key, taskType }) => {
-    const addTasks = _.differenceBy(card.edits[key], card[key], '_id');
-    const removeTasks = _.differenceBy(card[key], card.edits[key], '_id');
-
-    addTasks.filter(isInvitedUser).forEach(({ _id }) => {
-      const body = {
-        type: taskType,
-        data: { cardId: card._id, invitedUserId: _id }
-      };
-      newTasks.push(body);
-    });
-
-    removeTasks.filter(isInvitedUser).forEach(({ taskId }) => {
-      removeTaskIds.push(taskId);
-    });
-  });
-
-  const allRequests = [];
-
-  if (newTasks.length > 0) {
-    allRequests.push(call(doPost, '/delayedTasks/bulk', newTasks));
-  }
-
-  if (removeTaskIds.length > 0) {
-    allRequests.push(call(doDelete, '/delayedTasks/bulk', removeTaskIds));
-  }
-
-  return allRequests;
-}
-
-function* populateDelayedTasks(card) {
-  const delayedTasks = yield call(doGet, '/delayedTasks/query', { cardId: card._id });
-
-  Object.entries(_.groupBy(delayedTasks, 'type')).forEach(([taskType, tasks]) => {
-    const invitedUsers = formatDelayedTasks(tasks);
-    switch (taskType) {
-      case DELAYED_TASK_TYPE.ADD_CARD_OWNER: {
-        card.owners = _.union(card.owners, invitedUsers);
-        break;
-      }
-      case DELAYED_TASK_TYPE.ADD_CARD_SUBSCRIBER: {
-        card.subscribers = _.union(card.subscribers, invitedUsers);
-        break;
-      }
-      default:
-        break;
-    }
-  });
-
-  return card;
-}
-
 function* getCard() {
   const cardId = yield call(getActiveCardId);
   try {
     const card = yield call(doGet, `/cards/${cardId}`);
-    const populatedCard = yield call(populateDelayedTasks, card);
-    yield put(handleGetCardSuccess(cardId, populatedCard));
+    yield put(handleGetCardSuccess(cardId, card));
   } catch (error) {
     yield put(
       handleGetCardError(cardId, {
@@ -273,8 +197,8 @@ function* convertCardToBackendFormat(card) {
   const permissionsInfo = convertPermissionsToBackendFormat(_id, permissions, permissionGroups);
 
   // Handle invited owners / subscribers
-  let cardOwners = getArrayIds(owners.filter(isRegisteredUser));
-  let cardSubscribers = _.union(cardOwners, getArrayIds(subscribers.filter(isRegisteredUser)));
+  let cardOwners = getArrayIds(owners);
+  let cardSubscribers = _.union(cardOwners, getArrayIds(subscribers));
   let cardTags = tags;
   let cardUpdateInterval = verificationInterval.value;
 
@@ -322,15 +246,7 @@ function* createCard() {
       const newCardInfo = yield call(convertCardToBackendFormat, activeCard);
       const source = queryString.stringify({ source: AUDIT.SOURCE.DOCK });
       const card = yield call(doPost, `/cards?${source}`, newCardInfo);
-
-      const delayedTaskRequests = yield call(getDelayedTaskRequests, {
-        ...activeCard,
-        _id: card._id
-      });
-      yield all(delayedTaskRequests);
-
-      const populatedCard = yield call(populateDelayedTasks, card);
-      yield put(handleCreateCardSuccess(cardId, populatedCard));
+      yield put(handleCreateCardSuccess(cardId, card));
     } else {
       yield put(handleUpdateCardError(cardId, INCOMPLETE_CARD_ERROR));
     }
@@ -347,18 +263,10 @@ function* updateCard({ shouldCloseCard }) {
   try {
     if (hasValidEdits(activeCard.edits, isExternal)) {
       const newCardInfo = yield call(convertCardToBackendFormat, activeCard);
-      const delayedTaskRequests = yield call(getDelayedTaskRequests, activeCard);
-
-      const [card] = yield all([
-        call(doPut, `/cards/${cardId}`, newCardInfo),
-        ...delayedTaskRequests
-      ]);
-      const populatedCard = yield call(populateDelayedTasks, card);
-
       const user = yield select((state) => state.profile.user);
       const canApprove = isApprover(user);
-
-      yield put(handleUpdateCardSuccess(populatedCard, shouldCloseCard, canApprove));
+      const card = yield call(doPut, `/cards/${cardId}`, newCardInfo);
+      yield put(handleUpdateCardSuccess(card, shouldCloseCard, canApprove));
     } else {
       yield put(handleUpdateCardError(cardId, INCOMPLETE_CARD_ERROR, shouldCloseCard));
     }

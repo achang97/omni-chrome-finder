@@ -80,6 +80,8 @@ const Modal = ({
             <form
               onSubmit={(e) => {
                 e.preventDefault();
+                e.stopPropagation();
+
                 if (showPrimaryButton && !extendedPrimaryButtonProps.disabled) {
                   if (extendedPrimaryButtonProps.onClick) {
                     extendedPrimaryButtonProps.onClick();

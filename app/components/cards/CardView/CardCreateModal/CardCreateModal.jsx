@@ -5,7 +5,7 @@ import { MdLock } from 'react-icons/md';
 
 import { Modal, Message } from 'components/common';
 
-import { HINTS, MODAL_TYPE, DELAYED_TASK_TYPE } from 'appConstants/card';
+import { HINTS, MODAL_TYPE, INVITE_TYPE } from 'appConstants/card';
 import { SEEN_FEATURES } from 'appConstants/profile';
 import { hasValidEdits, isExistingCard, isJustMe } from 'utils/card';
 import { getStyleApplicationFn } from 'utils/style';
@@ -138,7 +138,7 @@ const CardCreateModal = ({
         users={owners}
         onAdd={addCardOwner}
         onRemoveClick={({ index }) => removeCardOwner(index)}
-        onCreate={(value) => openInviteModal(value, DELAYED_TASK_TYPE.ADD_CARD_OWNER)}
+        onCreate={(value) => openInviteModal(value, INVITE_TYPE.ADD_CARD_OWNER)}
         showTooltips
         showInviteOptions
         size="xs"
@@ -170,7 +170,7 @@ const CardCreateModal = ({
         showInviteOptions
         onAdd={addCardSubscriber}
         onRemoveClick={({ index }) => removeCardSubscriber(index)}
-        onCreate={(value) => openInviteModal(value, DELAYED_TASK_TYPE.ADD_CARD_SUBSCRIBER)}
+        onCreate={(value) => openInviteModal(value, INVITE_TYPE.ADD_CARD_SUBSCRIBER)}
         showTooltips
       />
     );
@@ -187,6 +187,8 @@ const CardCreateModal = ({
             <div className={s('text-gray-reg text-xs mb-sm')}> Tags </div>
             <CardTags
               isEditable={isEditable}
+              isCreatable
+              showSelect
               tags={tags}
               onChange={updateCardTags}
               onRemoveClick={({ index }) => removeCardTag(index)}

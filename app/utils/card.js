@@ -3,6 +3,7 @@ import _ from 'lodash';
 import { URL, CARD, PROFILE } from 'appConstants';
 import { getArrayIds } from './array';
 import { isAnyLoading } from './file';
+import { isActiveUser } from './user';
 import { copyText } from './window';
 
 export function convertCardToFrontendFormat(card) {
@@ -103,7 +104,7 @@ export function hasValidEdits(edits, isExternal = false) {
     question !== '' &&
     (isExternal || !!answerModel) &&
     hasValidPermissions(permissions, permissionGroups) &&
-    owners.filter(({ isInvited }) => !isInvited).length !== 0 &&
+    owners.filter(isActiveUser).length !== 0 &&
     !!verificationInterval &&
     !isAnyLoading(attachments)
   );
@@ -154,26 +155,6 @@ export function cardStateChanged(card) {
   return false;
 }
 
-export function formatDelayedTasks(delayedTasks) {
-  const invitedUsers = delayedTasks.map(({ _id, data }) => ({
-    taskId: _id,
-    ...formatInvitedUser(data.invitedUser)
-  }));
-  return invitedUsers;
-}
-
-export function formatInvitedUser(invitedUser) {
-  return { ...invitedUser, isInvited: true };
-}
-
-export function isInvitedUser(user) {
-  return !!user.isInvited;
-}
-
-export function isRegisteredUser(user) {
-  return !user.isInvited;
-}
-
 export function copyCardUrl(cardId) {
   copyText(`${URL.EXTENSION}?cardId=${cardId}`);
 }
@@ -216,9 +197,6 @@ export default {
   getNewCardBaseState,
   cardStateChanged,
   isExternalCard,
-  formatInvitedUser,
-  isInvitedUser,
-  isRegisteredUser,
   isSlackCard,
   copyCardUrl,
   getDraggableStyle

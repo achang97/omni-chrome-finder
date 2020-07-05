@@ -3,11 +3,12 @@ import PropTypes from 'prop-types';
 import { IoMdAdd } from 'react-icons/io';
 import _ from 'lodash';
 
-import { CircleButton, PlaceholderImg, Select } from 'components/common';
+import { CircleButton, Select } from 'components/common';
 
 import { DEBOUNCE } from 'appConstants/animate';
+import { UserPropTypes } from 'utils/propTypes';
+import { isInvitedUser } from 'utils/user';
 
-import { isInvitedUser } from 'utils/card';
 import { getStyleApplicationFn } from 'utils/style';
 import style from './card-users.css';
 import CardUser from '../CardUser';
@@ -18,6 +19,7 @@ const CardUsers = ({
   isEditable,
   className,
   users,
+  selectedUser,
   onRemoveClick,
   onUserClick,
   onAdd,
@@ -30,18 +32,12 @@ const CardUsers = ({
   userOptions,
   isLoading,
   isAdmin,
-  requestSearchUsers,
-  requestSearchInvitedUsers
+  requestSearchUsers
 }) => {
   const [showSelectState, setShowSelectState] = useState(false);
 
   const loadOptions = (inputValue) => {
     requestSearchUsers(inputValue);
-  };
-
-  const onFocus = () => {
-    loadOptions('');
-    requestSearchInvitedUsers();
   };
 
   const getSelectOptionLabel = (user) => {
@@ -59,7 +55,7 @@ const CardUsers = ({
   };
 
   const renderUser = (user, index) => {
-    const { _id, profilePicture, isEditable: userIsEditable = true } = user;
+    const { _id, profilePicture, status, isEditable: userIsEditable = true } = user;
     const name = getSelectOptionLabel(user);
 
     return (
@@ -73,22 +69,25 @@ const CardUsers = ({
         onClick={onUserClick}
         onRemoveClick={isEditable && userIsEditable ? () => onRemoveClick({ user, index }) : null}
         showTooltip={showTooltips}
-        isInvited={isInvitedUser(user)}
+        status={status}
       />
     );
   };
 
   const formatSelectOptionLabel = (option) => {
-    const { profilePicture, __isNew__ } = option;
+    const { profilePicture, status, __isNew__ } = option;
     const label = getSelectOptionLabel(option);
 
     return (
       <div className={s('flex items-center')}>
         {!__isNew__ && (
-          <PlaceholderImg
-            src={profilePicture}
+          <CardUser
             name={label}
-            className={s('h-3xl w-3xl rounded-full mr-sm')}
+            img={profilePicture}
+            showName={false}
+            status={status}
+            size="sm"
+            className={s('mr-sm')}
           />
         )}
         <div> {label} </div>
@@ -104,13 +103,13 @@ const CardUsers = ({
         <Select
           type={isAdmin && onCreate ? 'creatable' : 'default'}
           className={s('w-full mb-sm')}
-          value={null}
+          value={selectedUser}
           options={_.differenceBy(userOptions, users, '_id')}
           onChange={({ __isNew__, ...option }) =>
             __isNew__ && onCreate ? onCreate(option.value) : onAdd(option)
           }
           onInputChange={_.debounce(loadOptions, DEBOUNCE.MS_300)}
-          onFocus={onFocus}
+          onFocus={() => loadOptions('')}
           isSearchable
           menuShouldScrollIntoView
           isClearable={false}
@@ -141,27 +140,11 @@ const CardUsers = ({
   );
 };
 
-const UsersPropTypes = PropTypes.arrayOf(
-  PropTypes.oneOfType([
-    PropTypes.shape({
-      _id: PropTypes.string.isRequired,
-      firstname: PropTypes.string,
-      lastname: PropTypes.string,
-      img: PropTypes.string,
-      isEditable: PropTypes.bool
-    }),
-    PropTypes.shape({
-      _id: PropTypes.string.isRequired,
-      email: PropTypes.string,
-      isEditable: PropTypes.bool
-    })
-  ])
-);
-
 CardUsers.propTypes = {
   isEditable: PropTypes.bool,
   className: PropTypes.string,
-  users: UsersPropTypes.isRequired,
+  users: PropTypes.arrayOf(UserPropTypes),
+  selectedUser: UserPropTypes,
   onRemoveClick: PropTypes.func,
   onUserClick: PropTypes.func,
   onAdd: PropTypes.func,
@@ -171,21 +154,27 @@ CardUsers.propTypes = {
   size: PropTypes.oneOfType([PropTypes.number, PropTypes.oneOf(['xs', 'sm', 'md', 'lg'])]),
   showNames: PropTypes.bool,
   placeholder: PropTypes.string,
-  showInviteOptions: PropTypes.bool, // eslint-disable-line react/no-unused-prop-types
+
+  // Options that are used in index.js
+  /* eslint-disable react/no-unused-prop-types */
+  showInviteOptions: PropTypes.bool,
+  disabledUserIds: PropTypes.arrayOf(PropTypes.string),
+  /* eslint-enable react/no-unused-prop-types */
 
   // Redux State
-  userOptions: UsersPropTypes.isRequired,
+  userOptions: PropTypes.arrayOf(UserPropTypes).isRequired,
   isLoading: PropTypes.bool,
   isAdmin: PropTypes.bool.isRequired,
 
   // Redux Actions
-  requestSearchUsers: PropTypes.func.isRequired,
-  requestSearchInvitedUsers: PropTypes.func.isRequired
+  requestSearchUsers: PropTypes.func.isRequired
 };
 
 CardUsers.defaultProps = {
   className: '',
   isEditable: false,
+  selectedUser: null,
+  users: [],
   size: 'md',
   showSelect: false,
   showTooltips: false,
