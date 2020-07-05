@@ -88,7 +88,7 @@ export const PERMISSION_OPTIONS = [
   { label: 'Specific Groups', value: PERMISSION_OPTION.SPECIFIC_GROUPS }
 ];
 
-export const DELAYED_TASK_TYPE = {
+export const INVITE_TYPE = {
   ADD_CARD_OWNER: 'addCardOwner',
   ADD_CARD_SUBSCRIBER: 'addCardSubscriber',
   ADD_USER_TO_PERMISSION_GROUP: 'addUserToPermissionGroup'
@@ -105,5 +105,5 @@ export default {
   DEFAULT_VERIFICATION_INTERVAL,
   PERMISSION_OPTION,
   PERMISSION_OPTIONS,
-  DELAYED_TASK_TYPE
+  INVITE_TYPE
 };

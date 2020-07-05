@@ -12,3 +12,4 @@ export { default as select } from './select';
 export { default as segment } from './segment';
 export { default as storage } from './storage';
 export { default as style } from './style';
+export { default as user } from './user';

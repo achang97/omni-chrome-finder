@@ -225,7 +225,8 @@ const CardConfirmModals = ({
         onClick: requestCreateInvite,
         isLoading: isCreatingInvite,
         disabled: !inviteEmail
-      }
+      },
+      important: true
     },
     {
       modalType: MODAL_TYPE.CONFIRM_CLOSE,
@@ -240,7 +241,7 @@ const CardConfirmModals = ({
       secondaryButtonProps: {
         onClick: () => closeCard(activeCardIndex)
       },
-      important: true
+      zIndex: 200
     },
     {
       modalType: MODAL_TYPE.CONFIRM_CLOSE_UNDOCUMENTED,

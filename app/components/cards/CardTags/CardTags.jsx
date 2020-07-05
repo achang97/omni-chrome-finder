@@ -1,7 +1,6 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import { IoMdAdd } from 'react-icons/io';
-import { MdLock } from 'react-icons/md';
 import _ from 'lodash';
 
 import Select from 'components/common/Select';
@@ -73,17 +72,12 @@ class CardTags extends Component {
     return { maxWidth };
   };
 
-  renderOptionLabel = ({ name, locked }) => (
-    <div className={s('flex items-center')}>
-      <div> {name} </div>
-      {locked && <MdLock className={s('ml-xs')} />}
-    </div>
-  );
+  renderOptionLabel = ({ name }) => <div> {name} </div>;
 
   renderTag = (tag, index) => {
     const { maxWidth, tags, onTagClick, onRemoveClick, isEditable } = this.props;
     const { firstHiddenIndex } = this.state;
-    const { name, _id, locked, className } = tag;
+    const { name, _id, className } = tag;
 
     return (
       <React.Fragment key={_id}>
@@ -96,7 +90,6 @@ class CardTags extends Component {
         )}
         <CardTag
           name={name}
-          locked={locked}
           ref={
             maxWidth &&
             ((instance) => {
@@ -193,7 +186,6 @@ const TagPropTypes = PropTypes.arrayOf(
   PropTypes.shape({
     name: PropTypes.string.isRequired,
     _id: PropTypes.string.isRequired,
-    locked: PropTypes.bool.isRequired,
     className: PropTypes.string
   })
 );

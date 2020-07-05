@@ -1,31 +1,43 @@
+import _ from 'lodash';
 import { connect } from 'react-redux';
-import { requestSearchUsers, requestSearchInvitedUsers } from 'actions/search';
-import { USER_ROLE } from 'appConstants/profile';
-import { formatInvitedUser } from 'utils/card';
+import { requestSearchUsers } from 'actions/search';
+import { USER_ROLE, USER_STATUS } from 'appConstants/profile';
 import CardUsers from './CardUsers';
 
 const mapStateToProps = (state, ownProps) => {
   const {
-    search: { users, isSearchingUsers, invitedUsers, isSearchingInvites },
+    search: { users, isSearchingUsers, isSearchingInvites },
     profile: {
       user: { role }
     }
   } = state;
 
-  const { showInviteOptions } = ownProps;
+  const { showInviteOptions = true, disabledUserIds = [] } = ownProps;
 
-  let userOptions = users;
-  if (showInviteOptions) {
-    userOptions = userOptions.concat(invitedUsers.map(formatInvitedUser));
-  }
+  const userOptions = users.filter(({ _id }) => !disabledUserIds.includes(_id));
+  const groupedUserOptions = _.groupBy(userOptions, 'status');
+
+  const sections = [
+    { type: USER_STATUS.ACTIVE, isShown: true },
+    { type: USER_STATUS.INVITED, isShown: showInviteOptions }
+  ];
+  const sectionedOptions = sections
+    .filter(({ isShown }) => isShown)
+    .map(({ type }) => ({
+      label: type,
+      options: groupedUserOptions[type]
+    }));
 
   const isAdmin = role === USER_ROLE.ADMIN;
-  return { userOptions, isLoading: isSearchingUsers || isSearchingInvites, isAdmin };
+  return {
+    userOptions: sectionedOptions,
+    isLoading: isSearchingUsers || isSearchingInvites,
+    isAdmin
+  };
 };
 
 const mapDispatchToProps = {
-  requestSearchUsers,
-  requestSearchInvitedUsers
+  requestSearchUsers
 };
 
 export default connect(mapStateToProps, mapDispatchToProps)(CardUsers);

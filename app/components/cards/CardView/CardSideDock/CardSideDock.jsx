@@ -10,7 +10,7 @@ import { Button } from 'components/common';
 
 import { getBaseAnimationStyle } from 'utils/animate';
 import { isJustMe } from 'utils/card';
-import { MODAL_TYPE, DELAYED_TASK_TYPE, HINTS, PERMISSION_OPTION, STATUS } from 'appConstants/card';
+import { MODAL_TYPE, INVITE_TYPE, HINTS, PERMISSION_OPTION, STATUS } from 'appConstants/card';
 import { TRANSITIONS } from 'appConstants/animate';
 
 import { getStyleApplicationFn } from 'utils/style';
@@ -108,7 +108,7 @@ const CardSideDock = ({
         users={currOwners}
         onAdd={addCardOwner}
         onRemoveClick={({ index }) => removeCardOwner(index)}
-        onCreate={(value) => openInviteModal(value, DELAYED_TASK_TYPE.ADD_CARD_OWNER)}
+        onCreate={(value) => openInviteModal(value, INVITE_TYPE.ADD_CARD_OWNER)}
         size="sm"
         showTooltips
         showInviteOptions
@@ -141,7 +141,7 @@ const CardSideDock = ({
         showNames={false}
         onAdd={addCardSubscriber}
         onRemoveClick={({ index }) => removeCardSubscriber(index)}
-        onCreate={(value) => openInviteModal(value, DELAYED_TASK_TYPE.ADD_CARD_SUBSCRIBER)}
+        onCreate={(value) => openInviteModal(value, INVITE_TYPE.ADD_CARD_SUBSCRIBER)}
         showTooltips
         showInviteOptions
       />

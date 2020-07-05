@@ -1,13 +1,13 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import { MdClose, MdLock } from 'react-icons/md';
+import { MdClose } from 'react-icons/md';
 
 import { getStyleApplicationFn } from 'utils/style';
 import style from './card-tag.css';
 
 const s = getStyleApplicationFn(style);
 
-const CardTag = React.forwardRef(({ name, locked, onClick, onRemoveClick, className }, ref) => {
+const CardTag = React.forwardRef(({ name, onClick, onRemoveClick, className }, ref) => {
   const onRemove = (e) => {
     e.stopPropagation();
     onRemoveClick(name);
@@ -23,10 +23,7 @@ const CardTag = React.forwardRef(({ name, locked, onClick, onRemoveClick, classN
       ref={ref}
       className={s(`card-tag ${onClick ? 'button-hover' : ''} ${className}`)}
     >
-      <div className={s('flex items-center')}>
-        <div> {name} </div>
-        {locked && <MdLock className={s('ml-xs')} />}
-      </div>
+      <div> {name} </div>
       {onRemoveClick && (
         <MdClose onClick={(e) => onRemove(e)} className={s('ml-xs button-hover')} />
       )}
@@ -38,15 +35,13 @@ CardTag.displayName = 'CardTag';
 
 CardTag.propTypes = {
   name: PropTypes.node.isRequired,
-  locked: PropTypes.bool,
   onClick: PropTypes.func,
   onRemoveClick: PropTypes.func,
   className: PropTypes.string
 };
 
 CardTag.defaultProps = {
-  className: '',
-  locked: false
+  className: ''
 };
 
 export default CardTag;

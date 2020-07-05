@@ -13,6 +13,11 @@ export const USER_ROLE = {
   MEMBER: 'Member'
 };
 
+export const USER_STATUS = {
+  INVITED: 'Invited',
+  ACTIVE: 'Active'
+};
+
 export const USER_BADGE = {
   BRONZE: 'Bronze',
   SILVER: 'Silver',
@@ -83,6 +88,7 @@ export const ONBOARDING_COMPLETE = -1;
 export default {
   SETTING_SECTION_TYPE,
   USER_ROLE,
+  USER_STATUS,
   USER_BADGE,
   AUDIT,
   USER_PERFORMANCE,

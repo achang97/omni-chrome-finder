@@ -1,7 +1,7 @@
 import _ from 'lodash';
 import * as types from 'actions/actionTypes';
 import { removeIndex, updateIndex, updateArrayOfObjects } from 'utils/array';
-import { convertCardToFrontendFormat, generateCardId, formatInvitedUser } from 'utils/card';
+import { convertCardToFrontendFormat, generateCardId } from 'utils/card';
 import { CARD, FINDER, PROFILE } from 'appConstants';
 
 const initialState = {
@@ -687,18 +687,16 @@ export default function cardsReducer(state = initialState, action) {
     }
     case types.CREATE_INVITE_SUCCESS: {
       const { cardId, invitedUser } = payload;
-      const { modalOpen, edits } = getCardById(cardId);
+      const { inviteType, modalOpen, edits } = getCardById(cardId);
 
       const newEdits = edits;
-      const newUser = formatInvitedUser(invitedUser);
-
-      switch (edits.inviteType) {
-        case CARD.DELAYED_TASK_TYPE.ADD_CARD_OWNER: {
-          newEdits.owners = _.unionBy(edits.owners, [newUser], '_id');
+      switch (inviteType) {
+        case CARD.INVITE_TYPE.ADD_CARD_OWNER: {
+          newEdits.owners = _.unionBy(edits.owners, [invitedUser], '_id');
         }
         // Falls through, as owners are always subscribers
-        case CARD.DELAYED_TASK_TYPE.ADD_CARD_SUBSCRIBER: {
-          newEdits.subscribers = _.unionBy(edits.subscribers, [newUser], '_id');
+        case CARD.INVITE_TYPE.ADD_CARD_SUBSCRIBER: {
+          newEdits.subscribers = _.unionBy(edits.subscribers, [invitedUser], '_id');
           break;
         }
         default:
