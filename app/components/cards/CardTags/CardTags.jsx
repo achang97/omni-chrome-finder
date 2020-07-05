@@ -1,10 +1,12 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
+import axios from 'axios';
 import { IoMdAdd } from 'react-icons/io';
 import _ from 'lodash';
 
 import Select from 'components/common/Select';
-import { ANIMATE } from 'appConstants';
+import { ANIMATE, REQUEST } from 'appConstants';
+import { createConfig } from 'utils/request';
 
 import { getStyleApplicationFn } from 'utils/style';
 import style from './card-tags.css';
@@ -72,7 +74,16 @@ class CardTags extends Component {
     return { maxWidth };
   };
 
-  renderOptionLabel = ({ name }) => <div> {name} </div>;
+  getSelectOptionLabel = ({ name, label, __isNew__ }) => {
+    return __isNew__ ? label : name;
+  };
+
+  handleCreateOption = (name) => {
+    const { token, tags, onChange } = this.props;
+    axios.post(`${REQUEST.URL.SERVER}/tags`, { name }, createConfig(token)).then(({ data }) => {
+      onChange([...tags, data]);
+    });
+  };
 
   renderTag = (tag, index) => {
     const { maxWidth, tags, onTagClick, onRemoveClick, isEditable } = this.props;
@@ -122,6 +133,7 @@ class CardTags extends Component {
       onChange,
       maxWidth,
       isEditable,
+      isCreatable,
       showPlaceholder,
       hideSelectOnBlur,
       showSelect: propsShowSelect
@@ -138,8 +150,9 @@ class CardTags extends Component {
         )}
         style={containerStyle}
       >
-        {stateShowSelect || propsShowSelect ? (
+        {(stateShowSelect || propsShowSelect) && isEditable ? (
           <Select
+            type={isCreatable ? 'creatable' : 'default'}
             className={s('w-full')}
             value={tags}
             options={tagOptions}
@@ -152,9 +165,9 @@ class CardTags extends Component {
             isClearable={false}
             placeholder="Add tags..."
             onBlur={hideSelectOnBlur ? () => this.setState({ showSelect: false }) : null}
-            getOptionLabel={(option) => option.name}
+            getOptionLabel={this.getSelectOptionLabel}
             getOptionValue={(option) => option._id}
-            formatOptionLabel={this.renderOptionLabel}
+            onCreateOption={this.handleCreateOption}
             noOptionsMessage={() => (isSearchingTags ? 'Searching tags...' : 'No options')}
           />
         ) : (
@@ -192,6 +205,7 @@ const TagPropTypes = PropTypes.arrayOf(
 
 CardTags.propTypes = {
   isEditable: PropTypes.bool,
+  isCreatable: PropTypes.bool,
   className: PropTypes.string,
   tags: TagPropTypes.isRequired,
   maxWidth: PropTypes.number,
@@ -205,6 +219,7 @@ CardTags.propTypes = {
   // Redux State
   tagOptions: TagPropTypes.isRequired,
   isSearchingTags: PropTypes.bool,
+  token: PropTypes.string.isRequired,
 
   // Redux Actions
   requestSearchTags: PropTypes.func.isRequired
@@ -213,6 +228,7 @@ CardTags.propTypes = {
 CardTags.defaultProps = {
   className: '',
   isEditable: false,
+  isCreatable: true,
   showPlaceholder: false,
   showSelect: false,
   hideSelectOnBlur: false,

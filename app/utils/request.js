@@ -10,9 +10,7 @@ const REQUEST_TYPE = {
   DELETE: 'DELETE'
 };
 
-function* getConfig(isForm) {
-  const token = yield select((state) => state.auth.token);
-
+export function createConfig(token, isForm = false) {
   const config = {};
 
   if (token) {
@@ -28,11 +26,16 @@ function* getConfig(isForm) {
   return config;
 }
 
+function* getConfig(isForm) {
+  const token = yield select((state) => state.auth.token);
+  return createConfig(token, isForm);
+}
+
 function* doRequest(requestType, path, data, extraParams = {}) {
   const url = `${REQUEST.URL.SERVER}${path}`;
 
   // Read extra params
-  const { isForm = false, cancelToken } = extraParams;
+  const { isForm, cancelToken } = extraParams;
 
   const config = yield call(getConfig, isForm);
   config.cancelToken = cancelToken;
@@ -89,4 +92,4 @@ export function getErrorMessage(error) {
   return message;
 }
 
-export default { doPost, doGet, doPut, doDelete, getErrorMessage };
+export default { doPost, doGet, doPut, doDelete, createConfig, getErrorMessage };

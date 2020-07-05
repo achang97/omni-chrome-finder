@@ -187,6 +187,7 @@ const CardCreateModal = ({
             <div className={s('text-gray-reg text-xs mb-sm')}> Tags </div>
             <CardTags
               isEditable={isEditable}
+              showSelect
               tags={tags}
               onChange={updateCardTags}
               onRemoveClick={({ index }) => removeCardTag(index)}

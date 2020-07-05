@@ -4,10 +4,11 @@ import CardTags from './CardTags';
 
 const mapStateToProps = (state) => {
   const {
-    search: { tags, isSearchingTags }
+    search: { tags, isSearchingTags },
+    auth: { token }
   } = state;
 
-  return { tagOptions: tags, isSearchingTags };
+  return { tagOptions: tags, isSearchingTags, token };
 };
 
 const mapDispatchToProps = {

@@ -6,7 +6,7 @@ import CardUsers from './CardUsers';
 
 const mapStateToProps = (state, ownProps) => {
   const {
-    search: { users, isSearchingUsers, isSearchingInvites },
+    search: { users, isSearchingUsers },
     profile: {
       user: { role }
     }
@@ -25,15 +25,11 @@ const mapStateToProps = (state, ownProps) => {
     .filter(({ isShown }) => isShown)
     .map(({ type }) => ({
       label: type,
-      options: groupedUserOptions[type]
+      options: groupedUserOptions[type] || []
     }));
 
   const isAdmin = role === USER_ROLE.ADMIN;
-  return {
-    userOptions: sectionedOptions,
-    isLoading: isSearchingUsers || isSearchingInvites,
-    isAdmin
-  };
+  return { userOptions: sectionedOptions, isLoading: isSearchingUsers, isAdmin };
 };
 
 const mapDispatchToProps = {
