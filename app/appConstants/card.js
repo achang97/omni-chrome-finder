@@ -90,8 +90,7 @@ export const PERMISSION_OPTIONS = [
 
 export const INVITE_TYPE = {
   ADD_CARD_OWNER: 'addCardOwner',
-  ADD_CARD_SUBSCRIBER: 'addCardSubscriber',
-  ADD_USER_TO_PERMISSION_GROUP: 'addUserToPermissionGroup'
+  ADD_CARD_SUBSCRIBER: 'addCardSubscriber'
 };
 
 export default {

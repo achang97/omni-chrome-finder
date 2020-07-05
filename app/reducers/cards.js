@@ -689,7 +689,7 @@ export default function cardsReducer(state = initialState, action) {
       const { cardId, invitedUser } = payload;
       const { inviteType, modalOpen, edits } = getCardById(cardId);
 
-      const newEdits = edits;
+      const newEdits = { ...edits };
       switch (inviteType) {
         case CARD.INVITE_TYPE.ADD_CARD_OWNER: {
           newEdits.owners = _.unionBy(edits.owners, [invitedUser], '_id');
