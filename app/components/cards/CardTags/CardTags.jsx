@@ -228,7 +228,7 @@ CardTags.propTypes = {
 CardTags.defaultProps = {
   className: '',
   isEditable: false,
-  isCreatable: true,
+  isCreatable: false,
   showPlaceholder: false,
   showSelect: false,
   hideSelectOnBlur: false,

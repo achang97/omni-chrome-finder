@@ -188,6 +188,7 @@ const CardSideDock = ({
             <div className={s('text-gray-reg text-xs mb-sm')}> Tags </div>
             <CardTags
               isEditable={isEditing}
+              isCreatable
               showSelect
               tags={currTags}
               onChange={updateCardTags}
