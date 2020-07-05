@@ -8,6 +8,7 @@ import { Modal, Message } from 'components/common';
 import { UserPropTypes, NodePropTypes } from 'utils/propTypes';
 import { getStyleApplicationFn } from 'utils/style';
 import { usePrevious } from 'utils/react';
+import { isActiveUser } from 'utils/user';
 
 import style from './external-create-modal.css';
 
@@ -98,7 +99,8 @@ const ExternalCreateModal = ({
         bodyClassName={s('px-lg py-reg')}
         primaryButtonProps={{
           text: 'Track',
-          disabled: title === '' || owners.length === 0 || !verificationInterval,
+          disabled:
+            title === '' || owners.filter(isActiveUser).length === 0 || !verificationInterval,
           isLoading: isCreatingCard,
           onClick: requestCreateExternalCard
         }}
