@@ -3,9 +3,19 @@ import PropTypes from 'prop-types';
 import { Route, Redirect } from 'react-router-dom';
 import { ROUTES } from 'appConstants';
 
-const PrivateRoute = ({ isLoggedIn, isVerified, hasCompletedOnboarding, ...givenProps }) => {
+const PrivateRoute = ({
+  isLoggedIn,
+  isVerified,
+  isDisabled,
+  hasCompletedOnboarding,
+  ...givenProps
+}) => {
   const isOnVerifyPage = givenProps.path === ROUTES.VERIFY;
   const isOnCompletedOnboarding = givenProps.path === ROUTES.COMPLETE_ONBOARDING;
+
+  if (isDisabled) {
+    return null;
+  }
 
   if (isLoggedIn) {
     if ((isVerified && hasCompletedOnboarding) || isOnVerifyPage || isOnCompletedOnboarding) {
@@ -27,6 +37,7 @@ const PrivateRoute = ({ isLoggedIn, isVerified, hasCompletedOnboarding, ...given
 PrivateRoute.propTypes = {
   isLoggedIn: PropTypes.bool.isRequired,
   isVerified: PropTypes.bool.isRequired,
+  isDisabled: PropTypes.bool.isRequired,
   hasCompletedOnboarding: PropTypes.bool.isRequired
 };
 

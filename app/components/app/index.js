@@ -1,5 +1,6 @@
 export { default as AutofindListener } from './AutofindListener';
 export { default as ChromeMessageListener } from './ChromeMessageListener';
+export { default as DisabledAlert } from './DisabledAlert';
 export { default as ErrorBoundary } from './ErrorBoundary';
 export { default as ExternalVerification } from './ExternalVerification';
 export { default as ExternalCreateModal } from './ExternalCreateModal';

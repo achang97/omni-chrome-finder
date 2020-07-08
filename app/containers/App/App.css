@@ -90,9 +90,9 @@
 
 /* Anchor tag override */
 .app-container a {
-  @apply no-underline !important;
+  @apply no-underline;
 
-  color: inherit !important;
+  color: inherit;
 
   /* prettier-ignore */
   font-family:
