@@ -1,5 +1,5 @@
 .disabled-alert {
-  @apply rounded-lg text-sm mx-lg my-sm py-lg px-lg;
+  @apply rounded-lg text-sm py-lg px-lg;
 
   background: #fbf5e2;
 }

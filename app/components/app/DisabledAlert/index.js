@@ -1,5 +1,6 @@
 import { connect } from 'react-redux';
 import { USER_ROLE } from 'appConstants/profile';
+import { logout } from 'actions/auth';
 import DisabledAlert from './DisabledAlert';
 
 const mapStateToProps = (state) => {
@@ -15,4 +16,8 @@ const mapStateToProps = (state) => {
   return { disabled, hasPaymentMethod, isAdmin: role === USER_ROLE.ADMIN };
 };
 
-export default connect(mapStateToProps)(DisabledAlert);
+const mapDispatchToProps = {
+  logout
+};
+
+export default connect(mapStateToProps, mapDispatchToProps)(DisabledAlert);

@@ -36,11 +36,6 @@
   margin: 0 !important;
 }
 
-.card-text-editor-wrapper-inactive {
-  border-radius: 8px;
-  cursor: pointer;
-}
-
 .card-question-tooltip {
   max-width: 100%;
 }
@@ -55,10 +50,6 @@
   justify-content: space-between !important;
   border: 0 !important;
   border-radius: 0 !important;
-}
-
-.card-text-editor-view-spacing {
-  @apply px-lg pt-reg mb-xs;
 }
 
 .card-content-spacing {
