@@ -10,16 +10,9 @@ import style from './disabled-alert.css';
 
 const s = getStyleApplicationFn(style);
 
-const DisabledAlert = ({ disabled, hasPaymentMethod, isAdmin, logout }) => {
+const DisabledAlert = ({ disabled, disabledReason, isAdmin, logout }) => {
   if (!disabled) {
     return null;
-  }
-
-  let reason;
-  if (!hasPaymentMethod) {
-    reason = 'Missing Payment Method';
-  } else {
-    reason = 'Failed Payment';
   }
 
   return (
@@ -30,7 +23,7 @@ const DisabledAlert = ({ disabled, hasPaymentMethod, isAdmin, logout }) => {
             <MdPriorityHigh />
           </div>
           <div className={s('flex-1')}>
-            Your Omni account has been disabled for the following reason: <b>{reason}</b>
+            Your Omni account has been disabled for the following reason: <b>{disabledReason}</b>
           </div>
         </div>
         {isAdmin && (
@@ -57,7 +50,7 @@ const DisabledAlert = ({ disabled, hasPaymentMethod, isAdmin, logout }) => {
 DisabledAlert.propTypes = {
   // Redux State
   disabled: PropTypes.bool,
-  hasPaymentMethod: PropTypes.bool,
+  disabledReason: PropTypes.string,
   isAdmin: PropTypes.bool,
 
   // Redux Actions

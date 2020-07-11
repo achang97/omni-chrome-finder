@@ -8,12 +8,12 @@ const mapStateToProps = (state) => {
     profile: {
       user: {
         role,
-        company: { disabled, hasPaymentMethod }
+        company: { disabled, disabledReason }
       }
     }
   } = state;
 
-  return { disabled, hasPaymentMethod, isAdmin: role === USER_ROLE.ADMIN };
+  return { disabled, disabledReason, isAdmin: role === USER_ROLE.ADMIN };
 };
 
 const mapDispatchToProps = {
