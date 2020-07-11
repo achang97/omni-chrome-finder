@@ -37,7 +37,8 @@ export const APP_CONTAINER_ID = 'omni-chrome-ext-react-app';
 export const WEB_APP_ROUTES = {
   EXTENSION: '/extension',
   SIGNUP: '/signup',
-  ONBOARDING: '/onboarding'
+  ONBOARDING: '/onboarding',
+  BILLING: '/settings/billing'
 };
 
 const PROD_WEB_APP_URL = 'https://app.addomni.com';

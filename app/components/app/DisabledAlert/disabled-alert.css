@@ -1,0 +1,9 @@
+.disabled-alert {
+  @apply rounded-lg text-sm py-lg px-lg;
+
+  background: #fbf5e2;
+}
+
+.disabled-alert-icon {
+  @apply bg-yellow-500 rounded-full h-xl w-xl mr-reg flex items-center justify-center;
+}

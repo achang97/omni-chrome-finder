@@ -5,12 +5,13 @@ import PrivateRoute from './PrivateRoute';
 const mapStateToProps = (state) => {
   const {
     auth: { token },
-    profile: { user }
+    profile: { user = {} }
   } = state;
 
   return {
     isLoggedIn: !!token,
-    isVerified: !!(user && user.isVerified),
+    isVerified: !!user.isVerified,
+    isDisabled: !!(user.company && user.company.disabled),
     hasCompletedOnboarding: !!(user && hasCompletedOnboarding(user.onboarding))
   };
 };

@@ -116,10 +116,9 @@ const IntegrationAuthButton = ({
                 href="https://addomnihelp.zendesk.com/hc/en-us/articles/360010492158"
                 target="_blank"
                 rel="noopener noreferrer"
+                className={s('text-blue-500 underline text-xs mt-reg text-center')}
               >
-                <div className={s('text-blue-500 text-xs mt-reg text-center')}>
-                  How to set up {title} Server with Omni
-                </div>
+                How to set up {title} Server with Omni
               </a>
             </>
           ) : (

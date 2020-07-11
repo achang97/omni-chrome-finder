@@ -16,7 +16,8 @@ import {
   ToggleTab,
   MessageModal,
   MinimizeButton,
-  SearchBar
+  SearchBar,
+  DisabledAlert
 } from 'components/app';
 import { Dock } from 'components/common';
 import { PublicRoute, PrivateRoute } from 'components/routes';
@@ -75,7 +76,7 @@ const App = ({ dockVisible, isLoggedIn, user, showAutofind, requestGetUser, requ
   }, [isLoggedIn, user, isVerified, requestGetUser, requestGetTasks]);
 
   const completedOnboarding = user && auth.hasCompletedOnboarding(user.onboarding);
-  const isValidUser = auth.isValidUser(user);
+  const isValidUser = auth.isValidUser(user) && user.company && !user.company.disabled;
 
   return (
     <div className={s('app-container')} id={APP_CONTAINER_ID}>
@@ -83,10 +84,10 @@ const App = ({ dockVisible, isLoggedIn, user, showAutofind, requestGetUser, requ
         <div className={s(`flex relative flex-col ${isValidUser ? 'h-screen' : ''}`)}>
           <MessageModal />
           <MinimizeButton />
+          {isLoggedIn && <DisabledAlert />}
           {isValidUser && <Header />}
           <Switch>
             <PrivateRoute path={ROUTES.ASK} component={Ask} />
-            {/* <PrivateRoute path={ROUTES.CREATE} component={Create} /> */}
             <PrivateRoute path={ROUTES.TASKS} component={Tasks} />
             <PrivateRoute path={ROUTES.PROFILE} component={Profile} />
             {!completedOnboarding && (
