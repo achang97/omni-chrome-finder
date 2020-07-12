@@ -3,8 +3,8 @@ import PropTypes from 'prop-types';
 import _ from 'lodash';
 import { MdMoreHoriz, MdKeyboardArrowLeft, MdContentCopy, MdAttachFile } from 'react-icons/md';
 import { IoIosShareAlt } from 'react-icons/io';
-import { FaRegFilePdf } from 'react-icons/fa';
-import html2pdf from 'html2pdf.js';
+// import { FaRegFilePdf } from 'react-icons/fa';
+// import html2pdf from 'html2pdf.js';
 import { Timeago, Tooltip, Separator, PlaceholderImg } from 'components/common';
 
 import { copyCardUrl, isApprover } from 'utils/card';
@@ -17,14 +17,14 @@ import CardStatus from '../../CardStatus';
 
 const s = getStyleApplicationFn();
 
-const HTML2PDF_OPTIONS = {
-  margin: 1,
-  filename: 'myfile.pdf',
-  pagebreak: { mode: 'avoid-all' },
-  image: { type: 'jpeg', quality: 1 },
-  html2canvas: { scale: 2, useCORS: true },
-  jsPDF: { unit: 'in', format: 'letter', orientation: 'portrait' }
-};
+// const PDF_WIDTH = 621.572904588;
+// const HTML2PDF_OPTIONS = {
+//   margin: 1,
+//   pagebreak: { mode: 'avoid-all' },
+//   image: { type: 'jpeg', quality: 1 },
+//   html2canvas: { useCORS: true, letterRendering: true },
+//   jsPDF: { unit: 'in', format: 'letter', orientation: 'portrait' }
+// };
 
 const CardHeader = ({
   setToastMessage,
@@ -33,7 +33,6 @@ const CardHeader = ({
   outOfDateReason,
   _id,
   answer,
-  answerModel,
   externalLink,
   question,
   isEditing,
@@ -64,22 +63,46 @@ const CardHeader = ({
         className: `py-xs px-sm rounded-full shadow-md ${
           attachments.length > 0 ? 'gold-gradient' : 'bg-purple-light'
         }`,
+        isShown: !isEditing,
         event: SEGMENT.EVENT.CLICK_VIEW_ATTACHMENTS
       },
-      {
-        Icon: FaRegFilePdf,
-        tooltip: 'Export to PDF',
-        onClick: () => {
-          const htmlStr = `<h2 style="margin-bottom:15px;">${question}</h2>${answerModel}`;
-          html2pdf().set(HTML2PDF_OPTIONS).from(htmlStr, 'string').save(question);
-        },
-        event: SEGMENT.EVENT.EXPORT_CARD_PDF
-      },
+      // {
+      //   Icon: FaRegFilePdf,
+      //   tooltip: 'Export to PDF',
+      //   onClick: () => {
+      //     const frViews = document.getElementsByClassName('fr-view');
+      //     if (frViews.length === 0) {
+      //       setToastMessage('No content to export!');
+      //     } else {
+      //       setToastMessage('Exporting card to PDF!');
+      //       const view = frViews[0];
+      //       const options = {
+      //         ...HTML2PDF_OPTIONS,
+      //         html2canvas: {
+      //           ...HTML2PDF_OPTIONS.html2canvas,
+      //           y: windowPosition.y + window.scrollY,
+      //           x: windowPosition.x + window.scrollX,
+      //           scrollY: window.scrollY,
+      //           scrollX: window.scrollX
+      //         }
+      //       };
+      //       html2pdf()
+      //         .set(options)
+      //         .from(view)
+      //         .then(() => { view.style.width = `${PDF_WIDTH}px` })
+      //         .save(question)
+      //         .then(() => { view.style.width = ''; });
+      //     }
+      //   },
+      //   isShown: !isEditing && answerModel,
+      //   event: SEGMENT.EVENT.EXPORT_CARD_PDF
+      // },
       {
         Icon: MdContentCopy,
         toast: 'Copied answer to clipboard!',
         tooltip: 'Copy Answer',
         onClick: () => copyText(answer || externalLink),
+        isShown: !isEditing,
         event: SEGMENT.EVENT.COPY_CARD_BODY
       },
       {
@@ -88,6 +111,7 @@ const CardHeader = ({
         tooltip: 'Share Card',
         iconClassName: 'text-lg',
         onClick: () => copyCardUrl(_id),
+        isShown: !isEditing,
         event: SEGMENT.EVENT.SHARE_CARD
       },
       {
@@ -95,7 +119,7 @@ const CardHeader = ({
         label: 'More',
         tooltip: 'Advanced Settings',
         onClick: openCardSideDock,
-        showEdit: true,
+        isShown: true,
         event: SEGMENT.EVENT.CLICK_CARD_MORE_MENU
       }
     ];
@@ -106,7 +130,7 @@ const CardHeader = ({
       onClick();
     };
 
-    const filteredButtons = headerButtons.filter(({ showEdit }) => showEdit || !isEditing);
+    const filteredButtons = headerButtons.filter(({ isShown }) => isShown);
     return (
       <div className={s('flex items-center opacity-75')}>
         {filteredButtons.map(
@@ -242,7 +266,6 @@ CardHeader.propTypes = {
   ownUserId: PropTypes.string.isRequired,
   _id: PropTypes.string.isRequired,
   answer: PropTypes.string,
-  answerModel: PropTypes.string,
   externalLink: PropTypes.string,
   question: PropTypes.string,
   isEditing: PropTypes.bool.isRequired,

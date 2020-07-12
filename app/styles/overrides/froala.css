@@ -6,9 +6,8 @@
 }
 
 #omni-chrome-ext-main-container .fr-view {
-  min-height: 100%;
-  flex: 1;
   padding: 10px;
+  font-size: 14px;
 }
 
 #omni-chrome-ext-main-container .fr-element *:not(pre) {
@@ -22,6 +21,8 @@
 }
 
 #omni-chrome-ext-main-container .fr-view pre {
+  margin: 0;
+  font-family: 'Courier New', sans-serif;
   background: #211a1d0d;
   border-radius: 8px;
   padding: 5px;

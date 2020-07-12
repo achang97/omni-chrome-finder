@@ -49,6 +49,7 @@ const Modal = ({
   headerClassName,
   overlayClassName,
   bodyClassName,
+  bodyStyle,
   title,
   children,
   fixed,
@@ -71,7 +72,7 @@ const Modal = ({
       <Transition in={isOpen} timeout={transitionMs} mountOnEnter unmountOnExit>
         {(state) => (
           <div
-            style={{ ...baseStyle, ...MODAL_TRANSITION_STYLES[state], zIndex }}
+            style={{ ...baseStyle, ...MODAL_TRANSITION_STYLES[state], ...bodyStyle, zIndex }}
             className={s(`modal ${className} ${important ? 'modal-important' : ''}`)}
             onClick={(e) => e.stopPropagation()}
             onMouseOver={(e) => e.stopPropagation()}
@@ -157,6 +158,7 @@ Modal.propTypes = {
   className: PropTypes.string,
   headerClassName: PropTypes.string,
   bodyClassName: PropTypes.string,
+  bodyStyle: PropTypes.shape({}),
   overlayClassName: PropTypes.string,
   title: PropTypes.node,
   showHeader: PropTypes.bool,
@@ -186,6 +188,7 @@ Modal.defaultProps = {
   overlayClassName: '',
   headerClassName: '',
   bodyClassName: '',
+  bodyStyle: {},
   className: '',
   title: null,
   primaryButtonProps: null,
