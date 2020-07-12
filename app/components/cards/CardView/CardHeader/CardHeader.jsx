@@ -3,6 +3,8 @@ import PropTypes from 'prop-types';
 import _ from 'lodash';
 import { MdMoreHoriz, MdKeyboardArrowLeft, MdContentCopy, MdAttachFile } from 'react-icons/md';
 import { IoIosShareAlt } from 'react-icons/io';
+import { FaRegFilePdf } from 'react-icons/fa';
+import html2pdf from 'html2pdf.js';
 import { Timeago, Tooltip, Separator, PlaceholderImg } from 'components/common';
 
 import { copyCardUrl, isApprover } from 'utils/card';
@@ -15,6 +17,15 @@ import CardStatus from '../../CardStatus';
 
 const s = getStyleApplicationFn();
 
+const HTML2PDF_OPTIONS = {
+  margin: 1,
+  filename: 'myfile.pdf',
+  pagebreak: { mode: 'avoid-all' },
+  image: { type: 'jpeg', quality: 1 },
+  html2canvas: { scale: 2, useCORS: true },
+  jsPDF: { unit: 'in', format: 'letter', orientation: 'portrait' }
+};
+
 const CardHeader = ({
   setToastMessage,
   ownUserId,
@@ -22,6 +33,7 @@ const CardHeader = ({
   outOfDateReason,
   _id,
   answer,
+  answerModel,
   externalLink,
   question,
   isEditing,
@@ -53,6 +65,15 @@ const CardHeader = ({
           attachments.length > 0 ? 'gold-gradient' : 'bg-purple-light'
         }`,
         event: SEGMENT.EVENT.CLICK_VIEW_ATTACHMENTS
+      },
+      {
+        Icon: FaRegFilePdf,
+        tooltip: 'Export to PDF',
+        onClick: () => {
+          const htmlStr = `<h2 style="margin-bottom:15px;">${question}</h2>${answerModel}`;
+          html2pdf().set(HTML2PDF_OPTIONS).from(htmlStr, 'string').save(question);
+        },
+        event: SEGMENT.EVENT.EXPORT_CARD_PDF
       },
       {
         Icon: MdContentCopy,
@@ -221,6 +242,7 @@ CardHeader.propTypes = {
   ownUserId: PropTypes.string.isRequired,
   _id: PropTypes.string.isRequired,
   answer: PropTypes.string,
+  answerModel: PropTypes.string,
   externalLink: PropTypes.string,
   question: PropTypes.string,
   isEditing: PropTypes.bool.isRequired,

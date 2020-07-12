@@ -15,6 +15,7 @@ const mapStateToProps = (state) => {
 
   const {
     answer,
+    answerModel,
     externalLinkAnswer,
     question,
     outOfDateReason,
@@ -30,6 +31,7 @@ const mapStateToProps = (state) => {
     outOfDateReason,
     ownUserId,
     answer,
+    answerModel,
     externalLink: externalLinkAnswer && externalLinkAnswer.link,
     _id,
     question,
