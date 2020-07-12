@@ -1,6 +1,7 @@
 export const EVENT = {
   // Card
   CLICK_VIEW_ATTACHMENTS: 'Click View Attachments',
+  EXPORT_CARD_PDF: 'Export Card PDF',
   COPY_CARD_BODY: 'Copy Card Body',
   SHARE_CARD: 'Share Card',
   CLICK_CARD_MORE_MENU: 'Click Card More Menu',

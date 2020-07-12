@@ -117,6 +117,7 @@
     "file-loader": "^5.0.2",
     "font-awesome": "^4.7.0",
     "froala-editor": "^3.0.6",
+    "html2pdf.js": "^0.9.2",
     "html2plaintext": "^2.1.2",
     "i": "^0.3.6",
     "image-webpack-loader": "^6.0.0",
