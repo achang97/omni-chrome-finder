@@ -1,6 +1,7 @@
 import _ from 'lodash';
 
 import { URL, CARD, PROFILE } from 'appConstants';
+
 import { getArrayIds } from './array';
 import { isAnyLoading } from './file';
 import { isActiveUser } from './user';

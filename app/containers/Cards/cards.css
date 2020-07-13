@@ -1,5 +1,5 @@
 .card {
-  @apply top-0;
+  @apply top-0 left-0;
 
   position: fixed !important;
   z-index: 102;
