@@ -16,7 +16,7 @@ import { getVideoEmbeddedCode } from 'utils/editor';
 import { createConfig } from 'utils/request';
 import { URL } from 'appConstants/request';
 
-import { CARD_CONFIG, EXTENSION_CONFIG } from './TextEditorProps';
+import { CARD_CONFIG } from './TextEditorProps';
 import style from './text-editor.css';
 
 const s = getStyleApplicationFn(style);
@@ -28,21 +28,19 @@ const EVENT_TYPE = {
 };
 
 class TextEditor extends React.Component {
-  constructor(props) {
-    super(props);
-
-    this.editorRef = React.createRef();
-  }
-
   handleUpload = (type, response) => {
     const { editor } = this.editorRef.current;
-    const { token } = this.props;
+    const { token, onFileUpload } = this.props;
 
     const { key, name } = JSON.parse(response);
     const headers = createConfig(token);
     axios.get(`${URL.SERVER}/files/${key}/accesstoken`, headers).then(({ data }) => {
       const params = queryString.stringify({ token: data.token });
       const location = `${URL.SERVER}/files/bytoken/${key}?${params}`;
+
+      if (onFileUpload) {
+        onFileUpload(response);
+      }
 
       switch (type) {
         case EVENT_TYPE.IMAGE: {
@@ -68,44 +66,45 @@ class TextEditor extends React.Component {
   render() {
     const {
       model,
+      className,
       editorClassName,
       onModelChange,
       readOnly,
       autofocus,
-      editorType,
       placeholder,
       token
     } = this.props;
 
-    const defaultEditorClassName = editorType === 'CARD' ? 'text-editor' : 'text-editor-extension';
-
     if (readOnly) {
       return (
-        <div className={s(`${defaultEditorClassName} ${editorClassName} overflow-auto`)}>
+        <div className={s(`text-editor-container overflow-auto ${className}`)}>
           <FroalaEditorView model={model} />
         </div>
       );
     }
 
     return (
-      <FroalaEditor
-        ref={this.editorRef}
-        config={{
-          ...(editorType === 'CARD' ? CARD_CONFIG : EXTENSION_CONFIG),
-          requestHeaders: createConfig(token).headers,
-          events: {
-            'image.uploaded': (response) => this.handleUpload(EVENT_TYPE.IMAGE, response),
-            'file.uploaded': (response) => this.handleUpload(EVENT_TYPE.FILE, response),
-            'video.uploaded': (response) => this.handleUpload(EVENT_TYPE.VIDEO, response)
-          },
-          autofocus,
-          placeholderText: placeholder,
-          editorClass: s(`${defaultEditorClassName} ${editorClassName}`)
-        }}
-        tag="textarea"
-        model={model}
-        onModelChange={onModelChange}
-      />
+      <div className={s(`text-editor-container ${className}`)}>
+        <FroalaEditor
+          ref={this.editorRef}
+          config={{
+            ...CARD_CONFIG,
+            requestHeaders: createConfig(token).headers,
+            events: {
+              'image.uploaded': (response) => this.handleUpload(EVENT_TYPE.IMAGE, response),
+              'file.uploaded': (response) => this.handleUpload(EVENT_TYPE.FILE, response),
+              'video.uploaded': (response) => this.handleUpload(EVENT_TYPE.VIDEO, response)
+            },
+            autofocus,
+            placeholderText: placeholder,
+            editorClass: s(`text-editor ${editorClassName}`),
+            heightMax: '100vh'
+          }}
+          tag="textarea"
+          model={model}
+          onModelChange={onModelChange}
+        />
+      </div>
     );
   }
 }
@@ -113,10 +112,11 @@ class TextEditor extends React.Component {
 TextEditor.propTypes = {
   model: PropTypes.string,
   onModelChange: PropTypes.func,
+  onFileUpload: PropTypes.func,
+  className: PropTypes.string,
   editorClassName: PropTypes.string,
   readOnly: PropTypes.bool,
   autofocus: PropTypes.bool,
-  editorType: PropTypes.oneOf(['CARD', 'EXTENSION']),
   placeholder: PropTypes.string,
 
   // Redux State
@@ -125,10 +125,10 @@ TextEditor.propTypes = {
 
 TextEditor.defaultProps = {
   model: '',
+  className: '',
   editorClassName: '',
   readOnly: false,
   autofocus: false,
-  editorType: 'CARD',
   placeholder: null
 };
 

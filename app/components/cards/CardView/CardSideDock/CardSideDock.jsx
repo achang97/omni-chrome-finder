@@ -150,9 +150,11 @@ const CardSideDock = ({
 
   const renderAttachments = () => {
     const currAttachments = isEditing ? edits.attachments : attachments;
+    const filteredAttachments = currAttachments.filter(({ inline }) => !inline);
+
     return (
       <CardAttachments
-        attachments={currAttachments}
+        attachments={filteredAttachments}
         isEditable={isEditing}
         onRemoveClick={removeCardAttachment}
         onFileNameChange={({ name, key }) => updateCardAttachmentName(key, name)}

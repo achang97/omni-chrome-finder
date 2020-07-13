@@ -99,8 +99,3 @@ export const CARD_CONFIG = {
     }
   }
 };
-
-export const EXTENSION_CONFIG = {
-  ...BASE_CONFIG,
-  toolbarButtons: ['fontFamily', 'fontSize', '|', 'bold', 'italic', 'underline']
-};

@@ -1,3 +1,4 @@
+import _ from 'lodash';
 import queryString from 'query-string';
 import { URL } from 'appConstants/request';
 
@@ -12,7 +13,7 @@ export function isUploadedFile(key) {
 export function convertAttachmentsToBackendFormat(attachments) {
   return attachments
     .filter(({ key }) => isUploadedFile(key))
-    .map(({ key, location, name, mimetype }) => ({ key, location, name, mimetype }));
+    .map((file) => _.pick(file, ['key', 'location', 'name', 'mimetype', 'inline']));
 }
 
 export function isVideo(type) {

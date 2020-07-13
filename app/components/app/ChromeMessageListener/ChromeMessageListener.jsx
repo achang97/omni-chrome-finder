@@ -2,7 +2,7 @@ import { Component } from 'react';
 import PropTypes from 'prop-types';
 import queryString from 'query-string';
 
-import { CHROME, ROUTES, URL, TASKS, PROFILE } from 'appConstants';
+import { CHROME, ROUTES, URL, TASKS, PROFILE, APP_CONTAINER_ID } from 'appConstants';
 import { getNewCardBaseState } from 'utils/card';
 import { UserPropTypes } from 'utils/propTypes';
 import { convertTextToModel } from 'utils/editor';
@@ -32,9 +32,12 @@ class ChromeMessageListener extends Component {
   }
 
   interceptClickEvent = (e) => {
-    const target = e.target || e.srcElement;
+    let target = e.target || e.srcElement;
+    while (target.id !== APP_CONTAINER_ID && target.tagName !== 'A') {
+      target = target.parentNode;
+    }
 
-    if (target.tagName === 'A') {
+    if (target && target.tagName === 'A') {
       const href = target.getAttribute('href');
       const isExtensionLink = this.openChromeExtension(href);
       if (isExtensionLink) {
