@@ -8,7 +8,8 @@ import {
   convertPermissionsToBackendFormat,
   hasValidEdits,
   isApprover,
-  isExternalCard
+  isExternalCard,
+  getInlineAttachments
 } from 'utils/card';
 import { getModelText } from 'utils/editor';
 import { convertAttachmentsToBackendFormat } from 'utils/file';
@@ -220,11 +221,13 @@ function* convertCardToBackendFormat(card) {
     finderNodeId = finderNode._id;
   }
 
+  const allAttachments = [...attachments, ...getInlineAttachments(answerModel)];
+
   return {
     question,
     answer: answerText,
     answerModel,
-    attachments: convertAttachmentsToBackendFormat(attachments),
+    attachments: convertAttachmentsToBackendFormat(allAttachments),
     ...permissionsInfo,
     owners: cardOwners,
     subscribers: cardSubscribers,

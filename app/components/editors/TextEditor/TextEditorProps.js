@@ -8,6 +8,8 @@ export const BASE_CONFIG = {
   attribution: false,
   quickInsertEnabled: false,
 
+  heightMax: '100vh',
+
   linkAlwaysBlank: true,
   linkAutoPrefix: 'https://',
   linkInsertButtons: ['linkBack'],
@@ -98,9 +100,4 @@ export const CARD_CONFIG = {
       buttonsVisible: 2
     }
   }
-};
-
-export const EXTENSION_CONFIG = {
-  ...BASE_CONFIG,
-  toolbarButtons: ['fontFamily', 'fontSize', '|', 'bold', 'italic', 'underline']
 };

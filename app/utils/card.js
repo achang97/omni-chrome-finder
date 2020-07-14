@@ -1,6 +1,6 @@
 import _ from 'lodash';
 
-import { URL, CARD, PROFILE } from 'appConstants';
+import { URL, CARD, PROFILE, REQUEST } from 'appConstants';
 
 import { getArrayIds } from './array';
 import { isAnyLoading } from './file';
@@ -17,6 +17,7 @@ export function convertCardToFrontendFormat(card) {
     upvotes,
     slackReplies,
     status,
+    attachments,
     ...rest
   } = card;
 
@@ -29,6 +30,7 @@ export function convertCardToFrontendFormat(card) {
   }
 
   const permissions = convertPermissionsToFrontendFormat(userPermissions, permissionGroups);
+  const externalAttachments = attachments.filter(({ inline }) => !inline);
 
   return {
     answerModel: answerModel || '',
@@ -37,6 +39,7 @@ export function convertCardToFrontendFormat(card) {
     permissionGroups,
     outOfDateReason,
     upvotes: getArrayIds(upvotes),
+    attachments: externalAttachments,
     slackThreadIndex: 0,
     slackReplies: slackReplies.map((reply) => ({
       ...reply,
@@ -58,6 +61,26 @@ export function toggleUpvotes(upvoteIds, userId) {
   }
 
   return newUpvotes;
+}
+
+export function getInlineAttachments(answerModel) {
+  // NOTE: This is not a perfect approach, as it just checks for
+  // urls and could potentially result in false positives (ie. if someone
+  // just pasted a link to one of these attachments. However, this logic should be ok for now.
+  const replaceSlashRegex = new RegExp('/', 'g');
+  const baseUrl = REQUEST.URL.SERVER.replace(replaceSlashRegex, '\\/');
+
+  const pattern = `"${baseUrl}\\/files\\/bytoken\\/([^?"]+)\\?token=[^"]+"`;
+  const regexp = new RegExp(pattern, 'g');
+
+  const matches = [...answerModel.matchAll(regexp)];
+
+  const attachments = [];
+  [...matches].forEach((match) => {
+    attachments.push({ key: match[1], inline: true });
+  });
+
+  return attachments;
 }
 
 export function convertPermissionsToBackendFormat(userId, permissions, permissionGroups) {
@@ -187,6 +210,7 @@ export function getDraggableStyle(isDragging, draggableStyle, windowPosition) {
 export default {
   convertCardToFrontendFormat,
   toggleUpvotes,
+  getInlineAttachments,
   convertPermissionsToFrontendFormat,
   convertPermissionsToBackendFormat,
   hasValidPermissions,

@@ -1,28 +1,14 @@
 /* Prev styling */
+.text-editor-container,
 .text-editor {
-  height: 100%;
+  @apply flex flex-col h-full;
 }
 
-.text-editor-extension {
-  height: 150px !important;
-}
-
-.text-editor,
-.text-editor-extension {
-  @apply flex flex-col;
-
-  border: 1px solid #00025f1a;
-  border-radius: 0 0 8px 8px;
-  justify-content: space-between;
-}
-
-.text-editor:hover,
-.text-editor-extension:hover {
+.text-editor-container:hover {
   cursor: text;
 }
 
-.text-editor > div,
-.text-editor-extension > div {
+.text-editor > div {
   border: none !important;
   background: transparent;
 }

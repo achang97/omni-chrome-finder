@@ -78,16 +78,13 @@ const CardContent = ({
     if (!isEditing) {
       textEditorProps = {
         model: answerModel,
-        readOnly: true,
-        wrapperClassName: 'rounded-0',
-        editorClassName: 'card-text-editor-view'
+        readOnly: true
       };
     } else {
       textEditorProps = {
         placeholder: 'Add an answer here',
         model: edits.answerModel,
         onModelChange: updateCardAnswer,
-        editorClassName: 'card-text-editor-view bg-white',
         readOnly: false
       };
     }

@@ -187,7 +187,7 @@ const CardHeader = ({
         {isEditing && status !== CARD.STATUS.NOT_DOCUMENTED && (
           <div className={s('flex cursor-pointer font-bold opacity-75')} onClick={goBackToView}>
             <MdKeyboardArrowLeft className={s('text-gray-dark')} />
-            <div className={s('underline text-purple-reg')}> Back to View </div>
+            <div className={s('underline text-purple-reg')}> Back </div>
           </div>
         )}
         {/* Case 2: Card is not yet documented */}

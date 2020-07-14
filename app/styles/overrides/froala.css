@@ -8,6 +8,8 @@
 #omni-chrome-ext-main-container .fr-view {
   padding: 10px;
   font-size: 14px;
+  min-height: 100%;
+  color: black;
 }
 
 #omni-chrome-ext-main-container .fr-element *:not(pre) {
@@ -50,6 +52,10 @@
 
 #omni-chrome-ext-main-container .fr-view ul {
   list-style: disc;
+}
+
+#omni-chrome-ext-main-container .fr-toolbar {
+  border: none !important;
 }
 
 #omni-chrome-ext-main-container .fr-toolbar .fr-btn-grp {
