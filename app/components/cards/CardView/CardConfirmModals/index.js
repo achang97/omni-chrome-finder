@@ -1,20 +1,16 @@
 import { connect } from 'react-redux';
 import {
   updateOutOfDateReason,
-  updateCardSelectedThreadIndex,
-  toggleCardSelectedMessage,
   updateInviteRole,
   updateInviteEmail,
   closeCardModal,
   closeCard,
   cancelEditCard,
-  cancelEditCardMessages,
   requestDeleteCard,
   requestUpdateCard,
   requestMarkUpToDate,
   requestMarkOutOfDate,
   requestArchiveCard,
-  requestGetSlackThread,
   requestCreateInvite
 } from 'actions/cards';
 import CardConfirmModals from './CardConfirmModals';
@@ -23,12 +19,7 @@ const mapStateToProps = (state) => {
   const {
     cards: {
       activeCard: {
-        isEditing,
-        slackReplies,
-        edits,
         modalOpen,
-        slackThreadConvoPairs,
-        slackThreadIndex,
         deleteError,
         isDeletingCard,
         updateError,
@@ -37,8 +28,6 @@ const mapStateToProps = (state) => {
         markStatusError,
         isArchivingCard,
         archiveError,
-        isGettingSlackThread,
-        getSlackThreadError,
         outOfDateReasonInput,
         inviteEmail,
         inviteRole,
@@ -50,12 +39,7 @@ const mapStateToProps = (state) => {
   } = state;
 
   return {
-    isEditing,
-    slackReplies,
-    edits,
     modalOpen,
-    slackThreadConvoPairs,
-    slackThreadIndex,
     deleteError,
     isDeletingCard,
     updateError,
@@ -64,8 +48,6 @@ const mapStateToProps = (state) => {
     markStatusError,
     isArchivingCard,
     archiveError,
-    isGettingSlackThread,
-    getSlackThreadError,
     outOfDateReasonInput,
     inviteEmail,
     inviteRole,
@@ -77,20 +59,16 @@ const mapStateToProps = (state) => {
 
 const mapDispatchToProps = {
   updateOutOfDateReason,
-  updateCardSelectedThreadIndex,
-  toggleCardSelectedMessage,
   updateInviteRole,
   updateInviteEmail,
   closeCardModal,
   closeCard,
   cancelEditCard,
-  cancelEditCardMessages,
   requestDeleteCard,
   requestUpdateCard,
   requestMarkUpToDate,
   requestMarkOutOfDate,
   requestArchiveCard,
-  requestGetSlackThread,
   requestCreateInvite
 };
 

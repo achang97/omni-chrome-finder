@@ -19,6 +19,7 @@ import CardSideDock from '../CardSideDock';
 import CardCreateModal from '../CardCreateModal';
 import CardFinderModal from '../CardFinderModal';
 import CardConfirmModals from '../CardConfirmModals';
+import CardSlackModals from '../CardSlackModals';
 import CardHeader from '../CardHeader';
 import CardFooter from '../CardFooter';
 
@@ -311,6 +312,7 @@ const CardContent = ({
         <CardFinderModal />
         <CardCreateModal />
         <CardConfirmModals />
+        <CardSlackModals />
       </div>
     );
   };
