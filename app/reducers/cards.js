@@ -43,7 +43,7 @@ const BASE_CARD_STATE = {
   subscribers: [],
   question: '',
   answerModel: '',
-  inviteRole: USER.ROLE.MEMBER
+  inviteRole: USER.ROLE.VIEWER
 };
 
 export default function cardsReducer(state = initialState, action) {
@@ -706,7 +706,7 @@ export default function cardsReducer(state = initialState, action) {
       return updateCardById(cardId, {
         isCreatingInvite: false,
         modalOpen: { ...modalOpen, [CARD.MODAL_TYPE.INVITE_USER]: false },
-        inviteRole: USER.ROLE.MEMBER,
+        inviteRole: USER.ROLE.VIEWER,
         edits: newEdits
       });
     }

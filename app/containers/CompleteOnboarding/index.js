@@ -8,16 +8,15 @@ const mapStateToProps = (state) => {
   const {
     auth: { isGettingUser },
     profile: {
-      user: {
-        onboarding: { member, admin },
-        role
-      }
+      user: { onboarding, role }
     },
     display: { dockVisible }
   } = state;
 
-  const currSection = role === USER.ROLE.MEMBER ? member : admin;
-  const url = `${URL.WEB_APP}${WEB_APP_ROUTES.ONBOARDING}/${role.toLowerCase()}/${currSection}`;
+  const onboardingType =
+    role === USER.ROLE.ADMIN ? USER.ONBOARDING.TYPE.ADMIN : USER.ONBOARDING.TYPE.MEMBER;
+
+  const url = `${URL.WEB_APP}${WEB_APP_ROUTES.ONBOARDING}/${onboardingType}/${onboarding[onboardingType]}`;
 
   return {
     dockVisible,
