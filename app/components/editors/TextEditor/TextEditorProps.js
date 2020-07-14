@@ -8,6 +8,8 @@ export const BASE_CONFIG = {
   attribution: false,
   quickInsertEnabled: false,
 
+  heightMax: '100vh',
+
   linkAlwaysBlank: true,
   linkAutoPrefix: 'https://',
   linkInsertButtons: ['linkBack'],

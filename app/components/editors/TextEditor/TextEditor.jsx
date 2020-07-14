@@ -28,19 +28,22 @@ const EVENT_TYPE = {
 };
 
 class TextEditor extends React.Component {
+  constructor(props) {
+    super(props);
+    this.editorRef = React.createRef();
+  }
+
   handleUpload = (type, response) => {
     const { editor } = this.editorRef.current;
-    const { token, onFileUpload } = this.props;
+    const { token } = this.props;
 
-    const { key, name } = JSON.parse(response);
+    const attachment = JSON.parse(response);
+    const { key, name } = attachment;
+
     const headers = createConfig(token);
     axios.get(`${URL.SERVER}/files/${key}/accesstoken`, headers).then(({ data }) => {
       const params = queryString.stringify({ token: data.token });
       const location = `${URL.SERVER}/files/bytoken/${key}?${params}`;
-
-      if (onFileUpload) {
-        onFileUpload(response);
-      }
 
       switch (type) {
         case EVENT_TYPE.IMAGE: {
@@ -97,8 +100,7 @@ class TextEditor extends React.Component {
             },
             autofocus,
             placeholderText: placeholder,
-            editorClass: s(`text-editor ${editorClassName}`),
-            heightMax: '100vh'
+            editorClass: s(`text-editor ${editorClassName}`)
           }}
           tag="textarea"
           model={model}
@@ -112,7 +114,6 @@ class TextEditor extends React.Component {
 TextEditor.propTypes = {
   model: PropTypes.string,
   onModelChange: PropTypes.func,
-  onFileUpload: PropTypes.func,
   className: PropTypes.string,
   editorClassName: PropTypes.string,
   readOnly: PropTypes.bool,
