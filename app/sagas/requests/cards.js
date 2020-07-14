@@ -27,6 +27,7 @@ import {
   ARCHIVE_CARD_REQUEST,
   ADD_BOOKMARK_REQUEST,
   REMOVE_BOOKMARK_REQUEST,
+  TOGGLE_SUBSCRIBE_REQUEST,
   ADD_CARD_ATTACHMENT_REQUEST,
   GET_SLACK_THREAD_REQUEST,
   CREATE_INVITE_REQUEST
@@ -52,6 +53,8 @@ import {
   handleAddBookmarkError,
   handleRemoveBookmarkSuccess,
   handleRemoveBookmarkError,
+  handleToggleSubscribeSuccess,
+  handleToggleSubscribeError,
   handleAddCardAttachmentSuccess,
   handleAddCardAttachmentError,
   handleGetSlackThreadSuccess,
@@ -75,6 +78,7 @@ export default function* watchCardsRequests() {
       ARCHIVE_CARD_REQUEST,
       ADD_BOOKMARK_REQUEST,
       REMOVE_BOOKMARK_REQUEST,
+      TOGGLE_SUBSCRIBE_REQUEST,
       ADD_CARD_ATTACHMENT_REQUEST,
       GET_SLACK_THREAD_REQUEST,
       CREATE_INVITE_REQUEST
@@ -100,6 +104,10 @@ export default function* watchCardsRequests() {
       }
       case TOGGLE_UPVOTE_REQUEST: {
         yield fork(toggleUpvote, payload);
+        break;
+      }
+      case TOGGLE_SUBSCRIBE_REQUEST: {
+        yield fork(toggleSubscribe, payload);
         break;
       }
       case MARK_UP_TO_DATE_REQUEST: {
@@ -298,6 +306,23 @@ function* toggleUpvote({ upvotes }) {
     yield put(handleToggleUpvoteSuccess(card));
   } catch (error) {
     yield put(handleToggleUpvoteError(cardId, getErrorMessage(error), oldUpvotes));
+  }
+}
+
+function* toggleSubscribe() {
+  const { _id: cardId, subscribers } = yield call(getActiveCard);
+  const userId = yield call(getUserId);
+
+  try {
+    const subscriberIds = getArrayIds(subscribers);
+    const newSubscriberIds = subscribers.some(({ _id }) => _id === userId)
+      ? _.difference(subscriberIds, [userId])
+      : _.union(subscriberIds, [userId]);
+
+    const card = yield call(doPut, `/cards/${cardId}`, { subscribers: newSubscriberIds });
+    yield put(handleToggleSubscribeSuccess(card));
+  } catch (error) {
+    yield put(handleToggleSubscribeError(cardId, getErrorMessage(error)));
   }
 }
 

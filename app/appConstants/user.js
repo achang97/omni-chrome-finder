@@ -6,6 +6,8 @@ export const ROLE = {
   VIEWER: 'Viewer'
 };
 
+export const ROLE_LIST = [ROLE.ADMIN, ROLE.EDITOR, ROLE.VIEWER];
+
 export const STATUS = {
   INVITED: 'Invited',
   ACTIVE: 'Active'
@@ -86,6 +88,7 @@ export const ONBOARDING = {
 
 export default {
   ROLE,
+  ROLE_LIST,
   STATUS,
   BADGE,
   AUDIT,

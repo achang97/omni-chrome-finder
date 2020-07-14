@@ -9,6 +9,7 @@ import { Dropdown, ContextMenu, CircleButton, Tooltip } from 'components/common'
 import { getNewCardBaseState } from 'utils/card';
 import { UserPropTypes, NodePropTypes } from 'utils/propTypes';
 import { getStyleApplicationFn } from 'utils/style';
+import { isEditor } from 'utils/auth';
 import { FINDER, SEGMENT } from 'appConstants';
 
 import MoveFolder from 'assets/images/finder/move-folder.svg';
@@ -108,6 +109,8 @@ const FinderHeader = ({
     const finderNode = isSegment ? null : activeNode;
     const isMoving = moveNodes.length !== 0;
 
+    const canEdit = isEditor(user.role);
+
     const onClickWrapper = (onClick) => {
       return () => {
         onClick();
@@ -147,14 +150,17 @@ const FinderHeader = ({
         //   }
         // ],
         showModal: false
-      },
-      {
+      }
+    ];
+
+    if (canEdit) {
+      CONTEXT_MENU_OPTIONS.push({
         label: 'New Folder',
         onClick: onClickWrapper(() => openFinderModal(finderId, FINDER.MODAL_TYPE.CREATE_FOLDER)),
         disabled: isSegment,
         showModal: true
-      }
-    ];
+      });
+    }
 
     const filteredContextMenuOptions = CONTEXT_MENU_OPTIONS.filter(
       ({ showModal }) => !isModal || showModal
@@ -181,7 +187,7 @@ const FinderHeader = ({
             />
           }
         />
-        {!isModal && (
+        {!isModal && canEdit && (
           <Tooltip tooltip="Move Content">
             <CircleButton
               size="auto"

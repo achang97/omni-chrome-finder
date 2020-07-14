@@ -3,6 +3,7 @@ import _ from 'lodash';
 import { URL, CARD, USER, REQUEST } from 'appConstants';
 
 import { getArrayIds } from './array';
+import { isEditor } from './auth';
 import { isAnyLoading } from './file';
 import { isActiveUser } from './user';
 import { copyText } from './window';
@@ -144,6 +145,14 @@ export function isExistingCard(cardId) {
 
 export function isJustMe(permissions) {
   return permissions && permissions.value === CARD.PERMISSION_OPTION.JUST_ME;
+}
+
+export function canEditCard(user, card) {
+  const { role, _id: userId } = user;
+  const { asker = {}, owners = [] } = card;
+
+  // TODO: Also check the specified viewers who have been granted Edit Access
+  return isEditor(role) || asker._id === userId || owners.some(({ _id }) => _id === userId);
 }
 
 export function isApprover(user) {

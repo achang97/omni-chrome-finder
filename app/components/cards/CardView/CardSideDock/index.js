@@ -18,38 +18,38 @@ import {
   updateInviteEmail,
   editCard
 } from 'actions/cards';
-import { ROLE } from 'appConstants/user';
+import { canEditCard } from 'utils/card';
 import CardSideDock from './CardSideDock';
 
 const mapStateToProps = (state) => {
   const {
-    cards: {
-      activeCard: {
-        isEditing,
-        status,
-        finderNode,
-        owners,
-        subscribers,
-        attachments,
-        tags,
-        permissions,
-        permissionGroups,
-        verificationInterval,
-        isDeletingCard,
-        createdAt,
-        updatedAt,
-        sideDockOpen,
-        edits
-      }
-    },
-    profile: {
-      user: { role, _id: userId }
-    }
+    cards: { activeCard },
+    profile: { user }
   } = state;
 
-  return {
-    hasDeleteAccess: role === ROLE.ADMIN || owners.some(({ _id }) => _id === userId),
+  const {
     isEditing,
+    status,
+    finderNode,
+    owners,
+    subscribers,
+    attachments,
+    tags,
+    permissions,
+    permissionGroups,
+    verificationInterval,
+    isDeletingCard,
+    createdAt,
+    updatedAt,
+    sideDockOpen,
+    edits
+  } = activeCard;
+
+  const canEdit = canEditCard(user, activeCard);
+
+  return {
+    canEdit,
+    isEditing: isEditing && canEdit,
     status,
     finderNode,
     owners,

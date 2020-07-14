@@ -53,4 +53,15 @@ export function getIntegrationAuthLink(userId, token, integration, queryParams =
   }
 }
 
-export default { hasCompletedOnboarding, isValidUser, isLoggedIn, getIntegrationAuthLink };
+export function isEditor(role) {
+  const EDITOR_ROLES = [USER.ROLE.ADMIN, USER.ROLE.EDITOR];
+  return EDITOR_ROLES.includes(role);
+}
+
+export default {
+  hasCompletedOnboarding,
+  isValidUser,
+  isLoggedIn,
+  getIntegrationAuthLink,
+  isEditor
+};

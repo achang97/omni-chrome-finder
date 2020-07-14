@@ -30,7 +30,7 @@ const DATE_FORMAT = 'MMM DD, YYYY';
 const SIDE_DOCK_TRANSITION_MS = 200;
 
 const CardSideDock = ({
-  hasDeleteAccess,
+  canEdit,
   isEditing,
   status,
   finderNode,
@@ -240,7 +240,7 @@ const CardSideDock = ({
             <div className={s('text-purple-gray-50')}>{moment(updatedAt).format(DATE_FORMAT)}</div>
           </div>
         </div>
-        {hasDeleteAccess && (
+        {canEdit && (
           <div className={s('mt-lg')}>
             {FOOTER_BUTTONS.map(({ text, Icon, disabled, modalType }) => (
               <Button
@@ -356,7 +356,7 @@ const CardSideDock = ({
                       className={s(i < CARD_SECTIONS.length - 1 ? 'mb-lg' : '')}
                       title={title}
                       hint={hint}
-                      headerEnd={renderEditButton()}
+                      headerEnd={canEdit && renderEditButton()}
                     >
                       {renderFn(justMe)}
                     </CardSection>
@@ -375,7 +375,7 @@ const CardSideDock = ({
 };
 
 CardSideDock.propTypes = {
-  hasDeleteAccess: PropTypes.bool.isRequired,
+  canEdit: PropTypes.bool.isRequired,
   isEditing: PropTypes.bool.isRequired,
   status: PropTypes.oneOf(Object.values(STATUS)).isRequired,
   path: PropTypes.arrayOf(PropTypes.object),

@@ -255,6 +255,18 @@ export function handleMarkOutOfDateError(cardId, error) {
   return { type: types.MARK_OUT_OF_DATE_ERROR, payload: { cardId, error } };
 }
 
+export function requestToggleSubscribe() {
+  return { type: types.TOGGLE_SUBSCRIBE_REQUEST, payload: {} };
+}
+
+export function handleToggleSubscribeSuccess(card) {
+  return { type: types.TOGGLE_SUBSCRIBE_SUCCESS, payload: { card } };
+}
+
+export function handleToggleSubscribeError(cardId, error) {
+  return { type: types.TOGGLE_SUBSCRIBE_ERROR, payload: { cardId, error } };
+}
+
 export function requestArchiveCard() {
   return { type: types.ARCHIVE_CARD_REQUEST, payload: {} };
 }

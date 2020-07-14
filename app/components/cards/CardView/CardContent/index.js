@@ -7,28 +7,32 @@ import {
   openCardSideDock,
   requestAddCardAttachment
 } from 'actions/cards';
+import { canEditCard } from 'utils/card';
 import CardContent from './CardContent';
 
 const mapStateToProps = (state) => {
   const {
-    cards: {
-      activeCard: {
-        _id,
-        question,
-        answerModel,
-        status,
-        attachments,
-        slackThreadConvoPairs,
-        slackReplies,
-        externalLinkAnswer,
-        isEditing,
-        edits,
-        hasLoaded,
-        isGettingCard,
-        getError
-      }
-    }
+    cards: { activeCard },
+    profile: { user }
   } = state;
+
+  const {
+    _id,
+    question,
+    answerModel,
+    status,
+    attachments,
+    slackThreadConvoPairs,
+    slackReplies,
+    externalLinkAnswer,
+    isEditing,
+    edits,
+    hasLoaded,
+    isGettingCard,
+    getError
+  } = activeCard;
+
+  const canEdit = canEditCard(user, activeCard);
 
   return {
     _id,
@@ -39,7 +43,7 @@ const mapStateToProps = (state) => {
     slackThreadConvoPairs,
     slackReplies,
     externalLinkAnswer,
-    isEditing,
+    isEditing: isEditing && canEdit,
     edits,
     hasLoaded,
     isGettingCard,

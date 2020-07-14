@@ -8,6 +8,8 @@ import { UserPropTypes } from 'utils/propTypes';
 import { convertTextToModel } from 'utils/editor';
 import { isValidUser } from 'utils/auth';
 
+// const FROALA_EDIT_CLASSNAME = 'fr-element';
+
 class ChromeMessageListener extends Component {
   componentDidMount() {
     chrome.runtime.onMessage.addListener(this.listener);
@@ -33,9 +35,22 @@ class ChromeMessageListener extends Component {
 
   interceptClickEvent = (e) => {
     let target = e.target || e.srcElement;
-    while (target && target.id !== APP_CONTAINER_ID && target.tagName !== 'A') {
+    while (
+      target &&
+      target !== document.body &&
+      target.id !== APP_CONTAINER_ID &&
+      target.tagName !== 'A'
+    ) {
       target = target.parentNode;
     }
+
+    // let parent = target.parentNode;
+    // while (parent && parent !== document.body) {
+    //   if (parent.className.includes(FROALA_EDIT_CLASSNAME)) {
+    //     return;
+    //   }
+    //   parent = parent.parentNode;
+    // }
 
     if (target && target.tagName === 'A') {
       const href = target.getAttribute('href');

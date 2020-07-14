@@ -3,7 +3,7 @@ import PropTypes from 'prop-types';
 
 import { ConfirmModal, Select } from 'components/common';
 import { MODAL_TYPE } from 'appConstants/card';
-import { ROLE } from 'appConstants/user';
+import { ROLE_LIST } from 'appConstants/user';
 
 import { createSelectOptions, createSelectOption } from 'utils/select';
 import { getStyleApplicationFn } from 'utils/style';
@@ -66,7 +66,7 @@ const CardConfirmModals = ({
           <Select
             value={createSelectOption(inviteRole)}
             placeholder="Select invite role"
-            options={createSelectOptions(Object.values(ROLE))}
+            options={createSelectOptions(ROLE_LIST)}
             onChange={({ value }) => updateInviteRole(value)}
             className={s('flex-1 ml-xs')}
           />
@@ -255,7 +255,7 @@ CardConfirmModals.propTypes = {
   activeCardIndex: PropTypes.number.isRequired,
   modalOpen: PropTypes.objectOf(PropTypes.bool).isRequired,
   inviteEmail: PropTypes.string,
-  inviteRole: PropTypes.oneOf(Object.values(ROLE)),
+  inviteRole: PropTypes.oneOf(ROLE_LIST),
   isCreatingInvite: PropTypes.bool,
   createInviteError: PropTypes.string,
   deleteError: PropTypes.string,
