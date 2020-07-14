@@ -1,12 +1,13 @@
 import _ from 'lodash';
 import queryString from 'query-string';
-import { INTEGRATIONS, NODE_ENV, REQUEST, PROFILE } from 'appConstants';
+import { INTEGRATIONS, NODE_ENV, REQUEST, USER } from 'appConstants';
 
 export function hasCompletedOnboarding(onboarding) {
   return (
     !!onboarding &&
-    onboarding.admin === PROFILE.ONBOARDING_COMPLETE &&
-    onboarding.member === PROFILE.ONBOARDING_COMPLETE
+    Object.values(USER.ONBOARDING.TYPE).every(
+      (type) => onboarding[type] === USER.ONBOARDING.COMPLETE
+    )
   );
 }
 

@@ -2,7 +2,7 @@ import { Component } from 'react';
 import PropTypes from 'prop-types';
 import queryString from 'query-string';
 
-import { CHROME, ROUTES, URL, TASKS, PROFILE, APP_CONTAINER_ID } from 'appConstants';
+import { CHROME, ROUTES, URL, TASKS, USER, APP_CONTAINER_ID } from 'appConstants';
 import { getNewCardBaseState } from 'utils/card';
 import { UserPropTypes } from 'utils/propTypes';
 import { convertTextToModel } from 'utils/editor';
@@ -136,7 +136,7 @@ class ChromeMessageListener extends Component {
             toggleAskTeammate();
           }
           updateAskSearchText(selectedText);
-          requestLogAudit(PROFILE.AUDIT.TYPE.CONTEXT_MENU_SEARCH, { query: selectedText });
+          requestLogAudit(USER.AUDIT.TYPE.CONTEXT_MENU_SEARCH, { query: selectedText });
           history.push(ROUTES.ASK);
           break;
         }

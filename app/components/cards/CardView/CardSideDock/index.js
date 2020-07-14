@@ -18,7 +18,7 @@ import {
   updateInviteEmail,
   editCard
 } from 'actions/cards';
-import { USER_ROLE } from 'appConstants/profile';
+import { ROLE } from 'appConstants/user';
 import CardSideDock from './CardSideDock';
 
 const mapStateToProps = (state) => {
@@ -48,7 +48,7 @@ const mapStateToProps = (state) => {
   } = state;
 
   return {
-    hasDeleteAccess: role === USER_ROLE.ADMIN || owners.some(({ _id }) => _id === userId),
+    hasDeleteAccess: role === ROLE.ADMIN || owners.some(({ _id }) => _id === userId),
     isEditing,
     status,
     finderNode,

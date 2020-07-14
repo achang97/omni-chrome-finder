@@ -1,7 +1,7 @@
 import { take, put, select } from 'redux-saga/effects';
 import { TOGGLE_DOCK } from 'actions/actionTypes';
 import { requestLogAudit } from 'actions/auditLog';
-import { AUDIT } from 'appConstants/profile';
+import { AUDIT } from 'appConstants/user';
 
 export default function* watchAuditLogActions() {
   while (true) {

@@ -14,7 +14,7 @@ import {
 import { getModelText } from 'utils/editor';
 import { convertAttachmentsToBackendFormat } from 'utils/file';
 import { STATUS, PERMISSION_OPTION, VERIFICATION_INTERVAL_OPTION } from 'appConstants/card';
-import { AUDIT } from 'appConstants/profile';
+import { AUDIT } from 'appConstants/user';
 import { ROOT } from 'appConstants/finder';
 import {
   GET_CARD_REQUEST,

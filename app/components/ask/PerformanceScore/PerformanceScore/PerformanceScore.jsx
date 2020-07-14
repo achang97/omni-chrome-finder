@@ -3,7 +3,7 @@ import PropTypes from 'prop-types';
 import { MdCheck, MdKeyboardArrowLeft, MdKeyboardArrowRight } from 'react-icons/md';
 
 import { BackButton } from 'components/common';
-import { USER_BADGE } from 'appConstants/profile';
+import { BADGE } from 'appConstants/user';
 import { getStyleApplicationFn } from 'utils/style';
 
 import style from './performance-score.css';
@@ -25,13 +25,13 @@ const PerformanceScore = ({
     switch (badge) {
       case null:
         return `${baseText}learn how to use Omni and earn a badge!`;
-      case USER_BADGE.BRONZE:
+      case BADGE.BRONZE:
         return `${baseText}earn a silver badge:`;
-      case USER_BADGE.SILVER:
+      case BADGE.SILVER:
         return `${baseText}earn a gold badge:`;
-      case USER_BADGE.GOLD:
+      case BADGE.GOLD:
         return `${baseText}earn a platinum badge:`;
-      case USER_BADGE.PLATINUM:
+      case BADGE.PLATINUM:
         return "Congrats! You've achieved the highest Omni badge.";
       default:
         return '';
@@ -48,7 +48,7 @@ const PerformanceScore = ({
   const renderAccomplishmentCarousel = () => {
     const numRemainingAccomplishments = remainingAccomplishments.length;
 
-    if (badge === USER_BADGE.PLATINUM || numRemainingAccomplishments === 0) {
+    if (badge === BADGE.PLATINUM || numRemainingAccomplishments === 0) {
       return null;
     }
 

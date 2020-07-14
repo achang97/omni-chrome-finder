@@ -2,7 +2,7 @@ import _ from 'lodash';
 import * as types from 'actions/actionTypes';
 import { removeIndex, updateIndex, updateArrayOfObjects } from 'utils/array';
 import { convertCardToFrontendFormat, generateCardId } from 'utils/card';
-import { CARD, FINDER, PROFILE } from 'appConstants';
+import { CARD, FINDER, USER } from 'appConstants';
 
 const initialState = {
   showCards: false,
@@ -43,7 +43,7 @@ const BASE_CARD_STATE = {
   subscribers: [],
   question: '',
   answerModel: '',
-  inviteRole: PROFILE.USER_ROLE.MEMBER
+  inviteRole: USER.ROLE.MEMBER
 };
 
 export default function cardsReducer(state = initialState, action) {
@@ -706,7 +706,7 @@ export default function cardsReducer(state = initialState, action) {
       return updateCardById(cardId, {
         isCreatingInvite: false,
         modalOpen: { ...modalOpen, [CARD.MODAL_TYPE.INVITE_USER]: false },
-        inviteRole: PROFILE.USER_ROLE.MEMBER,
+        inviteRole: USER.ROLE.MEMBER,
         edits: newEdits
       });
     }

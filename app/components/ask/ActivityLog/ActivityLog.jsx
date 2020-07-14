@@ -6,7 +6,7 @@ import { FaListUl } from 'react-icons/fa';
 import { Loader, Tabs, Tab, Timeago } from 'components/common';
 import { CardUser } from 'components/cards';
 import { SuggestionCard } from 'components/suggestions';
-import { PROFILE, SEGMENT } from 'appConstants';
+import { USER, SEGMENT } from 'appConstants';
 
 import { isSlackCard } from 'utils/card';
 import { getStyleApplicationFn } from 'utils/style';
@@ -20,16 +20,16 @@ const s = getStyleApplicationFn(style, suggestionStyle);
 
 const getActionName = (type) => {
   switch (type) {
-    case PROFILE.AUDIT.TYPE.VIEW_CARD: {
+    case USER.AUDIT.TYPE.VIEW_CARD: {
       return 'viewed';
     }
-    case PROFILE.AUDIT.TYPE.CREATE_CARD: {
+    case USER.AUDIT.TYPE.CREATE_CARD: {
       return 'created';
     }
-    case PROFILE.AUDIT.TYPE.UPDATE_CARD: {
+    case USER.AUDIT.TYPE.UPDATE_CARD: {
       return 'updated';
     }
-    case PROFILE.AUDIT.TYPE.SIGN_UP: {
+    case USER.AUDIT.TYPE.SIGN_UP: {
       return 'joined the team! 🎉';
     }
     default: {

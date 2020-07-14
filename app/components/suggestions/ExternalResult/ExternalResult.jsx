@@ -7,7 +7,7 @@ import { CardStatusIndicator } from 'components/cards';
 import { copyText } from 'utils/window';
 import { getStyleApplicationFn } from 'utils/style';
 import { createHighlightedElement } from 'utils/search';
-import { PROFILE, SEGMENT, URL_REGEX } from 'appConstants';
+import { USER, SEGMENT, URL_REGEX } from 'appConstants';
 
 import style from './external-result.css';
 import sharedStyle from '../styles/external-result.css';
@@ -58,7 +58,7 @@ const ExternalResult = ({
 
   const onResultClick = () => {
     trackEvent(SEGMENT.EVENT.OPEN_EXTERNAL_DOC, { Type: type, Title: title }, true);
-    requestLogAudit(PROFILE.AUDIT.TYPE.OPEN_EXTERNAL_DOC, { type, title });
+    requestLogAudit(USER.AUDIT.TYPE.OPEN_EXTERNAL_DOC, { type, title });
     window.open(url, '_blank');
   };
 

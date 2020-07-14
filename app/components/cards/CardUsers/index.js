@@ -1,7 +1,7 @@
 import _ from 'lodash';
 import { connect } from 'react-redux';
 import { requestSearchUsers } from 'actions/search';
-import { USER_ROLE, USER_STATUS } from 'appConstants/profile';
+import { ROLE, STATUS } from 'appConstants/user';
 import CardUsers from './CardUsers';
 
 const mapStateToProps = (state, ownProps) => {
@@ -18,8 +18,8 @@ const mapStateToProps = (state, ownProps) => {
   const groupedUserOptions = _.groupBy(userOptions, 'status');
 
   const sections = [
-    { type: USER_STATUS.ACTIVE, isShown: true },
-    { type: USER_STATUS.INVITED, isShown: showInviteOptions }
+    { type: STATUS.ACTIVE, isShown: true },
+    { type: STATUS.INVITED, isShown: showInviteOptions }
   ];
   const sectionedOptions = sections
     .filter(({ isShown }) => isShown)
@@ -28,7 +28,7 @@ const mapStateToProps = (state, ownProps) => {
       options: groupedUserOptions[type] || []
     }));
 
-  const isAdmin = role === USER_ROLE.ADMIN;
+  const isAdmin = role === ROLE.ADMIN;
   return { userOptions: sectionedOptions, isLoading: isSearchingUsers, isAdmin };
 };
 

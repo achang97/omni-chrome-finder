@@ -1,4 +1,4 @@
-import { USER_BADGE, USER_PERFORMANCE } from 'appConstants/profile';
+import { BADGE, PERFORMANCE } from 'appConstants/user';
 import { colors } from 'styles/colors';
 
 import bronzeImg from 'assets/images/badges/bronze.svg';
@@ -34,69 +34,69 @@ export const PROGRESS_BAR_STYLES = {
 };
 
 export const BADGE_PROPS = {
-  [USER_BADGE.BRONZE]: {
+  [BADGE.BRONZE]: {
     imgSrc: bronzeImg,
     textClassName: 'badge-bronze'
   },
-  [USER_BADGE.SILVER]: {
+  [BADGE.SILVER]: {
     imgSrc: silverImg,
     textClassName: 'badge-silver'
   },
-  [USER_BADGE.GOLD]: {
+  [BADGE.GOLD]: {
     imgSrc: goldImg,
     textClassName: 'badge-gold'
   },
-  [USER_BADGE.PLATINUM]: {
+  [BADGE.PLATINUM]: {
     imgSrc: platinumImg,
     textClassName: 'badge-platinum'
   }
 };
 
 export const ACCOMPLISHMENTS = {
-  [USER_PERFORMANCE.CREATE_CARD]: {
+  [PERFORMANCE.CREATE_CARD]: {
     label: 'Create your first card',
     imgSrc: searchCardImg
   },
-  [USER_PERFORMANCE.SEARCH_OPEN]: {
+  [PERFORMANCE.SEARCH_OPEN]: {
     label: 'Search for a card and open it',
     imgSrc: searchCardImg
   },
-  [USER_PERFORMANCE.MARK_HELPFUL]: {
+  [PERFORMANCE.MARK_HELPFUL]: {
     label: 'Mark a card as helpful',
     imgSrc: markHelpfulImg
   },
-  [USER_PERFORMANCE.ADD_INTEGRATIONS]: {
+  [PERFORMANCE.ADD_INTEGRATIONS]: {
     label: "Add my team's integrations",
     imgSrc: addSlackImg
   },
 
-  [USER_PERFORMANCE.ADD_PROFILE_PICTURE]: {
+  [PERFORMANCE.ADD_PROFILE_PICTURE]: {
     label: 'Add a profile picture',
     imgSrc: profilePictureImg
   },
-  [USER_PERFORMANCE.VERIFY_EXTERNAL]: {
+  [PERFORMANCE.VERIFY_EXTERNAL]: {
     label: 'Verify an external document',
     imgSrc: externalVerifyImg
   },
 
-  [USER_PERFORMANCE.ALL_UP_TO_DATE]: {
+  [PERFORMANCE.ALL_UP_TO_DATE]: {
     label: 'Keep all your cards up to date',
     imgSrc: allUpdatedImg
   },
-  [USER_PERFORMANCE.ADD_SUBSCRIBER]: {
+  [PERFORMANCE.ADD_SUBSCRIBER]: {
     label: 'Add a subscriber to one of your cards',
     imgSrc: addSubscriberImg
   },
-  [USER_PERFORMANCE.CREATE_CARD_RECENT]: {
+  [PERFORMANCE.CREATE_CARD_RECENT]: {
     label: 'Created a card this past week',
     imgSrc: createCardImg
   },
 
-  [USER_PERFORMANCE.OPEN_EXTERNAL_DOC]: {
+  [PERFORMANCE.OPEN_EXTERNAL_DOC]: {
     label: 'Open a document from your integrations',
     imgSrc: existingKnowledgeImg
   },
-  [USER_PERFORMANCE.USE_SLACK_FIND]: {
+  [PERFORMANCE.USE_SLACK_FIND]: {
     label: 'Use /find on slack',
     imgSrc: slackFindImg
   }

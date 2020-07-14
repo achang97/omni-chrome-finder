@@ -6,7 +6,7 @@ import { MdEdit } from 'react-icons/md';
 import { Button, Separator, Loader, CheckBox } from 'components/common';
 import { SettingsSection, ProfilePicture } from 'components/profile';
 
-import { PROFILE, INTEGRATIONS, URL } from 'appConstants';
+import { PROFILE, USER, INTEGRATIONS, URL } from 'appConstants';
 import { UserPropTypes } from 'utils/propTypes';
 
 import { colors } from 'styles/colors';
@@ -62,7 +62,7 @@ const Profile = ({
     {
       sectionType: PROFILE.SETTING_SECTION_TYPE.INTEGRATIONS,
       title: 'Integrations',
-      options: PROFILE.USER_INTEGRATIONS,
+      options: USER.INTEGRATIONS,
       type: 'authButton'
     },
     {
@@ -215,7 +215,7 @@ const Profile = ({
   };
 
   const renderDashboardButton = () => {
-    if (user.role !== PROFILE.USER_ROLE.ADMIN) {
+    if (user.role !== USER.ROLE.ADMIN) {
       return null;
     }
 

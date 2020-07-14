@@ -1,6 +1,6 @@
 import _ from 'lodash';
 
-import { URL, CARD, PROFILE, REQUEST } from 'appConstants';
+import { URL, CARD, USER, REQUEST } from 'appConstants';
 
 import { getArrayIds } from './array';
 import { isAnyLoading } from './file';
@@ -148,7 +148,7 @@ export function isJustMe(permissions) {
 
 export function isApprover(user) {
   // TODO: Change this function so it actually checks the assigned approvers on the card
-  return user.role === PROFILE.USER_ROLE.ADMIN;
+  return user.role === USER.ROLE.ADMIN;
 }
 
 export function getNewCardBaseState(user) {

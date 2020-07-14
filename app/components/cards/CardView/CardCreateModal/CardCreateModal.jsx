@@ -6,7 +6,7 @@ import { MdLock } from 'react-icons/md';
 import { Modal, Message } from 'components/common';
 
 import { HINTS, MODAL_TYPE, INVITE_TYPE } from 'appConstants/card';
-import { SEEN_FEATURES } from 'appConstants/profile';
+import { SEEN_FEATURES } from 'appConstants/user';
 import { hasValidEdits, isExistingCard, isJustMe } from 'utils/card';
 import { getStyleApplicationFn } from 'utils/style';
 
