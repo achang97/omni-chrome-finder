@@ -33,7 +33,7 @@ class ChromeMessageListener extends Component {
 
   interceptClickEvent = (e) => {
     let target = e.target || e.srcElement;
-    while (target.id !== APP_CONTAINER_ID && target.tagName !== 'A') {
+    while (target && target.id !== APP_CONTAINER_ID && target.tagName !== 'A') {
       target = target.parentNode;
     }
 
