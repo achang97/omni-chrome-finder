@@ -92,9 +92,14 @@ const ExternalResult = ({
   return (
     <div className={s('external-result flex-col cursor-pointer')} onClick={onResultClick}>
       <div className={s('flex items-center')}>
-        <div className={s('external-result-icon')}>
-          <img src={logo} alt="" />
-        </div>
+        {logo &&
+          (typeof logo === 'string' ? (
+            <div className={s('external-result-icon')}>
+              <img src={logo} alt="" />
+            </div>
+          ) : (
+            logo
+          ))}
         <div className={s('min-w-0 flex-1 ml-sm flex flex-col')}>
           <div className={s('external-result-text')}> {title} </div>
           <div className={s(`external-result-description ${bodyClassName}`)}>{body}</div>
@@ -120,7 +125,7 @@ ExternalResult.propTypes = {
   id: PropTypes.oneOfType([PropTypes.string, PropTypes.number]).isRequired,
   url: PropTypes.string.isRequired,
   type: PropTypes.string.isRequired,
-  logo: PropTypes.string.isRequired,
+  logo: PropTypes.node.isRequired,
   title: PropTypes.string.isRequired,
   timestamp: PropTypes.string,
   body: PropTypes.node,

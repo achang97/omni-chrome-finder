@@ -1,0 +1,6 @@
+.slack-thumbnail {
+  @apply rounded-lg shadow-md;
+
+  height: 50px;
+  width: 50px;
+}
