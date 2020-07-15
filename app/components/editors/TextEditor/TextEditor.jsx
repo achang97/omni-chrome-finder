@@ -11,6 +11,8 @@ import FroalaEditorView from 'react-froala-wysiwyg/FroalaEditorView';
 import 'froala-editor/js/plugins.pkgd.min.js';
 import 'froala-editor/js/third_party/embedly.min.js';
 import 'froala-editor/css/third_party/embedly.min.css';
+import 'codemirror/lib/codemirror.css';
+import 'codemirror/mode/xml/xml.js';
 /* eslint-enable import/no-extraneous-dependencies, import/extensions */
 
 import { getStyleApplicationFn } from 'utils/style';

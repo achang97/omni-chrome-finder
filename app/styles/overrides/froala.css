@@ -33,6 +33,7 @@
 #omni-chrome-ext-main-container .fr-placeholder {
   font-family: inherit;
   font-size: 14px;
+  z-index: 0;
 }
 
 #omni-chrome-ext-main-container .fr-view a {
@@ -151,6 +152,11 @@
 }
 
 /* Embedly */
-#omni-chrome-ext-main-container .embdscl0 {
+#omni-chrome-ext-main-container .fr-view .embdscl0 {
   display: none;
+}
+
+/* Code Mirror */
+#omni-chrome-ext-main-container .fr-box.fr-code-view .CodeMirror {
+  height: 100% !important;
 }
