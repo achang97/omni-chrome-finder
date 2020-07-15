@@ -6,7 +6,7 @@ export function addScript({ code, url, shouldRemove = true }) {
     const inlineCode = document.createTextNode(code);
     scriptElm.appendChild(inlineCode);
   }
-  document.body.appendChild(scriptElm);
+  document.head.appendChild(scriptElm);
   if (shouldRemove) {
     scriptElm.remove();
   }

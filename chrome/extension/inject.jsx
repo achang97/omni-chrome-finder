@@ -6,6 +6,7 @@ import { MAIN_CONTAINER_ID, CHROME, NODE_ENV } from 'appConstants';
 import { initialState as authInitialState } from 'reducers/auth';
 import { initialState as profileInitialState } from 'reducers/profile';
 import { initialState as tasksInitialState } from 'reducers/tasks';
+import { addScript } from 'utils/window';
 import Root from 'containers/Root';
 
 function render(state, wrapper) {
@@ -28,6 +29,9 @@ function render(state, wrapper) {
   wrapper.id = MAIN_CONTAINER_ID;
   wrapper.style = 'all: initial; position: absolute; z-index: 2147483646;';
   body.appendChild(wrapper);
+
+  // Embedly script
+  addScript({ url: 'https://cdn.embedly.com/widgets/platform.js' });
 
   const initialState = {};
 

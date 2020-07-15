@@ -140,6 +140,7 @@
   padding: 4px 10px;
 }
 
+#omni-chrome-ext-main-container ~ .fr-box .fr-embedly-resizer,
 #omni-chrome-ext-main-container ~ .fr-popup.fr-active,
 #omni-chrome-ext-main-container ~ .fr-modal {
   z-index: 2147483646 !important;
@@ -147,4 +148,9 @@
 
 #omni-chrome-ext-main-container ~ .fr-tooltip {
   z-index: 2147483647 !important;
+}
+
+/* Embedly */
+#omni-chrome-ext-main-container .embdscl0 {
+  display: none;
 }
