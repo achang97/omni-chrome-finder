@@ -9,6 +9,8 @@ import FroalaEditorView from 'react-froala-wysiwyg/FroalaEditorView';
 /* eslint-disable import/no-extraneous-dependencies, import/extensions */
 // Import all Froala Editor plugins;
 import 'froala-editor/js/plugins.pkgd.min.js';
+import 'froala-editor/js/third_party/embedly.min.js';
+import 'froala-editor/css/third_party/embedly.min.css';
 /* eslint-enable import/no-extraneous-dependencies, import/extensions */
 
 import { getStyleApplicationFn } from 'utils/style';
@@ -16,7 +18,7 @@ import { getVideoEmbeddedCode } from 'utils/editor';
 import { createConfig } from 'utils/request';
 import { URL } from 'appConstants/request';
 
-import { CARD_CONFIG } from './TextEditorProps';
+import CONFIG from './TextEditorProps';
 import style from './text-editor.css';
 
 const s = getStyleApplicationFn(style);
@@ -91,7 +93,7 @@ class TextEditor extends React.Component {
         <FroalaEditor
           ref={this.editorRef}
           config={{
-            ...CARD_CONFIG,
+            ...CONFIG,
             requestHeaders: createConfig(token).headers,
             events: {
               'image.uploaded': (response) => this.handleUpload(EVENT_TYPE.IMAGE, response),

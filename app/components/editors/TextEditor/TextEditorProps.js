@@ -2,7 +2,7 @@ import { URL } from 'appConstants/request';
 
 const UPLOAD_URL = `${URL.SERVER}/files/upload`;
 
-export const BASE_CONFIG = {
+const CONFIG = {
   key: process.env.FROALA_KEY,
   charCounterCount: false,
   attribution: false,
@@ -34,17 +34,20 @@ export const BASE_CONFIG = {
   imageInsertButtons: ['imageBack', '|', 'imageUpload', 'imageByURL'],
   imageAddNewLine: true,
   imageDefaultAlign: 'left',
+  imageStyles: {
+    'fr-rounded': 'Rounded',
+    'fr-bordered': 'Bordered'
+  },
 
   videoDefaultAlign: 'left',
+
+  embedlyEditButtons: ['embedlyRemove'],
 
   // Set the image upload URL.
   imageUploadURL: UPLOAD_URL,
   fileUploadURL: UPLOAD_URL,
-  videoUploadURL: UPLOAD_URL
-};
+  videoUploadURL: UPLOAD_URL,
 
-export const CARD_CONFIG = {
-  ...BASE_CONFIG,
   toolbarButtons: {
     alwaysShown: {
       buttons: ['paragraphFormat']
@@ -84,11 +87,11 @@ export const CARD_CONFIG = {
       buttons: [
         'insertLink',
         'insertImage',
+        'embedly',
         'insertVideo',
         'insertTable',
         'emoticons',
         'specialCharacters',
-        'embedly',
         'insertFile',
         'insertHR'
       ],
@@ -101,3 +104,5 @@ export const CARD_CONFIG = {
     }
   }
 };
+
+export default CONFIG;
