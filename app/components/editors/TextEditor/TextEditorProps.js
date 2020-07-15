@@ -1,3 +1,4 @@
+import CodeMirror from 'codemirror/lib/codemirror';
 import { URL } from 'appConstants/request';
 
 const UPLOAD_URL = `${URL.SERVER}/files/upload`;
@@ -9,6 +10,16 @@ const CONFIG = {
   quickInsertEnabled: false,
 
   heightMax: '100vh',
+
+  codeMirror: CodeMirror,
+  codeBeautifierOptions: {
+    end_with_newline: true,
+    indent_inner_html: true,
+    brace_style: 'expand',
+    indent_char: '\t',
+    indent_size: 1,
+    wrap_line_length: 0
+  },
 
   linkAlwaysBlank: true,
   linkAutoPrefix: 'https://',

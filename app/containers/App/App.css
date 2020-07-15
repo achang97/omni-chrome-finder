@@ -30,7 +30,9 @@
 .app-container h4,
 .app-container h5,
 .app-container h6 {
-  @apply mt-sm mb-sm font-bold !important;
+  @apply font-bold !important;
+
+  margin: 0.65em 0;
 
   /* prettier-ignore */
   font-family:
@@ -43,7 +45,7 @@
 }
 
 .app-container h1 {
-  font-size: 1.55em;
+  font-size: 1.575em;
 }
 
 .app-container h2 {
