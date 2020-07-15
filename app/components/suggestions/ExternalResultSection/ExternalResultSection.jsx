@@ -1,16 +1,21 @@
 import React, { useState } from 'react';
 import PropTypes from 'prop-types';
+import moment from 'moment';
 import AnimateHeight from 'react-animate-height';
 import Switch from 'react-switch';
 import { MdKeyboardArrowUp, MdThumbUp, MdThumbDown } from 'react-icons/md';
 
+import { Timeago } from 'components/common';
 import { INTEGRATIONS_MAP, INTEGRATIONS } from 'appConstants';
+import { getAttachmentIconProps } from 'utils/file';
 import { getStyleApplicationFn } from 'utils/style';
 
 import ExternalResult from '../ExternalResult';
 import ExternalResultHeader from '../ExternalResultHeader';
 
-const s = getStyleApplicationFn();
+import style from './external-result-section.css';
+
+const s = getStyleApplicationFn(style);
 
 const FOLDER_MIME_TYPE = 'application/vnd.google-apps.folder';
 const DEFAULT_NUM_EXT_RESULTS_SHOWN = 4;
@@ -84,6 +89,34 @@ const getItemProps = (type, item) => {
       const { id, url, title } = item;
       return { ...baseProps, id, url, title, showDropdown: false };
     }
+    case INTEGRATIONS.SLACK.type: {
+      const { id, timestamp, title, mimetype, thumb_160: thumbnail, permalink, user } = item;
+      const { Icon, color } = getAttachmentIconProps(mimetype);
+      const logo = thumbnail ? (
+        <img src={thumbnail} alt="" className={s('slack-thumbnail')} />
+      ) : (
+        <div className={s('slack-thumbnail bg-white p-sm')}>
+          <Icon className={s(`h-full w-full text-${color}`)} />
+        </div>
+      );
+
+      return {
+        ...baseProps,
+        id,
+        url: permalink,
+        title,
+        logo,
+        showDropdown: false,
+        body: (
+          <div className={s('flex items-center text-xs')}>
+            <div className={s('font-bold mr-sm')}>
+              {user ? user.real_name_normalized : 'External Slack User'}
+            </div>
+            <Timeago date={moment(timestamp, 'X').toDate()} live={false} />
+          </div>
+        )
+      };
+    }
     default:
       return {};
   }
@@ -98,7 +131,8 @@ const ExternalResultSection = ({
   const [isExpanded, setExpanded] = useState(false);
 
   const renderResult = (result) => {
-    const { id, logo, url, title, body, showDropdown } = getItemProps(integrationType, result);
+    const resultProps = getItemProps(integrationType, result);
+    const { id, logo, url, title, body, showDropdown, timestamp } = resultProps;
     const { card } = result;
 
     return (
@@ -111,6 +145,7 @@ const ExternalResultSection = ({
         title={title}
         card={card}
         body={body}
+        timestamp={timestamp}
         showDropdown={showDropdown}
       />
     );
@@ -124,6 +159,7 @@ const ExternalResultSection = ({
 
   const renderSection = () => {
     const { logo, title } = INTEGRATIONS_MAP[integrationType];
+
     const isIntegrationDisabled = integrationSettings[integrationType].disabled;
 
     if (items.length === 0) {
