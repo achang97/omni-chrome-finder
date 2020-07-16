@@ -95,8 +95,8 @@ const getItemProps = (type, item) => {
       const logo = thumbnail ? (
         <img src={thumbnail} alt="" className={s('slack-thumbnail')} />
       ) : (
-        <div className={s('slack-thumbnail bg-white p-sm')}>
-          <Icon className={s(`h-full w-full text-${color}`)} />
+        <div className={s('external-result-icon')}>
+          <Icon className={s(`text-${color}`)} />
         </div>
       );
 
