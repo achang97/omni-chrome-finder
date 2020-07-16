@@ -122,7 +122,8 @@ const SuggestionCard = ({
   };
 
   const render = () => {
-    const { question: highlightQuestion, answer: highlightAnswer } = highlight;
+    const highlightQuestion = highlight['question.default'] || highlight.question;
+    const highlightAnswer = highlight['answer.default'] || highlight.answer;
 
     const displayedQuestion = highlightQuestion
       ? replaceHighlightTags(highlightQuestion)
