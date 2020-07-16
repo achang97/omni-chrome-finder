@@ -146,6 +146,10 @@ export function updateOutOfDateReason(reason) {
   return { type: types.UPDATE_OUT_OF_DATE_REASON, payload: { reason } };
 }
 
+export function updateEditAccessReason(reason) {
+  return { type: types.UPDATE_EDIT_ACCESS_REASON, payload: { reason } };
+}
+
 export function updateCard(card) {
   return { type: types.UPDATE_CARD, payload: { card } };
 }
@@ -301,6 +305,18 @@ export function handleRemoveBookmarkSuccess(cardId) {
 
 export function handleRemoveBookmarkError(cardId, error) {
   return { type: types.REMOVE_BOOKMARK_ERROR, payload: { cardId, error } };
+}
+
+export function requestGetEditAccess() {
+  return { type: types.GET_EDIT_ACCESS_REQUEST, payload: {} };
+}
+
+export function handleGetEditAccessSuccess(card) {
+  return { type: types.GET_EDIT_ACCESS_SUCCESS, payload: { card } };
+}
+
+export function handleGetEditAccessError(cardId, error) {
+  return { type: types.GET_EDIT_ACCESS_ERROR, payload: { cardId, error } };
 }
 
 export function requestGetSlackThread() {

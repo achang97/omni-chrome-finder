@@ -264,6 +264,10 @@ export default function cardsReducer(state = initialState, action) {
       const { reason } = payload;
       return updateActiveCard(state, { outOfDateReasonInput: reason });
     }
+    case types.UPDATE_EDIT_ACCESS_REASON: {
+      const { reason } = payload;
+      return updateActiveCard(state, { editAccessReasonInput: reason });
+    }
 
     case types.UPDATE_CARD: {
       const { card } = payload;
@@ -406,6 +410,29 @@ export default function cardsReducer(state = initialState, action) {
         }
       };
       return updateCardById(state, cardId, newInfo);
+    }
+
+    case types.GET_EDIT_ACCESS_REQUEST: {
+      return updateActiveCard(state, { isRequestingEditAccess: true, editAccessError: null });
+    }
+    case types.GET_EDIT_ACCESS_SUCCESS: {
+      const { card } = payload;
+      const newInfo = {
+        ...convertCardToFrontendFormat(card),
+        modalOpen: {
+          ...BASE_MODAL_OPEN_STATE,
+          [CARD.MODAL_TYPE.EDIT_ACCESS_REQUEST]: false
+        },
+        isRequestingEditAccess: false
+      };
+      return updateCardById(state, card._id, newInfo, true);
+    }
+    case types.GET_EDIT_ACCESS_ERROR: {
+      const { cardId, error } = payload;
+      return updateCardById(state, cardId, {
+        isRequestingEditAccess: false,
+        editAccessError: error
+      });
     }
 
     case types.TOGGLE_UPVOTE_REQUEST: {

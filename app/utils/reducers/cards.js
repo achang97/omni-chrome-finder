@@ -11,6 +11,7 @@ export const BASE_CARD_STATE = {
   edits: {},
   hasLoaded: true,
   outOfDateReasonInput: '',
+  editAccessReasonInput: '',
   status: CARD.STATUS.NOT_DOCUMENTED,
   tags: [],
   verificationInterval: CARD.DEFAULT_VERIFICATION_INTERVAL,

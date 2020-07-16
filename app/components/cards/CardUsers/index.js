@@ -1,7 +1,8 @@
 import _ from 'lodash';
 import { connect } from 'react-redux';
 import { requestSearchUsers } from 'actions/search';
-import { ROLE, STATUS } from 'appConstants/user';
+import { STATUS } from 'appConstants/user';
+import { isEditor } from 'utils/auth';
 import CardUsers from './CardUsers';
 
 const mapStateToProps = (state, ownProps) => {
@@ -28,8 +29,7 @@ const mapStateToProps = (state, ownProps) => {
       options: groupedUserOptions[type] || []
     }));
 
-  const isAdmin = role === ROLE.ADMIN;
-  return { userOptions: sectionedOptions, isLoading: isSearchingUsers, isAdmin };
+  return { userOptions: sectionedOptions, isLoading: isSearchingUsers, isEditor: isEditor(role) };
 };
 
 const mapDispatchToProps = {

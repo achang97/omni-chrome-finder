@@ -31,7 +31,7 @@ const CardUsers = ({
   placeholder,
   userOptions,
   isLoading,
-  isAdmin,
+  isEditor,
   requestSearchUsers
 }) => {
   const [showSelectState, setShowSelectState] = useState(false);
@@ -101,7 +101,7 @@ const CardUsers = ({
     <div className={s(`card-users-container ${className}`)}>
       {shouldShowSelect && (
         <Select
-          type={isAdmin && onCreate ? 'creatable' : 'default'}
+          type={isEditor && onCreate ? 'creatable' : 'default'}
           className={s('w-full mb-sm')}
           value={selectedUser}
           options={_.differenceBy(userOptions, users, '_id')}
@@ -164,7 +164,7 @@ CardUsers.propTypes = {
   // Redux State
   userOptions: PropTypes.arrayOf(UserPropTypes).isRequired,
   isLoading: PropTypes.bool,
-  isAdmin: PropTypes.bool.isRequired,
+  isEditor: PropTypes.bool.isRequired,
 
   // Redux Actions
   requestSearchUsers: PropTypes.func.isRequired

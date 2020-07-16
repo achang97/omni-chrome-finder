@@ -1,6 +1,6 @@
 import _ from 'lodash';
 import queryString from 'query-string';
-import { take, call, fork, put, select } from 'redux-saga/effects';
+import { take, call, fork, put, select, delay } from 'redux-saga/effects';
 import { doGet, doPost, doPut, doDelete, getErrorMessage } from 'utils/request';
 import { getArrayIds } from 'utils/array';
 import {
@@ -16,6 +16,7 @@ import { convertAttachmentsToBackendFormat } from 'utils/file';
 import { STATUS, PERMISSION_OPTION, VERIFICATION_INTERVAL_OPTION } from 'appConstants/card';
 import { AUDIT } from 'appConstants/user';
 import { ROOT } from 'appConstants/finder';
+
 import {
   GET_CARD_REQUEST,
   CREATE_CARD_REQUEST,
@@ -30,7 +31,8 @@ import {
   TOGGLE_SUBSCRIBE_REQUEST,
   ADD_CARD_ATTACHMENT_REQUEST,
   GET_SLACK_THREAD_REQUEST,
-  CREATE_INVITE_REQUEST
+  CREATE_INVITE_REQUEST,
+  GET_EDIT_ACCESS_REQUEST
 } from 'actions/actionTypes';
 import {
   handleGetCardSuccess,
@@ -60,7 +62,9 @@ import {
   handleGetSlackThreadSuccess,
   handleGetSlackThreadError,
   handleCreateInviteSuccess,
-  handleCreateInviteError
+  handleCreateInviteError,
+  handleGetEditAccessSuccess,
+  handleGetEditAccessError
 } from 'actions/cards';
 
 const INCOMPLETE_CARD_ERROR = 'Failed to save card: some fields are incomplete.';
@@ -81,7 +85,8 @@ export default function* watchCardsRequests() {
       TOGGLE_SUBSCRIBE_REQUEST,
       ADD_CARD_ATTACHMENT_REQUEST,
       GET_SLACK_THREAD_REQUEST,
-      CREATE_INVITE_REQUEST
+      CREATE_INVITE_REQUEST,
+      GET_EDIT_ACCESS_REQUEST
     ]);
 
     const { type, payload } = action;
@@ -140,6 +145,10 @@ export default function* watchCardsRequests() {
       }
       case CREATE_INVITE_REQUEST: {
         yield fork(createInvite);
+        break;
+      }
+      case GET_EDIT_ACCESS_REQUEST: {
+        yield fork(getEditAccess);
         break;
       }
       default: {
@@ -416,5 +425,19 @@ function* createInvite() {
     yield put(handleCreateInviteSuccess(activeCard._id, invitedUser));
   } catch (error) {
     yield put(handleCreateInviteError(activeCard._id, getErrorMessage(error)));
+  }
+}
+
+function* getEditAccess() {
+  const activeCard = yield call(getActiveCard);
+  const { editAccessReasonInput, _id: cardId } = activeCard;
+
+  try {
+    console.log(`Submitting request to get access: ${editAccessReasonInput}`);
+    yield delay(1000);
+    // const invitedUser = yield call(doPost, '/invitedUsers', invitedUserInfo);
+    yield put(handleGetEditAccessSuccess(activeCard));
+  } catch (error) {
+    yield put(handleGetEditAccessError(cardId, getErrorMessage(error)));
   }
 }

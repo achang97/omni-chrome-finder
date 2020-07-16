@@ -84,9 +84,10 @@ const CardFooter = ({
         onClick: editCard
       };
     } else {
+      // TODO: handle case where it's "pending"
       editButtonProps = {
         text: 'Request Edit Access',
-        onClick: () => console.log('Requested Edit Access!') // TODO
+        onClick: () => openCardModal(MODAL_TYPE.EDIT_ACCESS_REQUEST)
       };
     }
 

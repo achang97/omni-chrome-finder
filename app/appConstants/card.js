@@ -15,10 +15,14 @@ export const HINTS = {
 export const MODAL_TYPE = {
   // Create Modal
   CREATE: 'CREATE',
+  ADD_APPROVERS: 'ADD_APPROVERS',
 
   // Slack Modals
   THREAD: 'THREAD',
   SELECT_THREAD: 'SELECT_THREAD',
+
+  // Edit Access
+  EDIT_ACCESS_REQUEST: 'EDIT_ACCESS_REQUEST',
 
   // Invite
   INVITE_USER: 'INVITE_USER',

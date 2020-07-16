@@ -1,6 +1,7 @@
 import { connect } from 'react-redux';
 import {
   updateOutOfDateReason,
+  updateEditAccessReason,
   updateInviteRole,
   updateInviteEmail,
   closeCardModal,
@@ -11,7 +12,8 @@ import {
   requestMarkUpToDate,
   requestMarkOutOfDate,
   requestArchiveCard,
-  requestCreateInvite
+  requestCreateInvite,
+  requestGetEditAccess
 } from 'actions/cards';
 import CardConfirmModals from './CardConfirmModals';
 
@@ -29,6 +31,9 @@ const mapStateToProps = (state) => {
         isArchivingCard,
         archiveError,
         outOfDateReasonInput,
+        editAccessReasonInput,
+        isRequestingEditAccess,
+        editAccessError,
         inviteEmail,
         inviteRole,
         isCreatingInvite,
@@ -49,6 +54,9 @@ const mapStateToProps = (state) => {
     isArchivingCard,
     archiveError,
     outOfDateReasonInput,
+    editAccessReasonInput,
+    editAccessError,
+    isRequestingEditAccess,
     inviteEmail,
     inviteRole,
     isCreatingInvite,
@@ -59,6 +67,7 @@ const mapStateToProps = (state) => {
 
 const mapDispatchToProps = {
   updateOutOfDateReason,
+  updateEditAccessReason,
   updateInviteRole,
   updateInviteEmail,
   closeCardModal,
@@ -69,7 +78,8 @@ const mapDispatchToProps = {
   requestMarkUpToDate,
   requestMarkOutOfDate,
   requestArchiveCard,
-  requestCreateInvite
+  requestCreateInvite,
+  requestGetEditAccess
 };
 
 export default connect(mapStateToProps, mapDispatchToProps)(CardConfirmModals);

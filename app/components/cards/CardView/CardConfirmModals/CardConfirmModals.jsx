@@ -22,6 +22,9 @@ const CardConfirmModals = ({
   updateError,
   isUpdatingCard,
   outOfDateReasonInput,
+  editAccessReasonInput,
+  isRequestingEditAccess,
+  editAccessError,
   isMarkingStatus,
   markStatusError,
   isArchivingCard,
@@ -30,6 +33,7 @@ const CardConfirmModals = ({
   closeCard,
   cancelEditCard,
   updateOutOfDateReason,
+  updateEditAccessReason,
   updateInviteRole,
   updateInviteEmail,
   requestUpdateCard,
@@ -37,7 +41,8 @@ const CardConfirmModals = ({
   requestMarkUpToDate,
   requestMarkOutOfDate,
   requestArchiveCard,
-  requestCreateInvite
+  requestCreateInvite,
+  requestGetEditAccess
 }) => {
   const confirmCloseModalUndocumentedPrimary = () => {
     closeCardModal(MODAL_TYPE.CONFIRM_CLOSE);
@@ -115,7 +120,7 @@ const CardConfirmModals = ({
       title: 'Are you sure this card needs to be updated?',
       body: (
         <div>
-          <div className={s('text-xs text-gray-light mb-xs')}> Reason for Update </div>
+          <div className={s('text-xs text-gray-light mb-xs')}> Reason for Update (Optional) </div>
           <textarea
             type="textarea"
             className={s('w-full')}
@@ -233,6 +238,31 @@ const CardConfirmModals = ({
         onClick: confirmCloseEditModalSecondary
       },
       important: true
+    },
+    {
+      modalType: MODAL_TYPE.EDIT_ACCESS_REQUEST,
+      title: 'Request Edit Access',
+      body: (
+        <div>
+          <div className={s('text-xs text-gray-light mb-xs')}> Reason (Optional) </div>
+          <textarea
+            type="textarea"
+            className={s('w-full')}
+            placeholder="Please explain why you're requesting edit access."
+            value={editAccessReasonInput}
+            onChange={(e) => updateEditAccessReason(e.target.value)}
+          />
+        </div>
+      ),
+      error: editAccessError,
+      primaryButtonProps: {
+        text: 'Request Access',
+        onClick: requestGetEditAccess,
+        isLoading: isRequestingEditAccess
+      },
+      secondaryButtonProps: {
+        text: 'Cancel'
+      }
     }
   ];
 
@@ -267,9 +297,13 @@ CardConfirmModals.propTypes = {
   isArchivingCard: PropTypes.bool,
   archiveError: PropTypes.string,
   outOfDateReasonInput: PropTypes.string.isRequired,
+  editAccessReasonInput: PropTypes.string.isRequired,
+  isRequestingEditAccess: PropTypes.bool,
+  editAccessError: PropTypes.string,
 
   // Redux Actions
   updateOutOfDateReason: PropTypes.func.isRequired,
+  updateEditAccessReason: PropTypes.func.isRequired,
   closeCardModal: PropTypes.func.isRequired,
   closeCard: PropTypes.func.isRequired,
   cancelEditCard: PropTypes.func.isRequired,
@@ -280,7 +314,8 @@ CardConfirmModals.propTypes = {
   requestArchiveCard: PropTypes.func.isRequired,
   updateInviteRole: PropTypes.func.isRequired,
   updateInviteEmail: PropTypes.func.isRequired,
-  requestCreateInvite: PropTypes.func.isRequired
+  requestCreateInvite: PropTypes.func.isRequired,
+  requestGetEditAccess: PropTypes.func.isRequired
 };
 
 export default CardConfirmModals;
