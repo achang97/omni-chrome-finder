@@ -78,6 +78,14 @@ export function removeCardOwner(index) {
   return { type: types.REMOVE_CARD_OWNER, payload: { index } };
 }
 
+export function addCardApprover(approver) {
+  return { type: types.ADD_CARD_APPROVER, payload: { approver } };
+}
+
+export function removeCardApprover(index) {
+  return { type: types.REMOVE_CARD_APPROVER, payload: { index } };
+}
+
 export function addCardSubscriber(subscriber) {
   return { type: types.ADD_CARD_SUBSCRIBER, payload: { subscriber } };
 }

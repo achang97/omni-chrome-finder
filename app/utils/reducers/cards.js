@@ -24,6 +24,7 @@ export const BASE_CARD_STATE = {
   attachments: [],
   owners: [],
   subscribers: [],
+  approvers: [],
   question: '',
   answerModel: '',
   inviteRole: USER.ROLE.VIEWER

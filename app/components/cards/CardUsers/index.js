@@ -8,14 +8,14 @@ import CardUsers from './CardUsers';
 const mapStateToProps = (state, ownProps) => {
   const {
     search: { users, isSearchingUsers },
-    profile: {
-      user: { role }
-    }
+    profile: { user }
   } = state;
 
-  const { showInviteOptions = true, disabledUserIds = [] } = ownProps;
-
-  const userOptions = users.filter(({ _id }) => !disabledUserIds.includes(_id));
+  // Do some processing of users with the passed in component props
+  const { showInviteOptions = true, disabledUserIds = [], disabledUserRoles = [] } = ownProps;
+  const userOptions = users.filter(
+    ({ _id, role }) => !disabledUserIds.includes(_id) && !disabledUserRoles.includes(role)
+  );
   const groupedUserOptions = _.groupBy(userOptions, 'status');
 
   const sections = [
@@ -29,7 +29,11 @@ const mapStateToProps = (state, ownProps) => {
       options: groupedUserOptions[type] || []
     }));
 
-  return { userOptions: sectionedOptions, isLoading: isSearchingUsers, isEditor: isEditor(role) };
+  return {
+    userOptions: sectionedOptions,
+    isLoading: isSearchingUsers,
+    isEditor: isEditor(user.role)
+  };
 };
 
 const mapDispatchToProps = {

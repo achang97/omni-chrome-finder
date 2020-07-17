@@ -6,6 +6,7 @@ import _ from 'lodash';
 import { CircleButton, Select } from 'components/common';
 
 import { DEBOUNCE } from 'appConstants/animate';
+import { ROLE } from 'appConstants/user';
 import { UserPropTypes } from 'utils/propTypes';
 import { isInvitedUser } from 'utils/user';
 
@@ -158,6 +159,7 @@ CardUsers.propTypes = {
   // Options that are used in index.js
   /* eslint-disable react/no-unused-prop-types */
   showInviteOptions: PropTypes.bool,
+  disabledUserRoles: PropTypes.arrayOf(PropTypes.oneOf(Object.values(ROLE))),
   disabledUserIds: PropTypes.arrayOf(PropTypes.string),
   /* eslint-enable react/no-unused-prop-types */
 

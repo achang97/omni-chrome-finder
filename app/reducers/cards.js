@@ -214,6 +214,21 @@ export default function cardsReducer(state = initialState, action) {
       return updateActiveCardEdits(state, { subscribers: removeIndex(edits.subscribers, index) });
     }
 
+    case types.ADD_CARD_APPROVER: {
+      const { approver } = payload;
+      const { activeCard } = state;
+      return updateActiveCardEdits(state, {
+        approvers: _.unionBy(activeCard.edits.approvers, [approver], '_id')
+      });
+    }
+    case types.REMOVE_CARD_APPROVER: {
+      const { index } = payload;
+      const {
+        activeCard: { edits }
+      } = state;
+      return updateActiveCardEdits(state, { approvers: removeIndex(edits.approvers, index) });
+    }
+
     case types.UPDATE_CARD_TAGS: {
       const { tags } = payload;
       return updateActiveCardEdits(state, { tags: tags || [] });
@@ -398,17 +413,20 @@ export default function cardsReducer(state = initialState, action) {
     }
     case types.UPDATE_CARD_ERROR: {
       const { cardId, error, shouldCloseCard } = payload;
-      const modalType = shouldCloseCard
-        ? CARD.MODAL_TYPE.ERROR_UPDATE_CLOSE
-        : CARD.MODAL_TYPE.ERROR_UPDATE;
-      const newInfo = {
-        isUpdatingCard: false,
-        updateError: error,
-        modalOpen: {
+      const newInfo = { isUpdatingCard: false, updateError: error };
+
+      const currCard = getCardById(state, cardId);
+      if (currCard.status !== CARD.STATUS.NOT_DOCUMENTED) {
+        const modalType = shouldCloseCard
+          ? CARD.MODAL_TYPE.ERROR_UPDATE_CLOSE
+          : CARD.MODAL_TYPE.ERROR_UPDATE;
+
+        newInfo.modalOpen = {
           ...BASE_MODAL_OPEN_STATE,
           [modalType]: true
-        }
-      };
+        };
+      }
+
       return updateCardById(state, cardId, newInfo);
     }
 

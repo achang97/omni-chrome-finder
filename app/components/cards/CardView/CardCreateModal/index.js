@@ -18,6 +18,7 @@ import {
   updateInviteEmail
 } from 'actions/cards';
 import { requestUpdateUser } from 'actions/profile';
+import { isEditor } from 'utils/auth';
 import { MODAL_TYPE } from 'appConstants/card';
 import CardCreateModal from './CardCreateModal';
 
@@ -27,6 +28,7 @@ const mapStateToProps = (state) => {
       activeCard: {
         _id,
         createError,
+        updateError,
         isCreatingCard,
         isUpdatingCard,
         edits,
@@ -34,17 +36,19 @@ const mapStateToProps = (state) => {
       }
     },
     profile: {
-      user: { seenFeatures }
+      user: { seenFeatures, role }
     }
   } = state;
 
   return {
     _id,
     createError,
+    updateError,
     isCreatingCard,
     isUpdatingCard,
     edits,
     isOpen,
+    isEditor: isEditor(role),
     seenFeatures: _.omit(seenFeatures, '_id')
   };
 };

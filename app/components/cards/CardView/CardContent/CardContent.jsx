@@ -18,6 +18,7 @@ import style from './card-content.css';
 import CardSideDock from '../CardSideDock';
 import CardCreateModal from '../CardCreateModal';
 import CardFinderModal from '../CardFinderModal';
+import CardApproversModal from '../CardApproversModal';
 import CardConfirmModals from '../CardConfirmModals';
 import CardSlackModals from '../CardSlackModals';
 import CardHeader from '../CardHeader';
@@ -313,6 +314,7 @@ const CardContent = ({
         <CardCreateModal />
         <CardConfirmModals />
         <CardSlackModals />
+        <CardApproversModal />
       </div>
     );
   };

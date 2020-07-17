@@ -43,10 +43,12 @@ const WALKTHROUGH_PROPS = {
 const CardCreateModal = ({
   _id,
   createError,
+  updateError,
   isCreatingCard,
   isUpdatingCard,
   edits,
   isOpen,
+  isEditor,
   seenFeatures,
   requestCreateCard,
   requestUpdateCard,
@@ -94,10 +96,10 @@ const CardCreateModal = ({
   };
 
   useEffect(() => {
-    if (createError) {
+    if (!isEditor && isOpen && (createError || updateError)) {
       scrollToBottom();
     }
-  }, [createError]);
+  }, [isEditor, isOpen, createError, updateError]);
 
   const {
     owners = [],
@@ -226,8 +228,27 @@ const CardCreateModal = ({
 
   const render = () => {
     const isExisting = isExistingCard(_id);
-    const isLoading = isExisting ? isUpdatingCard : isCreatingCard;
-    const onClick = isExisting ? () => requestUpdateCard(false) : requestCreateCard;
+
+    let onClick;
+    let isLoading;
+    let error;
+
+    if (isExisting) {
+      isLoading = isUpdatingCard;
+      error = updateError;
+    } else {
+      isLoading = isCreatingCard;
+      error = createError;
+    }
+
+    if (isEditor) {
+      onClick = isExisting ? () => requestUpdateCard(false) : requestCreateCard;
+    } else {
+      onClick = () => {
+        closeCardModal(MODAL_TYPE.CREATE);
+        openCardModal(MODAL_TYPE.ADD_APPROVERS);
+      };
+    }
 
     const justMe = isJustMe(edits.permissions);
 
@@ -333,7 +354,7 @@ const CardCreateModal = ({
               </AnimateHeight>
             )
           )}
-          <Message className={s('my-sm')} message={createError} type="error" />
+          {isEditor && <Message className={s('my-sm')} message={error} type="error" />}
           {currWalkthroughKey && <div className={s('card-walkthrough-overlay')} />}
           {currWalkthroughKey && (
             <CardWalkthroughHelper
@@ -357,8 +378,10 @@ CardCreateModal.propTypes = {
   // Redux State
   _id: PropTypes.string.isRequired,
   createError: PropTypes.string,
+  updateError: PropTypes.bool,
   isCreatingCard: PropTypes.bool,
   isUpdatingCard: PropTypes.bool,
+  isEditor: PropTypes.bool.isRequired,
   isOpen: PropTypes.bool.isRequired,
   edits: PropTypes.shape({
     owners: PropTypes.arrayOf(PropTypes.object),

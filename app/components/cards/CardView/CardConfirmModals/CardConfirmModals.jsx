@@ -242,8 +242,9 @@ const CardConfirmModals = ({
     {
       modalType: MODAL_TYPE.EDIT_ACCESS_REQUEST,
       title: 'Request Edit Access',
+      description: "We'll notify the card owners about your request for edit access.",
       body: (
-        <div>
+        <div className={s('mt-sm')}>
           <div className={s('text-xs text-gray-light mb-xs')}> Reason (Optional) </div>
           <textarea
             type="textarea"
