@@ -23,7 +23,7 @@
 }
 
 .external-result-description {
-  @apply text-gray-reg mt-xs;
+  @apply text-gray-reg;
 
   font-size: 11px;
 }

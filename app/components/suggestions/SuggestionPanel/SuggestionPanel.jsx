@@ -196,7 +196,7 @@ const SuggestionPanel = ({
             )}
             onClick={() => clickCreateCard()}
           >
-            <MdAddCircle className={s('text-purple-gray-50 mr-xs')} />
+            <MdAddCircle className={s('text-purple-gray-50 mr-xs flex-shrink-0')} />
             <span className={s('text-sm font-bold')}>Create a card for &ldquo;{query}&rdquo;</span>
           </div>
         )}

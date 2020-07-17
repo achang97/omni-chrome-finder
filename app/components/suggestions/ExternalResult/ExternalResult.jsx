@@ -6,6 +6,7 @@ import { CardStatusIndicator } from 'components/cards';
 
 import { copyText } from 'utils/window';
 import { getStyleApplicationFn } from 'utils/style';
+import { createHighlightedElement } from 'utils/search';
 import { PROFILE, SEGMENT, URL_REGEX } from 'appConstants';
 
 import style from './external-result.css';
@@ -26,6 +27,7 @@ const ExternalResult = ({
   bodyClassName,
   card,
   showDropdown,
+  highlightTags,
   openCard,
   updateExternalLinkAnswer,
   toggleExternalCreateModal,
@@ -100,9 +102,17 @@ const ExternalResult = ({
           ) : (
             logo
           ))}
-        <div className={s('min-w-0 flex-1 ml-sm flex flex-col')}>
-          <div className={s('external-result-text')}> {title} </div>
-          <div className={s(`external-result-description ${bodyClassName}`)}>{body}</div>
+        <div className={s(`min-w-0 flex-1 flex flex-col ${logo ? 'ml-sm' : ''}`)}>
+          {title && (
+            <div className={s('external-result-text')}>
+              {highlightTags ? createHighlightedElement(title, highlightTags) : title}
+            </div>
+          )}
+          <div
+            className={s(`external-result-description ${title ? 'mt-xs' : ''} ${bodyClassName}`)}
+          >
+            {body}
+          </div>
         </div>
         <div className={s('flex self-start')}>
           {card && <CardStatusIndicator status={card.status} />}
@@ -113,7 +123,7 @@ const ExternalResult = ({
         <Timeago
           date={timestamp}
           live={false}
-          className={s('external-result-description flex justify-end')}
+          className={s('external-result-description mt-xs flex justify-end')}
         />
       )}
       {renderShareSuccess()}
@@ -125,8 +135,8 @@ ExternalResult.propTypes = {
   id: PropTypes.oneOfType([PropTypes.string, PropTypes.number]).isRequired,
   url: PropTypes.string.isRequired,
   type: PropTypes.string.isRequired,
-  logo: PropTypes.node.isRequired,
-  title: PropTypes.string.isRequired,
+  logo: PropTypes.node,
+  title: PropTypes.string,
   timestamp: PropTypes.string,
   body: PropTypes.node,
   bodyClassName: PropTypes.string,
@@ -135,6 +145,10 @@ ExternalResult.propTypes = {
     status: PropTypes.string.isRequired
   }),
   showDropdown: PropTypes.bool,
+  highlightTags: PropTypes.shape({
+    start: PropTypes.string,
+    end: PropTypes.string
+  }),
 
   // Redux Actions
   openCard: PropTypes.func.isRequired,
