@@ -1,5 +1,6 @@
 import React from 'react';
 import PropTypes from 'prop-types';
+import ReactMarkdown from 'react-markdown';
 import { MdOpenInNew } from 'react-icons/md';
 
 import { MODAL_TYPE } from 'appConstants/card';
@@ -82,7 +83,9 @@ const CardSlackModals = ({
                     <div className={s('flex items-end')}>
                       <div className={s('text-sm font-semibold mr-reg')}> {senderName} </div>
                     </div>
-                    <div className={s('mt-sm text-sm')}>{message}</div>
+                    <div className={s('mt-sm text-sm')}>
+                      <ReactMarkdown source={message} />
+                    </div>
                   </div>
                   {isEditing && (
                     <CheckBox isSelected={!!selected} className={s('flex-shrink-0 m-sm')} />

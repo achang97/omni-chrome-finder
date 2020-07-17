@@ -11,5 +11,6 @@ export { default as request } from './request';
 export { default as select } from './select';
 export { default as segment } from './segment';
 export { default as storage } from './storage';
+export { default as search } from './search';
 export { default as style } from './style';
 export { default as user } from './user';

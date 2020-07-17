@@ -1,23 +1,20 @@
 import React, { useState } from 'react';
 import PropTypes from 'prop-types';
-import moment from 'moment';
 import AnimateHeight from 'react-animate-height';
 import Switch from 'react-switch';
-import { MdKeyboardArrowUp, MdThumbUp, MdThumbDown } from 'react-icons/md';
+import { MdKeyboardArrowUp } from 'react-icons/md';
 
-import { Timeago } from 'components/common';
 import { INTEGRATIONS_MAP, INTEGRATIONS } from 'appConstants';
-import { getAttachmentIconProps } from 'utils/file';
 import { getStyleApplicationFn } from 'utils/style';
 
 import ExternalResult from '../ExternalResult';
 import ExternalResultHeader from '../ExternalResultHeader';
 
+import getItemProps from './ExternalResultProps';
 import style from './external-result-section.css';
 
 const s = getStyleApplicationFn(style);
 
-const FOLDER_MIME_TYPE = 'application/vnd.google-apps.folder';
 const DEFAULT_NUM_EXT_RESULTS_SHOWN = 4;
 
 export const SWITCH_PROPS = {
@@ -25,101 +22,6 @@ export const SWITCH_PROPS = {
   height: 17,
   checkedIcon: false,
   uncheckedIcon: false
-};
-
-const getItemProps = (type, item) => {
-  const baseProps = {
-    logo: INTEGRATIONS_MAP[type].logo,
-    showDropdown: true
-  };
-
-  switch (type) {
-    case INTEGRATIONS.GOOGLE.type: {
-      const { id, webViewLink, iconLink, name, owners, mimeType } = item;
-      return {
-        ...baseProps,
-        logo: iconLink,
-        id,
-        url: webViewLink,
-        title: name,
-        showDropdown: mimeType !== FOLDER_MIME_TYPE,
-        body: owners && (
-          <>
-            {owners.map(({ displayName, permissionId, me }, i) => (
-              <React.Fragment key={permissionId}>
-                <span>{me ? 'You' : displayName}</span>
-                {i !== owners.length - 1 && <span>, </span>}
-              </React.Fragment>
-            ))}
-          </>
-        )
-      };
-    }
-    case INTEGRATIONS.ZENDESK.type: {
-      const { id, html_url: htmlUrl, title, vote_sum: voteSum, author, promoted, draft } = item;
-      return {
-        ...baseProps,
-        id,
-        url: htmlUrl,
-        title,
-        body: (
-          <div className={s('flex items-center')}>
-            <div
-              className={s(`
-                flex items-center mr-sm
-                ${voteSum > 0 ? 'text-green-500' : ''}
-                ${voteSum < 0 ? 'text-red-500' : ''}
-              `)}
-            >
-              {voteSum >= 0 ? <MdThumbUp /> : <MdThumbDown />}
-              <div className={s('ml-xs')}> {voteSum} </div>
-            </div>
-            {author && <div className={s('mr-reg')}>{author.name}</div>}
-            {promoted && <div className={s('italic mr-sm')}> Promoted </div>}
-            {draft && <div className={s('italic mr-sm')}> Draft </div>}
-          </div>
-        )
-      };
-    }
-    case INTEGRATIONS.CONFLUENCE.type: {
-      const { id, url, title } = item;
-      return { ...baseProps, id, url, title };
-    }
-    case INTEGRATIONS.JIRA.type: {
-      const { id, url, title } = item;
-      return { ...baseProps, id, url, title, showDropdown: false };
-    }
-    case INTEGRATIONS.SLACK.type: {
-      const { id, timestamp, title, mimetype, thumb_160: thumbnail, permalink, user } = item;
-      const { Icon, color } = getAttachmentIconProps(mimetype);
-      const logo = thumbnail ? (
-        <img src={thumbnail} alt="" className={s('slack-thumbnail')} />
-      ) : (
-        <div className={s('external-result-icon')}>
-          <Icon className={s(`text-${color}`)} />
-        </div>
-      );
-
-      return {
-        ...baseProps,
-        id,
-        url: permalink,
-        title,
-        logo,
-        showDropdown: false,
-        body: (
-          <div className={s('flex items-center text-xs')}>
-            <div className={s('font-bold mr-sm')}>
-              {user ? user.real_name_normalized : 'External Slack User'}
-            </div>
-            <Timeago date={moment(timestamp, 'X').toDate()} live={false} />
-          </div>
-        )
-      };
-    }
-    default:
-      return {};
-  }
 };
 
 const ExternalResultSection = ({
@@ -132,7 +34,7 @@ const ExternalResultSection = ({
 
   const renderResult = (result) => {
     const resultProps = getItemProps(integrationType, result);
-    const { id, logo, url, title, body, showDropdown, timestamp } = resultProps;
+    const { id, logo, url, title, body, showDropdown, timestamp, highlightTags } = resultProps;
     const { card } = result;
 
     return (
@@ -146,6 +48,7 @@ const ExternalResultSection = ({
         card={card}
         body={body}
         timestamp={timestamp}
+        highlightTags={highlightTags}
         showDropdown={showDropdown}
       />
     );

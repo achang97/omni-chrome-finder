@@ -9,52 +9,25 @@ import { copyCardUrl } from 'utils/card';
 import { NodePropTypes } from 'utils/propTypes';
 
 import { getStyleApplicationFn } from 'utils/style';
+import { replaceHighlights, joinSections } from 'utils/search';
 import mainStyle from '../styles/suggestion.css';
 
 import SuggestionDropdown from '../SuggestionDropdown';
 
 const s = getStyleApplicationFn(mainStyle);
 
-const HIGHLIGHT_REGEX = /<HIGHLIGHT>(.+?)<\/HIGHLIGHT>/g;
-
 const replaceHighlightTags = (matches) => {
-  const sections = [];
+  let sections = [];
 
   matches.forEach((match, i) => {
-    const matchSections = match.split(HIGHLIGHT_REGEX);
     if (i > 0) {
       sections.push(<span>...&nbsp;</span>);
     }
-
-    let start = 0;
-    let j;
-
-    for (j = 0; j < matchSections.length; j++) {
-      const matchSection = matchSections[j];
-      const nextMatchSection = j < matchSections.length - 1 && matchSections[j + 1];
-
-      if (!nextMatchSection || (matchSection !== ' ' && nextMatchSection !== ' ')) {
-        const showHighlight = j % 2 === 1;
-        const matchElem = (
-          <span className={s(showHighlight ? 'bg-purple-gray-20 rounded-sm font-bold' : '')}>
-            {matchSections.slice(start, j + 1).join('')}
-          </span>
-        );
-
-        sections.push(matchElem);
-        start = j + 1;
-      }
-    }
+    const matchSections = replaceHighlights(match, { start: '<HIGHLIGHT>', end: '</HIGHLIGHT>' });
+    sections = sections.concat(matchSections);
   });
 
-  return (
-    <>
-      {sections.map((section, i) => (
-        // eslint-disable-next-line react/no-array-index-key
-        <React.Fragment key={`section-${i}`}>{section}</React.Fragment>
-      ))}
-    </>
-  );
+  return joinSections(sections);
 };
 
 const SuggestionCard = ({

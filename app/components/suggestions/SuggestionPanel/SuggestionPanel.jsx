@@ -1,5 +1,6 @@
 import React, { useState, useRef, useEffect } from 'react';
 import PropTypes from 'prop-types';
+import _ from 'lodash';
 import { useDebouncedCallback } from 'use-debounce';
 import { MdClose, MdKeyboardArrowLeft, MdAddCircle } from 'react-icons/md';
 import AnimateHeight from 'react-animate-height';
@@ -8,7 +9,7 @@ import Switch from 'react-switch';
 import { Button, Triangle, Separator, Loader } from 'components/common';
 
 import { colors } from 'styles/colors';
-import { SEARCH, ANIMATE, SEGMENT, INTEGRATIONS, ROUTES } from 'appConstants';
+import { SEARCH, ANIMATE, SEGMENT, ROUTES } from 'appConstants';
 
 import { getStyleApplicationFn } from 'utils/style';
 import { isLoggedIn } from 'utils/auth';
@@ -22,14 +23,6 @@ import ExternalResultHeader from '../ExternalResultHeader';
 
 const s = getStyleApplicationFn(mainStyle, scrollStyle);
 
-const SEARCH_INTEGRATIONS = [
-  INTEGRATIONS.CONFLUENCE,
-  INTEGRATIONS.GOOGLE,
-  INTEGRATIONS.JIRA,
-  INTEGRATIONS.SLACK,
-  INTEGRATIONS.ZENDESK
-];
-
 const SuggestionPanel = ({
   query,
   shouldSearchNodes,
@@ -40,7 +33,7 @@ const SuggestionPanel = ({
   nodes,
   isSearchingNodes,
   dockVisible,
-  integrationResults,
+  integrations,
   isSearchingIntegrations,
   hasSearchedIntegrations,
   user,
@@ -86,15 +79,15 @@ const SuggestionPanel = ({
 
   const countIntegrationResults = () => {
     let numIntegrationResults = 0;
-    integrationResults.forEach(({ items }) => {
-      numIntegrationResults += items.length;
+    SEARCH.INTEGRATIONS.forEach(({ type }) => {
+      numIntegrationResults += integrations[type].length;
     });
     return numIntegrationResults;
   };
 
   const renderExternalDocumentationResults = () => {
     const numIntegrationResults = countIntegrationResults();
-    if (numIntegrationResults === 0 || !shouldSearchIntegrations || isSearchingIntegrations) {
+    if (numIntegrationResults === 0 || !shouldSearchIntegrations) {
       // AnimateHeight expects children prop
       return <div />;
     }
@@ -112,8 +105,8 @@ const SuggestionPanel = ({
             onClick={() => setShowIntegrationResults(false)}
           />
         </div>
-        {integrationResults.map(({ type, items }) => (
-          <ExternalResultSection key={type} integrationType={type} items={items} />
+        {SEARCH.INTEGRATIONS.map(({ type }) => (
+          <ExternalResultSection key={type} integrationType={type} items={integrations[type]} />
         ))}
       </div>
     );
@@ -135,8 +128,9 @@ const SuggestionPanel = ({
     const DISCONNECTED_INTEGRATIONS = [
       {
         isShown: ({ type }) =>
-          isLoggedIn(user, type) &&
-          (!isSearchEnabled(type) || integrationResults.every((result) => result.type !== type)),
+          isLoggedIn(user, type) && // TODO: fix this logic
+          (!isSearchEnabled(type) ||
+            SEARCH.INTEGRATIONS.every(({ type: resultType }) => resultType !== type)),
         getHeaderEnd: (type) => (
           <Switch
             {...SWITCH_PROPS}
@@ -164,7 +158,7 @@ const SuggestionPanel = ({
     ];
     /* eslint-enable react/display-name */
 
-    if (!DISCONNECTED_INTEGRATIONS.some(({ isShown }) => SEARCH_INTEGRATIONS.some(isShown))) {
+    if (!DISCONNECTED_INTEGRATIONS.some(({ isShown }) => SEARCH.INTEGRATIONS.some(isShown))) {
       return null;
     }
 
@@ -173,14 +167,16 @@ const SuggestionPanel = ({
         <Separator horizontal className={s('w-5/6')} />
         <div className={s('text-gray-light my-sm text-xs px-reg')}> Show search results from: </div>
         {DISCONNECTED_INTEGRATIONS.map(({ isShown, getHeaderEnd }) =>
-          SEARCH_INTEGRATIONS.filter(isShown).map(({ type, logo, title }) => (
-            <ExternalResultHeader
-              key={type}
-              logo={logo}
-              title={title}
-              headerEnd={getHeaderEnd(type)}
-            />
-          ))
+          _.sortBy(SEARCH.INTEGRATIONS, 'title')
+            .filter(isShown)
+            .map(({ type, logo, title }) => (
+              <ExternalResultHeader
+                key={type}
+                logo={logo}
+                title={title}
+                headerEnd={getHeaderEnd(type)}
+              />
+            ))
         )}
       </>
     );
@@ -196,12 +192,9 @@ const SuggestionPanel = ({
             )}
             onClick={() => clickCreateCard()}
           >
-            <MdAddCircle className={s('text-purple-gray-50 mr-xs')} />
+            <MdAddCircle className={s('text-purple-gray-50 mr-xs flex-shrink-0')} />
             <span className={s('text-sm font-bold')}>Create a card for &ldquo;{query}&rdquo;</span>
           </div>
-        )}
-        {!isLoading && shouldSearchIntegrations && isSearchingIntegrations && (
-          <Loader size="sm" className={s('my-sm')} />
         )}
         <AnimateHeight
           height={showIntegrationResults ? 'auto' : 0}
@@ -210,6 +203,9 @@ const SuggestionPanel = ({
           }
         >
           {renderExternalDocumentationResults()}
+          {!isLoading && shouldSearchIntegrations && isSearchingIntegrations && (
+            <Loader size="sm" className={s('my-sm')} />
+          )}
           {renderDisconnectedIntegrations()}
         </AnimateHeight>
       </>
@@ -309,12 +305,7 @@ SuggestionPanel.propTypes = {
   hasReachedLimit: PropTypes.bool.isRequired,
   nodes: PropTypes.arrayOf(NodePropTypes).isRequired,
   isSearchingNodes: PropTypes.bool,
-  integrationResults: PropTypes.arrayOf(
-    PropTypes.shape({
-      type: PropTypes.string.isRequired,
-      items: PropTypes.array
-    })
-  ).isRequired,
+  integrations: PropTypes.objectOf(PropTypes.array).isRequired,
   isSearchingIntegrations: PropTypes.bool,
   hasSearchedIntegrations: PropTypes.bool,
   dockVisible: PropTypes.bool.isRequired,

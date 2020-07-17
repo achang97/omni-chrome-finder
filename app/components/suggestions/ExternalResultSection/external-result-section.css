@@ -1,6 +1,10 @@
 .slack-thumbnail {
-  @apply rounded-lg shadow-md;
+  @apply rounded-lg shadow-md mr-sm;
 
-  height: 50px;
-  width: 50px;
+  height: 35px;
+  width: 35px;
+}
+
+.excerpt-text {
+  @apply text-xs text-gray-dark;
 }

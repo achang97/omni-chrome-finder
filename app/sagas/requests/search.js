@@ -1,5 +1,5 @@
 import { CancelToken, isCancel } from 'axios';
-import { take, call, fork, put, select } from 'redux-saga/effects';
+import { take, call, fork, put, select, all } from 'redux-saga/effects';
 import { doGet, doPost, getErrorMessage } from 'utils/request';
 import { SEARCH } from 'appConstants';
 import {
@@ -16,6 +16,7 @@ import {
   handleSearchNodesSuccess,
   handleSearchNodesError,
   handleSearchIntegrationsSuccess,
+  handleSearchIndividualIntegrationSuccess,
   handleSearchIntegrationsError,
   handleSearchTagsSuccess,
   handleSearchTagsError,
@@ -137,12 +138,21 @@ function* searchNodes({ query }) {
   }
 }
 
+function* searchInvidividualIntegration(integration, query, cancelToken) {
+  const queryParams = { q: query, sources: integration };
+  const results = yield call(doGet, '/search/integrations', queryParams, { cancelToken });
+  if (results.length !== 0) {
+    yield put(handleSearchIndividualIntegrationSuccess(integration, results[0].items));
+  }
+}
+
 function* searchIntegrations({ query }) {
   const cancelToken = cancelRequest(CANCEL_TYPE.INTEGRATIONS);
-
   try {
-    const results = yield call(doGet, '/search/integrations', { q: query }, { cancelToken });
-    yield put(handleSearchIntegrationsSuccess(results));
+    yield all(
+      SEARCH.INTEGRATIONS.map(({ type }) => searchInvidividualIntegration(type, query, cancelToken))
+    );
+    yield put(handleSearchIntegrationsSuccess());
   } catch (error) {
     if (!isCancel(error)) {
       yield put(handleSearchIntegrationsError(getErrorMessage(error)));

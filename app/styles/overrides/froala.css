@@ -22,14 +22,6 @@
     sans-serif;
 }
 
-#omni-chrome-ext-main-container .fr-view pre {
-  margin: 0;
-  font-family: 'Courier New', sans-serif;
-  background: #211a1d0d;
-  border-radius: 8px;
-  padding: 5px;
-}
-
 #omni-chrome-ext-main-container .fr-placeholder {
   font-family: inherit;
   font-size: 14px;
@@ -39,20 +31,6 @@
 #omni-chrome-ext-main-container .fr-view a {
   color: blue !important;
   text-decoration: underline !important;
-}
-
-#omni-chrome-ext-main-container .fr-view ol,
-#omni-chrome-ext-main-container .fr-view ul {
-  margin: 0 14px;
-  padding-left: 20px;
-}
-
-#omni-chrome-ext-main-container .fr-view ol {
-  list-style: decimal;
-}
-
-#omni-chrome-ext-main-container .fr-view ul {
-  list-style: disc;
 }
 
 #omni-chrome-ext-main-container .fr-toolbar {
