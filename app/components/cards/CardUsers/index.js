@@ -7,16 +7,25 @@ import CardUsers from './CardUsers';
 
 const mapStateToProps = (state, ownProps) => {
   const {
-    search: { users, isSearchingUsers },
+    search: { users: userOptions, isSearchingUsers },
     profile: { user }
   } = state;
 
   // Do some processing of users with the passed in component props
-  const { showInviteOptions = true, disabledUserIds = [], disabledUserRoles = [] } = ownProps;
-  const userOptions = users.filter(
-    ({ _id, role }) => !disabledUserIds.includes(_id) && !disabledUserRoles.includes(role)
+  const {
+    showInviteOptions = true,
+    disabledUserIds = [],
+    disabledUserRoles = [],
+    users = []
+  } = ownProps;
+
+  const filteredOptions = userOptions.filter(
+    ({ _id, role }) =>
+      !disabledUserIds.includes(_id) &&
+      !disabledUserRoles.includes(role) &&
+      !users.some((currUser) => currUser._id === _id)
   );
-  const groupedUserOptions = _.groupBy(userOptions, 'status');
+  const groupedUserOptions = _.groupBy(filteredOptions, 'status');
 
   const sections = [
     { type: STATUS.ACTIVE, isShown: true },

@@ -6,7 +6,7 @@ import { MdLock } from 'react-icons/md';
 import { Modal, Message } from 'components/common';
 
 import { HINTS, MODAL_TYPE, INVITE_TYPE } from 'appConstants/card';
-import { SEEN_FEATURES } from 'appConstants/user';
+import { SEEN_FEATURES, ROLE } from 'appConstants/user';
 import { hasValidEdits, isExistingCard, isJustMe } from 'utils/card';
 import { getStyleApplicationFn } from 'utils/style';
 
@@ -58,6 +58,8 @@ const CardCreateModal = ({
   removeCardOwner,
   addCardSubscriber,
   removeCardSubscriber,
+  addCardApprover,
+  removeCardApprover,
   updateCardTags,
   removeCardTag,
   updateCardVerificationInterval,
@@ -104,6 +106,7 @@ const CardCreateModal = ({
   const {
     owners = [],
     subscribers = [],
+    approvers = [],
     tags = [],
     verificationInterval,
     permissions,
@@ -178,38 +181,51 @@ const CardCreateModal = ({
     );
   };
 
+  const renderTags = (isEditable) => {
+    return (
+      <CardTags
+        isEditable={isEditable}
+        isCreatable
+        showSelect
+        tags={tags}
+        onChange={updateCardTags}
+        onRemoveClick={({ index }) => removeCardTag(index)}
+        showPlaceholder
+      />
+    );
+  };
+
   const renderAdvanced = (isEditable, isExisting, justMe) => {
     return (
-      <>
-        <AnimateHeight
-          height={justMe ? 0 : 'auto'}
-          onAnimationEnd={({ newHeight }) => newHeight !== 0 && scrollToBottom()}
-        >
-          <div className={s('mb-sm')}>
-            <div className={s('text-gray-reg text-xs mb-sm')}> Tags </div>
-            <CardTags
-              isEditable={isEditable}
-              isCreatable
-              showSelect
-              tags={tags}
-              onChange={updateCardTags}
-              onRemoveClick={({ index }) => removeCardTag(index)}
-              showPlaceholder
+      <div className={s('mb-sm')}>
+        <div className={s('text-gray-reg text-xs mb-sm')}> Permissions </div>
+        <CardPermissions
+          isEditable={isEditable}
+          selectedPermissions={permissions}
+          onChangePermissions={updateCardPermissions}
+          permissionGroups={permissionGroups}
+          onChangePermissionGroups={updateCardPermissionGroups}
+          showJustMe={!isExisting && isEditor}
+        />
+        {isEditor && (
+          <AnimateHeight
+            height={justMe ? 0 : 'auto'}
+            onAnimationEnd={({ newHeight }) => newHeight !== 0 && scrollToBottom()}
+          >
+            <div className={s('text-gray-reg text-xs mb-sm')}> Approvers </div>
+            <CardUsers
+              isEditable
+              users={approvers}
+              onAdd={addCardApprover}
+              onRemoveClick={({ index }) => removeCardApprover(index)}
+              disabledUserRoles={[ROLE.VIEWER]}
+              showTooltips
+              showNames={false}
+              size="sm"
             />
-          </div>
-        </AnimateHeight>
-        <div>
-          <div className={s('text-gray-reg text-xs mb-sm')}> Permissions </div>
-          <CardPermissions
-            isEditable={isEditable}
-            selectedPermissions={permissions}
-            onChangePermissions={updateCardPermissions}
-            permissionGroups={permissionGroups}
-            onChangePermissionGroups={updateCardPermissionGroups}
-            showJustMe={!isExisting}
-          />
-        </div>
-      </>
+          </AnimateHeight>
+        )}
+      </div>
     );
   };
 
@@ -283,6 +299,12 @@ const CardCreateModal = ({
         hint: HINTS.SUBSCRIBERS,
         featureKey: SEEN_FEATURES.SUBSCRIBERS,
         renderFn: renderSubscribers
+      },
+      {
+        title: 'Tag(s)',
+        startExpanded: true,
+        isExpandable: false,
+        renderFn: renderTags
       },
       {
         title: 'Advanced',
@@ -386,6 +408,7 @@ CardCreateModal.propTypes = {
   edits: PropTypes.shape({
     owners: PropTypes.arrayOf(PropTypes.object),
     subscribers: PropTypes.arrayOf(PropTypes.object),
+    approvers: PropTypes.arrayOf(PropTypes.object),
     tags: PropTypes.arrayOf(PropTypes.object),
     verificationInterval: PropTypes.object,
     permissions: PropTypes.object,
@@ -403,6 +426,8 @@ CardCreateModal.propTypes = {
   removeCardOwner: PropTypes.func.isRequired,
   addCardSubscriber: PropTypes.func.isRequired,
   removeCardSubscriber: PropTypes.func.isRequired,
+  addCardApprover: PropTypes.func.isRequired,
+  removeCardApprover: PropTypes.func.isRequired,
   updateCardTags: PropTypes.func.isRequired,
   removeCardTag: PropTypes.func.isRequired,
   updateCardVerificationInterval: PropTypes.func.isRequired,

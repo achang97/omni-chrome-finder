@@ -160,55 +160,45 @@ const CardSideDock = ({
     );
   };
 
-  const handleHideSections = ({ newHeight }) => {
-    if (newHeight !== 0) {
-      permissionRef.current.scrollIntoView({ behavior: 'smooth', block: 'end' });
-    }
+  const renderTags = () => {
+    const currTags = isEditing ? edits.tags : tags;
+    return (
+      <CardTags
+        isEditable={isEditing}
+        isCreatable
+        showSelect
+        tags={currTags}
+        onChange={updateCardTags}
+        onRemoveClick={({ index }) => removeCardTag(index)}
+        showPlaceholder
+      />
+    );
   };
 
-  const renderAdvanced = (justMe) => {
-    let currTags;
+  const renderAdvanced = () => {
     let currPermissions;
     let currPermissionGroups;
 
     if (isEditing) {
-      currTags = edits.tags;
       currPermissions = edits.permissions;
       currPermissionGroups = edits.permissionGroups;
     } else {
-      currTags = tags;
       currPermissions = permissions;
       currPermissionGroups = permissionGroups;
     }
 
     return (
-      <>
-        <AnimateHeight height={justMe ? 0 : 'auto'} onAnimationEnd={handleHideSections}>
-          <div className={s('mb-reg')}>
-            <div className={s('text-gray-reg text-xs mb-sm')}> Tags </div>
-            <CardTags
-              isEditable={isEditing}
-              isCreatable
-              showSelect
-              tags={currTags}
-              onChange={updateCardTags}
-              onRemoveClick={({ index }) => removeCardTag(index)}
-              showPlaceholder
-            />
-          </div>
-        </AnimateHeight>
-        <div ref={permissionRef}>
-          <div className={s('text-gray-reg text-xs mb-sm')}>Permissions</div>
-          <CardPermissions
-            selectedPermissions={currPermissions}
-            onChangePermissions={updateCardPermissions}
-            permissionGroups={currPermissionGroups}
-            onChangePermissionGroups={updateCardPermissionGroups}
-            isEditable={isEditing}
-            showJustMe={permissions.value === PERMISSION_OPTION.JUST_ME}
-          />
-        </div>
-      </>
+      <div ref={permissionRef}>
+        <div className={s('text-gray-reg text-xs mb-sm')}>Permissions</div>
+        <CardPermissions
+          selectedPermissions={currPermissions}
+          onChangePermissions={updateCardPermissions}
+          permissionGroups={currPermissionGroups}
+          onChangePermissionGroups={updateCardPermissionGroups}
+          isEditable={isEditing}
+          showJustMe={permissions.value === PERMISSION_OPTION.JUST_ME}
+        />
+      </div>
     );
   };
 
@@ -312,6 +302,12 @@ const CardSideDock = ({
       renderFn: renderSubscribers
     },
     {
+      title: 'Tag(s)',
+      startExpanded: true,
+      isExpandable: false,
+      renderFn: renderTags
+    },
+    {
       title: 'Attachments',
       renderFn: renderAttachments,
       showJustMe: true,
@@ -358,7 +354,7 @@ const CardSideDock = ({
                       hint={hint}
                       headerEnd={canEdit && renderEditButton()}
                     >
-                      {renderFn(justMe)}
+                      {renderFn()}
                     </CardSection>
                   </AnimateHeight>
                 )

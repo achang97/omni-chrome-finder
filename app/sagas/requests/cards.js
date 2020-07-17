@@ -198,6 +198,7 @@ function* convertCardToBackendFormat(card) {
       answerModel,
       owners,
       subscribers,
+      approvers,
       tags,
       verificationInterval,
       permissions,
@@ -217,12 +218,14 @@ function* convertCardToBackendFormat(card) {
   // Handle invited owners / subscribers
   let cardOwners = getArrayIds(owners);
   let cardSubscribers = _.union(cardOwners, getArrayIds(subscribers));
+  let cardApprovers = getArrayIds(approvers);
   let cardTags = tags;
   let cardUpdateInterval = verificationInterval.value;
 
   if (permissions.value === PERMISSION_OPTION.JUST_ME) {
     cardOwners = [_id];
     cardSubscribers = [_id];
+    cardApprovers = [];
     cardTags = [];
     cardUpdateInterval = VERIFICATION_INTERVAL_OPTION.NEVER;
   }
@@ -248,6 +251,7 @@ function* convertCardToBackendFormat(card) {
     ...permissionsInfo,
     owners: cardOwners,
     subscribers: cardSubscribers,
+    approvers: cardApprovers,
     tags: cardTags,
     slackThreadConvoPairs: cardSlackThreadConvoPairs,
     slackReplies: cardSlackReplies,
