@@ -28,6 +28,7 @@ const ExternalResult = ({
   card,
   showDropdown,
   highlightTags,
+  isEditor,
   openCard,
   updateExternalLinkAnswer,
   toggleExternalCreateModal,
@@ -62,8 +63,19 @@ const ExternalResult = ({
     window.open(url, '_blank');
   };
 
-  let ACTIONS;
-  if (!card) {
+  let ACTIONS = [];
+  if (card) {
+    ACTIONS = [
+      {
+        label: 'Copy Link',
+        onClick: shareCard
+      },
+      {
+        label: 'Open Omni Card',
+        onClick: () => openCard({ _id: card._id })
+      }
+    ];
+  } else if (isEditor) {
     ACTIONS = [
       {
         label: 'Verify with Omni',
@@ -76,17 +88,6 @@ const ExternalResult = ({
           const links = getLinks(url.match(regex));
           updateExternalLinkAnswer({ type, ...links });
         }
-      }
-    ];
-  } else {
-    ACTIONS = [
-      {
-        label: 'Copy Link',
-        onClick: shareCard
-      },
-      {
-        label: 'Open Omni Card',
-        onClick: () => openCard({ _id: card._id })
       }
     ];
   }
@@ -149,6 +150,9 @@ ExternalResult.propTypes = {
     start: PropTypes.string,
     end: PropTypes.string
   }),
+
+  // Redux State
+  isEditor: PropTypes.bool.isRequired,
 
   // Redux Actions
   openCard: PropTypes.func.isRequired,

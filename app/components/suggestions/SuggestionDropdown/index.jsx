@@ -17,6 +17,10 @@ const SuggestionDropdown = ({ actions }) => {
     setDropdownOpen(false);
   };
 
+  if (actions.length === 0) {
+    return null;
+  }
+
   return (
     <div className={s('flex-shrink-0 relative')}>
       <Dropdown
