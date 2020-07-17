@@ -14,10 +14,15 @@ Object.values(SEARCH.SOURCE).forEach((type) => {
   INITIAL_CARDS_STATE[type] = BASE_CARDS_STATE;
 });
 
+const INITIAL_INTEGRATIONS_STATE = {};
+SEARCH.INTEGRATIONS.forEach(({ type }) => {
+  INITIAL_INTEGRATIONS_STATE[type] = [];
+});
+
 const initialState = {
   cards: INITIAL_CARDS_STATE,
   nodes: [],
-  integrationResults: [],
+  integrations: INITIAL_INTEGRATIONS_STATE,
   tags: [],
   users: [],
   permissionGroups: []
@@ -110,16 +115,22 @@ export default function searchReducer(state = initialState, action) {
     }
 
     case types.SEARCH_INTEGRATIONS_REQUEST: {
-      return { ...state, isSearchingIntegrations: true, searchIntegrationsError: null };
-    }
-    case types.SEARCH_INTEGRATIONS_SUCCESS: {
-      const { results } = payload;
       return {
         ...state,
-        isSearchingIntegrations: false,
-        integrationResults: results,
-        hasSearchedIntegrations: true
+        isSearchingIntegrations: true,
+        searchIntegrationsError: null,
+        integrations: INITIAL_INTEGRATIONS_STATE
       };
+    }
+    case types.SEARCH_INDIVIDUAL_INTEGRATION_SUCCESS: {
+      const { integration, items } = payload;
+      return {
+        ...state,
+        integrations: { ...state.integrations, [integration]: items }
+      };
+    }
+    case types.SEARCH_INTEGRATIONS_SUCCESS: {
+      return { ...state, isSearchingIntegrations: false, hasSearchedIntegrations: true };
     }
     case types.SEARCH_INTEGRATIONS_ERROR: {
       const { error } = payload;
@@ -127,20 +138,15 @@ export default function searchReducer(state = initialState, action) {
     }
 
     case types.UPDATE_SEARCH_INTEGRATION_RESULT: {
-      const { integrationType, matchParams, update } = payload;
-
-      const newIntegrationResults = state.integrationResults.map((currResults) => {
-        const { type: currType, items } = currResults;
-
-        if (currType !== integrationType) {
-          return currResults;
+      const { integration, matchParams, update } = payload;
+      const { integrations } = state;
+      return {
+        ...state,
+        integrations: {
+          ...integrations,
+          [integrations]: updateArrayOfObjects(integrations[integration], matchParams, update)
         }
-
-        const newItems = updateArrayOfObjects(items, matchParams, update);
-        return { type: currType, items: newItems };
-      });
-
-      return { ...state, integrationResults: newIntegrationResults };
+      };
     }
 
     case types.SEARCH_TAGS_REQUEST: {

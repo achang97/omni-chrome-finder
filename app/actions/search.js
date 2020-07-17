@@ -48,18 +48,22 @@ export function requestSearchIntegrations(query) {
   return { type: types.SEARCH_INTEGRATIONS_REQUEST, payload: { query } };
 }
 
-export function handleSearchIntegrationsSuccess(results) {
-  return { type: types.SEARCH_INTEGRATIONS_SUCCESS, payload: { results } };
+export function handleSearchIndividualIntegrationSuccess(integration, items) {
+  return { type: types.SEARCH_INDIVIDUAL_INTEGRATION_SUCCESS, payload: { integration, items } };
+}
+
+export function handleSearchIntegrationsSuccess() {
+  return { type: types.SEARCH_INTEGRATIONS_SUCCESS, payload: {} };
 }
 
 export function handleSearchIntegrationsError(error) {
   return { type: types.SEARCH_INTEGRATIONS_ERROR, payload: { error } };
 }
 
-export function updateSearchIntegrationResult(integrationType, matchParams, update) {
+export function updateSearchIntegrationResult(integration, matchParams, update) {
   return {
     type: types.UPDATE_SEARCH_INTEGRATION_RESULT,
-    payload: { integrationType, matchParams, update }
+    payload: { integration, matchParams, update }
   };
 }
 

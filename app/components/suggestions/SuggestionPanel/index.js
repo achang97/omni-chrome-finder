@@ -18,7 +18,7 @@ const mapStateToProps = (state) => {
       cards: { [SEARCH.SOURCE.DOCK]: cards },
       nodes,
       isSearchingNodes,
-      integrationResults,
+      integrations,
       isSearchingIntegrations,
       hasSearchedIntegrations
     },
@@ -30,7 +30,7 @@ const mapStateToProps = (state) => {
     ...cards,
     nodes,
     isSearchingNodes,
-    integrationResults,
+    integrations,
     isSearchingIntegrations,
     hasSearchedIntegrations,
     dockVisible,
