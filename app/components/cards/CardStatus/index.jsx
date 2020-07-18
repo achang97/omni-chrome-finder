@@ -66,7 +66,7 @@ const getDropdownInfo = (status) => {
     case CARD.STATUS.UP_TO_DATE:
       return { label: 'Flag as outdated', Icon: MdRemoveCircle, fontColor: 'red-500' };
     case CARD.STATUS.NEEDS_APPROVAL:
-      return { label: 'Approve Changes', Icon: MdCheck, fontColor: 'green-reg' };
+      return { label: 'Approve', Icon: MdCheck, fontColor: 'green-reg' };
     default:
       return {};
   }

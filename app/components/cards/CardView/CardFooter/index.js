@@ -9,7 +9,7 @@ import {
   editCard,
   cancelEditCard
 } from 'actions/cards';
-import { cardStateChanged, isExternalCard, canEditCard } from 'utils/card';
+import { cardStateChanged, canEditCard, hasValidEdits } from 'utils/card';
 import CardFooter from './CardFooter';
 
 const mapStateToProps = (state) => {
@@ -41,9 +41,9 @@ const mapStateToProps = (state) => {
   return {
     user,
     canEdit,
+    hasValidEdits: hasValidEdits(activeCard),
     activeScreenRecordingId,
     _id,
-    isExternal: isExternalCard(activeCard),
     status,
     tags,
     upvotes,

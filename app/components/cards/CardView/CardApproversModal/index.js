@@ -13,18 +13,18 @@ import CardApproversModal from './CardApproversModal';
 
 const mapStateToProps = (state) => {
   const {
-    cards: {
-      activeCard: {
-        _id,
-        createError,
-        updateError,
-        isCreatingCard,
-        isUpdatingCard,
-        edits,
-        modalOpen: { [MODAL_TYPE.ADD_APPROVERS]: isOpen }
-      }
-    }
+    cards: { activeCard }
   } = state;
+
+  const {
+    _id,
+    createError,
+    updateError,
+    isCreatingCard,
+    isUpdatingCard,
+    edits,
+    modalOpen: { [MODAL_TYPE.ADD_APPROVERS]: isOpen }
+  } = activeCard;
 
   return {
     _id,
@@ -34,7 +34,7 @@ const mapStateToProps = (state) => {
     isUpdatingCard,
     isOpen,
     approvers: edits.approvers || [],
-    hasValidEdits: hasValidEdits(edits)
+    hasValidEdits: hasValidEdits(activeCard)
   };
 };
 

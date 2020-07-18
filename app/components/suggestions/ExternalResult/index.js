@@ -13,12 +13,10 @@ import ExternalResult from './ExternalResult';
 
 const mapStateToProps = (state) => {
   const {
-    profile: {
-      user: { role }
-    }
+    profile: { user }
   } = state;
 
-  return { isEditor: isEditor(role) };
+  return { isEditor: isEditor(user) };
 };
 
 const mapDispatchToProps = {

@@ -142,7 +142,7 @@ const ExternalVerification = ({
           <IoMdAlert className={s('text-purple-reg mr-xs')} />
           <span className={s('text-sm text-gray-dark font-bold')}> Unverified </span>
         </div>
-        {isEditor(user.role) && (
+        {isEditor(user) && (
           <Button
             text="Verify with Omni"
             className={s('py-sm')}

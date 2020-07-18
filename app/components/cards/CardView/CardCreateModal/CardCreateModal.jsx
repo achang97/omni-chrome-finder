@@ -7,7 +7,7 @@ import { Modal, Message } from 'components/common';
 
 import { HINTS, MODAL_TYPE, INVITE_TYPE } from 'appConstants/card';
 import { SEEN_FEATURES, ROLE } from 'appConstants/user';
-import { hasValidEdits, isExistingCard, isJustMe } from 'utils/card';
+import { isExistingCard, isJustMe } from 'utils/card';
 import { getStyleApplicationFn } from 'utils/style';
 
 import style from './card-create-modal.css';
@@ -50,6 +50,7 @@ const CardCreateModal = ({
   isOpen,
   isEditor,
   seenFeatures,
+  hasValidEdits,
   requestCreateCard,
   requestUpdateCard,
   openCardModal,
@@ -320,7 +321,7 @@ const CardCreateModal = ({
       text: 'Complete Card',
       onClick,
       isLoading,
-      disabled: !hasValidEdits(edits)
+      disabled: !hasValidEdits
     };
 
     return (
@@ -416,6 +417,7 @@ CardCreateModal.propTypes = {
     finderNode: PropTypes.object
   }),
   seenFeatures: PropTypes.objectOf(PropTypes.bool).isRequired,
+  hasValidEdits: PropTypes.bool.isRequired,
 
   // Redux Actions
   requestCreateCard: PropTypes.func.isRequired,

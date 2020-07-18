@@ -75,7 +75,7 @@ const App = ({ dockVisible, isLoggedIn, user, showAutofind, requestGetUser, requ
     isMounted.current = true;
   }, [isLoggedIn, user, isVerified, requestGetUser, requestGetTasks]);
 
-  const completedOnboarding = user && auth.hasCompletedOnboarding(user.onboarding);
+  const completedOnboarding = auth.hasCompletedOnboarding(user);
   const isValidUser = auth.isValidUser(user) && user.company && !user.company.disabled;
 
   return (

@@ -7,7 +7,8 @@ import { IoIosShareAlt } from 'react-icons/io';
 // import html2pdf from 'html2pdf.js';
 import { Timeago, Tooltip, Separator, PlaceholderImg } from 'components/common';
 
-import { copyCardUrl, isApprover } from 'utils/card';
+import { copyCardUrl } from 'utils/card';
+import { isEditor } from 'utils/auth';
 import { copyText } from 'utils/window';
 import { getStyleApplicationFn } from 'utils/style';
 import { UserPropTypes } from 'utils/propTypes';
@@ -225,7 +226,7 @@ const CardHeader = ({
             <Separator className={s('bg-purple-gray-10 mx-sm opacity-75')} />
             <CardStatus
               status={status}
-              isActionable={status !== CARD.STATUS.NEEDS_APPROVAL || isApprover(user)}
+              isActionable={status !== CARD.STATUS.NEEDS_APPROVAL || isEditor(user)}
               outOfDateReason={outOfDateReason}
               onDropdownOptionClick={cardStatusOnClick}
               className={s('text-gray-dark')}

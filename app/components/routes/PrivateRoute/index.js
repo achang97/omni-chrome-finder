@@ -12,7 +12,7 @@ const mapStateToProps = (state) => {
     isLoggedIn: !!token,
     isVerified: !!user.isVerified,
     isDisabled: !!(user.company && user.company.disabled),
-    hasCompletedOnboarding: !!(user && hasCompletedOnboarding(user.onboarding))
+    hasCompletedOnboarding: hasCompletedOnboarding(user)
   };
 };
 

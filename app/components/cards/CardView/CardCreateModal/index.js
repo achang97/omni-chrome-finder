@@ -21,26 +21,25 @@ import {
 } from 'actions/cards';
 import { requestUpdateUser } from 'actions/profile';
 import { isEditor } from 'utils/auth';
+import { hasValidEdits } from 'utils/card';
 import { MODAL_TYPE } from 'appConstants/card';
 import CardCreateModal from './CardCreateModal';
 
 const mapStateToProps = (state) => {
   const {
-    cards: {
-      activeCard: {
-        _id,
-        createError,
-        updateError,
-        isCreatingCard,
-        isUpdatingCard,
-        edits,
-        modalOpen: { [MODAL_TYPE.CREATE]: isOpen }
-      }
-    },
-    profile: {
-      user: { seenFeatures, role }
-    }
+    cards: { activeCard },
+    profile: { user }
   } = state;
+
+  const {
+    _id,
+    createError,
+    updateError,
+    isCreatingCard,
+    isUpdatingCard,
+    edits,
+    modalOpen: { [MODAL_TYPE.CREATE]: isOpen }
+  } = activeCard;
 
   return {
     _id,
@@ -50,8 +49,9 @@ const mapStateToProps = (state) => {
     isUpdatingCard,
     edits,
     isOpen,
-    isEditor: isEditor(role),
-    seenFeatures: _.omit(seenFeatures, '_id')
+    isEditor: isEditor(user),
+    seenFeatures: _.omit(user.seenFeatures, '_id'),
+    hasValidEdits: hasValidEdits(activeCard)
   };
 };
 

@@ -1,6 +1,6 @@
 import _ from 'lodash';
 
-import { URL, CARD, USER, REQUEST } from 'appConstants';
+import { URL, CARD, REQUEST } from 'appConstants';
 
 import { getArrayIds } from './array';
 import { isEditor } from './auth';
@@ -106,6 +106,10 @@ export function convertPermissionsToFrontendFormat(userPermissions, permissionGr
   return CARD.PERMISSION_OPTIONS.find((option) => option.value === permissionsValue);
 }
 
+export function isJustMe(permissions) {
+  return permissions && permissions.value === CARD.PERMISSION_OPTION.JUST_ME;
+}
+
 export function hasValidPermissions(permissions, permissionGroups) {
   return (
     !!permissions &&
@@ -113,16 +117,19 @@ export function hasValidPermissions(permissions, permissionGroups) {
   );
 }
 
-export function hasValidEdits(edits, isExternal = false) {
+export function hasValidEdits(card) {
+  const isExternal = isExternalCard(card);
   const {
-    question,
-    answerModel,
-    owners = [],
-    verificationInterval,
-    permissions,
-    permissionGroups = [],
-    attachments = []
-  } = edits;
+    edits: {
+      question,
+      answerModel,
+      owners = [],
+      verificationInterval,
+      permissions,
+      permissionGroups = [],
+      attachments = []
+    }
+  } = card;
 
   return (
     !!question &&
@@ -143,21 +150,12 @@ export function isExistingCard(cardId) {
   return !cardId.startsWith('new-card-');
 }
 
-export function isJustMe(permissions) {
-  return permissions && permissions.value === CARD.PERMISSION_OPTION.JUST_ME;
-}
-
 export function canEditCard(user, card) {
-  const { role, _id: userId } = user;
+  const { _id: userId } = user;
   const { asker = {}, owners = [] } = card;
 
   // TODO: Also check the specified viewers who have been granted Edit Access
-  return isEditor(role) || asker._id === userId || owners.some(({ _id }) => _id === userId);
-}
-
-export function isApprover(user) {
-  // TODO: Change this function so it actually checks the assigned approvers on the card
-  return user.role === USER.ROLE.ADMIN;
+  return isEditor(user) || asker._id === userId || owners.some(({ _id }) => _id === userId);
 }
 
 export function getNewCardBaseState(user) {
@@ -227,7 +225,6 @@ export default {
   generateCardId,
   isExistingCard,
   isJustMe,
-  isApprover,
   getNewCardBaseState,
   cardStateChanged,
   isExternalCard,

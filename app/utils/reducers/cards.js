@@ -35,6 +35,7 @@ export function createCardEdits(card) {
   const {
     owners,
     subscribers,
+    approvers,
     attachments,
     tags,
     permissions,
@@ -52,6 +53,7 @@ export function createCardEdits(card) {
     edits: {
       owners,
       subscribers,
+      approvers,
       attachments,
       tags,
       permissions,

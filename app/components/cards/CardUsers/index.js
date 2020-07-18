@@ -41,7 +41,7 @@ const mapStateToProps = (state, ownProps) => {
   return {
     userOptions: sectionedOptions,
     isLoading: isSearchingUsers,
-    isEditor: isEditor(user.role)
+    isEditor: isEditor(user)
   };
 };
 

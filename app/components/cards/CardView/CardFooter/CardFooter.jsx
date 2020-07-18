@@ -3,7 +3,7 @@ import PropTypes from 'prop-types';
 import { MdModeEdit, MdThumbUp, MdBookmark, MdNotifications } from 'react-icons/md';
 
 import { Message, Button, Loader, Tooltip } from 'components/common';
-import { hasValidEdits, toggleUpvotes } from 'utils/card';
+import { toggleUpvotes } from 'utils/card';
 import { getStyleApplicationFn } from 'utils/style';
 import { isAnyLoading } from 'utils/file';
 import { UserPropTypes } from 'utils/propTypes';
@@ -18,9 +18,9 @@ const CardFooter = ({
   onToastHide,
   user,
   canEdit,
+  hasValidEdits,
   activeScreenRecordingId,
   _id,
-  isExternal,
   status,
   upvotes,
   subscribers,
@@ -70,7 +70,7 @@ const CardFooter = ({
         iconLeft={false}
         icon={isUpdatingCard ? <Loader className={s('ml-sm')} size="sm" color="white" /> : null}
         className={s('rounded-t-none p-lg')}
-        disabled={!hasValidEdits(edits, isExternal) || isUpdatingCard || isRecording}
+        disabled={!hasValidEdits || isUpdatingCard || isRecording}
         underline
       />
     );
@@ -186,9 +186,9 @@ CardFooter.propTypes = {
   // Redux State
   user: UserPropTypes.isRequired,
   canEdit: PropTypes.bool.isRequired,
+  hasValidEdits: PropTypes.bool.isRequired,
   activeScreenRecordingId: PropTypes.string,
   _id: PropTypes.string.isRequired,
-  isExternal: PropTypes.bool.isRequired,
   status: PropTypes.oneOf(Object.values(STATUS)).isRequired,
   upvotes: PropTypes.arrayOf(PropTypes.string).isRequired,
   subscribers: PropTypes.arrayOf(PropTypes.object).isRequired,

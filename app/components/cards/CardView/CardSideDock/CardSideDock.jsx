@@ -36,6 +36,7 @@ const CardSideDock = ({
   finderNode,
   owners,
   subscribers,
+  approvers,
   attachments,
   tags,
   permissions,
@@ -251,6 +252,10 @@ const CardSideDock = ({
     );
   };
 
+  const renderApprovers = () => (
+    <CardUsers users={approvers} size="xs" showNames={false} showTooltips />
+  );
+
   const renderOverlay = () => {
     const baseStyle = getBaseAnimationStyle(SIDE_DOCK_TRANSITION_MS);
     return (
@@ -320,6 +325,14 @@ const CardSideDock = ({
     }
   ];
 
+  if (status === STATUS.NEEDS_APPROVAL) {
+    CARD_SECTIONS.unshift({
+      title: 'Waiting on approval from: ',
+      renderFn: renderApprovers,
+      isEditable: false
+    });
+  }
+
   const render = () => {
     const baseStyle = getBaseAnimationStyle(SIDE_DOCK_TRANSITION_MS);
     const transitionStyles = {
@@ -343,7 +356,10 @@ const CardSideDock = ({
             >
               {renderHeader()}
               {CARD_SECTIONS.map(
-                ({ title, hint, renderFn, showJustMe, showNewCard = false }, i) => (
+                (
+                  { title, hint, renderFn, showJustMe, isEditable = true, showNewCard = false },
+                  i
+                ) => (
                   <AnimateHeight
                     key={title}
                     height={(!justMe || showJustMe) && (!isNewCard || showNewCard) ? 'auto' : 0}
@@ -352,7 +368,7 @@ const CardSideDock = ({
                       className={s(i < CARD_SECTIONS.length - 1 ? 'mb-lg' : '')}
                       title={title}
                       hint={hint}
-                      headerEnd={canEdit && renderEditButton()}
+                      headerEnd={isEditable && canEdit && renderEditButton()}
                     >
                       {renderFn()}
                     </CardSection>
@@ -376,6 +392,7 @@ CardSideDock.propTypes = {
   status: PropTypes.oneOf(Object.values(STATUS)).isRequired,
   path: PropTypes.arrayOf(PropTypes.object),
   owners: PropTypes.arrayOf(PropTypes.object).isRequired,
+  approvers: PropTypes.arrayOf(PropTypes.object).isRequired,
   subscribers: PropTypes.arrayOf(PropTypes.object).isRequired,
   attachments: PropTypes.arrayOf(PropTypes.object).isRequired,
   tags: PropTypes.arrayOf(PropTypes.object).isRequired,

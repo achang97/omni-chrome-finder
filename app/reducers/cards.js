@@ -379,9 +379,12 @@ export default function cardsReducer(state = initialState, action) {
     }
     case types.UPDATE_CARD_SUCCESS: {
       const { shouldCloseCard, card, isApprover } = payload;
+      const isOutdated = card.status !== CARD.STATUS.UP_TO_DATE;
 
-      const cardStatus = card.status;
-      const isOutdated = cardStatus !== CARD.STATUS.UP_TO_DATE;
+      const currCard = getCardById(state, card._id);
+      if (!currCard) {
+        return state;
+      }
 
       // Remove card
       if (shouldCloseCard && !isOutdated) {
@@ -394,19 +397,12 @@ export default function cardsReducer(state = initialState, action) {
         ...convertCardToFrontendFormat(card)
       };
 
-      const currCard = getCardById(state, card._id);
-      if (!currCard) {
-        return state;
-      }
-
       // Open corresponding modals
-      if (isOutdated && isApprover) {
-        newInfo.modalOpen = {
-          ...currCard.modalOpen,
-          [CARD.MODAL_TYPE.CONFIRM_UP_TO_DATE_SAVE]: true
-        };
+      const wasUndocumented = currCard.status === CARD.STATUS.NOT_DOCUMENTED;
+      if (isOutdated && !wasUndocumented && isApprover) {
+        newInfo.modalOpen = { ...BASE_CARD_STATE, [CARD.MODAL_TYPE.CONFIRM_UP_TO_DATE_SAVE]: true };
       } else if (shouldCloseCard) {
-        newInfo.modalOpen = { ...currCard.modalOpen, [CARD.MODAL_TYPE.CONFIRM_CLOSE]: false };
+        newInfo.modalOpen = { ...BASE_CARD_STATE, [CARD.MODAL_TYPE.CONFIRM_CLOSE]: false };
       }
 
       return updateCardById(state, card._id, newInfo, true);

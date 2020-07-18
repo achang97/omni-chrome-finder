@@ -109,7 +109,7 @@ const FinderHeader = ({
     const finderNode = isSegment ? null : activeNode;
     const isMoving = moveNodes.length !== 0;
 
-    const canEdit = isEditor(user.role);
+    const canEdit = isEditor(user);
 
     const onClickWrapper = (onClick) => {
       return () => {

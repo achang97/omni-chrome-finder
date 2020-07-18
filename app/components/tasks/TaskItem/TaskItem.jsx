@@ -70,7 +70,7 @@ const TaskItem = ({
         return {
           headerTitle: `${notifierName} needs you to approve this card`,
           headerTitleClassName: '',
-          headerIcon: <MdCheckCircle className={s('tasks-icon-container text-purple-reg mr-reg')} />
+          headerIcon: <MdCheckCircle className={s('tasks-icon-container text-orange-500 mr-reg')} />
         };
       default:
         return null;
@@ -102,8 +102,8 @@ const TaskItem = ({
         };
       case TASKS.TYPE.NEEDS_APPROVAL:
         return {
-          buttonColor: 'transparent',
-          buttonClassName: '',
+          buttonColor: 'secondary',
+          buttonClassName: 'text-green-reg',
           buttonUnderline: false,
           buttonIcon: <MdCheck className={s('ml-sm')} />
         };
@@ -121,7 +121,7 @@ const TaskItem = ({
       case TASKS.TYPE.NOT_DOCUMENTED:
         return 'tasks-undocumented-gradient';
       case TASKS.TYPE.NEEDS_APPROVAL:
-        return 'tasks-undocumented-gradient';
+        return 'bg-orange-100';
       default:
         return '';
     }
@@ -167,6 +167,7 @@ const TaskItem = ({
     const { answer, externalLinkAnswer, outOfDateReason } = card;
 
     switch (type) {
+      case TASKS.TYPE.NEEDS_APPROVAL:
       case TASKS.TYPE.NEEDS_VERIFICATION:
         return (
           <div
@@ -202,16 +203,6 @@ const TaskItem = ({
               src={SlackIcon}
               className={s('task-item-slack-icon rounded-full flex-shrink-0')}
               alt="Slack"
-            />
-          </div>
-        );
-      case TASKS.TYPE.NEEDS_APPROVAL:
-        return (
-          <div className={s('flex mt-reg')}>
-            <PlaceholderImg
-              name={`${notifier.firstname} ${notifier.lastname}`}
-              src={notifier.profilePicture}
-              className={s('task-item-profile-picture')}
             />
           </div>
         );

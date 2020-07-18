@@ -7,12 +7,11 @@ import {
   toggleUpvotes,
   convertPermissionsToBackendFormat,
   hasValidEdits,
-  isApprover,
-  isExternalCard,
   getInlineAttachments
 } from 'utils/card';
 import { getModelText } from 'utils/editor';
 import { convertAttachmentsToBackendFormat } from 'utils/file';
+import { isEditor } from 'utils/auth';
 import { STATUS, PERMISSION_OPTION, VERIFICATION_INTERVAL_OPTION } from 'appConstants/card';
 import { AUDIT } from 'appConstants/user';
 import { ROOT } from 'appConstants/finder';
@@ -266,7 +265,7 @@ function* createCard() {
   const cardId = activeCard._id;
 
   try {
-    if (hasValidEdits(activeCard.edits)) {
+    if (hasValidEdits(activeCard)) {
       const newCardInfo = yield call(convertCardToBackendFormat, activeCard);
       const source = queryString.stringify({ source: AUDIT.SOURCE.DOCK });
       const card = yield call(doPost, `/cards?${source}`, newCardInfo);
@@ -282,14 +281,13 @@ function* createCard() {
 function* updateCard({ shouldCloseCard }) {
   const activeCard = yield call(getActiveCard);
   const cardId = activeCard._id;
-  const isExternal = isExternalCard(activeCard);
 
   try {
-    if (hasValidEdits(activeCard.edits, isExternal)) {
+    if (hasValidEdits(activeCard)) {
       const newCardInfo = yield call(convertCardToBackendFormat, activeCard);
       const user = yield select((state) => state.profile.user);
-      const canApprove = isApprover(user);
       const card = yield call(doPut, `/cards/${cardId}`, newCardInfo);
+      const canApprove = isEditor(user);
       yield put(handleUpdateCardSuccess(card, shouldCloseCard, canApprove));
     } else {
       yield put(handleUpdateCardError(cardId, INCOMPLETE_CARD_ERROR, shouldCloseCard));

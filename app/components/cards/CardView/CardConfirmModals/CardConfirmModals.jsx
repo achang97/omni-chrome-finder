@@ -160,7 +160,7 @@ const CardConfirmModals = ({
     {
       modalType: MODAL_TYPE.CONFIRM_APPROVE,
       title: 'Confirm Approval',
-      description: 'Would you like to approve the changes to this card?',
+      description: 'Are you sure you want to approve this card?',
       primaryButtonProps: {
         onClick: requestMarkUpToDate,
         isLoading: isMarkingStatus

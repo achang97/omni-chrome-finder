@@ -41,7 +41,7 @@ const mapStateToProps = (state, ownProps) => {
     activePath,
     selectedNodes,
     moveNodes,
-    isEditor: isEditor(user.role)
+    isEditor: isEditor(user)
   };
 };
 
