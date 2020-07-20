@@ -229,6 +229,21 @@ export default function cardsReducer(state = initialState, action) {
       return updateActiveCardEdits(state, { approvers: removeIndex(edits.approvers, index) });
     }
 
+    case types.ADD_CARD_EDIT_VIEWER: {
+      const { viewer } = payload;
+      const { activeCard } = state;
+      return updateActiveCardEdits(state, {
+        editUserPermissions: _.unionBy(activeCard.edits.editUserPermissions, [viewer], '_id')
+      });
+    }
+    case types.REMOVE_CARD_EDIT_VIEWER: {
+      const { index } = payload;
+      const { activeCard } = state;
+      return updateActiveCardEdits(state, {
+        editUserPermissions: removeIndex(activeCard.edits.editUserPermissions, index)
+      });
+    }
+
     case types.UPDATE_CARD_TAGS: {
       const { tags } = payload;
       return updateActiveCardEdits(state, { tags: tags || [] });

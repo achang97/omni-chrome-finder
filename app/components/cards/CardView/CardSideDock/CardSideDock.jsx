@@ -12,6 +12,7 @@ import { getBaseAnimationStyle } from 'utils/animate';
 import { isJustMe } from 'utils/card';
 import { MODAL_TYPE, INVITE_TYPE, HINTS, PERMISSION_OPTION, STATUS } from 'appConstants/card';
 import { TRANSITIONS } from 'appConstants/animate';
+import { ROLE } from 'appConstants/user';
 
 import { getStyleApplicationFn } from 'utils/style';
 import style from './card-side-dock.css';
@@ -37,6 +38,7 @@ const CardSideDock = ({
   owners,
   subscribers,
   approvers,
+  editUserPermissions,
   attachments,
   tags,
   permissions,
@@ -54,6 +56,8 @@ const CardSideDock = ({
   removeCardOwner,
   addCardSubscriber,
   removeCardSubscriber,
+  addCardEditViewer,
+  removeCardEditViewer,
   removeCardAttachment,
   updateCardAttachmentName,
   updateCardTags,
@@ -176,30 +180,54 @@ const CardSideDock = ({
     );
   };
 
-  const renderAdvanced = () => {
+  const handleHideSections = ({ newHeight }) => {
+    if (newHeight !== 0) {
+      permissionRef.current.scrollIntoView({ behavior: 'smooth', block: 'end' });
+    }
+  };
+
+  const renderAdvanced = (justMe) => {
     let currPermissions;
     let currPermissionGroups;
+    let currEditViewers;
 
     if (isEditing) {
       currPermissions = edits.permissions;
       currPermissionGroups = edits.permissionGroups;
+      currEditViewers = edits.editUserPermissions;
     } else {
       currPermissions = permissions;
       currPermissionGroups = permissionGroups;
+      currEditViewers = editUserPermissions;
     }
 
     return (
-      <div ref={permissionRef}>
-        <div className={s('text-gray-reg text-xs mb-sm')}>Permissions</div>
-        <CardPermissions
-          selectedPermissions={currPermissions}
-          onChangePermissions={updateCardPermissions}
-          permissionGroups={currPermissionGroups}
-          onChangePermissionGroups={updateCardPermissionGroups}
-          isEditable={isEditing}
-          showJustMe={permissions.value === PERMISSION_OPTION.JUST_ME}
-        />
-      </div>
+      <>
+        <div ref={permissionRef} className={s('mb-sm')}>
+          <div className={s('text-gray-reg text-xs mb-sm')}>Permissions</div>
+          <CardPermissions
+            selectedPermissions={currPermissions}
+            onChangePermissions={updateCardPermissions}
+            permissionGroups={currPermissionGroups}
+            onChangePermissionGroups={updateCardPermissionGroups}
+            isEditable={isEditing}
+            showJustMe={permissions.value === PERMISSION_OPTION.JUST_ME}
+          />
+        </div>
+        <AnimateHeight height={justMe ? 0 : 'auto'} onAnimationEnd={handleHideSections}>
+          <div className={s('text-gray-reg text-xs mb-sm')}>Viewers with Edit Access</div>
+          <CardUsers
+            isEditable={isEditing}
+            users={currEditViewers}
+            size="xs"
+            showNames={false}
+            disabledUserRoles={[ROLE.EDITOR, ROLE.ADMIN]}
+            showTooltips
+            onAdd={addCardEditViewer}
+            onRemoveClick={({ index }) => removeCardEditViewer(index)}
+          />
+        </AnimateHeight>
+      </>
     );
   };
 
@@ -370,7 +398,7 @@ const CardSideDock = ({
                       hint={hint}
                       headerEnd={isEditable && canEdit && renderEditButton()}
                     >
-                      {renderFn()}
+                      {renderFn(justMe)}
                     </CardSection>
                   </AnimateHeight>
                 )
@@ -395,6 +423,7 @@ CardSideDock.propTypes = {
   approvers: PropTypes.arrayOf(PropTypes.object).isRequired,
   subscribers: PropTypes.arrayOf(PropTypes.object).isRequired,
   attachments: PropTypes.arrayOf(PropTypes.object).isRequired,
+  editUserPermissions: PropTypes.arrayOf(PropTypes.object).isRequired,
   tags: PropTypes.arrayOf(PropTypes.object).isRequired,
   permissions: PropTypes.shape({
     label: PropTypes.string.isRequired,

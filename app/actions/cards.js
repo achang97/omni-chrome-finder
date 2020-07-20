@@ -86,6 +86,14 @@ export function removeCardApprover(index) {
   return { type: types.REMOVE_CARD_APPROVER, payload: { index } };
 }
 
+export function addCardEditViewer(viewer) {
+  return { type: types.ADD_CARD_EDIT_VIEWER, payload: { viewer } };
+}
+
+export function removeCardEditViewer(index) {
+  return { type: types.REMOVE_CARD_EDIT_VIEWER, payload: { index } };
+}
+
 export function addCardSubscriber(subscriber) {
   return { type: types.ADD_CARD_SUBSCRIBER, payload: { subscriber } };
 }

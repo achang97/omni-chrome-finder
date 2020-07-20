@@ -25,6 +25,7 @@ export const BASE_CARD_STATE = {
   owners: [],
   subscribers: [],
   approvers: [],
+  editUserPermissions: [],
   question: '',
   answerModel: '',
   inviteRole: USER.ROLE.VIEWER
@@ -36,6 +37,7 @@ export function createCardEdits(card) {
     owners,
     subscribers,
     approvers,
+    editUserPermissions,
     attachments,
     tags,
     permissions,
@@ -54,6 +56,7 @@ export function createCardEdits(card) {
       owners,
       subscribers,
       approvers,
+      editUserPermissions,
       attachments,
       tags,
       permissions,

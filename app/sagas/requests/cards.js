@@ -215,6 +215,7 @@ function* convertCardToBackendFormat(card) {
       owners,
       subscribers,
       approvers,
+      editUserPermissions,
       tags,
       verificationInterval,
       permissions,
@@ -235,6 +236,7 @@ function* convertCardToBackendFormat(card) {
   let cardOwners = getArrayIds(owners);
   let cardSubscribers = _.union(cardOwners, getArrayIds(subscribers));
   let cardApprovers = getArrayIds(approvers);
+  let cardEditUserPermissions = getArrayIds(editUserPermissions);
   let cardTags = tags;
   let cardUpdateInterval = verificationInterval.value;
 
@@ -242,6 +244,7 @@ function* convertCardToBackendFormat(card) {
     cardOwners = [_id];
     cardSubscribers = [_id];
     cardApprovers = [];
+    cardEditUserPermissions = [];
     cardTags = [];
     cardUpdateInterval = VERIFICATION_INTERVAL_OPTION.NEVER;
   }
@@ -268,6 +271,7 @@ function* convertCardToBackendFormat(card) {
     owners: cardOwners,
     subscribers: cardSubscribers,
     approvers: cardApprovers,
+    editUserPermissions: cardEditUserPermissions,
     tags: cardTags,
     slackThreadConvoPairs: cardSlackThreadConvoPairs,
     slackReplies: cardSlackReplies,
