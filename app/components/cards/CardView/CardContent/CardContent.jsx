@@ -18,6 +18,7 @@ import style from './card-content.css';
 import CardSideDock from '../CardSideDock';
 import CardCreateModal from '../CardCreateModal';
 import CardFinderModal from '../CardFinderModal';
+import CardApproversModal from '../CardApproversModal';
 import CardConfirmModals from '../CardConfirmModals';
 import CardSlackModals from '../CardSlackModals';
 import CardHeader from '../CardHeader';
@@ -270,7 +271,11 @@ const CardContent = ({
     const isUnauthorized = errorStatus === REQUEST.HTTP_STATUS_CODE.UNAUTHORIZED;
 
     return (
-      <div className={s('flex flex-col h-full justify-center items-center bg-purple-2xlight')}>
+      <div
+        className={s(
+          'flex flex-col h-full justify-center items-center bg-purple-2xlight rounded-b-lg'
+        )}
+      >
         <div className={s('large-icon-container text-red-500')}>
           {isUnauthorized ? (
             <MdLock className={s('w-full h-full')} />
@@ -313,6 +318,7 @@ const CardContent = ({
         <CardCreateModal />
         <CardConfirmModals />
         <CardSlackModals />
+        <CardApproversModal />
       </div>
     );
   };

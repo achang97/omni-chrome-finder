@@ -39,6 +39,38 @@ export function handleDismissTaskError(taskId, error) {
   return { type: types.DISMISS_TASK_ERROR, payload: { taskId, error } };
 }
 
+export function requestApproveEditAccessFromTasks(taskId, cardId, requestor) {
+  return {
+    type: types.APPROVE_EDIT_ACCESS_FROM_TASKS_REQUEST,
+    payload: { taskId, cardId, requestor }
+  };
+}
+export function handleApproveEditAccessFromTasksSuccess(taskId, cardId, requestor) {
+  return {
+    type: types.APPROVE_EDIT_ACCESS_FROM_TASKS_SUCCESS,
+    payload: { taskId, cardId, requestor }
+  };
+}
+export function handleApproveEditAccessFromTasksError(taskId, error) {
+  return { type: types.APPROVE_EDIT_ACCESS_FROM_TASKS_ERROR, payload: { taskId, error } };
+}
+
+export function requestRejectEditAccessFromTasks(taskId, cardId, requestorId) {
+  return {
+    type: types.REJECT_EDIT_ACCESS_FROM_TASKS_REQUEST,
+    payload: { taskId, cardId, requestorId }
+  };
+}
+export function handleRejectEditAccessFromTasksSuccess(taskId, cardId, requestorId) {
+  return {
+    type: types.REJECT_EDIT_ACCESS_FROM_TASKS_SUCCESS,
+    payload: { taskId, cardId, requestorId }
+  };
+}
+export function handleRejectEditAccessFromTasksError(taskId, error) {
+  return { type: types.REJECT_EDIT_ACCESS_FROM_TASKS_ERROR, payload: { taskId, error } };
+}
+
 export function removeTask(taskId) {
   return { type: types.REMOVE_TASK, payload: { taskId } };
 }

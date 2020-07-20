@@ -128,7 +128,7 @@ const SuggestionPanel = ({
     const DISCONNECTED_INTEGRATIONS = [
       {
         isShown: ({ type }) =>
-          isLoggedIn(user, type) && // TODO: fix this logic
+          isLoggedIn(user, type) &&
           (!isSearchEnabled(type) ||
             SEARCH.INTEGRATIONS.every(({ type: resultType }) => resultType !== type)),
         getHeaderEnd: (type) => (

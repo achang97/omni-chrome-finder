@@ -7,7 +7,7 @@ import { CardStatusIndicator } from 'components/cards';
 import { copyText } from 'utils/window';
 import { getStyleApplicationFn } from 'utils/style';
 import { createHighlightedElement } from 'utils/search';
-import { PROFILE, SEGMENT, URL_REGEX } from 'appConstants';
+import { USER, SEGMENT, URL_REGEX } from 'appConstants';
 
 import style from './external-result.css';
 import sharedStyle from '../styles/external-result.css';
@@ -28,6 +28,7 @@ const ExternalResult = ({
   card,
   showDropdown,
   highlightTags,
+  isEditor,
   openCard,
   updateExternalLinkAnswer,
   toggleExternalCreateModal,
@@ -58,12 +59,23 @@ const ExternalResult = ({
 
   const onResultClick = () => {
     trackEvent(SEGMENT.EVENT.OPEN_EXTERNAL_DOC, { Type: type, Title: title }, true);
-    requestLogAudit(PROFILE.AUDIT.TYPE.OPEN_EXTERNAL_DOC, { type, title });
+    requestLogAudit(USER.AUDIT.TYPE.OPEN_EXTERNAL_DOC, { type, title });
     window.open(url, '_blank');
   };
 
-  let ACTIONS;
-  if (!card) {
+  let ACTIONS = [];
+  if (card) {
+    ACTIONS = [
+      {
+        label: 'Copy Link',
+        onClick: shareCard
+      },
+      {
+        label: 'Open Omni Card',
+        onClick: () => openCard({ _id: card._id })
+      }
+    ];
+  } else if (isEditor) {
     ACTIONS = [
       {
         label: 'Verify with Omni',
@@ -76,17 +88,6 @@ const ExternalResult = ({
           const links = getLinks(url.match(regex));
           updateExternalLinkAnswer({ type, ...links });
         }
-      }
-    ];
-  } else {
-    ACTIONS = [
-      {
-        label: 'Copy Link',
-        onClick: shareCard
-      },
-      {
-        label: 'Open Omni Card',
-        onClick: () => openCard({ _id: card._id })
       }
     ];
   }
@@ -149,6 +150,9 @@ ExternalResult.propTypes = {
     start: PropTypes.string,
     end: PropTypes.string
   }),
+
+  // Redux State
+  isEditor: PropTypes.bool.isRequired,
 
   // Redux Actions
   openCard: PropTypes.func.isRequired,

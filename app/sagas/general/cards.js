@@ -1,6 +1,8 @@
 import { take, put, all, select } from 'redux-saga/effects';
 import {
   MARK_UP_TO_DATE_FROM_TASKS_SUCCESS,
+  APPROVE_EDIT_ACCESS_FROM_TASKS_SUCCESS,
+  REJECT_EDIT_ACCESS_FROM_TASKS_SUCCESS,
   UPDATE_CARD_SUCCESS,
   MARK_OUT_OF_DATE_SUCCESS,
   MARK_UP_TO_DATE_SUCCESS,
@@ -12,7 +14,13 @@ import {
   MOVE_FINDER_NODES_SUCCESS,
   CREATE_CARD_SUCCESS
 } from 'actions/actionTypes';
-import { updateCard, handleDeleteCardSuccess, requestGetCard } from 'actions/cards';
+import {
+  updateCard,
+  handleDeleteCardSuccess,
+  requestGetCard,
+  handleApproveEditAccessSuccess,
+  handleRejectEditAccessSuccess
+} from 'actions/cards';
 import { requestGetRecentCards, requestGetActivityLog } from 'actions/ask';
 import { requestGetExternalCard } from 'actions/externalVerification';
 import { closeFinder, updateFinderNode } from 'actions/finder';
@@ -32,7 +40,9 @@ export default function* watchCardActions() {
       DELETE_CARD_SUCCESS,
       DELETE_FINDER_NODES_SUCCESS,
       MOVE_FINDER_NODES_SUCCESS,
-      CREATE_CARD_SUCCESS
+      CREATE_CARD_SUCCESS,
+      APPROVE_EDIT_ACCESS_FROM_TASKS_SUCCESS,
+      REJECT_EDIT_ACCESS_FROM_TASKS_SUCCESS
     ]);
 
     const { type, payload } = action;
@@ -44,6 +54,16 @@ export default function* watchCardActions() {
         yield put(requestGetExternalCard());
         yield put(requestGetActivityLog());
         yield put(updateFinderNode(card));
+        break;
+      }
+      case APPROVE_EDIT_ACCESS_FROM_TASKS_SUCCESS: {
+        const { cardId, requestor } = payload;
+        yield put(handleApproveEditAccessSuccess(cardId, requestor));
+        break;
+      }
+      case REJECT_EDIT_ACCESS_FROM_TASKS_SUCCESS: {
+        const { cardId, requestorId } = payload;
+        yield put(handleRejectEditAccessSuccess(cardId, requestorId));
         break;
       }
 

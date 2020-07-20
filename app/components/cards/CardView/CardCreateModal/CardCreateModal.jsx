@@ -6,8 +6,8 @@ import { MdLock } from 'react-icons/md';
 import { Modal, Message } from 'components/common';
 
 import { HINTS, MODAL_TYPE, INVITE_TYPE } from 'appConstants/card';
-import { SEEN_FEATURES } from 'appConstants/profile';
-import { hasValidEdits, isExistingCard, isJustMe } from 'utils/card';
+import { SEEN_FEATURES, ROLE } from 'appConstants/user';
+import { isExistingCard, isJustMe } from 'utils/card';
 import { getStyleApplicationFn } from 'utils/style';
 
 import style from './card-create-modal.css';
@@ -43,11 +43,14 @@ const WALKTHROUGH_PROPS = {
 const CardCreateModal = ({
   _id,
   createError,
+  updateError,
   isCreatingCard,
   isUpdatingCard,
   edits,
   isOpen,
+  isEditor,
   seenFeatures,
+  hasValidEdits,
   requestCreateCard,
   requestUpdateCard,
   openCardModal,
@@ -56,6 +59,8 @@ const CardCreateModal = ({
   removeCardOwner,
   addCardSubscriber,
   removeCardSubscriber,
+  addCardApprover,
+  removeCardApprover,
   updateCardTags,
   removeCardTag,
   updateCardVerificationInterval,
@@ -94,14 +99,15 @@ const CardCreateModal = ({
   };
 
   useEffect(() => {
-    if (createError) {
+    if (isEditor && isOpen && (createError || updateError)) {
       scrollToBottom();
     }
-  }, [createError]);
+  }, [isEditor, isOpen, createError, updateError]);
 
   const {
     owners = [],
     subscribers = [],
+    approvers = [],
     tags = [],
     verificationInterval,
     permissions,
@@ -176,38 +182,51 @@ const CardCreateModal = ({
     );
   };
 
+  const renderTags = (isEditable) => {
+    return (
+      <CardTags
+        isEditable={isEditable}
+        isCreatable
+        showSelect
+        tags={tags}
+        onChange={updateCardTags}
+        onRemoveClick={({ index }) => removeCardTag(index)}
+        showPlaceholder
+      />
+    );
+  };
+
   const renderAdvanced = (isEditable, isExisting, justMe) => {
     return (
-      <>
-        <AnimateHeight
-          height={justMe ? 0 : 'auto'}
-          onAnimationEnd={({ newHeight }) => newHeight !== 0 && scrollToBottom()}
-        >
-          <div className={s('mb-sm')}>
-            <div className={s('text-gray-reg text-xs mb-sm')}> Tags </div>
-            <CardTags
-              isEditable={isEditable}
-              isCreatable
-              showSelect
-              tags={tags}
-              onChange={updateCardTags}
-              onRemoveClick={({ index }) => removeCardTag(index)}
-              showPlaceholder
+      <div className={s('mb-sm')}>
+        <div className={s('text-gray-reg text-xs mb-sm')}> Permissions </div>
+        <CardPermissions
+          isEditable={isEditable}
+          selectedPermissions={permissions}
+          onChangePermissions={updateCardPermissions}
+          permissionGroups={permissionGroups}
+          onChangePermissionGroups={updateCardPermissionGroups}
+          showJustMe={!isExisting && isEditor}
+        />
+        {isEditor && (
+          <AnimateHeight
+            height={justMe ? 0 : 'auto'}
+            onAnimationEnd={({ newHeight }) => newHeight !== 0 && scrollToBottom()}
+          >
+            <div className={s('text-gray-reg text-xs mb-sm')}> Approvers </div>
+            <CardUsers
+              isEditable
+              users={approvers}
+              onAdd={addCardApprover}
+              onRemoveClick={({ index }) => removeCardApprover(index)}
+              disabledUserRoles={[ROLE.VIEWER]}
+              showTooltips
+              showNames={false}
+              size="sm"
             />
-          </div>
-        </AnimateHeight>
-        <div>
-          <div className={s('text-gray-reg text-xs mb-sm')}> Permissions </div>
-          <CardPermissions
-            isEditable={isEditable}
-            selectedPermissions={permissions}
-            onChangePermissions={updateCardPermissions}
-            permissionGroups={permissionGroups}
-            onChangePermissionGroups={updateCardPermissionGroups}
-            showJustMe={!isExisting}
-          />
-        </div>
-      </>
+          </AnimateHeight>
+        )}
+      </div>
     );
   };
 
@@ -226,8 +245,27 @@ const CardCreateModal = ({
 
   const render = () => {
     const isExisting = isExistingCard(_id);
-    const isLoading = isExisting ? isUpdatingCard : isCreatingCard;
-    const onClick = isExisting ? () => requestUpdateCard(false) : requestCreateCard;
+
+    let onClick;
+    let isLoading;
+    let error;
+
+    if (isExisting) {
+      isLoading = isUpdatingCard;
+      error = updateError;
+    } else {
+      isLoading = isCreatingCard;
+      error = createError;
+    }
+
+    if (isEditor) {
+      onClick = isExisting ? () => requestUpdateCard(false) : requestCreateCard;
+    } else {
+      onClick = () => {
+        closeCardModal(MODAL_TYPE.CREATE);
+        openCardModal(MODAL_TYPE.ADD_APPROVERS);
+      };
+    }
 
     const justMe = isJustMe(edits.permissions);
 
@@ -264,6 +302,12 @@ const CardCreateModal = ({
         renderFn: renderSubscribers
       },
       {
+        title: 'Tag(s)',
+        startExpanded: true,
+        isExpandable: false,
+        renderFn: renderTags
+      },
+      {
         title: 'Advanced',
         startExpanded: false,
         isExpandable: true,
@@ -277,7 +321,7 @@ const CardCreateModal = ({
       text: 'Complete Card',
       onClick,
       isLoading,
-      disabled: !hasValidEdits(edits)
+      disabled: !hasValidEdits
     };
 
     return (
@@ -333,7 +377,7 @@ const CardCreateModal = ({
               </AnimateHeight>
             )
           )}
-          <Message className={s('my-sm')} message={createError} type="error" />
+          {isEditor && <Message className={s('my-sm')} message={error} type="error" />}
           {currWalkthroughKey && <div className={s('card-walkthrough-overlay')} />}
           {currWalkthroughKey && (
             <CardWalkthroughHelper
@@ -357,12 +401,15 @@ CardCreateModal.propTypes = {
   // Redux State
   _id: PropTypes.string.isRequired,
   createError: PropTypes.string,
+  updateError: PropTypes.bool,
   isCreatingCard: PropTypes.bool,
   isUpdatingCard: PropTypes.bool,
+  isEditor: PropTypes.bool.isRequired,
   isOpen: PropTypes.bool.isRequired,
   edits: PropTypes.shape({
     owners: PropTypes.arrayOf(PropTypes.object),
     subscribers: PropTypes.arrayOf(PropTypes.object),
+    approvers: PropTypes.arrayOf(PropTypes.object),
     tags: PropTypes.arrayOf(PropTypes.object),
     verificationInterval: PropTypes.object,
     permissions: PropTypes.object,
@@ -370,6 +417,7 @@ CardCreateModal.propTypes = {
     finderNode: PropTypes.object
   }),
   seenFeatures: PropTypes.objectOf(PropTypes.bool).isRequired,
+  hasValidEdits: PropTypes.bool.isRequired,
 
   // Redux Actions
   requestCreateCard: PropTypes.func.isRequired,
@@ -380,6 +428,8 @@ CardCreateModal.propTypes = {
   removeCardOwner: PropTypes.func.isRequired,
   addCardSubscriber: PropTypes.func.isRequired,
   removeCardSubscriber: PropTypes.func.isRequired,
+  addCardApprover: PropTypes.func.isRequired,
+  removeCardApprover: PropTypes.func.isRequired,
   updateCardTags: PropTypes.func.isRequired,
   removeCardTag: PropTypes.func.isRequired,
   updateCardVerificationInterval: PropTypes.func.isRequired,

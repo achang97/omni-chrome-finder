@@ -49,17 +49,23 @@ export default function tasksReducer(state = initialState, action) {
     }
 
     case types.MARK_UP_TO_DATE_FROM_TASKS_REQUEST:
-    case types.DISMISS_TASK_REQUEST: {
+    case types.DISMISS_TASK_REQUEST:
+    case types.APPROVE_EDIT_ACCESS_FROM_TASKS_REQUEST:
+    case types.REJECT_EDIT_ACCESS_FROM_TASKS_REQUEST: {
       const { taskId } = payload;
       return updateTask(taskId, { isLoading: true, error: null });
     }
     case types.MARK_UP_TO_DATE_FROM_TASKS_SUCCESS:
-    case types.DISMISS_TASK_SUCCESS: {
+    case types.DISMISS_TASK_SUCCESS:
+    case types.APPROVE_EDIT_ACCESS_FROM_TASKS_SUCCESS:
+    case types.REJECT_EDIT_ACCESS_FROM_TASKS_SUCCESS: {
       const { taskId } = payload;
       return updateTask(taskId, { isLoading: false, resolved: true });
     }
     case types.MARK_UP_TO_DATE_FROM_TASKS_ERROR:
-    case types.DISMISS_TASK_ERROR: {
+    case types.DISMISS_TASK_ERROR:
+    case types.APPROVE_EDIT_ACCESS_FROM_TASKS_ERROR:
+    case types.REJECT_EDIT_ACCESS_FROM_TASKS_ERROR: {
       const { taskId, error } = payload;
       return updateTask(taskId, { isLoading: false, error });
     }

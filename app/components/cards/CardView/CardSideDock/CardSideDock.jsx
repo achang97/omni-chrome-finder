@@ -12,6 +12,7 @@ import { getBaseAnimationStyle } from 'utils/animate';
 import { isJustMe } from 'utils/card';
 import { MODAL_TYPE, INVITE_TYPE, HINTS, PERMISSION_OPTION, STATUS } from 'appConstants/card';
 import { TRANSITIONS } from 'appConstants/animate';
+import { ROLE } from 'appConstants/user';
 
 import { getStyleApplicationFn } from 'utils/style';
 import style from './card-side-dock.css';
@@ -23,6 +24,7 @@ import CardAttachments from '../../CardAttachments';
 import CardPermissions from '../../CardPermissions';
 import CardVerificationInterval from '../../CardVerificationInterval';
 import CardLocation from '../../CardLocation';
+import CardEditAccessRequests from '../../CardEditAccessRequests';
 
 const s = getStyleApplicationFn(style);
 
@@ -30,12 +32,17 @@ const DATE_FORMAT = 'MMM DD, YYYY';
 const SIDE_DOCK_TRANSITION_MS = 200;
 
 const CardSideDock = ({
-  hasDeleteAccess,
+  canEdit,
   isEditing,
   status,
   finderNode,
   owners,
   subscribers,
+  approvers,
+  editUserPermissions,
+  editAccessRequests,
+  isUpdatingEditRequests,
+  editRequestUpdateError,
   attachments,
   tags,
   permissions,
@@ -53,6 +60,8 @@ const CardSideDock = ({
   removeCardOwner,
   addCardSubscriber,
   removeCardSubscriber,
+  addCardEditViewer,
+  removeCardEditViewer,
   removeCardAttachment,
   updateCardAttachmentName,
   updateCardTags,
@@ -160,6 +169,21 @@ const CardSideDock = ({
     );
   };
 
+  const renderTags = () => {
+    const currTags = isEditing ? edits.tags : tags;
+    return (
+      <CardTags
+        isEditable={isEditing}
+        isCreatable
+        showSelect
+        tags={currTags}
+        onChange={updateCardTags}
+        onRemoveClick={({ index }) => removeCardTag(index)}
+        showPlaceholder
+      />
+    );
+  };
+
   const handleHideSections = ({ newHeight }) => {
     if (newHeight !== 0) {
       permissionRef.current.scrollIntoView({ behavior: 'smooth', block: 'end' });
@@ -167,37 +191,23 @@ const CardSideDock = ({
   };
 
   const renderAdvanced = (justMe) => {
-    let currTags;
     let currPermissions;
     let currPermissionGroups;
+    let currEditViewers;
 
     if (isEditing) {
-      currTags = edits.tags;
       currPermissions = edits.permissions;
       currPermissionGroups = edits.permissionGroups;
+      currEditViewers = edits.editUserPermissions;
     } else {
-      currTags = tags;
       currPermissions = permissions;
       currPermissionGroups = permissionGroups;
+      currEditViewers = editUserPermissions;
     }
 
     return (
       <>
-        <AnimateHeight height={justMe ? 0 : 'auto'} onAnimationEnd={handleHideSections}>
-          <div className={s('mb-reg')}>
-            <div className={s('text-gray-reg text-xs mb-sm')}> Tags </div>
-            <CardTags
-              isEditable={isEditing}
-              isCreatable
-              showSelect
-              tags={currTags}
-              onChange={updateCardTags}
-              onRemoveClick={({ index }) => removeCardTag(index)}
-              showPlaceholder
-            />
-          </div>
-        </AnimateHeight>
-        <div ref={permissionRef}>
+        <div ref={permissionRef} className={s('mb-sm')}>
           <div className={s('text-gray-reg text-xs mb-sm')}>Permissions</div>
           <CardPermissions
             selectedPermissions={currPermissions}
@@ -208,6 +218,25 @@ const CardSideDock = ({
             showJustMe={permissions.value === PERMISSION_OPTION.JUST_ME}
           />
         </div>
+        <AnimateHeight height={justMe ? 0 : 'auto'} onAnimationEnd={handleHideSections}>
+          <div className={s('text-gray-reg text-xs mb-sm')}>Viewers with Edit Access</div>
+          <CardUsers
+            isEditable={isEditing}
+            users={currEditViewers}
+            size="xs"
+            showNames={false}
+            disabledUserRoles={[ROLE.EDITOR, ROLE.ADMIN]}
+            showTooltips
+            onAdd={addCardEditViewer}
+            onRemoveClick={({ index }) => removeCardEditViewer(index)}
+          />
+          <CardEditAccessRequests
+            className={s('mt-reg')}
+            requests={editAccessRequests}
+            isLoading={isUpdatingEditRequests}
+            error={editRequestUpdateError}
+          />
+        </AnimateHeight>
       </>
     );
   };
@@ -240,7 +269,7 @@ const CardSideDock = ({
             <div className={s('text-purple-gray-50')}>{moment(updatedAt).format(DATE_FORMAT)}</div>
           </div>
         </div>
-        {hasDeleteAccess && (
+        {canEdit && (
           <div className={s('mt-lg')}>
             {FOOTER_BUTTONS.map(({ text, Icon, disabled, modalType }) => (
               <Button
@@ -260,6 +289,10 @@ const CardSideDock = ({
       </div>
     );
   };
+
+  const renderApprovers = () => (
+    <CardUsers users={approvers} size="xs" showNames={false} showTooltips />
+  );
 
   const renderOverlay = () => {
     const baseStyle = getBaseAnimationStyle(SIDE_DOCK_TRANSITION_MS);
@@ -312,6 +345,12 @@ const CardSideDock = ({
       renderFn: renderSubscribers
     },
     {
+      title: 'Tag(s)',
+      startExpanded: true,
+      isExpandable: false,
+      renderFn: renderTags
+    },
+    {
       title: 'Attachments',
       renderFn: renderAttachments,
       showJustMe: true,
@@ -323,6 +362,14 @@ const CardSideDock = ({
       showJustMe: true
     }
   ];
+
+  if (status === STATUS.NEEDS_APPROVAL) {
+    CARD_SECTIONS.unshift({
+      title: 'Waiting on approval from: ',
+      renderFn: renderApprovers,
+      isEditable: false
+    });
+  }
 
   const render = () => {
     const baseStyle = getBaseAnimationStyle(SIDE_DOCK_TRANSITION_MS);
@@ -347,7 +394,10 @@ const CardSideDock = ({
             >
               {renderHeader()}
               {CARD_SECTIONS.map(
-                ({ title, hint, renderFn, showJustMe, showNewCard = false }, i) => (
+                (
+                  { title, hint, renderFn, showJustMe, isEditable = true, showNewCard = false },
+                  i
+                ) => (
                   <AnimateHeight
                     key={title}
                     height={(!justMe || showJustMe) && (!isNewCard || showNewCard) ? 'auto' : 0}
@@ -356,7 +406,7 @@ const CardSideDock = ({
                       className={s(i < CARD_SECTIONS.length - 1 ? 'mb-lg' : '')}
                       title={title}
                       hint={hint}
-                      headerEnd={renderEditButton()}
+                      headerEnd={isEditable && canEdit && renderEditButton()}
                     >
                       {renderFn(justMe)}
                     </CardSection>
@@ -375,13 +425,18 @@ const CardSideDock = ({
 };
 
 CardSideDock.propTypes = {
-  hasDeleteAccess: PropTypes.bool.isRequired,
+  canEdit: PropTypes.bool.isRequired,
   isEditing: PropTypes.bool.isRequired,
   status: PropTypes.oneOf(Object.values(STATUS)).isRequired,
   path: PropTypes.arrayOf(PropTypes.object),
   owners: PropTypes.arrayOf(PropTypes.object).isRequired,
+  approvers: PropTypes.arrayOf(PropTypes.object).isRequired,
   subscribers: PropTypes.arrayOf(PropTypes.object).isRequired,
   attachments: PropTypes.arrayOf(PropTypes.object).isRequired,
+  editUserPermissions: PropTypes.arrayOf(PropTypes.object).isRequired,
+  editAccessRequests: PropTypes.arrayOf(PropTypes.object),
+  isUpdatingEditRequests: PropTypes.bool,
+  editRequestUpdateError: PropTypes.string,
   tags: PropTypes.arrayOf(PropTypes.object).isRequired,
   permissions: PropTypes.shape({
     label: PropTypes.string.isRequired,

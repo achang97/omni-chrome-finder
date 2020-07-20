@@ -1,17 +1,24 @@
 import _ from 'lodash';
 import queryString from 'query-string';
-import { INTEGRATIONS, NODE_ENV, REQUEST, PROFILE } from 'appConstants';
+import { INTEGRATIONS, NODE_ENV, REQUEST, USER } from 'appConstants';
 
-export function hasCompletedOnboarding(onboarding) {
+export function hasCompletedOnboarding(user) {
   return (
-    !!onboarding &&
-    onboarding.admin === PROFILE.ONBOARDING_COMPLETE &&
-    onboarding.member === PROFILE.ONBOARDING_COMPLETE
+    user &&
+    !!user.onboarding &&
+    Object.values(USER.ONBOARDING.TYPE).every(
+      (type) => user.onboarding[type] === USER.ONBOARDING.COMPLETE
+    )
   );
 }
 
 export function isValidUser(user) {
-  return !!user && !_.isEmpty(user) && !!user.isVerified && hasCompletedOnboarding(user.onboarding);
+  return !!user && !_.isEmpty(user) && !!user.isVerified && hasCompletedOnboarding(user);
+}
+
+export function isEditor(user) {
+  const EDITOR_ROLES = [USER.ROLE.ADMIN, USER.ROLE.EDITOR];
+  return EDITOR_ROLES.includes(user.role);
 }
 
 export function isLoggedIn(user = {}, integration) {
@@ -52,4 +59,10 @@ export function getIntegrationAuthLink(userId, token, integration, queryParams =
   }
 }
 
-export default { hasCompletedOnboarding, isValidUser, isLoggedIn, getIntegrationAuthLink };
+export default {
+  hasCompletedOnboarding,
+  isValidUser,
+  isLoggedIn,
+  getIntegrationAuthLink,
+  isEditor
+};

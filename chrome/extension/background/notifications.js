@@ -5,7 +5,7 @@ import { getStorage, setStorage } from 'utils/storage';
 import { getActiveTab, injectExtension, loadScript } from './inject';
 
 export default function createNotification({ message, notification }) {
-  const { notifier, resolver, card, question, status, resolved, _id } = notification;
+  const { notifier, resolver, card, status, resolved, _id } = notification;
 
   // Create chrome notification only if resolver !== notifier
   if (resolver && resolver._id !== notifier._id) {
@@ -19,7 +19,7 @@ export default function createNotification({ message, notification }) {
       type: 'basic',
       iconUrl: chrome.runtime.getURL('/img/icon-128.png'),
       title: message,
-      message: `Card: "${question}"`,
+      message: `Card: "${card.question}"`,
       contextMessage: `Sent by ${resolved ? resolver.name : notifierName}`
     });
   }

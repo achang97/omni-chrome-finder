@@ -3,7 +3,7 @@ import { take, call, fork, select, put } from 'redux-saga/effects';
 import { doGet, doPost, getErrorMessage } from 'utils/request';
 import { getArrayIds } from 'utils/array';
 import { STATUS } from 'appConstants/card';
-import { AUDIT } from 'appConstants/profile';
+import { AUDIT } from 'appConstants/user';
 import { GET_EXTERNAL_CARD_REQUEST, CREATE_EXTERNAL_CARD_REQUEST } from 'actions/actionTypes';
 import {
   handleGetExternalCardSuccess,

@@ -10,6 +10,8 @@ import {
   MARK_UP_TO_DATE_SUCCESS,
   ARCHIVE_CARD_SUCCESS,
   UPDATE_CARD_SUCCESS,
+  APPROVE_EDIT_ACCESS_SUCCESS,
+  REJECT_EDIT_ACCESS_SUCCESS,
   LOGOUT
 } from 'actions/actionTypes';
 import { setStorage, getStorage } from 'utils/storage';
@@ -38,6 +40,8 @@ export default function* watchTaskActions() {
       MARK_UP_TO_DATE_SUCCESS,
       ARCHIVE_CARD_SUCCESS,
       UPDATE_CARD_SUCCESS,
+      APPROVE_EDIT_ACCESS_SUCCESS,
+      REJECT_EDIT_ACCESS_SUCCESS,
       LOGOUT
     ]);
 
@@ -65,6 +69,8 @@ export default function* watchTaskActions() {
         cardIds.forEach((cardId) => removeTask(cardId));
         break;
       }
+      case APPROVE_EDIT_ACCESS_SUCCESS:
+      case REJECT_EDIT_ACCESS_SUCCESS:
       case ARCHIVE_CARD_SUCCESS:
       case DELETE_CARD_SUCCESS: {
         const { cardId } = payload;

@@ -1,9 +1,9 @@
 import _ from 'lodash';
 import * as types from 'actions/actionTypes';
-import { PROFILE } from 'appConstants';
+import { PROFILE, USER } from 'appConstants';
 
 const BASE_INTEGRATION_STATE = {};
-PROFILE.USER_INTEGRATIONS.forEach(({ type }) => {
+USER.INTEGRATIONS.forEach(({ type }) => {
   BASE_INTEGRATION_STATE[type] = {};
 });
 

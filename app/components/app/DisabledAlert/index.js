@@ -1,5 +1,5 @@
 import { connect } from 'react-redux';
-import { USER_ROLE } from 'appConstants/profile';
+import { ROLE } from 'appConstants/user';
 import { logout } from 'actions/auth';
 import DisabledAlert from './DisabledAlert';
 
@@ -13,7 +13,7 @@ const mapStateToProps = (state) => {
     }
   } = state;
 
-  return { disabled, disabledReason, isAdmin: role === USER_ROLE.ADMIN };
+  return { disabled, disabledReason, isAdmin: role === ROLE.ADMIN };
 };
 
 const mapDispatchToProps = {

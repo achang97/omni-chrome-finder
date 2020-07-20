@@ -9,6 +9,8 @@ import {
   removeCardOwner,
   addCardSubscriber,
   removeCardSubscriber,
+  addCardEditViewer,
+  removeCardEditViewer,
   updateCardTags,
   removeCardTag,
   updateCardVerificationInterval,
@@ -18,42 +20,52 @@ import {
   updateInviteEmail,
   editCard
 } from 'actions/cards';
-import { USER_ROLE } from 'appConstants/profile';
+import { canEditCard } from 'utils/card';
 import CardSideDock from './CardSideDock';
 
 const mapStateToProps = (state) => {
   const {
-    cards: {
-      activeCard: {
-        isEditing,
-        status,
-        finderNode,
-        owners,
-        subscribers,
-        attachments,
-        tags,
-        permissions,
-        permissionGroups,
-        verificationInterval,
-        isDeletingCard,
-        createdAt,
-        updatedAt,
-        sideDockOpen,
-        edits
-      }
-    },
-    profile: {
-      user: { role, _id: userId }
-    }
+    cards: { activeCard },
+    profile: { user }
   } = state;
 
-  return {
-    hasDeleteAccess: role === USER_ROLE.ADMIN || owners.some(({ _id }) => _id === userId),
+  const {
     isEditing,
     status,
     finderNode,
     owners,
     subscribers,
+    approvers,
+    editUserPermissions,
+    editAccessRequests,
+    isUpdatingEditRequests,
+    editRequestUpdateError,
+    attachments,
+    tags,
+    permissions,
+    permissionGroups,
+    verificationInterval,
+    isDeletingCard,
+    createdAt,
+    updatedAt,
+    sideDockOpen,
+    edits
+  } = activeCard;
+
+  const canEdit = canEditCard(user, activeCard);
+
+  return {
+    canEdit,
+    isEditing: isEditing && canEdit,
+    status,
+    finderNode,
+    owners,
+    subscribers,
+    approvers,
+    editUserPermissions,
+    editAccessRequests,
+    isUpdatingEditRequests,
+    editRequestUpdateError,
     attachments,
     tags,
     permissions,
@@ -75,6 +87,8 @@ const mapDispatchToProps = {
   removeCardOwner,
   addCardSubscriber,
   removeCardSubscriber,
+  addCardEditViewer,
+  removeCardEditViewer,
   removeCardAttachment,
   updateCardAttachmentName,
   updateCardTags,

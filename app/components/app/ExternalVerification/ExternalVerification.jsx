@@ -11,6 +11,7 @@ import { Button, Modal, Message, Loader, CheckBox } from 'components/common';
 import { getStyleApplicationFn } from 'utils/style';
 import { usePrevious } from 'utils/react';
 import { UserPropTypes } from 'utils/propTypes';
+import { isEditor } from 'utils/auth';
 import { URL_REGEX, INTEGRATIONS_MAP, INTEGRATIONS } from 'appConstants';
 import style from './external-verification.css';
 
@@ -141,12 +142,14 @@ const ExternalVerification = ({
           <IoMdAlert className={s('text-purple-reg mr-xs')} />
           <span className={s('text-sm text-gray-dark font-bold')}> Unverified </span>
         </div>
-        <Button
-          text="Verify with Omni"
-          className={s('py-sm')}
-          color="transparent"
-          onClick={onOpenModal}
-        />
+        {isEditor(user) && (
+          <Button
+            text="Verify with Omni"
+            className={s('py-sm')}
+            color="transparent"
+            onClick={onOpenModal}
+          />
+        )}
       </>
     );
   };

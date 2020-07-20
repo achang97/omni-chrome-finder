@@ -1,9 +1,9 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import { MdModeEdit, MdThumbUp, MdBookmarkBorder } from 'react-icons/md';
+import { MdModeEdit, MdThumbUp, MdBookmark, MdNotifications } from 'react-icons/md';
 
 import { Message, Button, Loader, Tooltip } from 'components/common';
-import { hasValidEdits, toggleUpvotes } from 'utils/card';
+import { toggleUpvotes } from 'utils/card';
 import { getStyleApplicationFn } from 'utils/style';
 import { isAnyLoading } from 'utils/file';
 import { UserPropTypes } from 'utils/propTypes';
@@ -17,18 +17,24 @@ const CardFooter = ({
   toastMessage,
   onToastHide,
   user,
+  canEdit,
+  hasValidEdits,
   activeScreenRecordingId,
   _id,
-  isExternal,
   status,
   upvotes,
+  subscribers,
+  owners,
+  requestedEditAccess,
   edits,
   isUpdatingBookmark,
   isUpdatingCard,
   isEditing,
   isTogglingUpvote,
+  isTogglingSubscribe,
   hasCardChanged,
   requestToggleUpvote,
+  requestToggleSubscribe,
   requestAddBookmark,
   requestRemoveBookmark,
   requestUpdateCard,
@@ -36,12 +42,9 @@ const CardFooter = ({
   openCardModal,
   cancelEditCard
 }) => {
-  const hasUpvoted = upvotes.some((upvoteId) => upvoteId === user._id);
-  const hasBookmarked = user.bookmarkIds.some((bookmarkId) => bookmarkId === _id);
-  const bookmarkOnClick = hasBookmarked ? requestRemoveBookmark : requestAddBookmark;
-  const isRecording = activeScreenRecordingId === _id;
-
   const renderEditView = () => {
+    const isRecording = activeScreenRecordingId === _id;
+
     if (status === STATUS.NOT_DOCUMENTED) {
       return (
         <Button
@@ -68,50 +71,99 @@ const CardFooter = ({
         iconLeft={false}
         icon={isUpdatingCard ? <Loader className={s('ml-sm')} size="sm" color="white" /> : null}
         className={s('rounded-t-none p-lg')}
-        disabled={!hasValidEdits(edits, isExternal) || isUpdatingCard || isRecording}
+        disabled={!hasValidEdits || isUpdatingCard || isRecording}
         underline
       />
     );
   };
 
-  const clickUpvote = () => {
-    requestToggleUpvote(toggleUpvotes(upvotes, user._id));
-  };
+  const renderReadView = () => {
+    let editButtonProps;
+    if (canEdit) {
+      editButtonProps = {
+        text: 'Edit Card',
+        onClick: editCard
+      };
+    } else if (requestedEditAccess) {
+      editButtonProps = {
+        text: 'Pending Edit Access Request',
+        color: null,
+        className: s('bg-yellow-100 text-yellow-600')
+      };
+    } else {
+      editButtonProps = {
+        text: 'Request Edit Access',
+        onClick: () => openCardModal(MODAL_TYPE.EDIT_ACCESS_REQUEST)
+      };
+    }
 
-  const renderReadView = () => (
-    <div className={s('flex items-center justify-between rounded-b-lg px-lg py-sm')}>
-      <div className={s('flex')}>
+    const hasUpvoted = upvotes.some((upvoteId) => upvoteId === user._id);
+    const hasBookmarked = user.bookmarkIds.some((bookmarkId) => bookmarkId === _id);
+    const hasSubscribed = subscribers.some(({ _id: userId }) => userId === user._id);
+
+    const isOwner = owners.some(({ _id: userId }) => userId === user._id);
+
+    const actionButtons = [
+      {
+        key: 'helpful',
+        tooltip: hasUpvoted ? 'Unmark as Helpful' : 'Mark Helpful',
+        text: upvotes.length !== 0 ? `(${upvotes.length})` : '',
+        icon: <MdThumbUp className={s(upvotes.length ? 'mr-xs' : '')} />,
+        isSelected: hasUpvoted,
+        disabled: isTogglingUpvote,
+        onClick: () => requestToggleUpvote(toggleUpvotes(upvotes, user._id))
+      },
+      {
+        key: 'bookmark',
+        tooltip: hasBookmarked ? 'Remove Bookmark' : 'Add Bookmark',
+        icon: <MdBookmark />,
+        isSelected: hasBookmarked,
+        disabled: isUpdatingBookmark,
+        onClick: () => {
+          const bookmarkOnClick = hasBookmarked ? requestRemoveBookmark : requestAddBookmark;
+          bookmarkOnClick(_id);
+        }
+      },
+      {
+        key: 'subscribe',
+        tooltip: (() => {
+          if (!hasSubscribed) {
+            return 'Subscribe';
+          }
+          return isOwner
+            ? 'You are an owner and cannot unsubscribe from this card.'
+            : 'Unsubscribe';
+        })(),
+        icon: <MdNotifications />,
+        isSelected: hasSubscribed,
+        disabled: isTogglingSubscribe || isOwner,
+        onClick: requestToggleSubscribe
+      }
+    ];
+
+    return (
+      <div className={s('flex items-center justify-between rounded-b-lg px-lg py-sm')}>
         <Button
-          text="Edit Card"
           color="primary"
           icon={<MdModeEdit className={s('mr-sm')} />}
-          onClick={editCard}
           className={s('mr-sm')}
+          {...editButtonProps}
         />
+        <div className={s('flex')}>
+          {actionButtons.map(({ key, isSelected, tooltip, ...restButtonProps }, i) => (
+            <Tooltip key={key} tooltip={tooltip} tooltipProps={{ place: 'left' }}>
+              <Button
+                key={key}
+                className={s(i !== actionButtons.length - 1 ? 'mr-sm' : '')}
+                color={isSelected ? 'gold' : 'secondary'}
+                {...restButtonProps}
+              />
+            </Tooltip>
+          ))}
+        </div>
       </div>
-      <div className={s('flex')}>
-        <Button
-          text={`Helpful${upvotes.length !== 0 ? ` (${upvotes.length})` : ''}`}
-          icon={<MdThumbUp className={s('mr-sm')} />}
-          className={s('mr-reg')}
-          color={hasUpvoted ? 'gold' : 'secondary'}
-          disabled={isTogglingUpvote}
-          onClick={clickUpvote}
-        />
-        <Tooltip
-          tooltip={hasBookmarked ? 'Remove Bookmark' : 'Add Bookmark'}
-          tooltipProps={{ place: 'left' }}
-        >
-          <Button
-            icon={<MdBookmarkBorder />}
-            color={hasBookmarked ? 'gold' : 'secondary'}
-            disabled={isUpdatingBookmark}
-            onClick={() => bookmarkOnClick(_id)}
-          />
-        </Tooltip>
-      </div>
-    </div>
-  );
+    );
+  };
 
   return (
     <div className={s('flex-shrink-0 min-h-0 relative')}>
@@ -139,11 +191,15 @@ CardFooter.propTypes = {
 
   // Redux State
   user: UserPropTypes.isRequired,
+  canEdit: PropTypes.bool.isRequired,
+  hasValidEdits: PropTypes.bool.isRequired,
   activeScreenRecordingId: PropTypes.string,
   _id: PropTypes.string.isRequired,
-  isExternal: PropTypes.bool.isRequired,
   status: PropTypes.oneOf(Object.values(STATUS)).isRequired,
   upvotes: PropTypes.arrayOf(PropTypes.string).isRequired,
+  subscribers: PropTypes.arrayOf(PropTypes.object).isRequired,
+  owners: PropTypes.arrayOf(PropTypes.object).isRequired,
+  requestedEditAccess: PropTypes.bool,
   edits: PropTypes.shape({
     question: PropTypes.string,
     answerModel: PropTypes.string,
@@ -152,11 +208,13 @@ CardFooter.propTypes = {
   isUpdatingBookmark: PropTypes.bool,
   isUpdatingCard: PropTypes.bool,
   isTogglingUpvote: PropTypes.bool,
+  isTogglingSubscribe: PropTypes.bool,
   isEditing: PropTypes.bool.isRequired,
   hasCardChanged: PropTypes.bool.isRequired,
 
   // Redux Actions
   requestToggleUpvote: PropTypes.func.isRequired,
+  requestToggleSubscribe: PropTypes.func.isRequired,
   requestAddBookmark: PropTypes.func.isRequired,
   requestRemoveBookmark: PropTypes.func.isRequired,
   openCardModal: PropTypes.func.isRequired,

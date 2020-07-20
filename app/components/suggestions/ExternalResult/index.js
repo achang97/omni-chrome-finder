@@ -7,8 +7,17 @@ import {
   updateExternalResultId
 } from 'actions/externalVerification';
 import { requestLogAudit } from 'actions/auditLog';
+import { isEditor } from 'utils/auth';
 import trackEvent from 'actions/analytics';
 import ExternalResult from './ExternalResult';
+
+const mapStateToProps = (state) => {
+  const {
+    profile: { user }
+  } = state;
+
+  return { isEditor: isEditor(user) };
+};
 
 const mapDispatchToProps = {
   openCard,
@@ -20,4 +29,4 @@ const mapDispatchToProps = {
   trackEvent
 };
 
-export default connect(null, mapDispatchToProps)(ExternalResult);
+export default connect(mapStateToProps, mapDispatchToProps)(ExternalResult);

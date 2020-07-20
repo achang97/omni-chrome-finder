@@ -3,7 +3,7 @@ import PropTypes from 'prop-types';
 
 import { ConfirmModal, Select } from 'components/common';
 import { MODAL_TYPE } from 'appConstants/card';
-import { USER_ROLE } from 'appConstants/profile';
+import { ROLE_LIST } from 'appConstants/user';
 
 import { createSelectOptions, createSelectOption } from 'utils/select';
 import { getStyleApplicationFn } from 'utils/style';
@@ -22,6 +22,9 @@ const CardConfirmModals = ({
   updateError,
   isUpdatingCard,
   outOfDateReasonInput,
+  editAccessReasonInput,
+  isRequestingEditAccess,
+  editAccessError,
   isMarkingStatus,
   markStatusError,
   isArchivingCard,
@@ -30,6 +33,7 @@ const CardConfirmModals = ({
   closeCard,
   cancelEditCard,
   updateOutOfDateReason,
+  updateEditAccessReason,
   updateInviteRole,
   updateInviteEmail,
   requestUpdateCard,
@@ -37,7 +41,8 @@ const CardConfirmModals = ({
   requestMarkUpToDate,
   requestMarkOutOfDate,
   requestArchiveCard,
-  requestCreateInvite
+  requestCreateInvite,
+  requestGetEditAccess
 }) => {
   const confirmCloseModalUndocumentedPrimary = () => {
     closeCardModal(MODAL_TYPE.CONFIRM_CLOSE);
@@ -66,7 +71,7 @@ const CardConfirmModals = ({
           <Select
             value={createSelectOption(inviteRole)}
             placeholder="Select invite role"
-            options={createSelectOptions(Object.values(USER_ROLE))}
+            options={createSelectOptions(ROLE_LIST)}
             onChange={({ value }) => updateInviteRole(value)}
             className={s('flex-1 ml-xs')}
           />
@@ -115,7 +120,7 @@ const CardConfirmModals = ({
       title: 'Are you sure this card needs to be updated?',
       body: (
         <div>
-          <div className={s('text-xs text-gray-light mb-xs')}> Reason for Update </div>
+          <div className={s('text-xs text-gray-light mb-xs')}> Reason for Update (Optional) </div>
           <textarea
             type="textarea"
             className={s('w-full')}
@@ -155,7 +160,7 @@ const CardConfirmModals = ({
     {
       modalType: MODAL_TYPE.CONFIRM_APPROVE,
       title: 'Confirm Approval',
-      description: 'Would you like to approve the changes to this card?',
+      description: 'Are you sure you want to approve this card?',
       primaryButtonProps: {
         onClick: requestMarkUpToDate,
         isLoading: isMarkingStatus
@@ -233,6 +238,32 @@ const CardConfirmModals = ({
         onClick: confirmCloseEditModalSecondary
       },
       important: true
+    },
+    {
+      modalType: MODAL_TYPE.EDIT_ACCESS_REQUEST,
+      title: 'Request Edit Access',
+      description: "We'll notify the card owners about your request for edit access.",
+      body: (
+        <div className={s('mt-sm')}>
+          <div className={s('text-xs text-gray-light mb-xs')}> Reason (Optional) </div>
+          <textarea
+            type="textarea"
+            className={s('w-full')}
+            placeholder="Please explain why you're requesting edit access."
+            value={editAccessReasonInput}
+            onChange={(e) => updateEditAccessReason(e.target.value)}
+          />
+        </div>
+      ),
+      error: editAccessError,
+      primaryButtonProps: {
+        text: 'Request Access',
+        onClick: requestGetEditAccess,
+        isLoading: isRequestingEditAccess
+      },
+      secondaryButtonProps: {
+        text: 'Cancel'
+      }
     }
   ];
 
@@ -255,7 +286,7 @@ CardConfirmModals.propTypes = {
   activeCardIndex: PropTypes.number.isRequired,
   modalOpen: PropTypes.objectOf(PropTypes.bool).isRequired,
   inviteEmail: PropTypes.string,
-  inviteRole: PropTypes.oneOf(Object.values(USER_ROLE)),
+  inviteRole: PropTypes.oneOf(ROLE_LIST),
   isCreatingInvite: PropTypes.bool,
   createInviteError: PropTypes.string,
   deleteError: PropTypes.string,
@@ -267,9 +298,13 @@ CardConfirmModals.propTypes = {
   isArchivingCard: PropTypes.bool,
   archiveError: PropTypes.string,
   outOfDateReasonInput: PropTypes.string.isRequired,
+  editAccessReasonInput: PropTypes.string.isRequired,
+  isRequestingEditAccess: PropTypes.bool,
+  editAccessError: PropTypes.string,
 
   // Redux Actions
   updateOutOfDateReason: PropTypes.func.isRequired,
+  updateEditAccessReason: PropTypes.func.isRequired,
   closeCardModal: PropTypes.func.isRequired,
   closeCard: PropTypes.func.isRequired,
   cancelEditCard: PropTypes.func.isRequired,
@@ -280,7 +315,8 @@ CardConfirmModals.propTypes = {
   requestArchiveCard: PropTypes.func.isRequired,
   updateInviteRole: PropTypes.func.isRequired,
   updateInviteEmail: PropTypes.func.isRequired,
-  requestCreateInvite: PropTypes.func.isRequired
+  requestCreateInvite: PropTypes.func.isRequired,
+  requestGetEditAccess: PropTypes.func.isRequired
 };
 
 export default CardConfirmModals;

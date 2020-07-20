@@ -1,16 +1,21 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import _ from 'lodash';
-import { MdMoreHoriz, MdKeyboardArrowLeft, MdContentCopy, MdAttachFile } from 'react-icons/md';
+import {
+  MdMoreHoriz,
+  MdKeyboardArrowLeft,
+  MdContentCopy,
+  MdAttachFile,
+  MdRefresh
+} from 'react-icons/md';
 import { IoIosShareAlt } from 'react-icons/io';
 // import { FaRegFilePdf } from 'react-icons/fa';
 // import html2pdf from 'html2pdf.js';
-import { Timeago, Tooltip, Separator, PlaceholderImg } from 'components/common';
+import { Timeago, Tooltip, Separator, PlaceholderImg, Button } from 'components/common';
 
-import { copyCardUrl, isApprover } from 'utils/card';
+import { copyCardUrl } from 'utils/card';
 import { copyText } from 'utils/window';
 import { getStyleApplicationFn } from 'utils/style';
-import { UserPropTypes } from 'utils/propTypes';
 import { CARD, SEGMENT } from 'appConstants';
 
 import CardStatus from '../../CardStatus';
@@ -29,8 +34,9 @@ const s = getStyleApplicationFn();
 const CardHeader = ({
   setToastMessage,
   ownUserId,
-  user,
+  isEditor,
   outOfDateReason,
+  editAccessRequests,
   _id,
   answer,
   externalLink,
@@ -43,6 +49,7 @@ const CardHeader = ({
   cancelEditCard,
   openCardModal,
   openCardSideDock,
+  requestGetCard,
   trackEvent
 }) => {
   const goBackToView = () => {
@@ -116,7 +123,16 @@ const CardHeader = ({
       },
       {
         Icon: MdMoreHoriz,
-        label: 'More',
+        label: (
+          <span>
+            <span>More</span>
+            {!_.isEmpty(editAccessRequests) && (
+              <span className={s('rounded-full bg-red-600 px-xs text-white shadow-md ml-sm')}>
+                {editAccessRequests.length}
+              </span>
+            )}
+          </span>
+        ),
         tooltip: 'Advanced Settings',
         onClick: openCardSideDock,
         isShown: true,
@@ -225,11 +241,18 @@ const CardHeader = ({
             <Separator className={s('bg-purple-gray-10 mx-sm opacity-75')} />
             <CardStatus
               status={status}
-              isActionable={status !== CARD.STATUS.NEEDS_APPROVAL || isApprover(user)}
+              isActionable={status !== CARD.STATUS.NEEDS_APPROVAL || isEditor}
               outOfDateReason={outOfDateReason}
               onDropdownOptionClick={cardStatusOnClick}
               className={s('text-gray-dark')}
             />
+            <Tooltip tooltip="Reload">
+              <Button
+                icon={<MdRefresh />}
+                onClick={requestGetCard}
+                className={s('p-xs ml-reg text-reg')}
+              />
+            </Tooltip>
           </div>
         )}
       </>
@@ -257,14 +280,16 @@ CardHeader.propTypes = {
   setToastMessage: PropTypes.func.isRequired,
 
   // Redux State
-  user: UserPropTypes.isRequired,
+  isEditor: PropTypes.bool.isRequired,
+  ownUserId: PropTypes.string.isRequired,
+
+  _id: PropTypes.string.isRequired,
   outOfDateReason: PropTypes.shape({
     reason: PropTypes.string.isRequired,
     sender: PropTypes.object.isRequired,
     time: PropTypes.string.isRequired
   }),
-  ownUserId: PropTypes.string.isRequired,
-  _id: PropTypes.string.isRequired,
+  editAccessRequests: PropTypes.arrayOf(PropTypes.object),
   answer: PropTypes.string,
   externalLink: PropTypes.string,
   question: PropTypes.string,
@@ -278,6 +303,7 @@ CardHeader.propTypes = {
   cancelEditCard: PropTypes.func.isRequired,
   openCardModal: PropTypes.func.isRequired,
   openCardSideDock: PropTypes.func.isRequired,
+  requestGetCard: PropTypes.func.isRequired,
   trackEvent: PropTypes.func.isRequired
 };
 

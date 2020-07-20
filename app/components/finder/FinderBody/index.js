@@ -10,6 +10,7 @@ import {
 import { openCard } from 'actions/cards';
 import trackEvent from 'actions/analytics';
 import { SEARCH } from 'appConstants';
+import { isEditor } from 'utils/auth';
 import FinderBody from './FinderBody';
 
 const mapStateToProps = (state, ownProps) => {
@@ -26,7 +27,8 @@ const mapStateToProps = (state, ownProps) => {
           hasReachedLimit: hasReachedSegmentLimit
         }
       }
-    }
+    },
+    profile: { user }
   } = state;
 
   const activePath = _.last(finderHistory);
@@ -38,7 +40,8 @@ const mapStateToProps = (state, ownProps) => {
     hasReachedSegmentLimit,
     activePath,
     selectedNodes,
-    moveNodes
+    moveNodes,
+    isEditor: isEditor(user)
   };
 };
 

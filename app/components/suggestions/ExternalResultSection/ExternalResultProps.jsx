@@ -108,11 +108,15 @@ const getItemProps = (type, item) => {
         body: (
           <>
             <div className={s('flex items-center mb-sm')}>
-              <div className={s('font-bold text-xs mr-sm')}>
+              <div className={s('font-bold text-xs mr-sm truncate')}>
                 {channel ? `#${channel}` : 'Direct Message'}
               </div>
-              <div className={s('font-bold text-black mr-sm')}> {user.name} </div>
-              <Timeago className={s('ml-auto')} date={moment(ts, 'X').toDate()} live={false} />
+              <div className={s('font-bold text-black mr-sm flex-shrink-0')}> {user.name} </div>
+              <Timeago
+                className={s('ml-auto flex-shrink-0')}
+                date={moment(ts, 'X').toDate()}
+                live={false}
+              />
             </div>
             <div className={s('flex items-start')}>
               <img src={user.imageUrl} alt="" className={s('slack-thumbnail')} />

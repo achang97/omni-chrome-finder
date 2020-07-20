@@ -1,21 +1,22 @@
 import _ from 'lodash';
 import queryString from 'query-string';
-import { take, call, fork, put, select } from 'redux-saga/effects';
+import { take, call, fork, put, select, all } from 'redux-saga/effects';
 import { doGet, doPost, doPut, doDelete, getErrorMessage } from 'utils/request';
 import { getArrayIds } from 'utils/array';
 import {
   toggleUpvotes,
   convertPermissionsToBackendFormat,
   hasValidEdits,
-  isApprover,
-  isExternalCard,
   getInlineAttachments
 } from 'utils/card';
 import { getModelText } from 'utils/editor';
 import { convertAttachmentsToBackendFormat } from 'utils/file';
+import { isEditor } from 'utils/auth';
+import { TYPE as NOTIFICATION_TYPE } from 'appConstants/tasks';
 import { STATUS, PERMISSION_OPTION, VERIFICATION_INTERVAL_OPTION } from 'appConstants/card';
-import { AUDIT } from 'appConstants/profile';
+import { AUDIT } from 'appConstants/user';
 import { ROOT } from 'appConstants/finder';
+
 import {
   GET_CARD_REQUEST,
   CREATE_CARD_REQUEST,
@@ -27,9 +28,13 @@ import {
   ARCHIVE_CARD_REQUEST,
   ADD_BOOKMARK_REQUEST,
   REMOVE_BOOKMARK_REQUEST,
+  TOGGLE_SUBSCRIBE_REQUEST,
   ADD_CARD_ATTACHMENT_REQUEST,
   GET_SLACK_THREAD_REQUEST,
-  CREATE_INVITE_REQUEST
+  CREATE_INVITE_REQUEST,
+  GET_EDIT_ACCESS_REQUEST,
+  APPROVE_EDIT_ACCESS_REQUEST,
+  REJECT_EDIT_ACCESS_REQUEST
 } from 'actions/actionTypes';
 import {
   handleGetCardSuccess,
@@ -52,12 +57,20 @@ import {
   handleAddBookmarkError,
   handleRemoveBookmarkSuccess,
   handleRemoveBookmarkError,
+  handleToggleSubscribeSuccess,
+  handleToggleSubscribeError,
   handleAddCardAttachmentSuccess,
   handleAddCardAttachmentError,
   handleGetSlackThreadSuccess,
   handleGetSlackThreadError,
   handleCreateInviteSuccess,
-  handleCreateInviteError
+  handleCreateInviteError,
+  handleGetEditAccessSuccess,
+  handleGetEditAccessError,
+  handleApproveEditAccessSuccess,
+  handleApproveEditAccessError,
+  handleRejectEditAccessSuccess,
+  handleRejectEditAccessError
 } from 'actions/cards';
 
 const INCOMPLETE_CARD_ERROR = 'Failed to save card: some fields are incomplete.';
@@ -75,9 +88,13 @@ export default function* watchCardsRequests() {
       ARCHIVE_CARD_REQUEST,
       ADD_BOOKMARK_REQUEST,
       REMOVE_BOOKMARK_REQUEST,
+      TOGGLE_SUBSCRIBE_REQUEST,
       ADD_CARD_ATTACHMENT_REQUEST,
       GET_SLACK_THREAD_REQUEST,
-      CREATE_INVITE_REQUEST
+      CREATE_INVITE_REQUEST,
+      GET_EDIT_ACCESS_REQUEST,
+      APPROVE_EDIT_ACCESS_REQUEST,
+      REJECT_EDIT_ACCESS_REQUEST
     ]);
 
     const { type, payload } = action;
@@ -100,6 +117,10 @@ export default function* watchCardsRequests() {
       }
       case TOGGLE_UPVOTE_REQUEST: {
         yield fork(toggleUpvote, payload);
+        break;
+      }
+      case TOGGLE_SUBSCRIBE_REQUEST: {
+        yield fork(toggleSubscribe, payload);
         break;
       }
       case MARK_UP_TO_DATE_REQUEST: {
@@ -134,6 +155,18 @@ export default function* watchCardsRequests() {
         yield fork(createInvite);
         break;
       }
+      case GET_EDIT_ACCESS_REQUEST: {
+        yield fork(getEditAccess);
+        break;
+      }
+      case APPROVE_EDIT_ACCESS_REQUEST: {
+        yield fork(approveEditAccess, payload);
+        break;
+      }
+      case REJECT_EDIT_ACCESS_REQUEST: {
+        yield fork(rejectEditAccess, payload);
+        break;
+      }
       default: {
         break;
       }
@@ -159,7 +192,37 @@ function* getUserId() {
 function* getCard() {
   const cardId = yield call(getActiveCardId);
   try {
-    const card = yield call(doGet, `/cards/${cardId}`);
+    const requests = [call(doGet, `/cards/${cardId}`)];
+
+    const user = yield select((state) => state.profile.user);
+    if (!isEditor(user)) {
+      requests.push(
+        call(doGet, '/notifications/sentByMe', {
+          cardId,
+          status: NOTIFICATION_TYPE.REQUEST_EDIT_ACCESS
+        })
+      );
+    } else {
+      requests.push(
+        call(doGet, '/notifications', {
+          cardId,
+          status: NOTIFICATION_TYPE.REQUEST_EDIT_ACCESS
+        })
+      );
+    }
+
+    const [card, editAccessRequests] = yield all(requests);
+    if (editAccessRequests && editAccessRequests.length !== 0) {
+      if (isEditor(user)) {
+        card.editAccessRequests = editAccessRequests;
+      } else {
+        card.requestedEditAccess = true;
+      }
+    } else {
+      card.requestedEditAccess = false;
+      card.editAccessRequests = null;
+    }
+
     yield put(handleGetCardSuccess(cardId, card));
   } catch (error) {
     yield put(
@@ -181,6 +244,8 @@ function* convertCardToBackendFormat(card) {
       answerModel,
       owners,
       subscribers,
+      approvers,
+      editUserPermissions,
       tags,
       verificationInterval,
       permissions,
@@ -200,12 +265,16 @@ function* convertCardToBackendFormat(card) {
   // Handle invited owners / subscribers
   let cardOwners = getArrayIds(owners);
   let cardSubscribers = _.union(cardOwners, getArrayIds(subscribers));
+  let cardApprovers = getArrayIds(approvers);
+  let cardEditUserPermissions = getArrayIds(editUserPermissions);
   let cardTags = tags;
   let cardUpdateInterval = verificationInterval.value;
 
   if (permissions.value === PERMISSION_OPTION.JUST_ME) {
     cardOwners = [_id];
     cardSubscribers = [_id];
+    cardApprovers = [];
+    cardEditUserPermissions = [];
     cardTags = [];
     cardUpdateInterval = VERIFICATION_INTERVAL_OPTION.NEVER;
   }
@@ -231,6 +300,8 @@ function* convertCardToBackendFormat(card) {
     ...permissionsInfo,
     owners: cardOwners,
     subscribers: cardSubscribers,
+    approvers: cardApprovers,
+    editUserPermissions: cardEditUserPermissions,
     tags: cardTags,
     slackThreadConvoPairs: cardSlackThreadConvoPairs,
     slackReplies: cardSlackReplies,
@@ -245,7 +316,7 @@ function* createCard() {
   const cardId = activeCard._id;
 
   try {
-    if (hasValidEdits(activeCard.edits)) {
+    if (hasValidEdits(activeCard)) {
       const newCardInfo = yield call(convertCardToBackendFormat, activeCard);
       const source = queryString.stringify({ source: AUDIT.SOURCE.DOCK });
       const card = yield call(doPost, `/cards?${source}`, newCardInfo);
@@ -261,14 +332,13 @@ function* createCard() {
 function* updateCard({ shouldCloseCard }) {
   const activeCard = yield call(getActiveCard);
   const cardId = activeCard._id;
-  const isExternal = isExternalCard(activeCard);
 
   try {
-    if (hasValidEdits(activeCard.edits, isExternal)) {
+    if (hasValidEdits(activeCard)) {
       const newCardInfo = yield call(convertCardToBackendFormat, activeCard);
       const user = yield select((state) => state.profile.user);
-      const canApprove = isApprover(user);
       const card = yield call(doPut, `/cards/${cardId}`, newCardInfo);
+      const canApprove = isEditor(user);
       yield put(handleUpdateCardSuccess(card, shouldCloseCard, canApprove));
     } else {
       yield put(handleUpdateCardError(cardId, INCOMPLETE_CARD_ERROR, shouldCloseCard));
@@ -298,6 +368,21 @@ function* toggleUpvote({ upvotes }) {
     yield put(handleToggleUpvoteSuccess(card));
   } catch (error) {
     yield put(handleToggleUpvoteError(cardId, getErrorMessage(error), oldUpvotes));
+  }
+}
+
+function* toggleSubscribe() {
+  const { _id: cardId, subscribers } = yield call(getActiveCard);
+  const userId = yield call(getUserId);
+
+  try {
+    const endpointUrl = subscribers.some(({ _id }) => _id === userId)
+      ? `/cards/${cardId}/unsubscribe`
+      : `/cards/${cardId}/subscribe`;
+    const card = yield call(doPost, endpointUrl);
+    yield put(handleToggleSubscribeSuccess(card));
+  } catch (error) {
+    yield put(handleToggleSubscribeError(cardId, getErrorMessage(error)));
   }
 }
 
@@ -372,7 +457,6 @@ function* getSlackThread() {
   const activeCard = yield call(getActiveCard);
   const { slackThreadConvoPairs, slackThreadIndex } = activeCard;
   const { threadId, channelId } = slackThreadConvoPairs[slackThreadIndex];
-
   try {
     const slackReplies = yield call(doGet, '/slack/threadReplies', { threadId, channelId });
     yield put(handleGetSlackThreadSuccess(activeCard._id, slackReplies));
@@ -384,12 +468,42 @@ function* getSlackThread() {
 function* createInvite() {
   const activeCard = yield call(getActiveCard);
   const { inviteEmail, inviteRole } = activeCard;
-
   try {
     const invitedUserInfo = { email: inviteEmail, role: inviteRole };
     const invitedUser = yield call(doPost, '/invitedUsers', invitedUserInfo);
     yield put(handleCreateInviteSuccess(activeCard._id, invitedUser));
   } catch (error) {
     yield put(handleCreateInviteError(activeCard._id, getErrorMessage(error)));
+  }
+}
+
+function* getEditAccess() {
+  const activeCard = yield call(getActiveCard);
+  const { editAccessReasonInput, _id: cardId } = activeCard;
+  try {
+    yield call(doPost, `/cards/${cardId}/requestEditAccess`, { reason: editAccessReasonInput });
+    yield put(handleGetEditAccessSuccess(cardId));
+  } catch (error) {
+    yield put(handleGetEditAccessError(cardId, getErrorMessage(error)));
+  }
+}
+
+function* approveEditAccess({ requestor }) {
+  const cardId = yield call(getActiveCardId);
+  try {
+    yield call(doPost, `/cards/${cardId}/approveEditAccessRequest`, { userId: requestor._id });
+    yield put(handleApproveEditAccessSuccess(cardId, requestor));
+  } catch (error) {
+    yield put(handleApproveEditAccessError(cardId, getErrorMessage(error)));
+  }
+}
+
+function* rejectEditAccess({ requestorId }) {
+  const cardId = yield call(getActiveCardId);
+  try {
+    yield call(doPost, `/cards/${cardId}/rejectEditAccessRequest`, { userId: requestorId });
+    yield put(handleRejectEditAccessSuccess(cardId, requestorId));
+  } catch (error) {
+    yield put(handleRejectEditAccessError(cardId, getErrorMessage(error)));
   }
 }

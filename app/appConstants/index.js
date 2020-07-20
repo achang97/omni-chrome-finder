@@ -6,6 +6,7 @@ export { default as CHROME } from './chrome';
 export { default as URL_REGEX } from './urlRegex';
 export { default as FINDER } from './finder';
 export { default as PROFILE } from './profile';
+export { default as USER } from './user';
 export { default as REQUEST } from './request';
 export { default as SEARCH } from './search';
 export { default as SEGMENT } from './segment';

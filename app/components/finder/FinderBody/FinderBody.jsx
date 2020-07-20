@@ -41,6 +41,7 @@ const FinderBody = ({
   hasReachedSegmentLimit,
   selectedNodes,
   moveNodes,
+  isEditor,
   pushFinderNode,
   openFinderModal,
   openCard,
@@ -221,7 +222,7 @@ const FinderBody = ({
             </div>
           )}
         </BottomScrollListener>
-        {renderActionIcons()}
+        {isEditor && renderActionIcons()}
       </div>
     );
   };

@@ -1,8 +1,9 @@
 import _ from 'lodash';
 
-import { URL, CARD, PROFILE, REQUEST } from 'appConstants';
+import { URL, CARD, REQUEST } from 'appConstants';
 
 import { getArrayIds } from './array';
+import { isEditor } from './auth';
 import { isAnyLoading } from './file';
 import { isActiveUser } from './user';
 import { copyText } from './window';
@@ -105,6 +106,10 @@ export function convertPermissionsToFrontendFormat(userPermissions, permissionGr
   return CARD.PERMISSION_OPTIONS.find((option) => option.value === permissionsValue);
 }
 
+export function isJustMe(permissions) {
+  return permissions && permissions.value === CARD.PERMISSION_OPTION.JUST_ME;
+}
+
 export function hasValidPermissions(permissions, permissionGroups) {
   return (
     !!permissions &&
@@ -112,16 +117,19 @@ export function hasValidPermissions(permissions, permissionGroups) {
   );
 }
 
-export function hasValidEdits(edits, isExternal = false) {
+export function hasValidEdits(card) {
+  const isExternal = isExternalCard(card);
   const {
-    question,
-    answerModel,
-    owners = [],
-    verificationInterval,
-    permissions,
-    permissionGroups = [],
-    attachments = []
-  } = edits;
+    edits: {
+      question,
+      answerModel,
+      owners = [],
+      verificationInterval,
+      permissions,
+      permissionGroups = [],
+      attachments = []
+    }
+  } = card;
 
   return (
     !!question &&
@@ -142,13 +150,15 @@ export function isExistingCard(cardId) {
   return !cardId.startsWith('new-card-');
 }
 
-export function isJustMe(permissions) {
-  return permissions && permissions.value === CARD.PERMISSION_OPTION.JUST_ME;
-}
-
-export function isApprover(user) {
-  // TODO: Change this function so it actually checks the assigned approvers on the card
-  return user.role === PROFILE.USER_ROLE.ADMIN;
+export function canEditCard(user, card) {
+  const { _id: userId } = user;
+  const { asker = {}, owners = [], editUserPermissions = [] } = card;
+  return (
+    isEditor(user) ||
+    asker._id === userId ||
+    owners.some(({ _id }) => _id === userId) ||
+    editUserPermissions.some(({ _id }) => _id === userId)
+  );
 }
 
 export function getNewCardBaseState(user) {
@@ -218,7 +228,6 @@ export default {
   generateCardId,
   isExistingCard,
   isJustMe,
-  isApprover,
   getNewCardBaseState,
   cardStateChanged,
   isExternalCard,

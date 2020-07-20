@@ -2,11 +2,13 @@ import { Component } from 'react';
 import PropTypes from 'prop-types';
 import queryString from 'query-string';
 
-import { CHROME, ROUTES, URL, TASKS, PROFILE, APP_CONTAINER_ID } from 'appConstants';
+import { CHROME, ROUTES, URL, TASKS, USER, APP_CONTAINER_ID } from 'appConstants';
 import { getNewCardBaseState } from 'utils/card';
 import { UserPropTypes } from 'utils/propTypes';
 import { convertTextToModel } from 'utils/editor';
 import { isValidUser } from 'utils/auth';
+
+// const FROALA_EDIT_CLASSNAME = 'fr-element';
 
 class ChromeMessageListener extends Component {
   componentDidMount() {
@@ -33,9 +35,22 @@ class ChromeMessageListener extends Component {
 
   interceptClickEvent = (e) => {
     let target = e.target || e.srcElement;
-    while (target && target.id !== APP_CONTAINER_ID && target.tagName !== 'A') {
+    while (
+      target &&
+      target !== document.body &&
+      target.id !== APP_CONTAINER_ID &&
+      target.tagName !== 'A'
+    ) {
       target = target.parentNode;
     }
+
+    // let parent = target.parentNode;
+    // while (parent && parent !== document.body) {
+    //   if (parent.className.includes(FROALA_EDIT_CLASSNAME)) {
+    //     return;
+    //   }
+    //   parent = parent.parentNode;
+    // }
 
     if (target && target.tagName === 'A') {
       const href = target.getAttribute('href');
@@ -136,7 +151,7 @@ class ChromeMessageListener extends Component {
             toggleAskTeammate();
           }
           updateAskSearchText(selectedText);
-          requestLogAudit(PROFILE.AUDIT.TYPE.CONTEXT_MENU_SEARCH, { query: selectedText });
+          requestLogAudit(USER.AUDIT.TYPE.CONTEXT_MENU_SEARCH, { query: selectedText });
           history.push(ROUTES.ASK);
           break;
         }

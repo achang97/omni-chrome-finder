@@ -1,11 +1,11 @@
-import { USER_STATUS } from 'appConstants/profile';
+import { STATUS } from 'appConstants/user';
 
 export function isInvitedUser(user) {
-  return user.status === USER_STATUS.INVITED;
+  return user.status === STATUS.INVITED;
 }
 
 export function isActiveUser(user) {
-  return user.status === USER_STATUS.ACTIVE;
+  return user.status === STATUS.ACTIVE;
 }
 
 export default { isInvitedUser, isActiveUser };

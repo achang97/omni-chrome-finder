@@ -78,6 +78,22 @@ export function removeCardOwner(index) {
   return { type: types.REMOVE_CARD_OWNER, payload: { index } };
 }
 
+export function addCardApprover(approver) {
+  return { type: types.ADD_CARD_APPROVER, payload: { approver } };
+}
+
+export function removeCardApprover(index) {
+  return { type: types.REMOVE_CARD_APPROVER, payload: { index } };
+}
+
+export function addCardEditViewer(viewer) {
+  return { type: types.ADD_CARD_EDIT_VIEWER, payload: { viewer } };
+}
+
+export function removeCardEditViewer(index) {
+  return { type: types.REMOVE_CARD_EDIT_VIEWER, payload: { index } };
+}
+
 export function addCardSubscriber(subscriber) {
   return { type: types.ADD_CARD_SUBSCRIBER, payload: { subscriber } };
 }
@@ -144,6 +160,10 @@ export function closeCardSideDock() {
 
 export function updateOutOfDateReason(reason) {
   return { type: types.UPDATE_OUT_OF_DATE_REASON, payload: { reason } };
+}
+
+export function updateEditAccessReason(reason) {
+  return { type: types.UPDATE_EDIT_ACCESS_REASON, payload: { reason } };
 }
 
 export function updateCard(card) {
@@ -255,6 +275,18 @@ export function handleMarkOutOfDateError(cardId, error) {
   return { type: types.MARK_OUT_OF_DATE_ERROR, payload: { cardId, error } };
 }
 
+export function requestToggleSubscribe() {
+  return { type: types.TOGGLE_SUBSCRIBE_REQUEST, payload: {} };
+}
+
+export function handleToggleSubscribeSuccess(card) {
+  return { type: types.TOGGLE_SUBSCRIBE_SUCCESS, payload: { card } };
+}
+
+export function handleToggleSubscribeError(cardId, error) {
+  return { type: types.TOGGLE_SUBSCRIBE_ERROR, payload: { cardId, error } };
+}
+
 export function requestArchiveCard() {
   return { type: types.ARCHIVE_CARD_REQUEST, payload: {} };
 }
@@ -291,6 +323,18 @@ export function handleRemoveBookmarkError(cardId, error) {
   return { type: types.REMOVE_BOOKMARK_ERROR, payload: { cardId, error } };
 }
 
+export function requestGetEditAccess() {
+  return { type: types.GET_EDIT_ACCESS_REQUEST, payload: {} };
+}
+
+export function handleGetEditAccessSuccess(cardId) {
+  return { type: types.GET_EDIT_ACCESS_SUCCESS, payload: { cardId } };
+}
+
+export function handleGetEditAccessError(cardId, error) {
+  return { type: types.GET_EDIT_ACCESS_ERROR, payload: { cardId, error } };
+}
+
 export function requestGetSlackThread() {
   return { type: types.GET_SLACK_THREAD_REQUEST, payload: {} };
 }
@@ -313,4 +357,28 @@ export function handleCreateInviteSuccess(cardId, invitedUser) {
 
 export function handleCreateInviteError(cardId, error) {
   return { type: types.CREATE_INVITE_ERROR, payload: { cardId, error } };
+}
+
+export function requestApproveEditAccess(requestor) {
+  return { type: types.APPROVE_EDIT_ACCESS_REQUEST, payload: { requestor } };
+}
+
+export function handleApproveEditAccessSuccess(cardId, requestor) {
+  return { type: types.APPROVE_EDIT_ACCESS_SUCCESS, payload: { cardId, requestor } };
+}
+
+export function handleApproveEditAccessError(cardId, error) {
+  return { type: types.APPROVE_EDIT_ACCESS_ERROR, payload: { cardId, error } };
+}
+
+export function requestRejectEditAccess(requestorId) {
+  return { type: types.REJECT_EDIT_ACCESS_REQUEST, payload: { requestorId } };
+}
+
+export function handleRejectEditAccessSuccess(cardId, requestorId) {
+  return { type: types.REJECT_EDIT_ACCESS_SUCCESS, payload: { cardId, requestorId } };
+}
+
+export function handleRejectEditAccessError(cardId, error) {
+  return { type: types.REJECT_EDIT_ACCESS_ERROR, payload: { cardId, error } };
 }

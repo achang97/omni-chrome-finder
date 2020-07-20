@@ -3,7 +3,7 @@ import PropTypes from 'prop-types';
 import { MdClose } from 'react-icons/md';
 
 import { CircleButton, PlaceholderImg, Tooltip } from 'components/common';
-import { USER_STATUS } from 'appConstants/profile';
+import { STATUS } from 'appConstants/user';
 
 import { getStyleApplicationFn } from 'utils/style';
 import style from './card-user.css';
@@ -21,7 +21,7 @@ const CardUser = ({
   showTooltip,
   status
 }) => {
-  const isInvited = status === USER_STATUS.INVITED;
+  const isInvited = status === STATUS.INVITED;
 
   const protectedOnClick = () => {
     if (onClick) onClick({ img, name });
@@ -68,7 +68,7 @@ CardUser.propTypes = {
   onRemoveClick: PropTypes.func,
   showName: PropTypes.bool,
   showTooltip: PropTypes.bool,
-  status: PropTypes.oneOf(Object.values(USER_STATUS))
+  status: PropTypes.oneOf(Object.values(STATUS))
 };
 
 CardUser.defaultProps = {
