@@ -1,5 +1,5 @@
 import { connect } from 'react-redux';
-import { cancelEditCard, openCardModal, openCardSideDock } from 'actions/cards';
+import { cancelEditCard, openCardModal, openCardSideDock, requestGetCard } from 'actions/cards';
 import trackEvent from 'actions/analytics';
 import { cardStateChanged, canEditCard } from 'utils/card';
 import CardHeader from './CardHeader';
@@ -46,6 +46,7 @@ const mapDispatchToProps = {
   cancelEditCard,
   openCardModal,
   openCardSideDock,
+  requestGetCard,
   trackEvent
 };
 

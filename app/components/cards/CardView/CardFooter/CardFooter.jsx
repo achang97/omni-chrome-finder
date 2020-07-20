@@ -25,6 +25,7 @@ const CardFooter = ({
   upvotes,
   subscribers,
   owners,
+  requestedEditAccess,
   edits,
   isUpdatingBookmark,
   isUpdatingCard,
@@ -83,8 +84,13 @@ const CardFooter = ({
         text: 'Edit Card',
         onClick: editCard
       };
+    } else if (requestedEditAccess) {
+      editButtonProps = {
+        text: 'Pending Edit Access Request',
+        color: null,
+        className: s('bg-yellow-100 text-yellow-600')
+      };
     } else {
-      // TODO: handle case where it's "pending"
       editButtonProps = {
         text: 'Request Edit Access',
         onClick: () => openCardModal(MODAL_TYPE.EDIT_ACCESS_REQUEST)
@@ -102,7 +108,7 @@ const CardFooter = ({
         key: 'helpful',
         tooltip: hasUpvoted ? 'Unmark as Helpful' : 'Mark Helpful',
         text: upvotes.length !== 0 ? `(${upvotes.length})` : '',
-        icon: <MdThumbUp className={s('mr-xs')} />,
+        icon: <MdThumbUp className={s(upvotes.length ? 'mr-xs' : '')} />,
         isSelected: hasUpvoted,
         disabled: isTogglingUpvote,
         onClick: () => requestToggleUpvote(toggleUpvotes(upvotes, user._id))
@@ -193,6 +199,7 @@ CardFooter.propTypes = {
   upvotes: PropTypes.arrayOf(PropTypes.string).isRequired,
   subscribers: PropTypes.arrayOf(PropTypes.object).isRequired,
   owners: PropTypes.arrayOf(PropTypes.object).isRequired,
+  requestedEditAccess: PropTypes.bool,
   edits: PropTypes.shape({
     question: PropTypes.string,
     answerModel: PropTypes.string,

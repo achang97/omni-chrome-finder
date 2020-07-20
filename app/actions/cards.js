@@ -319,8 +319,8 @@ export function requestGetEditAccess() {
   return { type: types.GET_EDIT_ACCESS_REQUEST, payload: {} };
 }
 
-export function handleGetEditAccessSuccess(card) {
-  return { type: types.GET_EDIT_ACCESS_SUCCESS, payload: { card } };
+export function handleGetEditAccessSuccess(cardId) {
+  return { type: types.GET_EDIT_ACCESS_SUCCESS, payload: { cardId } };
 }
 
 export function handleGetEditAccessError(cardId, error) {

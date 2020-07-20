@@ -430,16 +430,17 @@ export default function cardsReducer(state = initialState, action) {
       return updateActiveCard(state, { isRequestingEditAccess: true, editAccessError: null });
     }
     case types.GET_EDIT_ACCESS_SUCCESS: {
-      const { card } = payload;
+      const { cardId } = payload;
       const newInfo = {
-        ...convertCardToFrontendFormat(card),
         modalOpen: {
           ...BASE_MODAL_OPEN_STATE,
           [CARD.MODAL_TYPE.EDIT_ACCESS_REQUEST]: false
         },
+        editAccessReasonInput: '',
+        requestedEditAccess: true,
         isRequestingEditAccess: false
       };
-      return updateCardById(state, card._id, newInfo, true);
+      return updateCardById(state, cardId, newInfo, true);
     }
     case types.GET_EDIT_ACCESS_ERROR: {
       const { cardId, error } = payload;

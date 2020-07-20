@@ -1,11 +1,17 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import _ from 'lodash';
-import { MdMoreHoriz, MdKeyboardArrowLeft, MdContentCopy, MdAttachFile } from 'react-icons/md';
+import {
+  MdMoreHoriz,
+  MdKeyboardArrowLeft,
+  MdContentCopy,
+  MdAttachFile,
+  MdRefresh
+} from 'react-icons/md';
 import { IoIosShareAlt } from 'react-icons/io';
 // import { FaRegFilePdf } from 'react-icons/fa';
 // import html2pdf from 'html2pdf.js';
-import { Timeago, Tooltip, Separator, PlaceholderImg } from 'components/common';
+import { Timeago, Tooltip, Separator, PlaceholderImg, Button } from 'components/common';
 
 import { copyCardUrl } from 'utils/card';
 import { isEditor } from 'utils/auth';
@@ -44,6 +50,7 @@ const CardHeader = ({
   cancelEditCard,
   openCardModal,
   openCardSideDock,
+  requestGetCard,
   trackEvent
 }) => {
   const goBackToView = () => {
@@ -231,6 +238,13 @@ const CardHeader = ({
               onDropdownOptionClick={cardStatusOnClick}
               className={s('text-gray-dark')}
             />
+            <Tooltip tooltip="Reload">
+              <Button
+                icon={<MdRefresh />}
+                onClick={requestGetCard}
+                className={s('p-xs ml-reg text-reg')}
+              />
+            </Tooltip>
           </div>
         )}
       </>
@@ -279,6 +293,7 @@ CardHeader.propTypes = {
   cancelEditCard: PropTypes.func.isRequired,
   openCardModal: PropTypes.func.isRequired,
   openCardSideDock: PropTypes.func.isRequired,
+  requestGetCard: PropTypes.func.isRequired,
   trackEvent: PropTypes.func.isRequired
 };
 

@@ -2,7 +2,7 @@ import React, { useEffect } from 'react';
 import PropTypes from 'prop-types';
 import AnimateHeight from 'react-animate-height';
 import { IoMdAlert } from 'react-icons/io';
-import { MdKeyboardArrowDown, MdKeyboardArrowUp, MdNotifications } from 'react-icons/md';
+import { MdKeyboardArrowDown, MdKeyboardArrowUp, MdNotifications, MdLock } from 'react-icons/md';
 import { AiFillMinusCircle, AiFillQuestionCircle } from 'react-icons/ai';
 
 import { Tabs, Tab, Loader } from 'components/common';
@@ -59,7 +59,7 @@ const Tasks = ({
   const renderTasksList = (type, filteredTasks) => (
     <div className={s('h-full flex flex-col p-reg overflow-auto')}>
       {filteredTasks.map(
-        ({ _id, createdAt, status, card, isLoading, error, resolved, notifier }, i) => (
+        ({ _id, createdAt, status, card, isLoading, error, resolved, notifier, data }, i) => (
           <TaskItem
             key={_id}
             id={_id}
@@ -67,6 +67,7 @@ const Tasks = ({
             createdAt={createdAt}
             type={status}
             card={card}
+            data={data}
             isLoading={isLoading}
             error={error}
             resolved={resolved}
@@ -90,11 +91,15 @@ const Tasks = ({
         break;
       }
       case SECTION_TYPE.OUT_OF_DATE: {
-        icon = <AiFillMinusCircle className={s('tasks-icon-container text-red-reg ')} />;
+        icon = <AiFillMinusCircle className={s('tasks-icon-container text-red-reg')} />;
         break;
       }
       case SECTION_TYPE.NOT_DOCUMENTED: {
         icon = <AiFillQuestionCircle className={s('tasks-icon-container text-purple-reg')} />;
+        break;
+      }
+      case SECTION_TYPE.REQUEST_EDIT_ACCESS: {
+        icon = <MdLock className={s('tasks-icon-container text-yellow-500')} />;
         break;
       }
       default:

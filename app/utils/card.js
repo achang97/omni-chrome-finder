@@ -152,10 +152,13 @@ export function isExistingCard(cardId) {
 
 export function canEditCard(user, card) {
   const { _id: userId } = user;
-  const { asker = {}, owners = [] } = card;
-
-  // TODO: Also check the specified viewers who have been granted Edit Access
-  return isEditor(user) || asker._id === userId || owners.some(({ _id }) => _id === userId);
+  const { asker = {}, owners = [], editUserPermissions = [] } = card;
+  return (
+    isEditor(user) ||
+    asker._id === userId ||
+    owners.some(({ _id }) => _id === userId) ||
+    editUserPermissions.some(({ _id }) => _id === userId)
+  );
 }
 
 export function getNewCardBaseState(user) {

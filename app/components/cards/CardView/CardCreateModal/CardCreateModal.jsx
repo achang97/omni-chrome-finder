@@ -99,7 +99,7 @@ const CardCreateModal = ({
   };
 
   useEffect(() => {
-    if (!isEditor && isOpen && (createError || updateError)) {
+    if (isEditor && isOpen && (createError || updateError)) {
       scrollToBottom();
     }
   }, [isEditor, isOpen, createError, updateError]);

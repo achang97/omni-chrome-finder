@@ -1,6 +1,6 @@
 import _ from 'lodash';
 import queryString from 'query-string';
-import { take, call, fork, put, select, delay } from 'redux-saga/effects';
+import { take, call, fork, put, select, all } from 'redux-saga/effects';
 import { doGet, doPost, doPut, doDelete, getErrorMessage } from 'utils/request';
 import { getArrayIds } from 'utils/array';
 import {
@@ -12,6 +12,7 @@ import {
 import { getModelText } from 'utils/editor';
 import { convertAttachmentsToBackendFormat } from 'utils/file';
 import { isEditor } from 'utils/auth';
+import { TYPE as NOTIFICATION_TYPE } from 'appConstants/tasks';
 import { STATUS, PERMISSION_OPTION, VERIFICATION_INTERVAL_OPTION } from 'appConstants/card';
 import { AUDIT } from 'appConstants/user';
 import { ROOT } from 'appConstants/finder';
@@ -175,7 +176,23 @@ function* getUserId() {
 function* getCard() {
   const cardId = yield call(getActiveCardId);
   try {
-    const card = yield call(doGet, `/cards/${cardId}`);
+    const requests = [call(doGet, `/cards/${cardId}`)];
+
+    const user = yield select((state) => state.profile.user);
+    if (!isEditor(user)) {
+      requests.push(
+        call(doGet, '/notifications/sentByMe', {
+          cardId,
+          status: NOTIFICATION_TYPE.REQUEST_EDIT_ACCESS
+        })
+      );
+    }
+
+    const [card, editAccessRequests] = yield all(requests);
+    if (editAccessRequests && editAccessRequests.length !== 0) {
+      card.requestedEditAccess = true;
+    }
+
     yield put(handleGetCardSuccess(cardId, card));
   } catch (error) {
     yield put(
@@ -325,12 +342,10 @@ function* toggleSubscribe() {
   const userId = yield call(getUserId);
 
   try {
-    const subscriberIds = getArrayIds(subscribers);
-    const newSubscriberIds = subscribers.some(({ _id }) => _id === userId)
-      ? _.difference(subscriberIds, [userId])
-      : _.union(subscriberIds, [userId]);
-
-    const card = yield call(doPut, `/cards/${cardId}`, { subscribers: newSubscriberIds });
+    const endpointUrl = subscribers.some(({ _id }) => _id === userId)
+      ? `/cards/${cardId}/unsubscribe`
+      : `/cards/${cardId}/subscribe`;
+    const card = yield call(doPost, endpointUrl);
     yield put(handleToggleSubscribeSuccess(card));
   } catch (error) {
     yield put(handleToggleSubscribeError(cardId, getErrorMessage(error)));
@@ -408,7 +423,6 @@ function* getSlackThread() {
   const activeCard = yield call(getActiveCard);
   const { slackThreadConvoPairs, slackThreadIndex } = activeCard;
   const { threadId, channelId } = slackThreadConvoPairs[slackThreadIndex];
-
   try {
     const slackReplies = yield call(doGet, '/slack/threadReplies', { threadId, channelId });
     yield put(handleGetSlackThreadSuccess(activeCard._id, slackReplies));
@@ -420,7 +434,6 @@ function* getSlackThread() {
 function* createInvite() {
   const activeCard = yield call(getActiveCard);
   const { inviteEmail, inviteRole } = activeCard;
-
   try {
     const invitedUserInfo = { email: inviteEmail, role: inviteRole };
     const invitedUser = yield call(doPost, '/invitedUsers', invitedUserInfo);
@@ -433,12 +446,9 @@ function* createInvite() {
 function* getEditAccess() {
   const activeCard = yield call(getActiveCard);
   const { editAccessReasonInput, _id: cardId } = activeCard;
-
   try {
-    console.log(`Submitting request to get access: ${editAccessReasonInput}`);
-    yield delay(1000);
-    // const invitedUser = yield call(doPost, '/invitedUsers', invitedUserInfo);
-    yield put(handleGetEditAccessSuccess(activeCard));
+    yield call(doPost, `/cards/${cardId}/requestEditAccess`, { reason: editAccessReasonInput });
+    yield put(handleGetEditAccessSuccess(cardId));
   } catch (error) {
     yield put(handleGetEditAccessError(cardId, getErrorMessage(error)));
   }
