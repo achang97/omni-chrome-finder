@@ -24,6 +24,7 @@ import CardAttachments from '../../CardAttachments';
 import CardPermissions from '../../CardPermissions';
 import CardVerificationInterval from '../../CardVerificationInterval';
 import CardLocation from '../../CardLocation';
+import CardEditAccessRequests from '../../CardEditAccessRequests';
 
 const s = getStyleApplicationFn(style);
 
@@ -39,6 +40,9 @@ const CardSideDock = ({
   subscribers,
   approvers,
   editUserPermissions,
+  editAccessRequests,
+  isUpdatingEditRequests,
+  editRequestUpdateError,
   attachments,
   tags,
   permissions,
@@ -225,6 +229,12 @@ const CardSideDock = ({
             showTooltips
             onAdd={addCardEditViewer}
             onRemoveClick={({ index }) => removeCardEditViewer(index)}
+          />
+          <CardEditAccessRequests
+            className={s('mt-reg')}
+            requests={editAccessRequests}
+            isLoading={isUpdatingEditRequests}
+            error={editRequestUpdateError}
           />
         </AnimateHeight>
       </>
@@ -424,6 +434,9 @@ CardSideDock.propTypes = {
   subscribers: PropTypes.arrayOf(PropTypes.object).isRequired,
   attachments: PropTypes.arrayOf(PropTypes.object).isRequired,
   editUserPermissions: PropTypes.arrayOf(PropTypes.object).isRequired,
+  editAccessRequests: PropTypes.arrayOf(PropTypes.object),
+  isUpdatingEditRequests: PropTypes.bool,
+  editRequestUpdateError: PropTypes.string,
   tags: PropTypes.arrayOf(PropTypes.object).isRequired,
   permissions: PropTypes.shape({
     label: PropTypes.string.isRequired,

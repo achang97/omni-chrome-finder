@@ -2,6 +2,7 @@ import { connect } from 'react-redux';
 import { cancelEditCard, openCardModal, openCardSideDock, requestGetCard } from 'actions/cards';
 import trackEvent from 'actions/analytics';
 import { cardStateChanged, canEditCard } from 'utils/card';
+import { isEditor } from 'utils/auth';
 import CardHeader from './CardHeader';
 
 const mapStateToProps = (state) => {
@@ -15,6 +16,7 @@ const mapStateToProps = (state) => {
     externalLinkAnswer,
     question,
     outOfDateReason,
+    editAccessRequests,
     attachments,
     _id,
     isEditing,
@@ -27,9 +29,10 @@ const mapStateToProps = (state) => {
   const canEdit = canEditCard(user, activeCard);
 
   return {
-    user,
-    outOfDateReason,
+    isEditor: isEditor(user),
     ownUserId,
+    outOfDateReason,
+    editAccessRequests,
     answer,
     externalLink: externalLinkAnswer && externalLinkAnswer.link,
     _id,

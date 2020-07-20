@@ -358,3 +358,27 @@ export function handleCreateInviteSuccess(cardId, invitedUser) {
 export function handleCreateInviteError(cardId, error) {
   return { type: types.CREATE_INVITE_ERROR, payload: { cardId, error } };
 }
+
+export function requestApproveEditAccess(requestor) {
+  return { type: types.APPROVE_EDIT_ACCESS_REQUEST, payload: { requestor } };
+}
+
+export function handleApproveEditAccessSuccess(cardId, requestor) {
+  return { type: types.APPROVE_EDIT_ACCESS_SUCCESS, payload: { cardId, requestor } };
+}
+
+export function handleApproveEditAccessError(cardId, error) {
+  return { type: types.APPROVE_EDIT_ACCESS_ERROR, payload: { cardId, error } };
+}
+
+export function requestRejectEditAccess(requestorId) {
+  return { type: types.REJECT_EDIT_ACCESS_REQUEST, payload: { requestorId } };
+}
+
+export function handleRejectEditAccessSuccess(cardId, requestorId) {
+  return { type: types.REJECT_EDIT_ACCESS_SUCCESS, payload: { cardId, requestorId } };
+}
+
+export function handleRejectEditAccessError(cardId, error) {
+  return { type: types.REJECT_EDIT_ACCESS_ERROR, payload: { cardId, error } };
+}

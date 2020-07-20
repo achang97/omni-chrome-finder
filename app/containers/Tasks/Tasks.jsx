@@ -9,7 +9,6 @@ import { Tabs, Tab, Loader } from 'components/common';
 import TaskItem from 'components/tasks/TaskItem';
 
 import { TYPE, SECTION_TYPE, SECTIONS, TAB_OPTIONS } from 'appConstants/tasks';
-import { STATUS } from 'appConstants/card';
 
 import NoNotificationsImg from 'assets/images/general/noNotifications.svg';
 
@@ -219,7 +218,7 @@ Tasks.propTypes = {
     PropTypes.shape({
       _id: PropTypes.string.isRequired,
       createdAt: PropTypes.string.isRequired,
-      status: PropTypes.oneOf(Object.values(STATUS)),
+      status: PropTypes.oneOf(Object.values(TYPE)),
       card: PropTypes.object,
       resolved: PropTypes.bool.isRequired,
       notifier: PropTypes.object,

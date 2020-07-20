@@ -4,8 +4,8 @@ import {
   GET_TASKS_REQUEST,
   MARK_UP_TO_DATE_FROM_TASKS_REQUEST,
   DISMISS_TASK_REQUEST,
-  APPROVE_EDIT_ACCESS_REQUEST,
-  REJECT_EDIT_ACCESS_REQUEST
+  APPROVE_EDIT_ACCESS_FROM_TASKS_REQUEST,
+  REJECT_EDIT_ACCESS_FROM_TASKS_REQUEST
 } from 'actions/actionTypes';
 import {
   handleGetTasksSuccess,
@@ -14,10 +14,10 @@ import {
   handleMarkUpToDateFromTasksError,
   handleDismissTaskSuccess,
   handleDismissTaskError,
-  handleApproveEditAccessSuccess,
-  handleApproveEditAccessError,
-  handleRejectEditAccessSuccess,
-  handleRejectEditAccessError
+  handleApproveEditAccessFromTasksSuccess,
+  handleApproveEditAccessFromTasksError,
+  handleRejectEditAccessFromTasksSuccess,
+  handleRejectEditAccessFromTasksError
 } from 'actions/tasks';
 
 export default function* watchTasksRequests() {
@@ -26,8 +26,8 @@ export default function* watchTasksRequests() {
       GET_TASKS_REQUEST,
       MARK_UP_TO_DATE_FROM_TASKS_REQUEST,
       DISMISS_TASK_REQUEST,
-      APPROVE_EDIT_ACCESS_REQUEST,
-      REJECT_EDIT_ACCESS_REQUEST
+      APPROVE_EDIT_ACCESS_FROM_TASKS_REQUEST,
+      REJECT_EDIT_ACCESS_FROM_TASKS_REQUEST
     ]);
 
     const { type, payload } = action;
@@ -44,11 +44,11 @@ export default function* watchTasksRequests() {
         yield fork(dismissTask, payload);
         break;
       }
-      case APPROVE_EDIT_ACCESS_REQUEST: {
+      case APPROVE_EDIT_ACCESS_FROM_TASKS_REQUEST: {
         yield fork(approveEditAccess, payload);
         break;
       }
-      case REJECT_EDIT_ACCESS_REQUEST: {
+      case REJECT_EDIT_ACCESS_FROM_TASKS_REQUEST: {
         yield fork(rejectEditAccess, payload);
         break;
       }
@@ -86,20 +86,20 @@ function* dismissTask({ taskId }) {
   }
 }
 
-function* approveEditAccess({ taskId, cardId, requestorId }) {
+function* approveEditAccess({ taskId, cardId, requestor }) {
   try {
-    yield call(doPost, `/cards/${cardId}/approveEditAccessRequest`, { userId: requestorId });
-    yield put(handleApproveEditAccessSuccess(taskId));
+    yield call(doPost, `/cards/${cardId}/approveEditAccessRequest`, { userId: requestor._id });
+    yield put(handleApproveEditAccessFromTasksSuccess(taskId, cardId, requestor));
   } catch (error) {
-    yield put(handleApproveEditAccessError(taskId, getErrorMessage(error)));
+    yield put(handleApproveEditAccessFromTasksError(taskId, getErrorMessage(error)));
   }
 }
 
 function* rejectEditAccess({ taskId, cardId, requestorId }) {
   try {
     yield call(doPost, `/cards/${cardId}/rejectEditAccessRequest`, { userId: requestorId });
-    yield put(handleRejectEditAccessSuccess(taskId));
+    yield put(handleRejectEditAccessFromTasksSuccess(taskId, cardId, requestorId));
   } catch (error) {
-    yield put(handleRejectEditAccessError(taskId, getErrorMessage(error)));
+    yield put(handleRejectEditAccessFromTasksError(taskId, getErrorMessage(error)));
   }
 }

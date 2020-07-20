@@ -32,7 +32,9 @@ import {
   ADD_CARD_ATTACHMENT_REQUEST,
   GET_SLACK_THREAD_REQUEST,
   CREATE_INVITE_REQUEST,
-  GET_EDIT_ACCESS_REQUEST
+  GET_EDIT_ACCESS_REQUEST,
+  APPROVE_EDIT_ACCESS_REQUEST,
+  REJECT_EDIT_ACCESS_REQUEST
 } from 'actions/actionTypes';
 import {
   handleGetCardSuccess,
@@ -64,7 +66,11 @@ import {
   handleCreateInviteSuccess,
   handleCreateInviteError,
   handleGetEditAccessSuccess,
-  handleGetEditAccessError
+  handleGetEditAccessError,
+  handleApproveEditAccessSuccess,
+  handleApproveEditAccessError,
+  handleRejectEditAccessSuccess,
+  handleRejectEditAccessError
 } from 'actions/cards';
 
 const INCOMPLETE_CARD_ERROR = 'Failed to save card: some fields are incomplete.';
@@ -86,7 +92,9 @@ export default function* watchCardsRequests() {
       ADD_CARD_ATTACHMENT_REQUEST,
       GET_SLACK_THREAD_REQUEST,
       CREATE_INVITE_REQUEST,
-      GET_EDIT_ACCESS_REQUEST
+      GET_EDIT_ACCESS_REQUEST,
+      APPROVE_EDIT_ACCESS_REQUEST,
+      REJECT_EDIT_ACCESS_REQUEST
     ]);
 
     const { type, payload } = action;
@@ -151,6 +159,14 @@ export default function* watchCardsRequests() {
         yield fork(getEditAccess);
         break;
       }
+      case APPROVE_EDIT_ACCESS_REQUEST: {
+        yield fork(approveEditAccess, payload);
+        break;
+      }
+      case REJECT_EDIT_ACCESS_REQUEST: {
+        yield fork(rejectEditAccess, payload);
+        break;
+      }
       default: {
         break;
       }
@@ -186,11 +202,25 @@ function* getCard() {
           status: NOTIFICATION_TYPE.REQUEST_EDIT_ACCESS
         })
       );
+    } else {
+      requests.push(
+        call(doGet, '/notifications', {
+          cardId,
+          status: NOTIFICATION_TYPE.REQUEST_EDIT_ACCESS
+        })
+      );
     }
 
     const [card, editAccessRequests] = yield all(requests);
     if (editAccessRequests && editAccessRequests.length !== 0) {
-      card.requestedEditAccess = true;
+      if (isEditor(user)) {
+        card.editAccessRequests = editAccessRequests;
+      } else {
+        card.requestedEditAccess = true;
+      }
+    } else {
+      card.requestedEditAccess = false;
+      card.editAccessRequests = null;
     }
 
     yield put(handleGetCardSuccess(cardId, card));
@@ -455,5 +485,25 @@ function* getEditAccess() {
     yield put(handleGetEditAccessSuccess(cardId));
   } catch (error) {
     yield put(handleGetEditAccessError(cardId, getErrorMessage(error)));
+  }
+}
+
+function* approveEditAccess({ requestor }) {
+  const cardId = yield call(getActiveCardId);
+  try {
+    yield call(doPost, `/cards/${cardId}/approveEditAccessRequest`, { userId: requestor._id });
+    yield put(handleApproveEditAccessSuccess(cardId, requestor));
+  } catch (error) {
+    yield put(handleApproveEditAccessError(cardId, getErrorMessage(error)));
+  }
+}
+
+function* rejectEditAccess({ requestorId }) {
+  const cardId = yield call(getActiveCardId);
+  try {
+    yield call(doPost, `/cards/${cardId}/rejectEditAccessRequest`, { userId: requestorId });
+    yield put(handleRejectEditAccessSuccess(cardId, requestorId));
+  } catch (error) {
+    yield put(handleRejectEditAccessError(cardId, getErrorMessage(error)));
   }
 }

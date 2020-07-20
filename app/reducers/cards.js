@@ -427,7 +427,7 @@ export default function cardsReducer(state = initialState, action) {
       const newInfo = { isUpdatingCard: false, updateError: error };
 
       const currCard = getCardById(state, cardId);
-      if (currCard.status !== CARD.STATUS.NOT_DOCUMENTED) {
+      if (currCard && currCard.status !== CARD.STATUS.NOT_DOCUMENTED) {
         const modalType = shouldCloseCard
           ? CARD.MODAL_TYPE.ERROR_UPDATE_CLOSE
           : CARD.MODAL_TYPE.ERROR_UPDATE;
@@ -572,12 +572,12 @@ export default function cardsReducer(state = initialState, action) {
     }
     case types.GET_SLACK_THREAD_SUCCESS: {
       const { cardId, slackReplies } = payload;
-      const { edits } = getCardById(state, cardId);
+      const currCard = getCardById(state, cardId);
       return updateCardById(state, cardId, {
         isGettingSlackThread: false,
         modalOpen: BASE_MODAL_OPEN_STATE,
         slackReplies,
-        edits: { ...edits, slackReplies }
+        edits: { ..._.get(currCard, 'edits'), slackReplies }
       });
     }
     case types.GET_SLACK_THREAD_ERROR: {
@@ -619,6 +619,53 @@ export default function cardsReducer(state = initialState, action) {
     case types.CREATE_INVITE_ERROR: {
       const { cardId, error } = payload;
       return updateCardById(state, cardId, { isCreatingInvite: false, createInviteError: error });
+    }
+
+    case types.APPROVE_EDIT_ACCESS_REQUEST:
+    case types.REJECT_EDIT_ACCESS_REQUEST: {
+      return updateActiveCard(state, {
+        isUpdatingEditRequests: true,
+        editRequestUpdateError: null
+      });
+    }
+    case types.APPROVE_EDIT_ACCESS_ERROR:
+    case types.REJECT_EDIT_ACCESS_ERROR: {
+      const { cardId, error } = payload;
+      return updateCardById(state, cardId, {
+        isUpdatingEditRequests: false,
+        editRequestUpdateError: error
+      });
+    }
+    case types.APPROVE_EDIT_ACCESS_SUCCESS: {
+      const { cardId, requestor } = payload;
+
+      const currCard = getCardById(state, cardId);
+      if (!currCard) {
+        return state;
+      }
+
+      return updateCardById(state, cardId, {
+        isUpdatingEditRequests: false,
+        editAccessRequests: currCard.editAccessRequests.filter(
+          (request) => request.notifier._id !== requestor._id
+        ),
+        editUserPermissions: _.unionBy(currCard.editUserPermissions, [requestor], '_id'),
+        edits: {
+          ...currCard.edits,
+          editUserPermissions: _.unionBy(currCard.edits.editUserPermissions, [requestor], '_id')
+        }
+      });
+    }
+    case types.REJECT_EDIT_ACCESS_SUCCESS: {
+      const { cardId, requestorId } = payload;
+      const currCard = getCardById(state, cardId);
+      const currEditRequests = _.get(currCard, 'editAccessRequests', []);
+      return updateCardById(state, cardId, {
+        isUpdatingEditRequests: false,
+        editAccessRequests: currEditRequests.filter(
+          (request) => request.notifier._id !== requestorId
+        )
+      });
     }
 
     case types.CLOSE_ALL_CARDS: {

@@ -30,8 +30,8 @@ const TaskItem = ({
   ownUserId,
   requestMarkUpToDateFromTasks,
   requestDismissTask,
-  requestApproveEditAccess,
-  requestRejectEditAccess,
+  requestApproveEditAccessFromTasks,
+  requestRejectEditAccessFromTasks,
   openCard
 }) => {
   const getNotifierName = () => {
@@ -171,9 +171,9 @@ const TaskItem = ({
       case TASKS.TYPE.REQUEST_EDIT_ACCESS:
         return {
           primaryOption: 'Grant Access',
-          primaryAction: () => requestApproveEditAccess(id, cardId, notifierId),
+          primaryAction: () => requestApproveEditAccessFromTasks(id, cardId, notifier),
           secondaryOption: 'Deny',
-          secondaryAction: () => requestRejectEditAccess(id, cardId, notifierId)
+          secondaryAction: () => requestRejectEditAccessFromTasks(id, cardId, notifierId)
         };
       default:
         return {};
@@ -335,7 +335,8 @@ TaskItem.propTypes = {
     TASKS.TYPE.NEEDS_VERIFICATION,
     TASKS.TYPE.OUT_OF_DATE,
     TASKS.TYPE.NOT_DOCUMENTED,
-    TASKS.TYPE.NEEDS_APPROVAL
+    TASKS.TYPE.NEEDS_APPROVAL,
+    TASKS.TYPE.REQUEST_EDIT_ACCESS
   ]).isRequired,
   card: PropTypes.shape({
     _id: PropTypes.string.isRequired,
@@ -363,8 +364,8 @@ TaskItem.propTypes = {
   // Redux Actions
   requestMarkUpToDateFromTasks: PropTypes.func.isRequired,
   requestDismissTask: PropTypes.func.isRequired,
-  requestApproveEditAccess: PropTypes.func.isRequired,
-  requestRejectEditAccess: PropTypes.func.isRequired,
+  requestApproveEditAccessFromTasks: PropTypes.func.isRequired,
+  requestRejectEditAccessFromTasks: PropTypes.func.isRequired,
   openCard: PropTypes.func.isRequired
 };
 

@@ -39,24 +39,36 @@ export function handleDismissTaskError(taskId, error) {
   return { type: types.DISMISS_TASK_ERROR, payload: { taskId, error } };
 }
 
-export function requestApproveEditAccess(taskId, cardId, requestorId) {
-  return { type: types.APPROVE_EDIT_ACCESS_REQUEST, payload: { taskId, cardId, requestorId } };
+export function requestApproveEditAccessFromTasks(taskId, cardId, requestor) {
+  return {
+    type: types.APPROVE_EDIT_ACCESS_FROM_TASKS_REQUEST,
+    payload: { taskId, cardId, requestor }
+  };
 }
-export function handleApproveEditAccessSuccess(taskId) {
-  return { type: types.APPROVE_EDIT_ACCESS_SUCCESS, payload: { taskId } };
+export function handleApproveEditAccessFromTasksSuccess(taskId, cardId, requestor) {
+  return {
+    type: types.APPROVE_EDIT_ACCESS_FROM_TASKS_SUCCESS,
+    payload: { taskId, cardId, requestor }
+  };
 }
-export function handleApproveEditAccessError(taskId, error) {
-  return { type: types.APPROVE_EDIT_ACCESS_ERROR, payload: { taskId, error } };
+export function handleApproveEditAccessFromTasksError(taskId, error) {
+  return { type: types.APPROVE_EDIT_ACCESS_FROM_TASKS_ERROR, payload: { taskId, error } };
 }
 
-export function requestRejectEditAccess(taskId, cardId, requestorId) {
-  return { type: types.REJECT_EDIT_ACCESS_REQUEST, payload: { taskId, cardId, requestorId } };
+export function requestRejectEditAccessFromTasks(taskId, cardId, requestorId) {
+  return {
+    type: types.REJECT_EDIT_ACCESS_FROM_TASKS_REQUEST,
+    payload: { taskId, cardId, requestorId }
+  };
 }
-export function handleRejectEditAccessSuccess(taskId) {
-  return { type: types.REJECT_EDIT_ACCESS_SUCCESS, payload: { taskId } };
+export function handleRejectEditAccessFromTasksSuccess(taskId, cardId, requestorId) {
+  return {
+    type: types.REJECT_EDIT_ACCESS_FROM_TASKS_SUCCESS,
+    payload: { taskId, cardId, requestorId }
+  };
 }
-export function handleRejectEditAccessError(taskId, error) {
-  return { type: types.REJECT_EDIT_ACCESS_ERROR, payload: { taskId, error } };
+export function handleRejectEditAccessFromTasksError(taskId, error) {
+  return { type: types.REJECT_EDIT_ACCESS_FROM_TASKS_ERROR, payload: { taskId, error } };
 }
 
 export function removeTask(taskId) {

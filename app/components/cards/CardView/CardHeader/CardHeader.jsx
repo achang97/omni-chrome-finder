@@ -14,10 +14,8 @@ import { IoIosShareAlt } from 'react-icons/io';
 import { Timeago, Tooltip, Separator, PlaceholderImg, Button } from 'components/common';
 
 import { copyCardUrl } from 'utils/card';
-import { isEditor } from 'utils/auth';
 import { copyText } from 'utils/window';
 import { getStyleApplicationFn } from 'utils/style';
-import { UserPropTypes } from 'utils/propTypes';
 import { CARD, SEGMENT } from 'appConstants';
 
 import CardStatus from '../../CardStatus';
@@ -36,8 +34,9 @@ const s = getStyleApplicationFn();
 const CardHeader = ({
   setToastMessage,
   ownUserId,
-  user,
+  isEditor,
   outOfDateReason,
+  editAccessRequests,
   _id,
   answer,
   externalLink,
@@ -124,7 +123,16 @@ const CardHeader = ({
       },
       {
         Icon: MdMoreHoriz,
-        label: 'More',
+        label: (
+          <span>
+            <span>More</span>
+            {!_.isEmpty(editAccessRequests) && (
+              <span className={s('rounded-full bg-red-600 px-xs text-white shadow-md ml-sm')}>
+                {editAccessRequests.length}
+              </span>
+            )}
+          </span>
+        ),
         tooltip: 'Advanced Settings',
         onClick: openCardSideDock,
         isShown: true,
@@ -233,7 +241,7 @@ const CardHeader = ({
             <Separator className={s('bg-purple-gray-10 mx-sm opacity-75')} />
             <CardStatus
               status={status}
-              isActionable={status !== CARD.STATUS.NEEDS_APPROVAL || isEditor(user)}
+              isActionable={status !== CARD.STATUS.NEEDS_APPROVAL || isEditor}
               outOfDateReason={outOfDateReason}
               onDropdownOptionClick={cardStatusOnClick}
               className={s('text-gray-dark')}
@@ -272,14 +280,16 @@ CardHeader.propTypes = {
   setToastMessage: PropTypes.func.isRequired,
 
   // Redux State
-  user: UserPropTypes.isRequired,
+  isEditor: PropTypes.bool.isRequired,
+  ownUserId: PropTypes.string.isRequired,
+
+  _id: PropTypes.string.isRequired,
   outOfDateReason: PropTypes.shape({
     reason: PropTypes.string.isRequired,
     sender: PropTypes.object.isRequired,
     time: PropTypes.string.isRequired
   }),
-  ownUserId: PropTypes.string.isRequired,
-  _id: PropTypes.string.isRequired,
+  editAccessRequests: PropTypes.arrayOf(PropTypes.object),
   answer: PropTypes.string,
   externalLink: PropTypes.string,
   question: PropTypes.string,

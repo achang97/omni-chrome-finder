@@ -2,8 +2,8 @@ import { connect } from 'react-redux';
 import {
   requestMarkUpToDateFromTasks,
   requestDismissTask,
-  requestApproveEditAccess,
-  requestRejectEditAccess
+  requestApproveEditAccessFromTasks,
+  requestRejectEditAccessFromTasks
 } from 'actions/tasks';
 import { openCard } from 'actions/cards';
 import TaskItem from './TaskItem';
@@ -19,8 +19,8 @@ const mapStateToProps = (state) => {
 const mapDispatchToProps = {
   requestMarkUpToDateFromTasks,
   requestDismissTask,
-  requestApproveEditAccess,
-  requestRejectEditAccess,
+  requestApproveEditAccessFromTasks,
+  requestRejectEditAccessFromTasks,
   openCard
 };
 
