@@ -41,6 +41,8 @@ const mapStateToProps = (state) => {
     modalOpen: { [MODAL_TYPE.CREATE]: isOpen }
   } = activeCard;
 
+  const { _id: ownUserId, seenFeatures } = user;
+
   return {
     _id,
     createError,
@@ -49,8 +51,9 @@ const mapStateToProps = (state) => {
     isUpdatingCard,
     edits,
     isOpen,
+    ownUserId,
     isEditor: isEditor(user),
-    seenFeatures: _.omit(user.seenFeatures, '_id'),
+    seenFeatures: _.omit(seenFeatures, '_id'),
     hasValidEdits: hasValidEdits(activeCard)
   };
 };

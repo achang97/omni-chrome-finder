@@ -9,12 +9,46 @@ import { copyCardUrl } from 'utils/card';
 import { NodePropTypes } from 'utils/propTypes';
 
 import { getStyleApplicationFn } from 'utils/style';
-import { replaceHighlights, joinSections } from 'utils/search';
+import { replaceHighlights, getHighlightRegex, joinSections } from 'utils/search';
 import mainStyle from '../styles/suggestion.css';
 
 import SuggestionDropdown from '../SuggestionDropdown';
 
 const s = getStyleApplicationFn(mainStyle);
+
+const HIGHLIGHT = {
+  start: '<HIGHLIGHT>',
+  end: '</HIGHLIGHT>'
+};
+
+const HIGHLIGHT_REGEX = getHighlightRegex(HIGHLIGHT);
+
+const getBestAnalyzer = (highlights, baseKey) => {
+  let maxHighlightLength = 0;
+  let bestMatches = null;
+
+  Object.entries(highlights).forEach(([analyzerKey, matches]) => {
+    if (analyzerKey.startsWith(baseKey)) {
+      const totalHighlightLength = matches.reduce((aggNum, match) => {
+        // Calculate the length of all tokens between highlight tags
+        const highlightMatches = match.matchAll(HIGHLIGHT_REGEX);
+        const highlightMatchGroups = [...highlightMatches].map(
+          (highlightMatch) => highlightMatch[1]
+        );
+        const highlightLength = highlightMatchGroups.join('').length;
+
+        return aggNum + highlightLength;
+      }, 0);
+
+      if (totalHighlightLength > maxHighlightLength) {
+        bestMatches = matches;
+        maxHighlightLength = totalHighlightLength;
+      }
+    }
+  });
+
+  return bestMatches;
+};
 
 const replaceHighlightTags = (matches) => {
   let sections = [];
@@ -23,7 +57,7 @@ const replaceHighlightTags = (matches) => {
     if (i > 0) {
       sections.push(<span>...&nbsp;</span>);
     }
-    const matchSections = replaceHighlights(match, { start: '<HIGHLIGHT>', end: '</HIGHLIGHT>' });
+    const matchSections = replaceHighlights(match, HIGHLIGHT);
     sections = sections.concat(matchSections);
   });
 
@@ -95,8 +129,8 @@ const SuggestionCard = ({
   };
 
   const render = () => {
-    const highlightQuestion = highlight['question.default'] || highlight.question;
-    const highlightAnswer = highlight['answer.default'] || highlight.answer;
+    const highlightQuestion = getBestAnalyzer(highlight, 'question');
+    const highlightAnswer = getBestAnalyzer(highlight, 'answer');
 
     const displayedQuestion = highlightQuestion
       ? replaceHighlightTags(highlightQuestion)

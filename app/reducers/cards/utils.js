@@ -1,6 +1,6 @@
 import _ from 'lodash';
 import { CARD, FINDER, USER } from 'appConstants';
-import { updateArrayOfObjects, updateIndex, removeIndex } from '../array';
+import { updateArrayOfObjects, updateIndex, removeIndex } from 'utils/array';
 
 export const BASE_MODAL_OPEN_STATE = _.mapValues(CARD.MODAL_TYPE, () => false);
 
@@ -29,6 +29,22 @@ export const BASE_CARD_STATE = {
   question: '',
   answerModel: '',
   inviteRole: USER.ROLE.VIEWER
+};
+
+export const INITIAL_STATE = {
+  showCards: false,
+  cards: [],
+  cardsWidth: CARD.DIMENSIONS.DEFAULT_CARDS_WIDTH,
+  cardsHeight: CARD.DIMENSIONS.DEFAULT_CARDS_HEIGHT,
+  activeCardIndex: FINDER.TAB_INDEX,
+  activeCard: FINDER.TAB,
+  cardsExpanded: true,
+  cardsMaximized: false,
+  windowPosition: {
+    x: window.innerWidth / 2 - CARD.DIMENSIONS.DEFAULT_CARDS_WIDTH / 2,
+    y: window.innerHeight / 2 - CARD.DIMENSIONS.DEFAULT_CARDS_HEIGHT / 2
+  },
+  showCloseModal: false
 };
 
 /* Card Helpers */
@@ -103,6 +119,20 @@ export function updateActiveCard(state, newInfo, newEditsInfo = {}) {
 
 export function updateActiveCardEdits(state, newEditsInfo) {
   return updateActiveCard(state, {}, newEditsInfo);
+}
+
+export function addCardEditsArrayElem(state, key, elem) {
+  const { activeCard } = state;
+  return updateActiveCardEdits(state, {
+    [key]: _.unionBy(activeCard.edits[key], [elem], '_id')
+  });
+}
+
+export function removeCardEditsArrayElem(state, key, index) {
+  const { activeCard } = state;
+  return updateActiveCardEdits(state, {
+    [key]: removeIndex(activeCard.edits[key], index)
+  });
 }
 
 export function updateCardById(state, id, newInfo, updateCardsArray = false) {
@@ -204,11 +234,14 @@ export function setActiveCardIndex(state, index) {
 export default {
   BASE_MODAL_OPEN_STATE,
   BASE_CARD_STATE,
+  INITIAL_STATE,
   createCardEdits,
   getIndexById,
   getCardById,
   updateActiveCard,
   updateActiveCardEdits,
+  addCardEditsArrayElem,
+  removeCardEditsArrayElem,
   updateCardById,
   getUpdatedCards,
   removeCardAtIndex,
