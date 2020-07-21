@@ -55,6 +55,15 @@ const CardUsers = ({
     return `${firstname} ${lastname}`;
   };
 
+  const isValidNewOption = (inputValue, selectValue, selectOptions) => {
+    return (
+      inputValue &&
+      !selectOptions.some(({ options }) =>
+        options.some(({ email }) => email === inputValue.trim().toLowerCase())
+      )
+    );
+  };
+
   const renderUser = (user, index) => {
     const { _id, profilePicture, status, isEditable: userIsEditable = true } = user;
     const name = getSelectOptionLabel(user);
@@ -106,9 +115,7 @@ const CardUsers = ({
           className={s('w-full mb-sm')}
           value={selectedUser}
           options={_.differenceBy(userOptions, users, '_id')}
-          onChange={({ __isNew__, ...option }) =>
-            __isNew__ && onCreate ? onCreate(option.value) : onAdd(option)
-          }
+          onChange={onAdd}
           onInputChange={_.debounce(loadOptions, DEBOUNCE.MS_300)}
           onFocus={() => loadOptions('')}
           isSearchable
@@ -119,6 +126,8 @@ const CardUsers = ({
           formatCreateLabel={(inputValue) => `Invite ${inputValue}`}
           getOptionValue={({ _id, value, __isNew__ }) => (__isNew__ ? value : _id)}
           formatOptionLabel={formatSelectOptionLabel}
+          onCreateOption={onCreate}
+          isValidNewOption={isValidNewOption}
           noOptionsMessage={() => (isLoading ? 'Searching users...' : 'No options')}
         />
       )}

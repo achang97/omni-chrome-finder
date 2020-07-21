@@ -78,6 +78,12 @@ class CardTags extends Component {
     return __isNew__ ? label : name;
   };
 
+  isValidNewOption = (inputValue, selectValue, selectOptions) => {
+    return (
+      inputValue && !selectOptions.some(({ name }) => name === inputValue.trim().toLowerCase())
+    );
+  };
+
   handleCreateOption = (name) => {
     const { token, tags, onChange } = this.props;
     axios.post(`${REQUEST.URL.SERVER}/tags`, { name }, createConfig(token)).then(({ data }) => {
@@ -166,8 +172,8 @@ class CardTags extends Component {
             placeholder="Add tags..."
             onBlur={hideSelectOnBlur ? () => this.setState({ showSelect: false }) : null}
             getOptionLabel={this.getSelectOptionLabel}
-            getOptionValue={(option) => option._id}
             onCreateOption={this.handleCreateOption}
+            isValidNewOption={this.isValidNewOption}
             noOptionsMessage={() => (isSearchingTags ? 'Searching tags...' : 'No options')}
           />
         ) : (
