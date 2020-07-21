@@ -1,310 +1,23 @@
 import _ from 'lodash';
 import * as types from 'actions/actionTypes';
-import { removeIndex, updateIndex } from 'utils/array';
-import { convertCardToFrontendFormat, generateCardId } from 'utils/card';
+import { CARD, USER } from 'appConstants';
+import { convertCardToFrontendFormat } from 'utils/card';
 import {
   BASE_MODAL_OPEN_STATE,
   BASE_CARD_STATE,
   createCardEdits,
-  getIndexById,
   getCardById,
   updateActiveCard,
   updateActiveCardEdits,
   updateCardById,
-  getUpdatedCards,
-  removeCardAtIndex,
   removeCardById,
-  setActiveCardIndex,
   updateAttachmentsByKey
-} from 'utils/reducers/cards';
-import { CARD, FINDER, USER } from 'appConstants';
+} from './utils';
 
-const initialState = {
-  showCards: false,
-  cards: [],
-  cardsWidth: CARD.DIMENSIONS.DEFAULT_CARDS_WIDTH,
-  cardsHeight: CARD.DIMENSIONS.DEFAULT_CARDS_HEIGHT,
-  activeCardIndex: FINDER.TAB_INDEX,
-  activeCard: FINDER.TAB,
-  cardsExpanded: true,
-  cardsMaximized: false,
-  windowPosition: {
-    x: window.innerWidth / 2 - CARD.DIMENSIONS.DEFAULT_CARDS_WIDTH / 2,
-    y: window.innerHeight / 2 - CARD.DIMENSIONS.DEFAULT_CARDS_HEIGHT / 2
-  },
-  showCloseModal: false
-};
-
-export default function cardsReducer(state = initialState, action) {
+export default function cardRequestsReducer(state, action) {
   const { type, payload = {} } = action;
 
   switch (type) {
-    case types.UPDATE_CARD_WINDOW_POSITION: {
-      const { position } = payload;
-      return { ...state, windowPosition: position };
-    }
-    case types.ADJUST_CARDS_DIMENSIONS: {
-      const { newWidth, newHeight } = payload;
-      return { ...state, cardsWidth: newWidth, cardsHeight: newHeight };
-    }
-    case types.UPDATE_CARD_TAB_ORDER: {
-      const { source, destination } = payload;
-      const { cards } = state;
-
-      const newCards = Array.from(cards);
-      const [removed] = newCards.splice(source.index, 1);
-      newCards.splice(destination.index, 0, removed);
-
-      return { ...state, cards: newCards, activeCardIndex: destination.index };
-    }
-    case types.TOGGLE_MAXIMIZE_CARDS: {
-      return { ...state, cardsMaximized: !state.cardsMaximized };
-    }
-    case types.TOGGLE_CARDS: {
-      return { ...state, cardsExpanded: !state.cardsExpanded };
-    }
-
-    case types.OPEN_FINDER: {
-      const newState = state.showCards ? setActiveCardIndex(state, FINDER.TAB_INDEX) : state;
-      return { ...newState, showCards: true, cardsExpanded: true };
-    }
-    case types.OPEN_CARD: {
-      const { card, isNewCard, createModalOpen } = payload;
-
-      if (!isNewCard) {
-        const currIndex = getIndexById(state, card._id);
-        if (currIndex !== -1) {
-          return { ...setActiveCardIndex(state, currIndex), cardsExpanded: true };
-        }
-      }
-
-      let cardInfo = { ...BASE_CARD_STATE, ...card };
-
-      if (isNewCard) {
-        cardInfo = createCardEdits({
-          ...cardInfo,
-          _id: generateCardId(),
-          modalOpen: { ...cardInfo.modalOpen, [CARD.MODAL_TYPE.CREATE]: createModalOpen }
-        });
-      } else {
-        // Will have to update this section in the future
-        cardInfo = { ...cardInfo, hasLoaded: false };
-      }
-
-      const newCards = [...getUpdatedCards(state), cardInfo];
-      return {
-        ...state,
-        showCards: true,
-        cards: newCards,
-        activeCard: cardInfo,
-        activeCardIndex: newCards.length - 1,
-        cardsExpanded: true
-      };
-    }
-    case types.SET_ACTIVE_CARD_INDEX: {
-      const { index } = payload;
-      return setActiveCardIndex(state, index);
-    }
-    case types.CLOSE_CARD: {
-      const { index } = payload;
-      return removeCardAtIndex(state, index);
-    }
-
-    case types.OPEN_CARD_CONTAINER_MODAL: {
-      return { ...state, showCloseModal: true, cardsExpanded: true };
-    }
-    case types.CLOSE_CARD_CONTAINER_MODAL: {
-      return { ...state, showCloseModal: false };
-    }
-
-    case types.OPEN_CARD_SIDE_DOCK: {
-      return updateActiveCard(state, { sideDockOpen: true });
-    }
-    case types.CLOSE_CARD_SIDE_DOCK: {
-      return updateActiveCard(state, { sideDockOpen: false });
-    }
-
-    case types.OPEN_CARD_MODAL: {
-      const { modalType } = payload;
-      const { activeCard } = state;
-      return updateActiveCard(state, {
-        modalOpen: { ...activeCard.modalOpen, [modalType]: true }
-      });
-    }
-    case types.CLOSE_CARD_MODAL: {
-      const { modalType } = payload;
-      const { activeCard } = state;
-      const newInfo = {
-        modalOpen: { ...activeCard.modalOpen, [modalType]: false },
-        outOfDateReasonInput: ''
-      };
-      return updateActiveCard(state, newInfo);
-    }
-
-    case types.UPDATE_CARD_QUESTION: {
-      const { question } = payload;
-      return updateActiveCardEdits(state, { question });
-    }
-    case types.UPDATE_CARD_ANSWER: {
-      const { answer } = payload;
-      return updateActiveCardEdits(state, { answerModel: answer });
-    }
-
-    case types.UPDATE_CARD_SELECTED_THREAD: {
-      const { index } = payload;
-      return updateActiveCard(state, { slackThreadIndex: index });
-    }
-    case types.TOGGLE_CARD_SELECTED_MESSAGE: {
-      const { messageIndex } = payload;
-      const { activeCard } = state;
-
-      const { slackReplies } = activeCard.edits;
-      const newSlackReplies = updateIndex(
-        slackReplies,
-        messageIndex,
-        {
-          selected: !slackReplies[messageIndex].selected
-        },
-        true
-      );
-      return updateActiveCardEdits(state, { slackReplies: newSlackReplies });
-    }
-    case types.CANCEL_EDIT_CARD_MESSAGES: {
-      const { activeCard } = state;
-      return updateActiveCardEdits(state, { slackReplies: activeCard.slackReplies });
-    }
-
-    case types.UPDATE_CARD_FINDER_NODE: {
-      const { finderNode } = payload;
-      return updateActiveCardEdits(state, { finderNode });
-    }
-
-    case types.ADD_CARD_OWNER: {
-      const { owner } = payload;
-      const {
-        activeCard: { edits }
-      } = state;
-      return updateActiveCardEdits(state, {
-        owners: _.unionBy(edits.owners, [owner], '_id'),
-        subscribers: _.unionBy(edits.subscribers, [owner], '_id')
-      });
-    }
-    case types.REMOVE_CARD_OWNER: {
-      const { index } = payload;
-      const {
-        activeCard: { edits }
-      } = state;
-      return updateActiveCardEdits(state, { owners: removeIndex(edits.owners, index) });
-    }
-
-    case types.ADD_CARD_SUBSCRIBER: {
-      const { subscriber } = payload;
-      const {
-        activeCard: { edits }
-      } = state;
-      return updateActiveCardEdits(state, {
-        subscribers: _.unionBy(edits.subscribers, [subscriber], '_id')
-      });
-    }
-    case types.REMOVE_CARD_SUBSCRIBER: {
-      const { index } = payload;
-      const {
-        activeCard: { edits }
-      } = state;
-      return updateActiveCardEdits(state, { subscribers: removeIndex(edits.subscribers, index) });
-    }
-
-    case types.ADD_CARD_APPROVER: {
-      const { approver } = payload;
-      const { activeCard } = state;
-      return updateActiveCardEdits(state, {
-        approvers: _.unionBy(activeCard.edits.approvers, [approver], '_id')
-      });
-    }
-    case types.REMOVE_CARD_APPROVER: {
-      const { index } = payload;
-      const {
-        activeCard: { edits }
-      } = state;
-      return updateActiveCardEdits(state, { approvers: removeIndex(edits.approvers, index) });
-    }
-
-    case types.ADD_CARD_EDIT_VIEWER: {
-      const { viewer } = payload;
-      const { activeCard } = state;
-      return updateActiveCardEdits(state, {
-        editUserPermissions: _.unionBy(activeCard.edits.editUserPermissions, [viewer], '_id')
-      });
-    }
-    case types.REMOVE_CARD_EDIT_VIEWER: {
-      const { index } = payload;
-      const { activeCard } = state;
-      return updateActiveCardEdits(state, {
-        editUserPermissions: removeIndex(activeCard.edits.editUserPermissions, index)
-      });
-    }
-
-    case types.UPDATE_CARD_TAGS: {
-      const { tags } = payload;
-      return updateActiveCardEdits(state, { tags: tags || [] });
-    }
-    case types.REMOVE_CARD_TAG: {
-      const { index } = payload;
-      const {
-        activeCard: { edits }
-      } = state;
-      return updateActiveCardEdits(state, { tags: removeIndex(edits.tags, index) });
-    }
-
-    case types.UPDATE_CARD_VERIFICATION_INTERVAL: {
-      const { verificationInterval } = payload;
-      return updateActiveCardEdits(state, { verificationInterval });
-    }
-    case types.UPDATE_CARD_PERMISSIONS: {
-      const { permissions } = payload;
-      return updateActiveCardEdits(state, { permissions });
-    }
-    case types.UPDATE_CARD_PERMISSION_GROUPS: {
-      const { permissionGroups } = payload;
-      return updateActiveCardEdits(state, { permissionGroups: permissionGroups || [] });
-    }
-
-    case types.UPDATE_INVITE_EMAIL: {
-      const { email } = payload;
-      return updateActiveCard(state, { inviteEmail: email });
-    }
-    case types.UPDATE_INVITE_ROLE: {
-      const { role } = payload;
-      return updateActiveCard(state, { inviteRole: role });
-    }
-    case types.UPDATE_INVITE_TYPE: {
-      const { inviteType } = payload;
-      return updateActiveCard(state, { inviteType });
-    }
-
-    case types.EDIT_CARD: {
-      const { activeCard } = state;
-      return { ...state, activeCard: createCardEdits(activeCard) };
-    }
-    case types.CANCEL_EDIT_CARD: {
-      return updateActiveCard(state, { isEditing: false, edits: {} });
-    }
-
-    case types.UPDATE_OUT_OF_DATE_REASON: {
-      const { reason } = payload;
-      return updateActiveCard(state, { outOfDateReasonInput: reason });
-    }
-    case types.UPDATE_EDIT_ACCESS_REASON: {
-      const { reason } = payload;
-      return updateActiveCard(state, { editAccessReasonInput: reason });
-    }
-
-    case types.UPDATE_CARD: {
-      const { card } = payload;
-      return updateCardById(state, card._id, convertCardToFrontendFormat(card));
-    }
-
-    /* API REQUESTS */
     case types.ADD_CARD_ATTACHMENT_REQUEST: {
       const { cardId, key, file } = payload;
 
@@ -334,19 +47,15 @@ export default function cardsReducer(state = initialState, action) {
 
     case types.REMOVE_CARD_ATTACHMENT: {
       const { key } = payload;
-      const {
-        activeCard: { edits }
-      } = state;
+      const { activeCard } = state;
       return updateActiveCardEdits(state, {
-        attachments: edits.attachments.filter((attachment) => attachment.key !== key)
+        attachments: activeCard.edits.attachments.filter((attachment) => attachment.key !== key)
       });
     }
     case types.UPDATE_CARD_ATTACHMENT_NAME: {
       const { key, name } = payload;
-      const {
-        activeCard: { _id }
-      } = state;
-      return updateAttachmentsByKey(state, _id, key, { name });
+      const { activeCard } = state;
+      return updateAttachmentsByKey(state, activeCard._id, key, { name });
     }
 
     case types.GET_CARD_REQUEST: {
@@ -447,10 +156,7 @@ export default function cardsReducer(state = initialState, action) {
     case types.GET_EDIT_ACCESS_SUCCESS: {
       const { cardId } = payload;
       const newInfo = {
-        modalOpen: {
-          ...BASE_MODAL_OPEN_STATE,
-          [CARD.MODAL_TYPE.EDIT_ACCESS_REQUEST]: false
-        },
+        modalOpen: { ...BASE_MODAL_OPEN_STATE, [CARD.MODAL_TYPE.EDIT_ACCESS_REQUEST]: false },
         editAccessReasonInput: '',
         requestedEditAccess: true,
         isRequestingEditAccess: false
@@ -668,11 +374,7 @@ export default function cardsReducer(state = initialState, action) {
       });
     }
 
-    case types.CLOSE_ALL_CARDS: {
-      return initialState;
-    }
-
     default:
-      return state;
+      return null;
   }
 }

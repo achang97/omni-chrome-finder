@@ -9,11 +9,14 @@ function replaceFrontSlash(text) {
   return text.replace(new RegExp('/', 'g'), '\\/');
 }
 
-export function replaceHighlights(text, highlightTags) {
+export function getHighlightRegex(highlightTags) {
   const { start: startTag, end: endTag } = highlightTags;
   const pattern = `${replaceFrontSlash(startTag)}(.+?)${replaceFrontSlash(endTag)}`;
-  const highlightRegex = new RegExp(pattern, 'g');
+  return new RegExp(pattern, 'g');
+}
 
+export function replaceHighlights(text, highlightTags) {
+  const highlightRegex = getHighlightRegex(highlightTags);
   const matchSections = text.split(highlightRegex);
 
   let start = 0;
@@ -55,4 +58,4 @@ export function createHighlightedElement(text, highlightTags) {
   return joinSections(replaceHighlights(text, highlightTags));
 }
 
-export default { replaceHighlights, joinSections, createHighlightedElement };
+export default { getHighlightRegex, replaceHighlights, joinSections, createHighlightedElement };

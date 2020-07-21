@@ -48,6 +48,7 @@ const CardCreateModal = ({
   isUpdatingCard,
   edits,
   isOpen,
+  ownUserId,
   isEditor,
   seenFeatures,
   hasValidEdits,
@@ -220,6 +221,7 @@ const CardCreateModal = ({
               onAdd={addCardApprover}
               onRemoveClick={({ index }) => removeCardApprover(index)}
               disabledUserRoles={[ROLE.VIEWER]}
+              disabledUserIds={[ownUserId]}
               showTooltips
               showNames={false}
               size="sm"
@@ -404,6 +406,7 @@ CardCreateModal.propTypes = {
   updateError: PropTypes.bool,
   isCreatingCard: PropTypes.bool,
   isUpdatingCard: PropTypes.bool,
+  ownUserId: PropTypes.string.isRequired,
   isEditor: PropTypes.bool.isRequired,
   isOpen: PropTypes.bool.isRequired,
   edits: PropTypes.shape({
