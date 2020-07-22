@@ -71,7 +71,7 @@ const SearchBar = ({
       trackEvent(SEGMENT.EVENT.SEARCH_IN_SEARCHBAR, { Query: query, ...BASE_EVENT_PROPERTIES });
       history.push(ROUTES.ASK);
     }
-  }, ANIMATE.DEBOUNCE.MS_300);
+  }, ANIMATE.DEBOUNCE.MS_600);
 
   useEffect(() => {
     debouncedOpenExtension(searchText);

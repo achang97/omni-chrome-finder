@@ -1,7 +1,8 @@
 // Debounce / Animations
 export const DEBOUNCE = {
   HZ_60: 166,
-  MS_300: 300
+  MS_300: 300,
+  MS_600: 600
 };
 
 export const TIMEOUT = {

@@ -88,7 +88,7 @@ const FinderView = ({
 
   const [debouncedLoadFinderContent] = useDebouncedCallback(() => {
     loadFinderContent();
-  }, ANIMATE.DEBOUNCE.MS_300);
+  }, ANIMATE.DEBOUNCE.MS_600);
 
   const prevPath = usePrevious(activePath);
   useEffect(() => {

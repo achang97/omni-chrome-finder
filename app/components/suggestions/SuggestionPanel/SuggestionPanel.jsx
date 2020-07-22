@@ -67,7 +67,7 @@ const SuggestionPanel = ({
 
   const [debouncedRequestSearch] = useDebouncedCallback(() => {
     searchCards(true);
-  }, ANIMATE.DEBOUNCE.MS_300);
+  }, ANIMATE.DEBOUNCE.MS_600);
 
   useEffect(() => {
     if (query === '') {
