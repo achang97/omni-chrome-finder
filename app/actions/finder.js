@@ -28,6 +28,10 @@ export function updateFinderSearchText(finderId, text) {
   return { type: types.UPDATE_FINDER_SEARCH_TEXT, payload: { finderId, text } };
 }
 
+export function updateFinderSearchType(finderId, type) {
+  return { type: types.UPDATE_FINDER_SEARCH_TYPE, payload: { finderId, type } };
+}
+
 export function openFinderModal(finderId, modalType) {
   return { type: types.OPEN_FINDER_MODAL, payload: { finderId, modalType } };
 }

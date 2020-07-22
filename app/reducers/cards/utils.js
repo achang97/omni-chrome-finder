@@ -94,7 +94,7 @@ export function getIndexById(state, id) {
 
 export function getCardById(state, id) {
   const { activeCard, cards } = state;
-  if (id === activeCard._id) {
+  if (id === _.get(activeCard, '_id')) {
     return activeCard;
   }
 
@@ -136,24 +136,45 @@ export function removeCardEditsArrayElem(state, key, index) {
 }
 
 export function updateCardById(state, id, newInfo, updateCardsArray = false) {
-  if (!state.activeCard) {
+  const { activeCard, cards } = state;
+
+  const isActiveCard = id === _.get(activeCard, '_id');
+  const currCard = isActiveCard ? activeCard : getCardById(state, id);
+
+  if (!currCard) {
     return state;
   }
 
-  if (id === state.activeCard._id && !updateCardsArray) {
-    return updateActiveCard(state, newInfo);
+  let update = {};
+  switch (typeof newInfo) {
+    case 'object': {
+      update = newInfo;
+      break;
+    }
+    case 'function': {
+      update = newInfo(currCard);
+      break;
+    }
+    default:
+      break;
   }
-  if (id === state.activeCard._id && updateCardsArray) {
-    const newActiveCard = { ...state.activeCard, ...newInfo };
+
+  if (isActiveCard) {
+    if (!updateCardsArray) {
+      return updateActiveCard(state, update);
+    }
+
+    const newActiveCard = { ...activeCard, ...update };
     return {
       ...state,
       activeCard: newActiveCard,
-      cards: updateArrayOfObjects(state.cards, { _id: id }, newActiveCard, false)
+      cards: updateArrayOfObjects(cards, { _id: id }, newActiveCard, false)
     };
   }
+
   return {
     ...state,
-    cards: updateArrayOfObjects(state.cards, { _id: id }, newInfo)
+    cards: updateArrayOfObjects(cards, { _id: id }, update)
   };
 }
 

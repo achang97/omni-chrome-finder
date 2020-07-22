@@ -34,6 +34,7 @@ const FinderBody = ({
   isModal,
   nodes,
   activePath,
+  activeNode,
   isGettingNode,
   isMovingNodes,
   isSearchingSegment,
@@ -48,6 +49,7 @@ const FinderBody = ({
   updateFinderFolderName,
   updateFinderFolderPermissions,
   updateFinderFolderPermissionGroups,
+  updateFinderSearchType,
   trackEvent
 }) => {
   const isCardNode = (finderType) => {
@@ -173,56 +175,92 @@ const FinderBody = ({
     return activePath.type === FINDER.PATH_TYPE.SEGMENT;
   };
 
+  const renderSearchTypeToggle = () => {
+    // TODO: May need to refactor this out if it gets more complicated
+    const {
+      state: { searchType }
+    } = activePath;
+
+    if (!searchType || isSegment()) {
+      return null;
+    }
+
+    const SEARCH_TYPE_OPTIONS = [
+      {
+        type: FINDER.SEARCH_TYPE.ALL_FOLDERS,
+        label: 'All Folders'
+      },
+      {
+        type: FINDER.SEARCH_TYPE.CURRENT_FOLDER,
+        label: `"${activeNode.name}"`
+      }
+    ];
+
+    return (
+      <div className={s('flex items-center bg-gray-xlight px-lg py-xs text-xs')}>
+        <div className={s('mr-reg')}> Search: </div>
+        {SEARCH_TYPE_OPTIONS.map(({ label, type }) => (
+          <div
+            key={type}
+            onClick={() => updateFinderSearchType(finderId, type)}
+            className={s(`
+              mx-xs cursor-pointer rounded-lg py-xs px-sm 
+              ${type === searchType ? 'bg-white shadow-md' : ''}
+            `)}
+          >
+            {label}
+          </div>
+        ))}
+      </div>
+    );
+  };
+
   const render = () => {
     if (isGettingNode || isMovingNodes || (isSearchingSegment && segmentPage === 0)) {
       return <Loader className={s('w-full')} />;
     }
 
-    if (nodes.length === 0) {
-      return (
-        <div className={s('flex items-center justify-center w-full h-full text-gray-dark')}>
-          Nothing to display
-        </div>
-      );
-    }
-
     return (
       <div className={s('relative w-full flex flex-col')}>
-        {activePath.state.searchText && (
-          <div className={s('italic bg-gray-xlight px-lg py-xs text-xs')}>
-            Results for &quot;{activePath.state.searchText}&quot;
+        {renderSearchTypeToggle()}
+        {nodes.length === 0 ? (
+          <div className={s('flex items-center justify-center w-full h-full text-gray-dark')}>
+            Nothing to display
           </div>
-        )}
-        <BottomScrollListener onBottom={onBottom} bottomOffset={INFINITE_SCROLL_OFFSET}>
-          {(scrollRef) => (
-            <div ref={scrollRef} className={s('flex-1 overflow-auto flex flex-col')}>
-              <Droppable droppableId={activePath._id}>
-                {({ innerRef, placeholder, droppableProps }) => (
-                  <div
-                    ref={innerRef}
-                    className={s('flex flex-wrap items-start content-start')}
-                    {...droppableProps}
-                  >
-                    {nodes.map(renderChildNode)}
-                    <span className={s('hidden')}>{placeholder}</span>
-                  </div>
-                )}
-              </Droppable>
-              {!isSearchingSegment && !hasReachedSegmentLimit && isSegment() && (
-                <div
-                  onClick={onBottom}
-                  className={s(
-                    'text-purple-reg mx-auto text-sm underline-border cursor-pointer my-sm'
+        ) : (
+          <>
+            <BottomScrollListener onBottom={onBottom} bottomOffset={INFINITE_SCROLL_OFFSET}>
+              {(scrollRef) => (
+                <div ref={scrollRef} className={s('flex-1 overflow-auto flex flex-col')}>
+                  <Droppable droppableId={activePath._id}>
+                    {({ innerRef, placeholder, droppableProps }) => (
+                      <div
+                        ref={innerRef}
+                        className={s('flex flex-wrap items-start content-start')}
+                        {...droppableProps}
+                      >
+                        {nodes.map(renderChildNode)}
+                        <span className={s('hidden')}>{placeholder}</span>
+                      </div>
+                    )}
+                  </Droppable>
+                  {!isSearchingSegment && !hasReachedSegmentLimit && isSegment() && (
+                    <div
+                      onClick={onBottom}
+                      className={s(
+                        'text-purple-reg mx-auto text-sm underline-border cursor-pointer my-sm'
+                      )}
+                    >
+                      Show More
+                    </div>
                   )}
-                >
-                  Show More
+                  {isSearchingSegment && <Loader className={s('my-reg')} size="sm" />}
                 </div>
               )}
-              {isSearchingSegment && <Loader className={s('my-reg')} size="sm" />}
-            </div>
-          )}
-        </BottomScrollListener>
-        {isEditor && renderActionIcons()}
+            </BottomScrollListener>
+            {isEditor && renderActionIcons()}
+          </>
+        )}
       </div>
     );
   };
@@ -236,6 +274,7 @@ FinderBody.propTypes = {
   onBottom: PropTypes.func,
 
   // Redux State
+  activeNode: NodePropTypes.isRequired,
   activePath: PropTypes.shape({
     _id: PropTypes.string.isRequired,
     type: PropTypes.oneOf(Object.values(FINDER.PATH_TYPE)).isRequired,
@@ -254,7 +293,9 @@ FinderBody.propTypes = {
   openCard: PropTypes.func.isRequired,
   updateFinderFolderName: PropTypes.func.isRequired,
   updateFinderFolderPermissions: PropTypes.func.isRequired,
-  updateFinderFolderPermissionGroups: PropTypes.func.isRequired
+  updateFinderFolderPermissionGroups: PropTypes.func.isRequired,
+  updateFinderSearchType: PropTypes.func.isRequired,
+  trackEvent: PropTypes.func.isRequired
 };
 
 export default FinderBody;

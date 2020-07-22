@@ -5,6 +5,7 @@ import {
   goBackFinder,
   pushFinderNode,
   updateFinderSearchText,
+  updateFinderSearchType,
   openFinderModal,
   startMoveFinderNodes
 } from 'actions/finder';
@@ -39,6 +40,7 @@ const mapDispatchToProps = {
   goBackFinder,
   pushFinderNode,
   updateFinderSearchText,
+  updateFinderSearchType,
   openFinderModal,
   startMoveFinderNodes,
   openCard,

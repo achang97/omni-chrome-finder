@@ -5,7 +5,8 @@ import {
   openFinderModal,
   updateFinderFolderName,
   updateFinderFolderPermissions,
-  updateFinderFolderPermissionGroups
+  updateFinderFolderPermissionGroups,
+  updateFinderSearchType
 } from 'actions/finder';
 import { openCard } from 'actions/cards';
 import trackEvent from 'actions/analytics';
@@ -17,7 +18,14 @@ const mapStateToProps = (state, ownProps) => {
   const { finderId } = ownProps;
   const {
     finder: {
-      [finderId]: { history: finderHistory, isGettingNode, isMovingNodes, selectedNodes, moveNodes }
+      [finderId]: {
+        history: finderHistory,
+        activeNode,
+        isGettingNode,
+        isMovingNodes,
+        selectedNodes,
+        moveNodes
+      }
     },
     search: {
       cards: {
@@ -38,6 +46,7 @@ const mapStateToProps = (state, ownProps) => {
     isSearchingSegment,
     segmentPage,
     hasReachedSegmentLimit,
+    activeNode,
     activePath,
     selectedNodes,
     moveNodes,
@@ -52,6 +61,7 @@ const mapDispatchToProps = {
   updateFinderFolderName,
   updateFinderFolderPermissions,
   updateFinderFolderPermissionGroups,
+  updateFinderSearchType,
   trackEvent
 };
 

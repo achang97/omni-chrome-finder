@@ -97,7 +97,7 @@ const FinderView = ({
       if (prevPathId !== activePath._id) {
         // Changed "page" in the history
         loadFinderContent();
-      } else if (prevState.searchText !== activePath.state.searchText) {
+      } else if (prevState !== activePath.state) {
         // Some other change, including search text, filters, etc.
         debouncedLoadFinderContent();
       }
