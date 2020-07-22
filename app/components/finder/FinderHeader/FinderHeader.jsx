@@ -207,7 +207,7 @@ const FinderHeader = ({
             value={activePath.state.searchText}
             onChange={(e) => updateFinderSearchText(finderId, e.target.value)}
           />
-          {activePath.state.searchType && (
+          {(isSegment ? activePath.state.searchText : activePath.state.searchType) && (
             <IoMdCloseCircle
               onClick={() => {
                 updateFinderSearchText(finderId, '');

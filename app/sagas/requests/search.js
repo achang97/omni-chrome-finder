@@ -113,7 +113,7 @@ function* searchCards({ source, query, clearCards }) {
       if (source === SEARCH.SOURCE.AUTOFIND) {
         cards = yield call(doPost, '/suggest', body, { cancelToken });
       } else {
-        cards = yield call(doGet, '/cards/query', { source, ...body }, { cancelToken });
+        ({ cards } = yield call(doGet, '/cards/query', { source, ...body }, { cancelToken }));
       }
     }
 

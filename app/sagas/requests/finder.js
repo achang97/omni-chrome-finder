@@ -121,12 +121,10 @@ function* getNode({ finderId }) {
       node = yield call(doGet, `/finder/node/${nodeId}`);
     }
 
-    console.log(searchText);
-
     let nodeChildren = [];
     switch (searchType) {
       case SEARCH_TYPE.ALL_FOLDERS: {
-        const [nodes, cards] = yield all([
+        const [nodes, { cards }] = yield all([
           call(doGet, '/finder/node/query', { q: searchText }),
           call(doGet, '/cards/query', { source: AUDIT.SOURCE.FINDER, q: searchText })
         ]);
