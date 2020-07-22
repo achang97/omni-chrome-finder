@@ -2,11 +2,11 @@ import _ from 'lodash';
 import * as types from 'actions/actionTypes';
 import { updateIndex } from 'utils/array';
 import { convertPermissionsToFrontendFormat } from 'utils/card';
-import { MAIN_STATE_ID, ROOT, PATH_TYPE, MODAL_TYPE } from 'appConstants/finder';
+import { MAIN_STATE_ID, ROOT, PATH_TYPE, MODAL_TYPE, SEARCH_TYPE } from 'appConstants/finder';
 import { PERMISSION_OPTIONS } from 'appConstants/card';
 
 const createBasePath = (nodeId) => {
-  return { _id: nodeId, type: PATH_TYPE.NODE, state: { searchText: '' } };
+  return { _id: nodeId, type: PATH_TYPE.NODE, state: { searchText: '', searchType: null } };
 };
 
 const BASE_ACTIVE_NODE = {
@@ -46,6 +46,21 @@ export default function finderReducer(state = initialState, action) {
   const updateStateById = (finderId, getNewState) => {
     const currIdState = state[finderId] || BASE_FINDER_STATE;
     return { ...state, [finderId]: { ...currIdState, ...getNewState(currIdState) } };
+  };
+
+  const updatePathStateById = (finderId, getNewPathState) => {
+    return updateStateById(finderId, (currState) => {
+      const { history } = currState;
+      const activePath = _.last(history);
+
+      const newPath = {
+        ...activePath,
+        state: { ...activePath.state, ...getNewPathState(activePath.state) }
+      };
+      const newHistory = updateIndex(history, history.length - 1, newPath);
+
+      return { history: newHistory, selectedNodes: [] };
+    });
   };
 
   const pushToHistory = (history, pathType, pathId, pathState = {}) => {
@@ -122,15 +137,14 @@ export default function finderReducer(state = initialState, action) {
 
     case types.UPDATE_FINDER_SEARCH_TEXT: {
       const { finderId, text } = payload;
-      return updateStateById(finderId, (currState) => {
-        const { history } = currState;
-        const activePath = _.last(history);
-
-        const newPath = { ...activePath, state: { ...activePath.state, searchText: text } };
-        const newHistory = updateIndex(history, history.length - 1, newPath);
-
-        return { history: newHistory, selectedNodes: [] };
-      });
+      return updatePathStateById(finderId, ({ searchType }) => ({
+        searchText: text,
+        searchType: searchType || SEARCH_TYPE.ALL_FOLDERS
+      }));
+    }
+    case types.UPDATE_FINDER_SEARCH_TYPE: {
+      const { finderId, type: searchType } = payload;
+      return updatePathStateById(finderId, () => ({ searchType }));
     }
 
     case types.UPDATE_FINDER_FOLDER_NAME: {

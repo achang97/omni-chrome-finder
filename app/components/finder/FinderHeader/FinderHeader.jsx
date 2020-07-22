@@ -32,6 +32,7 @@ const FinderHeader = ({
   goBackFinder,
   pushFinderNode,
   updateFinderSearchText,
+  updateFinderSearchType,
   openFinderModal,
   startMoveFinderNodes,
   openCard,
@@ -206,9 +207,12 @@ const FinderHeader = ({
             value={activePath.state.searchText}
             onChange={(e) => updateFinderSearchText(finderId, e.target.value)}
           />
-          {activePath.state.searchText && (
+          {activePath.state.searchType && (
             <IoMdCloseCircle
-              onClick={() => updateFinderSearchText(finderId, '')}
+              onClick={() => {
+                updateFinderSearchText(finderId, '');
+                updateFinderSearchType(finderId, null);
+              }}
               className={s('flex-shrink-0 m-xs cursor-pointer text-purple-gray-50')}
             />
           )}
@@ -250,6 +254,7 @@ FinderHeader.propTypes = {
   goBackFinder: PropTypes.func.isRequired,
   pushFinderNode: PropTypes.func.isRequired,
   updateFinderSearchText: PropTypes.func.isRequired,
+  updateFinderSearchType: PropTypes.func.isRequired,
   openFinderModal: PropTypes.func.isRequired,
   startMoveFinderNodes: PropTypes.func.isRequired,
   openCard: PropTypes.func.isRequired,

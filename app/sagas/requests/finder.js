@@ -23,7 +23,8 @@ import {
   handleMoveFinderNodesSuccess,
   handleMoveFinderNodesError
 } from 'actions/finder';
-import { ROOT, FINDER_TYPE, PATH_TYPE } from 'appConstants/finder';
+import { ROOT, FINDER_TYPE, PATH_TYPE, SEARCH_TYPE } from 'appConstants/finder';
+import { AUDIT } from 'appConstants/user';
 
 export default function* watchFinderRequests() {
   while (true) {
@@ -108,9 +109,9 @@ function* getGroupedSelectedNodeIds(finderId) {
 function* getNode({ finderId }) {
   try {
     const { _id: nodeId } = yield call(getParentNode, finderId);
-    const finderHistory = yield select((state) => state.finder[finderId].history);
+    const { history: finderHistory } = yield select((state) => state.finder[finderId]);
     const {
-      state: { searchText }
+      state: { searchText, searchType }
     } = _.last(finderHistory);
 
     let node;
@@ -120,8 +121,30 @@ function* getNode({ finderId }) {
       node = yield call(doGet, `/finder/node/${nodeId}`);
     }
 
-    const query = { q: searchText, orderBy: !searchText ? 'name' : null };
-    const nodeChildren = yield call(doGet, `/finder/node/${nodeId}/content`, query);
+    console.log(searchText);
+
+    let nodeChildren = [];
+    switch (searchType) {
+      case SEARCH_TYPE.ALL_FOLDERS: {
+        const [nodes, cards] = yield all([
+          call(doGet, '/finder/node/query', { q: searchText }),
+          call(doGet, '/cards/query', { source: AUDIT.SOURCE.FINDER, q: searchText })
+        ]);
+
+        nodeChildren = _.concat(
+          nodes.map((currNode) => ({ ...currNode, finderType: FINDER_TYPE.NODE })),
+          cards.map((card) => ({ ...card, finderType: FINDER_TYPE.CARD }))
+        );
+        break;
+      }
+      case SEARCH_TYPE.CURRENT_FOLDER:
+      default: {
+        const query = { q: searchText, orderBy: !searchText ? 'name' : null };
+        nodeChildren = yield call(doGet, `/finder/node/${nodeId}/content`, query);
+        break;
+      }
+    }
+
     yield put(handleGetFinderNodeSuccess(finderId, { ...node, children: nodeChildren }));
   } catch (error) {
     yield put(handleGetFinderNodeError(finderId, getErrorMessage(error)));

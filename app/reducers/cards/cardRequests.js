@@ -6,7 +6,6 @@ import {
   BASE_MODAL_OPEN_STATE,
   BASE_CARD_STATE,
   createCardEdits,
-  getCardById,
   updateActiveCard,
   updateActiveCardEdits,
   updateCardById,
@@ -20,13 +19,7 @@ export default function cardRequestsReducer(state, action) {
   switch (type) {
     case types.ADD_CARD_ATTACHMENT_REQUEST: {
       const { cardId, key, file } = payload;
-
-      const currCard = getCardById(state, cardId);
-      if (!currCard) {
-        return state;
-      }
-
-      return updateCardById(state, cardId, {
+      return updateCardById(state, cardId, (currCard) => ({
         edits: {
           ...currCard.edits,
           attachments: [
@@ -34,7 +27,7 @@ export default function cardRequestsReducer(state, action) {
             { key, name: file.name, mimetype: file.type, isLoading: true, error: null }
           ]
         }
-      });
+      }));
     }
     case types.ADD_CARD_ATTACHMENT_SUCCESS: {
       const { cardId, key, attachment } = payload;
@@ -63,18 +56,18 @@ export default function cardRequestsReducer(state, action) {
     }
     case types.GET_CARD_SUCCESS: {
       const { cardId, card } = payload;
+      const updateFn = (currCard) => {
+        const isEditing = currCard.isEditing || card.status === CARD.STATUS.NOT_DOCUMENTED;
 
-      const currCard = getCardById(state, cardId);
-      const isEditing =
-        (currCard && currCard.isEditing) || card.status === CARD.STATUS.NOT_DOCUMENTED;
+        let newCardInfo = convertCardToFrontendFormat(card);
+        if (isEditing) {
+          newCardInfo = createCardEdits(newCardInfo);
+        }
 
-      let newCardInfo = convertCardToFrontendFormat(card);
-      if (isEditing) {
-        newCardInfo = createCardEdits(newCardInfo);
-      }
+        return { ...BASE_CARD_STATE, isGettingCard: false, hasLoaded: true, ...newCardInfo };
+      };
 
-      const newInfo = { ...BASE_CARD_STATE, isGettingCard: false, hasLoaded: true, ...newCardInfo };
-      return updateCardById(state, cardId, newInfo, true);
+      return updateCardById(state, cardId, updateFn, true);
     }
     case types.GET_CARD_ERROR: {
       const { cardId, error } = payload;
@@ -105,49 +98,55 @@ export default function cardRequestsReducer(state, action) {
       const { shouldCloseCard, card, isApprover } = payload;
       const isOutdated = card.status !== CARD.STATUS.UP_TO_DATE;
 
-      const currCard = getCardById(state, card._id);
-      if (!currCard) {
-        return state;
-      }
+      const updateFn = (currCard) => {
+        // Remove card
+        if (shouldCloseCard && !isOutdated) {
+          return removeCardById(state, card._id);
+        }
 
-      // Remove card
-      if (shouldCloseCard && !isOutdated) {
-        return removeCardById(state, card._id);
-      }
+        const newInfo = {
+          ...BASE_CARD_STATE,
+          isUpdatingCard: false,
+          ...convertCardToFrontendFormat(card)
+        };
 
-      const newInfo = {
-        ...BASE_CARD_STATE,
-        isUpdatingCard: false,
-        ...convertCardToFrontendFormat(card)
+        // Open corresponding modals
+        const wasUndocumented = currCard.status === CARD.STATUS.NOT_DOCUMENTED;
+        if (isOutdated && !wasUndocumented && isApprover) {
+          newInfo.modalOpen = {
+            ...BASE_CARD_STATE,
+            [CARD.MODAL_TYPE.CONFIRM_UP_TO_DATE_SAVE]: true
+          };
+        } else if (shouldCloseCard) {
+          newInfo.modalOpen = {
+            ...BASE_CARD_STATE,
+            [CARD.MODAL_TYPE.CONFIRM_CLOSE]: false
+          };
+        }
+
+        return newInfo;
       };
 
-      // Open corresponding modals
-      const wasUndocumented = currCard.status === CARD.STATUS.NOT_DOCUMENTED;
-      if (isOutdated && !wasUndocumented && isApprover) {
-        newInfo.modalOpen = { ...BASE_CARD_STATE, [CARD.MODAL_TYPE.CONFIRM_UP_TO_DATE_SAVE]: true };
-      } else if (shouldCloseCard) {
-        newInfo.modalOpen = { ...BASE_CARD_STATE, [CARD.MODAL_TYPE.CONFIRM_CLOSE]: false };
-      }
-
-      return updateCardById(state, card._id, newInfo, true);
+      return updateCardById(state, card._id, updateFn, true);
     }
     case types.UPDATE_CARD_ERROR: {
       const { cardId, error, shouldCloseCard } = payload;
-      const newInfo = { isUpdatingCard: false, updateError: error };
+      return updateCardById(state, cardId, (currCard) => {
+        const update = { isUpdatingCard: false, updateError: error };
 
-      const currCard = getCardById(state, cardId);
-      if (currCard && currCard.status !== CARD.STATUS.NOT_DOCUMENTED) {
-        const modalType = shouldCloseCard
-          ? CARD.MODAL_TYPE.ERROR_UPDATE_CLOSE
-          : CARD.MODAL_TYPE.ERROR_UPDATE;
+        if (currCard.status !== CARD.STATUS.NOT_DOCUMENTED) {
+          const modalType = shouldCloseCard
+            ? CARD.MODAL_TYPE.ERROR_UPDATE_CLOSE
+            : CARD.MODAL_TYPE.ERROR_UPDATE;
 
-        newInfo.modalOpen = {
-          ...BASE_MODAL_OPEN_STATE,
-          [modalType]: true
-        };
-      }
+          update.modalOpen = {
+            ...BASE_MODAL_OPEN_STATE,
+            [modalType]: true
+          };
+        }
 
-      return updateCardById(state, cardId, newInfo);
+        return update;
+      });
     }
 
     case types.GET_EDIT_ACCESS_REQUEST: {
@@ -278,13 +277,12 @@ export default function cardRequestsReducer(state, action) {
     }
     case types.GET_SLACK_THREAD_SUCCESS: {
       const { cardId, slackReplies } = payload;
-      const currCard = getCardById(state, cardId);
-      return updateCardById(state, cardId, {
+      return updateCardById(state, cardId, (currCard) => ({
         isGettingSlackThread: false,
         modalOpen: BASE_MODAL_OPEN_STATE,
         slackReplies,
-        edits: { ..._.get(currCard, 'edits'), slackReplies }
-      });
+        edits: { ...currCard.edits, slackReplies }
+      }));
     }
     case types.GET_SLACK_THREAD_ERROR: {
       const { cardId, error } = payload;
@@ -299,27 +297,29 @@ export default function cardRequestsReducer(state, action) {
     }
     case types.CREATE_INVITE_SUCCESS: {
       const { cardId, invitedUser } = payload;
-      const { inviteType, modalOpen, edits } = getCardById(state, cardId);
+      return updateCardById(state, cardId, (currCard) => {
+        const { modalOpen, edits, inviteType } = currCard;
 
-      const newEdits = { ...edits };
-      switch (inviteType) {
-        case CARD.INVITE_TYPE.ADD_CARD_OWNER: {
-          newEdits.owners = _.unionBy(edits.owners, [invitedUser], '_id');
+        const newEdits = { ...edits };
+        switch (inviteType) {
+          case CARD.INVITE_TYPE.ADD_CARD_OWNER: {
+            newEdits.owners = _.unionBy(edits.owners, [invitedUser], '_id');
+          }
+          // Falls through, as owners are always subscribers
+          case CARD.INVITE_TYPE.ADD_CARD_SUBSCRIBER: {
+            newEdits.subscribers = _.unionBy(edits.subscribers, [invitedUser], '_id');
+            break;
+          }
+          default:
+            break;
         }
-        // Falls through, as owners are always subscribers
-        case CARD.INVITE_TYPE.ADD_CARD_SUBSCRIBER: {
-          newEdits.subscribers = _.unionBy(edits.subscribers, [invitedUser], '_id');
-          break;
-        }
-        default:
-          break;
-      }
 
-      return updateCardById(state, cardId, {
-        isCreatingInvite: false,
-        modalOpen: { ...modalOpen, [CARD.MODAL_TYPE.INVITE_USER]: false },
-        inviteRole: USER.ROLE.VIEWER,
-        edits: newEdits
+        return {
+          isCreatingInvite: false,
+          modalOpen: { ...modalOpen, [CARD.MODAL_TYPE.INVITE_USER]: false },
+          inviteRole: USER.ROLE.VIEWER,
+          edits: newEdits
+        };
       });
     }
     case types.CREATE_INVITE_ERROR: {
@@ -344,13 +344,7 @@ export default function cardRequestsReducer(state, action) {
     }
     case types.APPROVE_EDIT_ACCESS_SUCCESS: {
       const { cardId, requestor } = payload;
-
-      const currCard = getCardById(state, cardId);
-      if (!currCard) {
-        return state;
-      }
-
-      return updateCardById(state, cardId, {
+      return updateCardById(state, cardId, (currCard) => ({
         isUpdatingEditRequests: false,
         editAccessRequests: currCard.editAccessRequests.filter(
           (request) => request.notifier._id !== requestor._id
@@ -360,18 +354,16 @@ export default function cardRequestsReducer(state, action) {
           ...currCard.edits,
           editUserPermissions: _.unionBy(currCard.edits.editUserPermissions, [requestor], '_id')
         }
-      });
+      }));
     }
     case types.REJECT_EDIT_ACCESS_SUCCESS: {
       const { cardId, requestorId } = payload;
-      const currCard = getCardById(state, cardId);
-      const currEditRequests = _.get(currCard, 'editAccessRequests', []);
-      return updateCardById(state, cardId, {
+      return updateCardById(state, cardId, (currCard) => ({
         isUpdatingEditRequests: false,
-        editAccessRequests: currEditRequests.filter(
+        editAccessRequests: currCard.editAccessRequests.filter(
           (request) => request.notifier._id !== requestorId
         )
-      });
+      }));
     }
 
     default:

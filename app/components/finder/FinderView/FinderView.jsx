@@ -88,7 +88,7 @@ const FinderView = ({
 
   const [debouncedLoadFinderContent] = useDebouncedCallback(() => {
     loadFinderContent();
-  }, ANIMATE.DEBOUNCE.MS_300);
+  }, ANIMATE.DEBOUNCE.MS_600);
 
   const prevPath = usePrevious(activePath);
   useEffect(() => {
@@ -97,7 +97,7 @@ const FinderView = ({
       if (prevPathId !== activePath._id) {
         // Changed "page" in the history
         loadFinderContent();
-      } else if (prevState.searchText !== activePath.state.searchText) {
+      } else if (prevState !== activePath.state) {
         // Some other change, including search text, filters, etc.
         debouncedLoadFinderContent();
       }
