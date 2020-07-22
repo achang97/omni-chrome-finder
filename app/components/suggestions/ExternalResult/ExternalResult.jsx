@@ -59,7 +59,11 @@ const ExternalResult = ({
 
   const onResultClick = () => {
     trackEvent(SEGMENT.EVENT.OPEN_EXTERNAL_DOC, { Type: type, Title: title }, true);
-    requestLogAudit(USER.AUDIT.TYPE.OPEN_EXTERNAL_DOC, { type, title });
+    requestLogAudit(USER.AUDIT.TYPE.OPEN_EXTERNAL_DOC, {
+      type,
+      title,
+      source: USER.AUDIT.SOURCE.DOCK
+    });
     window.open(url, '_blank');
   };
 

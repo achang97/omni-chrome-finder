@@ -94,16 +94,18 @@ class ChromeMessageListener extends Component {
 
       if (this.isValidUser()) {
         const searchParams = url.substring(url.indexOf('?') + 1);
-        const { taskId, cardId, edit } = queryString.parse(searchParams);
+        const { taskId, cardId, edit, source, baseLogId } = queryString.parse(searchParams);
         if (taskId) {
           this.openTask(taskId);
         }
 
         if (cardId) {
-          openCard({ _id: cardId, isEditing: edit === 'true' });
+          openCard({ _id: cardId, source, baseLogId, isEditing: edit === 'true' });
         }
       }
 
+      // Clear out params
+      window.history.replaceState(null, null, window.location.pathname);
       return true;
     }
 

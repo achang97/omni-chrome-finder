@@ -8,6 +8,7 @@ export const BASE_CARD_STATE = {
   isEditing: false,
   sideDockOpen: false,
   modalOpen: BASE_MODAL_OPEN_STATE,
+  source: USER.AUDIT.SOURCE.DOCK,
   edits: {},
   hasLoaded: true,
   outOfDateReasonInput: '',
