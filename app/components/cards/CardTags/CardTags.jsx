@@ -78,6 +78,10 @@ class CardTags extends Component {
     return __isNew__ ? label : name;
   };
 
+  getSelectOptionValue = ({ _id, value, __isNew__ }) => {
+    return __isNew__ ? value : _id;
+  };
+
   isValidNewOption = (inputValue, selectValue, selectOptions) => {
     return (
       inputValue && !selectOptions.some(({ name }) => name === inputValue.trim().toLowerCase())
@@ -172,6 +176,7 @@ class CardTags extends Component {
             placeholder="Add tags..."
             onBlur={hideSelectOnBlur ? () => this.setState({ showSelect: false }) : null}
             getOptionLabel={this.getSelectOptionLabel}
+            getOptionValue={this.getSelectOptionValue}
             onCreateOption={this.handleCreateOption}
             isValidNewOption={this.isValidNewOption}
             noOptionsMessage={() => (isSearchingTags ? 'Searching tags...' : 'No options')}
