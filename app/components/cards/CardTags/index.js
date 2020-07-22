@@ -8,8 +8,6 @@ const mapStateToProps = (state) => {
     auth: { token }
   } = state;
 
-  console.log(tags);
-
   return { tagOptions: tags, isSearchingTags, token };
 };
 
