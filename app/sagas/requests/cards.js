@@ -14,7 +14,7 @@ import { convertAttachmentsToBackendFormat } from 'utils/file';
 import { isEditor } from 'utils/auth';
 import { TYPE as NOTIFICATION_TYPE } from 'appConstants/tasks';
 import { STATUS, PERMISSION_OPTION, VERIFICATION_INTERVAL_OPTION } from 'appConstants/card';
-import { AUDIT } from 'appConstants/user';
+import AUDIT from 'appConstants/audit';
 import { ROOT } from 'appConstants/finder';
 
 import {

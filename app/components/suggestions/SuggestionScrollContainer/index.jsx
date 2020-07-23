@@ -6,7 +6,7 @@ import { colors } from 'styles/colors';
 import { isSlackCard } from 'utils/card';
 import { getStyleApplicationFn } from 'utils/style';
 import { NodePropTypes } from 'utils/propTypes';
-import { FINDER, SEGMENT } from 'appConstants';
+import { FINDER, SEGMENT, AUDIT } from 'appConstants';
 
 import SuggestionCard from '../SuggestionCard';
 import SuggestionNode from '../SuggestionNode';
@@ -21,6 +21,8 @@ const SEARCH_INFINITE_SCROLL_OFFSET = 150;
 const SuggestionScrollContainer = ({
   cards,
   nodes,
+  searchLogId,
+  source,
   getCardProps,
   isSearching,
   hasReachedLimit,
@@ -70,6 +72,8 @@ const SuggestionScrollContainer = ({
         answer={answer}
         createdFromSlack={isSlackCard(elem)}
         externalLinkAnswer={externalLinkAnswer}
+        searchLogId={searchLogId}
+        source={source}
         status={status}
         highlight={highlight}
         className={s(`suggestion-scroll-container-card ${cardClassName}`)}
@@ -155,6 +159,8 @@ SuggestionScrollContainer.propTypes = {
     })
   ).isRequired,
   nodes: PropTypes.arrayOf(NodePropTypes),
+  searchLogId: PropTypes.string,
+  source: PropTypes.oneOf(Object.values(AUDIT.SOURCE)),
   getCardProps: PropTypes.func,
   isSearching: PropTypes.bool,
   onBottom: PropTypes.func.isRequired,

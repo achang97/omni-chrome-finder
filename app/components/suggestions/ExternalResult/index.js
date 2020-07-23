@@ -6,9 +6,7 @@ import {
   updateExternalTitle,
   updateExternalResultId
 } from 'actions/externalVerification';
-import { requestLogAudit } from 'actions/auditLog';
 import { isEditor } from 'utils/auth';
-import trackEvent from 'actions/analytics';
 import ExternalResult from './ExternalResult';
 
 const mapStateToProps = (state) => {
@@ -24,9 +22,7 @@ const mapDispatchToProps = {
   updateExternalLinkAnswer,
   toggleExternalCreateModal,
   updateExternalTitle,
-  updateExternalResultId,
-  requestLogAudit,
-  trackEvent
+  updateExternalResultId
 };
 
 export default connect(mapStateToProps, mapDispatchToProps)(ExternalResult);

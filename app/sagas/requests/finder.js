@@ -24,7 +24,7 @@ import {
   handleMoveFinderNodesError
 } from 'actions/finder';
 import { ROOT, FINDER_TYPE, PATH_TYPE, SEARCH_TYPE } from 'appConstants/finder';
-import { AUDIT } from 'appConstants/user';
+import AUDIT from 'appConstants/audit';
 
 export default function* watchFinderRequests() {
   while (true) {
@@ -122,9 +122,11 @@ function* getNode({ finderId }) {
     }
 
     let nodeChildren = [];
+    let cardSearchLogId;
+
     switch (searchType) {
       case SEARCH_TYPE.ALL_FOLDERS: {
-        const [nodes, { cards }] = yield all([
+        const [nodes, { cards, auditLogId }] = yield all([
           call(doGet, '/finder/node/query', { q: searchText }),
           call(doGet, '/cards/query', { source: AUDIT.SOURCE.FINDER, q: searchText })
         ]);
@@ -133,17 +135,26 @@ function* getNode({ finderId }) {
           nodes.map((currNode) => ({ ...currNode, finderType: FINDER_TYPE.NODE })),
           cards.map((card) => ({ ...card, finderType: FINDER_TYPE.CARD }))
         );
+        cardSearchLogId = auditLogId;
         break;
       }
       case SEARCH_TYPE.CURRENT_FOLDER:
       default: {
         const query = { q: searchText, orderBy: !searchText ? 'name' : null };
-        nodeChildren = yield call(doGet, `/finder/node/${nodeId}/content`, query);
+        const { content, cardAuditLogId } = yield call(
+          doGet,
+          `/finder/node/${nodeId}/content`,
+          query
+        );
+
+        nodeChildren = content;
+        cardSearchLogId = cardAuditLogId;
         break;
       }
     }
 
-    yield put(handleGetFinderNodeSuccess(finderId, { ...node, children: nodeChildren }));
+    const fullNode = { ...node, children: nodeChildren, cardSearchLogId };
+    yield put(handleGetFinderNodeSuccess(finderId, fullNode));
   } catch (error) {
     yield put(handleGetFinderNodeError(finderId, getErrorMessage(error)));
   }

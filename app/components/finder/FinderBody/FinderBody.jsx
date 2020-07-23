@@ -8,7 +8,7 @@ import { Droppable } from 'react-beautiful-dnd';
 import { Tooltip, Loader } from 'components/common';
 import { CardStatusIndicator } from 'components/cards';
 
-import { SEGMENT, FINDER } from 'appConstants';
+import { SEGMENT, FINDER, AUDIT } from 'appConstants';
 import { getArrayIds } from 'utils/array';
 import { getStyleApplicationFn } from 'utils/style';
 import { NodePropTypes } from 'utils/propTypes';
@@ -68,7 +68,8 @@ const FinderBody = ({
     const { finderType, _id, name } = node;
 
     if (isCardNode(finderType)) {
-      openCard({ _id });
+      const { cardSearchLogId } = activeNode;
+      openCard({ _id, baseLogId: cardSearchLogId, source: AUDIT.SOURCE.FINDER });
       trackEvent(SEGMENT.EVENT.OPEN_CARD_FROM_FINDER, getCardProperties(node));
     } else if (!isMovingNode(_id)) {
       pushFinderNode(finderId, _id);

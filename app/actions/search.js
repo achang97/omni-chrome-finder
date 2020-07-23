@@ -4,8 +4,8 @@ export function requestSearchCards(source, query, clearCards = false) {
   return { type: types.SEARCH_CARDS_REQUEST, payload: { source, query, clearCards } };
 }
 
-export function handleSearchCardsSuccess(source, cards, clearCards) {
-  return { type: types.SEARCH_CARDS_SUCCESS, payload: { source, cards, clearCards } };
+export function handleSearchCardsSuccess(source, cards, searchLogId, clearCards) {
+  return { type: types.SEARCH_CARDS_SUCCESS, payload: { source, cards, searchLogId, clearCards } };
 }
 
 export function handleSearchCardsError(source, error) {

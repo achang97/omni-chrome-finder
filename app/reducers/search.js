@@ -58,12 +58,13 @@ export default function searchReducer(state = initialState, action) {
       }));
     }
     case types.SEARCH_CARDS_SUCCESS: {
-      const { source, cards, clearCards } = payload;
+      const { source, cards, searchLogId, clearCards } = payload;
       return updateCardStateBySource(source, (cardState) => ({
         isSearchingCards: false,
         cards: clearCards ? cards : _.unionBy(cardState.cards, cards, '_id'),
         page: clearCards ? 1 : cardState.page + 1,
-        hasReachedLimit: cards.length === 0 || cards.length < SEARCH.PAGE_SIZE
+        hasReachedLimit: cards.length === 0 || cards.length < SEARCH.PAGE_SIZE,
+        searchLogId
       }));
     }
     case types.SEARCH_CARDS_ERROR: {

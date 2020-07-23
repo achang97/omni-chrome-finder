@@ -9,6 +9,7 @@ import {
 import { openCard } from 'actions/cards';
 import { requestUpdateUser } from 'actions/profile';
 import trackEvent from 'actions/analytics';
+import { requestLogAudit } from 'actions/auditLog';
 import { SEARCH } from 'appConstants';
 import SuggestionPanel from './SuggestionPanel';
 
@@ -45,7 +46,8 @@ const mapDispatchToProps = {
   requestSearchIntegrations,
   openCard,
   requestUpdateUser,
-  trackEvent
+  trackEvent,
+  requestLogAudit
 };
 
 export default connect(mapStateToProps, mapDispatchToProps)(withRouter(SuggestionPanel));

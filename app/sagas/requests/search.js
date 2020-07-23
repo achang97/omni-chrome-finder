@@ -100,7 +100,9 @@ function* searchCards({ source, query, clearCards }) {
 
   try {
     const page = yield select((state) => state.search.cards[source].page);
+
     let cards = [];
+    let auditLogId;
 
     if (!query.ids || query.ids.length !== 0) {
       const body = {
@@ -110,14 +112,17 @@ function* searchCards({ source, query, clearCards }) {
         orderBy: !query.q ? 'question' : null
       };
 
+      let result;
       if (source === SEARCH.SOURCE.AUTOFIND) {
-        cards = yield call(doPost, '/suggest', body, { cancelToken });
+        result = yield call(doPost, '/suggest', body, { cancelToken });
       } else {
-        ({ cards } = yield call(doGet, '/cards/query', { source, ...body }, { cancelToken }));
+        result = yield call(doGet, '/cards/query', { source, ...body }, { cancelToken });
       }
+
+      ({ cards, auditLogId } = result);
     }
 
-    yield put(handleSearchCardsSuccess(source, cards, clearCards));
+    yield put(handleSearchCardsSuccess(source, cards, auditLogId, clearCards));
   } catch (error) {
     if (!isCancel(error)) {
       yield put(handleSearchCardsError(source, getErrorMessage(error)));
@@ -139,7 +144,7 @@ function* searchNodes({ query }) {
 }
 
 function* searchInvidividualIntegration(integration, query, cancelToken) {
-  const queryParams = { q: query, sources: integration };
+  const queryParams = { q: query, integrations: integration };
   const results = yield call(doGet, '/search/integrations', queryParams, { cancelToken });
   if (results.length !== 0) {
     yield put(handleSearchIndividualIntegrationSuccess(integration, results[0].items));

@@ -49,6 +49,7 @@ const mapStateToProps = (state, ownProps) => {
 
   return {
     activePath,
+    hasLoaded: !!_.get(activeNode, '_id'),
     selectedNodes,
     nodes,
     hasReachedSegmentLimit,

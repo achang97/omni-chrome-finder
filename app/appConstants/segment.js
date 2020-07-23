@@ -18,7 +18,6 @@ export const EVENT = {
   OPEN_FOLDER_FROM_SEARCH: 'Open Folder from Search',
   OPEN_CARD_FROM_SEARCH: 'Open Card from Search',
   CLICK_CREATE_CARD_FROM_SEARCH: 'Click Create Card from Search',
-  OPEN_EXTERNAL_DOC: 'Open External Document',
 
   // External Verification
   CLICK_VERIFY_EXTERNAL_KNOWLEDGE: 'Click Verify External Knowledge',

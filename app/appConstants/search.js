@@ -1,6 +1,6 @@
 import _ from 'lodash';
 import { INTEGRATIONS as ALL_INTEGRATIONS } from './general';
-import { AUDIT } from './user';
+import AUDIT from './audit';
 
 export const SOURCE = {
   ..._.pickBy(AUDIT.SOURCE, (value) => [AUDIT.SOURCE.DOCK, AUDIT.SOURCE.SEGMENT].includes(value)),

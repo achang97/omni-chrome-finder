@@ -9,7 +9,7 @@ import Switch from 'react-switch';
 import { Button, Triangle, Separator, Loader } from 'components/common';
 
 import { colors } from 'styles/colors';
-import { SEARCH, ANIMATE, SEGMENT, ROUTES } from 'appConstants';
+import { SEARCH, ANIMATE, SEGMENT, ROUTES, AUDIT } from 'appConstants';
 
 import { getStyleApplicationFn } from 'utils/style';
 import { isLoggedIn } from 'utils/auth';
@@ -28,6 +28,7 @@ const SuggestionPanel = ({
   shouldSearchNodes,
   shouldSearchIntegrations,
   cards,
+  searchLogId,
   isSearchingCards,
   hasReachedLimit,
   nodes,
@@ -44,6 +45,7 @@ const SuggestionPanel = ({
   openCard,
   requestUpdateUser,
   trackEvent,
+  requestLogAudit,
   history
 }) => {
   const [isVisible, setIsVisible] = useState(true);
@@ -106,7 +108,12 @@ const SuggestionPanel = ({
           />
         </div>
         {SEARCH.INTEGRATIONS.map(({ type }) => (
-          <ExternalResultSection key={type} integrationType={type} items={integrations[type]} />
+          <ExternalResultSection
+            key={type}
+            integrationType={type}
+            items={integrations[type]}
+            searchLogId={searchLogId}
+          />
         ))}
       </div>
     );
@@ -114,6 +121,7 @@ const SuggestionPanel = ({
 
   const clickCreateCard = () => {
     trackEvent(SEGMENT.EVENT.CLICK_CREATE_CARD_FROM_SEARCH, { Question: query });
+    requestLogAudit(AUDIT.TYPE.CLICK, { baseLogId: searchLogId, type: AUDIT.CLICK.CREATE_CARD });
     openCard({ question: query }, true);
   };
 
@@ -193,7 +201,10 @@ const SuggestionPanel = ({
             onClick={() => clickCreateCard()}
           >
             <MdAddCircle className={s('text-purple-gray-50 mr-xs flex-shrink-0')} />
-            <span className={s('text-sm font-bold')}>Create a card for &ldquo;{query}&rdquo;</span>
+            <span className={s('text-sm font-bold')}>
+              {' '}
+              Create a card for &ldquo;{query}&rdquo;{' '}
+            </span>
           </div>
         )}
         <AnimateHeight
@@ -260,6 +271,7 @@ const SuggestionPanel = ({
             )}
             cards={cards}
             nodes={shouldSearchNodes ? nodes : []}
+            searchLogId={searchLogId}
             isSearching={isLoading}
             triangleColor={colors.purple.light}
             onBottom={() => searchCards(false)}
@@ -301,6 +313,7 @@ SuggestionPanel.propTypes = {
 
   // Redux State
   cards: PropTypes.arrayOf(PropTypes.object).isRequired,
+  searchLogId: PropTypes.string,
   isSearchingCards: PropTypes.bool,
   hasReachedLimit: PropTypes.bool.isRequired,
   nodes: PropTypes.arrayOf(NodePropTypes).isRequired,
@@ -318,7 +331,8 @@ SuggestionPanel.propTypes = {
   requestSearchIntegrations: PropTypes.func.isRequired,
   requestUpdateUser: PropTypes.func.isRequired,
   openCard: PropTypes.func.isRequired,
-  trackEvent: PropTypes.func.isRequired
+  trackEvent: PropTypes.func.isRequired,
+  requestLogAudit: PropTypes.func.isRequired
 };
 
 SuggestionPanel.defaultProps = {

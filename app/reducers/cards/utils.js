@@ -1,5 +1,5 @@
 import _ from 'lodash';
-import { CARD, FINDER, USER } from 'appConstants';
+import { CARD, FINDER, USER, AUDIT } from 'appConstants';
 import { updateArrayOfObjects, updateIndex, removeIndex } from 'utils/array';
 
 export const BASE_MODAL_OPEN_STATE = _.mapValues(CARD.MODAL_TYPE, () => false);
@@ -8,7 +8,7 @@ export const BASE_CARD_STATE = {
   isEditing: false,
   sideDockOpen: false,
   modalOpen: BASE_MODAL_OPEN_STATE,
-  source: USER.AUDIT.SOURCE.DOCK,
+  source: AUDIT.SOURCE.DOCK,
   edits: {},
   hasLoaded: true,
   outOfDateReasonInput: '',

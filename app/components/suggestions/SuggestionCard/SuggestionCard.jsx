@@ -4,7 +4,7 @@ import PropTypes from 'prop-types';
 import { CardStatusIndicator, CardLocation } from 'components/cards';
 import { Message } from 'components/common';
 
-import { CARD, INTEGRATIONS, INTEGRATIONS_MAP, SEGMENT } from 'appConstants';
+import { CARD, INTEGRATIONS, INTEGRATIONS_MAP, SEGMENT, AUDIT } from 'appConstants';
 import { copyCardUrl } from 'utils/card';
 import { NodePropTypes } from 'utils/propTypes';
 
@@ -71,6 +71,8 @@ const SuggestionCard = ({
   answer,
   createdFromSlack,
   externalLinkAnswer,
+  searchLogId,
+  source,
   highlight,
   showAnswer,
   status,
@@ -125,7 +127,7 @@ const SuggestionCard = ({
       trackEvent(event, eventProperties);
     }
 
-    openCard({ _id: id });
+    openCard({ _id: id, baseLogId: searchLogId, source });
   };
 
   const render = () => {
@@ -197,6 +199,8 @@ SuggestionCard.propTypes = {
     link: PropTypes.string.isRequired,
     type: PropTypes.string.isRequired
   }),
+  searchLogId: PropTypes.string,
+  source: PropTypes.oneOf(Object.values(AUDIT.SOURCE)),
   highlight: PropTypes.shape({
     question: PropTypes.arrayOf(PropTypes.string),
     answer: PropTypes.arrayOf(PropTypes.string)
