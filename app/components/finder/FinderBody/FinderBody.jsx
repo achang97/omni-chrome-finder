@@ -40,6 +40,7 @@ const FinderBody = ({
   isSearchingSegment,
   segmentPage,
   hasReachedSegmentLimit,
+  segmentSearchLogId,
   selectedNodes,
   moveNodes,
   isEditor,
@@ -64,11 +65,16 @@ const FinderBody = ({
     return getArrayIds(moveNodes).includes(nodeId);
   };
 
+  const isSegment = () => {
+    return activePath.type === FINDER.PATH_TYPE.SEGMENT;
+  };
+
   const openNode = (node) => {
     const { finderType, _id, name } = node;
 
-    const { auditLogId } = activeNode;
+    const auditLogId = isSegment() ? segmentSearchLogId : activeNode.auditLogId;
     const loadArgs = { baseLogId: auditLogId, source: AUDIT.SOURCE.FINDER };
+
     if (isCardNode(finderType)) {
       openCard({ _id, ...loadArgs });
       trackEvent(SEGMENT.EVENT.OPEN_CARD_FROM_FINDER, getCardProperties(node));
@@ -171,10 +177,6 @@ const FinderBody = ({
         ))}
       </div>
     );
-  };
-
-  const isSegment = () => {
-    return activePath.type === FINDER.PATH_TYPE.SEGMENT;
   };
 
   const renderSearchTypeToggle = () => {
@@ -287,6 +289,7 @@ FinderBody.propTypes = {
   isSearchingSegment: PropTypes.bool,
   segmentPage: PropTypes.number.isRequired,
   hasReachedSegmentLimit: PropTypes.bool.isRequired,
+  segmentSearchLogId: PropTypes.bool,
   selectedNodes: PropTypes.arrayOf(NodePropTypes).isRequired,
 
   // Redux Actions

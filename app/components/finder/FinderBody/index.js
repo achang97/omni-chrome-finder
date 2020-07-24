@@ -32,7 +32,8 @@ const mapStateToProps = (state, ownProps) => {
         [SEARCH.SOURCE.SEGMENT]: {
           isSearchingCards: isSearchingSegment,
           page: segmentPage,
-          hasReachedLimit: hasReachedSegmentLimit
+          hasReachedLimit: hasReachedSegmentLimit,
+          searchLogId: segmentSearchLogId
         }
       }
     },
@@ -46,6 +47,7 @@ const mapStateToProps = (state, ownProps) => {
     isSearchingSegment,
     segmentPage,
     hasReachedSegmentLimit,
+    segmentSearchLogId,
     activeNode,
     activePath,
     selectedNodes,
