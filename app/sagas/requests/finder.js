@@ -24,6 +24,7 @@ import {
   handleMoveFinderNodesError
 } from 'actions/finder';
 import { ROOT, FINDER_TYPE, PATH_TYPE, SEARCH_TYPE } from 'appConstants/finder';
+import AUDIT from 'appConstants/audit';
 
 export default function* watchFinderRequests() {
   while (true) {
@@ -127,7 +128,8 @@ function* getNode({ finderId }) {
       case SEARCH_TYPE.ALL_FOLDERS: {
         const { results, auditLogId } = yield call(doGet, '/search/all', {
           types: ['card', 'finder'].join(','),
-          q: searchText
+          q: searchText,
+          source: AUDIT.SOURCE.FINDER
         });
         const [{ items: cards }, { items: nodes }] = results;
 
@@ -140,7 +142,11 @@ function* getNode({ finderId }) {
       }
       case SEARCH_TYPE.CURRENT_FOLDER:
       default: {
-        const query = { q: searchText, orderBy: !searchText ? 'name' : null };
+        const query = {
+          q: searchText,
+          source: AUDIT.SOURCE.FINDER,
+          orderBy: !searchText ? 'name' : null
+        };
         const { content, auditLogId } = yield call(doGet, `/finder/node/${nodeId}/content`, query);
 
         nodeChildren = content;
