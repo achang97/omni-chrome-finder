@@ -28,8 +28,8 @@ export function requestSearchNodes(query) {
   return { type: types.SEARCH_NODES_REQUEST, payload: { query } };
 }
 
-export function handleSearchNodesSuccess(nodes) {
-  return { type: types.SEARCH_NODES_SUCCESS, payload: { nodes } };
+export function handleSearchNodesSuccess(nodes, searchLogId) {
+  return { type: types.SEARCH_NODES_SUCCESS, payload: { nodes, searchLogId } };
 }
 
 export function handleSearchNodesError(error) {

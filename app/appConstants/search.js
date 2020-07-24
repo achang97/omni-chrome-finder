@@ -2,10 +2,9 @@ import _ from 'lodash';
 import { INTEGRATIONS as ALL_INTEGRATIONS } from './general';
 import AUDIT from './audit';
 
-export const SOURCE = {
-  ..._.pickBy(AUDIT.SOURCE, (value) => [AUDIT.SOURCE.DOCK, AUDIT.SOURCE.SEGMENT].includes(value)),
-  AUTOFIND: 'autofind'
-};
+export const SOURCE = _.pickBy(AUDIT.SOURCE, (value) =>
+  [AUDIT.SOURCE.DOCK, AUDIT.SOURCE.AUTOFIND, AUDIT.SOURCE.SEGMENT].includes(value)
+);
 
 export const INTEGRATIONS = [
   ALL_INTEGRATIONS.CONFLUENCE,

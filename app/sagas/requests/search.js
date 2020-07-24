@@ -91,7 +91,7 @@ function cancelRequest(cancelType) {
 }
 
 function* searchCards({ source, query, clearCards }) {
-  const cancelToken = cancelRequest(CANCEL_TYPE.CARDS);
+  const cancelToken = cancelRequest(`${CANCEL_TYPE.CARDS}-${source}`);
 
   if (!query) {
     // eslint-disable-next-line no-param-reassign
@@ -134,7 +134,7 @@ function* searchNodes({ query }) {
   const cancelToken = cancelRequest(CANCEL_TYPE.NODES);
 
   try {
-    const nodes = yield call(doGet, '/finder/node/query', { q: query }, { cancelToken });
+    const { nodes } = yield call(doGet, '/finder/node/query', { q: query }, { cancelToken });
     yield put(handleSearchNodesSuccess(nodes));
   } catch (error) {
     if (!isCancel(error)) {

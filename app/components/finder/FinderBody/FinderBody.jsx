@@ -67,12 +67,13 @@ const FinderBody = ({
   const openNode = (node) => {
     const { finderType, _id, name } = node;
 
+    const { cardSearchLogId } = activeNode;
+    const loadArgs = { baseLogId: cardSearchLogId, source: AUDIT.SOURCE.FINDER };
     if (isCardNode(finderType)) {
-      const { cardSearchLogId } = activeNode;
-      openCard({ _id, baseLogId: cardSearchLogId, source: AUDIT.SOURCE.FINDER });
+      openCard({ _id, ...loadArgs });
       trackEvent(SEGMENT.EVENT.OPEN_CARD_FROM_FINDER, getCardProperties(node));
     } else if (!isMovingNode(_id)) {
-      pushFinderNode(finderId, _id);
+      pushFinderNode(finderId, _id, loadArgs);
       trackEvent(SEGMENT.EVENT.CLICK_FOLDER, { 'Folder Name': name });
     }
   };

@@ -16,8 +16,8 @@ export function goBackFinder(finderId) {
   return { type: types.GO_BACK_FINDER, payload: { finderId } };
 }
 
-export function pushFinderNode(finderId, nodeId) {
-  return { type: types.PUSH_FINDER_NODE, payload: { finderId, nodeId } };
+export function pushFinderNode(finderId, nodeId, loadArgs) {
+  return { type: types.PUSH_FINDER_NODE, payload: { finderId, nodeId, loadArgs } };
 }
 
 export function pushFinderSegment(finderId, segmentId, segmentName) {

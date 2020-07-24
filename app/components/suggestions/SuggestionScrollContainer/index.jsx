@@ -55,6 +55,8 @@ const SuggestionScrollContainer = ({
           className={s('suggestion-scroll-container-card')}
           path={path}
           event={SEGMENT.EVENT.OPEN_FOLDER_FROM_SEARCH}
+          searchLogId={searchLogId}
+          source={source}
         />
       );
     }
@@ -104,6 +106,8 @@ const SuggestionScrollContainer = ({
           questionDescription={description}
           answer={answer}
           externalLinkAnswer={externalLinkAnswer}
+          searchLogId={searchLogId}
+          source={source}
         />
         <Triangle
           size={10}

@@ -108,7 +108,7 @@ function* getGroupedSelectedNodeIds(finderId) {
 
 function* getNode({ finderId }) {
   try {
-    const { _id: nodeId } = yield call(getParentNode, finderId);
+    const { _id: nodeId, source, baseLogId } = yield call(getParentNode, finderId);
     const { history: finderHistory } = yield select((state) => state.finder[finderId]);
     const {
       state: { searchText, searchType }
@@ -118,7 +118,7 @@ function* getNode({ finderId }) {
     if (nodeId === ROOT.ID) {
       node = { _id: ROOT.ID, name: ROOT.NAME };
     } else {
-      node = yield call(doGet, `/finder/node/${nodeId}`);
+      node = yield call(doGet, `/finder/node/${nodeId}`, { source, baseLogId });
     }
 
     let nodeChildren = [];
@@ -126,7 +126,7 @@ function* getNode({ finderId }) {
 
     switch (searchType) {
       case SEARCH_TYPE.ALL_FOLDERS: {
-        const [nodes, { cards, auditLogId }] = yield all([
+        const [{ nodes }, { cards, auditLogId }] = yield all([
           call(doGet, '/finder/node/query', { q: searchText }),
           call(doGet, '/cards/query', { source: AUDIT.SOURCE.FINDER, q: searchText })
         ]);

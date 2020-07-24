@@ -27,7 +27,6 @@ const FinderView = ({
   isPrimaryDisabled,
   isLoading,
   activePath,
-  hasLoaded,
   nodes,
   selectedNodes,
   hasReachedSegmentLimit,
@@ -93,8 +92,7 @@ const FinderView = ({
 
   const prevPath = usePrevious(activePath);
   useEffect(() => {
-    const shouldReload = !hasLoaded || (prevPath && prevPath !== activePath);
-    if (activePath && shouldReload) {
+    if (activePath) {
       const { _id: prevPathId, state: prevState = {} } = prevPath || {};
       if (prevPathId !== activePath._id) {
         // Changed "page" in the history
@@ -104,7 +102,7 @@ const FinderView = ({
         debouncedLoadFinderContent();
       }
     }
-  }, [prevPath, activePath, hasLoaded, loadFinderContent, debouncedLoadFinderContent]);
+  }, [prevPath, activePath, loadFinderContent, debouncedLoadFinderContent]);
 
   const unselectAll = useCallback(() => {
     updateSelectedFinderNodes(finderId, []);
@@ -232,7 +230,6 @@ FinderView.propTypes = {
     type: PropTypes.oneOf(Object.values(FINDER.PATH_TYPE)).isRequired,
     state: PropTypes.object
   }),
-  hasLoaded: PropTypes.bool.isRequired,
   selectedNodes: PropTypes.arrayOf(NodePropTypes).isRequired,
   ownUserId: PropTypes.string.isRequired,
   bookmarkIds: PropTypes.arrayOf(PropTypes.string).isRequired,

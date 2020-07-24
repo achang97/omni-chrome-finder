@@ -272,6 +272,7 @@ const SuggestionPanel = ({
             cards={cards}
             nodes={shouldSearchNodes ? nodes : []}
             searchLogId={searchLogId}
+            source={AUDIT.SOURCE.DOCK}
             isSearching={isLoading}
             triangleColor={colors.purple.light}
             onBottom={() => searchCards(false)}
