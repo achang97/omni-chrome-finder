@@ -24,16 +24,8 @@ export function removeSearchCards(cardIds) {
   return { type: types.REMOVE_SEARCH_CARDS, payload: { cardIds } };
 }
 
-export function requestSearchNodes(query) {
-  return { type: types.SEARCH_NODES_REQUEST, payload: { query } };
-}
-
-export function handleSearchNodesSuccess(nodes, searchLogId) {
-  return { type: types.SEARCH_NODES_SUCCESS, payload: { nodes, searchLogId } };
-}
-
-export function handleSearchNodesError(error) {
-  return { type: types.SEARCH_NODES_ERROR, payload: { error } };
+export function handleSearchNodesSuccess(nodes) {
+  return { type: types.SEARCH_NODES_SUCCESS, payload: { nodes } };
 }
 
 export function updateSearchNode(node) {

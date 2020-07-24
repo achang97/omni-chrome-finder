@@ -88,15 +88,15 @@ const getItemProps = (type, item) => {
       return { id, title, highlightTags: HIGHLIGHT_TAGS.CONFLUENCE, showDropdown: false };
     }
     case INTEGRATIONS.SLACK.type: {
-      const { id, ts, text, user, channel } = item;
+      const { iid, ts, text, user, channel } = item;
       return {
-        id,
+        id: iid,
         showDropdown: false,
         body: (
           <>
             <div className={s('flex items-center mb-sm')}>
               <div className={s('font-bold text-xs mr-sm truncate')}>
-                {channel ? `#${channel}` : 'Direct Message'}
+                {channel.is_channel || channel.is_group ? `#${channel.name}` : 'Direct Message'}
               </div>
               <div className={s('font-bold text-black mr-sm flex-shrink-0')}> {user.name} </div>
               <Timeago

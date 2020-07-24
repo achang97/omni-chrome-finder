@@ -25,14 +25,11 @@ const s = getStyleApplicationFn(mainStyle, scrollStyle);
 
 const SuggestionPanel = ({
   query,
-  shouldSearchNodes,
-  shouldSearchIntegrations,
   cards,
   searchLogId,
   isSearchingCards,
   hasReachedLimit,
   nodes,
-  isSearchingNodes,
   dockVisible,
   integrations,
   isSearchingIntegrations,
@@ -40,7 +37,6 @@ const SuggestionPanel = ({
   user,
   requestSearchCards,
   clearSearchCards,
-  requestSearchNodes,
   requestSearchIntegrations,
   openCard,
   requestUpdateUser,
@@ -57,13 +53,7 @@ const SuggestionPanel = ({
     requestSearchCards(SEARCH.SOURCE.DOCK, { q: query }, clearCards);
 
     if (clearCards) {
-      if (shouldSearchNodes) {
-        requestSearchNodes(query);
-      }
-
-      if (shouldSearchIntegrations) {
-        requestSearchIntegrations(query);
-      }
+      requestSearchIntegrations(query);
     }
   };
 
@@ -89,7 +79,7 @@ const SuggestionPanel = ({
 
   const renderExternalDocumentationResults = () => {
     const numIntegrationResults = countIntegrationResults();
-    if (numIntegrationResults === 0 || !shouldSearchIntegrations) {
+    if (numIntegrationResults === 0) {
       // AnimateHeight expects children prop
       return <div />;
     }
@@ -121,7 +111,11 @@ const SuggestionPanel = ({
 
   const clickCreateCard = () => {
     trackEvent(SEGMENT.EVENT.CLICK_CREATE_CARD_FROM_SEARCH, { Question: query });
-    requestLogAudit(AUDIT.TYPE.CLICK, { baseLogId: searchLogId, type: AUDIT.CLICK.CREATE_CARD });
+    requestLogAudit(AUDIT.TYPE.CLICK, {
+      baseLogId: searchLogId,
+      type: AUDIT.CLICK.CREATE_CARD,
+      source: AUDIT.SOURCE.DOCK
+    });
     openCard({ question: query }, true);
   };
 
@@ -214,9 +208,7 @@ const SuggestionPanel = ({
           }
         >
           {renderExternalDocumentationResults()}
-          {!isLoading && shouldSearchIntegrations && isSearchingIntegrations && (
-            <Loader size="sm" className={s('my-sm')} />
-          )}
+          {!isLoading && isSearchingIntegrations && <Loader size="sm" className={s('my-sm')} />}
           {renderDisconnectedIntegrations()}
         </AnimateHeight>
       </>
@@ -252,7 +244,6 @@ const SuggestionPanel = ({
 
   const showMainPanel = isVisible && query.length !== 0 && dockVisible;
 
-  const isLoading = isSearchingCards || (shouldSearchNodes && isSearchingNodes);
   return (
     <div className={s(`suggestion-panel ${!showMainPanel ? 'border-0' : ''}`)}>
       <AnimateHeight height={showMainPanel ? 'auto' : 0}>
@@ -270,15 +261,15 @@ const SuggestionPanel = ({
               }`
             )}
             cards={cards}
-            nodes={shouldSearchNodes ? nodes : []}
+            nodes={nodes}
             searchLogId={searchLogId}
             source={AUDIT.SOURCE.DOCK}
-            isSearching={isLoading}
+            isSearching={isSearchingCards}
             triangleColor={colors.purple.light}
             onBottom={() => searchCards(false)}
             hasReachedLimit={hasReachedLimit}
             showPlaceholder={false}
-            footer={renderScrollContainerFooter(isLoading)}
+            footer={renderScrollContainerFooter(isSearchingCards)}
           />
           {!showIntegrationResults && renderPanelFooter()}
         </div>
@@ -309,8 +300,6 @@ const SuggestionPanel = ({
 
 SuggestionPanel.propTypes = {
   query: PropTypes.string.isRequired,
-  shouldSearchNodes: PropTypes.bool,
-  shouldSearchIntegrations: PropTypes.bool,
 
   // Redux State
   cards: PropTypes.arrayOf(PropTypes.object).isRequired,
@@ -318,7 +307,6 @@ SuggestionPanel.propTypes = {
   isSearchingCards: PropTypes.bool,
   hasReachedLimit: PropTypes.bool.isRequired,
   nodes: PropTypes.arrayOf(NodePropTypes).isRequired,
-  isSearchingNodes: PropTypes.bool,
   integrations: PropTypes.objectOf(PropTypes.array).isRequired,
   isSearchingIntegrations: PropTypes.bool,
   hasSearchedIntegrations: PropTypes.bool,
@@ -328,17 +316,11 @@ SuggestionPanel.propTypes = {
   // Redux Actions
   requestSearchCards: PropTypes.func.isRequired,
   clearSearchCards: PropTypes.func.isRequired,
-  requestSearchNodes: PropTypes.func.isRequired,
   requestSearchIntegrations: PropTypes.func.isRequired,
   requestUpdateUser: PropTypes.func.isRequired,
   openCard: PropTypes.func.isRequired,
   trackEvent: PropTypes.func.isRequired,
   requestLogAudit: PropTypes.func.isRequired
-};
-
-SuggestionPanel.defaultProps = {
-  shouldSearchNodes: false,
-  shouldSearchIntegrations: false
 };
 
 export default SuggestionPanel;

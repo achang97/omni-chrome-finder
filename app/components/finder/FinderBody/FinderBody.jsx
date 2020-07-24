@@ -67,8 +67,8 @@ const FinderBody = ({
   const openNode = (node) => {
     const { finderType, _id, name } = node;
 
-    const { cardSearchLogId } = activeNode;
-    const loadArgs = { baseLogId: cardSearchLogId, source: AUDIT.SOURCE.FINDER };
+    const { auditLogId } = activeNode;
+    const loadArgs = { baseLogId: auditLogId, source: AUDIT.SOURCE.FINDER };
     if (isCardNode(finderType)) {
       openCard({ _id, ...loadArgs });
       trackEvent(SEGMENT.EVENT.OPEN_CARD_FROM_FINDER, getCardProperties(node));

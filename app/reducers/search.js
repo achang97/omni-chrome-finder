@@ -91,16 +91,9 @@ export default function searchReducer(state = initialState, action) {
       return updateAllCards((cards) => cards.filter(({ _id }) => !cardIds.includes(_id)));
     }
 
-    case types.SEARCH_NODES_REQUEST: {
-      return { ...state, isSearchingNodes: true, searchNodesError: null };
-    }
     case types.SEARCH_NODES_SUCCESS: {
       const { nodes } = payload;
-      return { ...state, isSearchingNodes: false, nodes };
-    }
-    case types.SEARCH_NODES_ERROR: {
-      const { error } = payload;
-      return { ...state, isSearchingNodes: false, searchNodesError: error };
+      return { ...state, nodes };
     }
 
     case types.UPDATE_SEARCH_NODE: {

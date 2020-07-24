@@ -66,7 +66,7 @@ SuggestionPreview.propTypes = {
     link: PropTypes.string.isRequired,
     type: PropTypes.string.isRequired
   }),
-  source: PropTypes.oneOf(Object.values(AUDIT)),
+  source: PropTypes.oneOf(Object.values(AUDIT.SOURCE)),
   searchLogId: PropTypes.string,
 
   // Redux Actions

@@ -24,7 +24,6 @@ import {
   handleMoveFinderNodesError
 } from 'actions/finder';
 import { ROOT, FINDER_TYPE, PATH_TYPE, SEARCH_TYPE } from 'appConstants/finder';
-import AUDIT from 'appConstants/audit';
 
 export default function* watchFinderRequests() {
   while (true) {
@@ -122,38 +121,35 @@ function* getNode({ finderId }) {
     }
 
     let nodeChildren = [];
-    let cardSearchLogId;
+    let searchAuditLogId;
 
     switch (searchType) {
       case SEARCH_TYPE.ALL_FOLDERS: {
-        const [{ nodes }, { cards, auditLogId }] = yield all([
-          call(doGet, '/finder/node/query', { q: searchText }),
-          call(doGet, '/cards/query', { source: AUDIT.SOURCE.FINDER, q: searchText })
-        ]);
+        const { results, auditLogId } = yield call(doGet, '/search/all', {
+          types: ['card', 'finder'].join(','),
+          q: searchText
+        });
+        const [{ items: cards }, { items: nodes }] = results;
 
         nodeChildren = _.concat(
           nodes.map((currNode) => ({ ...currNode, finderType: FINDER_TYPE.NODE })),
           cards.map((card) => ({ ...card, finderType: FINDER_TYPE.CARD }))
         );
-        cardSearchLogId = auditLogId;
+        searchAuditLogId = auditLogId;
         break;
       }
       case SEARCH_TYPE.CURRENT_FOLDER:
       default: {
         const query = { q: searchText, orderBy: !searchText ? 'name' : null };
-        const { content, cardAuditLogId } = yield call(
-          doGet,
-          `/finder/node/${nodeId}/content`,
-          query
-        );
+        const { content, auditLogId } = yield call(doGet, `/finder/node/${nodeId}/content`, query);
 
         nodeChildren = content;
-        cardSearchLogId = cardAuditLogId;
+        searchAuditLogId = auditLogId;
         break;
       }
     }
 
-    const fullNode = { ...node, children: nodeChildren, cardSearchLogId };
+    const fullNode = { ...node, children: nodeChildren, auditLogId: searchAuditLogId };
     yield put(handleGetFinderNodeSuccess(finderId, fullNode));
   } catch (error) {
     yield put(handleGetFinderNodeError(finderId, getErrorMessage(error)));

@@ -1,11 +1,6 @@
 import { connect } from 'react-redux';
 import { withRouter } from 'react-router';
-import {
-  requestSearchCards,
-  clearSearchCards,
-  requestSearchNodes,
-  requestSearchIntegrations
-} from 'actions/search';
+import { requestSearchCards, clearSearchCards, requestSearchIntegrations } from 'actions/search';
 import { openCard } from 'actions/cards';
 import { requestUpdateUser } from 'actions/profile';
 import trackEvent from 'actions/analytics';
@@ -18,7 +13,6 @@ const mapStateToProps = (state) => {
     search: {
       cards: { [SEARCH.SOURCE.DOCK]: cards },
       nodes,
-      isSearchingNodes,
       integrations,
       isSearchingIntegrations,
       hasSearchedIntegrations
@@ -30,7 +24,6 @@ const mapStateToProps = (state) => {
   return {
     ...cards,
     nodes,
-    isSearchingNodes,
     integrations,
     isSearchingIntegrations,
     hasSearchedIntegrations,
@@ -42,7 +35,6 @@ const mapStateToProps = (state) => {
 const mapDispatchToProps = {
   requestSearchCards,
   clearSearchCards,
-  requestSearchNodes,
   requestSearchIntegrations,
   openCard,
   requestUpdateUser,
