@@ -25,7 +25,6 @@ import { PublicRoute, PrivateRoute } from 'components/routes';
 import { getStyleApplicationFn } from 'utils/style';
 
 import Ask from '../Ask';
-// import Create from '../Create';
 import Tasks from '../Tasks';
 import Cards from '../Cards';
 import Autofind from '../Autofind';
