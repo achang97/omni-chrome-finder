@@ -63,14 +63,15 @@ export default function finderReducer(state = initialState, action) {
     });
   };
 
-  const pushToHistory = (history, pathType, pathId, pathState = {}) => {
+  const pushToHistory = (history, newEntry, pathState = {}) => {
     const prevPath = _.last(history);
+    const { type: pathType, _id: pathId } = newEntry;
 
     if (pathType === prevPath.type && pathId === prevPath._id) {
       return {};
     }
 
-    const newPath = { _id: pathId, type: pathType, state: { searchText: '', ...pathState } };
+    const newPath = { ...newEntry, state: { searchText: '', ...pathState } };
     return { history: [...history, newPath], selectedNodes: [] };
   };
 
@@ -112,16 +113,17 @@ export default function finderReducer(state = initialState, action) {
       });
     }
     case types.PUSH_FINDER_NODE: {
-      const { finderId, nodeId } = payload;
+      const { finderId, nodeId, loadArgs } = payload;
       return updateStateById(finderId, ({ history }) => {
-        return pushToHistory(history, PATH_TYPE.NODE, nodeId);
+        return pushToHistory(history, { type: PATH_TYPE.NODE, _id: nodeId, ...loadArgs });
       });
     }
     case types.PUSH_FINDER_SEGMENT: {
       const { finderId, segmentId, segmentName } = payload;
       return updateStateById(finderId, ({ history }) => {
         const newPathState = { name: segmentName };
-        const newState = pushToHistory(history, PATH_TYPE.SEGMENT, segmentId, newPathState);
+        const newEntry = { type: PATH_TYPE.SEGMENT, _id: segmentId };
+        const newState = pushToHistory(history, newEntry, newPathState);
         return { ...newState, activeNode: BASE_ACTIVE_NODE };
       });
     }

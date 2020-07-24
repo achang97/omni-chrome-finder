@@ -37,30 +37,6 @@ export const PERFORMANCE = {
   USE_SLACK_FIND: 'useSlackFind'
 };
 
-export const AUDIT = {
-  TYPE: {
-    SEARCH: 'search',
-    VIEW_CARD: 'viewCard',
-    ACTION: 'userAction',
-    MARK_CARD_UPTODATE: 'markCardUpToDate',
-    MARK_CARD_OUTOFDATE: 'markCardOutOfDate',
-    UPDATE_CARD: 'updateCard',
-    CREATE_CARD: 'createCard',
-    CONTEXT_MENU_SEARCH: 'contextMenuSearch',
-    OPEN_EXTERNAL_DOC: 'openExternalDoc',
-    OPEN_EXTENSION: 'openExtension',
-    SIGN_UP: 'signUp'
-  },
-  SOURCE: {
-    FINDER: 'finder',
-    DOCK: 'dock',
-    EXTERNAL: 'external',
-    SLACK: 'slack',
-    SEGMENT: 'segment',
-    DASHBOARD: 'dashboard'
-  }
-};
-
 export const SEEN_FEATURES = {
   OWNERS: 'owners',
   UPDATE_INTERVAL: 'updateInterval',
@@ -91,7 +67,6 @@ export default {
   ROLE_LIST,
   STATUS,
   BADGE,
-  AUDIT,
   PERFORMANCE,
   SEEN_FEATURES,
   INTEGRATIONS,

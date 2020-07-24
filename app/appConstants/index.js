@@ -1,6 +1,7 @@
 export * from './general';
 export { default as ANIMATE } from './animate';
 export { default as ASK } from './ask';
+export { default as AUDIT } from './audit';
 export { default as CARD } from './card';
 export { default as CHROME } from './chrome';
 export { default as URL_REGEX } from './urlRegex';

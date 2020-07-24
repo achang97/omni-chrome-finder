@@ -58,12 +58,13 @@ export default function searchReducer(state = initialState, action) {
       }));
     }
     case types.SEARCH_CARDS_SUCCESS: {
-      const { source, cards, clearCards } = payload;
+      const { source, cards, searchLogId, clearCards } = payload;
       return updateCardStateBySource(source, (cardState) => ({
         isSearchingCards: false,
         cards: clearCards ? cards : _.unionBy(cardState.cards, cards, '_id'),
         page: clearCards ? 1 : cardState.page + 1,
-        hasReachedLimit: cards.length === 0 || cards.length < SEARCH.PAGE_SIZE
+        hasReachedLimit: cards.length === 0 || cards.length < SEARCH.PAGE_SIZE,
+        searchLogId
       }));
     }
     case types.SEARCH_CARDS_ERROR: {
@@ -90,16 +91,9 @@ export default function searchReducer(state = initialState, action) {
       return updateAllCards((cards) => cards.filter(({ _id }) => !cardIds.includes(_id)));
     }
 
-    case types.SEARCH_NODES_REQUEST: {
-      return { ...state, isSearchingNodes: true, searchNodesError: null };
-    }
     case types.SEARCH_NODES_SUCCESS: {
       const { nodes } = payload;
-      return { ...state, isSearchingNodes: false, nodes };
-    }
-    case types.SEARCH_NODES_ERROR: {
-      const { error } = payload;
-      return { ...state, isSearchingNodes: false, searchNodesError: error };
+      return { ...state, nodes };
     }
 
     case types.UPDATE_SEARCH_NODE: {

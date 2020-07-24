@@ -10,7 +10,6 @@ import {
   startMoveFinderNodes
 } from 'actions/finder';
 import { openCard, toggleCards } from 'actions/cards';
-import { toggleTemplateView, updateCreateFinderNode } from 'actions/create';
 import trackEvent from 'actions/analytics';
 import FinderHeader from './FinderHeader';
 
@@ -20,7 +19,6 @@ const mapStateToProps = (state, ownProps) => {
     finder: {
       [finderId]: { history: finderHistory, activeNode, selectedNodes, moveNodes }
     },
-    create: { isTemplateView },
     profile: { user }
   } = state;
 
@@ -31,7 +29,6 @@ const mapStateToProps = (state, ownProps) => {
     activeNode,
     selectedNodes,
     moveNodes,
-    isTemplateView,
     user
   };
 };
@@ -45,8 +42,6 @@ const mapDispatchToProps = {
   startMoveFinderNodes,
   openCard,
   toggleCards,
-  toggleTemplateView,
-  updateCreateFinderNode,
   trackEvent
 };
 

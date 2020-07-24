@@ -14,7 +14,7 @@ import { convertAttachmentsToBackendFormat } from 'utils/file';
 import { isEditor } from 'utils/auth';
 import { TYPE as NOTIFICATION_TYPE } from 'appConstants/tasks';
 import { STATUS, PERMISSION_OPTION, VERIFICATION_INTERVAL_OPTION } from 'appConstants/card';
-import { AUDIT } from 'appConstants/user';
+import AUDIT from 'appConstants/audit';
 import { ROOT } from 'appConstants/finder';
 
 import {
@@ -190,9 +190,9 @@ function* getUserId() {
 }
 
 function* getCard() {
-  const cardId = yield call(getActiveCardId);
+  const { _id: cardId, source, baseLogId } = yield call(getActiveCard);
   try {
-    const requests = [call(doGet, `/cards/${cardId}`)];
+    const requests = [call(doGet, `/cards/${cardId}`, { source, baseLogId })];
 
     const user = yield select((state) => state.profile.user);
     if (!isEditor(user)) {

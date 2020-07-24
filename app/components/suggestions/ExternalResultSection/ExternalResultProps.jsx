@@ -21,11 +21,10 @@ const HIGHLIGHT_TAGS = {
 const getItemProps = (type, item) => {
   switch (type) {
     case INTEGRATIONS.GOOGLE.type: {
-      const { id, webViewLink, iconLink, name, owners, mimeType } = item;
+      const { id, iconLink, name, owners, mimeType } = item;
       return {
         logo: iconLink,
         id,
-        url: webViewLink,
         title: name,
         showDropdown: mimeType !== FOLDER_MIME_TYPE,
         body: owners && (
@@ -41,19 +40,9 @@ const getItemProps = (type, item) => {
       };
     }
     case INTEGRATIONS.ZENDESK.type: {
-      const {
-        id,
-        html_url: htmlUrl,
-        title,
-        snippet,
-        vote_sum: voteSum,
-        author,
-        promoted,
-        draft
-      } = item;
+      const { id, title, snippet, vote_sum: voteSum, author, promoted, draft } = item;
       return {
         id,
-        url: htmlUrl,
         title,
         body: (
           <>
@@ -81,10 +70,9 @@ const getItemProps = (type, item) => {
       };
     }
     case INTEGRATIONS.CONFLUENCE.type: {
-      const { id, url, title } = item;
+      const { id, title } = item;
       return {
         id,
-        url,
         title,
         highlightTags: HIGHLIGHT_TAGS.CONFLUENCE,
         showDropdown: true
@@ -96,20 +84,19 @@ const getItemProps = (type, item) => {
       };
     }
     case INTEGRATIONS.JIRA.type: {
-      const { id, url, title } = item;
-      return { id, url, title, highlightTags: HIGHLIGHT_TAGS.CONFLUENCE, showDropdown: false };
+      const { id, title } = item;
+      return { id, title, highlightTags: HIGHLIGHT_TAGS.CONFLUENCE, showDropdown: false };
     }
     case INTEGRATIONS.SLACK.type: {
-      const { id, ts, text, permalink, user, channel } = item;
+      const { iid, ts, text, user, channel } = item;
       return {
-        id,
-        url: permalink,
+        id: iid,
         showDropdown: false,
         body: (
           <>
             <div className={s('flex items-center mb-sm')}>
               <div className={s('font-bold text-xs mr-sm truncate')}>
-                {channel ? `#${channel}` : 'Direct Message'}
+                {channel.is_channel || channel.is_group ? `#${channel.name}` : 'Direct Message'}
               </div>
               <div className={s('font-bold text-black mr-sm flex-shrink-0')}> {user.name} </div>
               <Timeago

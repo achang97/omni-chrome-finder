@@ -4,7 +4,6 @@ import { doGet, doPost, getErrorMessage } from 'utils/request';
 import { SEARCH } from 'appConstants';
 import {
   SEARCH_CARDS_REQUEST,
-  SEARCH_NODES_REQUEST,
   SEARCH_INTEGRATIONS_REQUEST,
   SEARCH_TAGS_REQUEST,
   SEARCH_USERS_REQUEST,
@@ -14,7 +13,6 @@ import {
   handleSearchCardsSuccess,
   handleSearchCardsError,
   handleSearchNodesSuccess,
-  handleSearchNodesError,
   handleSearchIntegrationsSuccess,
   handleSearchIndividualIntegrationSuccess,
   handleSearchIntegrationsError,
@@ -28,7 +26,6 @@ import {
 
 const CANCEL_TYPE = {
   CARDS: 'CARDS',
-  NODES: 'NODES',
   INTEGRATIONS: 'INTEGRATIONS',
   TAGS: 'TAGS',
   USERS: 'USERS',
@@ -41,7 +38,6 @@ export default function* watchSearchRequests() {
   while (true) {
     const action = yield take([
       SEARCH_CARDS_REQUEST,
-      SEARCH_NODES_REQUEST,
       SEARCH_INTEGRATIONS_REQUEST,
       SEARCH_TAGS_REQUEST,
       SEARCH_USERS_REQUEST,
@@ -52,10 +48,6 @@ export default function* watchSearchRequests() {
     switch (type) {
       case SEARCH_CARDS_REQUEST: {
         yield fork(searchCards, payload);
-        break;
-      }
-      case SEARCH_NODES_REQUEST: {
-        yield fork(searchNodes, payload);
         break;
       }
       case SEARCH_INTEGRATIONS_REQUEST: {
@@ -91,7 +83,7 @@ function cancelRequest(cancelType) {
 }
 
 function* searchCards({ source, query, clearCards }) {
-  const cancelToken = cancelRequest(CANCEL_TYPE.CARDS);
+  const cancelToken = cancelRequest(`${CANCEL_TYPE.CARDS}-${source}`);
 
   if (!query) {
     // eslint-disable-next-line no-param-reassign
@@ -100,7 +92,9 @@ function* searchCards({ source, query, clearCards }) {
 
   try {
     const page = yield select((state) => state.search.cards[source].page);
+
     let cards = [];
+    let auditLogId;
 
     if (!query.ids || query.ids.length !== 0) {
       const body = {
@@ -110,14 +104,41 @@ function* searchCards({ source, query, clearCards }) {
         orderBy: !query.q ? 'question' : null
       };
 
-      if (source === SEARCH.SOURCE.AUTOFIND) {
-        cards = yield call(doPost, '/suggest', body, { cancelToken });
-      } else {
-        cards = yield call(doGet, '/cards/query', { source, ...body }, { cancelToken });
+      switch (source) {
+        case SEARCH.SOURCE.DOCK: {
+          const params = { ...body, types: ['card', 'finder'].join(',') };
+          const allResults = yield call(doGet, '/search/all', params, { cancelToken });
+
+          // eslint-disable-next-line prefer-destructuring
+          auditLogId = allResults.auditLogId;
+          cards = allResults.results[0].items;
+
+          // NOTE @achang97: This is pretty ugly, but I wanted to keep the functionality of
+          // paginating cards while being able to create one unified search log in the BE.
+          // This could be restructured in the future.
+          const nodes = allResults.results[1].items;
+          yield put(handleSearchNodesSuccess(nodes));
+
+          break;
+        }
+        case SEARCH.SOURCE.AUTOFIND: {
+          ({ cards, auditLogId } = yield call(doPost, '/suggest', body, { cancelToken }));
+          break;
+        }
+        case SEARCH.SOURCE.SEGMENT:
+        default: {
+          ({ cards, auditLogId } = yield call(
+            doGet,
+            '/cards/query',
+            { source, ...body },
+            { cancelToken }
+          ));
+          break;
+        }
       }
     }
 
-    yield put(handleSearchCardsSuccess(source, cards, clearCards));
+    yield put(handleSearchCardsSuccess(source, cards, auditLogId, clearCards));
   } catch (error) {
     if (!isCancel(error)) {
       yield put(handleSearchCardsError(source, getErrorMessage(error)));
@@ -125,24 +146,13 @@ function* searchCards({ source, query, clearCards }) {
   }
 }
 
-function* searchNodes({ query }) {
-  const cancelToken = cancelRequest(CANCEL_TYPE.NODES);
-
-  try {
-    const nodes = yield call(doGet, '/finder/node/query', { q: query }, { cancelToken });
-    yield put(handleSearchNodesSuccess(nodes));
-  } catch (error) {
-    if (!isCancel(error)) {
-      yield put(handleSearchNodesError(getErrorMessage(error)));
-    }
-  }
-}
-
 function* searchInvidividualIntegration(integration, query, cancelToken) {
-  const queryParams = { q: query, sources: integration };
-  const results = yield call(doGet, '/search/integrations', queryParams, { cancelToken });
-  if (results.length !== 0) {
-    yield put(handleSearchIndividualIntegrationSuccess(integration, results[0].items));
+  if (query) {
+    const queryParams = { q: query, types: integration };
+    const { results } = yield call(doGet, '/search/integrations', queryParams, { cancelToken });
+    if (results.length !== 0) {
+      yield put(handleSearchIndividualIntegrationSuccess(integration, results[0].items));
+    }
   }
 }
 

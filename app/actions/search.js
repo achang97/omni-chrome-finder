@@ -4,8 +4,8 @@ export function requestSearchCards(source, query, clearCards = false) {
   return { type: types.SEARCH_CARDS_REQUEST, payload: { source, query, clearCards } };
 }
 
-export function handleSearchCardsSuccess(source, cards, clearCards) {
-  return { type: types.SEARCH_CARDS_SUCCESS, payload: { source, cards, clearCards } };
+export function handleSearchCardsSuccess(source, cards, searchLogId, clearCards) {
+  return { type: types.SEARCH_CARDS_SUCCESS, payload: { source, cards, searchLogId, clearCards } };
 }
 
 export function handleSearchCardsError(source, error) {
@@ -24,16 +24,8 @@ export function removeSearchCards(cardIds) {
   return { type: types.REMOVE_SEARCH_CARDS, payload: { cardIds } };
 }
 
-export function requestSearchNodes(query) {
-  return { type: types.SEARCH_NODES_REQUEST, payload: { query } };
-}
-
 export function handleSearchNodesSuccess(nodes) {
   return { type: types.SEARCH_NODES_SUCCESS, payload: { nodes } };
-}
-
-export function handleSearchNodesError(error) {
-  return { type: types.SEARCH_NODES_ERROR, payload: { error } };
 }
 
 export function updateSearchNode(node) {

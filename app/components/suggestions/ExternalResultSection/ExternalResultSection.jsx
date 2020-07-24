@@ -27,6 +27,7 @@ export const SWITCH_PROPS = {
 const ExternalResultSection = ({
   integrationType,
   items,
+  searchLogId,
   integrationSettings,
   requestUpdateUser
 }) => {
@@ -34,8 +35,8 @@ const ExternalResultSection = ({
 
   const renderResult = (result) => {
     const resultProps = getItemProps(integrationType, result);
-    const { id, logo, url, title, body, showDropdown, timestamp, highlightTags } = resultProps;
-    const { card } = result;
+    const { id, logo, title, body, showDropdown, timestamp, highlightTags } = resultProps;
+    const { card, trackingLink } = result;
 
     return (
       <ExternalResult
@@ -43,7 +44,8 @@ const ExternalResultSection = ({
         id={id}
         type={integrationType}
         logo={logo}
-        url={url}
+        url={trackingLink}
+        searchLogId={searchLogId}
         title={title}
         card={card}
         body={body}
@@ -126,6 +128,7 @@ ExternalResultSection.propTypes = {
       id: PropTypes.oneOfType([PropTypes.string, PropTypes.number])
     })
   ),
+  searchLogId: PropTypes.string,
 
   // Redux State
   integrationSettings: PropTypes.objectOf(

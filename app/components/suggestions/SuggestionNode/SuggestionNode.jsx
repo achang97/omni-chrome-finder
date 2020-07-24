@@ -3,7 +3,7 @@ import PropTypes from 'prop-types';
 
 import { CardLocation } from 'components/cards';
 
-import { FINDER, SEGMENT } from 'appConstants';
+import { FINDER, SEGMENT, AUDIT } from 'appConstants';
 import { getStyleApplicationFn } from 'utils/style';
 import FinderFolder from 'assets/images/finder/folder.svg';
 
@@ -17,13 +17,16 @@ const SuggestionNode = ({
   name,
   path,
   event,
+  searchLogId,
+  source,
   openFinder,
   pushFinderNode,
   trackEvent
 }) => {
   const onClick = () => {
     openFinder();
-    pushFinderNode(FINDER.MAIN_STATE_ID, id);
+    pushFinderNode(FINDER.MAIN_STATE_ID, id, { baseLogId: searchLogId, source });
+
     if (event) {
       const fullPath = [FINDER.ROOT.NAME, ...path.map(({ name: folderName }) => folderName), name];
       trackEvent(event, { Folder: fullPath.join(' > ') });
@@ -60,6 +63,8 @@ SuggestionNode.propTypes = {
       name: PropTypes.string.isRequired
     })
   ),
+  source: PropTypes.oneOf(Object.values(AUDIT.SOURCE)),
+  searchLogId: PropTypes.string,
 
   // Redux Actions
   openFinder: PropTypes.func.isRequired,

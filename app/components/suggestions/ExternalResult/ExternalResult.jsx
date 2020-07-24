@@ -7,7 +7,7 @@ import { CardStatusIndicator } from 'components/cards';
 import { copyText } from 'utils/window';
 import { getStyleApplicationFn } from 'utils/style';
 import { createHighlightedElement } from 'utils/search';
-import { USER, SEGMENT, URL_REGEX } from 'appConstants';
+import { URL_REGEX } from 'appConstants';
 
 import style from './external-result.css';
 import sharedStyle from '../styles/external-result.css';
@@ -19,6 +19,7 @@ const s = getStyleApplicationFn(style, sharedStyle);
 const ExternalResult = ({
   id,
   url,
+  searchLogId,
   type,
   logo,
   title,
@@ -33,9 +34,7 @@ const ExternalResult = ({
   updateExternalLinkAnswer,
   toggleExternalCreateModal,
   updateExternalTitle,
-  updateExternalResultId,
-  requestLogAudit,
-  trackEvent
+  updateExternalResultId
 }) => {
   const [showShare, setShowShare] = useState(false);
 
@@ -58,9 +57,7 @@ const ExternalResult = ({
   };
 
   const onResultClick = () => {
-    trackEvent(SEGMENT.EVENT.OPEN_EXTERNAL_DOC, { Type: type, Title: title }, true);
-    requestLogAudit(USER.AUDIT.TYPE.OPEN_EXTERNAL_DOC, { type, title });
-    window.open(url, '_blank');
+    window.open(`${url}&baseLogId=${searchLogId}`, '_blank');
   };
 
   let ACTIONS = [];
@@ -135,6 +132,7 @@ const ExternalResult = ({
 ExternalResult.propTypes = {
   id: PropTypes.oneOfType([PropTypes.string, PropTypes.number]).isRequired,
   url: PropTypes.string.isRequired,
+  searchLogId: PropTypes.string.isRequired,
   type: PropTypes.string.isRequired,
   logo: PropTypes.node,
   title: PropTypes.string,
@@ -159,9 +157,7 @@ ExternalResult.propTypes = {
   updateExternalLinkAnswer: PropTypes.func.isRequired,
   toggleExternalCreateModal: PropTypes.func.isRequired,
   updateExternalTitle: PropTypes.func.isRequired,
-  updateExternalResultId: PropTypes.func.isRequired,
-  requestLogAudit: PropTypes.func.isRequired,
-  trackEvent: PropTypes.func.isRequired
+  updateExternalResultId: PropTypes.func.isRequired
 };
 
 ExternalResult.defaultProps = {

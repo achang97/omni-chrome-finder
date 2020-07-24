@@ -2,7 +2,7 @@ import { Component } from 'react';
 import PropTypes from 'prop-types';
 import queryString from 'query-string';
 
-import { CHROME, ROUTES, URL, TASKS, USER, APP_CONTAINER_ID } from 'appConstants';
+import { CHROME, ROUTES, URL, TASKS, AUDIT, APP_CONTAINER_ID } from 'appConstants';
 import { getNewCardBaseState } from 'utils/card';
 import { UserPropTypes } from 'utils/propTypes';
 import { convertTextToModel } from 'utils/editor';
@@ -94,16 +94,18 @@ class ChromeMessageListener extends Component {
 
       if (this.isValidUser()) {
         const searchParams = url.substring(url.indexOf('?') + 1);
-        const { taskId, cardId, edit } = queryString.parse(searchParams);
+        const { taskId, cardId, edit, source, baseLogId } = queryString.parse(searchParams);
         if (taskId) {
           this.openTask(taskId);
         }
 
         if (cardId) {
-          openCard({ _id: cardId, isEditing: edit === 'true' });
+          openCard({ _id: cardId, source, baseLogId, isEditing: edit === 'true' });
         }
       }
 
+      // Clear out params
+      window.history.replaceState(null, null, window.location.pathname);
       return true;
     }
 
@@ -151,7 +153,7 @@ class ChromeMessageListener extends Component {
             toggleAskTeammate();
           }
           updateAskSearchText(selectedText);
-          requestLogAudit(USER.AUDIT.TYPE.CONTEXT_MENU_SEARCH, { query: selectedText });
+          requestLogAudit(AUDIT.TYPE.CONTEXT_MENU_SEARCH, { query: selectedText });
           history.push(ROUTES.ASK);
           break;
         }

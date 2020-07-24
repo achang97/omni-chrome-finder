@@ -6,7 +6,6 @@ import display from './display';
 import cards from './cards';
 import finder from './finder';
 import ask from './ask';
-import create from './create';
 import tasks from './tasks';
 import search from './search';
 import screenRecording from './screenRecording';
@@ -20,7 +19,6 @@ const appReducer = combineReducers({
   cards,
   finder,
   ask,
-  create,
   tasks,
   search,
   screenRecording,

@@ -24,7 +24,6 @@ import {
   handleMoveFinderNodesError
 } from 'actions/finder';
 import { ROOT, FINDER_TYPE, PATH_TYPE, SEARCH_TYPE } from 'appConstants/finder';
-import { AUDIT } from 'appConstants/user';
 
 export default function* watchFinderRequests() {
   while (true) {
@@ -108,7 +107,7 @@ function* getGroupedSelectedNodeIds(finderId) {
 
 function* getNode({ finderId }) {
   try {
-    const { _id: nodeId } = yield call(getParentNode, finderId);
+    const { _id: nodeId, source, baseLogId } = yield call(getParentNode, finderId);
     const { history: finderHistory } = yield select((state) => state.finder[finderId]);
     const {
       state: { searchText, searchType }
@@ -118,34 +117,40 @@ function* getNode({ finderId }) {
     if (nodeId === ROOT.ID) {
       node = { _id: ROOT.ID, name: ROOT.NAME };
     } else {
-      node = yield call(doGet, `/finder/node/${nodeId}`);
+      node = yield call(doGet, `/finder/node/${nodeId}`, { source, baseLogId });
     }
 
-    console.log(searchText);
-
     let nodeChildren = [];
+    let searchAuditLogId;
+
     switch (searchType) {
       case SEARCH_TYPE.ALL_FOLDERS: {
-        const [nodes, cards] = yield all([
-          call(doGet, '/finder/node/query', { q: searchText }),
-          call(doGet, '/cards/query', { source: AUDIT.SOURCE.FINDER, q: searchText })
-        ]);
+        const { results, auditLogId } = yield call(doGet, '/search/all', {
+          types: ['card', 'finder'].join(','),
+          q: searchText
+        });
+        const [{ items: cards }, { items: nodes }] = results;
 
         nodeChildren = _.concat(
           nodes.map((currNode) => ({ ...currNode, finderType: FINDER_TYPE.NODE })),
           cards.map((card) => ({ ...card, finderType: FINDER_TYPE.CARD }))
         );
+        searchAuditLogId = auditLogId;
         break;
       }
       case SEARCH_TYPE.CURRENT_FOLDER:
       default: {
         const query = { q: searchText, orderBy: !searchText ? 'name' : null };
-        nodeChildren = yield call(doGet, `/finder/node/${nodeId}/content`, query);
+        const { content, auditLogId } = yield call(doGet, `/finder/node/${nodeId}/content`, query);
+
+        nodeChildren = content;
+        searchAuditLogId = auditLogId;
         break;
       }
     }
 
-    yield put(handleGetFinderNodeSuccess(finderId, { ...node, children: nodeChildren }));
+    const fullNode = { ...node, children: nodeChildren, auditLogId: searchAuditLogId };
+    yield put(handleGetFinderNodeSuccess(finderId, fullNode));
   } catch (error) {
     yield put(handleGetFinderNodeError(finderId, getErrorMessage(error)));
   }

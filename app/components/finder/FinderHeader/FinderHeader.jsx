@@ -27,7 +27,6 @@ const FinderHeader = ({
   activeNode,
   selectedNodes,
   moveNodes,
-  // isTemplateView,
   user,
   goBackFinder,
   pushFinderNode,
@@ -36,11 +35,7 @@ const FinderHeader = ({
   openFinderModal,
   startMoveFinderNodes,
   openCard,
-  // toggleCards,
-  // toggleTemplateView,
-  // updateCreateFinderNode,
   trackEvent
-  // history
 }) => {
   const [isNewDropdownOpen, setNewDropdownOpen] = useState(false);
 
@@ -118,15 +113,6 @@ const FinderHeader = ({
         setNewDropdownOpen(false);
       };
     };
-
-    // const onTemplateClick = () => {
-    //   history.push(ROUTES.CREATE);
-    //   toggleCards();
-    //   updateCreateFinderNode(finderNode);
-    //   if (!isTemplateView) {
-    //     toggleTemplateView();
-    //   }
-    // };
 
     const CONTEXT_MENU_OPTIONS = [
       {
@@ -207,7 +193,7 @@ const FinderHeader = ({
             value={activePath.state.searchText}
             onChange={(e) => updateFinderSearchText(finderId, e.target.value)}
           />
-          {activePath.state.searchType && (
+          {(isSegment ? activePath.state.searchText : activePath.state.searchType) && (
             <IoMdCloseCircle
               onClick={() => {
                 updateFinderSearchText(finderId, '');
@@ -247,7 +233,6 @@ FinderHeader.propTypes = {
   activeNode: NodePropTypes.isRequired,
   selectedNodes: PropTypes.arrayOf(NodePropTypes).isRequired,
   moveNodes: PropTypes.arrayOf(NodePropTypes).isRequired,
-  // isTemplateView: PropTypes.bool.isRequired,
   user: UserPropTypes.isRequired,
 
   // Redux Actions
@@ -258,9 +243,6 @@ FinderHeader.propTypes = {
   openFinderModal: PropTypes.func.isRequired,
   startMoveFinderNodes: PropTypes.func.isRequired,
   openCard: PropTypes.func.isRequired,
-  // toggleCards: PropTypes.func.isRequired,
-  // toggleTemplateView: PropTypes.func.isRequired,
-  // updateCreateFinderNode: PropTypes.func.isRequired,
   trackEvent: PropTypes.func.isRequired
 };
 

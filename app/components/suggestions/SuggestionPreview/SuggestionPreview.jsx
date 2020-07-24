@@ -1,17 +1,26 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 
-import { INTEGRATIONS_MAP, SEGMENT } from 'appConstants';
+import { INTEGRATIONS_MAP, SEGMENT, AUDIT } from 'appConstants';
 
 import { getStyleApplicationFn } from 'utils/style';
 import style from './suggestion-preview.css';
 
 const s = getStyleApplicationFn(style);
 
-const SuggestionPreview = ({ id, question, answer, externalLinkAnswer, openCard, trackEvent }) => {
+const SuggestionPreview = ({
+  id,
+  question,
+  answer,
+  externalLinkAnswer,
+  source,
+  searchLogId,
+  openCard,
+  trackEvent
+}) => {
   const clickOpenCard = () => {
     trackEvent(SEGMENT.EVENT.OPEN_CARD_FROM_SEARCH, { 'Card ID': id, Question: question });
-    openCard({ _id: id });
+    openCard({ _id: id, baseLogId: searchLogId, source });
   };
 
   const renderExternalLogo = () => {
@@ -57,6 +66,8 @@ SuggestionPreview.propTypes = {
     link: PropTypes.string.isRequired,
     type: PropTypes.string.isRequired
   }),
+  source: PropTypes.oneOf(Object.values(AUDIT.SOURCE)),
+  searchLogId: PropTypes.string,
 
   // Redux Actions
   openCard: PropTypes.func.isRequired,
