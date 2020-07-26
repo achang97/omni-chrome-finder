@@ -129,10 +129,6 @@ const Cards = ({
           text: 'Close Cards',
           onClick: closeAllCards
         }}
-        secondaryButtonProps={{
-          text: 'No',
-          onClick: closeCardContainerModal
-        }}
         overlayClassName={s('rounded-lg')}
       />
     );
