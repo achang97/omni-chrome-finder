@@ -42,7 +42,7 @@ const Modal = ({
   shouldCloseOnOutsideClick,
   showHeader,
   className,
-  onRequestClose,
+  onClose,
   primaryButtonProps,
   secondaryButtonProps,
   showPrimaryButton,
@@ -57,7 +57,7 @@ const Modal = ({
   zIndex
 }) => {
   const onOutsideClick = () => {
-    if (shouldCloseOnOutsideClick && onRequestClose) onRequestClose();
+    if (shouldCloseOnOutsideClick && onClose) onClose();
   };
 
   const baseStyle = getBaseAnimationStyle(transitionMs);
@@ -87,7 +87,7 @@ const Modal = ({
                   if (extendedPrimaryButtonProps.onClick) {
                     extendedPrimaryButtonProps.onClick();
                   } else {
-                    onRequestClose();
+                    onClose();
                   }
                 }
               }}
@@ -96,8 +96,8 @@ const Modal = ({
               {showHeader && (
                 <div className={s(`modal-header ${headerClassName}`)}>
                   <div className={s('font-semibold')}> {title} </div>
-                  {onRequestClose && (
-                    <button onClick={onRequestClose} type="button">
+                  {onClose && (
+                    <button onClick={onClose} type="button">
                       <MdClose className={s('text-purple-gray-50')} />
                     </button>
                   )}
@@ -120,7 +120,7 @@ const Modal = ({
                       underline
                       underlineColor="purple-gray-50"
                       className={s(`flex-1 ${secondaryButtonProps ? 'ml-reg' : 'rounded-t-none'}`)}
-                      onClick={onRequestClose}
+                      onClick={onClose}
                       text="Close"
                       {...extendedPrimaryButtonProps}
                     />
@@ -153,7 +153,7 @@ const Modal = ({
 
 Modal.propTypes = {
   isOpen: PropTypes.bool,
-  onRequestClose: PropTypes.func,
+  onClose: PropTypes.func,
   shouldCloseOnOutsideClick: PropTypes.bool,
   className: PropTypes.string,
   headerClassName: PropTypes.string,
@@ -183,7 +183,7 @@ Modal.propTypes = {
 
 Modal.defaultProps = {
   isOpen: false,
-  onRequestClose: null,
+  onClose: null,
   shouldCloseOnOutsideClick: false,
   overlayClassName: '',
   headerClassName: '',

@@ -329,7 +329,7 @@ const CardCreateModal = ({
     return (
       <Modal
         isOpen={isOpen}
-        onRequestClose={() => closeCardModal(MODAL_TYPE.CREATE)}
+        onClose={() => closeCardModal(MODAL_TYPE.CREATE)}
         title={edits.question}
         overlayClassName={s('rounded-b-lg')}
         bodyClassName={s('flex flex-col')}

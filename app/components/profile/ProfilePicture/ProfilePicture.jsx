@@ -130,7 +130,7 @@ const ProfilePicture = ({
         </div>
         <Modal
           isOpen={!!uploadedImg}
-          onRequestClose={() => setUploadedImg(null)}
+          onClose={() => setUploadedImg(null)}
           title="Crop Profile Picture"
           primaryButtonProps={{
             text: 'Save Profile Picture',

@@ -125,7 +125,7 @@ const FinderConfirmModals = ({
         <ConfirmModal
           key={modalType}
           isOpen={modalOpen[modalType]}
-          onRequestClose={() => closeFinderModal(finderId, modalType)}
+          onClose={() => closeFinderModal(finderId, modalType)}
           {...rest}
         />
       ))}

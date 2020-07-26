@@ -273,7 +273,7 @@ const CardConfirmModals = ({
         <ConfirmModal
           key={modalType}
           isOpen={modalOpen[modalType]}
-          onRequestClose={canClose ? () => closeCardModal(modalType) : null}
+          onClose={canClose ? () => closeCardModal(modalType) : null}
           {...rest}
         />
       ))}

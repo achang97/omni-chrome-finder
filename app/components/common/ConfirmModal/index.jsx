@@ -15,7 +15,7 @@ const ConfirmModal = ({
   description,
   body,
   error,
-  onRequestClose,
+  onClose,
   primaryButtonProps,
   secondaryButtonProps,
   showPrimary,
@@ -29,7 +29,7 @@ const ConfirmModal = ({
   return (
     <Modal
       isOpen={isOpen}
-      onRequestClose={onRequestClose}
+      onClose={onClose}
       bodyClassName={s(`confirm-modal-body ${bodyClassName}`)}
       overlayClassName={s(`rounded-b-lg ${overlayClassName}`)}
       shouldCloseOnOutsideClick={shouldCloseOnOutsideClick}
@@ -37,10 +37,10 @@ const ConfirmModal = ({
       important={important}
       zIndex={zIndex}
       secondaryButtonProps={
-        showSecondary ? { text: 'No', onClick: onRequestClose, ...secondaryButtonProps } : null
+        showSecondary ? { text: 'No', onClick: onClose, ...secondaryButtonProps } : null
       }
       primaryButtonProps={
-        showPrimary ? { text: 'Yes', onClick: onRequestClose, ...primaryButtonProps } : null
+        showPrimary ? { text: 'Yes', onClick: onClose, ...primaryButtonProps } : null
       }
       showPrimaryButton={showPrimary}
     >
@@ -57,7 +57,7 @@ ConfirmModal.propTypes = {
   description: PropTypes.string,
   body: PropTypes.node,
   error: PropTypes.string,
-  onRequestClose: PropTypes.func,
+  onClose: PropTypes.func,
   primaryButtonProps: PropTypes.shape({
     text: PropTypes.node,
     onClick: PropTypes.func
@@ -82,7 +82,7 @@ ConfirmModal.defaultProps = {
   description: null,
   body: null,
   error: null,
-  onRequestClose: null,
+  onClose: null,
   shouldCloseOnOutsideClick: false,
   important: false,
   overlayClassName: '',

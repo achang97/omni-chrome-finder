@@ -90,7 +90,7 @@ const ExternalCreateModal = ({
     <>
       <Modal
         isOpen={isCreateModalOpen}
-        onRequestClose={toggleExternalCreateModal}
+        onClose={toggleExternalCreateModal}
         title={title || 'New External Card'}
         shouldCloseOnOutsideClick
         important

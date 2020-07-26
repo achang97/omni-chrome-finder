@@ -224,7 +224,7 @@ const ExternalVerification = ({
     return (
       <Modal
         isOpen={isSettingsModalOpen}
-        onRequestClose={toggleExternalSettingsModal}
+        onClose={toggleExternalSettingsModal}
         title="Verify Existing Documents Settings"
         shouldCloseOnOutsideClick
         important
