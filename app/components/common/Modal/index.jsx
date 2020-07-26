@@ -166,17 +166,8 @@ Modal.propTypes = {
   important: PropTypes.bool,
   zIndex: PropTypes.number,
   fixed: PropTypes.bool,
-  primaryButtonProps: PropTypes.shape({
-    disabled: PropTypes.bool,
-    isLoading: PropTypes.bool,
-    icon: PropTypes.node
-  }),
-  secondaryButtonProps: PropTypes.shape({
-    disabled: PropTypes.bool,
-    isLoading: PropTypes.bool,
-    icon: PropTypes.node,
-    onClick: PropTypes.func.isRequired
-  }),
+  primaryButtonProps: PropTypes.shape(Button.propTypes),
+  secondaryButtonProps: PropTypes.shape(Button.propTypes),
   showPrimaryButton: PropTypes.bool,
   children: PropTypes.node.isRequired
 };

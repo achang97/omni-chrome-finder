@@ -6,6 +6,7 @@ import style from './confirm-modal.css';
 
 import Modal from '../Modal';
 import Message from '../Message';
+import Button from '../Button';
 
 const s = getStyleApplicationFn(style);
 
@@ -58,14 +59,8 @@ ConfirmModal.propTypes = {
   body: PropTypes.node,
   error: PropTypes.string,
   onClose: PropTypes.func,
-  primaryButtonProps: PropTypes.shape({
-    text: PropTypes.node,
-    onClick: PropTypes.func
-  }),
-  secondaryButtonProps: PropTypes.shape({
-    text: PropTypes.node,
-    onClick: PropTypes.func
-  }),
+  primaryButtonProps: PropTypes.shape(Button.propTypes).isRequired,
+  secondaryButtonProps: PropTypes.shape(Button.propTypes),
   showPrimary: PropTypes.bool,
   showSecondary: PropTypes.bool,
   shouldCloseOnOutsideClick: PropTypes.bool,

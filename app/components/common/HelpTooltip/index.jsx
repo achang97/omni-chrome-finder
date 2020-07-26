@@ -20,7 +20,7 @@ const HelpTooltip = ({ tooltip, className, tooltipProps }) => {
 HelpTooltip.propTypes = {
   tooltip: PropTypes.string.isRequired,
   className: PropTypes.string,
-  tooltipProps: PropTypes.shape({})
+  tooltipProps: PropTypes.shape(Tooltip.propTypes)
 };
 
 HelpTooltip.defaultProps = {
