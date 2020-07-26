@@ -13,7 +13,7 @@ const MessageModal = ({
 }) => (
   <Modal
     isOpen={modalOpen}
-    onRequestClose={closeModal}
+    onClose={closeModal}
     showHeader={showHeader}
     title={title}
     shouldCloseOnOutsideClick

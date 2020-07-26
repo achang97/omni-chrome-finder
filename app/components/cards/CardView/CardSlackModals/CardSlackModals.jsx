@@ -134,7 +134,7 @@ const CardSlackModals = ({
         modalType: MODAL_TYPE.THREAD,
         title: isEditing ? 'Unselect messages you do not want shown' : 'View Slack Thread',
         shouldCloseOnOutsideClick: true,
-        onRequestClose: closeThreadModal,
+        onClose: closeThreadModal,
         showPrimary: isEditing,
         showSecondary: false,
         bodyClassName: s('p-0 overflow-auto'),
@@ -169,7 +169,7 @@ const CardSlackModals = ({
           <ConfirmModal
             key={modalType}
             isOpen={modalOpen[modalType]}
-            onRequestClose={canClose ? () => closeCardModal(modalType) : null}
+            onClose={canClose ? () => closeCardModal(modalType) : null}
             {...rest}
           />
         ))}

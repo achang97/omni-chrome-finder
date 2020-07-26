@@ -58,7 +58,7 @@ const CardApproversModal = ({
   return (
     <Modal
       isOpen={isOpen}
-      onRequestClose={onClose}
+      onClose={onClose}
       title="Add Approvers"
       overlayClassName={s('rounded-b-lg')}
       bodyClassName={s('text-sm p-lg')}

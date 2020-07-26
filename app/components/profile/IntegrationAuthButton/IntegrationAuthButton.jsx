@@ -194,7 +194,7 @@ const IntegrationAuthButton = ({
         shouldCloseOnOutsideClick
         isOpen={!!isModalOpen}
         showSecondary={false}
-        onRequestClose={resetState}
+        onClose={resetState}
         primaryButtonProps={{
           text: 'Sign In',
           disabled: hostUrl === '',
