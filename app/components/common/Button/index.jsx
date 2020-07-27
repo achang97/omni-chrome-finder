@@ -5,31 +5,42 @@ import style from './button.css';
 
 const s = getStyleApplicationFn(style);
 
-const getClassNames = (color, underline) => {
+const getButtonStyles = (color) => {
+  let outerClassName = '';
+  let innerClassName = '';
+  let borderColor;
+
   switch (color) {
     case 'primary':
-      return {
-        outerClassName: 'primary-gradient text-white',
-        innerClassName: underline ? 'primary-underline' : ''
-      };
+      outerClassName = 'primary-gradient text-white';
+      innerClassName = 'primary-underline';
+      break;
     case 'secondary':
-      return {
-        outerClassName: `button-${color}`,
-        innerClassName: underline ? `button-underline-${color}` : ''
-      };
+      outerClassName = `bg-white text-purple-reg`;
+      borderColor = '#777bad33';
+      break;
     case 'transparent':
-      return {
-        outerClassName: `light-gradient button-${color}`,
-        innerClassName: underline ? `button-underline-${color}` : ''
-      };
+      outerClassName = `light-gradient text-purple-reg`;
+      borderColor = '#777bad33';
+      break;
     case 'gold':
-      return {
-        outerClassName: `gold-gradient text-gold-reg`,
-        innerClassName: underline ? `button-underline-${color}` : ''
-      };
+      outerClassName = `gold-gradient text-gold-reg`;
+      borderColor = '#b18b5033';
+      break;
+    case 'danger': {
+      outerClassName = 'bg-red-100 text-red-500';
+      innerClassName = `border-red-200`;
+      break;
+    }
     default:
-      return {};
+      break;
   }
+
+  return {
+    outerClassName,
+    innerClassName,
+    innerStyle: { borderColor }
+  };
 };
 
 const Button = ({
@@ -45,30 +56,30 @@ const Button = ({
   disabled,
   ...rest
 }) => {
-  const { outerClassName = '', innerClassName = '' } = getClassNames(color, underline);
-
   const protectedOnClick = (e) => {
     if (onClick && !disabled) onClick(e);
   };
 
+  const { outerClassName, innerClassName, innerStyle } = getButtonStyles(color);
+  const underlineClassName = `
+    underline-border
+    ${underlineColor ? `border-${underlineColor}` : innerClassName}
+  `;
+
   return (
     <div
-      className={s(
-        `button-container ${className} ${outerClassName} ${
-          disabled ? 'button-disabled' : 'button-hover'
-        }`
-      )}
+      className={s(`
+        button-container ${className} ${outerClassName}
+        ${disabled ? 'button-disabled' : 'button-hover'}
+      `)}
       onClick={protectedOnClick}
       {...rest}
     >
       {iconLeft && icon}
       {text && (
         <div
-          className={s(
-            `button-text ${
-              underline && underlineColor ? `underline-border border-${underlineColor}` : ''
-            } ${innerClassName} ${textClassName}`
-          )}
+          className={s(`button-text ${textClassName} ${underline ? underlineClassName : ''}`)}
+          style={!underlineColor ? innerStyle : {}}
         >
           {text}
         </div>

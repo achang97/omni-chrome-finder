@@ -2,39 +2,6 @@
   @apply flex items-center justify-center shadow-md p-reg rounded-lg;
 }
 
-.button-shadow {
-  width: 80%;
-  background-color: white;
-  height: 50%;
-}
-
 .button-text {
   font-size: 14px;
-}
-
-/* PRIMARY BUTTON (in global styles) */
-
-/* SECONDARY BUTTON */
-.button-secondary {
-  background: white;
-
-  @apply text-purple-reg;
-}
-
-.button-underline-secondary {
-  border-bottom: 2px solid #777bad33;
-}
-
-/* TRANSPARENT BUTTON */
-.button-transparent {
-  @apply text-purple-reg;
-}
-
-.button-underline-transparent {
-  border-bottom: 2px solid #777bad33;
-}
-
-/* GOLD BUTTON */
-.button-underline-gold {
-  border-bottom: 2px solid #b18b5033;
 }

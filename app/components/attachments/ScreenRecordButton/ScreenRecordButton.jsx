@@ -7,9 +7,8 @@ import { Tooltip, Button } from 'components/common';
 
 import { getStyleApplicationFn } from 'utils/style';
 import attachmentsStyle from '../attachments.css';
-import screenRecordButtonStyle from './screen-record-button.css';
 
-const s = getStyleApplicationFn(attachmentsStyle, screenRecordButtonStyle);
+const s = getStyleApplicationFn(attachmentsStyle);
 
 const ScreenRecordButton = ({
   abbrText,
@@ -46,10 +45,9 @@ const ScreenRecordButton = ({
       >
         <Button
           onClick={onClick}
-          className={s(`attachment-button screen-record-button ${className}`)}
+          className={s(`attachment-button ${className}`)}
           text={showText ? text : ''}
-          underline
-          underlineColor="red-200"
+          color="danger"
           icon={<Icon className={s(`${showText ? 'ml-sm' : ''} text-red-500`)} />}
           iconLeft={false}
           disabled={!navigator.mediaDevices || (activeId !== null && !isActiveButton)}
