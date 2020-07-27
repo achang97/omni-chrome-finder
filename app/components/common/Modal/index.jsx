@@ -46,6 +46,7 @@ const Modal = ({
   primaryButtonProps,
   secondaryButtonProps,
   showPrimaryButton,
+  showSecondaryButton,
   headerClassName,
   overlayClassName,
   bodyClassName,
@@ -104,13 +105,15 @@ const Modal = ({
                 </div>
               )}
               <div className={s(`modal-body ${bodyClassName}`)}>{children}</div>
-              {(showPrimaryButton || secondaryButtonProps) && (
-                <div className={s(secondaryButtonProps ? 'flex py-sm px-reg' : '')}>
-                  {secondaryButtonProps && (
+              {(showPrimaryButton || showSecondaryButton) && (
+                <div className={s(showSecondaryButton ? 'flex py-sm px-reg' : '')}>
+                  {showSecondaryButton && (
                     <Button
                       color="transparent"
                       className={s('flex-1 mr-reg')}
                       underline
+                      text="Close"
+                      onClick={onClose}
                       {...getButtonProps(secondaryButtonProps)}
                     />
                   )}
@@ -119,7 +122,7 @@ const Modal = ({
                       color="primary"
                       underline
                       underlineColor="purple-gray-50"
-                      className={s(`flex-1 ${secondaryButtonProps ? 'ml-reg' : 'rounded-t-none'}`)}
+                      className={s(`flex-1 ${showSecondaryButton ? 'ml-reg' : 'rounded-t-none'}`)}
                       onClick={onClose}
                       text="Close"
                       {...extendedPrimaryButtonProps}
@@ -169,26 +172,24 @@ Modal.propTypes = {
   primaryButtonProps: PropTypes.shape(Button.propTypes),
   secondaryButtonProps: PropTypes.shape(Button.propTypes),
   showPrimaryButton: PropTypes.bool,
+  showSecondaryButton: PropTypes.bool,
   children: PropTypes.node.isRequired
 };
 
 Modal.defaultProps = {
   isOpen: false,
-  onClose: null,
   shouldCloseOnOutsideClick: false,
   overlayClassName: '',
   headerClassName: '',
   bodyClassName: '',
   bodyStyle: {},
   className: '',
-  title: null,
-  primaryButtonProps: null,
-  secondaryButtonProps: null,
   transitionMs: 100,
   important: false,
   fixed: false,
   showHeader: true,
-  showPrimaryButton: true
+  showPrimaryButton: true,
+  showSecondaryButton: false
 };
 
 export default Modal;

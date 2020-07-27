@@ -37,13 +37,14 @@ const ConfirmModal = ({
       title={title}
       important={important}
       zIndex={zIndex}
-      secondaryButtonProps={
-        showSecondary ? { text: 'No', onClick: onClose, ...secondaryButtonProps } : null
-      }
       primaryButtonProps={
         showPrimary ? { text: 'Yes', onClick: onClose, ...primaryButtonProps } : null
       }
+      secondaryButtonProps={
+        showSecondary ? { text: 'No', onClick: onClose, ...secondaryButtonProps } : null
+      }
       showPrimaryButton={showPrimary}
+      showSecondaryButton={showSecondary}
     >
       {description && <div> {description} </div>}
       {body}
