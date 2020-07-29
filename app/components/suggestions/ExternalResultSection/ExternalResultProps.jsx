@@ -9,24 +9,14 @@ import { createHighlightedElement } from 'utils/search';
 
 import style from './external-result-section.css';
 
-const FOLDER_MIME_TYPE = 'application/vnd.google-apps.folder';
 const s = getStyleApplicationFn(style);
-
-const HIGHLIGHT_TAGS = {
-  SLACK: { start: '\ue000', end: '\ue001' },
-  CONFLUENCE: { start: '@@@hl@@@', end: '@@@endhl@@@' },
-  ZENDESK: { start: '<em>', end: '</em>' }
-};
 
 const getItemProps = (type, item) => {
   switch (type) {
     case INTEGRATIONS.GOOGLE.type: {
-      const { id, iconLink, name, owners, mimeType } = item;
+      const { iconLink, owners } = item;
       return {
         logo: iconLink,
-        id,
-        title: name,
-        showDropdown: mimeType !== FOLDER_MIME_TYPE,
         body: owners && (
           <>
             {owners.map(({ displayName, permissionId, me }, i) => (
@@ -40,10 +30,8 @@ const getItemProps = (type, item) => {
       };
     }
     case INTEGRATIONS.ZENDESK.type: {
-      const { id, title, snippet, vote_sum: voteSum, author, promoted, draft } = item;
+      const { snippet, vote_sum: voteSum, author, promoted, draft, commonProps } = item;
       return {
-        id,
-        title,
         body: (
           <>
             <div className={s('flex items-center')}>
@@ -62,36 +50,16 @@ const getItemProps = (type, item) => {
               {draft && <div className={s('italic mr-sm')}> Draft </div>}
             </div>
             <div className={s('line-clamp-2 excerpt-text mt-sm')}>
-              {createHighlightedElement(snippet, HIGHLIGHT_TAGS.ZENDESK)}
+              {createHighlightedElement(snippet, commonProps.highlightTags)}
             </div>
           </>
-        ),
-        showDropdown: true
+        )
       };
-    }
-    case INTEGRATIONS.CONFLUENCE.type: {
-      const { id, title } = item;
-      return {
-        id,
-        title,
-        highlightTags: HIGHLIGHT_TAGS.CONFLUENCE,
-        showDropdown: true
-        // body: excerpt && (
-        //   <div className={s('line-clamp-2 excerpt-text')}>
-        //     {createHighlightedElement(excerpt, HIGHLIGHT_TAGS.CONFLUENCE)}
-        //   </div>
-        // )
-      };
-    }
-    case INTEGRATIONS.JIRA.type: {
-      const { id, title } = item;
-      return { id, title, highlightTags: HIGHLIGHT_TAGS.CONFLUENCE, showDropdown: false };
     }
     case INTEGRATIONS.SLACK.type: {
-      const { iid, ts, text, user, channel } = item;
+      const { ts, text, user, channel, commonProps } = item;
       return {
-        id: iid,
-        showDropdown: false,
+        showTitle: false,
         body: (
           <>
             <div className={s('flex items-center mb-sm')}>
@@ -108,7 +76,7 @@ const getItemProps = (type, item) => {
             <div className={s('flex items-start')}>
               <img src={user.imageUrl} alt="" className={s('slack-thumbnail')} />
               <div className={s('line-clamp-3 excerpt-text')}>
-                {createHighlightedElement(text, HIGHLIGHT_TAGS.SLACK)}
+                {createHighlightedElement(text, commonProps.highlightTags)}
               </div>
             </div>
           </>

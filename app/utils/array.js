@@ -1,3 +1,5 @@
+import _ from 'lodash';
+
 /*
  * Returns a shallow copy of array with element at index removed.
  */
@@ -21,7 +23,7 @@ export function updateIndex(array, index, newElement, merge = false) {
  */
 export function updateArrayOfObjects(array, matchObj, newInfoObj, merge = true) {
   return array.map((elem) => {
-    const isMatch = Object.entries(matchObj).every(([key, value]) => elem[key] === value);
+    const isMatch = Object.entries(matchObj).every(([key, value]) => _.get(elem, key) === value);
     if (isMatch) {
       if (merge) {
         return { ...elem, ...newInfoObj };

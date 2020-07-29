@@ -138,7 +138,7 @@ export default function searchReducer(state = initialState, action) {
         ...state,
         integrations: {
           ...integrations,
-          [integrations]: updateArrayOfObjects(integrations[integration], matchParams, update)
+          [integration]: updateArrayOfObjects(integrations[integration], matchParams, update)
         }
       };
     }

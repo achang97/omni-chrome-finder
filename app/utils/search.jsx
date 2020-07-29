@@ -10,12 +10,16 @@ function replaceFrontSlash(text) {
 }
 
 export function getHighlightRegex(highlightTags) {
-  const { start: startTag, end: endTag } = highlightTags;
+  const [startTag, endTag] = highlightTags;
   const pattern = `${replaceFrontSlash(startTag)}(.+?)${replaceFrontSlash(endTag)}`;
   return new RegExp(pattern, 'g');
 }
 
 export function replaceHighlights(text, highlightTags) {
+  if (!highlightTags) {
+    return [text];
+  }
+
   const highlightRegex = getHighlightRegex(highlightTags);
   const matchSections = text.split(highlightRegex);
 
