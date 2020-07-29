@@ -35,23 +35,21 @@ const ExternalResultSection = ({
 
   const renderResult = (result) => {
     const resultProps = getItemProps(integrationType, result);
-    const { id, logo, title, body, showDropdown, timestamp, highlightTags } = resultProps;
-    const { card, trackingLink } = result;
+    const { logo, body, timestamp, showTitle } = resultProps;
+    const { card, trackingLink, commonProps } = result;
 
     return (
       <ExternalResult
-        key={id}
-        id={id}
+        key={commonProps.id}
         type={integrationType}
         logo={logo}
-        url={trackingLink}
         searchLogId={searchLogId}
-        title={title}
-        card={card}
+        showTitle={showTitle}
         body={body}
         timestamp={timestamp}
-        highlightTags={highlightTags}
-        showDropdown={showDropdown}
+        url={trackingLink}
+        card={card}
+        commonProps={commonProps}
       />
     );
   };

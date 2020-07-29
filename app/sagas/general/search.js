@@ -69,7 +69,9 @@ export default function* watchSearchActions() {
           externalLinkAnswer: { type: integrationType },
           resultId
         } = yield select((state) => state.externalVerification);
-        yield put(updateSearchIntegrationResult(integrationType, { id: resultId }, { card }));
+        yield put(
+          updateSearchIntegrationResult(integrationType, { 'commonProps.id': resultId }, { card })
+        );
         break;
       }
 

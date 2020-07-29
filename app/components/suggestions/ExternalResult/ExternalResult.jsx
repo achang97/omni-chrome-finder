@@ -7,7 +7,7 @@ import { CardStatusIndicator } from 'components/cards';
 import { copyText } from 'utils/window';
 import { getStyleApplicationFn } from 'utils/style';
 import { createHighlightedElement } from 'utils/search';
-import { URL_REGEX } from 'appConstants';
+import { URL_REGEX, CARD } from 'appConstants';
 
 import style from './external-result.css';
 import sharedStyle from '../styles/external-result.css';
@@ -17,18 +17,16 @@ import SuggestionDropdown from '../SuggestionDropdown';
 const s = getStyleApplicationFn(style, sharedStyle);
 
 const ExternalResult = ({
-  id,
   url,
   searchLogId,
   type,
   logo,
-  title,
   timestamp,
+  showTitle,
   body,
   bodyClassName,
   card,
-  showDropdown,
-  highlightTags,
+  commonProps,
   isEditor,
   openCard,
   updateExternalLinkAnswer,
@@ -73,22 +71,27 @@ const ExternalResult = ({
       }
     ];
   } else if (isEditor) {
-    ACTIONS = [
-      {
-        label: 'Verify with Omni',
-        onClick: () => {
-          toggleExternalCreateModal();
-          updateExternalTitle(title);
-          updateExternalResultId(id);
+    const regexInfo = URL_REGEX.EXTERNAL_VERIFICATION[type];
+    const match = regexInfo && commonProps.url.match(regexInfo.regex);
 
-          const { getLinks, regex } = URL_REGEX.EXTERNAL_VERIFICATION[type];
-          const links = getLinks(url.match(regex));
-          updateExternalLinkAnswer({ type, ...links });
+    if (match) {
+      const links = regexInfo.getLinks(match);
+      ACTIONS = [
+        {
+          label: 'Verify with Omni',
+          onClick: () => {
+            toggleExternalCreateModal();
+            updateExternalTitle(commonProps.parsedTitle);
+            updateExternalResultId(commonProps.id);
+
+            updateExternalLinkAnswer({ type, ...links });
+          }
         }
-      }
-    ];
+      ];
+    }
   }
 
+  const shouldDisplayTitle = showTitle && commonProps.title;
   return (
     <div className={s('external-result flex-col cursor-pointer')} onClick={onResultClick}>
       <div className={s('flex items-center')}>
@@ -101,20 +104,23 @@ const ExternalResult = ({
             logo
           ))}
         <div className={s(`min-w-0 flex-1 flex flex-col ${logo ? 'ml-sm' : ''}`)}>
-          {title && (
+          {shouldDisplayTitle && (
             <div className={s('external-result-text')}>
-              {highlightTags ? createHighlightedElement(title, highlightTags) : title}
+              {createHighlightedElement(commonProps.title, commonProps.highlightTags)}
             </div>
           )}
           <div
-            className={s(`external-result-description ${title ? 'mt-xs' : ''} ${bodyClassName}`)}
+            className={s(`
+              external-result-description
+              ${shouldDisplayTitle ? 'mt-xs' : ''} ${bodyClassName}
+            `)}
           >
             {body}
           </div>
         </div>
         <div className={s('flex self-start')}>
           {card && <CardStatusIndicator status={card.status} />}
-          {showDropdown && <SuggestionDropdown actions={ACTIONS} />}
+          <SuggestionDropdown actions={ACTIONS} />
         </div>
       </div>
       {timestamp && (
@@ -130,23 +136,24 @@ const ExternalResult = ({
 };
 
 ExternalResult.propTypes = {
-  id: PropTypes.oneOfType([PropTypes.string, PropTypes.number]).isRequired,
   url: PropTypes.string.isRequired,
   searchLogId: PropTypes.string.isRequired,
   type: PropTypes.string.isRequired,
   logo: PropTypes.node,
-  title: PropTypes.string,
+  showTitle: PropTypes.bool,
   timestamp: PropTypes.string,
   body: PropTypes.node,
   bodyClassName: PropTypes.string,
   card: PropTypes.shape({
     _id: PropTypes.string.isRequired,
-    status: PropTypes.string.isRequired
+    status: PropTypes.oneOf(Object.values(CARD.STATUS)).isRequired
   }),
-  showDropdown: PropTypes.bool,
-  highlightTags: PropTypes.shape({
-    start: PropTypes.string,
-    end: PropTypes.string
+  commonProps: PropTypes.shape({
+    id: PropTypes.oneOfType([PropTypes.string, PropTypes.number]).isRequired,
+    url: PropTypes.string.isRequired,
+    title: PropTypes.string,
+    parsedTitle: PropTypes.string,
+    highlightTags: PropTypes.arrayOf(PropTypes.string)
   }),
 
   // Redux State
@@ -162,7 +169,8 @@ ExternalResult.propTypes = {
 
 ExternalResult.defaultProps = {
   bodyClassName: '',
-  showDropdown: true
+  showTitle: true,
+  commonProps: {}
 };
 
 export default ExternalResult;

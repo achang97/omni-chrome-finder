@@ -16,11 +16,7 @@ import SuggestionDropdown from '../SuggestionDropdown';
 
 const s = getStyleApplicationFn(mainStyle);
 
-const HIGHLIGHT = {
-  start: '<HIGHLIGHT>',
-  end: '</HIGHLIGHT>'
-};
-
+const HIGHLIGHT = ['<HIGHLIGHT>', '</HIGHLIGHT>'];
 const HIGHLIGHT_REGEX = getHighlightRegex(HIGHLIGHT);
 
 const getBestAnalyzer = (highlights, baseKey) => {
