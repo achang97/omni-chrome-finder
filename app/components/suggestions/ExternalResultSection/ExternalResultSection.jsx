@@ -36,7 +36,7 @@ const ExternalResultSection = ({
   const renderResult = (result) => {
     const resultProps = getItemProps(integrationType, result);
     const { logo, body, timestamp, showTitle } = resultProps;
-    const { card, trackingLink, commonProps } = result;
+    const { card, commonProps } = result;
 
     return (
       <ExternalResult
@@ -47,7 +47,6 @@ const ExternalResultSection = ({
         showTitle={showTitle}
         body={body}
         timestamp={timestamp}
-        url={trackingLink}
         card={card}
         commonProps={commonProps}
       />

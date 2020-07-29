@@ -17,7 +17,6 @@ import SuggestionDropdown from '../SuggestionDropdown';
 const s = getStyleApplicationFn(style, sharedStyle);
 
 const ExternalResult = ({
-  url,
   searchLogId,
   type,
   logo,
@@ -38,7 +37,7 @@ const ExternalResult = ({
 
   const shareCard = () => {
     // Create invisible element with text
-    copyText(url);
+    copyText(commonProps.trackingUrl);
     setShowShare(true);
   };
 
@@ -55,7 +54,7 @@ const ExternalResult = ({
   };
 
   const onResultClick = () => {
-    window.open(`${url}&baseLogId=${searchLogId}`, '_blank');
+    window.open(`${commonProps.trackingUrl}&baseLogId=${searchLogId}`, '_blank');
   };
 
   let ACTIONS = [];
@@ -136,7 +135,6 @@ const ExternalResult = ({
 };
 
 ExternalResult.propTypes = {
-  url: PropTypes.string.isRequired,
   searchLogId: PropTypes.string.isRequired,
   type: PropTypes.string.isRequired,
   logo: PropTypes.node,
@@ -151,6 +149,7 @@ ExternalResult.propTypes = {
   commonProps: PropTypes.shape({
     id: PropTypes.oneOfType([PropTypes.string, PropTypes.number]).isRequired,
     url: PropTypes.string.isRequired,
+    trackingUrl: PropTypes.string.isRequired,
     title: PropTypes.string,
     parsedTitle: PropTypes.string,
     highlightTags: PropTypes.arrayOf(PropTypes.string)

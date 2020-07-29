@@ -153,7 +153,8 @@ const IntegrationAuthButton = ({
             <Button
               text={`Connected${textSuffix}`}
               color="secondary"
-              className={s(`text-green-reg bg-green-xlight p-reg shadow-none ${className}`)}
+              className={s(`bg-green-xlight p-reg shadow-none ${className}`)}
+              textClassName={s('text-green-reg')}
               icon={
                 isLoading ? (
                   <Loader size="sm" className={s('ml-reg')} />
