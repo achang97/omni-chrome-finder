@@ -48,23 +48,26 @@ const SettingsSection = React.forwardRef(
       return (
         <div>
           {options.map((option, i) => {
-            const { title: optionTitle, logo } = option;
+            const { logo, title: optionTitle, footer: optionFooter } = option;
             return (
               <div
                 key={optionTitle}
                 className={s(
-                  `flex bg-white p-reg justify-between border border-solid border-gray-xlight items-center rounded-lg ${
+                  `bg-white p-reg border border-solid border-gray-xlight rounded-lg ${
                     i > 0 ? 'mt-sm' : ''
                   }`
                 )}
               >
-                <div className={s('flex flex-1 items-center')}>
-                  <div className={s('settings-integration-img-container')}>
-                    <img src={logo} className={s('settings-integration-img')} alt={optionTitle} />
+                <div className={s('flex justify-between items-center')}>
+                  <div className={s('flex flex-1 items-center')}>
+                    <div className={s('settings-integration-img-container')}>
+                      <img src={logo} className={s('settings-integration-img')} alt={optionTitle} />
+                    </div>
+                    <div className={s('flex-1 text-sm')}> {optionTitle} </div>
                   </div>
-                  <div className={s('flex-1 text-sm')}> {optionTitle} </div>
+                  {renderOptionAction(option)}
                 </div>
-                {renderOptionAction(option)}
+                {optionFooter && <div className={s('mt-sm text-xs text-gray')}>{optionFooter}</div>}
               </div>
             );
           })}
