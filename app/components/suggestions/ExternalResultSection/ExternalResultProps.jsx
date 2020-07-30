@@ -83,6 +83,12 @@ const getItemProps = (type, item) => {
         )
       };
     }
+    case INTEGRATIONS.SALESFORCE.type: {
+      const { type: resultType } = item;
+      return {
+        body: <div> {resultType} </div>
+      };
+    }
     default:
       return {};
   }

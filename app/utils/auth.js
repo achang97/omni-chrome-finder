@@ -46,6 +46,8 @@ export function getIntegrationAuthLink(userId, token, integration, queryParams =
       }&scope=chat:write,commands,chat:write.public&user_scope=channels:history,channels:read,chat:write,groups:history,groups:read,im:history,im:read,im:write,mpim:history,mpim:read,mpim:write,search:read,team:read,users.profile:read,users:read,users:read.email&state=`;
       return `${slackAuthUrl}${userId}`;
     }
+    case INTEGRATIONS.SALESFORCE.type:
+    case INTEGRATIONS.DROPBOX.type:
     case INTEGRATIONS.ZENDESK.type:
     case INTEGRATIONS.GOOGLE.type:
     case INTEGRATIONS.CONFLUENCE.type:

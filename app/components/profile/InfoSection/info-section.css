@@ -1,4 +1,4 @@
-.profile-about-input {
+.info-about-input {
   border-radius: 0 !important;
   border: 0 !important;
   box-shadow: 0 !important;
@@ -7,6 +7,6 @@
   border-bottom: 1px solid #211a1d40 !important;
 }
 
-.profile-about-input:focus {
+.info-about-input:focus {
   box-shadow: none !important;
 }
