@@ -49,6 +49,7 @@ export function getIntegrationAuthLink(userId, token, integration, queryParams =
     case INTEGRATIONS.SALESFORCE.type:
     case INTEGRATIONS.DROPBOX.type:
     case INTEGRATIONS.ZENDESK.type:
+    case INTEGRATIONS.GMAIL.type:
     case INTEGRATIONS.GOOGLE.type:
     case INTEGRATIONS.CONFLUENCE.type:
     case INTEGRATIONS.JIRA.type: {
