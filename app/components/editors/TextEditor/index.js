@@ -4,10 +4,11 @@ import TextEditor from './TextEditor';
 
 const mapStateToProps = (state) => {
   const {
-    auth: { token }
+    auth: { token },
+    cards: { cardsHeight, cardsWidth, cardsMaximized }
   } = state;
 
-  return { token };
+  return { token, cardsHeight, cardsWidth, cardsMaximized };
 };
 
 const mapDispatchToProps = {

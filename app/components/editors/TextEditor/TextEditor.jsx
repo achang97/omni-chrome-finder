@@ -40,6 +40,22 @@ class TextEditor extends React.Component {
     this.createCustomButtons();
   }
 
+  componentDidUpdate(prevProps) {
+    const {
+      cardsHeight: prevHeight,
+      cardsWidth: prevWidth,
+      cardsMaximized: prevExpanded
+    } = prevProps;
+    const { cardsHeight, cardsWidth, cardsMaximized } = this.props;
+
+    const hasChangedSize =
+      cardsHeight !== prevHeight || cardsWidth !== prevWidth || prevExpanded !== cardsMaximized;
+
+    if (hasChangedSize && this.editorRef.current) {
+      this.editorRef.current.editor.size.syncIframe();
+    }
+  }
+
   createCustomButtons = () => {
     const { openCard } = this.props;
 
@@ -170,6 +186,9 @@ TextEditor.propTypes = {
 
   // Redux State
   token: PropTypes.string.isRequired,
+  cardsHeight: PropTypes.number.isRequired,
+  cardsWidth: PropTypes.number.isRequired,
+  cardsMaximized: PropTypes.bool.isRequired,
 
   // Redux Actions
   openCard: PropTypes.func.isRequired
