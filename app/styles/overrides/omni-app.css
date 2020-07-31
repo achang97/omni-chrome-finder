@@ -73,9 +73,9 @@
 }
 
 .omni-app-container p,
-pre,
-code {
-  margin: 7px 0;
+.omni-app-container pre,
+.omni-app-container code {
+  margin: 10px 0;
 }
 
 .omni-app-container ol li,
@@ -93,7 +93,7 @@ code {
 
 .omni-app-container ol,
 .omni-app-container ul {
-  padding-left: 20px;
+  padding-left: 35px;
 }
 
 .omni-app-container ol {
