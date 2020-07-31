@@ -8,6 +8,111 @@ const CONFIG = {
   charCounterCount: false,
   attribution: false,
   quickInsertEnabled: false,
+  iframe: true,
+
+  // NOTE: this is pretty much ripped from the style overrides. It's obviously not pretty
+  // but allows for the styles to appear more consistent to the end user. This could
+  // need to be restructured later, if Froala allows for more instantenous setting of the id / classname.
+  iframeDefaultStyle: `
+    html {
+      height: auto;
+      cursor: text !important;
+      font-size: 14px !important;
+      line-height: 1.25 !important;
+      cursor: default;
+
+      /* prettier-ignore */
+      font-family:
+        "HelveticaNeue-Light",
+        "Helvetica Neue Light",
+        "Helvetica Neue",
+        Helvetica,
+        Arial,
+        sans-serif !important;
+      font-weight: 400;
+      box-sizing: border-box;
+      letter-spacing: 0;
+    }
+
+    body {
+      padding: 10px;
+      margin: 0px;
+    }
+
+    p { margin: 0; }
+
+    p, h1, h2, h3, h4, h5, h6 {
+      line-height: 1.25;
+    }
+
+    h1, h2, h3, h4, h5, h6 {
+      font-weight: bold !important;
+      margin: 0.7em 0;
+
+      /* prettier-ignore */
+      font-family:
+        'HelveticaNeue-Light',
+        'Helvetica Neue Light',
+        'Helvetica Neue',
+        Helvetica,
+        Arial,
+        sans-serif !important;
+    }
+
+    h1 {
+      font-size: 1.575em;
+    }
+
+    h2 {
+      font-size: 1.425em;
+    }
+
+    h3 {
+      font-size: 1.3em;
+    }
+
+    h4 {
+      font-size: 1em;
+    }
+
+    h5 {
+      font-size: 0.8em;
+    }
+
+    h6 {
+      font-size: 0.7em;
+    }
+
+    pre, code {
+      margin: 0;
+      font-family: 'Courier New', sans-serif;
+      background: #211a1d0d;
+      border-radius: 8px;
+      padding: 5px;
+    }
+
+    ol, ul {
+      margin: 0 14px;
+      padding-left: 20px;
+    }
+
+    ol {
+      list-style-type: decimal;
+    }
+
+    ul {
+      list-style-type: disc;
+    }
+  `,
+  iframeStyleFiles: [
+    'https://cdn.jsdelivr.net/npm/froala-editor@3.0.6/css/froala_style.min.css',
+    'https://cdn.jsdelivr.net/npm/froala-editor@3.0.6/css/froala_editor.pkgd.min.css',
+    'https://cdn.jsdelivr.net/npm/froala-editor@3.0.6/css/plugins.pkgd.min.css',
+    'https://cdn.jsdelivr.net/npm/froala-editor@3.0.6/css/froala_editor.min.css',
+    'https://cdn.jsdelivr.net/npm/froala-editor@3.0.6/css/third_party/embedly.min.css',
+    chrome.runtime.getURL('/style-overrides/froala.css'),
+    chrome.runtime.getURL('/style-overrides/omni-app.css')
+  ],
 
   heightMax: '100vh',
 
@@ -24,7 +129,7 @@ const CONFIG = {
   linkAlwaysBlank: true,
   linkAutoPrefix: 'https://',
   linkInsertButtons: ['linkBack'],
-  linkEditButtons: ['linkOpen', 'linkEdit', 'linkRemove'],
+  linkEditButtons: ['openCustomLink', 'linkEdit', 'linkRemove'],
 
   paragraphFormatDefaultSelection: 'Normal',
   paragraphFormatSelection: true,

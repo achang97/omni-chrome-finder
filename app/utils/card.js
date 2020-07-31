@@ -1,4 +1,5 @@
 import _ from 'lodash';
+import queryString from 'query-string';
 
 import { URL, CARD, REQUEST } from 'appConstants';
 
@@ -193,6 +194,15 @@ export function copyCardUrl(cardId) {
   copyText(`${URL.EXTENSION}?cardId=${cardId}`);
 }
 
+export function getCardUrlParams(url) {
+  if (!url.startsWith(URL.EXTENSION)) {
+    return null;
+  }
+
+  const searchParams = url.substring(url.indexOf('?') + 1);
+  return queryString.parse(searchParams);
+}
+
 export function isExternalCard(card) {
   return !!card.externalLinkAnswer;
 }
@@ -233,5 +243,6 @@ export default {
   isExternalCard,
   isSlackCard,
   copyCardUrl,
+  getCardUrlParams,
   getDraggableStyle
 };

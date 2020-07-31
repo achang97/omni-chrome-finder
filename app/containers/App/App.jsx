@@ -3,7 +3,7 @@ import PropTypes from 'prop-types';
 import { Switch, Redirect } from 'react-router-dom';
 import * as Sentry from '@sentry/browser';
 
-import { ROUTES, APP_CONTAINER_ID, APP_CONTAINER_CLASSNAME } from 'appConstants';
+import { ROUTES, APP_CLASSNAME } from 'appConstants';
 import { auth } from 'utils';
 import { UserPropTypes } from 'utils/propTypes';
 
@@ -46,14 +46,15 @@ import 'froala-editor/css/froala_style.min.css';
 import 'froala-editor/css/froala_editor.pkgd.min.css';
 import 'froala-editor/css/plugins.pkgd.min.css';
 import 'froala-editor/css/froala_editor.min.css';
+import 'froala-editor/css/third_party/embedly.min.css';
+import 'codemirror/lib/codemirror.css';
 /* eslint-enable import/no-extraneous-dependencies */
 
 // Overrides
+import 'styles/overrides/omni-app.css';
 import 'styles/overrides/froala.css';
 
-import style from './App.css';
-
-const s = getStyleApplicationFn(style);
+const s = getStyleApplicationFn();
 
 const DOCK_WIDTH = 350;
 
@@ -78,7 +79,7 @@ const App = ({ dockVisible, isLoggedIn, user, showAutofind, requestGetUser, requ
   const isValidUser = auth.isValidUser(user) && user.company && !user.company.disabled;
 
   return (
-    <div className={s(APP_CONTAINER_CLASSNAME)} id={APP_CONTAINER_ID}>
+    <div className={APP_CLASSNAME}>
       <Dock position="right" width={DOCK_WIDTH} isVisible={dockVisible} isFullHeight={isValidUser}>
         <div className={s(`flex relative flex-col ${isValidUser ? 'h-screen' : ''}`)}>
           <MessageModal />

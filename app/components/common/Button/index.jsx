@@ -98,7 +98,7 @@ Button.propTypes = {
   onClick: PropTypes.func,
   icon: PropTypes.node,
   iconLeft: PropTypes.bool,
-  color: PropTypes.oneOf(['primary', 'secondary', 'transparent', 'gold']),
+  color: PropTypes.oneOf(['primary', 'secondary', 'transparent', 'gold', 'danger']),
   disabled: PropTypes.bool
 };
 

@@ -1,15 +1,21 @@
 #omni-chrome-ext-main-container .fr-wrapper {
   flex: 1;
   min-height: 0;
-  overflow: auto;
   border-radius: 0 0 8px 8px;
+  cursor: text;
+}
+
+#omni-chrome-ext-main-container .fr-iframe {
+  flex: 1;
 }
 
 #omni-chrome-ext-main-container .fr-view {
   padding: 10px;
+  margin: 0;
   font-size: 14px;
   min-height: 100%;
   color: black;
+  box-sizing: border-box;
 }
 
 #omni-chrome-ext-main-container .fr-element *:not(pre) {
@@ -24,7 +30,9 @@
 
 #omni-chrome-ext-main-container .fr-placeholder {
   font-family: inherit;
-  font-size: 14px;
+  font-size: 14px !important;
+  margin: 0 !important;
+  padding: 10px !important;
   z-index: 0;
 }
 
@@ -44,6 +52,7 @@
 #omni-chrome-ext-main-container .fr-command.fr-btn {
   margin: 0 !important;
   width: auto;
+  cursor: pointer;
 }
 
 #omni-chrome-ext-main-container .fr-command.fr-btn,
@@ -61,10 +70,13 @@
 
 #omni-chrome-ext-main-container .fr-toolbar .fr-command.fr-btn i,
 #omni-chrome-ext-main-container .fr-toolbar .fr-command.fr-btn svg,
+#omni-chrome-ext-main-container .fr-toolbar .fr-command.fr-btn img,
 #omni-chrome-ext-main-container ~ .fr-popup .fr-command.fr-btn i,
 #omni-chrome-ext-main-container ~ .fr-popup .fr-command.fr-btn svg,
+#omni-chrome-ext-main-container ~ .fr-popup .fr-command.fr-btn img,
 #omni-chrome-ext-main-container ~ .fr-modal .fr-command.fr-btn i,
-#omni-chrome-ext-main-container ~ .fr-modal .fr-command.fr-btn svg {
+#omni-chrome-ext-main-container ~ .fr-modal .fr-command.fr-btn svg,
+#omni-chrome-ext-main-container ~ .fr-modal .fr-command.fr-btn img {
   margin: 0 4px;
 }
 
@@ -78,6 +90,20 @@
 #omni-chrome-ext-main-container ~ .fr-popup .fr-command.fr-btn.fr-dropdown::after,
 #omni-chrome-ext-main-container ~ .fr-modal .fr-command.fr-btn.fr-dropdown::after {
   top: 50%;
+}
+
+#omni-chrome-ext-main-container .fr-popup .fr-action-buttons button,
+#omni-chrome-ext-main-container .fr-popup .fr-action-buttons button:hover {
+  box-sizing: border-box;
+}
+
+/* Inputs */
+#omni-chrome-ext-main-container .fr-popup .fr-input-line input[type='text'],
+#omni-chrome-ext-main-container .fr-popup .fr-input-line textarea {
+  border-radius: 2px !important;
+  height: 46px !important;
+  width: 100% !important;
+  box-shadow: none !important;
 }
 
 #omni-chrome-ext-main-container .fr-code {

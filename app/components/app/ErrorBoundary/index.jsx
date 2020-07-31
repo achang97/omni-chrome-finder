@@ -4,15 +4,13 @@ import * as Sentry from '@sentry/browser';
 import { MdError, MdClose, MdCloudDownload } from 'react-icons/md';
 
 import { Dock, Button, Message } from 'components/common';
-import { APP_CONTAINER_CLASSNAME } from 'appConstants';
 import { EXTENSION_MESSAGE, MESSAGE, COMMAND } from 'appConstants/chrome';
+import { APP_CLASSNAME } from 'appConstants';
 
 import { getStyleApplicationFn } from 'utils/style';
-import appStyles from 'containers/App/App.css';
-
 import logo from 'assets/images/logos/logo-dark.svg';
 
-const s = getStyleApplicationFn(appStyles);
+const s = getStyleApplicationFn();
 
 const DOCK_WIDTH = 300;
 
@@ -108,7 +106,7 @@ class ErrorBoundary extends Component {
       }
 
       return (
-        <div className={s(APP_CONTAINER_CLASSNAME)}>
+        <div className={APP_CLASSNAME}>
           <Dock isVisible={showError} width={DOCK_WIDTH} isFullHeight={false} position="right">
             <div className={s('flex flex-col items-center text-center p-xl relative')}>
               <MdClose

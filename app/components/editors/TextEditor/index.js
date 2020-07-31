@@ -1,12 +1,18 @@
 import { connect } from 'react-redux';
+import { openCard } from 'actions/cards';
 import TextEditor from './TextEditor';
 
 const mapStateToProps = (state) => {
   const {
-    auth: { token }
+    auth: { token },
+    cards: { cardsHeight, cardsWidth, cardsMaximized }
   } = state;
 
-  return { token };
+  return { token, cardsHeight, cardsWidth, cardsMaximized };
 };
 
-export default connect(mapStateToProps)(TextEditor);
+const mapDispatchToProps = {
+  openCard
+};
+
+export default connect(mapStateToProps, mapDispatchToProps)(TextEditor);
