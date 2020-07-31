@@ -19,10 +19,6 @@
   letter-spacing: 0 !important;
 }
 
-.omni-app-container p {
-  margin: 0;
-}
-
 .omni-app-container p,
 .omni-app-container h1,
 .omni-app-container h2,
@@ -76,9 +72,19 @@
   font-size: 0.7em;
 }
 
+.omni-app-container p,
+pre,
+code {
+  margin: 7px 0;
+}
+
+.omni-app-container ol li,
+.omni-app-container ul li {
+  margin: 5px 0;
+}
+
 .omni-app-container pre,
 .omni-app-container code {
-  margin: 0;
   font-family: 'Courier New', sans-serif;
   background: #211a1d0d;
   border-radius: 8px;
@@ -87,7 +93,6 @@
 
 .omni-app-container ol,
 .omni-app-container ul {
-  margin: 0 14px;
   padding-left: 20px;
 }
 

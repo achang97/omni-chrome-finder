@@ -39,8 +39,6 @@ const CONFIG = {
       margin: 0px;
     }
 
-    p { margin: 0; }
-
     p, h1, h2, h3, h4, h5, h6 {
       line-height: 1.25;
     }
@@ -83,8 +81,15 @@ const CONFIG = {
       font-size: 0.7em;
     }
 
+    p, pre, code {
+      margin: 7px 0;
+    }
+
+    ol li, ul li {
+      margin: 5px 0;
+    }
+
     pre, code {
-      margin: 0;
       font-family: 'Courier New', sans-serif;
       background: #211a1d0d;
       border-radius: 8px;
@@ -92,7 +97,6 @@ const CONFIG = {
     }
 
     ol, ul {
-      margin: 0 14px;
       padding-left: 20px;
     }
 
