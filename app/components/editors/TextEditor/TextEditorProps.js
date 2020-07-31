@@ -82,7 +82,7 @@ const CONFIG = {
     }
 
     p, pre, code {
-      margin: 7px 0;
+      margin: 10px 0;
     }
 
     ol li, ul li {
@@ -97,7 +97,7 @@ const CONFIG = {
     }
 
     ol, ul {
-      padding-left: 20px;
+      padding-left: 35px;
     }
 
     ol {
