@@ -89,6 +89,34 @@ const getItemProps = (type, item) => {
         body: <div> {resultType} </div>
       };
     }
+    case INTEGRATIONS.GMAIL.type: {
+      const { deliveredTo, date, from } = item;
+      const SECTIONS = [
+        {
+          label: 'From',
+          value: from
+        },
+        {
+          label: 'To',
+          value: deliveredTo
+        }
+      ];
+
+      return {
+        showDropdown: false,
+        timestamp: date,
+        body: (
+          <>
+            {SECTIONS.map(({ label, value }) => (
+              <div className={s('flex mb-xs')} key={label}>
+                <div className={s('font-semibold w-4xl flex-shrink-0 text-xs')}> {label}: </div>
+                <div className={s('text-xs truncate')}> {value} </div>
+              </div>
+            ))}
+          </>
+        )
+      };
+    }
     default:
       return {};
   }
