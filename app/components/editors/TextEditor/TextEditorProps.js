@@ -8,7 +8,21 @@ const CONFIG = {
   charCounterCount: false,
   attribution: false,
   quickInsertEnabled: false,
+  iframe: true,
+  iframeDefaultStyle: `
+    html { height: auto; min-height: 100vh; cursor: text !important; }
+  `,
+  iframeStyleFiles: [
+    'https://cdn.jsdelivr.net/npm/froala-editor@3.0.6/css/froala_style.min.css',
+    'https://cdn.jsdelivr.net/npm/froala-editor@3.0.6/css/froala_editor.pkgd.min.css',
+    'https://cdn.jsdelivr.net/npm/froala-editor@3.0.6/css/plugins.pkgd.min.css',
+    'https://cdn.jsdelivr.net/npm/froala-editor@3.0.6/css/froala_editor.min.css',
+    'https://cdn.jsdelivr.net/npm/froala-editor@3.0.6/css/third_party/embedly.min.css',
+    chrome.runtime.getURL('/style-overrides/froala.css'),
+    chrome.runtime.getURL('/style-overrides/omni-app.css')
+  ],
 
+  // heightMin: '100vh',
   heightMax: '100vh',
 
   codeMirror: CodeMirror,
@@ -24,7 +38,7 @@ const CONFIG = {
   linkAlwaysBlank: true,
   linkAutoPrefix: 'https://',
   linkInsertButtons: ['linkBack'],
-  linkEditButtons: ['linkOpen', 'linkEdit', 'linkRemove'],
+  linkEditButtons: ['openCustomLink', 'linkEdit', 'linkRemove'],
 
   paragraphFormatDefaultSelection: 'Normal',
   paragraphFormatSelection: true,

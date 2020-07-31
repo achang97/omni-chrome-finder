@@ -3,6 +3,7 @@ import PropTypes from 'prop-types';
 import axios from 'axios';
 import queryString from 'query-string';
 
+import Froala from 'froala-editor';
 import FroalaEditor from 'react-froala-wysiwyg';
 import FroalaEditorView from 'react-froala-wysiwyg/FroalaEditorView';
 
@@ -10,15 +11,15 @@ import FroalaEditorView from 'react-froala-wysiwyg/FroalaEditorView';
 // Import all Froala Editor plugins;
 import 'froala-editor/js/plugins.pkgd.min.js';
 import 'froala-editor/js/third_party/embedly.min.js';
-import 'froala-editor/css/third_party/embedly.min.css';
-import 'codemirror/lib/codemirror.css';
 import 'codemirror/mode/xml/xml.js';
 /* eslint-enable import/no-extraneous-dependencies, import/extensions */
 
 import { getStyleApplicationFn } from 'utils/style';
 import { getVideoEmbeddedCode } from 'utils/editor';
+import { getCardUrlParams } from 'utils/card';
 import { createConfig } from 'utils/request';
 import { URL } from 'appConstants/request';
+import { MAIN_CONTAINER_ID, APP_CLASSNAME } from 'appConstants';
 
 import CONFIG from './TextEditorProps';
 import style from './text-editor.css';
@@ -35,7 +36,38 @@ class TextEditor extends React.Component {
   constructor(props) {
     super(props);
     this.editorRef = React.createRef();
+
+    this.createCustomButtons();
   }
+
+  createCustomButtons = () => {
+    const { openCard } = this.props;
+
+    const COMMANDS = [
+      {
+        type: 'openCustomLink',
+        data: {
+          title: 'Open Link',
+          icon: 'linkOpen',
+          // eslint-disable-next-line func-names, object-shorthand
+          callback: function () {
+            const link = this.link.get().getAttribute('href');
+            const cardParams = getCardUrlParams(link);
+
+            if (cardParams && cardParams.cardId) {
+              openCard({ _id: cardParams.cardId });
+            } else {
+              window.open(link, '_blank');
+            }
+          }
+        }
+      }
+    ];
+
+    COMMANDS.forEach((command) => {
+      Froala.RegisterCommand(command.type, command.data);
+    });
+  };
 
   handleUpload = (type, response) => {
     const { editor } = this.editorRef.current;
@@ -70,6 +102,16 @@ class TextEditor extends React.Component {
     return false;
   };
 
+  initializeEditor = () => {
+    if (this.editorRef.current) {
+      this.editorRef.current.editor.$html[0].id = MAIN_CONTAINER_ID;
+      this.editorRef.current.editor.$html.addClass(APP_CLASSNAME);
+      this.editorRef.current.editor.$html[0].addEventListener('click', () => {
+        this.editorRef.current.editor.$el[0].focus();
+      });
+    }
+  };
+
   render() {
     const {
       model,
@@ -100,7 +142,9 @@ class TextEditor extends React.Component {
             events: {
               'image.uploaded': (response) => this.handleUpload(EVENT_TYPE.IMAGE, response),
               'file.uploaded': (response) => this.handleUpload(EVENT_TYPE.FILE, response),
-              'video.uploaded': (response) => this.handleUpload(EVENT_TYPE.VIDEO, response)
+              'video.uploaded': (response) => this.handleUpload(EVENT_TYPE.VIDEO, response),
+              'edit.on': this.initializeEditor,
+              initialized: this.initializeEditor
             },
             autofocus,
             placeholderText: placeholder,
@@ -125,7 +169,10 @@ TextEditor.propTypes = {
   placeholder: PropTypes.string,
 
   // Redux State
-  token: PropTypes.string.isRequired
+  token: PropTypes.string.isRequired,
+
+  // Redux Actions
+  openCard: PropTypes.func.isRequired
 };
 
 TextEditor.defaultProps = {

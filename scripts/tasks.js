@@ -20,6 +20,7 @@ exports.copyAssets = (type) => {
   rm('-rf', type);
   mkdir(type);
   cp(`chrome/manifest.${env}.json`, `${type}/manifest.json`);
+  cp('-R', `app/styles/overrides`, `${type}/style-overrides`);
   cp('-R', 'chrome/assets/*', type);
   exec(`pug -O "{ env: '${env}' }" -o ${type} chrome/views/`);
 };

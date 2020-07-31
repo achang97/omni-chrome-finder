@@ -5,7 +5,7 @@ import AsyncSelect from 'react-select/async';
 import PropTypes from 'prop-types';
 
 import { colors } from 'styles/colors';
-import { APP_CONTAINER_ID } from 'appConstants';
+import { APP_CLASSNAME } from 'appConstants';
 import { getStyleApplicationFn } from 'utils/style';
 import customStyles from './customStyles';
 
@@ -32,7 +32,7 @@ const Select = ({ className, type, styles, ...rest }) => {
     <SelectComponent
       {...rest}
       classNamePrefix="omni-react-select"
-      menuPortalTarget={document.querySelector(`#${APP_CONTAINER_ID}`)}
+      menuPortalTarget={document.querySelector(`.${APP_CLASSNAME}`)}
       menuPosition="fixed"
       className={s(`select ${className}`)}
       styles={styles ? { ...customStyles, ...styles } : customStyles}

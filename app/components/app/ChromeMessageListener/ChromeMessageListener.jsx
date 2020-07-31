@@ -1,9 +1,8 @@
 import { Component } from 'react';
 import PropTypes from 'prop-types';
-import queryString from 'query-string';
 
-import { CHROME, ROUTES, URL, TASKS, AUDIT, APP_CONTAINER_ID } from 'appConstants';
-import { getNewCardBaseState } from 'utils/card';
+import { CHROME, ROUTES, TASKS, AUDIT, MAIN_CONTAINER_ID } from 'appConstants';
+import { getNewCardBaseState, getCardUrlParams } from 'utils/card';
 import { UserPropTypes } from 'utils/propTypes';
 import { convertTextToModel } from 'utils/editor';
 import { isValidUser } from 'utils/auth';
@@ -38,7 +37,7 @@ class ChromeMessageListener extends Component {
     while (
       target &&
       target !== document.body &&
-      target.id !== APP_CONTAINER_ID &&
+      target.id !== MAIN_CONTAINER_ID &&
       target.tagName !== 'A'
     ) {
       target = target.parentNode;
@@ -89,12 +88,12 @@ class ChromeMessageListener extends Component {
   openChromeExtension = (url = window.location.href) => {
     const { openCard } = this.props;
 
-    if (url.startsWith(URL.EXTENSION)) {
+    const cardParams = getCardUrlParams(url);
+    if (cardParams) {
       this.openDock();
 
       if (this.isValidUser()) {
-        const searchParams = url.substring(url.indexOf('?') + 1);
-        const { taskId, cardId, edit, source, baseLogId } = queryString.parse(searchParams);
+        const { taskId, cardId, edit, source, baseLogId } = cardParams;
         if (taskId) {
           this.openTask(taskId);
         }

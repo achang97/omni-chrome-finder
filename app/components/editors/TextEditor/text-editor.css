@@ -4,10 +4,6 @@
   @apply flex flex-col h-full;
 }
 
-.text-editor-container:hover {
-  cursor: text;
-}
-
 .text-editor > div {
   border: none !important;
   background: transparent;

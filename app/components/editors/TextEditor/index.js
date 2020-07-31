@@ -1,4 +1,5 @@
 import { connect } from 'react-redux';
+import { openCard } from 'actions/cards';
 import TextEditor from './TextEditor';
 
 const mapStateToProps = (state) => {
@@ -9,4 +10,8 @@ const mapStateToProps = (state) => {
   return { token };
 };
 
-export default connect(mapStateToProps)(TextEditor);
+const mapDispatchToProps = {
+  openCard
+};
+
+export default connect(mapStateToProps, mapDispatchToProps)(TextEditor);
