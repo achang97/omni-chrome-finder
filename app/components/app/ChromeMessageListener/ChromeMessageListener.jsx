@@ -1,7 +1,7 @@
 import { Component } from 'react';
 import PropTypes from 'prop-types';
 
-import { CHROME, ROUTES, TASKS, AUDIT, MAIN_CONTAINER_ID } from 'appConstants';
+import { CHROME, ROUTES, TASKS, AUDIT, FINDER, MAIN_CONTAINER_ID } from 'appConstants';
 import { getNewCardBaseState, getCardUrlParams } from 'utils/card';
 import { UserPropTypes } from 'utils/propTypes';
 import { convertTextToModel } from 'utils/editor';
@@ -86,20 +86,25 @@ class ChromeMessageListener extends Component {
   };
 
   openChromeExtension = (url = window.location.href) => {
-    const { openCard } = this.props;
+    const { openCard, openFinder, pushFinderNode } = this.props;
 
     const cardParams = getCardUrlParams(url);
     if (cardParams) {
       this.openDock();
 
       if (this.isValidUser()) {
-        const { taskId, cardId, edit, source, baseLogId } = cardParams;
+        const { taskId, cardId, finderNodeId, edit, source, baseLogId } = cardParams;
         if (taskId) {
           this.openTask(taskId);
         }
 
         if (cardId) {
           openCard({ _id: cardId, source, baseLogId, isEditing: edit === 'true' });
+        }
+
+        if (finderNodeId) {
+          openFinder();
+          pushFinderNode(FINDER.MAIN_STATE_ID, finderNodeId);
         }
       }
 
@@ -152,7 +157,10 @@ class ChromeMessageListener extends Component {
             toggleAskTeammate();
           }
           updateAskSearchText(selectedText);
-          requestLogAudit(AUDIT.TYPE.CONTEXT_MENU_SEARCH, { query: selectedText });
+          requestLogAudit(AUDIT.TYPE.CLICK, {
+            query: selectedText,
+            type: AUDIT.CLICK.CONTEXT_MENU_SEARCH
+          });
           history.push(ROUTES.ASK);
           break;
         }
@@ -297,7 +305,9 @@ ChromeMessageListener.propTypes = {
   requestGetTasks: PropTypes.func.isRequired,
   updateTasksTab: PropTypes.func.isRequired,
   updateTasksOpenSection: PropTypes.func.isRequired,
-  requestLogAudit: PropTypes.func.isRequired
+  requestLogAudit: PropTypes.func.isRequired,
+  openFinder: PropTypes.func.isRequired,
+  pushFinderNode: PropTypes.func.isRequired
 };
 
 export default ChromeMessageListener;

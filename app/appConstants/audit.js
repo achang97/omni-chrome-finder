@@ -2,19 +2,21 @@ const AUDIT = {
   TYPE: {
     SEARCH: 'search',
     VIEW_CARD: 'viewCard',
-    ACTION: 'userAction',
+    VIEW_FINDER_NODE: 'viewFinderNode',
+    USER_ACTION: 'userAction',
     MARK_CARD_UPTODATE: 'markCardUpToDate',
     MARK_CARD_OUTOFDATE: 'markCardOutOfDate',
     UPDATE_CARD: 'updateCard',
     CREATE_CARD: 'createCard',
-    CONTEXT_MENU_SEARCH: 'contextMenuSearch',
     OPEN_EXTERNAL_DOC: 'openExternalDoc',
     OPEN_EXTENSION: 'openExtension',
-    SIGN_UP: 'signUp',
+    POST_ANSWER: 'postAnswer',
+    RESOLVE_NOTIFICATION: 'resolveNotification',
     CLICK: 'click'
   },
   CLICK: {
-    CREATE_CARD: 'createCard'
+    CREATE_CARD: 'createCard',
+    CONTEXT_MENU_SEARCH: 'contextMenuSearch'
   },
   SOURCE: {
     FINDER: 'finder',
@@ -27,4 +29,4 @@ const AUDIT = {
   }
 };
 
-export default AUDIT;
+module.exports = AUDIT;
