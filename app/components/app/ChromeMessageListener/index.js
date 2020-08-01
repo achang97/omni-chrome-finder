@@ -6,6 +6,7 @@ import { openCard } from 'actions/cards';
 import { requestSearchCards, clearSearchCards } from 'actions/search';
 import { requestGetUser } from 'actions/profile';
 import { requestLogAudit } from 'actions/auditLog';
+import { openFinder, pushFinderNode } from 'actions/finder';
 import { requestGetTasks, updateTasksOpenSection, updateTasksTab } from 'actions/tasks';
 import ChromeMessageListener from './ChromeMessageListener';
 
@@ -41,7 +42,9 @@ const mapDispatchToProps = {
   requestGetTasks,
   updateTasksTab,
   updateTasksOpenSection,
-  requestLogAudit
+  requestLogAudit,
+  openFinder,
+  pushFinderNode
 };
 
 export default connect(mapStateToProps, mapDispatchToProps)(withRouter(ChromeMessageListener));

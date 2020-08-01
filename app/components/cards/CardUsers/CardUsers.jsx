@@ -1,9 +1,10 @@
 import React, { useState } from 'react';
 import PropTypes from 'prop-types';
 import { IoMdAdd } from 'react-icons/io';
+import { FiUserPlus } from 'react-icons/fi';
 import _ from 'lodash';
 
-import { CircleButton, Select } from 'components/common';
+import { CircleButton, Select, Tooltip } from 'components/common';
 
 import { DEBOUNCE } from 'appConstants/animate';
 import { ROLE } from 'appConstants/user';
@@ -30,6 +31,7 @@ const CardUsers = ({
   size,
   showNames,
   placeholder,
+  maxShown,
   userOptions,
   isLoading,
   isEditor,
@@ -76,7 +78,7 @@ const CardUsers = ({
         showName={showNames}
         img={profilePicture}
         className={s('mr-sm mb-sm')}
-        onClick={onUserClick}
+        onClick={() => onUserClick(user, index)}
         onRemoveClick={isEditable && userIsEditable ? () => onRemoveClick({ user, index }) : null}
         showTooltip={showTooltips}
         status={status}
@@ -131,9 +133,21 @@ const CardUsers = ({
           noOptionsMessage={() => (isLoading ? 'Searching users...' : 'No options')}
         />
       )}
-      {users.map(renderUser)}
+      {users.slice(0, maxShown).map(renderUser)}
       {!isEditable && users.length === 0 && (
         <div className={s('text-sm text-gray-light')}>{placeholder}</div>
+      )}
+      {!isEditable && users.length > maxShown && (
+        <Tooltip tooltip={`+${users.length - maxShown} more`}>
+          <CircleButton
+            content={<FiUserPlus />}
+            className="text-purple-reg"
+            buttonClassName="bg-purple-gray-10"
+            labelClassName="text-xs"
+            size={size}
+            onClick={() => onUserClick(null, -1)}
+          />
+        </Tooltip>
       )}
       {isEditable && onAdd && !shouldShowSelect && (
         <CircleButton
@@ -164,6 +178,7 @@ CardUsers.propTypes = {
   size: PropTypes.oneOfType([PropTypes.number, PropTypes.oneOf(['xs', 'sm', 'md', 'lg'])]),
   showNames: PropTypes.bool,
   placeholder: PropTypes.string,
+  maxShown: PropTypes.number,
 
   // Options that are used in index.js
   /* eslint-disable react/no-unused-prop-types */
