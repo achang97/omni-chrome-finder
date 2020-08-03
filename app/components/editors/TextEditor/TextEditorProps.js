@@ -114,8 +114,7 @@ const CONFIG = {
     'https://cdn.jsdelivr.net/npm/froala-editor@3.0.6/css/plugins.pkgd.min.css',
     'https://cdn.jsdelivr.net/npm/froala-editor@3.0.6/css/froala_editor.min.css',
     'https://cdn.jsdelivr.net/npm/froala-editor@3.0.6/css/third_party/embedly.min.css',
-    chrome.runtime.getURL('/style-overrides/froala.css'),
-    chrome.runtime.getURL('/style-overrides/omni-app.css')
+    chrome.runtime.getURL('/css/overrides.min.css')
   ],
 
   heightMax: '100vh',
