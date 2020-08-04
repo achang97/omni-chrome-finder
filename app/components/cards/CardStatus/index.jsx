@@ -155,15 +155,17 @@ const CardStatus = ({
                 </div>
                 <div className={s('flex items-center text-xs')}>
                   {outOfDateReason.sender && (
-                    <CardUser
-                      img={outOfDateReason.sender.profilePicture}
-                      name={`${outOfDateReason.sender.firstname} ${outOfDateReason.sender.lastname}`}
-                      showName={false}
-                      size="sm"
-                    />
+                    <>
+                      <CardUser
+                        img={outOfDateReason.sender.profilePicture}
+                        name={`${outOfDateReason.sender.firstname} ${outOfDateReason.sender.lastname}`}
+                        showName={false}
+                        size="sm"
+                      />
+                      <div className={s('ml-sm')}> {outOfDateReason.sender.firstname} </div>
+                      <div className={s('mx-xs')}> &#8226; </div>
+                    </>
                   )}
-                  <div className={s('ml-sm')}> {outOfDateReason.sender.firstname} </div>
-                  <div className={s('mx-xs')}> &#8226; </div>
                   <Timeago live={false} date={outOfDateReason.time} />
                 </div>
               </div>
