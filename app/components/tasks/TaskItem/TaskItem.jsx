@@ -183,11 +183,13 @@ const TaskItem = ({
   const renderReasonPreview = (sender, reason) => {
     return (
       <div className={s('flex mt-reg items-center')}>
-        <PlaceholderImg
-          name={`${sender.firstname} ${sender.lastname}`}
-          src={sender.profilePicture}
-          className={s('task-item-profile-picture')}
-        />
+        {sender && (
+          <PlaceholderImg
+            name={`${sender.firstname} ${sender.lastname}`}
+            src={sender.profilePicture}
+            className={s('task-item-profile-picture')}
+          />
+        )}
         <div
           className={s(
             'bg-gray-xlight p-reg rounded-lg w-full vertical-ellipsis-2 text-xs break-words line-clamp-4'
