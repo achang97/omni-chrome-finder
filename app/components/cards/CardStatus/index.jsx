@@ -154,12 +154,14 @@ const CardStatus = ({
                   {outOfDateReason.reason || 'No reason specified.'}
                 </div>
                 <div className={s('flex items-center text-xs')}>
-                  <CardUser
-                    img={outOfDateReason.sender.profilePicture}
-                    name={`${outOfDateReason.sender.firstname} ${outOfDateReason.sender.lastname}`}
-                    showName={false}
-                    size="sm"
-                  />
+                  {outOfDateReason.sender && (
+                    <CardUser
+                      img={outOfDateReason.sender.profilePicture}
+                      name={`${outOfDateReason.sender.firstname} ${outOfDateReason.sender.lastname}`}
+                      showName={false}
+                      size="sm"
+                    />
+                  )}
                   <div className={s('ml-sm')}> {outOfDateReason.sender.firstname} </div>
                   <div className={s('mx-xs')}> &#8226; </div>
                   <Timeago live={false} date={outOfDateReason.time} />
