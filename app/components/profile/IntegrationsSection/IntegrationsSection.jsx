@@ -31,14 +31,21 @@ const IntegrationsSection = ({
       options: USER.INTEGRATIONS,
       type: 'authButton',
       extendOption: ({ type }) => {
-        if (type !== INTEGRATIONS.SALESFORCE.type) {
-          return null;
+        switch (type) {
+          case INTEGRATIONS.SALESFORCE.type: {
+            return {
+              footer:
+                "Usage of Salesforce's search API is available only for Developer, Professional, and Enterprise accounts."
+            };
+          }
+          case INTEGRATIONS.DROPBOX.type: {
+            return {
+              footer: "Dropbox's search API is available only for personal accounts."
+            };
+          }
+          default:
+            return null;
         }
-
-        return {
-          footer:
-            "Usage of Salesforce's search API is available only for Developer, Professional, and Enterprise accounts."
-        };
       }
     },
     {
