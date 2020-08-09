@@ -144,7 +144,7 @@ const CardCreateModal = ({
         isEditable={isEditable}
         users={owners}
         onAdd={addCardOwner}
-        onRemoveClick={({ index }) => removeCardOwner(index)}
+        onRemoveClick={(user, index) => removeCardOwner(index)}
         onCreate={(value) => openInviteModal(value, INVITE_TYPE.ADD_CARD_OWNER)}
         showTooltips
         showInviteOptions
@@ -176,7 +176,7 @@ const CardCreateModal = ({
         showNames={false}
         showInviteOptions
         onAdd={addCardSubscriber}
-        onRemoveClick={({ index }) => removeCardSubscriber(index)}
+        onRemoveClick={(user, index) => removeCardSubscriber(index)}
         onCreate={(value) => openInviteModal(value, INVITE_TYPE.ADD_CARD_SUBSCRIBER)}
         showTooltips
       />
@@ -191,7 +191,7 @@ const CardCreateModal = ({
         showSelect
         tags={tags}
         onChange={updateCardTags}
-        onRemoveClick={({ index }) => removeCardTag(index)}
+        onRemoveClick={(tag, index) => removeCardTag(index)}
         showPlaceholder
       />
     );
@@ -219,7 +219,7 @@ const CardCreateModal = ({
               isEditable
               users={approvers}
               onAdd={addCardApprover}
-              onRemoveClick={({ index }) => removeCardApprover(index)}
+              onRemoveClick={(user, index) => removeCardApprover(index)}
               disabledUserRoles={[ROLE.VIEWER]}
               disabledUserIds={[ownUserId]}
               showTooltips
@@ -403,7 +403,7 @@ CardCreateModal.propTypes = {
   // Redux State
   _id: PropTypes.string.isRequired,
   createError: PropTypes.string,
-  updateError: PropTypes.bool,
+  updateError: PropTypes.string,
   isCreatingCard: PropTypes.bool,
   isUpdatingCard: PropTypes.bool,
   ownUserId: PropTypes.string.isRequired,

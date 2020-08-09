@@ -15,10 +15,6 @@ const CardUser = ({ user, className, size, onClick, onRemoveClick, showName, sho
   const name = getUserName(user);
   const isInvited = isInvitedUser(user);
 
-  const protectedOnClick = () => {
-    if (onClick) onClick(user);
-  };
-
   return (
     <div className={s(`card-user ${className}`)}>
       <Tooltip tooltip={name} show={showTooltip}>
@@ -36,7 +32,7 @@ const CardUser = ({ user, className, size, onClick, onRemoveClick, showName, sho
                 />
               }
               size={size}
-              onClick={protectedOnClick}
+              onClick={onClick}
             />
             {onRemoveClick && (
               <button onClick={onRemoveClick} className={s('card-user-remove')} type="button">

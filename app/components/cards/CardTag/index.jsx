@@ -10,23 +10,17 @@ const s = getStyleApplicationFn(style);
 const CardTag = React.forwardRef(({ name, onClick, onRemoveClick, className }, ref) => {
   const onRemove = (e) => {
     e.stopPropagation();
-    onRemoveClick(name);
-  };
-
-  const protectedOnClick = () => {
-    if (onClick) onClick(name);
+    onRemoveClick();
   };
 
   return (
     <div
-      onClick={protectedOnClick}
+      onClick={onClick}
       ref={ref}
       className={s(`card-tag ${onClick ? 'button-hover' : ''} ${className}`)}
     >
       <div> {name} </div>
-      {onRemoveClick && (
-        <MdClose onClick={(e) => onRemove(e)} className={s('ml-xs button-hover')} />
-      )}
+      {onRemoveClick && <MdClose onClick={onRemove} className={s('ml-xs button-hover')} />}
     </div>
   );
 });

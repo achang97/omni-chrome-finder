@@ -71,8 +71,8 @@ const CardUsers = ({
         size={size}
         showName={showNames}
         className={s('mr-sm mb-sm')}
-        onClick={() => onUserClick(user, index)}
-        onRemoveClick={isEditable && userIsEditable ? () => onRemoveClick({ user, index }) : null}
+        onClick={onUserClick && (() => onUserClick(user, index))}
+        onRemoveClick={isEditable && userIsEditable ? () => onRemoveClick(user, index) : null}
         showTooltip={showTooltips}
       />
     );
@@ -128,7 +128,7 @@ const CardUsers = ({
             buttonClassName="bg-purple-gray-10"
             labelClassName="text-xs"
             size={size}
-            onClick={() => onUserClick(null, -1)}
+            onClick={onUserClick && (() => onUserClick(null, -1))}
           />
         </Tooltip>
       )}

@@ -68,7 +68,7 @@ const ExternalCreateModal = ({
         <CardUsers
           users={owners}
           onAdd={(addUser) => addExternalOwner(addUser)}
-          onRemoveClick={({ user: removeUser }) => removeExternalOwner(removeUser)}
+          onRemoveClick={(removeUser) => removeExternalOwner(removeUser)}
           size="sm"
           isEditable
         />

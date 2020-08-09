@@ -35,7 +35,7 @@ Tooltip.propTypes = {
     className: PropTypes.string
   }),
   show: PropTypes.bool,
-  children: PropTypes.node.isRequired
+  children: PropTypes.node
 };
 
 Tooltip.defaultProps = {
