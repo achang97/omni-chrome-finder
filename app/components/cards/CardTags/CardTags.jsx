@@ -106,7 +106,7 @@ class CardTags extends Component {
           <CardTag
             name={`+${tags.length - firstHiddenIndex}`}
             className={s(`flex items-center mb-xs ${className}`)}
-            onClick={onTagClick}
+            onClick={onTagClick && (() => onTagClick(null, -1))}
           />
         )}
         <CardTag
@@ -122,8 +122,8 @@ class CardTags extends Component {
               maxWidth ? `whitespace-no-wrap ${index >= firstHiddenIndex ? 'invisible' : ''}` : ''
             } ${className}`
           )}
-          onClick={onTagClick}
-          onRemoveClick={isEditable && onRemoveClick ? () => onRemoveClick({ tag, index }) : null}
+          onClick={onTagClick && (() => onTagClick(tag, index))}
+          onRemoveClick={isEditable && onRemoveClick ? () => onRemoveClick(tag, index) : null}
         />
       </React.Fragment>
     );

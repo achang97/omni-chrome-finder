@@ -93,12 +93,7 @@ const ActivityLog = ({
           <div key={_id || user._id} className={s('mt-xs mb-reg')}>
             <div className={s('flex items-center justify-between mb-xs text-2xs')}>
               <div className={s('flex items-center')}>
-                <CardUser
-                  name={`${user.firstname} ${user.lastname}`}
-                  img={user.profilePicture}
-                  showName={false}
-                  size={20}
-                />
+                <CardUser user={user} showName={false} size={20} />
                 <span className={s('text-gray-dark ml-sm')}>
                   {user._id === ownUserId ? 'You' : user.firstname} {getActionName(type)}
                 </span>
@@ -116,12 +111,7 @@ const ActivityLog = ({
                 <div className={s('font-bold mr-sm')}>
                   {user.firstname} {user.lastname} ({user.role})
                 </div>
-                <CardUser
-                  name={`${user.firstname} ${user.lastname}`}
-                  img={user.profilePicture}
-                  showName={false}
-                  size="xs"
-                />
+                <CardUser user={user} showName={false} size="xs" />
               </div>
             )}
           </div>

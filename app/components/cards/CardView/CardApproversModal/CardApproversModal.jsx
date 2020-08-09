@@ -75,7 +75,7 @@ const CardApproversModal = ({
         isEditable
         users={approvers}
         onAdd={addCardApprover}
-        onRemoveClick={({ index }) => removeCardApprover(index)}
+        onRemoveClick={(user, index) => removeCardApprover(index)}
         disabledUserRoles={[ROLE.VIEWER]}
         showSelect
         showTooltips

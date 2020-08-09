@@ -8,4 +8,12 @@ export function isActiveUser(user) {
   return user.status === STATUS.ACTIVE;
 }
 
-export default { isInvitedUser, isActiveUser };
+export function getUserName(user) {
+  if (isInvitedUser(user)) {
+    return user.email;
+  }
+
+  return `${user.firstname} ${user.lastname}`;
+}
+
+export default { isInvitedUser, isActiveUser, getUserName };

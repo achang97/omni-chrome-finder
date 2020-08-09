@@ -116,7 +116,7 @@ const CardSideDock = ({
         isEditable={isEditing}
         users={currOwners}
         onAdd={addCardOwner}
-        onRemoveClick={({ index }) => removeCardOwner(index)}
+        onRemoveClick={(user, index) => removeCardOwner(index)}
         onCreate={(value) => openInviteModal(value, INVITE_TYPE.ADD_CARD_OWNER)}
         size="sm"
         showTooltips
@@ -149,7 +149,7 @@ const CardSideDock = ({
         size="xs"
         showNames={false}
         onAdd={addCardSubscriber}
-        onRemoveClick={({ index }) => removeCardSubscriber(index)}
+        onRemoveClick={(user, index) => removeCardSubscriber(index)}
         onCreate={(value) => openInviteModal(value, INVITE_TYPE.ADD_CARD_SUBSCRIBER)}
         showTooltips
         showInviteOptions
@@ -178,7 +178,7 @@ const CardSideDock = ({
         showSelect
         tags={currTags}
         onChange={updateCardTags}
-        onRemoveClick={({ index }) => removeCardTag(index)}
+        onRemoveClick={(tag, index) => removeCardTag(index)}
         showPlaceholder
       />
     );
@@ -228,7 +228,7 @@ const CardSideDock = ({
             disabledUserRoles={[ROLE.EDITOR, ROLE.ADMIN]}
             showTooltips
             onAdd={addCardEditViewer}
-            onRemoveClick={({ index }) => removeCardEditViewer(index)}
+            onRemoveClick={(user, index) => removeCardEditViewer(index)}
           />
           <CardEditAccessRequests
             className={s('mt-reg')}
