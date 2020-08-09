@@ -9,7 +9,7 @@ import { CircleButton, Select, Tooltip } from 'components/common';
 import { DEBOUNCE } from 'appConstants/animate';
 import { ROLE } from 'appConstants/user';
 import { UserPropTypes } from 'utils/propTypes';
-import { isInvitedUser } from 'utils/user';
+import { getUserName } from 'utils/user';
 
 import { getStyleApplicationFn } from 'utils/style';
 import style from './card-users.css';
@@ -44,17 +44,13 @@ const CardUsers = ({
   };
 
   const getSelectOptionLabel = (user) => {
-    const { firstname, lastname, email, label, __isNew__ } = user;
+    const { label, __isNew__ } = user;
 
     if (__isNew__) {
       return label;
     }
 
-    if (isInvitedUser(user)) {
-      return email;
-    }
-
-    return `${firstname} ${lastname}`;
+    return getUserName(user);
   };
 
   const isValidNewOption = (inputValue, selectValue, selectOptions) => {
@@ -67,41 +63,28 @@ const CardUsers = ({
   };
 
   const renderUser = (user, index) => {
-    const { _id, profilePicture, status, isEditable: userIsEditable = true } = user;
-    const name = getSelectOptionLabel(user);
-
+    const { _id, isEditable: userIsEditable = true } = user;
     return (
       <CardUser
         key={_id}
+        user={user}
         size={size}
-        name={name}
         showName={showNames}
-        img={profilePicture}
         className={s('mr-sm mb-sm')}
         onClick={() => onUserClick(user, index)}
         onRemoveClick={isEditable && userIsEditable ? () => onRemoveClick({ user, index }) : null}
         showTooltip={showTooltips}
-        status={status}
       />
     );
   };
 
   const formatSelectOptionLabel = (option) => {
-    const { profilePicture, status, __isNew__ } = option;
+    const { __isNew__ } = option;
     const label = getSelectOptionLabel(option);
 
     return (
       <div className={s('flex items-center')}>
-        {!__isNew__ && (
-          <CardUser
-            name={label}
-            img={profilePicture}
-            showName={false}
-            status={status}
-            size="sm"
-            className={s('mr-sm')}
-          />
-        )}
+        {!__isNew__ && <CardUser showName={false} size="sm" className={s('mr-sm')} user={option} />}
         <div> {label} </div>
       </div>
     );

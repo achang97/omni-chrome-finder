@@ -29,13 +29,7 @@ const CardEditAccessRequests = ({
       </div>
       {requests.map(({ _id, notifier, data }) => (
         <div className={s('flex items-center text-xs')} key={_id}>
-          <CardUser
-            name={`${notifier.firstname} ${notifier.lastname}`}
-            src={notifier.profilePicture}
-            showName={false}
-            showTooltip
-            size="xs"
-          />
+          <CardUser user={notifier} showName={false} showTooltip size="xs" />
           <div className={s('ml-sm truncate')}> {notifier.firstname} </div>
           {data.reason && <HelpTooltip tooltip={data.reason} className={s('ml-sm')} />}
           <div className={s('ml-auto flex items-center')}>
