@@ -11,6 +11,7 @@ import DropboxIcon from 'assets/images/icons/Dropbox_Icon.svg';
 import NotionIcon from 'assets/images/icons/Notion_Icon.svg';
 import ConfluenceIcon from 'assets/images/icons/Confluence_Icon.svg';
 import TettraIcon from 'assets/images/icons/Tettra_Icon.svg';
+import OutlookIcon from 'assets/images/icons/Outlook_Icon.svg';
 
 export const ROUTES = {
   ASK: '/ask',
@@ -59,7 +60,8 @@ export const INTEGRATIONS = {
   CONFLUENCE: { type: 'confluence', title: 'Confluence', logo: ConfluenceIcon },
   NOTION: { type: 'notion', title: 'Notion', logo: NotionIcon },
   TETTRA: { type: 'tettra', title: 'Tettra', logo: TettraIcon },
-  DROPBOX: { type: 'dropbox', title: 'Dropbox', logo: DropboxIcon }
+  DROPBOX: { type: 'dropbox', title: 'Dropbox', logo: DropboxIcon },
+  OUTLOOK: { type: 'outlook', title: 'Outlook', logo: OutlookIcon }
 };
 
 export const INTEGRATIONS_MAP = _.mapKeys(INTEGRATIONS, ({ type }) => type);

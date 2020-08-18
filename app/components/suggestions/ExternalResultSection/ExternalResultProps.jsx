@@ -1,5 +1,6 @@
 import React from 'react';
 import moment from 'moment';
+import _ from 'lodash';
 import { MdThumbUp, MdThumbDown } from 'react-icons/md';
 import { Timeago } from 'components/common';
 
@@ -10,6 +11,36 @@ import { createHighlightedElement } from 'utils/search';
 import style from './external-result-section.css';
 
 const s = getStyleApplicationFn(style);
+
+const formatMicrosoftUser = (user) => `${user.emailAddress.name} <${user.emailAddress.address}>`;
+
+const getEmailItemProps = (from, to, date) => {
+  const SECTIONS = [
+    {
+      label: 'From',
+      value: from
+    },
+    {
+      label: 'To',
+      value: to
+    }
+  ];
+
+  return {
+    showDropdown: false,
+    timestamp: date,
+    body: (
+      <>
+        {SECTIONS.map(({ label, value }) => (
+          <div className={s('flex mb-xs')} key={label}>
+            <div className={s('font-semibold w-4xl flex-shrink-0 text-xs')}> {label}: </div>
+            <div className={s('text-xs truncate')}> {value} </div>
+          </div>
+        ))}
+      </>
+    )
+  };
+};
 
 const getItemProps = (type, item) => {
   switch (type) {
@@ -91,31 +122,17 @@ const getItemProps = (type, item) => {
     }
     case INTEGRATIONS.GMAIL.type: {
       const { deliveredTo, date, from } = item;
-      const SECTIONS = [
-        {
-          label: 'From',
-          value: from
-        },
-        {
-          label: 'To',
-          value: deliveredTo
-        }
-      ];
+      return getEmailItemProps(from, deliveredTo, date);
+    }
+    case INTEGRATIONS.OUTLOOK.type: {
+      const { sender, toRecipients, ccRecipients, bccRecipients, createdDateTime } = item;
 
-      return {
-        showDropdown: false,
-        timestamp: date,
-        body: (
-          <>
-            {SECTIONS.map(({ label, value }) => (
-              <div className={s('flex mb-xs')} key={label}>
-                <div className={s('font-semibold w-4xl flex-shrink-0 text-xs')}> {label}: </div>
-                <div className={s('text-xs truncate')}> {value} </div>
-              </div>
-            ))}
-          </>
-        )
-      };
+      const from = formatMicrosoftUser(sender);
+      const to = _.union(toRecipients, ccRecipients, bccRecipients)
+        .map(formatMicrosoftUser)
+        .join(', ');
+
+      return getEmailItemProps(from, to, createdDateTime);
     }
     default:
       return {};
