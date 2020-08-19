@@ -9,11 +9,7 @@ const mapStateToProps = (state) => {
   const {
     display: { onlyShowSearchBar, dockVisible, toggleTabShown, windowUrl },
     ask: { searchText },
-    profile: {
-      user: {
-        widgetSettings: { searchBar }
-      }
-    }
+    profile: { user }
   } = state;
 
   return {
@@ -22,7 +18,7 @@ const mapStateToProps = (state) => {
     searchText,
     dockVisible,
     toggleTabShown,
-    searchBarSettings: searchBar
+    user
   };
 };
 

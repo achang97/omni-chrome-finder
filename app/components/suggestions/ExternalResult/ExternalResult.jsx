@@ -7,6 +7,8 @@ import { CardStatusIndicator } from 'components/cards';
 import { copyText } from 'utils/window';
 import { getStyleApplicationFn } from 'utils/style';
 import { createHighlightedElement } from 'utils/search';
+import { isEditor } from 'utils/auth';
+import { UserPropTypes } from 'utils/propTypes';
 import { URL_REGEX, CARD } from 'appConstants';
 
 import style from './external-result.css';
@@ -26,7 +28,7 @@ const ExternalResult = ({
   bodyClassName,
   card,
   commonProps,
-  isEditor,
+  user,
   openCard,
   updateExternalLinkAnswer,
   toggleExternalCreateModal,
@@ -69,8 +71,8 @@ const ExternalResult = ({
         onClick: () => openCard({ _id: card._id })
       }
     ];
-  } else if (isEditor) {
-    const regexInfo = URL_REGEX.EXTERNAL_VERIFICATION[type];
+  } else if (isEditor(user)) {
+    const { [type]: regexInfo } = URL_REGEX.getExternalVerificationRegexes(user.integrations);
     const match = regexInfo && commonProps.url.match(regexInfo.regex);
 
     if (match) {
@@ -156,7 +158,7 @@ ExternalResult.propTypes = {
   }),
 
   // Redux State
-  isEditor: PropTypes.bool.isRequired,
+  user: UserPropTypes.isRequired,
 
   // Redux Actions
   openCard: PropTypes.func.isRequired,

@@ -6,7 +6,6 @@ import {
   updateExternalTitle,
   updateExternalResultId
 } from 'actions/externalVerification';
-import { isEditor } from 'utils/auth';
 import ExternalResult from './ExternalResult';
 
 const mapStateToProps = (state) => {
@@ -14,7 +13,7 @@ const mapStateToProps = (state) => {
     profile: { user }
   } = state;
 
-  return { isEditor: isEditor(user) };
+  return { user };
 };
 
 const mapDispatchToProps = {
