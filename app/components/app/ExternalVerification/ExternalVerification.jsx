@@ -12,12 +12,10 @@ import { getStyleApplicationFn } from 'utils/style';
 import { usePrevious } from 'utils/react';
 import { UserPropTypes } from 'utils/propTypes';
 import { isEditor } from 'utils/auth';
-import { URL_REGEX, INTEGRATIONS_MAP, INTEGRATIONS } from 'appConstants';
+import { INTEGRATIONS_MAP, URL_REGEX } from 'appConstants';
 import style from './external-verification.css';
 
 const s = getStyleApplicationFn(style);
-
-const URL_REGEX_LIST = Object.entries(URL_REGEX.EXTERNAL_VERIFICATION);
 
 const ExternalVerification = ({
   windowUrl,
@@ -27,6 +25,7 @@ const ExternalVerification = ({
   settingIndex,
   externalCard,
   isGettingCard,
+  isCreatingCard,
   user,
   isUpdatingUser,
   updateUserError,
@@ -44,8 +43,10 @@ const ExternalVerification = ({
   toggleDock,
   openCard
 }) => {
+  const prevCreatingCard = usePrevious(isCreatingCard);
+
   useEffect(() => {
-    const isEnabled = ({ integration, links: { link } }) => {
+    if (!isCreatingCard) {
       const {
         widgetSettings: {
           externalLink: { disabledPages, disabledIntegrations, disabled }
@@ -53,54 +54,48 @@ const ExternalVerification = ({
         integrations
       } = user;
 
-      // Specific check for Zendesk brand url
-      if (integration === INTEGRATIONS.ZENDESK.type) {
-        const { brands: zendeskBrands = [] } = integrations[INTEGRATIONS.ZENDESK.type];
-        if (zendeskBrands.length !== 0) {
-          const hasMatch = zendeskBrands.some(({ brand_url: brandUrl }) =>
-            link.startsWith(brandUrl)
-          );
+      const URL_REGEX_LIST = Object.entries(URL_REGEX.getExternalVerificationRegexes(integrations));
+      const isEnabled = ({ integration, links: { link } }) => {
+        return (
+          !disabled && !disabledIntegrations.includes(integration) && !disabledPages.includes(link)
+        );
+      };
 
-          if (!hasMatch) {
-            return false;
-          }
+      const resetState = () => {
+        if (activeIntegration) {
+          resetExternalState();
         }
-      }
+      };
 
-      return (
-        !disabled && !disabledIntegrations.includes(integration) && !disabledPages.includes(link)
-      );
-    };
-
-    const resetState = () => {
-      if (activeIntegration) {
-        resetExternalState();
-      }
-    };
-
-    if (!windowUrl || (activeIntegration && !isEnabled(activeIntegration))) {
-      resetState();
-    } else {
-      let i;
-      let newIntegration = null;
-
-      for (i = 0; i < URL_REGEX_LIST.length; i++) {
-        const [integration, { regex, getTitle, getLinks }] = URL_REGEX_LIST[i];
-        const match = windowUrl.match(regex);
-        if (match) {
-          const links = getLinks(match);
-          if (isEnabled({ integration, links })) {
-            newIntegration = { links, getTitle, integration };
-            break;
-          }
-        }
-      }
-
-      if (!newIntegration) {
+      if (!windowUrl || (activeIntegration && !isEnabled(activeIntegration))) {
         resetState();
-      } else if (!activeIntegration || newIntegration.links.link !== activeIntegration.links.link) {
-        updateExternalIntegration(newIntegration);
-        requestGetExternalCard();
+      } else {
+        let i;
+        let newIntegration = null;
+
+        for (i = 0; i < URL_REGEX_LIST.length; i++) {
+          const [integration, { regex, getTitle, getLinks }] = URL_REGEX_LIST[i];
+          const match = windowUrl.match(regex);
+
+          if (match) {
+            const links = getLinks(match);
+            if (isEnabled({ integration, links })) {
+              newIntegration = { links, getTitle, integration };
+              break;
+            }
+          }
+        }
+
+        if (!newIntegration) {
+          resetState();
+        } else if (
+          !activeIntegration ||
+          newIntegration.links.link !== activeIntegration.links.link ||
+          prevCreatingCard !== isCreatingCard
+        ) {
+          updateExternalIntegration(newIntegration);
+          requestGetExternalCard();
+        }
       }
     }
   }, [
@@ -109,7 +104,9 @@ const ExternalVerification = ({
     activeIntegration,
     updateExternalIntegration,
     resetExternalState,
-    requestGetExternalCard
+    requestGetExternalCard,
+    isCreatingCard,
+    prevCreatingCard
   ]);
 
   const prevIsUpdatingUser = usePrevious(isUpdatingUser);
@@ -303,6 +300,7 @@ ExternalVerification.propTypes = {
     finderNode: PropTypes.object
   }),
   isGettingCard: PropTypes.bool,
+  isCreatingCard: PropTypes.bool,
   user: UserPropTypes.isRequired,
   isUpdatingUser: PropTypes.bool,
   updateUserError: PropTypes.string,

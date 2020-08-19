@@ -25,7 +25,8 @@ const mapStateToProps = (state) => {
       isSettingsModalOpen,
       settingIndex,
       externalCard,
-      isGettingCard
+      isGettingCard,
+      isCreatingCard
     }
   } = state;
 
@@ -40,7 +41,8 @@ const mapStateToProps = (state) => {
     isSettingsModalOpen,
     settingIndex,
     externalCard,
-    isGettingCard
+    isGettingCard,
+    isCreatingCard
   };
 };
 

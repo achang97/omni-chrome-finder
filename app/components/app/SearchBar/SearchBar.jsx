@@ -6,6 +6,7 @@ import { MdSettings, MdClose } from 'react-icons/md';
 import { Dock } from 'components/common';
 import { ANIMATE, ROUTES, PROFILE, SEGMENT, URL_REGEX } from 'appConstants';
 import { usePrevious } from 'utils/react';
+import { UserPropTypes } from 'utils/propTypes';
 
 import logo from 'assets/images/logos/logo-dark-icon.svg';
 import { getStyleApplicationFn } from 'utils/style';
@@ -15,18 +16,13 @@ const DOCK_WIDTH = 225;
 
 const s = getStyleApplicationFn(style);
 
-const regexMatch = URL_REGEX.SEARCH_BAR.find(({ regex }) => window.location.href.match(regex));
-const BASE_EVENT_PROPERTIES = {
-  type: regexMatch && regexMatch.integration.title
-};
-
 const SearchBar = ({
   windowUrl,
   onlyShowSearchBar,
   searchText,
   toggleTabShown,
   dockVisible,
-  searchBarSettings,
+  user,
   toggleSearchBar,
   toggleDock,
   updateAskSearchText,
@@ -36,12 +32,24 @@ const SearchBar = ({
 }) => {
   const [isHovering, setIsHovering] = useState(false);
 
+  const {
+    widgetSettings: { searchBar: searchBarSettings },
+    integrations
+  } = user;
+
+  const searchBarRegexes = URL_REGEX.getSearchBarRegexes(integrations);
+
+  const regexMatch = searchBarRegexes.find(({ regex }) => window.location.href.match(regex));
+  const BASE_EVENT_PROPERTIES = {
+    type: regexMatch && regexMatch.integration.title
+  };
+
   const prevSearchBarSettings = usePrevious(searchBarSettings);
   const prevUrl = usePrevious(windowUrl);
 
   useEffect(() => {
     if (prevUrl !== windowUrl || prevSearchBarSettings !== searchBarSettings) {
-      const matchesSearchBar = URL_REGEX.SEARCH_BAR.some(({ integration, regex }) => {
+      const matchesSearchBar = searchBarRegexes.some(({ integration, regex }) => {
         return !searchBarSettings[integration.type].disabled && window.location.href.match(regex);
       });
 
@@ -61,7 +69,8 @@ const SearchBar = ({
     dockVisible,
     toggleTabShown,
     onlyShowSearchBar,
-    toggleSearchBar
+    toggleSearchBar,
+    searchBarRegexes
   ]);
 
   const [debouncedOpenExtension] = useDebouncedCallback((query) => {
@@ -127,11 +136,7 @@ SearchBar.propTypes = {
   searchText: PropTypes.string.isRequired,
   toggleTabShown: PropTypes.bool.isRequired,
   dockVisible: PropTypes.bool.isRequired,
-  searchBarSettings: PropTypes.objectOf(
-    PropTypes.shape({
-      disabled: PropTypes.bool.isRequired
-    })
-  ).isRequired,
+  user: UserPropTypes.isRequired,
 
   // Redux Actions
   toggleSearchBar: PropTypes.func.isRequired,
