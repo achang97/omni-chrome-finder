@@ -4,7 +4,7 @@ import PropTypes from 'prop-types';
 import { Timeago, Message } from 'components/common';
 import { CardStatusIndicator } from 'components/cards';
 
-import { copyText } from 'utils/window';
+import { copyText, decodeHtml } from 'utils/window';
 import { getStyleApplicationFn } from 'utils/style';
 import { createHighlightedElement } from 'utils/search';
 import { isEditor } from 'utils/auth';
@@ -107,7 +107,7 @@ const ExternalResult = ({
         <div className={s(`min-w-0 flex-1 flex flex-col ${logo ? 'ml-sm' : ''}`)}>
           {shouldDisplayTitle && (
             <div className={s('external-result-text')}>
-              {createHighlightedElement(commonProps.title, commonProps.highlightTags)}
+              {createHighlightedElement(decodeHtml(commonProps.title), commonProps.highlightTags)}
             </div>
           )}
           <div
