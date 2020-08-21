@@ -26,9 +26,20 @@ export function copyText(text) {
   document.body.removeChild(el);
 }
 
+export function decodeHtml(html) {
+  const txt = document.createElement('textarea');
+  txt.innerHTML = html;
+  return txt.value;
+}
+
 export const wasCommandKeyUsed = (event) => {
   const isUsingWindows = navigator.platform.indexOf('Win') >= 0;
   return isUsingWindows ? event.ctrlKey : event.metaKey;
 };
 
-export default { addScript, copyText, wasCommandKeyUsed };
+export default {
+  addScript,
+  copyText,
+  decodeHtml,
+  wasCommandKeyUsed
+};
