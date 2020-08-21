@@ -115,9 +115,26 @@ const getItemProps = (type, item) => {
       };
     }
     case INTEGRATIONS.SALESFORCE.type: {
-      const { type: resultType } = item;
+      const { type: resultType, AnnualRevenue, Description } = item;
+      const isAccount = resultType === 'Account';
+
       return {
-        body: <div> {resultType} </div>
+        body: (
+          <>
+            <div className="flex">
+              <div>{resultType}</div>
+              {isAccount && AnnualRevenue && (
+                <div className={s('ml-sm')}>
+                  <span className={s('font-bold')}> ARR: </span>
+                  <span> ${AnnualRevenue} </span>
+                </div>
+              )}
+            </div>
+            {isAccount && Description && (
+              <div className={s('line-clamp-2 mt-xs text-xs')}>{Description}</div>
+            )}
+          </>
+        )
       };
     }
     case INTEGRATIONS.GMAIL.type: {
