@@ -30,8 +30,8 @@ export function isLoggedIn(user = {}, integration) {
   switch (integration) {
     case INTEGRATIONS.CONFLUENCE.type:
     case INTEGRATIONS.JIRA.type: {
-      const { access_token: accessToken, oauthTokenSecret, deployedSiteUrl } = integrationInfo;
-      return deployedSiteUrl ? !!oauthTokenSecret : !!accessToken;
+      const { access_token: accessToken, oauthAccessToken, deployedSiteUrl } = integrationInfo;
+      return deployedSiteUrl ? !!oauthAccessToken : !!accessToken;
     }
     default:
       return !!integrationInfo.access_token;

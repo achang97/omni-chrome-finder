@@ -23,8 +23,8 @@ const IntegrationAuthButton = ({
   requestLogoutUserIntegration
 }) => {
   const [authWindow, setAuthWindow] = useState(null);
-  const loggedIn = isLoggedIn(user, type);
   const [dropdownOpen, setDropdownOpen] = useState(false);
+  const loggedIn = isLoggedIn(user, type);
 
   // Integration Specific
   const [isModalOpen, setModalOpen] = useState(false);
