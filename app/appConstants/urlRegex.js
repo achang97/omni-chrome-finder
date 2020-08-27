@@ -13,30 +13,33 @@ function getDefaultTitle(title) {
   return title;
 }
 
-function createRegexPrefix(urlObjects, field) {
-  const prefixes = getArrayField(urlObjects, field);
-
+function createRegexPrefix(urls) {
   // TODO: Replace with global string util function (replaceAll)
-  const escapedPrefixes = prefixes.map((prefix) => {
-    let newPrefix = prefix;
+  const escapedPrefixes = urls
+    .filter((url) => !!url)
+    .map((url) => {
+      let newPrefix = url;
 
-    newPrefix = newPrefix.replace(new RegExp('/', 'g'), '\\/');
-    newPrefix = newPrefix.replace(new RegExp('\\.', 'g'), '\\.');
+      newPrefix = newPrefix.replace(new RegExp('/', 'g'), '\\/');
+      newPrefix = newPrefix.replace(new RegExp('\\.', 'g'), '\\.');
 
-    return newPrefix;
-  });
+      return newPrefix;
+    });
 
   return `(${escapedPrefixes.join('|')})`;
 }
 
 export const getExternalVerificationRegexes = (userIntegrations) => {
   const {
-    [INTEGRATIONS.CONFLUENCE.type]: { sites: confluenceSites = [] },
+    [INTEGRATIONS.CONFLUENCE.type]: { sites: confluenceSites = [], deployedSiteUrl },
     [INTEGRATIONS.ZENDESK.type]: { brands: zendeskBrands = [] }
   } = userIntegrations;
 
-  const confluencePrefix = createRegexPrefix(confluenceSites, 'url');
-  const zendeskPrefix = createRegexPrefix(zendeskBrands, 'brand_url');
+  const confluencePrefix = createRegexPrefix([
+    ...getArrayField(confluenceSites, 'url'),
+    deployedSiteUrl
+  ]);
+  const zendeskPrefix = createRegexPrefix(getArrayField(zendeskBrands, 'brand_url'));
 
   return {
     [INTEGRATIONS.GOOGLE.type]: {
@@ -78,12 +81,14 @@ export const getExternalVerificationRegexes = (userIntegrations) => {
 
 export function getSearchBarRegexes(userIntegrations) {
   const {
-    [INTEGRATIONS.JIRA.type]: { sites: jiraSites = [] },
+    [INTEGRATIONS.JIRA.type]: { sites: jiraSites = [], deployedSiteUrl },
     [INTEGRATIONS.ZENDESK.type]: { brands: zendeskBrands = [] }
   } = userIntegrations;
 
-  const jiraPrefix = createRegexPrefix(jiraSites, 'url');
-  const zendeskPrefix = createRegexPrefix(zendeskBrands, 'brand_url');
+  const jiraPrefix = createRegexPrefix([...getArrayField(jiraSites, 'url'), deployedSiteUrl]);
+  const zendeskPrefix = createRegexPrefix(getArrayField(zendeskBrands, 'brand_url'));
+
+  console.log(jiraPrefix);
 
   const externalVerificationRegexes = getExternalVerificationRegexes(userIntegrations);
 
