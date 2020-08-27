@@ -88,8 +88,6 @@ export function getSearchBarRegexes(userIntegrations) {
   const jiraPrefix = createRegexPrefix([...getArrayField(jiraSites, 'url'), deployedSiteUrl]);
   const zendeskPrefix = createRegexPrefix(getArrayField(zendeskBrands, 'brand_url'));
 
-  console.log(jiraPrefix);
-
   const externalVerificationRegexes = getExternalVerificationRegexes(userIntegrations);
 
   return [
