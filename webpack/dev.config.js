@@ -1,19 +1,23 @@
 const path = require('path');
 const webpack = require('webpack');
 const autoprefixer = require('autoprefixer');
+const ExtensionReloader = require('webpack-extension-reloader');
+
 const tailwindcss = require('tailwindcss');
 const tailwindConfig = require('../tailwind.config');
 
 const host = 'localhost';
 const port = 3000;
-const customPath = path.join(__dirname, './customPublicPath');
-const hotScript = 'webpack-hot-middleware/client?path=__webpack_hmr&dynamicPublicPath=true';
-require('dotenv').config({ path: path.join(__dirname, '../.dev.env') });
 
-const baseDevConfig = () => ({
+const customPath = path.join(__dirname, './customPublicPath');
+
+require('dotenv').config({ path: path.join(__dirname, '../env/.dev.env') });
+
+module.exports = {
   devtool: 'eval-cheap-module-source-map',
   entry: {
-    background: [customPath, hotScript, path.join(__dirname, '../chrome/extension/background')]
+    background: [customPath, path.join(__dirname, '../chrome/extension/background')],
+    inject: [customPath, path.join(__dirname, '../chrome/extension/inject')]
   },
   devMiddleware: {
     publicPath: `http://${host}:${port}/js`,
@@ -36,6 +40,14 @@ const baseDevConfig = () => ({
     new webpack.HotModuleReplacementPlugin(),
     new webpack.NoEmitOnErrorsPlugin(),
     new webpack.IgnorePlugin(/[^/]+\/[\S]+.prod$/),
+    new ExtensionReloader({
+      reloadPage: true,
+      entries: {
+        // The entries used for the content/background scripts or extension pages
+        background: 'background',
+        contentScript: 'inject'
+      }
+    }),
     new webpack.DefinePlugin({
       __HOST__: `'${host}'`,
       __PORT__: port,
@@ -110,17 +122,4 @@ const baseDevConfig = () => ({
       }
     ]
   }
-});
-
-const injectPageConfig = baseDevConfig();
-injectPageConfig.entry = [customPath, path.join(__dirname, '../chrome/extension/inject')];
-delete injectPageConfig.hotMiddleware;
-delete injectPageConfig.module.rules[0].options;
-injectPageConfig.plugins.shift(); // remove HotModuleReplacementPlugin
-injectPageConfig.output = {
-  path: path.join(__dirname, '../dev/js'),
-  filename: 'inject.bundle.js'
 };
-const appConfig = baseDevConfig();
-
-module.exports = [injectPageConfig, appConfig];

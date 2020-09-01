@@ -4,7 +4,7 @@ const autoprefixer = require('autoprefixer');
 const tailwindcss = require('tailwindcss');
 const TerserPlugin = require('terser-webpack-plugin');
 const tailwindConfig = require('../tailwind.config');
-require('dotenv').config({ path: path.join(__dirname, '../.prod.env') });
+require('dotenv').config({ path: path.join(__dirname, '../env/.prod.env') });
 
 const customPath = path.join(__dirname, './customPublicPath');
 
