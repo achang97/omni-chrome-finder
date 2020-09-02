@@ -2,6 +2,7 @@ import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import * as Sentry from '@sentry/browser';
 import { MdError, MdClose, MdCloudDownload } from 'react-icons/md';
+import browser from 'webextension-polyfill';
 
 import { Dock, Button, Message } from 'components/common';
 import { EXTENSION_MESSAGE, MESSAGE, COMMAND } from 'appConstants/chrome';
@@ -26,7 +27,7 @@ class ErrorBoundary extends Component {
   }
 
   componentDidMount() {
-    chrome.runtime.onMessage.addListener(this.chromeListener);
+    browser.runtime.onMessage.addListener(this.chromeListener);
   }
 
   componentDidCatch(error, errorInfo) {
@@ -42,17 +43,17 @@ class ErrorBoundary extends Component {
     this.setState({ hasError: true });
 
     // Communicate with background page to get version information?
-    chrome.runtime.sendMessage({ type: EXTENSION_MESSAGE.CATCH_ERROR }, (hasUpdate) => {
+    browser.runtime.sendMessage({ type: EXTENSION_MESSAGE.CATCH_ERROR }).then((hasUpdate) => {
       this.setState({ hasUpdate });
     });
   }
 
   componentWillUnmount() {
-    chrome.runtime.onMessage.removeListener(this.chromeListener);
+    browser.runtime.onMessage.removeListener(this.chromeListener);
   }
 
   getVersion = () => {
-    return chrome.runtime.getManifest().version;
+    return browser.runtime.getManifest().version;
   };
 
   chromeListener = (msg) => {
@@ -77,7 +78,7 @@ class ErrorBoundary extends Component {
   };
 
   updateExtension = () => {
-    chrome.runtime.sendMessage({ type: EXTENSION_MESSAGE.RELOAD_EXTENSION }, () => {
+    browser.runtime.sendMessage({ type: EXTENSION_MESSAGE.RELOAD_EXTENSION }).then(() => {
       this.setState({ hasReloaded: true });
     });
   };

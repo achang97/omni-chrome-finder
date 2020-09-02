@@ -1,5 +1,7 @@
 import _ from 'lodash';
 import queryString from 'query-string';
+import browser from 'webextension-polyfill';
+
 import { CHROME, URL } from 'appConstants';
 import { getStorage, setStorage } from 'utils/storage';
 import { getActiveTab, injectExtension, loadScript } from './inject';
@@ -15,9 +17,9 @@ export default function createNotification({ message, notification }) {
         : `${CHROME.NOTIFICATION_TYPE.CARD}-${status}-${card._id}`;
 
     const notifierName = notifier ? `${notifier.firstname} ${notifier.lastname}` : 'Omni';
-    chrome.notifications.create(notificationId, {
+    browser.notifications.create(notificationId, {
       type: 'basic',
-      iconUrl: chrome.runtime.getURL('/img/icon-128.png'),
+      iconUrl: browser.runtime.getURL('/img/icon-128.png'),
       title: message,
       message: `Card: "${card.question}"`,
       contextMessage: `Sent by ${resolved ? resolver.name : notifierName}`
@@ -41,8 +43,8 @@ export default function createNotification({ message, notification }) {
 }
 
 function openNotification(windowId, tabId, payload) {
-  chrome.windows.update(windowId, { focused: true });
-  chrome.tabs.sendMessage(tabId, {
+  browser.windows.update(windowId, { focused: true });
+  browser.tabs.sendMessage(tabId, {
     type: CHROME.MESSAGE.NOTIFICATION_OPENED,
     payload
   });
@@ -68,8 +70,8 @@ function openNotificationNewTab(type, id) {
   newWindow.focus();
 }
 
-chrome.notifications.onClicked.addListener(async (notificationId) => {
-  chrome.notifications.clear(notificationId);
+browser.notifications.onClicked.addListener(async (notificationId) => {
+  browser.notifications.clear(notificationId);
 
   const match = notificationId.match(/(\S+)-(\S+)-(\S+)/);
   const type = match[1];
@@ -80,14 +82,12 @@ chrome.notifications.onClicked.addListener(async (notificationId) => {
       if (activeTab) {
         const { windowId, id: activeTabId } = activeTab;
         const isInjected = await injectExtension(activeTabId);
-        if (!chrome.runtime.lastError) {
+        if (!browser.runtime.lastError) {
           if (!isInjected) {
-            loadScript('inject', activeTabId, () => {
-              openNotification(windowId, activeTabId, { type, id });
-            });
-          } else {
-            openNotification(windowId, activeTabId, { type, id });
+            await loadScript('inject', activeTabId);
           }
+
+          openNotification(windowId, activeTabId, { type, id });
         }
       } else {
         openNotificationNewTab(type, id);

@@ -32,7 +32,7 @@ export const NODE_ENV = {
   PROD: 'production'
 };
 
-export const MAIN_CONTAINER_ID = 'omni-chrome-ext-main-container';
+export const MAIN_CONTAINER_ID = 'omni-extension-main-container';
 export const APP_CLASSNAME = 'omni-app-container';
 
 export const WEB_APP_ROUTES = {

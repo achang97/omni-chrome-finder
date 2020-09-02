@@ -1,3 +1,4 @@
+import browser from 'webextension-polyfill';
 import { CHROME } from 'appConstants';
 import { injectExtension, loadScript } from './inject';
 
@@ -24,17 +25,17 @@ const ACTION_MENU_ITEMS = [
 ];
 
 // Remove all context menus
-chrome.contextMenus.removeAll();
+browser.contextMenus.removeAll();
 
 // Create Main Menu
-chrome.contextMenus.create({
+browser.contextMenus.create({
   id: IDS.PARENT,
   title: 'Omni',
   ...BASE_CONTEXT_MENU_PROPS
 });
 
 ACTION_MENU_ITEMS.forEach(({ title, id }) => {
-  chrome.contextMenus.create({
+  browser.contextMenus.create({
     parentId: IDS.PARENT,
     title,
     id,
@@ -45,10 +46,10 @@ ACTION_MENU_ITEMS.forEach(({ title, id }) => {
 function handleMenuAction(tabId, menuItemId, selectionText) {
   switch (menuItemId) {
     case IDS.SEARCH:
-      chrome.tabs.sendMessage(tabId, { type: CHROME.MESSAGE.SEARCH, payload: { selectionText } });
+      browser.tabs.sendMessage(tabId, { type: CHROME.MESSAGE.SEARCH, payload: { selectionText } });
       break;
     case IDS.CREATE: {
-      chrome.tabs.sendMessage(tabId, { type: CHROME.MESSAGE.CREATE, payload: { selectionText } });
+      browser.tabs.sendMessage(tabId, { type: CHROME.MESSAGE.CREATE, payload: { selectionText } });
       break;
     }
     default: {
@@ -57,17 +58,15 @@ function handleMenuAction(tabId, menuItemId, selectionText) {
   }
 }
 
-chrome.contextMenus.onClicked.addListener(async ({ menuItemId, selectionText = '' }, tab) => {
+browser.contextMenus.onClicked.addListener(async ({ menuItemId, selectionText = '' }, tab) => {
   const tabId = tab.id;
 
   // Attempt to inject extension
   // TODO: should take this out once <all_urls> permission is enabled
   const isInjected = await injectExtension(tabId);
   if (!isInjected) {
-    loadScript('inject', tabId, () => {
-      handleMenuAction(tabId, menuItemId, selectionText);
-    });
-  } else {
-    handleMenuAction(tabId, menuItemId, selectionText);
+    await loadScript('inject', tabId);
   }
+
+  handleMenuAction(tabId, menuItemId, selectionText);
 });

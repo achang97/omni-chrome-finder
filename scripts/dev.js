@@ -1,6 +1,4 @@
-const createWebpackServer = require('webpack-httpolyglot-server');
 const tasks = require('./tasks');
-const devConfig = require('../webpack/dev.config');
 
 tasks.replaceWebpack();
 console.log('[Copy assets]');
@@ -14,7 +12,5 @@ console.log('please allow `https://localhost:3000` connections in Google Chrome,
 console.log(
   'and load unpacked extensions with `./dev` folder. (see https://developer.chrome.com/extensions/getstarted#unpacked)\n'
 );
-createWebpackServer(devConfig, {
-  host: 'localhost',
-  port: 3000
-});
+
+exec('webpack --config webpack/dev.config.js --progress --profile --colors --watch');

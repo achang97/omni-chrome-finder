@@ -1,3 +1,4 @@
+import browser from 'webextension-polyfill';
 import { URL, WEB_APP_ROUTES, CHROME } from 'appConstants';
 import { getStorage, setStorage, addStorageListener, removeStorageListener } from 'utils/storage';
 import { logout, syncAuthInfo } from 'actions/auth';
@@ -18,20 +19,22 @@ const INSTALL_REASON = {
 let justInstalled = false;
 let lastUpdateStatus;
 
-chrome.runtime.requestUpdateCheck((status) => {
-  lastUpdateStatus = status;
+if (browser.runtime.requestUpdateCheck) {
+  browser.runtime.requestUpdateCheck().then((status) => {
+    lastUpdateStatus = status;
 
-  if (status === STATUS.UPDATE_AVAILABLE) {
-    chrome.runtime.reload();
-  }
-});
+    if (status === STATUS.UPDATE_AVAILABLE) {
+      browser.runtime.reload();
+    }
+  });
+}
 
-chrome.runtime.onUpdateAvailable.addListener(() => {
+browser.runtime.onUpdateAvailable.addListener(() => {
   // Automatically update
-  chrome.runtime.reload();
+  browser.runtime.reload();
 });
 
-chrome.runtime.onInstalled.addListener(({ reason }) => {
+browser.runtime.onInstalled.addListener(({ reason }) => {
   switch (reason) {
     case INSTALL_REASON.INSTALL: {
       justInstalled = true;
@@ -47,23 +50,25 @@ chrome.runtime.onInstalled.addListener(({ reason }) => {
   }
 });
 
-chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
+browser.runtime.onMessage.addListener((message, sender, sendResponse) => {
   const { type } = message;
   switch (type) {
     case CHROME.EXTENSION_MESSAGE.CATCH_ERROR: {
-      chrome.runtime.requestUpdateCheck((status) => {
-        if (status !== STATUS.THROTTLED) {
-          lastUpdateStatus = status;
-        }
+      if (browser.runtime.requestUpdateCheck) {
+        browser.runtime.requestUpdateCheck().then((status) => {
+          if (status !== STATUS.THROTTLED) {
+            lastUpdateStatus = status;
+          }
 
-        sendResponse(lastUpdateStatus === STATUS.UPDATE_AVAILABLE);
-      });
+          sendResponse(lastUpdateStatus === STATUS.UPDATE_AVAILABLE);
+        });
+      }
 
       // Mark as asynchronous response
       return true;
     }
     case CHROME.EXTENSION_MESSAGE.RELOAD_EXTENSION: {
-      chrome.runtime.reload();
+      browser.runtime.reload();
       sendResponse('Successfully reloaded extension!');
       break;
     }
@@ -74,14 +79,14 @@ chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
   return false;
 });
 
-chrome.runtime.onMessageExternal.addListener((message, sender, sendResponse) => {
+browser.runtime.onMessageExternal.addListener((message, sender, sendResponse) => {
   if (sender.origin === URL.WEB_APP) {
     // Send back basic response
     sendResponse(`Successfully received message from ${URL.WEB_APP}.`);
   }
 });
 
-chrome.runtime.onConnectExternal.addListener((port) => {
+browser.runtime.onConnectExternal.addListener((port) => {
   const sendMessage = (auth) => {
     if (auth && auth.token) {
       const { user, token, refreshToken } = auth;
@@ -138,15 +143,15 @@ chrome.runtime.onConnectExternal.addListener((port) => {
   port.onDisconnect.addListener(() => removeStorageListener(listener));
 });
 
-chrome.tabs.onUpdated.addListener(async (tabId, changeInfo) => {
+browser.tabs.onUpdated.addListener(async (tabId, changeInfo) => {
   try {
     switch (changeInfo.status) {
       case 'loading': {
         initSocket();
 
         const isInjected = await injectExtension(tabId);
-        if (!chrome.runtime.lastError && !isInjected) {
-          loadScript('inject', tabId);
+        if (!browser.runtime.lastError && !isInjected) {
+          await loadScript('inject', tabId);
         }
 
         break;
@@ -154,7 +159,7 @@ chrome.tabs.onUpdated.addListener(async (tabId, changeInfo) => {
       case 'complete': {
         const isInjected = await injectExtension(tabId);
         if (isInjected) {
-          chrome.tabs.sendMessage(tabId, { type: CHROME.MESSAGE.TAB_UPDATE });
+          browser.tabs.sendMessage(tabId, { type: CHROME.MESSAGE.TAB_UPDATE });
         }
         break;
       }
@@ -166,20 +171,17 @@ chrome.tabs.onUpdated.addListener(async (tabId, changeInfo) => {
   }
 });
 
-chrome.browserAction.onClicked.addListener(async (tab) => {
+browser.browserAction.onClicked.addListener(async (tab) => {
   try {
     const tabId = tab.id;
     const isInjected = await injectExtension(tabId);
-    if (!chrome.runtime.lastError) {
+    if (!browser.runtime.lastError) {
       if (!isInjected) {
-        loadScript('inject', tabId, () => {
-          chrome.tabs.sendMessage(tabId, { type: CHROME.MESSAGE.TOGGLE });
-        });
-
+        await loadScript('inject', tabId);
         initSocket();
-      } else {
-        chrome.tabs.sendMessage(tabId, { type: CHROME.MESSAGE.TOGGLE });
       }
+
+      await browser.tabs.sendMessage(tabId, { type: CHROME.MESSAGE.TOGGLE });
     }
   } catch (error) {
     window.open(URL.EXTENSION);

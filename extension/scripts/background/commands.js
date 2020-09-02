@@ -1,10 +1,11 @@
+import browser from 'webextension-polyfill';
 import { CHROME, URL } from 'appConstants';
 import { getActiveTab, loadScript, injectExtension } from './inject';
 
-function handleCommand(tabId, command) {
+async function handleCommand(tabId, command) {
   switch (command) {
     case CHROME.COMMAND.OPEN_EXTENSION: {
-      chrome.tabs.sendMessage(tabId, { type: CHROME.COMMAND.OPEN_EXTENSION });
+      await browser.tabs.sendMessage(tabId, { type: CHROME.COMMAND.OPEN_EXTENSION });
       break;
     }
     default:
@@ -12,7 +13,7 @@ function handleCommand(tabId, command) {
   }
 }
 
-chrome.commands.onCommand.addListener(async (command) => {
+browser.commands.onCommand.addListener(async (command) => {
   getActiveTab().then(async (activeTab) => {
     try {
       if (activeTab) {
@@ -20,12 +21,10 @@ chrome.commands.onCommand.addListener(async (command) => {
 
         const isInjected = await injectExtension(tabId);
         if (!isInjected) {
-          loadScript('inject', tabId, () => {
-            handleCommand(tabId, command);
-          });
-        } else {
-          handleCommand(tabId, command);
+          await loadScript('inject', tabId);
         }
+
+        await handleCommand(tabId, command);
       } else {
         window.open(URL.EXTENSION);
       }

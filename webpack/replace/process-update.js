@@ -1,3 +1,5 @@
+const browser = require('webextension-polyfill');
+
 /**
  * Based heavily on https://github.com/webpack/webpack/blob/
  *  c0afdf9c6abc1dd70707c594e473802a566f7b6e/hot/only-dev-server.js
@@ -91,9 +93,9 @@ module.exports = function (hash, moduleMap, options) {
         });
       }
       /* replaced part start */
-      if (chrome && chrome.runtime && chrome.runtime.reload) {
+      if (chrome && browser.runtime && browser.runtime.reload) {
         console.warn('[HMR] extension reload');
-        chrome.runtime.reload();
+        browser.runtime.reload();
         return;
       }
       /* replaced part end */
