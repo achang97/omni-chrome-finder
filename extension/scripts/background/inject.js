@@ -1,3 +1,4 @@
+import axios from 'axios';
 import browser from 'webextension-polyfill';
 import { NODE_ENV } from 'appConstants';
 
@@ -27,18 +28,14 @@ export async function loadScript(name, tabId) {
   if (chrome && process.env.NODE_ENV === NODE_ENV.DEV) {
     // Load redux-devtools-extension inject bundle,
     // because inject script and page is in a different context
-    const request = new XMLHttpRequest();
-    request.open('GET', 'chrome://lmhkpmbekcpmknklioeibfkpmmfibljd/js/redux-devtools-extension.js'); // sync
-    request.send();
     try {
-      request.onload = () => {
-        if (request.readyState === XMLHttpRequest.DONE && request.status === 200) {
-          browser.tabs.executeScript(tabId, {
-            code: request.responseText,
-            runAt: 'document_start'
-          });
-        }
-      };
+      const { data } = await axios.get(
+        'chrome-extension://lmhkpmbekcpmknklioeibfkpmmfibljd/js/redux-devtools-extension.js'
+      );
+      browser.tabs.executeScript(tabId, {
+        code: data,
+        runAt: 'document_start'
+      });
     } catch (error) {
       // Don't actually throw an error
       console.log(error);
