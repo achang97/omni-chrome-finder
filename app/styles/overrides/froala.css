@@ -1,3 +1,10 @@
+/* Site-specific problems */
+
+/* Mandrill Fix with #logo ID */
+#logo {
+  float: none;
+}
+
 #omni-extension-main-container .fr-wrapper {
   flex: 1;
   min-height: 0;

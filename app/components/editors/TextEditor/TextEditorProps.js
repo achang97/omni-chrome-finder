@@ -1,5 +1,6 @@
 import browser from 'webextension-polyfill';
 import CodeMirror from 'codemirror/lib/codemirror';
+
 import { URL } from 'appConstants/request';
 
 const UPLOAD_URL = `${URL.SERVER}/files/upload`;
@@ -9,6 +10,8 @@ const CONFIG = {
   charCounterCount: false,
   attribution: false,
   quickInsertEnabled: false,
+
+  // TODO: Figure out what to do with this. Crashes in Firefox.
   iframe: true,
 
   // NOTE: this is pretty much ripped from the style overrides. It's obviously not pretty
@@ -17,19 +20,16 @@ const CONFIG = {
   iframeDefaultStyle: `
     html {
       height: auto;
-      cursor: text !important;
-      font-size: 14px !important;
-      line-height: 1.25 !important;
-      cursor: default;
-
-      /* prettier-ignore */
+      cursor: text;
+      font-size: 14px;
+      line-height: 1.25;
       font-family:
         "HelveticaNeue-Light",
         "Helvetica Neue Light",
         "Helvetica Neue",
         Helvetica,
         Arial,
-        sans-serif !important;
+        sans-serif;
       font-weight: 400;
       box-sizing: border-box;
       letter-spacing: 0;
@@ -45,17 +45,8 @@ const CONFIG = {
     }
 
     h1, h2, h3, h4, h5, h6 {
-      font-weight: bold !important;
+      font-weight: bold;
       margin: 0.7em 0;
-
-      /* prettier-ignore */
-      font-family:
-        'HelveticaNeue-Light',
-        'Helvetica Neue Light',
-        'Helvetica Neue',
-        Helvetica,
-        Arial,
-        sans-serif !important;
     }
 
     h1 {
