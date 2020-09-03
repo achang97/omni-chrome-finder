@@ -1,103 +1,37 @@
 const path = require('path');
 const webpack = require('webpack');
-const autoprefixer = require('autoprefixer');
-const tailwindcss = require('tailwindcss');
 const TerserPlugin = require('terser-webpack-plugin');
-const tailwindConfig = require('../tailwind.config');
-require('dotenv').config({ path: path.join(__dirname, '../.prod.env') });
+// const ZipPlugin = require('zip-webpack-plugin');
 
-const customPath = path.join(__dirname, './customPublicPath');
+require('dotenv').config({ path: path.join(__dirname, '../env/.prod.env') });
 
-module.exports = {
-  entry: {
-    background: [customPath, path.join(__dirname, '../chrome/extension/background')],
-    inject: [customPath, path.join(__dirname, '../chrome/extension/inject')]
-  },
+// const targetBrowser = process.env.TARGET_BROWSER;
+
+// const getExtensionFileType = (browser) => {
+//   switch (browser) {
+//     case 'opera':
+//       return 'crx';
+//     case 'firefox':
+//       return 'xpi';
+//     default:
+//       return 'zip';
+//   }
+// };
+
+module.exports = require('./base.config.js')({
   mode: 'production',
-  output: {
-    path: path.join(__dirname, '../build/js'),
-    filename: '[name].bundle.js',
-    chunkFilename: '[id].chunk.js'
-  },
+  output: 'build',
   plugins: [
     new webpack.optimize.OccurrenceOrderPlugin(),
-    new webpack.IgnorePlugin(/[^/]+\/[\S]+.dev$/),
-    new webpack.DefinePlugin({
-      'process.env': {
-        NODE_ENV: JSON.stringify('production'),
-        SEGMENT_KEY: JSON.stringify(process.env.SEGMENT_KEY),
-        FROALA_KEY: JSON.stringify(process.env.FROALA_KEY)
-      }
-    })
+    new webpack.IgnorePlugin(/[^/]+\/[\S]+.dev$/)
+    // new ZipPlugin({
+    //   path: path.join(__dirname, '../build'),
+    //   extension: `${getExtensionFileType(targetBrowser)}`,
+    //   filename: `${targetBrowser}`
+    // })
   ],
-  resolve: {
-    modules: ['app', 'node_modules'],
-    extensions: ['*', '.js', '.jsx']
-  },
-  module: {
-    rules: [
-      {
-        test: /\.js|\.jsx$/,
-        loader: 'babel-loader',
-        exclude: /node_modules/,
-        query: {
-          plugins: [
-            /* 'optimize-react' */
-          ]
-        }
-      },
-      {
-        test: /\.css$/,
-        exclude: /node_modules|app\/styles\/overrides/,
-        use: [
-          'style-loader',
-          'css-loader?modules&importLoaders=1&localIdentName=[name]_[local]_[hash:base64:5]',
-          {
-            loader: 'postcss-loader',
-            options: {
-              plugins: () => [tailwindcss(tailwindConfig), autoprefixer]
-            }
-          }
-        ]
-      },
-      {
-        test: /\.css$/,
-        include: /node_modules|app\/styles\/overrides/,
-        use: ['style-loader', 'css-loader']
-      },
-      {
-        test: /\.(gif|png|jpe?g|svg)$/i,
-        use: [
-          'file-loader',
-          {
-            loader: 'image-webpack-loader',
-            options: {
-              bypassOnDebug: true, // webpack@1.x
-              disable: true // webpack@2.x and newer
-            }
-          }
-        ]
-      },
-      {
-        test: /\.woff(\?v=\d+\.\d+\.\d+)?$/,
-        use: 'url-loader?limit=10000&mimetype=application/font-woff'
-      },
-      {
-        test: /\.woff2(\?v=\d+\.\d+\.\d+)?$/,
-        use: 'url-loader?limit=10000&mimetype=application/font-woff'
-      },
-      {
-        test: /\.ttf(\?v=\d+\.\d+\.\d+)?$/,
-        use: 'url-loader?limit=10000&mimetype=application/octet-stream'
-      },
-      {
-        test: /\.eot(\?v=\d+\.\d+\.\d+)?$/,
-        use: 'file-loader'
-      }
-    ]
-  },
   optimization: {
     minimize: true,
     minimizer: [new TerserPlugin()]
   }
-};
+});

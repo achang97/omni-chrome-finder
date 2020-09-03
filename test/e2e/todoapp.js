@@ -70,7 +70,7 @@
 //       `.//h2[contains(text(), "${extensionName}")]]`
 //     ));
 //     const extensionId = await elems[0].getAttribute('id');
-//     await driver.get(`chrome-extension://${extensionId}/window.html`);
+//     await driver.get(`extensionension://${extensionId}/window.html`);
 //   });
 
 //   after(async () => driver.quit());

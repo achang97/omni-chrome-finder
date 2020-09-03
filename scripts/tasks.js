@@ -1,4 +1,8 @@
+const { mkdir } = require('shelljs');
+
 require('shelljs/global');
+
+const targetBrowser = process.env.TARGET_BROWSER;
 
 exports.replaceWebpack = () => {
   const replaceTasks = [
@@ -16,14 +20,11 @@ exports.replaceWebpack = () => {
 };
 
 exports.copyAssets = (type) => {
-  const env = type === 'build' ? 'prod' : type;
-  rm('-rf', type);
   mkdir(type);
-  cp(`chrome/manifest.${env}.json`, `${type}/manifest.json`);
 
-  mkdir(`${type}/css`);
-  exec(`cleancss -o ${type}/css/overrides.min.css app/styles/overrides/*.css`);
+  const dest = `${type}/${targetBrowser}`;
+  mkdir(dest);
 
-  cp('-R', 'chrome/assets/*', type);
-  exec(`pug -O "{ env: '${env}' }" -o ${type} chrome/views/`);
+  mkdir(`${dest}/css`);
+  exec(`cleancss -o ${dest}/css/overrides.min.css app/styles/overrides/*.css`);
 };

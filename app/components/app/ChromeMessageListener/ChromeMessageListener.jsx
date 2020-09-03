@@ -1,5 +1,6 @@
 import { Component } from 'react';
 import PropTypes from 'prop-types';
+import browser from 'webextension-polyfill';
 
 import { CHROME, ROUTES, TASKS, AUDIT, FINDER, MAIN_CONTAINER_ID } from 'appConstants';
 import { getNewCardBaseState, getCardUrlParams } from 'utils/card';
@@ -11,7 +12,7 @@ import { isValidUser } from 'utils/auth';
 
 class ChromeMessageListener extends Component {
   componentDidMount() {
-    chrome.runtime.onMessage.addListener(this.listener);
+    browser.runtime.onMessage.addListener(this.listener);
 
     if (document.addEventListener) {
       document.addEventListener('click', this.interceptClickEvent);
@@ -23,7 +24,7 @@ class ChromeMessageListener extends Component {
   }
 
   componentWillUnmount() {
-    chrome.runtime.onMessage.removeListener(this.listener);
+    browser.runtime.onMessage.removeListener(this.listener);
 
     if (document.removeEventListener) {
       document.removeEventListener('click', this.interceptClickEvent);

@@ -1,11 +1,12 @@
+import browser from 'webextension-polyfill';
 import { NODE_ENV } from 'appConstants';
 
 export const getStorageName = (name) =>
   `OMNI_EXTENSION_${process.env.NODE_ENV === NODE_ENV.DEV ? 'DEV' : 'PROD'}_${name}`;
 
 export function setStorage(key, value) {
-  if (chrome.storage) {
-    return chrome.storage.local.set({
+  if (browser.storage) {
+    return browser.storage.local.set({
       [getStorageName(key)]: JSON.stringify(value)
     });
   }
@@ -15,24 +16,24 @@ export function setStorage(key, value) {
 
 export function getStorage(key) {
   return new Promise((resolve, reject) => {
-    if (chrome.storage) {
+    if (browser.storage) {
       const keyName = getStorageName(key);
-      chrome.storage.local.get(keyName, (obj) => {
-        if (chrome.runtime.lastError) {
-          reject(chrome.runtime.lastError);
+      browser.storage.local.get(keyName).then((obj) => {
+        if (browser.runtime.lastError) {
+          reject(browser.runtime.lastError);
         } else {
           const value = obj[keyName];
           resolve(value ? JSON.parse(value) : null);
         }
       });
     } else {
-      reject(new Error('The variable `chrome.storage` does not exist'));
+      reject(new Error('The variable `browser.storage` does not exist'));
     }
   });
 }
 
 export function addStorageListener(storageKey, callback) {
-  if (chrome.storage) {
+  if (browser.storage) {
     const listener = (changes, namespace) => {
       Object.entries(changes).forEach(([key, change]) => {
         const { oldValue, newValue } = change;
@@ -44,7 +45,7 @@ export function addStorageListener(storageKey, callback) {
       });
     };
 
-    chrome.storage.onChanged.addListener(listener);
+    browser.storage.onChanged.addListener(listener);
 
     return listener;
   }
@@ -53,7 +54,7 @@ export function addStorageListener(storageKey, callback) {
 }
 
 export function removeStorageListener(callback) {
-  chrome.storage.onChanged.removeListener(callback);
+  browser.storage.onChanged.removeListener(callback);
 }
 
 export default {

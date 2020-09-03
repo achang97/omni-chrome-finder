@@ -42,10 +42,10 @@ import 'video-react/dist/video-react.css';
 import 'react-image-crop/dist/ReactCrop.css';
 
 /* eslint-disable import/no-extraneous-dependencies, import/extensions */
-import 'froala-editor/css/froala_style.min.css';
+// import 'froala-editor/css/froala_style.min.css';
+// import 'froala-editor/css/froala_editor.min.css';
 import 'froala-editor/css/froala_editor.pkgd.min.css';
 import 'froala-editor/css/plugins.pkgd.min.css';
-import 'froala-editor/css/froala_editor.min.css';
 import 'froala-editor/css/third_party/embedly.min.css';
 import 'codemirror/lib/codemirror.css';
 /* eslint-enable import/no-extraneous-dependencies */

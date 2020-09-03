@@ -1,3 +1,4 @@
+import browser from 'webextension-polyfill';
 import { CHROME, NODE_ENV, REQUEST } from 'appConstants';
 import { getStorage, addStorageListener } from 'utils/storage';
 import createNotification from './notifications';
@@ -19,8 +20,8 @@ function handleSocketMessage(type, payload) {
     case CHROME.SOCKET_MESSAGE_TYPE.OAUTH_SUCCESS: {
       // TODO: Only send to one tab with injected extension. Currently, send to all tabs
       // (since the focused tab is not necessarily the one with injected extension).
-      chrome.tabs.query({}, (tabs) => {
-        tabs.forEach((tab) => chrome.tabs.sendMessage(tab.id, { type, payload }));
+      browser.tabs.query({}).then((tabs) => {
+        tabs.forEach((tab) => browser.tabs.sendMessage(tab.id, { type, payload }));
       });
       break;
     }
