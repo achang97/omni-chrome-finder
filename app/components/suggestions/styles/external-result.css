@@ -6,3 +6,7 @@
   height: 27px;
   padding: 6px;
 }
+
+.external-result-icon img {
+  @apply w-full h-full;
+}

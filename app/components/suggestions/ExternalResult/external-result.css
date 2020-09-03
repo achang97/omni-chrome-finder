@@ -18,10 +18,6 @@
   font-size: 13px;
 }
 
-.external-result-icon img {
-  @apply w-full h-full;
-}
-
 .external-result-description {
   @apply text-gray-reg;
 
