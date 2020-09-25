@@ -89,6 +89,7 @@ class CardTags extends Component {
   };
 
   // TODO: Remove this once React-Select gets their shit together.
+  // Solution taken from https://github.com/JedWatson/react-select/issues/3988.
   getNewOptionData = (inputValue, optionLabel) => ({
     value: inputValue,
     label: optionLabel,
