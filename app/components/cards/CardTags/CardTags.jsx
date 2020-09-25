@@ -88,6 +88,14 @@ class CardTags extends Component {
     );
   };
 
+  // TODO: Remove this once React-Select gets their shit together.
+  getNewOptionData = (inputValue, optionLabel) => ({
+    value: inputValue,
+    label: optionLabel,
+    __isNew__: true,
+    isEqual: () => false
+  });
+
   handleCreateOption = (name) => {
     const { token, tags, onChange } = this.props;
     axios.post(`${REQUEST.URL.SERVER}/tags`, { name }, createConfig(token)).then(({ data }) => {
@@ -179,6 +187,7 @@ class CardTags extends Component {
             getOptionValue={this.getSelectOptionValue}
             onCreateOption={this.handleCreateOption}
             isValidNewOption={this.isValidNewOption}
+            getNewOptionData={this.getNewOptionData}
             noOptionsMessage={() => (isSearchingTags ? 'Searching tags...' : 'No options')}
           />
         ) : (
