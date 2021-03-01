@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react';
+import React, { useEffect, useMemo, useCallback } from 'react';
 import PropTypes from 'prop-types';
 import { FiClock } from 'react-icons/fi';
 import { FaListUl } from 'react-icons/fa';
@@ -10,7 +10,7 @@ import { AUDIT, SEGMENT } from 'appConstants';
 
 import { isSlackCard } from 'utils/card';
 import { getStyleApplicationFn } from 'utils/style';
-import { UserPropTypes } from 'utils/propTypes';
+import { UserPropTypes, NodePropTypes } from 'utils/propTypes';
 import { usePrevious } from 'utils/react';
 
 import suggestionStyle from 'components/suggestions/styles/suggestion.css';
@@ -73,75 +73,93 @@ const ActivityLog = ({
     );
   };
 
-  const renderRecentCardsSection = (placeholder, event, isLoading) => {
-    return (
-      <>
-        {recentCards.map((card) => (
-          <div key={card._id} className={s('my-sm')}>
-            {renderCard(card, event)}
-          </div>
-        ))}
-        {recentCards.length === 0 && !isLoading && renderPlaceholder(placeholder)}
-      </>
-    );
-  };
-
-  const renderActivityLogSection = (placeholder, event, isLoading) => {
-    return (
-      <>
-        {activityLog.map(({ _id, card, user, type, createdAt, data }) => (
-          <div key={_id || user._id} className={s('mt-xs mb-reg')}>
-            <div className={s('flex items-center justify-between mb-xs text-2xs')}>
-              <div className={s('flex items-center')}>
-                <CardUser user={user} showName={false} size={20} />
-                <span className={s('text-gray-dark ml-sm')}>
-                  {user._id === ownUserId ? 'You' : user.firstname} {getActionName(type)}
-                </span>
-              </div>
-              <Timeago
-                live={false}
-                date={createdAt || data.date}
-                className={s('text-2xs text-gray-reg')}
-              />
+  const renderRecentCardsSection = useCallback(
+    (placeholder, event, isLoading) => {
+      return (
+        <>
+          {recentCards.map((card) => (
+            <div key={card._id} className={s('my-sm')}>
+              {renderCard(card, event)}
             </div>
-            {card ? (
-              renderCard(card, event)
-            ) : (
-              <div className={s('suggestion-elem activity-log-entry activity-log-signup')}>
-                <div className={s('font-bold mr-sm')}>
-                  {user.firstname} {user.lastname} ({user.role})
-                </div>
-                <CardUser user={user} showName={false} size="xs" />
-              </div>
-            )}
-          </div>
-        ))}
-        {activityLog.length === 0 && !isLoading && renderPlaceholder(placeholder)}
-      </>
-    );
-  };
-
-  const TABS = [
-    {
-      Icon: FaListUl,
-      label: 'Activity',
-      renderFn: renderActivityLogSection,
-      placeholder:
-        "Here, you'll see your team's activity and cards that have been recently created, edited, or viewed.",
-      getDataFn: requestGetActivityLog,
-      isLoading: isGettingActivityLog,
-      event: SEGMENT.EVENT.OPEN_CARD_FROM_ACTIVITY_LOG
+          ))}
+          {recentCards.length === 0 && !isLoading && renderPlaceholder(placeholder)}
+        </>
+      );
     },
-    {
-      Icon: FiClock,
-      label: 'Recent',
-      renderFn: renderRecentCardsSection,
-      placeholder: "Here, you'll see cards that you've recently created, edited, or viewed.",
-      getDataFn: requestGetRecentCards,
-      isLoading: isGettingRecentCards,
-      event: SEGMENT.EVENT.OPEN_CARD_FROM_RECENT
-    }
-  ];
+    [recentCards]
+  );
+
+  const renderActivityLogSection = useCallback(
+    (placeholder, event, isLoading) => {
+      return (
+        <>
+          {activityLog.map(({ _id, card, user, type, createdAt, data }) => (
+            <div key={_id || (user && user._id)} className={s('mt-xs mb-reg')}>
+              <div className={s('flex items-center justify-between mb-xs text-2xs')}>
+                {user && (
+                  <div className={s('flex items-center')}>
+                    <CardUser user={user} showName={false} size={20} />
+                    <span className={s('text-gray-dark ml-sm')}>
+                      {user._id === ownUserId ? 'You' : user.firstname} {getActionName(type)}
+                    </span>
+                  </div>
+                )}
+                <Timeago
+                  live={false}
+                  date={createdAt || data.date}
+                  className={s('text-2xs text-gray-reg')}
+                />
+              </div>
+              {card ? (
+                renderCard(card, event)
+              ) : (
+                <div className={s('suggestion-elem activity-log-entry activity-log-signup')}>
+                  <div className={s('font-bold mr-sm')}>
+                    {user.firstname} {user.lastname} ({user.role})
+                  </div>
+                  <CardUser user={user} showName={false} size="xs" />
+                </div>
+              )}
+            </div>
+          ))}
+          {activityLog.length === 0 && !isLoading && renderPlaceholder(placeholder)}
+        </>
+      );
+    },
+    [activityLog, ownUserId]
+  );
+
+  const TABS = useMemo(
+    () => [
+      {
+        Icon: FaListUl,
+        label: 'Activity',
+        renderFn: renderActivityLogSection,
+        placeholder:
+          "Here, you'll see your team's activity and cards that have been recently created, edited, or viewed.",
+        getDataFn: requestGetActivityLog,
+        isLoading: isGettingActivityLog,
+        event: SEGMENT.EVENT.OPEN_CARD_FROM_ACTIVITY_LOG
+      },
+      {
+        Icon: FiClock,
+        label: 'Recent',
+        renderFn: renderRecentCardsSection,
+        placeholder: "Here, you'll see cards that you've recently created, edited, or viewed.",
+        getDataFn: requestGetRecentCards,
+        isLoading: isGettingRecentCards,
+        event: SEGMENT.EVENT.OPEN_CARD_FROM_RECENT
+      }
+    ],
+    [
+      renderActivityLogSection,
+      requestGetActivityLog,
+      isGettingActivityLog,
+      renderRecentCardsSection,
+      requestGetRecentCards,
+      isGettingRecentCards
+    ]
+  );
 
   const prevActivityIndex = usePrevious(activityIndex);
   const prevDockVisible = usePrevious(dockVisible);
@@ -209,7 +227,7 @@ ActivityLog.propTypes = {
       _id: PropTypes.string.isRequired,
       question: PropTypes.string.isRequired,
       status: PropTypes.number.isRequired,
-      finderNode: PropTypes.object
+      finderNode: NodePropTypes
     })
   ).isRequired,
   showPerformanceScore: PropTypes.bool.isRequired,
@@ -219,7 +237,7 @@ ActivityLog.propTypes = {
       user: UserPropTypes.isRequired,
       createdAt: PropTypes.string,
       type: PropTypes.string.isRequired,
-      card: PropTypes.object
+      card: PropTypes.shape({})
     })
   ).isRequired,
   isGettingActivityLog: PropTypes.bool,
