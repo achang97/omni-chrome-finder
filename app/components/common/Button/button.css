@@ -1,7 +1,0 @@
-.button-container {
-  @apply flex items-center justify-center shadow-md p-reg rounded-lg;
-}
-
-.button-text {
-  font-size: 14px;
-}

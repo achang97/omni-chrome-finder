@@ -1,7 +1,0 @@
-.suggestion-scroll-container {
-  @apply flex flex-col h-full;
-}
-
-.suggestion-scroll-container-card {
-  @apply mx-sm mb-sm;
-}

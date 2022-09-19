@@ -1,7 +1,0 @@
-.card-tags-container {
-  @apply text-gray-dark flex items-center relative;
-}
-
-.card-tags-container-wrap {
-  @apply flex-wrap;
-}

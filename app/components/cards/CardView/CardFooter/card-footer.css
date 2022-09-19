@@ -1,7 +1,0 @@
-.card-footer-toast {
-  @apply absolute rounded-full bg-gray-overlay text-white px-xl py-reg z-10;
-
-  left: 50%;
-  top: 50%;
-  transform: translate(-50%, -50%);
-}

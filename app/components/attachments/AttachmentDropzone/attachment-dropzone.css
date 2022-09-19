@@ -1,7 +1,0 @@
-.attachment-dropzone {
-  @apply flex-1 border border-dashed border-gray-light;
-}
-
-.attachment-dropzone-button {
-  @apply bg-white text-purple-reg shadow-none;
-}

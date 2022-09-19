@@ -1,7 +1,0 @@
-.tabs-all-container {
-  @apply flex overflow-hidden items-center;
-}
-
-.tabs-tab-container {
-  @apply flex-1 overflow-auto flex max-w-full;
-}
